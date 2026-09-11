@@ -13,7 +13,7 @@ import threading
 import unittest
 from unittest import mock
 
-from minireason.campaign import ARMS, make_plan, run_test
+from minireason.campaign import ARMS, make_plan, run_arm, run_test
 from minireason.provider import Settings, write_new
 from minireason.templates import TEMPLATES
 from tests.test_tasks import correct_program
@@ -126,6 +126,24 @@ class CampaignIntegrationTests(unittest.TestCase):
                 run_test(path, self.root / 'run')
         transport.assert_not_called()
         self.assertFalse((self.root / 'run').exists())
+
+    def test_failed_final_parse_preserves_completed_stages_and_candidate_failures(self) -> None:
+        responses = [
+            {'content': json.dumps({'body': 'A retained but invalid candidate.',
+                                    'commitments': 'not a JSON program'})},
+            {'content': json.dumps({'body': 'The program is not JSON.',
+                                    'commitments': 'Investigate its encoding.'})},
+            {'content': '{"body":"incomplete'}]
+        with mock.patch.dict(os.environ, {'DEEPSEEK_API_KEY': 'offline-test-key'}), \
+             mock.patch('minireason.campaign.DeepSeek.complete', side_effect=responses):
+            plan = make_plan('partial-history', 'critic_revision_v1',
+                             'Retain earlier evidence after a final parse failure.', arms=['matched'])
+            result = run_arm(plan, 'matched', 1, self.root / 'partial')
+        self.assertEqual(result['status'], 'OPERATIONAL_FAILURE')
+        self.assertEqual([h['stage'] for h in result['history']], ['conjecture', 'criticise'])
+        errata = json.loads((self.root / 'partial/errata.json').read_text())
+        self.assertEqual(len(errata['candidate_failures']), 1)
+        self.assertIn('PROGRAM_NOT_JSON', errata['candidate_failures'][0]['evaluation']['error'])
 
     def test_cli_help_is_available_without_a_credential(self) -> None:
         completed = subprocess.run([sys.executable, '-m', 'minireason.campaign', '--help'],

@@ -77,9 +77,11 @@ def _system() -> str:
     return system + "\nReturn one JSON object conforming to: " + json.dumps(schema, sort_keys=True)
 
 
-def _direct(provider: DeepSeek, arm: str, plan: dict[str, Any], root: Path) -> tuple[dict[str, str], list[dict[str, Any]]]:
+def _direct(provider: DeepSeek, arm: str, plan: dict[str, Any], root: Path,
+            history: list[dict[str, Any]] | None = None) -> tuple[dict[str, str], list[dict[str, Any]]]:
     template = TEMPLATES[plan["template_id"]]
-    history: list[dict[str, Any]] = []
+    if history is None:
+        history = []
     if arm in {"bare", "native"}:
         result = provider.complete([{"role": "system", "content": _system()},
                                     {"role": "user", "content": task_prompt()}])
@@ -154,7 +156,7 @@ def run_arm(plan: dict[str, Any], arm: str, repeat: int, root: Path) -> dict[str
                 if event["type"] in {"FORMAT_FAILURE", "REFUSED", "SUBMISSION_DROPPED", "BUDGET_REFUSED"}:
                     record["alarms"].append({"code": event["type"], "event_id": event["event_id"], "payload": event["payload"]})
         else:
-            final, history = _direct(provider, arm, plan, root)
+            final, history = _direct(provider, arm, plan, root, record["history"])
             record["history"] = history
         record["final"] = final
         record["public"] = evaluate(final["commitments"])

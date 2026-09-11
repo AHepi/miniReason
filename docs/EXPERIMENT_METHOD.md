@@ -2,6 +2,8 @@
 
 Read [the purpose](../PURPOSE.md) and [the semantic guide](SEMANTIC_GUIDE.md) before proposing a template. Every template answers a specific causal hypothesis about information flow, criticism, revision or deployment. A configuration search is not an evolutionary competition: diagnose the observed failure, explain the mechanism of the proposed repair, and test the prediction on declared conditions.
 
+The current initial stage freezes model-proposed languages and semantic classes, including non-Lean proposals, to study relative expression under Mini's actual resources. Correctness of capture is not an admission requirement, and prose need not pass a formal translation gate. Repair and adequacy tests below apply when those stronger claims become the declared question; they do not replace the initial exploratory question. Preserve each first proposal unchanged and identify later integrations as successor experiments.
+
 This method distinguishes required comparison obligations from capabilities implemented in a particular runner. A missing arm, ablation or semantic witness remains missing; the method is not a claim that all its experiments have run.
 
 ## Freeze a concrete claim

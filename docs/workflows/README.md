@@ -5,9 +5,12 @@ Use [continue](continue.md) at session start, [experiment](experiment.md) before
 | Situation | Read | Write |
 |---|---|---|
 | Resume | PURPOSE, STATUS, latest plan, last published records | STATUS with verified next action |
-| Design a configuration | Semantic guide, method, relevant errata and lessons | New rationale and immutable plan/template |
+| Collect initial proposals | PURPOSE, language-proposal propositions, method | Original frozen scheme and material conditions; no adequacy admission gate |
+| Design a configuration or later integration | Semantic guide, method, problem promotion, relevant errata and lessons | New causal rationale and immutable successor plan/template |
 | Run fails | Wire request, answer, actual Mini ports, checker trace | Erratum with causes and uncertainty |
 | Learn something transferable | Evidence and competing explanations | Appropriate lesson file |
 | Compare arms | Exact inputs, mode, calls, tokens, chronology, repeated controls | New comparison with narrow claims |
 | Test finishes | Full record and diagnosis | Immediate main commit and verified push |
 | Stop or hand over | Untried mechanisms and outstanding confounds | Honest stopping rationale and reopening conditions |
+
+The active original runner has a dedicated [frozen language workflow](language-study.md), including setup ordering, controls, withheld-source limits and publication points.
