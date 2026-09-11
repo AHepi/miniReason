@@ -161,3 +161,9 @@ Choice: after this record is verified on main, run the unchanged E018 different-
 ### D012 publication outcome — E017 verified; E018 activation
 
 E017 record is verified on main at `8363c4cab3c39aab1223a884df109c4a5382b88a`, local `d951dd95b11e8e0d868193a4d87bf09391fdee07`, shared tree `ceb72f8d7daf35436138dd2ff6f02b6ede14ac99`. All 146 explicit paths were reviewed/scanned; original evidence bytes preserved. The unchanged E018 plan `ae1df87eba27569cc89035ce790f725cfe447e7dfb0accb1ccc6643e4349631c` is now activated under the predeclared D012 sequence. No provider or source change, hidden retry, or adaptive stimulus edit is made. Independent E018 review follows D019 with its own file and receipts.
+
+### D019 outcome — E017 independent review complete
+
+The E017 review (SHA-256 `e1310ce8b3deb235abef5641a581783f8576ce2061717174c52d51162075e4da`) verifies all 84 JSON records, ten public responses, exact wire/source/occurrence bindings, resources and both Mini replays. Recorded total is 168,053 tokens (106,343 prompt + 61,710 completion). All four use answers satisfy the finite calculation/information-state obligations. Capacity wording and interval/hull meaning remain scoped ambiguities; no capacity-only deletion occurred in use. Unsupported novelty praise and retrospective interpretation claims are recorded separately. The review supplies its own decision receipts and does not infer general recoding invariance or a Mini advantage. Publish this new review without changing any input or original output.
+
+D001 historical read outcome: the initial Git fetch completed at the then-current remote `78331ad4469831610e3a4a0eb6efee835ea26f37`. Local/connector histories showed 24 commits on each side; the known equivalent tree and separate metadata histories were retained without rewriting. Current publication always uses the live connector ref and the recorded local/tree correspondence, not that now-stale origin/main.

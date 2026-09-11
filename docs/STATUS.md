@@ -13,7 +13,7 @@ README/AGENTS and the ledger recovery instructions are published. The integrated
 | Test | Intervention | Execution state |
 |---|---|---|
 | E016-reason-original | Exact E015 J and R; account returned at use | All six arms / ten calls complete; published at 31b2db6; independent integrity and substantive review complete (separate review) |
-| E017-reason-recoded | Reviewed whole recoding of R | All six arms / ten calls complete; published at 8363c4c; independent review finishing |
+| E017-reason-recoded | Reviewed whole recoding of R | All six arms / ten calls complete; published at 8363c4c; independent review complete |
 | E018-reason-different | Scoped capacity criticism | Activation selected after verified E017; inspect actual records for live state |
 | E019-reason-omitted | Zero-byte supplemental criticism | Frozen, preflight passed, not yet run |
 | E020-reason-no-return | Empty use-account field; four staged controls | Frozen, preflight passed, not yet run |
