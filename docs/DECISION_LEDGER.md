@@ -149,3 +149,11 @@ The separate E016 review is complete: `docs/reviews/E016-reason-use-review.md`, 
 ### D020 — Carry E016 interpretation findings forward separately
 
 Choice: append the E016 review's scoped defects to interpretation errata and semantic lessons, preserving correct case answers as separate evidence. Why: correct final arithmetic can coexist with incorrect source attribution or an internally inconsistent account, and using one success to erase those defects would hide the mechanism under study. Contribution: identifies which commitments must be compared across recoding, different-reason, omission and no-return conditions. These are fallible passage-level findings; no semantic standing or language change is installed.
+
+### D012 outcome — E017 complete
+
+The frozen recoding condition completed all six arms and ten calls without operational alarms. Recorded resources: {"calls": 10, "completion_tokens": 61710, "prompt_tokens": 106343}. Adjacent actual request/response bindings and complete finish reasons verified. An independent review is finishing against the frozen interpretation contract. No input, source or sampling setting changed after seeing E016. Publish this complete record before E018.
+
+### D012 execution receipt — E018 follows verified E017
+
+Choice: after this record is verified on main, run the unchanged E018 different-reason plan. Why: the predeclared capacity criticism supplies a different relevant reason and preserves J’s tentative scope. Contribution: examines commitment-level selectivity rather than mandatory condition-specific conclusions. Same six controls, settings and five-worker limit; no retry, and no E019 dispatch until publication.

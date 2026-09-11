@@ -1,0 +1,95 @@
+I treat the use-domain cases as stipulated integer reservation cases. I use the returned account only as an account; its references to P7/P9, the fixed construction, etc., are not independently supplied here, so I do not treat them as additional case data.
+
+## Case A
+
+The reporting specification says: capacity 9, selected quantities 6 and 5, subtract the sum from capacity, return the integer. So:
+
+\[
+9-(6+5)=9-11=-2.
+\]
+
+The reporting result is therefore **-2**.
+
+What follows about the selected entries is limited. The file says the selected entries are an active hold of 6 for booking K and an active hold of 5 for booking L, each booking has exactly that one selected entry, and there are no ties, releases, or expired holds. The calculation shows that those two selected quantities sum to 11, which is 2 more than the stated capacity 9. It does not by itself show that either selected entry is erroneous, invalid, duplicated, released, expired, tied, or not selected. It also does not identify any unnamed resource or any reason beyond the arithmetic that the two entries cannot both count.
+
+A stronger conclusion needs an added premise. For example, to conclude that the two holds cannot both be fully honored together, one needs the premise that both selected entries compete for the same hard capacity 9 at the same time, with no offsetting capacity or release. To conclude that the file is inconsistent, one needs the premise that negative availability is not allowed and the file is supposed to be internally consistent. To blame a particular entry, one needs an error model, priority rule, or allocation rule. None of those is supplied in Case A. No separate inspection report accompanies Case A.
+
+## Case B: reporting procedure
+
+Capacity is 23. U has alternatives 0 or 8. V has alternatives 0 or 11. The reporting procedure forms every pair:
+
+| U | V | Calculation | Displayed value |
+|---|---:|---:|---:|
+| 0 | 0 | 23−0−0 | 23 |
+| 0 | 11 | 23−0−11 | 12 |
+| 8 | 0 | 23−8−0 | 15 |
+| 8 | 11 | 23−8−11 | 4 |
+
+So the specified reporting procedure displays **23, 12, 15, and 4**.
+
+## Case B: planner results with inspection
+
+The inspection file says U=8 and V=11 both need the same single-use jig at the same time, so the pair (8,11) cannot be performed jointly. Each other listed pair can be performed jointly. Therefore the planner’s requested values are those for the jointly performable pairs:
+
+| Pair | Value |
+|---|---:|
+| (0,0) | 23 |
+| (0,11) | 12 |
+| (8,0) | 15 |
+| (8,11) | 4 — excluded, because that pair cannot be performed jointly |
+
+So the planner’s values are **23, 12, and 15**. The value 4 remains the arithmetic result for the pair (8,11), but it is not an answer to the planner’s question about jointly performable pairs.
+
+A useful point of tension: capacity 23 alone would not exclude (8,11), since 8+11=19 and 23−19=4. The exclusion comes from the separate compatibility evidence in the inspection file, not from the reporting arithmetic.
+
+## Reader with only the snapshot and reporting procedure
+
+A reader without the inspection file can support the following:
+
+- U has listed alternatives 0 or 8; V has listed alternatives 0 or 11.
+- The reporting procedure forms four pairs and gives the four arithmetic values 23, 12, 15, and 4.
+- None of those arithmetic values violates the named capacity 23 in the sense of being negative.
+- The snapshot contains no physical-resource fields.
+
+That reader cannot support:
+
+- that all four pairs are jointly performable;
+- that (8,11) is impossible;
+- that no unnamed resource matters;
+- that the four displayed values are operationally usable planner options;
+- that named capacity is the only relevant global constraint.
+
+The reader can support a conditional statement: if the reporting procedure’s composition rule is accepted, and only named capacity is considered, then those are the arithmetic remainders. The reader cannot support the stronger claim that those remainders correspond to jointly realizable plans.
+
+## The reviewer’s remark before the inspection
+
+The reviewer wrote that each listed quantity may be defensible on its own, yet a pairing might fail to be jointly performable, and that an unnamed resource might matter. At the time it was made, the remark supplied no observed resource and no identified impossible pair.
+
+What it challenges is not the local defensibility of U=0/8 or V=0/11, and not the arithmetic 23−u−v. It challenges the commitment that local alternatives can be freely composed into global performable pairs, or the commitment that named capacity is sufficient for joint performability, or the scope claim that the reporting outputs are planner-feasible rather than merely arithmetic. In the returned account’s vocabulary, this is naturally a composition criticism or a scope criticism. It can also be recast as a vocabulary or snapshot-completeness criticism: the snapshot lacks physical-resource fields, so it cannot represent a cross-booking resource relation like a shared jig.
+
+The remark does not, by itself, require changing any listed quantity or the reporting calculation. Its grounds are modal: “may” and “might.” It identifies no actual resource conflict and no actual impossible pair. It can therefore motivate a caveat or a separate feasibility filter, but it does not show that 0, 8, 0, 11, or the calculation 23−u−v is wrong.
+
+Defensible alternative readings:
+
+1. **Conditional warning reading.** The remark only says an unnamed constraint might matter. On this reading, no change is required for the arithmetic. A distinguishing observation would be an actual shared-resource conflict, such as the later inspection file’s jig conflict for (8,11).
+2. **Composition-rule criticism.** If the reporting procedure treats all four pairs as jointly feasible, the remark challenges that composition rule. The inspection file’s exclusion of (8,11) would confirm this reading for that pair.
+3. **Snapshot-completeness or vocabulary criticism.** The remark challenges the idea that a snapshot without physical-resource fields can settle joint performability. A case where all listed pairs are jointly performable despite unnamed resources would weaken this reading for that case, but not in general.
+4. **Scope criticism.** The remark challenges presenting arithmetic remainders as operational planner options. An account that explicitly labels its output as “record-supported under named constraints” would not need to change its calculation; an account that labels the output “planner-feasible” would need to change its scope or add a feasibility relation.
+
+## Relation between the reviewer and the numerical answers
+
+The reviewer’s remark does not change the Case B reporting values: they remain 23, 12, 15, and 4. It does change how those values may be used. Before inspection, one may not infer that all four pairs are jointly performable. After inspection, one has actual grounds to exclude (8,11) from the planner’s feasible-pair values, leaving 23, 12, and 15.
+
+That is the key distinction: the number 4 is a valid reporting-arithmetic result, but it is not a planner-feasible result for (8,11). The inspection file adds a feasibility relation; it does not alter the reporting calculation.
+
+Case A has a related but distinct tension. The reporting result is -2. Whether that means “the selected entries are inconsistent” or “one entry is wrong” or “both holds cannot be jointly honored” depends on further premises about the scope and purpose of the reporting file. The arithmetic alone does not settle those questions. No inspection file is supplied for Case A, so an unnamed-resource objection is not even the issue there; the named capacity is already exceeded by the selected quantities if both are counted together.
+
+## Use of the returned account
+
+I use the returned account’s distinctions between local alternatives, composition rule, feasibility relation, and scope claim. They map onto Case B: the snapshot and reporting procedure supply local alternatives and an arithmetic composition rule under named capacity; the inspection file supplies a feasibility relation for one pair; the planner’s question asks for the scope “jointly performable.”
+
+I also use its conditional point: a compatibility objection forces a change only if the account claims operational or exhaustive global feasibility. If the account claims only record-supported arithmetic under named constraints, no change to the calculation is required; a caveat or explicit scope claim may be appropriate.
+
+I qualify or depart from one part of the returned account. The returned account says that the supplied material does not contain an actual case where two bookings’ local alternatives are individually admissible but jointly impossible for an unnamed reason. Under this task’s use-domain data, Case B’s inspection file supplies exactly such a case for the pair (8,11): U=8 and V=11 are individually listed alternatives and their sum does not violate capacity 23, but they cannot be jointly performed because of the shared single-use jig. I do not extend that conclusion to any other pair or any other case. I also do not import the returned account’s capacity-10 illustration or its P7/P9 references as if they were supplied case data.
+
+Thus the numerical answers and the reviewer treatment remain separated by scope: arithmetic/reporting values remain unchanged, while planner-feasible values require the additional feasibility evidence. The unresolved issue is the intended scope of the reporting procedure in cases like A and B: if it is only arithmetic under named constraints, no calculation changes; if it is presented as operational feasibility, then additional feasibility relations or explicit caveats are needed.
