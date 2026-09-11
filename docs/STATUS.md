@@ -14,13 +14,13 @@ README/AGENTS and the ledger recovery instructions are published. The integrated
 |---|---|---|
 | E016-reason-original | Exact E015 J and R; account returned at use | All six arms / ten calls complete; published at 31b2db6; independent integrity and substantive review complete (separate review) |
 | E017-reason-recoded | Reviewed whole recoding of R | All six arms / ten calls complete; published at 8363c4c; independent review complete |
-| E018-reason-different | Scoped capacity criticism | All six arms / ten calls complete; included in this checkpoint; review finishing |
-| E019-reason-omitted | Zero-byte supplemental criticism | Frozen, preflight passed, not yet run |
+| E018-reason-different | Scoped capacity criticism | All six arms / ten calls complete; published at 9e59d57; independent review finishing |
+| E019-reason-omitted | Zero-byte supplemental criticism | Activation selected after verified E018; inspect actual records for live state |
 | E020-reason-no-return | Empty use-account field; four staged controls | Frozen, preflight passed, not yet run |
 
 All plans and original inputs are fixed under `experiments/plans` and `experiments/materials/reason-use-v1`. Use sees only its finite domain data/questions and the account when enabled. Source/J/R are not separate use-stage ports. Prospective interpretation and decision receipts are outside model-visible inputs. E020 retains/counts its first response but does not expose it at use. One shared baseline is one observation. No scalar merit measure or automatic language installation exists.
 
-E016 publication is verified at `31b2db694023d4268dbbb08dbc695344475552d8`. E017 publication is verified at `8363c4cab3c39aab1223a884df109c4a5382b88a`. The current exact task is to verify E018 publication, then run unchanged E019 and E020 in order, reviewing/publishing each outcome under [the reason-use workflow](workflows/reason-use.md). Do not reuse an existing output directory. Do not dispatch a successor after publication or provider-access failure. If interrupted, inspect actual request, response, result and summary files; preserve partial evidence.
+E016 publication is verified at `31b2db694023d4268dbbb08dbc695344475552d8`. E017 publication is verified at `8363c4cab3c39aab1223a884df109c4a5382b88a`. E018 publication is verified at `9e59d57696c81a34173bf0501179182eecf5f2ca`. The current exact task is to complete unchanged E019, then E020, reviewing/publishing each outcome under [the reason-use workflow](workflows/reason-use.md). Do not reuse an existing output directory. Do not dispatch a successor after publication or provider-access failure. If interrupted, inspect actual request, response, result and summary files; preserve partial evidence.
 
 ```sh
 python -m minireason.reason_use_study run --plan experiments/plans/E019-reason-omitted.json --output experiments/records/E019-reason-omitted --jobs 5

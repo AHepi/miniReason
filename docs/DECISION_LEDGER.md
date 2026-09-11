@@ -175,3 +175,7 @@ The frozen different-reason condition completed all six arms and ten calls witho
 ### D012 execution receipt — E019 follows verified E018
 
 Choice: after this record is verified on main, run the unchanged E019 omission plan. Why: it removes only the supplemental criticism while preserving J and common source, including earlier reasons. Contribution: tests whether the same distinctions emerge through reconsideration of shared material. Same six controls, settings and five-worker limit; no retry. The omission is zero bytes, not an instruction that J is correct or criticism unnecessary.
+
+### D012 publication outcome — E018 verified; E019 activation
+
+E018 is verified on main at `9e59d57696c81a34173bf0501179182eecf5f2ca`, local `0f13035ee9bc30d89e3c49a94e6822d424638240`, shared tree `17c2f5aaf08fd79be0e7d4a06e81e0b681b30218`. The complete 146-path checkpoint is durable with credential scan and immutable-byte preservation. Activate unchanged E019 plan `a947af87f023579aefd14f98028f8e6a935f7e1fbfe2bcf5a2a1b8a861eea34b` under D012: exact supplemental omission, same source/J and six controls. No source or provider change, hidden retry, or adaptive stimulus edit. Review uses D019 and cannot change E020.
