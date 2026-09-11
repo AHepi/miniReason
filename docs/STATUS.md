@@ -1,6 +1,6 @@
 # Current recovery and research state
 
-**Live execution is blocked at E019 by transport failures and a cancelled network approval. E016–E018 are complete; E020 is unrun. E021 is the prepared exact retry, not activated.**
+**Continuation renewed by the user: E021 is next, followed by E020 after publication. E019 remains an unchanged partial record. Next target: assess template retention, then one cycle in each of two distinct linked templates; problem promotion is optional.**
 
 Updated during the 2026-09-12 Australia recovery (provider timestamps use UTC). Start with [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [the recovery workflow](workflows/continue.md). Authorized destination: AHepi/miniReason main; source h-EPI remains unchanged. One publisher owns the ledger and main.
 
@@ -56,3 +56,7 @@ Read [the dated recovery/report](reviews/2026-09-12-recovery-and-reason-use.md).
 The frozen block remains incomplete. There is no E020 no-return observation, no account-necessity conclusion, and no general creativity or Mini-advantage verdict. Three complete new configurations and the partial fourth provide 37 complete responses; all requested offline preparation and review that can proceed without the blocked provider path is preserved in this checkpoint.
 
 Final evidence publication is verified at remote `3e2e96e5684c1f8b464801739507a5d88dc10f1c`, local `ab2ab5ecdf2e2168ba9e41681d750e6b623ffa2b`, shared tree `bde248a2f1075f82f0c82eb4adc6b2da8a95b085`. This includes every completed review and the blocked-state records above. The enclosing final receipt commit is checked separately by the publisher. No live retry was made.
+
+## Renewed continuation and next target
+
+The user has instructed continuation after the reported cancellation. D025 records the unchanged E021 activation through the normal provider path, conditional on successful access, then E020. D026 commissions template retention and distinct-template handoff reviews before implementation. No completed observation is overwritten; this new authorization does not claim that transport access already works. The next target is problem promotion, including a legitimate no-promotion outcome. The same template must not be run for two cycles.
