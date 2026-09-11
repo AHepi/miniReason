@@ -1,0 +1,29 @@
+{
+  "content_appraisal": "unresolved",
+  "disposition": "queued",
+  "occurrence_id": "e3301f68a7c8b29233d2cc49d55f7db9f054bcc30d7838b0aebb03b9cc95e84e",
+  "origin": {
+    "arm": "matched_native",
+    "cycle": 1,
+    "input_provenance_meaning": "Supplied material only; no semantic dependency, about or answers edge implied",
+    "mini_artifact_id": null,
+    "plan_id": "3af9a0dce49e0671c4cf9288be4dbf03ffc3e6eecc3e18707aabc4eec3d720ea",
+    "repeat": 1,
+    "stage": "criticize",
+    "supplied_input_occurrence_ids": [
+      "c5abeb308c572ef21099dc89962b88aea27a34873f18a187961808fbfbc7c615",
+      "5510d756585292b9ffbb2435e80aa3a61a162e97d9e1fcbe72937d5e03c8343a",
+      "6742a2a12b2f6e87cdfa889eed495f44a504365c1db35ef1e7d3fa6068e2cac4",
+      "117f62cbb688e023fdaea0a14c6cd0135a69f8868a34c8e76fefe631e344b0f4",
+      "1ccfa8272dc9c7bee4babf35f58c7fbaf72bca82f1f8f675bdda4105ff6251b9"
+    ],
+    "test_id": "E013-joint-nonlean"
+  },
+  "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+  "proposed_changes_installed": false,
+  "schema": "minireason.inquiry-occurrence.v1",
+  "stage": "criticize",
+  "standing_effect": "none",
+  "text": "I can support a narrower criticism of the new artifact **TCC**: its central test for when P9’s compatibility objection forces a change to a global-availability account conflates two intervals and, with them, the direction of P9’s “high alternative” correlation objection.\n\nThe relevant P9 material is:\n\n> “One can compute a lower bound by taking the minimum reservation per booking and an upper bound by taking the maximum. That gives an interval, but intervals lose correlations: booking A’s high alternative might be incompatible with booking B’s high alternative if they share a physical resource not named in the snapshot.”\n\nTCC describes its projection as:\n\n> “`P_ind` that computes each booking’s possible reservations, takes min/max per booking, sums, and subtracts from capacity.”\n\nSo `P_ind` is described as producing an **availability** interval. But then TCC’s `K_exhaustive` says:\n\n> “`P_ind`’s interval contains exactly the feasible global reservations, or its upper endpoint is tight.”\n\nand the discriminating question asks:\n\n> “Does the global-availability account claim that its interval is an exhaustive set of feasible global reservations, that it is a conservative bound under an independence assumption, or that it is merely one lossy projection?”\n\nHere TCC shifts between an interval of **global reservations** and an interval of **global availability**. That is not a harmless paraphrase. P9’s objection is specifically about **high alternatives** being jointly incompatible. High alternatives mean larger reservations and therefore smaller availability. In a reservation interval, that incompatibility threatens the **upper reservation endpoint**. In an availability interval, the same incompatibility threatens the **lower availability endpoint**. TCC repeatedly says “upper endpoint,” while `P_ind` has been defined as subtracting from capacity.\n\nA concrete distinguishing case:\n\n- Capacity `C = 10`.\n- Booking A has unresolved alternatives `{0, 10}`.\n- Booking B has unresolved alternatives `{0, 10}`.\n- An unnamed shared resource makes the combination `(10, 10)` impossible.\n\nUnder independent per-booking min/max:\n\n- Reservation interval: `[0, 20]`.\n- Availability interval: `10 - [0, 20] = [-10, 10]`.\n\nUnder the shared-resource constraint, suppose only one booking can take its high alternative; feasible reservations are `{0, 10}`, so feasible availability is `{10, 0}`, i.e. interval `[0, 10]`.\n\nP9’s high-high incompatibility therefore shows that the independent reservation interval’s upper endpoint `20` is too high, and the independent availability interval’s lower endpoint `-10` is too low. The availability interval’s **upper** endpoint `10` remains tight in this example. So if TCC’s `K_exhaustive` is read as asking whether `P_ind`’s availability interval has a tight upper endpoint, it can answer “yes” while P9’s objection still bites at the lower availability endpoint. If TCC instead means the upper endpoint of the reservation interval, then it is talking about a different object from the availability interval it earlier said `P_ind` computes.\n\nThat is a supported semantic defect, not merely a proposed repair. TCC’s `K_exhaustive` does not preserve the distinction between:\n\n1. the interval of possible global reservations,\n2. the interval of possible global availability,\n3. the upper reservation endpoint, and\n4. the lower availability endpoint.\n\nThe question specifically required keeping “local alternatives, aggregation, bounds and correlation objections” distinguishable. TCC’s central discriminating question does not do that. It can misclassify P9’s objection as harmless because an upper endpoint is tight, when P9’s example concerns a high-high combination that makes a lower availability bound or upper reservation bound too permissive.\n\nI do not take this to establish that P9’s compatibility objection always requires a resource model, nor that TCC’s conditional “unconditionally no, conditionally yes” answer is wrong in every reading. A charitable reading can repair the wording by saying explicitly: P9 threatens the upper reservation endpoint, which corresponds to the lower availability endpoint. But that repair is not what TCC states. As written, TCC loses the relevant distinction and therefore its answer to “what exactly is being questioned in P7’s sense?” remains underidentified. The defect is in the account pattern’s endpoint/object tracking, not in the frozen RSS vocabulary as such, and it does not require replacing RSS or editing the frozen sources.",
+  "text_sha256": "687e11e0030d2e7a0d852382a54fa756cd0ab62c95bbc5159bfe9441652e22a3"
+}
