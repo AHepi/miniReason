@@ -137,3 +137,15 @@ E016 is published at remote `31b2db694023d4268dbbb08dbc695344475552d8`, local `1
 ### D012 execution receipt — E017 activation
 
 Choice: execute the unchanged published E017 recoding plan `f7fc6f851672928b224ac742d756632b4b1aed1a7d9a4ad75ecb4ba740eda4f9` now that E016 is durably complete. Why: the predeclared expression contrast follows the original treatment and requires no response-driven changes. Contribution: permits a finite original/recoded commitment comparison under the same common material and routes. Same authorized provider, resource settings, no retry and five-worker limit. E018 remains blocked until this result is preserved and published.
+
+### D019 — Keep independent review parallel to frozen execution
+
+Choice: assign separate reviewers to remaining completed conditions under the already published interpretation contract while the single publisher serializes records. Why: execution and substantive review have different evidence needs; the inputs are frozen, so reviewing an earlier result cannot silently change a later treatment. Contribution: improves passage-level checking without delaying custody of terminal records or introducing adaptive stimulus selection. Each reviewer owns one new review file and supplies choice/why/goal receipts; no reviewer triggers calls, changes source or edits original records. Cross-condition interpretation follows completion of the relevant comparisons, and single-sample differences retain sampling ambiguity.
+
+### D017 outcome — E016 substantive review complete
+
+The separate E016 review is complete: `docs/reviews/E016-reason-use-review.md`, SHA-256 `def85baa6358594c45390cb28addb54744d4ebb31693adaeff5690025a53b2d2`. It records four review decision receipts, exact integrity evidence and all ten public-output readings. All four use responses satisfy the declared numerical/information-state cases, but returned accounts and explanations retain capacity-filter, attribution and reporting/physical-use tensions. No account-necessity or Mini-advantage claim follows before controls. The review is now selected for publication without changing any experiment bytes.
+
+### D020 — Carry E016 interpretation findings forward separately
+
+Choice: append the E016 review's scoped defects to interpretation errata and semantic lessons, preserving correct case answers as separate evidence. Why: correct final arithmetic can coexist with incorrect source attribution or an internally inconsistent account, and using one success to erase those defects would hide the mechanism under study. Contribution: identifies which commitments must be compared across recoding, different-reason, omission and no-return conditions. These are fallible passage-level findings; no semantic standing or language change is installed.

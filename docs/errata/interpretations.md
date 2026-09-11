@@ -31,3 +31,7 @@ E013 Mini-native accepts its critic's claim that RSS projections cannot return i
 ## INT-006 — Generated occurrence identifier loses a digit
 
 E013 matched-native promotion prints a 63-character P9 identifier where the source identifier has 64 characters. Host origin metadata and retained source bytes are correct. The malformed reference occurs in model prose, so valid machine provenance does not repair that textual attribution. The [recovery review](../reviews/E013-recovery-review.md#matched-native-endpoint-polarity-corrected-tightness-still-misdefined) records both exact strings. No original response was edited.
+
+## INT-007 — Correct use answers coexist with inconsistent returned accounts
+
+E016's native-family accounts introduce capacity as an admissibility filter while the source permits negative reported availability. Matched-native use still correctly reports -2 and separates arithmetic from physical planning. The correct table does not make the earlier filter formulation coherent. The [E016 review](../reviews/E016-reason-use-review.md) identifies precise passages and alternative readings; it also records inaccurate attribution of supplied distinctions and occasional claims that physical freedom licenses mere arithmetic enumeration. These are separately scoped defects. No earlier response was edited and no new criticism variant was constructed from this observation; E017–E020 remain as preregistered.
