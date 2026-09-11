@@ -1,0 +1,85 @@
+## Case A
+
+The specification is mechanical: capacity 9 minus the sum of the selected quantities, 6 + 5 = 11, giving
+
+```
+9 - 11 = -2
+```
+
+So the reporting result is −2.
+
+What follows about the selected entries is narrow. In this file, both entries are active holds (no ties, no releases, no expired holds, exactly one selected entry per booking), and the arithmetic is a subtraction. The arithmetic does not by itself say that either hold is invalid, wrongly recorded, or should be released. A negative figure of the kind produced here just records that the selected quantities exceed capacity under the stated rule. Nothing in Case A identifies which hold, if either, is the "cause," and nothing in the file supplies a rule that would make one entry trump the other.
+
+A stronger conclusion — e.g., "the snapshot is inconsistent, and specifically the K/L pair cannot be jointly honored" — needs a further premise the case does not supply: either that capacity is a joint-holding constraint on the bookings taken together, or a norm that "negative availability = infeasible state," or a rule for what counts as inconsistency. Without one of those added premises, the strongest thing the file supports is the arithmetic and the observation that the sum of selected quantities exceeds the stated capacity.
+
+## Case B
+
+**Reporting procedure (as specified, no inspection file).** All pairs (u,v) with u ∈ {0,8}, v ∈ {0,11}:
+
+| Pair | u | v | 23 − u − v |
+|------|---|---|------------|
+| (0,0) | 0 | 0 | 23 |
+| (0,11) | 0 | 11 | 12 |
+| (8,0) | 8 | 0 | 15 |
+| (8,11) | 8 | 11 | 4 |
+
+So the four displayed values are 23, 12, 15, 4.
+
+**Planner's request, with inspection file.** The inspection says the pair (8,11) cannot be jointly performed (shared single-use jig, same time); every other listed pair can. So the planner-requested values are the same table minus the (8,11) row:
+
+- (0,0) → 23
+- (0,11) → 12
+- (8,0) → 15
+- (8,11) excluded
+
+**Reader with only the snapshot and reporting procedure.** That reader can support:
+
+- The four listed values as arithmetic outputs of the stated procedure.
+- The observation that each listed quantity is individually defensible (each of 0 and 8 is a listed alternative for U; each of 0 and 11 for V).
+- The conditional observation that a pairing might fail joint performability for a reason the snapshot does not name — but only as a possibility, not as a fact about a particular pair.
+
+That reader cannot support:
+
+- Any assertion that a specific pair is impossible.
+- Any assertion that no pair is impossible.
+- Any claim about what physical resources exist or are shared.
+- The planner's filtered set; the reader has no grounds for excluding any pair.
+
+The discrepancy between the two tables — Case B's reporting table and the planner's table — is exactly one row, and it is supplied by the inspection file, not by the snapshot.
+
+## The reviewer's remark, at the time it was made
+
+The remark: *each listed quantity may be defensible on its own, yet a pairing might fail to be jointly performable; a resource the snapshot does not name might matter.*
+
+**What it challenges.** It challenges the commitment — usually implicit — that *per-alternative admissibility composes freely across bookings*. In the Case B calculation, that commitment is what licenses treating all four (u,v) pairs as evaluable, and what licenses reporting 23 − u − v for every pair regardless of any joint constraint. The remark does not challenge a listed quantity (0, 8, 0, 11 remain as listed), does not challenge the formula 23 − u − v, and does not name a resource or a pair.
+
+**Where it would affect an account.** It bites at the point where the account moves from per-booking alternatives to cross-booking aggregation. In the returned account's vocabulary, that is the "across-booking composition" sub-commitment. Under the returned account's reading, this is a criticism of a stated rule (if the aggregation rule is stated) or of an unstated presupposition (if it is not).
+
+**Defensible alternative readings.**
+
+1. *Weakest reading:* the remark is a caution about the limits of the snapshot, not a claim about the account. It asserts nothing and therefore changes nothing.
+2. *Middle reading:* the remark identifies a presupposition (free composition across bookings) that the snapshot relies on but does not state. It motivates marking that presupposition, not changing it.
+3. *Stronger reading:* the remark is a conditional counterexample schema — "if such a resource existed, the aggregation would be defeated at that pair." It does not commit to the antecedent.
+
+**What distinguishes them.** A concrete observation: a case in which two bookings' individually admissible quantities are jointly impossible for a reason not stated in the snapshot. That would vindicate readings 2 and 3 and give content to reading 1's "caution." Absent such an observation, readings 1 and 2 are behaviorally indistinguishable for the Case B calculation; reading 3 adds a schema but no instance.
+
+**Does the remark alone require changing a listed quantity or the calculation?** No. It names no quantity and no pair. Changing 0/8/0/11 or the formula 23 − u − v on the strength of the remark would be an addition of assumptions not present in the supplied material. On the Case B data, the remark is consistent with both "there is a hidden constraint" and "there is none," and it supplies no instance that resolves the disjunction.
+
+## Relation of the treatment of the reviewer to the numerical answers
+
+- The Case A result (−2) is unaffected by the reviewer's remark. The remark concerns cross-booking composition; Case A involves a single combined subtraction across two bookings without a per-booking alternative structure. Even read as a caution, it does not change the arithmetic.
+- The Case B *reporting* table (23, 12, 15, 4) is computed under the plain reading with no cross-booking constraint applied, which is what the specified reporting procedure calls for. The reviewer's remark, taken as a caution rather than a claim, does not force the table to change.
+- The planner's table (23, 12, 15; (8,11) excluded) changes because the inspection file supplies a specific exclusion, not because the reviewer's remark did. The reviewer's remark and the inspection file are different things: the remark is a possibility schema; the inspection file is a case-level stipulation.
+- The tension to leave unresolved: the Case B reporting table includes the pair (8,11) with value 4, and the planner's table excludes it. Both are correct relative to their governing materials. Whether the reporting procedure *should* have been constrained by a joint-performability filter is not settled by the snapshot, and the reviewer's remark does not settle it either — it merely flags that the snapshot might be incomplete in a way the reporting procedure is not designed to catch. The returned account's "across-booking commitment" reading places the question exactly there and also leaves it open.
+
+## On the returned account
+
+I use the account's distinctions between target and locus, and between within-booking and across-booking commitments, because they map cleanly onto the Case B distinction between the snapshot-only table and the planner's table: the per-booking alternatives 0/8 and 0/11 are within-booking; the pair set {(0,0),(0,11),(8,0),(8,11)} and its arithmetic are the across-booking composition, and the inspection file defeats one member of that composition.
+
+I qualify one part. The account's treatment of "conditional possible incompatibility" as something an account can *represent without asserting*, if it has the right marker, is stated as an open question there and remains open here. Neither Case B's snapshot nor the reviewer's remark supplies such a marker, so on the supplied material the snapshot-only reader cannot represent the condition as anything other than a possibility. The inspection file supplies the resolution for this one case, not a general marker.
+
+I do not use the account's disputed "target/locus" split as a solved distinction. For Case B, the remark's criticism is best located at the across-booking composition step, and whether that is described as a rule-criticism or as an unstated-presupposition-criticism is a choice of vocabulary that does not change the numerical answers. The numerical answers depend only on: (i) the subtraction 23 − u − v, (ii) the alternative sets, and (iii) the inspection file's exclusion of (8,11). The reviewer's remark, before the inspection file, contributes none of these.
+
+## Unresolved issue
+
+The one genuinely unresolved point carried forward: whether the Case B reporting procedure *should* incorporate a joint-performability constraint even when the snapshot does not name one. The supplied materials do not decide this. The inspection file shows that such a constraint can exist in a particular case, but not that the procedure must in general apply one. The reviewer's remark, at the time it was made, was a prompt to ask, not an answer.

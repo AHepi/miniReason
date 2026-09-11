@@ -1,0 +1,70 @@
+## Case A
+
+The reporting specification says to subtract the sum of the selected quantities from capacity.
+
+Selected quantities: \(6 + 5 = 11\).  
+Capacity: \(9\).  
+Reporting result: \(9 - 11 = -2\).
+
+So the reporting result is **-2**.
+
+What follows about the selected entries is limited. The two selected entries are an active hold of 6 for K and an active hold of 5 for L. Their sum is 11, which exceeds the stated capacity 9 by 2. Each hold is individually within capacity: 6 ≤ 9 and 5 ≤ 9. The case stipulates no ties, releases, or expired holds, so no local complication such as tied alternatives or zeroing by release/expiry is present.
+
+A stronger conclusion—for example, that the file is inconsistent, that K and L are overbooked, or that the two holds cannot both be honored—needs an additional premise. One needs at least the premise that capacity 9 is a hard upper bound on simultaneous active holds, that K and L are to be honored at the same time, and that negative remaining capacity is treated as infeasibility rather than merely as an arithmetic result. No separate inspection report accompanies Case A, so there is no evidence of an unnamed cross-booking resource conflict. If the hard-cap and simultaneity premises are added, then the selected entries overrun the named capacity by 2; without those premises, only the arithmetic result \(-2\) follows.
+
+## Case B
+
+The reporting procedure takes every pair \((u,v)\) from the listed alternatives for U and V and displays \(23-u-v\).
+
+| U | V | Computation | Reporting value | Inspection status |
+|---|---:|---:|---:|---|
+| 0 | 0 | \(23-0-0\) | 23 | jointly performable |
+| 0 | 11 | \(23-0-11\) | 12 | jointly performable |
+| 8 | 0 | \(23-8-0\) | 15 | jointly performable |
+| 8 | 11 | \(23-8-11\) | 4 | not jointly performable |
+
+So the specified reporting procedure gives all four values:
+
+\[
+23,\ 12,\ 15,\ 4.
+\]
+
+With the inspection file available, the planner is asking only about pairs that can be performed jointly. The inspection excludes \((U,V)=(8,11)\) because both require the same single-use jig at the same time. The other listed pairs can be performed jointly. Therefore the planner’s values are:
+
+\[
+(0,0)\mapsto 23,\qquad (0,11)\mapsto 12,\qquad (8,0)\mapsto 15.
+\]
+
+The value \(4\) for \((8,11)\) remains the arithmetic result of the reporting procedure, but it is not a value for a jointly performable pair under the inspection. It should be excluded from the planner’s feasible list or, if displayed at all, labeled as computed but not jointly performable.
+
+A reader with only the snapshot and the reporting procedure can support the arithmetic table above. That reader can also support that the snapshot names capacity 23, U alternatives 0 or 8, and V alternatives 0 or 11, and that the snapshot contains no physical-resource fields. The reader cannot support that all four pairs are jointly performable simply from the reporting procedure, nor can the reader support that any particular pair is impossible. If the reader adds the assumption “there are no cross-booking constraints beyond the named capacity,” then all four pairs would be treated as performable; but that is an added assumption, not something supplied by the snapshot or the reviewer’s remark. The feasibility of each pair, especially \((8,11)\), remains open without the inspection file.
+
+## The reviewer’s remark before inspection
+
+The reviewer wrote that each listed quantity may be defensible on its own, yet a pairing might fail to be jointly performable, and that a resource not named by the snapshot might matter. At the time it was made, before the inspection, this remark challenges the independence or composition assumption in any account that moves from per-booking alternatives to a global availability or feasibility result simply by combining one alternative per booking, subject only to the named capacity.
+
+More specifically, it challenges:
+
+- the inference that because each listed quantity is locally defensible, any pairing of listed quantities is jointly performable;
+- the assumption that the named capacity is the only relevant cross-booking constraint;
+- any claim that the snapshot is complete with respect to resources needed to determine joint feasibility.
+
+It does not challenge the correctness of the individual listed quantities \(0,8\) for U and \(0,11\) for V. It does not challenge the arithmetic \(23-u-v\). It supplies no observed resource and no identified impossible pair. Its language is hedged: “may,” “might.” So it is a warning or conditional criticism, not evidence that any specific pair fails.
+
+Where would this affect an account? At the aggregation step. If the account merely reports what the snapshot’s per-booking alternatives and arithmetic permit, then no arithmetic or listed quantity need change; the account should, however, mark the independence assumption as conditional. If the account claims to report exact global availability or downstream planning feasibility, then the remark shows that the account may be overclaiming unless it adds or permits a cross-booking compatibility relation or resource model, represents joint admissible combinations, or restricts itself to outer bounds and explicitly disclaims exactness.
+
+There are defensible alternative readings. On a weak reading, the remark is a methodological caution: it requires caveat and explicit marking of assumptions, not revision. On a stronger reading, it is an objection to any exact availability claim derived from the snapshot alone; it requires changing the account’s claim or purpose. A distinguishing observation would be an actual case where two individually admissible choices are jointly impossible because of an unnamed shared resource. The inspection file in Case B is exactly such an observation: \((8,11)\) is individually within capacity but jointly impossible because of the single-use jig. Before the inspection, the strong reading was not forced. After the inspection, for planning use, the strong reading is vindicated. If instead every pair were jointly performable, the weak reading would remain adequate.
+
+Does anything in the remark alone require changing a listed quantity or the reporting calculation? No. The remark alone does not make \((8,11)\) impossible, does not establish that the jig exists, and does not alter \(23-8-11=4\). It can require changing how the result is used or described: if the account had presented all four values as jointly performable, it should add a caveat or stop claiming joint feasibility. But the listed quantities and the arithmetic are unchanged by the remark alone.
+
+## Relation to the numerical answers and the returned account
+
+The returned account’s relevant passages are its distinction between local alternatives and global aggregation, its description of the compatibility criticism as a possible unstated cross-booking constraint, and its conditional conclusion that a planning-oriented account may need a compatibility relation or resource model. Those passages bear directly on Case B. The reporting procedure corresponds to the account’s “report what the bag supports” side: the arithmetic values are \(23,12,15,4\). The planner’s request corresponds to the downstream planning side: once the inspection supplies the shared single-use jig, \((8,11)\) is excluded, and the usable values are \(23,12,15\).
+
+The returned account also says that the additional observation that would matter is a case where two bookings’ high alternatives are individually admissible under capacity but jointly impossible for a reason the snapshot does not name. Case B’s inspection is such an observation. It does not change the reporting calculation, but it changes the planner’s feasible set. That is the tension: the reviewer’s remark anticipated the possibility, the inspection identifies an actual restriction, and the numerical answers differ depending on whether one is doing arithmetic reporting or planning use.
+
+I use the returned account’s local/global distinction and its conditional treatment of compatibility criticism. I do not rely on its historical-status passages about P7, P9, E009, C0, WHL, or RSS as evidence for Cases A or B; those are outside the stipulated finite use-domain data. I also qualify any suggestion that the source-status discussion itself supplies a cross-booking constraint. For these cases, the only supplied cross-booking evidence is the inspection file’s single-use jig constraint.
+
+For Case A, the analogous lesson is that the arithmetic result \(-2\) follows, but a stronger conclusion such as “K and L cannot both be honored” needs the additional premise that capacity is a hard simultaneous cap and that negative remaining capacity means infeasibility. The reviewer’s remark does not itself supply that premise for Case A either.
+
+Remaining unresolved issues include: whether Case A’s capacity is meant as a hard joint cap or only as an arithmetic starting value; whether the reporting procedure in Case B is meant as a feasibility enumeration or only as an arithmetic display; whether any unlisted constraints exist beyond the inspected jig in Case B; and whether the account’s purpose is to report what the snapshot supports or to report what a planner can actually use. Those distinctions should not be collapsed by an unannounced change of assumptions.

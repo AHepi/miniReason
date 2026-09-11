@@ -115,3 +115,17 @@ The E016 activation receipt is published at remote `0c5751468efe0f0606a1438b9658
 ### D017 — Independently review actual E016 evidence
 
 Choice: assign an independent reviewer to reconstruct E016 requests from the frozen plan and review terminal content against the prepublished interpretation contract. Why: script success alone does not verify actual delivered information or substantive use, and a failed call must not be mistaken for a model finding. Contribution: gives the first reason-use condition an attributable integrity/content assessment before comparisons. The reviewer owns only a separately named E016 review; root owns ledger and publication. If the run is still incomplete, report that state rather than inferring completion. This review does not alter a frozen input or trigger another call.
+
+### D016 outcome — E016 completed, ready for immediate publication
+
+All six arms and ten planned calls completed with no operational alarms. Total recorded resources: {"calls": 10, "completion_tokens": 71423, "prompt_tokens": 109678}. Every response is complete, names deepseek-flash and retains the identical adjacent request. The independently assigned review is finishing; initial content findings include capacity-filter assumptions despite source permission for negative reports. These are unresolved passage-level findings, separate from recording success. No retry was made.
+
+### D018 — Keep STATUS as one current handover
+
+Choice: replace accumulated stale current-state paragraphs with a concise current snapshot, historical execution table and exact next command. Why: successive appended status updates can leave contradictory pending/completed statements that mislead recovery. Contribution: a new agent can identify completed observations, published code, review state and the next authorized action immediately. Only STATUS is mutable; the decision ledger, original observations and recovered review drafts remain append-only or unchanged. Source guide and study purpose are unaffected.
+
+### D012 execution receipt — Publish E016, then activate E017
+
+Choice: publish the complete E016 record with current recovery state, then execute the already frozen E017 recoding plan only after exact remote-tree/main verification. Why: the original treatment is complete and the independently reviewed recoding is the next predeclared contrast. Contribution: tests sensitivity to changed expression of the same selected criticism without a response-driven stimulus amendment. An independent E016 content review may finish during E017; it cannot alter E017–E020 frozen materials. This receipt records the predeclared continuation, not a new optimization choice.
+
+E016 publication whitespace exception: 2 diagnostics occur only in original experiment record bytes. They are preserved exactly rather than normalized; staged Git blob identity binds every retained file. Credential scan passed all 146 explicit paths.
