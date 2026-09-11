@@ -1,0 +1,414 @@
+# Criticize the expression and reading
+
+Compare the original frozen prose, the actual expression, its independent reading and the proposed language. Find specific lost distinctions, introduced commitments, vanished uncertainty, broken dependencies or blocked criticism where the evidence supports them. Quote the source and expression and give a distinguishing reading or case. Consider whether the defect is in the translator, reader, selected language, compiler bridge or the probe itself. Do not infer impossibility merely because one model failed to express something. A substantive prose objection remains admissible even if the selected formal language cannot encode it. The original conjecture and language remain frozen: record proposed repairs without installing them. An unresolved or competing interpretation is an acceptable disposition.
+
+## Selected carrier
+Selected carrier: the frozen model-proposed Lean-compatible language. Try its own expressive resources, while preserving any unsupported substantive content or criticism on the explicit prose escape path. Compilation is optional evidence about the supplied Lean text, not an admission rule for the argument.
+
+## Frozen shared packet (packet)
+[ff9e94e0885d5417] (minireason.frozen-packet.v1)
+{
+  "corpus": {
+    "corpus_id": "41efaae132de8b176c85b109b39ab39738708355742354d2e9714aeaf87ecb55",
+    "model": "deepseek-flash",
+    "origin_plan_id": "842e2fc309a1dd76503a7d275460c906571732ac69d513fc15a097998e15d417",
+    "problem": "A replicated warehouse reservation snapshot is described by a capacity, logical current time, and an unordered bag of delivered records. Each record names a booking, revision, hold or release, quantity and expiry. Duplicate deliveries convey no additional authority. A higher revision supersedes lower revisions. Different records tied at a greatest revision can remain unresolved alternatives; different bookings need not share the same choice. A release or expired hold can reserve zero while an active hold reserves its quantity. Availability can be negative. People may disagree about whether uncertainty should be retained, what expiry does to obsolete records, what a criticism targets, and which source assumptions an account depends on. Explore this problem in prose. Correctness is not a condition for preserving a conjecture; false or incomplete proposals remain material for inquiry.",
+    "schema": "minireason.language-corpus.v1",
+    "text": "A replicated warehouse snapshot is not a single ledger but a cloud of rival stories about what has been promised. The capacity and logical time are shared coordinates, but the records arrive as a bag: orderless, possibly repeated, possibly stale, possibly contradictory. The first useful conjecture is that the snapshot's job is not to compute one timeless answer but to decide which conflicts are still alive. Duplicate delivery of the same booking, revision, kind, quantity, and expiry adds nothing; authority does not accumulate by repetition. A higher revision kills lower revisions for that booking, but only within the booking. Two bookings can disagree about which revision they have accepted without infecting each other.\n\nFor any one booking, the natural reconstruction is to group its records by revision, then keep only the greatest revision present. Within that greatest revision, a hold and a release cannot both be in force as the same fact; they are alternatives. An expired hold and a release both reserve zero. An active hold reserves its quantity. If several active holds tie at the greatest revision, they remain unresolved alternatives, not a sum and not a vote. That is a deliberate refusal: the rules do not say how to merge them, so the snapshot should retain the possibility that any one is the true one, or that none is, depending on what \"true\" is taken to mean.\n\nAvailability is then capacity minus whatever reservation is actually selected, but the word \"actually\" hides the problem. If each booking's greatest revision is unambiguous, availability may still be negative if the selected holds exceed capacity. Negative availability is not an error in the arithmetic; it is a signal that the warehouse has over-promised relative to this reconstruction. If different bookings have unresolved alternatives, availability is not a number but a set or an interval, and possibly not even a convex one. A pessimistic reading takes the maximum hold among alternatives for each booking; an optimistic reading takes the minimum. Neither is forced by the snapshot alone.\n\nNow the disagreements begin.\n\nOne disagreement is whether uncertainty should be retained at all. A reconciler might collapse each tie to the largest quantity, or to the earliest expiry, or to the record with some lexical tiebreak, and thereby produce a single availability number. That is convenient, but it manufactures authority. Another reconciler might keep all alternatives and report a range. That preserves honesty but makes downstream decisions harder. The snapshot description does not settle which is correct; it only says tied records can remain unresolved. A conjecture: the more useful representation is a partial order of possible reservations, not a set, because some alternatives may be compatible with others across bookings while others are not. A criticism: once you move to a set of possible worlds, you have smuggled in a notion of possibility that the original bag did not contain.\n\nA second disagreement concerns expiry and obsolete records. If logical current time is past a hold's expiry, that hold reserves zero. But does expiry erase the record, demote it, or merely change its effect? Suppose a booking has revision 5 expired and revision 3 active. Higher revision supersedes lower revision, so revision 5 wins, and because it is expired it reserves zero. Revision 3 is obsolete and should not be resurrected. That reading treats revision as authority and expiry as effect. Another reading treats expiry as deleting the record from the bag, after which revision 3 becomes greatest and active, so the booking reserves again. These give opposite answers. The snapshot description tilts toward the first: a higher revision supersedes lower revisions, and expiry can make a hold reserve zero. It does not say expiry removes the supersession. So the first is better supported, but the second remains a live conjecture, especially if one thinks expired records are no longer \"delivered records\" in the relevant sense. A criticism of the first: it lets a dead revision keep a live one buried forever, which may be undesirable operationally.\n\nA third disagreement is what a criticism targets. One can criticize a reconstruction rule, a particular record, a booking's history, the snapshot as a whole, or the assumption that logical time is meaningful. For example, saying \"this snapshot is inconsistent\" might mean two active holds for one booking at the same greatest revision, or it might mean total reservations exceed capacity, or it might mean the logical time is behind an expiry that someone expected to have passed. These are different claims. A conjecture: many apparent disagreements about availability are really disagreements about which target a criticism addresses. A criticism of the rule \"higher revision always supersedes\" is not the same as a criticism of a record that carries a high revision but an implausible quantity. Preserving that distinction matters because one can reject a rule while accepting the data, or accept the rule while rejecting the data as corrupt or late.\n\nA fourth disagreement concerns source assumptions. The snapshot assumes records are delivered, but not that they are complete. It assumes duplicates convey no additional authority, but not that all duplicates are identical in every field; if two records share booking and revision but differ in kind or quantity, are they duplicates or alternatives? The description says duplicate deliveries convey no additional authority, which suggests exact duplicates are inert, but near-duplicates may be unresolved alternatives. It assumes logical current time is a single coordinate, but different replicas may have different logical times; if so, expiry is replica-relative. It assumes bookings are independent, but capacity is shared, so reservations interact. It assumes a release or expired hold reserves zero, but does not say whether a release at a lower revision can cancel a hold at a higher revision. By the supersession rule, no: the higher hold wins. By a cancellation rule, maybe yes. That is a source assumption about what \"release\" means.\n\nA fifth disagreement is whether availability should be computed per booking or globally. Per booking, one can say each booking's reservation is the quantity of its greatest-revision active hold, or zero otherwise, or unresolved among tied greatest-revision active holds. Globally, availability is capacity minus the sum. But if there are unresolved alternatives, the sum is not well-defined. One can compute a lower bound by taking the minimum reservation per booking and an upper bound by taking the maximum. That gives an interval, but intervals lose correlations: booking A's high alternative might be incompatible with booking B's high alternative if they share a physical resource not named in the snapshot. The snapshot does not name physical resources, so this incompatibility is invisible. A conjecture: the snapshot is under-specified for any real warehouse, and the best one can do is expose the unresolved alternatives rather than pretend to a single answer. A criticism: exposing alternatives without a policy for resolving them pushes the problem downstream, where it may be resolved badly or inconsistently.\n\nA sixth disagreement concerns negative availability. If capacity is 10 and active holds sum to 12, availability is -2. Some might call this an inconsistency and reject the snapshot. Others might call it a valid state of over-reservation. The description says availability can be negative, which suggests over-reservation is allowed. But negative availability does not say which holds are the offenders. If there are alternatives, some combinations may be negative and others not. A conjecture: the sign of availability is less important than the set of reservations that produce it, because a negative number alone does not tell you which booking to revisit. A criticism: if availability is allowed to be negative, then capacity is not a hard constraint, and the word \"capacity\" may be misleading; it is more like a soft target or a reporting threshold.\n\nA seventh disagreement is about revision gaps and missing records. Suppose a booking has revision 7 and revision 5, but no revision 6. Does revision 7 supersede revision 5? Yes, if higher revision supersedes lower. Does the absence of revision 6 matter? Not by the stated rules, but it might indicate a lost delivery. A conjecture: revision numbers are not necessarily contiguous, and treating a gap as evidence of loss is an extra assumption. A criticism: if revisions are generated in order, a gap may be meaningful, and ignoring it may hide a delivery failure.\n\nAn eighth disagreement is about tie-breaking across bookings. Different bookings need not share the same choice, so one cannot impose a global tiebreak. But a downstream consumer might want a single availability number. To get one, it must choose per booking, possibly arbitrarily. That choice is not authorized by the snapshot. A conjecture: any single-number availability is a projection that discards information, and different projections can disagree even when they respect the snapshot. A criticism: without a projection, the snapshot cannot answer the simple question \"how much is available?\" That may be acceptable if the snapshot's role is to support inquiry rather than to issue verdicts.\n\nA ninth disagreement is about time. Logical current time is given, but records have expiries. If logical time advances, expired holds become zero. Does an expired hold at a high revision still supersede a lower active hold? As above, one reading says yes. Another says expiry is a state change that makes the high revision inactive, allowing a lower revision to become relevant if it is still active. The description does not resolve this. A conjecture: the safer reading is that supersession is structural and expiry is evaluative; the high revision remains the chosen record, but its contribution is zero. A criticism: this can leave a booking with no reservation even though an older active hold exists, which may violate an operator's expectation that the warehouse still holds the goods.\n\nA tenth disagreement is about what \"delivered\" means. A record delivered to one replica may not be delivered to another. The snapshot is described as replicated, but the bag is unordered. Does the snapshot represent the union of all deliveries, or the intersection, or one replica's view? If it is a union, it may contain alternatives that no single replica has. If it is an intersection, it may omit records that matter. A conjecture: the snapshot is a merge, and merging is itself a source of uncertainty, because different replicas may have different logical times and different sets of records. A criticism: the description treats the snapshot as a single object, which may obscure the replication problem rather than solve it.\n\nFinally, there is the question of what remains material for inquiry. False or incomplete proposals are not discarded; they are part of the evidence about how people understand the system. A conjecture that a release always cancels a hold, even across revisions, may be false under the stated supersession rule, but it reveals an assumption about what releases are for. A conjecture that ties should be summed may be false under the \"unresolved alternatives\" reading, but it reveals a desire for conservatism. A criticism that the snapshot is unusable because it does not resolve ties may be substantive, but it may also be a demand for a decision that the snapshot was never meant to make. Keeping these disagreements visible is not a failure of the reconstruction; it is the reconstruction's only honest form."
+  },
+  "languages": {
+    "lean": "```lean\n/-\n  Warehouse History Language (WHL) — a Lean-core-compatible formal language for\n  describing a replicated warehouse reservation snapshot as a bag of records.\n\n  This file declares a language, not a translation of any particular corpus.\n  It contains no quotations and no per-fragment translations.\n\n  The language is designed to be usable with Lean core alone (no Mathlib).\n  It uses only `Nat`, `List`, `Option`, `Bool`, and simple inductive types.\n  A `Bag` is represented as a `List`; bag equality is not declared, because\n  the language is about records and their relations, not about quotienting.\n\n  Primitive sorts:\n    - `Booking`  : opaque identifiers for bookings.\n    - `Revision` : natural numbers; higher is greater authority.\n    - `Quantity` : natural numbers. (Negative availability is handled separately.)\n    - `Time`     : natural numbers for logical time and expiry.\n\n  Record kinds:\n    - `hold`    : a hold of some quantity with an expiry.\n    - `release` : a release; quantity and expiry are still carried, because the\n                  language does not force a single meaning for them.\n\n  A `Record` is a quintuple (booking, revision, kind, quantity, expiry).\n  A `Snapshot` is a capacity, a logical time, and a list of records.\n\n  The language provides relations for:\n    - exact duplication (all five fields equal)\n    - revision dominance within a booking\n    - greatest revision within a booking\n    - active vs expired holds relative to logical time\n    - reservation effect of a record (zero for releases and expired holds;\n      quantity for active holds)\n    - alternative records at a greatest revision\n    - per-booking possible reservations (as sets of quantities)\n    - global availability bounds (as intervals over integers)\n\n  Conjectures, commitments and refutations are expressed as Lean `Prop`s.\n  The language does not assert which conjectures are true; it provides the\n  vocabulary to state them and to record refutations as proofs of negation\n  or as explicit counterexamples.\n\n  This construction permits: precise statements about which records remain\n  live under a given reading of supersession; separation of structural\n  supersession from evaluative expiry; explicit representation of unresolved\n  alternatives as sets of quantities; and formal criticism of rules by\n  stating alternative rules and deriving different results.\n\n  It may obstruct: reasoning about replication as such, because the snapshot\n  is a single list and the language has no primitive for multiple replicas;\n  reasoning about physical resource sharing beyond capacity, because capacity\n  is the only global constraint; and reasoning about the provenance or\n  authority of deliveries, because delivery is not modelled.\n-/\n\n/-! ## Primitive sorts -/\n\naxiom Booking : Type\naxiom Revision : Type\naxiom Quantity : Type\naxiom Time : Type\n\naxiom revision_le : Revision → Revision → Prop\naxiom revision_lt : Revision → Revision → Prop\naxiom revision_le_refl : ∀ r, revision_le r r\naxiom revision_lt_iff : ∀ r s, revision_lt r s ↔ revision_le r s ∧ ¬ revision_le s r\n\n/-! ## Record kinds and records -/\n\ninductive Kind : Type\n| hold : Kind\n| release : Kind\n\nstructure Record : Type := \n  (booking : Booking)\n  (revision : Revision)\n  (kind : Kind)\n  (quantity : Quantity)\n  (expiry : Time)\n\n/-! ## Snapshot -/\n\nstructure Snapshot : Type :=\n  (capacity : Quantity)\n  (logical_time : Time)\n  (records : List Record)\n\n/-! ## Basic relations on records -/\n\ndef exact_duplicate (r s : Record) : Prop :=\n  r.booking = s.booking ∧\n  r.revision = s.revision ∧\n  r.kind = s.kind ∧\n  r.quantity = s.quantity ∧\n  r.expiry = s.expiry\n\n/-- `s` has greater revision than `r` for the same booking. -/\ndef higher_revision (r s : Record) : Prop :=\n  r.booking = s.booking ∧ revision_lt r.revision s.revision\n\n/-- `r` is dominated within its booking by some record in the list. -/\ndef dominated_in (rs : List Record) (r : Record) : Prop :=\n  ∃ s, s ∈ rs ∧ higher_revision r s\n\n/-- `r` has greatest revision among records of its booking in `rs`. -/\ndef greatest_revision_in (rs : List Record) (r : Record) : Prop :=\n  r ∈ rs ∧ ¬ dominated_in rs r\n\n/-- Active hold relative to logical time: kind is hold and logical time has not\n    passed expiry. -/\ndef active_hold (t : Time) (r : Record) : Prop :=\n  r.kind = Kind.hold ∧ ¬ (t > r.expiry)\n\n/-- Expired hold relative to logical time. -/\ndef expired_hold (t : Time) (r : Record) : Prop :=\n  r.kind = Kind.hold ∧ t > r.expiry\n\n/-- Reservation effect under the \"structural supersession, evaluative expiry\" reading. -/\ndef reserves_effect (t : Time) (r : Record) : Quantity :=\n  match r.kind with\n  | Kind.hold => if t > r.expiry then 0 else r.quantity\n  | Kind.release => 0\n\n/-! ## Alternatives at greatest revision -/\n\n/-- Two records are alternatives at a greatest revision for a booking if they\n    are both in the snapshot, both have the greatest revision for that booking,\n    and they are not exact duplicates. -/\ndef alternatives_at_greatest (rs : List Record) (r s : Record) : Prop :=\n  r.booking = s.booking ∧\n  greatest_revision_in rs r ∧\n  greatest_revision_in rs s ∧\n  ¬ exact_duplicate r s\n\n/-- The set of quantities that a booking could reserve under the unresolved-alternatives\n    reading, given a snapshot. Represented as a list of quantities (may contain duplicates).\n    For each record at the greatest revision for the booking, include its reservation effect.\n    If no such record exists, the list is empty (booking reserves nothing). -/\ndef possible_reservations (snap : Snapshot) (b : Booking) : List Quantity :=\n  let rs := snap.records;\n  let t := snap.logical_time;\n  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (reserves_effect t)\n\n/-! ## Availability bounds -/\n\n/-- Unary minus for natural numbers encoded as integers, to allow negative availability. -/\ninductive Int : Type\n| of_nat : Nat → Int\n| neg_succ_of_nat : Nat → Int\n\nnamespace Int\ndef sub_nat (a b : Nat) : Int :=\n  if a ≥ b then Int.of_nat (a - b) else Int.neg_succ_of_nat (b - a - 1)\nend Int\n\n/-- Minimum quantity in a list, if any. -/\ndef list_min? : List Quantity → Option Quantity\n| [] => none\n| (x :: xs) => some (xs.foldl (λ acc y, if y < acc then y else acc) x)\n\n/-- Maximum quantity in a list, if any. -/\ndef list_max? : List Quantity → Option Quantity\n| [] => none\n| (x :: xs) => some (xs.foldl (λ acc y, if y > acc then y else acc) x)\n\n/-- Per-booking lower bound: minimum possible reservation, or 0 if none. -/\ndef booking_lower_bound (snap : Snapshot) (b : Booking) : Quantity :=\n  match list_min? (possible_reservations snap b) with\n  | none => 0\n  | some q => q\n\n/-- Per-booking upper bound: maximum possible reservation, or 0 if none. -/\ndef booking_upper_bound (snap : Snapshot) (b : Booking) : Quantity :=\n  match list_max? (possible_reservations snap b) with\n  | none => 0\n  | some q => q\n\n/-- Global lower availability bound: capacity minus sum of per-booking lower bounds. -/\ndef availability_lower_bound (snap : Snapshot) (bookings : List Booking) : Int :=\n  let total_lower := bookings.foldl (λ acc b, acc + booking_lower_bound snap b) 0;\n  Int.sub_nat snap.capacity total_lower\n\n/-- Global upper availability bound: capacity minus sum of per-booking upper bounds. -/\ndef availability_upper_bound (snap : Snapshot) (bookings : List Booking) : Int :=\n  let total_upper := bookings.foldl (λ acc b, acc + booking_upper_bound snap b) 0;\n  Int.sub_nat snap.capacity total_upper\n\n/-! ## Conjectures, commitments, refutations -/\n\n/-- A conjecture is a proposition about a snapshot. -/\ndef Conjecture : Type := Snapshot → Prop\n\n/-- A commitment is a proposition that a reasoner endorses. -/\ndef Commitment : Type := Prop\n\n/-- A refutation of a conjecture is a snapshot together with a proof that the\n    conjecture does not hold for that snapshot. -/\nstructure Refutation (c : Conjecture) : Type :=\n  (snap : Snapshot)\n  (not_c : ¬ c snap)\n\n/-- Example schema: a rule states a reservation function for a single record. -/\ndef ReservationRule : Type := Time → Record → Quantity\n\n/-- Two rules disagree on a snapshot if they assign different possible reservations\n    to some booking. -/\ndef rules_disagree (r1 r2 : ReservationRule) (snap : Snapshot) : Prop :=\n  ∃ b, possible_reservations_with r1 snap b ≠ possible_reservations_with r2 snap b\n\n/-- Reservation possibilities parameterized by a rule. -/\ndef possible_reservations_with (rule : ReservationRule) (snap : Snapshot) (b : Booking) : List Quantity :=\n  let rs := snap.records;\n  let t := snap.logical_time;\n  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (rule t)\n\n/-- Alternative rule: expiry deletes the record, so a lower revision can become greatest. -/\ndef expired_deletes_rule (t : Time) (r : Record) : Quantity :=\n  match r.kind with\n  | Kind.hold => if t > r.expiry then 0 else r.quantity\n  | Kind.release => 0\n\n/-- The standard rule and the deletion rule can differ in which records are\n    considered greatest. This is stated as a possible disagreement, not resolved. -/\ndef deletion_changes_greatest (snap : Snapshot) : Prop :=\n  ∃ b r, greatest_revision_in snap.records r ∧\n         r.booking = b ∧\n         expired_hold snap.logical_time r ∧\n         ∃ s, s ∈ snap.records ∧ s.booking = b ∧\n              revision_lt s.revision r.revision ∧\n              active_hold snap.logical_time s\n\n/-! ## Notes on intended meaning -/\n\n/- \n  The language treats the snapshot as a bag of records with no order.\n  Order is not primitive; membership and filtering are the only structural\n  operations.\n\n  \"Duplicate deliveries convey no additional authority\" is represented by\n  `exact_duplicate`: two records with all five fields equal are inert with\n  respect to each other. The language does not say that near-duplicates are\n  inert; they may be alternatives.\n\n  \"A higher revision supersedes lower revisions\" is represented by\n  `greater_revision_in`, which ignores lower revisions for the same booking.\n  It does not cross booking boundaries, because `higher_revision` requires\n  equality of booking.\n\n  \"A release or expired hold can reserve zero while an active hold reserves its\n  quantity\" is represented by `reserves_effect`. This is one reading; the\n  alternative reading where expiry deletes the record is represented by\n  `expired_deletes_rule`, but the language does not choose between them.\n\n  \"Availability can be negative\" is represented by `Int.sub_nat`, which yields\n  an integer that can be negative.\n\n  \"Unresolved alternatives\" is represented by `possible_reservations`, which\n  is a list of quantities, not a single quantity. Different bookings have\n  separate lists; there is no global choice function.\n\n  \"Different bookings need not share the same choice\" is represented by the\n  absence of any mechanism that forces a single choice across bookings.\n\n  \"What a criticism targets\" is represented by the separation between\n  conjectures about rules (`ReservationRule`) and conjectures about data\n  (`Record` and `Snapshot`). A refutation targets a conjecture by exhibiting\n  a snapshot for which it fails.\n\n  \"Source assumptions\" are not primitive. The language can state them as\n  conjectures or commitments, but it does not encode a notion of assumption\n  dependence. This is an expressive limitation.\n\n  \"Replication\" is not primitive. The snapshot is a single list. The language\n  cannot distinguish union, intersection, or replica-relative views. This is\n  an expressive limitation.\n\n  \"Physical resource sharing\" is not primitive beyond capacity. The language\n  cannot express incompatibility between alternatives of different bookings\n  except through the capacity sum. This is an expressive limitation.\n\n  \"Logical time per replica\" is not primitive. There is one logical time in\n  the snapshot. The language can state conjectures about replica-relative\n  time but cannot model multiple times directly. This is an expressive\n  limitation.\n\n  The language does not assert that any conjecture is true. It provides\n  vocabulary for stating conjectures, commitments, and refutations.\n-/\n```",
+    "nonlean": "Non-Lean Semantic Class: **Rival-Story Semantics (RSS)**\n\nRSS is a non-Lean, noncomputable semantic class for the frozen warehouse prose. It is not a proof assistant language. It is a way of assigning meanings to statements about a replicated warehouse snapshot by treating the snapshot as a collection of rival stories rather than as a database. It is deliberately noncomputable: it does not provide an algorithm for resolving conflicts, and it treats any demand for a single answer as a projection that must be justified outside the semantics.\n\n**Primitives**\n\n1. **Story**: a story is a claim about what is promised for a booking. A story is not a record. Records are evidence for stories. A story has a booking, a revision, a kind (hold or release), a quantity, an expiry, and a provenance (which delivery or set of deliveries it is drawn from). Provenance is not ordered; it is a set of delivery events.\n\n2. **Bag**: an unordered collection of deliveries. A delivery is an event that makes a record available. Deliveries are not ordered, may be repeated, and may differ in logical time if they come from different replicas. The bag is the raw material, not the story.\n\n3. **Coordinate**: a capacity and a logical time. A coordinate can be shared or replica-relative. RSS treats coordinates as parameters of a viewpoint, not as absolute facts.\n\n4. **Viewpoint**: a pair (coordinate, bag). A viewpoint is what a reasoner sees. Different viewpoints may disagree about logical time, capacity, and which deliveries are present.\n\n5. **Conflict**: a situation in which two or more stories for the same booking at the same greatest revision are not exact duplicates. Conflict is not error; it is material.\n\n6. **Liveness**: a story is live under a viewpoint if it is not superseded by a higher revision for the same booking within that viewpoint, and if its kind and expiry are considered under the viewpoint's reading of expiry.\n\n7. **Reading**: a reading is a policy that decides how to treat expiry, releases, duplicates, and ties. Readings are not part of the snapshot; they are supplied by reasoners. RSS does not choose a reading. It compares readings.\n\n8. **Projection**: a function from a viewpoint and a reading to a single answer (for example, a single availability number). Projections are allowed but not privileged. A projection is always a loss of information.\n\n**Relations**\n\n- **Exact duplication**: two deliveries are exact duplicates if all record fields and provenance are equal. Exact duplicates add no authority.\n- **Near-duplication**: two deliveries share booking and revision but differ in kind, quantity, or expiry. Near-duplicates are candidates for conflict. RSS does not decide whether they are duplicates or alternatives; it records the disagreement.\n- **Supersession**: for a given booking, a story with higher revision supersedes a story with lower revision. Supersession is structural within a reading; whether it is structural across readings is a matter of conjecture.\n- **Expiry effect**: under one reading, an expired hold reserves zero but remains superseding; under another, an expired hold is deleted and lower revisions can become live. RSS represents both as readings, not as facts.\n- **Release effect**: under one reading, a release at a lower revision cannot cancel a hold at a higher revision; under another, cancellation is possible. RSS represents both as readings.\n- **Alternative compatibility**: two stories from different bookings may be compatible or incompatible depending on unstated physical resources. RSS marks this as invisible unless a viewpoint includes a resource model.\n- **Negative availability**: availability is a derived quantity that can be negative under a reading. RSS treats the sign as a signal, not an error, and treats the set of reservations as more informative than the sign.\n\n**Combinations**\n\nRSS combines primitives into **accounts**. An account is a viewpoint, a reading, and a set of accepted conjectures. Accounts are not merged. Disagreement between accounts is a first-class object. An account can be criticized by another account, and the criticism targets a specific element: a record, a rule, a booking history, a snapshot, a coordinate, or an assumption.\n\nRSS also allows **inquiry states**. An inquiry state is a collection of accounts plus a set of open questions. Open questions are not solved by RSS; they are carried forward. A conjecture is open if no account has committed to it or refuted it. A commitment is an account's acceptance of a conjecture. A refutation is an account's production of a counterexample or a derivation of inconsistency within its own reading.\n\n**Interpretation**\n\nA statement in the frozen prose is interpreted in RSS by locating its primitives and relations. For example, \"duplicate deliveries convey no additional authority\" is interpreted as: exact duplicates are inert in all readings; near-duplicates are not covered by this statement and remain candidates for conflict. \"A higher revision supersedes lower revisions\" is interpreted as: within a booking, supersession is structural under all readings; across bookings, it has no force. \"Availability can be negative\" is interpreted as: under readings that select reservations, derived availability may be negative; RSS does not treat this as an error. \"People may disagree about whether uncertainty should be retained\" is interpreted as: different accounts may adopt different readings, and RSS does not rank them.\n\nRSS interpretation is noncomputable because it does not specify an algorithm for selecting a reading or resolving conflicts. It specifies what would count as an interpretation, and it allows multiple interpretations to coexist.\n\n**Conjectures, commitments, refutations**\n\n- A **conjecture** is a proposition about an account or a class of accounts. It may be about a reading, a rule, a record, a snapshot, or an assumption. Conjectures are not required to be true.\n- A **commitment** is an account's acceptance of a conjecture. Commitment is local to an account. Different accounts may commit to incompatible conjectures.\n- A **refutation** is one of: (a) a counterexample within an account's own viewpoint; (b) a derivation of inconsistency within an account's own reading; or (c) a demonstration that a conjecture depends on an assumption that another account rejects. Refutations are local to accounts and do not force global agreement.\n\n**What RSS permits**\n\nRSS permits the representation of uncertainty without forcing resolution. It permits multiple readings of expiry and release to coexist. It permits criticism to target specific elements. It permits negative availability as a signal. It permits the distinction between exact and near-duplicates. It permits the distinction between a rule criticism and a data criticism. It permits the idea that the snapshot is a merge of replica views, without deciding union, intersection, or single-view.\n\n**What RSS may obstruct**\n\nRSS may obstruct efficient decision-making because it refuses to produce a single answer. It may obstruct comparison between accounts because it lacks a common metric. It may obstruct automation because it is noncomputable and requires human or external choice. It may obstruct reasoning about physical resources because it does not include a resource model unless one is added as a primitive. It may obstruct reasoning about time across replicas because it treats logical time as viewpoint-relative without a mechanism for aligning viewpoints. It may obstruct the very idea of a snapshot as a single object, because it treats a snapshot as one viewpoint among many.\n\n**Unresolved expressive limitations**\n\nRSS cannot express the exact provenance of a delivery unless provenance is added. RSS cannot express physical resource sharing beyond what an account includes. RSS cannot express replica agreement protocols. RSS cannot express the operational cost of retaining uncertainty. RSS cannot express the authority of a delivery beyond the record fields. RSS does not resolve the disagreements it represents, and it does not claim to. Ordinary prose remains available to criticize RSS for being too permissive, too vague, or too detached from operational needs."
+  },
+  "model": "deepseek-flash",
+  "origin_plan_id": "706777b431b112e8a5da499bcbfedf9a3a33a1814942507b219addec58b907b3",
+  "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+  "schema": "minireason.language-packet.v1",
+  "status": "FROZEN_UNADJUDICATED"
+}
+
+## Actual expression (expression)
+[8aa888193bbb2d13] (minireason.language-expression.v1)
+Below is an attempt to carry the frozen warehouse text in the WHL carrier supplied in the packet. I have not repaired the prose, added language (no new Lean constructs, no Mathlib, no quotient of bags), or installed a new interpretation. Where WHL had no primitive for something the prose asserts, I say so in ordinary prose rather than manufacturing a primitive. Where I quote the source to preserve an obstructed expression, I mark it `PROSE-ESCAPE`.
+
+---
+
+## 1. Prologue: what the source text asks to be expressed
+
+The source says the snapshot "is not a single ledger but a cloud of rival stories." WHL has one `Snapshot` with one `List Record`. A list is orderless in the sense used here (membership and filtering only), but a `List` is neither a set nor a bag-with-quotient, and it is not a cloud. `exact_duplicate` is *defined* as the five-field equality, so the list can contain exact duplicates and the language records them as inert with respect to each other only through that definition — it does not quotient. That mismatch between "cloud of rival stories" and `List Record` is not something I can repair with the carrier; I record it here.
+
+The source says the snapshot's "job is not to compute one timeless answer but to decide which conflicts are still alive." WHL can state `greatest_revision_in`, `active_hold`, `expired_hold`, and `alternatives_at_greatest`. Whether those amount to "still alive" is a reading, not a theorem. WHL does not fix it.
+
+The source says correctness is not a condition for preservation: "false or incomplete proposals remain material for inquiry." WHL's `Conjecture`, `Commitment`, and `Refutation` are the nearest structural analog. A `Refutation c` is a snapshot plus `¬ c snap`; a `Commitment` is a bare `Prop`. The source's notion of "material for inquiry" is not a primitive, and I do not install one.
+
+## 2. Conjecture 1 — the snapshot decides liveness, not truth
+
+> The first useful conjecture is that the snapshot's job is not to compute one timeless answer but to decide which conflicts are still alive.
+
+In WHL this can only be paraphrased. A candidate expression:
+
+```lean
+def live_conflict (snap : Snapshot) (r s : Record) : Prop :=
+  alternatives_at_greatest snap.records r s
+```
+
+But `alternatives_at_greatest` requires both to be `greatest_revision_in` and not `exact_duplicate`. This is a definition, not a conjecture. The source's "job is … to decide" is normative; `Prop` is descriptive. I cannot carry the normative force in WHL. I flag this as an obstruction; I do not alter the source.
+
+> Duplicate delivery of the same booking, revision, kind, quantity, and expiry adds nothing; authority does not accumulate by repetition.
+
+WHL can state this as a fact about `exact_duplicate`:
+
+```lean
+theorem exact_duplicate_inert (r s : Record) (h : exact_duplicate r s) :
+  r.booking = s.booking ∧ r.revision = s.revision :=
+⟨h.1, h.2.1⟩
+```
+
+This does not say "authority does not accumulate"; it says the two records agree on the fields in `exact_duplicate`. The word "authority" has no WHL primitive. I keep the source's word.
+
+> A higher revision kills lower revisions for that booking, but only within the booking.
+
+WHL expresses revision dominance and its booking-scoping:
+
+```lean
+def higher_revision (r s : Record) : Prop :=
+  r.booking = s.booking ∧ revision_lt r.revision s.revision
+```
+
+That `higher_revision` requires equality of bookings is the WHL form of "only within the booking." The word "kills" is not primitive; WHL has dominance, not killing.
+
+## 3. The greatest-revision reconstruction
+
+> For any one booking, the natural reconstruction is to group its records by revision, then keep only the greatest revision present.
+
+WHL does not provide grouping. It provides filtering by a predicate. The nearest expression is the filter inside `possible_reservations`:
+
+```lean
+def possible_reservations (snap : Snapshot) (b : Booking) : List Quantity :=
+  let rs := snap.records;
+  let t := snap.logical_time;
+  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (reserves_effect t)
+```
+
+This *is* a grouping in effect, but WHL does not say "group." "Natural reconstruction" is not a WHL notion. I do not supply one.
+
+> Within that greatest revision, a hold and a release cannot both be in force as the same fact; they are alternatives.
+
+`alternatives_at_greatest` covers records that are not exact duplicates, including a hold and a release at the same greatest revision. That they "cannot both be in force as the same fact" is not something WHL asserts; it lists both as possible reservations via `reserves_effect`, one of which is `0` if kind is release. WHL does not adjudicate between them.
+
+> An expired hold and a release both reserve zero. An active hold reserves its quantity.
+
+Direct:
+
+```lean
+def reserves_effect (t : Time) (r : Record) : Quantity :=
+  match r.kind with
+  | Kind.hold => if t > r.expiry then 0 else r.quantity
+  | Kind.release => 0
+```
+
+> If several active holds tie at the greatest revision, they remain unresolved alternatives, not a sum and not a vote.
+
+`possible_reservations` returns a `List Quantity` — repetitions are not summed, not voted. But a `List` is not a proof that they are "unresolved alternatives." The `Filter`/`map` construction does not assert non-resolution; it merely fails to resolve. The distinction between "not resolved by the language" and "deliberately refused" is not representable in WHL.
+
+> That is a deliberate refusal: the rules do not say how to merge them, so the snapshot should retain the possibility that any one is the true one, or that none is, depending on what "true" is taken to mean.
+
+`possible_reservations` retains all four via a list; "true" has no WHL counterpart. The word "deliberate" describes the source author's stance, not the formal object.
+
+## 4. Availability and its hidden "actually"
+
+> Availability is then capacity minus whatever reservation is actually selected, but the word "actually" hides the problem.
+
+WHL cannot select. It can bound:
+
+```lean
+def availability_lower_bound (snap : Snapshot) (bookings : List Booking) : Int :=
+  let total_lower := bookings.foldl (λ acc b, acc + booking_lower_bound snap b) 0;
+  Int.sub_nat snap.capacity total_lower
+
+def availability_upper_bound (snap : Snapshot) (bookings : List Booking) : Int :=
+  let total_upper := bookings.foldl (λ acc b, acc + booking_upper_bound snap b) 0;
+  Int.sub_nat snap.capacity total_upper
+```
+
+"The problem" that `actually` hides is not a WHL object. WHL provides the bounds; the word `actually` has no carrier.
+
+> Negative availability is not an error in the arithmetic; it is a signal that the warehouse has over-promised relative to this reconstruction.
+
+`Int.sub_nat` can return `Int.neg_succ_of_nat …`, i.e. a negative integer. That WHL *can* produce a negative number is not the same as the source's claim that the sign "is not an error" but "a signal." WHL has no error/signal distinction.
+
+> If different bookings have unresolved alternatives, availability is not a number but a set or an interval, and possibly not even a convex one.
+
+WHL provides `booking_lower_bound` and `booking_upper_bound`, and the global pair. It does not produce a set of availabilities, and it cannot say "not even convex," because WHL has no order-theoretic structure on `Quantity` beyond `<` and `≥`. Note also that the WHL file's comment says "as intervals over integers," but the actual `availability_lower_bound`/`availability_upper_bound` return `Int`, not an interval type. If we want an "interval," that is `(Int × Int)` — not declared in the supplied WHL. The packet's WHL does not actually define an interval type, so the source's "interval" reading is only approximated by the pair of bounds. I do not add the type.
+
+> A pessimistic reading takes the maximum hold among alternatives for each booking; an optimistic reading takes the minimum. Neither is forced by the snapshot alone.
+
+In WHL, `booking_lower_bound` = minimum of `possible_reservations`, `booking_upper_bound` = maximum. The source calls these "optimistic" (min) and "pessimistic" (max) readings. WHL does not label them thus, and does not say "neither is forced." The absence of an assertion is not an assertion of under-determination; WHL simply has no commitment either way.
+
+## 5. Disagreement 1 — whether uncertainty should be retained
+
+> A reconciler might collapse each tie to the largest quantity, or to the earliest expiry, or to the record with some lexical tiebreak, and thereby produce a single availability number. That is convenient, but it manufactures authority.
+
+WHL has `ReservationRule` and `possible_reservations_with`:
+
+```lean
+def ReservationRule : Type := Time → Record → Quantity
+
+def possible_reservations_with (rule : ReservationRule) (snap : Snapshot) (b : Booking) : List Quantity :=
+  let rs := snap.records;
+  let t := snap.logical_time;
+  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (rule t)
+```
+
+A rule like "take the largest quantity" can be written as a `ReservationRule`, but WHL does not require it, nor does it produce a `Quantity` from a `List Quantity`. To get a single number from a list, we would need a `ReservationListReducer : List Quantity → Quantity`. WHL does not declare one. So the source's "produce a single availability number" is beyond WHL's declared constructors. I do not add a reducer.
+
+> That is convenient, but it manufactures authority.
+
+"Authority" is not a WHL primitive. WHL's notes claim "Duplicate deliveries convey no additional authority" is represented by `exact_duplicate`, but that is a claim in the file's comment, not a definition. The word "manufactures" has no carrier.
+
+> Another reconciler might keep all alternatives and report a range. That preserves honesty but makes downstream decisions harder.
+
+`possible_reservations` returns a `List Quantity`, which is a range only in a loose sense. "Honesty" and "downstream decisions" are outside WHL. Not represented.
+
+> A conjecture: the more useful representation is a partial order of possible reservations, not a set, because some alternatives may be compatible with others across bookings while others are not.
+
+WHL does not have a partial order over reservations. It has `revision_le`/`revision_lt`, and `Int` with `of_nat`/`neg_succ_of_nat`. Neither is a partial order of records-at-greatest-revision. This conjecture is not expressible in the supplied WHL without adding a new structure; I do not add one.
+
+> A criticism: once you move to a set of possible worlds, you have smuggled in a notion of possibility that the original bag did not contain.
+
+WHL has no notion of "possible worlds." The criticism is not expressible; the source itself is already beyond the carrier here.
+
+## 6. Disagreement 2 — expiry and obsolete records
+
+> Suppose a booking has revision 5 expired and revision 3 active. Higher revision supersedes lower revision, so revision 5 wins, and because it is expired it reserves zero. Revision 3 is obsolete and should not be resurrected.
+
+Under WHL's `greatest_revision_in`, revision 5 is the only record at greatest revision for the booking; revision 3 is dominated. Under `reserves_effect`, revision 5 contributes `0`. The phrase "should not be resurrected" is normative; WHL gives `dominated_in` as a fact, not a duty.
+
+> Another reading treats expiry as deleting the record from the bag, after which revision 3 becomes greatest and active, so the booking reserves again.
+
+WHL's `expired_deletes_rule` is declared, but — importantly — it is declared as a `Time → Record → Quantity`, i.e. a per-record effect, *not* as a deletion that changes `greatest_revision_in`. The comment says "Alternative rule: expiry deletes the record, so a lower revision can become greatest," but the actual `expired_deletes_rule` does not do that: it returns `0` for expired holds and otherwise behaves like `reserves_effect`. The source's deletion reading is therefore *not* faithfully realized by the WHL constructor `expired_deletes_rule`; the file's comment and its definition disagree. I do not fix the file. I note the mismatch.
+
+The nearest structural expression of the source's deletion reading would require a function `List Record → List Record` that removes expired holds, and then a `greatest_revision_in` applied to the result. WHL does not declare such a function. `deletion_changes_greatest` is a `Prop` mentioning both, but its existence as a `Prop` is not the same as the deletion reading being a `ReservationRule`.
+
+> These give opposite answers. The snapshot description tilts toward the first: a higher revision supersedes lower revisions, and expiry can make a hold reserve zero. It does not say expiry removes the supersession.
+
+WHL's `reserves_effect` implements the first reading; `expired_deletes_rule` implements a weakened version of the second that does *not* actually change supersession. So WHL's constructors do not instantiate both readings as the source describes them. This is an obstruction I cannot repair.
+
+> A criticism of the first: it lets a dead revision keep a live one buried forever, which may be undesirable operationally.
+
+WHL has `dominated_in` and the effect. It has no notion of "forever," "operationally undesirable," or "buried." Not expressible.
+
+## 7. Disagreement 3 — what a criticism targets
+
+> One can criticize a reconstruction rule, a particular record, a booking's history, the snapshot as a whole, or the assumption that logical time is meaningful.
+
+The WHL file comment claims: "What a criticism targets is represented by the separation between conjectures about rules (ReservationRule) and conjectures about data (Record and Snapshot)." This is a claim about the language, not a definition inside it. `Conjecture` is `Snapshot → Prop`. `ReservationRule` is `Time → Record → Quantity`. There is no constructor whose type is "criticism of X." So at the level of declared constructors, WHL does *not* separate targets of criticism; it has `Prop`, and it has two kinds of value, and the file's comment asserts a separation the definitions do not enforce.
+
+> A criticism of the rule "higher revision always supersedes" is not the same as a criticism of a record that carries a high revision but an implausible quantity.
+
+Under WHL, both can be written as `Prop`s about a `Snapshot`, but nothing in the language requires them to be distinguished. The distinction is in the source; WHL can carry it only by our own discipline in writing `Prop`s, not by language structure.
+
+## 8. Disagreement 4 — source assumptions
+
+> It assumes records are delivered, but not that they are complete.
+
+WHL has no notion of "delivered" or "complete." `Snapshot.records` is a `List`. This is an expressive limitation; I do not install a delivery primitive.
+
+> It assumes duplicates convey no additional authority, but not that all duplicates are identical in every field; if two records share booking and revision but differ in kind or quantity, are they duplicates or alternatives?
+
+`exact_duplicate` is five-field equality. `alternatives_at_greatest` is the negation of `exact_duplicate` among records at greatest revision. So WHL cleanly separates exact and near duplicates at the level of these definitions. What WHL does not say is whether near-duplicates are "duplicates" or "alternatives" — the definitions give names, but the source's question is interpretive.
+
+> It assumes logical current time is a single coordinate, but different replicas may have different logical times; if so, expiry is replica-relative.
+
+`Snapshot.logical_time : Time` is a single field. There is no `Replica`. The file comment acknowledges this as an expressive limitation ("Logical time per replica is not primitive"). I do not add `Replica`.
+
+> It assumes bookings are independent, but capacity is shared, so reservations interact.
+
+WHL has `Snapshot.capacity : Quantity` and per-booking `possible_reservations`. Cross-booking incompatibility beyond the sum is not expressible. The file's comment says the same.
+
+> It assumes a release or expired hold reserves zero, but does not say whether a release at a lower revision can cancel a hold at a higher revision. By the supersession rule, no: the higher hold wins. By a cancellation rule, maybe yes.
+
+Under WHL, if a hold at revision 5 and a release at revision 3 share a booking, then the release is dominated and does not appear in `possible_reservations`. So WHL implements "the higher hold wins." To express the cancellation rule, one would need a `ReservationRule` that inspects records outside the greatest revision. `ReservationRule : Time → Record → Quantity` maps a single record; it does not see other records. WHL as supplied cannot express that rule. This is an expressive limitation of the given `ReservationRule` type.
+
+## 9. Disagreement 5 — per-booking vs global availability
+
+> Globally, availability is capacity minus the sum. But if there are unresolved alternatives, the sum is not well-defined.
+
+WHL's `availability_lower_bound` and `availability_upper_bound` take a `List Booking` and sum lower/upper bounds. The source's "sum is not well-defined" is represented by choosing a bound, not by refusing to sum. The refusal is in the source, not in the carrier.
+
+> That gives an interval, but intervals lose correlations: booking A's high alternative might be incompatible with booking B's high alternative if they share a physical resource not named in the snapshot.
+
+WHL has no interval type, and the "interval" produced by (`availability_lower_bound`, `availability_upper_bound`) is a pair of `Int`s, not an interval object. The WHL comment says "as intervals over integers," but as noted, no such type is declared. Correlation and physical resource sharing are not WHL primitives. I do not add them.
+
+> A conjecture: the snapshot is under-specified for any real warehouse, and the best one can do is expose the unresolved alternatives rather than pretend to a single answer.
+
+`possible_reservations` exposes alternatives. "Under-specified for any real warehouse" is not a `Prop` in WHL. I do not state it.
+
+> A criticism: exposing alternatives without a policy for resolving them pushes the problem downstream, where it may be resolved badly or inconsistently.
+
+Not expressible in WHL. This is prose.
+
+## 10. Disagreement 6 — negative availability
+
+> If capacity is 10 and active holds sum to 12, availability is -2.
+
+Under WHL with `Int.sub_nat`, `sub_nat 10 12` is `Int.neg_succ_of_nat 1`. Whether that is "-2" depends on the intended encoding of `Int`, which the WHL file does not fully develop (no `Int` arithmetic, no coercions). The file declares `Int.sub_nat` but does not define a normal form for `neg_succ_of_nat`, so "-2" as a displayed integer is at best the intended reading of `Int.neg_succ_of_nat 1`. I do not develop the encoding.
+
+> Some might call this an inconsistency and reject the snapshot. Others might call it a valid state of over-reservation. The description says availability can be negative, which suggests over-reservation is allowed.
+
+WHL can produce a negative `Int`. It cannot call it "inconsistency" or "valid state." Both terms have no carrier.
+
+> But negative availability does not say which holds are the offenders.
+
+Correct, and WHL has no offender-tracking either.
+
+> A criticism: if availability is allowed to be negative, then capacity is not a hard constraint, and the word "capacity" may be misleading; it is more like a soft target or a reporting threshold.
+
+"Hard constraint" is not a WHL primitive. `Snapshot.capacity` is a `Quantity`. WHL does not type-check constraints.
+
+## 11. Disagreement 7 — revision gaps and missing records
+
+> Suppose a booking has revision 7 and revision 5, but no revision 6. Does revision 7 supersede revision 5? Yes, if higher revision supersedes lower.
+
+Under WHL: yes, `higher_revision` (with matching booking) holds for the pair.
+
+> Does the absence of revision 6 matter? Not by the stated rules, but it might indicate a lost delivery.
+
+WHL has no notion of "lost delivery." The absence of a record is simply a fact about the list. Not expressible.
+
+> A conjecture: revision numbers are not necessarily contiguous, and treating a gap as evidence of loss is an extra assumption.
+
+This is a meta-claim about `Revision`; `Revision` is axiomatic in WHL and no arithmetic is declared on it beyond `revision_le` and `revision_lt`. WHL cannot state "contiguous" because it has no successor structure on `Revision`. Even `revision_lt_iff` is declared as an axiom schema, not derived from arithmetic. So this conjecture is not expressible without adding arithmetic; I do not add it.
+
+## 12. Disagreement 8 — tie-breaking across bookings
+
+> Different bookings need not share the same choice, so one cannot impose a global tiebreak.
+
+WHL's absence of a global choice function is structural: `possible_reservations` is per-booking. The absence of a `Booking → Choice` map is a fact about the file, not a proof that no global tiebreak exists. I do not assert the latter.
+
+> A conjecture: any single-number availability is a projection that discards information, and different projections can disagree even when they respect the snapshot.
+
+WHL has no projection type. `ReservationRule` is not a projection from a `List Quantity` to a `Quantity`. I do not add one.
+
+> A criticism: without a projection, the snapshot cannot answer the simple question "how much is available?" That may be acceptable if the snapshot's role is to support inquiry rather than to issue verdicts.
+
+Not expressible. Prose.
+
+## 13. Disagreement 9 — time
+
+> Logical current time is given, but records have expiries. If logical time advances, expired holds become zero.
+
+Under WHL, `reserves_effect t r` with larger `t` may return `0` for a hold.
+
+> Does an expired hold at a high revision still supersede a lower active hold? As above, one reading says yes. Another says expiry is a state change that makes the high revision inactive, allowing a lower revision to become relevant if it is still active.
+
+WHL's `greatest_revision_in` does not depend on `t`. So under WHL as written, expiry does not demote the high revision. The source's "another reading" is not expressible in WHL without a `greatest_revision_in` that is `Time`-parameterized. WHL does not provide that, and I do not add it.
+
+> A conjecture: the safer reading is that supersession is structural and expiry is evaluative; the high revision remains the chosen record, but its contribution is zero.
+
+Under WHL this conjecture is *the* reading implemented by `greatest_revision_in` plus `reserves_effect`. WHL does not call it "safer"; "safer" is not a carrier.
+
+> A criticism: this can leave a booking with no reservation even though an older active hold exists, which may violate an operator's expectation that the warehouse still holds the goods.
+
+Not expressible. `operators` and `expectation` are outside WHL.
+
+## 14. Disagreement 10 — what "delivered" means
+
+> A record delivered to one replica may not be delivered to another. The snapshot is described as replicated, but the bag is unordered. Does the snapshot represent the union of all deliveries, or the intersection, or one replica's view?
+
+WHL has no `Replica`, no `Delivery`, no `Union`, no `Intersection`. The file's comment says so. `Snapshot.records` is a `List`, and the language cannot distinguish these readings. This is a genuine expressive limitation of the carrier with respect to the source.
+
+> A conjecture: the snapshot is a merge, and merging is itself a source of uncertainty, because different replicas may have different logical times and different sets of records.
+
+Not expressible.
+
+> A criticism: the description treats the snapshot as a single object, which may obscure the replication problem rather than solve it.
+
+Not expressible; the criticism is of the description, not of a WHL object.
+
+## 15. What remains material for inquiry
+
+> A conjecture that a release always cancels a hold, even across revisions, may be false under the stated supersession rule, but it reveals an assumption about what releases are for.
+
+WHL can state a supersession-crossing cancellation only by extending `ReservationRule` or by adding a rule that sees multiple records. The supplied `ReservationRule` cannot. So the "release always cancels" conjecture, as such, is outside WHL as supplied. The source's point that it "reveals an assumption" has no WHL carrier.
+
+> A conjecture that ties should be summed may be false under the "unresolved alternatives" reading, but it reveals a desire for conservatism.
+
+"Desire for conservatism" is not a WHL object. A "sum ties" rule could be written as a `ReservationRule` only if it could see a group; it cannot, since `ReservationRule : Time → Record → Quantity`. To express summing over ties, WHL would need a `List Record → Quantity` reducer that is not supplied. I do not add one.
+
+> A criticism that the snapshot is unusable because it does not resolve ties may be substantive, but it may also be a demand for a decision that the snapshot was never meant to make.
+
+No WHL carrier. Prose.
+
+> Keeping these disagreements visible is not a failure of the reconstruction; it is the reconstruction's only honest form.
+
+"Honest form" is not a WHL predicate.
+
+## 16. Summary of obstructions, in prose
+
+Several distinctions and criticisms in the source are not expressible in the supplied WHL without adding language components, which I have not done:
+
+- **Cloud of rival stories** — WHL has one `List Record`, not a cloud of stories, and no quotient.
+- **"Authority"**, **"manufactures authority"** — no primitive.
+- **"Deliberate refusal"** vs. **mere non-resolution by the language** — no carrier.
+- **"Actually selected"** — WHL provides bounds, not selection.
+- **"Signal" vs. "error"** for negative availability — no carrier.
+- **"Interval"** — WHL declares no interval type; the bounds are a pair of `Int`s, and the WHL `-!`-comment's word "interval" is not backed by a definition.
+- **Expiry-as-deletion** — the given `expired_deletes_rule` is a per-record effect, not a deletion; the WHL file's comment and its definition disagree, and I do not fix the file. The source's deletion reading is therefore *not* faithfully instantiated by that constructor.
+- **Targets of criticism** — the WHL file's comment asserts a separation that the file's own definitions do not enforce; `Conjecture` is `Snapshot → Prop` and nothing more.
+- **Replication, union/intersection/single-view** — not primitive.
+- **Replica-relative logical time** — one `Time` field.
+- **Physical resource sharing beyond capacity** — not primitive.
+- **Partial order of possible reservations** — not declared.
+- **Projection from a list of ties to a single number** — not declared.
+- **Successor structure on `Revision`** — not declared, so "gap" is not expressible.
+- **Delivery, provenance, lost delivery** — not primitive.
+
+In each case I have not added a component, repaired the source, or installed an interpretation. Where the source's word is the only honest carrier — "cloud," "authority," "deliberate refusal," "signal," "honest form," "assumption," "soft target" — I have left it in ordinary prose and marked the packet's own negative-space. The reader can decide whether WHL is a suitable carrier for this text or merely a partial one; the packet is frozen and unadjudicated, and I have not tried to make it otherwise.
+
+## Independent reading (reading)
+[2719f0943d91c7df] (minireason.language-reading.v1)
+The expression is a **meta-commentary on a carrier**, not a translation of a source into that carrier. What is actually present is a long prose document that repeatedly cites an implied "source text" (a warehouse text about replicated snapshots, rival readings, resurrection of revisions, etc.) and compares each fragment of it against a frozen Lean-like language ("WHL") that was supplied in the same packet. The speaker's stance is: *I will not repair the source, will not add Lean constructs, will not add Mathlib, will not quotient bags, and where WHL lacks a primitive I will say so in ordinary prose rather than invent one.* That is the operational thesis of the expression, and everything else is a case-by-case audit of that thesis.
+
+What the expression *says*, roughly, decomposes into three claims:
+
+1. **WHL and the source are mismatched in specifiable ways.** A list of specific gaps is offered: no `Replica`, no `Delivery`, no interval type, no reducer from `List Quantity` to `Quantity`, no successor structure on `Revision`, no partial order over reservations, no notion of "authority," "signal," "honesty," "operational desirability," etc. These gaps are asserted, not proven, but they are the sort of assertion one can check against the quoted WHL text.
+
+2. **Some internal WHL comments are inconsistent with WHL definitions.** The clearest case named is `expired_deletes_rule`: the file's comment says "expiry deletes the record, so a lower revision can become greatest," but the definition is `Time → Record → Quantity` and only returns `0` for expired holds; it does not remove records, so it cannot promote a lower revision into `greatest_revision_in`. Similarly, the file's comment says the language provides "intervals over integers," but only a pair of `Int`-valued functions is declared. These are genuine observations about the frozen text, and they can be verified by reading the packet.
+
+3. **The source's invocations of "cloud of rival stories," "authority," "deliberate refusal," "signal," "honest form," "soft target," and similar are carried by prose, not by WHL.** The expression claims it leaves those words in place rather than fabricating primitives, which is a coherent methodological choice.
+
+What it *leaves unresolved*:
+
+- It never quotes the source directly with page or fragment markers; the fragments beginning "> The source says…" are presented as paraphrase, but the reader is not given the original wording for comparison. This matters because the expression's central evidence is the alleged *inexpressibility* of specific source words in WHL, and inexpressibility claims are easiest to overreach when the exact phrasing is absent.
+- It does not distinguish, except by assertion, between (a) syntactic inexpressibility in WHL, (b) semantic non-theoremhood of a paraphrase in WHL, and (c) the source author's refusal to endorse a paraphrase. These are different failures, and the expression tends to flatten them into "not expressible in WHL."
+- It nowhere states whether its own prose is exempt from the constraint it applies to WHL. It says it will not add Lean constructs, but it writes normative English ("honest," "safer," "not something I can repair") freely. That may be fine, but the asymmetry is not argued for.
+
+**Assumptions used:**
+
+- That the packet's WHL is *the* carrier, and that no stronger carrier is admissible. The expression treats the carrier as a frozen object; a critic could reject the freeze.
+- That additions (new inductive types, quotient, Mathlib) are illegitimate "repairs." This is a methodological stipulation, not a theorem. A competing reading says that a carrier is exactly what you are willing to extend to carry the content, and that refusing to extend is itself a carrier choice with its own losses.
+- That "not expressible" can be established by showing the needed constructor is absent from a given file. This is only true relative to a fixed syntax. A rival definition of "expressible" — say, expressible up to definitional unfolding of the whole file — would give different verdicts.
+- That the source has a definite intended content against which WHL is being measured. If the source is itself under-determined, then several "obstructions" evaporate: WHL would be failing to carry something that was never fixed.
+
+**What could criticize it:**
+
+- **The audit can be accused of tendentiousness.** Many of the flagged words ("authority," "signal," "honest") are *rhetorical*, and it is unclear that a formal carrier is obligated to encode rhetorical vocabulary. Conflating "the source uses this word" with "the carrier must have a primitive for this word" is a category error. WHL might carry the substantive mathematical content and legitimately refuse the rhetoric.
+- **The audit can be accused of giving no positive account.** It says what WHL cannot do but does not state what WHL *does* carry faithfully, beyond scattered definitions. A reader leaves uncertain whether WHL is a good carrier, a partial one, or a wrong one.
+- **The self-description is not neutral.** Phrases like "the packet's own negative-space," "the only honest carrier," and "I do not fix the file" preempt the reader's judgment. The expression claims neutrality and then performs a stance.
+- **It treats absence of a constructor as evidence of inexpressibility, but Lean permits definitional extension.** A `ReservationListReducer : List Quantity → Quantity` can be introduced as a `def` in the same file if the argument that it cannot is not made sharply. The expression's refusal is methodological, not logical. It should be labeled as such.
+- **The `expired_deletes_rule` inconsistency is a real finding, but its significance is overclaimed.** That a comment and a definition disagree is a bookkeeping defect. Whether it invalidates the carrier for the source's purposes depends on a separate argument, which is not given.
+- **The expression's most substantive claim — "the deletion reading is not faithfully instantiates by that constructor" — is correct against the shown text, but it is a claim about a single identifier, not about the language as such.** The language could have other routes (e.g. manipulating `Snapshot.records` before evaluating `greatest_revision_in`) that are compatible with its declared types, and the expression does not exclude them.
+
+**Competing readings:**
+
+- **Reading A (the expression's own).** WHL is a deliberately weak carrier; the expression is an honest inventory of what it cannot say; prose is the escape hatch.
+- **Reading B.** WHL is not a carrier of the source at all but a *vocabulary generator*; the expression is best read as an exploration of what a minimal Lean-core language can say about snapshots, with the source fragments serving as prompts rather than as content to be carried. On this reading, "obstruction" is not failure but the boundary of the vocabulary.
+- **Reading C.** The expression is a critique of *carrier-essentialism*: it shows that insisting on a fixed carrier forces the analyst into long lists of "cannot be expressed," which is itself a warning about the method. On this reading, the load-bearing content is the critical posture, not any particular Lean fragment.
+
+**On visible source quotations and embedded translations.** The expression marks its own source-attributions with `>` blockquotes led by "The source says…" but gives no bibliographic anchor. The Lean blocks inside it are not "embedded translations" in the sense of being sourced from a foreign text; they are excerpts from the same WHL file the expression is auditing, or small Lean fragments newly written by the expression author (e.g. `exact_duplicate_inert`, `live_conflict`). This is a real category shift: fragments in lean fences are not quotations of the source text at all, but quotations of the carrier, or new propositions in the carrier. Reading them as "translation of the source" would be reconstructing content that the expression itself repeatedly denies is carried.
+
+**In short:** the expression is a careful, one-sided audit of a frozen carrier against an unquoted source, whose central methodological claim (refuse repair, refuse addition, mark the gaps in prose) is coherent but not innocent. Its strongest concrete findings are the comment/definition inconsistencies in the shown WHL file — `expired_deletes_rule` and the "intervals over integers" paraphrase. Its weakest move is the drift from "the source uses this word" to "the carrier fails to carry this," which conflates rhetoric with formal content and treats absence of a constructor as decisive. Whether the expression is a faithful audit or a rhetorically structured performance depends on whether one accepts its carrier-essentialism; on that question the expression does not argue, it stipulates.
+
+## What to return
+A JSON object carrying "body" and "commitments". Both are strings and nothing else is required.

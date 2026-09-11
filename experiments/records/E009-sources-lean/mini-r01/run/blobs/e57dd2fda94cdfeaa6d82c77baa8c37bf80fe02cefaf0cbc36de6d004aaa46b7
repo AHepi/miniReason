@@ -1,0 +1,290 @@
+```lean
+/-
+  Warehouse History Language (WHL) — a Lean-core-compatible formal language for
+  describing a replicated warehouse reservation snapshot as a bag of records.
+
+  This file declares a language, not a translation of any particular corpus.
+  It contains no quotations and no per-fragment translations.
+
+  The language is designed to be usable with Lean core alone (no Mathlib).
+  It uses only `Nat`, `List`, `Option`, `Bool`, and simple inductive types.
+  A `Bag` is represented as a `List`; bag equality is not declared, because
+  the language is about records and their relations, not about quotienting.
+
+  Primitive sorts:
+    - `Booking`  : opaque identifiers for bookings.
+    - `Revision` : natural numbers; higher is greater authority.
+    - `Quantity` : natural numbers. (Negative availability is handled separately.)
+    - `Time`     : natural numbers for logical time and expiry.
+
+  Record kinds:
+    - `hold`    : a hold of some quantity with an expiry.
+    - `release` : a release; quantity and expiry are still carried, because the
+                  language does not force a single meaning for them.
+
+  A `Record` is a quintuple (booking, revision, kind, quantity, expiry).
+  A `Snapshot` is a capacity, a logical time, and a list of records.
+
+  The language provides relations for:
+    - exact duplication (all five fields equal)
+    - revision dominance within a booking
+    - greatest revision within a booking
+    - active vs expired holds relative to logical time
+    - reservation effect of a record (zero for releases and expired holds;
+      quantity for active holds)
+    - alternative records at a greatest revision
+    - per-booking possible reservations (as sets of quantities)
+    - global availability bounds (as intervals over integers)
+
+  Conjectures, commitments and refutations are expressed as Lean `Prop`s.
+  The language does not assert which conjectures are true; it provides the
+  vocabulary to state them and to record refutations as proofs of negation
+  or as explicit counterexamples.
+
+  This construction permits: precise statements about which records remain
+  live under a given reading of supersession; separation of structural
+  supersession from evaluative expiry; explicit representation of unresolved
+  alternatives as sets of quantities; and formal criticism of rules by
+  stating alternative rules and deriving different results.
+
+  It may obstruct: reasoning about replication as such, because the snapshot
+  is a single list and the language has no primitive for multiple replicas;
+  reasoning about physical resource sharing beyond capacity, because capacity
+  is the only global constraint; and reasoning about the provenance or
+  authority of deliveries, because delivery is not modelled.
+-/
+
+/-! ## Primitive sorts -/
+
+axiom Booking : Type
+axiom Revision : Type
+axiom Quantity : Type
+axiom Time : Type
+
+axiom revision_le : Revision → Revision → Prop
+axiom revision_lt : Revision → Revision → Prop
+axiom revision_le_refl : ∀ r, revision_le r r
+axiom revision_lt_iff : ∀ r s, revision_lt r s ↔ revision_le r s ∧ ¬ revision_le s r
+
+/-! ## Record kinds and records -/
+
+inductive Kind : Type
+| hold : Kind
+| release : Kind
+
+structure Record : Type := 
+  (booking : Booking)
+  (revision : Revision)
+  (kind : Kind)
+  (quantity : Quantity)
+  (expiry : Time)
+
+/-! ## Snapshot -/
+
+structure Snapshot : Type :=
+  (capacity : Quantity)
+  (logical_time : Time)
+  (records : List Record)
+
+/-! ## Basic relations on records -/
+
+def exact_duplicate (r s : Record) : Prop :=
+  r.booking = s.booking ∧
+  r.revision = s.revision ∧
+  r.kind = s.kind ∧
+  r.quantity = s.quantity ∧
+  r.expiry = s.expiry
+
+/-- `s` has greater revision than `r` for the same booking. -/
+def higher_revision (r s : Record) : Prop :=
+  r.booking = s.booking ∧ revision_lt r.revision s.revision
+
+/-- `r` is dominated within its booking by some record in the list. -/
+def dominated_in (rs : List Record) (r : Record) : Prop :=
+  ∃ s, s ∈ rs ∧ higher_revision r s
+
+/-- `r` has greatest revision among records of its booking in `rs`. -/
+def greatest_revision_in (rs : List Record) (r : Record) : Prop :=
+  r ∈ rs ∧ ¬ dominated_in rs r
+
+/-- Active hold relative to logical time: kind is hold and logical time has not
+    passed expiry. -/
+def active_hold (t : Time) (r : Record) : Prop :=
+  r.kind = Kind.hold ∧ ¬ (t > r.expiry)
+
+/-- Expired hold relative to logical time. -/
+def expired_hold (t : Time) (r : Record) : Prop :=
+  r.kind = Kind.hold ∧ t > r.expiry
+
+/-- Reservation effect under the "structural supersession, evaluative expiry" reading. -/
+def reserves_effect (t : Time) (r : Record) : Quantity :=
+  match r.kind with
+  | Kind.hold => if t > r.expiry then 0 else r.quantity
+  | Kind.release => 0
+
+/-! ## Alternatives at greatest revision -/
+
+/-- Two records are alternatives at a greatest revision for a booking if they
+    are both in the snapshot, both have the greatest revision for that booking,
+    and they are not exact duplicates. -/
+def alternatives_at_greatest (rs : List Record) (r s : Record) : Prop :=
+  r.booking = s.booking ∧
+  greatest_revision_in rs r ∧
+  greatest_revision_in rs s ∧
+  ¬ exact_duplicate r s
+
+/-- The set of quantities that a booking could reserve under the unresolved-alternatives
+    reading, given a snapshot. Represented as a list of quantities (may contain duplicates).
+    For each record at the greatest revision for the booking, include its reservation effect.
+    If no such record exists, the list is empty (booking reserves nothing). -/
+def possible_reservations (snap : Snapshot) (b : Booking) : List Quantity :=
+  let rs := snap.records;
+  let t := snap.logical_time;
+  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (reserves_effect t)
+
+/-! ## Availability bounds -/
+
+/-- Unary minus for natural numbers encoded as integers, to allow negative availability. -/
+inductive Int : Type
+| of_nat : Nat → Int
+| neg_succ_of_nat : Nat → Int
+
+namespace Int
+def sub_nat (a b : Nat) : Int :=
+  if a ≥ b then Int.of_nat (a - b) else Int.neg_succ_of_nat (b - a - 1)
+end Int
+
+/-- Minimum quantity in a list, if any. -/
+def list_min? : List Quantity → Option Quantity
+| [] => none
+| (x :: xs) => some (xs.foldl (λ acc y, if y < acc then y else acc) x)
+
+/-- Maximum quantity in a list, if any. -/
+def list_max? : List Quantity → Option Quantity
+| [] => none
+| (x :: xs) => some (xs.foldl (λ acc y, if y > acc then y else acc) x)
+
+/-- Per-booking lower bound: minimum possible reservation, or 0 if none. -/
+def booking_lower_bound (snap : Snapshot) (b : Booking) : Quantity :=
+  match list_min? (possible_reservations snap b) with
+  | none => 0
+  | some q => q
+
+/-- Per-booking upper bound: maximum possible reservation, or 0 if none. -/
+def booking_upper_bound (snap : Snapshot) (b : Booking) : Quantity :=
+  match list_max? (possible_reservations snap b) with
+  | none => 0
+  | some q => q
+
+/-- Global lower availability bound: capacity minus sum of per-booking lower bounds. -/
+def availability_lower_bound (snap : Snapshot) (bookings : List Booking) : Int :=
+  let total_lower := bookings.foldl (λ acc b, acc + booking_lower_bound snap b) 0;
+  Int.sub_nat snap.capacity total_lower
+
+/-- Global upper availability bound: capacity minus sum of per-booking upper bounds. -/
+def availability_upper_bound (snap : Snapshot) (bookings : List Booking) : Int :=
+  let total_upper := bookings.foldl (λ acc b, acc + booking_upper_bound snap b) 0;
+  Int.sub_nat snap.capacity total_upper
+
+/-! ## Conjectures, commitments, refutations -/
+
+/-- A conjecture is a proposition about a snapshot. -/
+def Conjecture : Type := Snapshot → Prop
+
+/-- A commitment is a proposition that a reasoner endorses. -/
+def Commitment : Type := Prop
+
+/-- A refutation of a conjecture is a snapshot together with a proof that the
+    conjecture does not hold for that snapshot. -/
+structure Refutation (c : Conjecture) : Type :=
+  (snap : Snapshot)
+  (not_c : ¬ c snap)
+
+/-- Example schema: a rule states a reservation function for a single record. -/
+def ReservationRule : Type := Time → Record → Quantity
+
+/-- Two rules disagree on a snapshot if they assign different possible reservations
+    to some booking. -/
+def rules_disagree (r1 r2 : ReservationRule) (snap : Snapshot) : Prop :=
+  ∃ b, possible_reservations_with r1 snap b ≠ possible_reservations_with r2 snap b
+
+/-- Reservation possibilities parameterized by a rule. -/
+def possible_reservations_with (rule : ReservationRule) (snap : Snapshot) (b : Booking) : List Quantity :=
+  let rs := snap.records;
+  let t := snap.logical_time;
+  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (rule t)
+
+/-- Alternative rule: expiry deletes the record, so a lower revision can become greatest. -/
+def expired_deletes_rule (t : Time) (r : Record) : Quantity :=
+  match r.kind with
+  | Kind.hold => if t > r.expiry then 0 else r.quantity
+  | Kind.release => 0
+
+/-- The standard rule and the deletion rule can differ in which records are
+    considered greatest. This is stated as a possible disagreement, not resolved. -/
+def deletion_changes_greatest (snap : Snapshot) : Prop :=
+  ∃ b r, greatest_revision_in snap.records r ∧
+         r.booking = b ∧
+         expired_hold snap.logical_time r ∧
+         ∃ s, s ∈ snap.records ∧ s.booking = b ∧
+              revision_lt s.revision r.revision ∧
+              active_hold snap.logical_time s
+
+/-! ## Notes on intended meaning -/
+
+/- 
+  The language treats the snapshot as a bag of records with no order.
+  Order is not primitive; membership and filtering are the only structural
+  operations.
+
+  "Duplicate deliveries convey no additional authority" is represented by
+  `exact_duplicate`: two records with all five fields equal are inert with
+  respect to each other. The language does not say that near-duplicates are
+  inert; they may be alternatives.
+
+  "A higher revision supersedes lower revisions" is represented by
+  `greater_revision_in`, which ignores lower revisions for the same booking.
+  It does not cross booking boundaries, because `higher_revision` requires
+  equality of booking.
+
+  "A release or expired hold can reserve zero while an active hold reserves its
+  quantity" is represented by `reserves_effect`. This is one reading; the
+  alternative reading where expiry deletes the record is represented by
+  `expired_deletes_rule`, but the language does not choose between them.
+
+  "Availability can be negative" is represented by `Int.sub_nat`, which yields
+  an integer that can be negative.
+
+  "Unresolved alternatives" is represented by `possible_reservations`, which
+  is a list of quantities, not a single quantity. Different bookings have
+  separate lists; there is no global choice function.
+
+  "Different bookings need not share the same choice" is represented by the
+  absence of any mechanism that forces a single choice across bookings.
+
+  "What a criticism targets" is represented by the separation between
+  conjectures about rules (`ReservationRule`) and conjectures about data
+  (`Record` and `Snapshot`). A refutation targets a conjecture by exhibiting
+  a snapshot for which it fails.
+
+  "Source assumptions" are not primitive. The language can state them as
+  conjectures or commitments, but it does not encode a notion of assumption
+  dependence. This is an expressive limitation.
+
+  "Replication" is not primitive. The snapshot is a single list. The language
+  cannot distinguish union, intersection, or replica-relative views. This is
+  an expressive limitation.
+
+  "Physical resource sharing" is not primitive beyond capacity. The language
+  cannot express incompatibility between alternatives of different bookings
+  except through the capacity sum. This is an expressive limitation.
+
+  "Logical time per replica" is not primitive. There is one logical time in
+  the snapshot. The language can state conjectures about replica-relative
+  time but cannot model multiple times directly. This is an expressive
+  limitation.
+
+  The language does not assert that any conjecture is true. It provides
+  vocabulary for stating conjectures, commitments, and refutations.
+-/
+```

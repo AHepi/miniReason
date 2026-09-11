@@ -1,0 +1,147 @@
+Below is a direct comparison of the four items in the packet — the frozen source prose, the actual expression, the expression's own independent reading, and the selected WHL carrier — along with the non-Lean RSS proposal, since it is also in the packet. I do not score, repair, or install anything.
+
+## 1. What each item actually is
+
+- **Source (frozen prose).** A long argumentative essay about a replicated warehouse snapshot. It openly retains conjectures it also flags as possibly false, e.g. "false or incomplete proposals remain material for inquiry." It is mostly rhetorical, but its rhetoric is doing work: "deliberate refusal," "manufactures authority," "honest form," "the snapshot's job." It also contains one fairly specific technical gesture: a proposed partial order of reservations, and an explicit criticism that "once you move to a set of possible worlds, you have smuggled in a notion of possibility that the original bag did not contain."
+
+- **Actual expression.** A section-by-section audit of WHL against the source. It quotes source fragments as `>` blockquotes, proposes tiny Lean fragments (`live_conflict`, `exact_duplicate_inert`) that are *not* in WHL, and repeatedly refuses to extend WHL. It explicitly marks a `PROSE-ESCAPE` mechanism but in this expression never actually dispatches to it with the marker — the phrase "marked it `PROSE-ESCAPE`" appears in the prologue, but the marker never reappears in the body. That is a small bookkeeping discrepancy between the expression's stated method and its practice.
+
+- **Independent reading (source-text-withheld).** A meta-commentary that reframes the expression as a carrier-audit, lists the expression's central claims, its assumptions, and two competing readings (B: vocabulary generator; C: critique of carrier-essentialism). It is candid that the expression gives no page/fragment anchors, that "not expressible" is being used loosely, and that the expression's own prose is exempted from the constraint it applies to WHL.
+
+- **WHL (selected language).** A Lean-core-only file declaring `Booking`, `Revision`, `Quantity`, `Time` as axioms; `Record`, `Snapshot`, `Kind`, `Int`; and definitions for `exact_duplicate`, `higher_revision`, `dominated_in`, `greatest_revision_in`, `active_hold`, `expired_hold`, `reserves_effect`, `alternatives_at_greatest`, `possible_reservations`, `booking_lower_bound`, `booking_upper_bound`, `availability_lower_bound`, `availability_upper_bound`, plus `Conjecture`, `Commitment`, `Refutation`, `ReservationRule`, `possible_reservations_with`, `rules_disagree`, `expired_deletes_rule`, `deletion_changes_greatest`.
+
+- **RSS (non-Lean).** A noncomputable semantic class with primitives (`Story`, `Bag`, `Coordinate`, `Viewpoint`, `Conflict`, `Liveness`, `Reading`, `Projection`) and an "accounts / inquiry states" model. It explicitly refuses to decide between readings and treats projections as losses.
+
+## 2. Concrete lost distinctions
+
+### 2.1 "Cloud of rival stories" vs. `List Record`
+
+Source: *"the snapshot […] is not a single ledger but a cloud of rival stories about what has been promised."*
+
+WHL: `Snapshot.records : List Record`. No quotient, no story type, no provenance.
+
+The expression notices the mismatch and says it cannot repair it. But the independent reading rightly raises a distinction the expression flattens: a `List Record` *can* faithfully carry "a bag of deliveries" if the reader is willing to treat an individual `Record` as a *delivery event* rather than as a *story about what is promised*. Under that reading, "rival stories" is not a data-level primitive at all — it is a description of what the reader does with the bag. The expression treats "cloud" as a missing primitive; a rival reading says "cloud" is a way of not treating the bag as a single answer, which is a *use* of the carrier, not a missing constructor. That is a distinction the expression loses, and it is worth naming because RSS makes the opposite choice: RSS introduces a `Story` type that is *not* a record, so RSS retains the distinction the expression says WHL cannot carry.
+
+### 2.2 "Deliberate refusal" vs. "not resolved by the language"
+
+Source: *"That is a deliberate refusal: the rules do not say how to merge them…"*
+
+Expression: correctly notes WHL "does not assert non-resolution; it merely fails to resolve." That is a genuine loss of a speaker-level stance in the translation. But it stops there.
+
+Independent reading: this is precisely the point where the expression's method becomes self-undermining. The source's "deliberate" is a stance the *author* holds. WHL cannot encode authorial stance. The expression's own prose, however, is full of stance ("honest," "safer," "not something I can repair"). So the expression has not lost the distinction; it has *moved* it from the source into the commentary. The distinction survives in the packet as a whole, but not in the *target* (WHL). The expression doesn't say this about itself, and the independent reading does.
+
+### 2.3 Deletion reading vs. `expired_deletes_rule`
+
+Source: *"Another reading treats expiry as deleting the record from the bag, after which revision 3 becomes greatest and active, so the booking reserves again."*
+
+Expression: says `expired_deletes_rule` is a `Time → Record → Quantity` and does not delete records, so it does not faithfully implement the deletion reading. The comment says "expiry deletes the record, so a lower revision can become greatest," but the definition returns `0` for expired holds; it does not remove anything from `rs`.
+
+Here the expression's finding is *correct against the shown text*, and it is the strongest single technical finding in the packet. But the independent reading over-claims its significance by saying the expression "overclaims." What the expression actually says is bounded: "the source's deletion reading is therefore *not* faithfully realized by the WHL constructor `expired_deletes_rule`." That is precise. It *does* say "the file's comment and its definition disagree," which is also precisely true. It does *not* say "the language cannot express the deletion reading." So the independent reading's claim that "the expression's refusal is methodological, not logical" is right about the expression's method but slightly misreads the specific argument for `expired_deletes_rule`.
+
+The lost distinction here is subtler: the source's deletion reading is *structural* (it changes which revision is greatest), while `expired_deletes_rule` is *evaluative* (it changes what the greatest record contributes). The expression identifies this implicitly but doesn't name it. RSS does: "under one reading, an expired hold reserves zero but remains superseding; under another, an expired hold is deleted and lower revisions can become live. RSS represents both as readings, not as facts." That is exactly the distinction the expression is groping at.
+
+### 2.4 "Signal" vs. "error" for negative availability
+
+Source: *"Negative availability is not an error in the arithmetic; it is a signal that the warehouse has over-promised."*
+
+Expression: notes that `Int.sub_nat` can produce a negative `Int` but that WHL has "no error/signal distinction."
+
+This is a real loss, but it is also partly a category mistake of the kind the independent reading warns about. "Error" and "signal" are *uses* of a negative value, not properties of the value. A carrier does not need them. RSS agrees: "RSS treats the sign as a signal, not an error." RSS encodes the *stance* as part of the semantic class, which is a legitimate design choice but is *not* what the source demands. The source is describing a practice (don't treat it as an error), and WHL's failure to encode that practice is a limit of the carrier, not a defeat. The expression marks this correctly; the independent reading correctly adds that this is the sort of flag that can over-multiply.
+
+### 2.5 "Interval" — a genuine internal inconsistency in WHL
+
+Expression: notes that WHL's comment claims intervals "over integers" but no interval type is declared; only a pair of `Int`-valued functions. This is another correct internal-consistency finding, parallel to `expired_deletes_rule`.
+
+Independent reading: catches the same. Neither the source nor RSS is here implicated; this is purely a defect in the carrier's self-description. The source's phrase "not even convex" is a distinct claim (about convexity of the solution set) that WHL cannot state at all, and the expression does not claim WHL can.
+
+### 2.6 "Targets of criticism"
+
+Source: *"One can criticize a reconstruction rule, a particular record, a booking's history, the snapshot as a whole, or the assumption that logical time is meaningful."*
+
+WHL's comment claims the rule/data separation is represented by the separation of `ReservationRule` and `Record`/`Snapshot`. The expression notes that `Conjecture : Type := Snapshot → Prop` does not enforce a criticism-target separation.
+
+This is a third correct internal-consistency finding. But there is a distinction the expression nearly loses: the source's list of targets is *open* — it says "one can criticize X, Y, Z, W" and the list is not claimed exhaustive. WHL cannot enumerate targets, but it also does not claim to. `Conjecture` is `Snapshot → Prop`, and any proposition about a snapshot is admissible as a conjecture. The lack of enforced structure is not obviously a loss for the source's claim, because the source's claim is itself unstructured. The independent reading's point that "the distinction is in the source; WHL can carry it only by our own discipline" is the right way to say it: the discipline moves, it does not vanish. The expression's phrasing ("WHL does *not* separate targets of criticism") is slightly stronger than what the evidence supports.
+
+### 2.7 Replication, provenance, and "delivered"
+
+Source: *"Does the snapshot represent the union of all deliveries, or the intersection, or one replica's view?"*
+
+WHL: no `Replica`, no `Delivery`. Expression records the gap. RSS *adds* `Delivery` and `Viewpoint` primitives and then explicitly says provenance is needed "unless provenance is added." So RSS loses the source's "the snapshot is a single object" reading and gains finer provenance; WHL loses the finer provenance and keeps the single object. The two carriers make opposite bets, and the source's phrasing ("described as replicated") does not force either. This is a genuine under-determination in the source that runs through both carriers. The expression does not acknowledge that the source is itself under-determined here; the independent reading does, and this is where the independent reading is genuinely stronger than the expression.
+
+## 3. Introduced commitments the expression does not acknowledge
+
+- **Carrier-essentialism.** The expression treats WHL's axioms and definitions as a fixed boundary for expressibility, rather than as a starting point for definitional extension within the same file. The independent reading names this: a `ReservationListReducer : List Quantity → Quantity` and a `List Record → List Record` deletion function are both definable in WHL without new axioms. The expression's rule "I do not add Lean constructs" is a *methodological stipulation*, and it is doing work the source does not demand. It is coherent, but it is not innocent, and it is not what the source says.
+
+- **"Not expressible" as "no constructor named."** The expression repeatedly slides from "WHL does not declare X" to "X is not expressible in WHL." These are different claims under any standard usage. `ReservationListReducer` is expressible in WHL's type system — as a function whose *particular behavior* is not constrained by WHL. The expression uses the stricter reading, which makes the list of obstructions longer than it needs to be.
+
+- **Normative authorship relocated.** The source says "the more useful representation is a partial order." The expression says "I cannot express this." But WHL does not have to express "more useful"; the source itself is commenting *on* usefulness, not requesting it in the carrier. WHL's failure to carry "useful" is not an obstruction to the source's *technical* content (partial order over reservations). The independent reading catches this in its general form; the expression does not catch it in this instance.
+
+- **The `PROSE-ESCAPE` marker is never used in the body.** The prologue promises it. The body consistently uses ordinary `<p>`-prose instead. That is a small internal commitment gap in the expression itself. If the marker was intended as evidence of method, the evidence is missing; if it was rhetorical, the prologue overpromises.
+
+## 4. Vanished uncertainty
+
+The source's uncertainty is *conjectural*: it explicitly says several readings are live and does not rank them. But the expression's repeated "I cannot express this in WHL" has the *form* of a ranking. The reader can easily take "not expressible" as "therefore not a serious claim," which is not what the source says and not what the expression says it is doing. The independent reading names this drift. It is worth naming it more sharply:
+
+- The source: "the second remains a live conjecture."
+- The expression: "WHL does not express the second reading."
+- The flattening: the reader may conclude the second reading is *defeated*, when the source says it is *live*.
+
+The source's conjecture is preserved by *not* being formalized in WHL — that is the *point* of "live." WHL's inability to represent a live conjecture is itself an argument that WHL is not the right carrier for *this part* of the source, but the expression does not separate "not carried" from "not live."
+
+## 5. Broken dependencies
+
+- **`reserves_effect` vs. `expired_hold`/`active_hold`.** `active_hold` and `expired_hold` are *predicates*, but `reserves_effect` *re-computes* the expiry check inline (`if t > r.expiry then 0 else r.quantity`). Nothing in WHL forces `reserves_effect t r` to agree with `active_hold t r` in the hold case. A reader could in principle amend `reserves_effect` without amending `active_hold` and no theorem would break because there is no theorem tying them. The expression does not note this; it is a real internal dependency gap in the carrier.
+
+- **`dominated_in` vs. `greatest_revision_in`.** `greatest_revision_in rs r` is defined as `r ∈ rs ∧ ¬ dominated_in rs r`. `dominated_in` uses `higher_revision`, which requires booking equality. So `greatest_revision_in` is per-booking *by construction of the predicate*. If the reader *assumes* `rs` contains records from multiple bookings, `greatest_revision_in` will correctly classify per-booking — no bug. But this is load-bearing: the carrier relies on `higher_revision`'s booking-equality clause for one of the source's central distinctions ("only within the booking"). The expression mentions this correctly (`higher_revision` requires booking equality) but does not flag how much weight is carried by a single conjunct in `higher_revision`.
+
+- **`availability_lower_bound` iterates `bookings`.** The list of bookings is external input. Nothing in `Snapshot` provides it. Whether the same booking appears twice in the list, or whether it should appear at all, is not constrained. `booking_lower_bound` is set to `0` if the booking has no records. If a booking appears twice in the list, the sum double-counts. The expression does not mention this.
+
+- **`Int.sub_nat` encoding.** `Int.neg_succ_of_nat b` is the Lean standard encoding of `-(b+1)`, not `-b`. So `Int.sub_nat 10 12` is `Int.neg_succ_of_nat 1`, whose intended value is `-2`. The expression correctly says "whether that is '-2' depends on the intended encoding … which the WHL file does not fully develop." This is precise; the independent reading does not add anything here that the expression hasn't already said.
+
+## 6. Blocked criticism
+
+The source's most *pointed* criticism is: *"once you move to a set of possible worlds, you have smuggled in a notion of possibility that the original bag did not contain."* This is aimed at a specific formal move (set-valued semantics, Kripke-style possible worlds). WHL does not perform that move — it has no `Set` of worlds. So the source's criticism, in this instance, is directed at a hypothetical carrier that WHL is *not*. The expression notes "WHL has no notion of 'possible worlds'" and stops.
+
+But the criticism is not blocked by WHL; it is blocked by the *absence of any carrier in the packet that uses possible worlds*. RSS is *closer* to the criticism's target (it has `Viewpoint`s and `accounts`), and RSS's "Accounts are not merged" line is itself a way of dodging the criticism rather than responding to it. So the source's criticism, addressed at the packet's proposals, is: RSS moves in the direction of possible worlds via accounts/viewpoints, and RSS does not engage the objection. The expression does not say this because it does not consider RSS.
+
+A second blocked criticism is the source's *"Manufactures authority."* WHL has no `Authority`, so the criticism cannot even be stated. The expression says this. The independent reading says: maybe that's fine, because "authority" is a rhetorical claim. But the source's criticism is not purely rhetorical — it is the claim that *a tie-break rule that collapses alternatives thereby makes a claim not licensed by the bag*. WHL *can* carry that: "a `ReservationRule` that maps a `List Quantity` of alternatives to a single `Quantity` adds information not in the bag" is expressible as a `Prop` about such a rule. WHL does not, in the shown file, declare such a reducer; but the criticism's substantive content does not require the word "authority." The expression confuses "lacks the word" with "lacks the concept."
+
+## 7. Where the defect is located
+
+For each finding, the location is distinguishable:
+
+- **Cloud vs. cloud, authority, deliberate refusal, honest form, soft target, signal:** the *translator* (the expression) is over-attributing rhetorical weight to source words and treating them as carrier obligations. The carrier is fine; the source uses these words *about* practices, not as requests for primitives.
+- **`expired_deletes_rule`, "intervals over integers," criticism-target separation:** the *carrier's self-description* is inconsistent with the carrier's definitions. Real defects in the WHL file, correctly identified by the expression.
+- **`reserves_effect` vs. `active_hold`, `availability_lower_bound` booking-list dependence, `Int` encoding:** *carrier-design gaps*, noted by the expression only in the `Int` case.
+- **Replication, provenance, physical-resource sharing, per-replica time:** *genuine carrier limits*, correctly identified, but the source is *also* under-determined here, so the "loss" is partial (the source does not fully commit to a specific union/intersection/view either).
+- **"Not expressible" sliding:** located in the *expression's reasoning*, not in WHL. The independent reading catches this.
+- **Absence of source anchors, absence of sustained engagement with RSS:** located in the *probe/expression design*. The expression reads the carrier against paraphrases, not against the source verbatim, and does not compare carrier to carrier. That weakens the review evidence.
+
+## 8. Where the source itself blocks criticism
+
+The source contains a passage that undercuts the expression's whole project: *"A criticism that the snapshot is unusable because it does not resolve ties may be substantive, but it may also be a demand for a decision that the snapshot was never meant to make."*
+
+Read in spirit, this also applies to the expression: "a demand that the carrier fully carry the source may be substantive, but it may also be a demand for a carrier that the source never asked for." The source describes an *attitude* toward snapshots (rival stories, no single answer), not a formal specification to be faithfully encoded. The expression's audit is therefore not merely comparing two objects; it is comparing a formal object against a viewpoint, and complaining that the viewpoint's vocabulary is missing. The independent reading catches this; the expression does not reflect on it.
+
+## 9. Repairs proposed but not installed
+
+The following are candidate repairs, recorded but not installed, in keeping with the packet's frozen status.
+
+1. **For `expired_deletes_rule`:** declare a companion `List Record → List Record → List Record` filter (`keep_non_expired t rs`) and, if the deletion reading is to be modeled, define a *Time-parameterized* `greatest_revision_in_t : Time → List Record → Record → Prop`. Do not modify `expired_deletes_rule`.
+2. **For "intervals over integers":** declare `structure Interval := (lo : Int) (hi : Int)` and return an `Interval` from a new `availability_interval` def. Do not modify the existing bound functions.
+3. **For `reserves_effect` vs. `active_hold`:** add a theorem schema `reserves_effect_decomposes (t r) : r.kind = Kind.hold → (reserves_effect t r = 0 ↔ expired_hold t r)`. Do not modify the definitions.
+4. **For projection loss:** declare `def ReservationListReducer : Type := List Quantity → Quantity` and `def is_projection (f : ReservationListReducer) : Prop := ∀ l, ... non-injective-condition`. Do not install any particular reducer.
+5. **For per-replica time:** declare `axiom Replica : Type` and `Viewpoint : Replica → Snapshot`-style structure. Do not install.
+
+If any of these were installed, the source's text would have a *better chance* of being carried, but the packet would no longer be frozen. The expression's refusal to install is a methodological choice, not a theorem about WHL's limits.
+
+## 10. Disposition
+
+- The expression's strongest concrete findings are the three internal WHL inconsistencies: `expired_deletes_rule` comment-vs-definition, "intervals" comment-vs-definition, criticism-targets comment-vs-definition. These are checkable against the shown text and hold.
+- The expression's weakest move is the drift from *"the source uses word W"* to *"the carrier must have primitive W."* Several flagged words (`authority`, `signal`, `honest`, `soft target`, `safer`) are stances about practices, not properties of the mathematics; WHL legitimately does not carry them, and the source's normative content is *not* lost when a formalization omits them, because the source's own text retains them alongside.
+- The absent comparison with RSS is a real defect of the expression's reasoning, since RSS was in the packet and makes a different set of bets on many of the same questions (`Story` non-identical to `Record`, `Viewpoint` as first-class, `Reading` as policy). A packet that fixes a Lean carrier and also supplies a non-Lean semantic class arguably *invites* the comparison, and the expression does not take it up.
+- The expression's "not expressible" claims are correct under a strict "declared-constructor" reading of expressibility, incorrect under a "definitional extension in the same file" reading. The packet does not fix which reading governs, so this remains unresolved. The independent reading's naming of this ambiguity is the most substantive addition it makes; the rest of its critique (tendentiousness, no positive account, non-neutral self-description) is fair but secondary.
+
+Unresolved: whether the source is to be read as (a) a formal specification that WHL under-carries, (b) a viewpoint that WHL under-resources, or (c) a prompt for exploring a minimal carrier, in which case "obstruction" is a feature. The packet's three carriers (WHL, RSS, the expression's own prose) instantiate all three readings respectively, and the packet does not prefer one. That is an acceptable disposition; the packet is frozen and unadjudicated.
+
+One residual criticism I want to leave on the record, because the packet cannot carry it in WHL and the expression does not carry it in its own prose: the source says *"Correctness is not a condition for preserving a conjecture; false or incomplete proposals remain material for inquiry."* Whichever carrier is chosen, the retained conjectures are retained *by the packet's designers*, not by the language. WHL retains no conjecture; it declares predicates. RSS retains conjectures as `Prop`s but, because it is noncomputable, never checks them. The expression retains conjectures only in blockquote. So the source's criterion — proposals remain material *because someone keeps them* — is satisfied only by the human carriers of the packet or by external commentary, not by either formal language. That is a limit that no repair to WHL or RSS as specified would fix, because retaining a conjecture is a practice, not a primitive. The source says as much; the packet's frozen status respects it; and both proposed carriers, in different ways, show why.

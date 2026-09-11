@@ -1,0 +1,228 @@
+{
+  "cycles": {
+    "completion_tokens_per_call": 32768,
+    "max_calls": 3,
+    "max_completion_tokens": 98304,
+    "max_cycles": 1
+  },
+  "kinds": [
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [],
+      "instruction": "Copy the named frozen source unchanged; do not interpret or judge it.",
+      "kind_id": "minireason.frozen-packet.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.frozen-packet.v1"
+      },
+      "title": "Frozen material: frozen_packet"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [],
+      "instruction": "Copy the named frozen source unchanged; do not interpret or judge it.",
+      "kind_id": "minireason.frozen-language.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.frozen-language.v1"
+      },
+      "title": "Frozen material: selected_language"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "packet",
+          "port_type": "packet",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Use the selected carrier to express the assigned frozen source material without changing what the original says. Do not repair the original conjecture, add a language component, or install a new interpretation. Try to carry uncertainty, denial, dependence, provenance and criticism only where the source actually uses them; do not invent these structures to satisfy a checklist. If the carrier obstructs a distinction or criticism, retain the exact original fragment and explain the obstruction in ordinary prose. A prose escape is legitimate evidence, not a disqualified answer. Keep your expression distinguishable from commentary about it. Clearly mark any exact source quotation used to preserve an obstructed expression as PROSE-ESCAPE. Such quoted text remains legitimate but must not masquerade as successful expression in the selected language.\n\n## Selected carrier\nSelected carrier: the frozen model-proposed Lean-compatible language. Try its own expressive resources, while preserving any unsupported substantive content or criticism on the explicit prose escape path. Compilation is optional evidence about the supplied Lean text, not an admission rule for the argument.",
+      "kind_id": "minireason.language-expression.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.language-expression.v1"
+      },
+      "title": "Express the frozen material"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "meaning",
+          "port_type": "meaning",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "expression",
+          "port_type": "expression",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "You are shown an expression and the selected carrier's proposed meaning, with the original source corpus field withheld. Explain what this expression says, what it leaves unresolved, which assumptions it uses and what could criticize it. Give competing readings if needed. Do not assume that the expression is a faithful translation or that a compiled statement is semantically superior. Your interpretation will itself be criticized against the frozen source. The language was invented from the source and the expression may contain a prose escape. Identify visible source quotations or embedded translations; reconstruction from them does not establish the selected language carried the content.\n\n## Selected carrier\nSelected carrier: the frozen model-proposed Lean-compatible language. Try its own expressive resources, while preserving any unsupported substantive content or criticism on the explicit prose escape path. Compilation is optional evidence about the supplied Lean text, not an admission rule for the argument.",
+      "kind_id": "minireason.language-reading.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.language-reading.v1"
+      },
+      "title": "Reinterpret the actual expression"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "packet",
+          "port_type": "packet",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "expression",
+          "port_type": "expression",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "reading",
+          "port_type": "reading",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Compare the original frozen prose, the actual expression, its independent reading and the proposed language. Find specific lost distinctions, introduced commitments, vanished uncertainty, broken dependencies or blocked criticism where the evidence supports them. Quote the source and expression and give a distinguishing reading or case. Consider whether the defect is in the translator, reader, selected language, compiler bridge or the probe itself. Do not infer impossibility merely because one model failed to express something. A substantive prose objection remains admissible even if the selected formal language cannot encode it. The original conjecture and language remain frozen: record proposed repairs without installing them. An unresolved or competing interpretation is an acceptable disposition.\n\n## Selected carrier\nSelected carrier: the frozen model-proposed Lean-compatible language. Try its own expressive resources, while preserving any unsupported substantive content or criticism on the explicit prose escape path. Compilation is optional evidence about the supplied Lean text, not an admission rule for the argument.",
+      "kind_id": "mini.verdict.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "mini.verdict.v1"
+      },
+      "title": "Criticize the expression and reading"
+    }
+  ],
+  "manifest_id": "minireason.language-probe.v2.38081dc7e8294e16db095f27",
+  "port_types": [
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.frozen-packet.v1"
+        ]
+      },
+      "port_type": "packet",
+      "render": {
+        "header": "Frozen shared packet",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.frozen-language.v1"
+        ]
+      },
+      "port_type": "meaning",
+      "render": {
+        "header": "Selected language meaning",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.language-expression.v1"
+        ]
+      },
+      "port_type": "expression",
+      "render": {
+        "header": "Actual expression",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.language-reading.v1"
+        ]
+      },
+      "port_type": "reading",
+      "render": {
+        "header": "Independent reading",
+        "rule": "list_bodies"
+      }
+    }
+  ],
+  "problem": "Study the frozen material through the declared source-artifact ports; no semantic verdict is implied.",
+  "schema_version": "creib.mini.manifest.v1",
+  "sources": [
+    {
+      "path": "sources/packet.txt",
+      "source_id": "frozen_packet"
+    },
+    {
+      "path": "sources/selected-language.txt",
+      "source_id": "selected_language"
+    }
+  ],
+  "stages": [
+    {
+      "kind_id": "minireason.frozen-packet.v1",
+      "ports": [],
+      "seat": "machine",
+      "stage_id": "seed_frozen_packet"
+    },
+    {
+      "kind_id": "minireason.frozen-language.v1",
+      "ports": [],
+      "seat": "machine",
+      "stage_id": "seed_selected_language"
+    },
+    {
+      "kind_id": "minireason.language-expression.v1",
+      "ports": [
+        "packet"
+      ],
+      "stage_id": "express"
+    },
+    {
+      "kind_id": "minireason.language-reading.v1",
+      "ports": [
+        "meaning",
+        "expression"
+      ],
+      "stage_id": "reinterpret"
+    },
+    {
+      "kind_id": "mini.verdict.v1",
+      "ports": [
+        "packet",
+        "expression",
+        "reading"
+      ],
+      "stage_id": "criticize"
+    },
+    {
+      "end": true,
+      "stage_id": "end"
+    }
+  ]
+}
