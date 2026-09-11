@@ -14,3 +14,5 @@ Use [continue](continue.md) at session start, [experiment](experiment.md) before
 | Stop or hand over | Untried mechanisms and outstanding confounds | Honest stopping rationale and reopening conditions |
 
 The active original runner has a dedicated [frozen language workflow](language-study.md), including setup ordering, controls, withheld-source limits and publication points.
+
+The [construction inquiry workflow](inquiry-study.md) continues from a whole frozen issue occurrence into construction, criticism, proposed revision and unresolved promotion. Use it for the first P7/P9 inquiry block and later separately justified selections. Selecting an issue is recorded as an allocation decision; the route neither installs a successor automatically nor assigns semantic standing.

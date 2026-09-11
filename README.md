@@ -25,6 +25,8 @@ The experiment model is DeepSeek V4.1 Flash, using the official `deepseek-flash`
 | `docs/reviews/` | Independent substantive readings of explanations, criticisms and realized behavior |
 | `tests/` | Offline checks for engine integrity and experiment machinery |
 
+The [construction inquiry workflow](docs/workflows/inquiry-study.md) now supports four-stage construction, criticism, proposed revision and unresolved problem promotion. It preserves the original source packet and proposed languages, provides the same conditional prompts through direct and Mini routes, and records each new output separately. Queuing a problem does not endorse its diagnosis or install a language change.
+
 ## Local setup
 
 ```sh
