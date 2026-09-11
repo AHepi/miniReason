@@ -1,6 +1,6 @@
 # Current recovery and research state
 
-**Continuation renewed by the user: E021 is next, followed by E020 after publication. E019 remains an unchanged partial record. Next target: assess template retention, then one cycle in each of two distinct linked templates; problem promotion is optional.**
+**E021 was interrupted by automatic approval review. Exact public-payload evidence is verified; E022 is its separately identified normal-path retry. E020 remains pending. The next target is one cycle in each of two distinct linked templates, with optional problem promotion.**
 
 Updated during the 2026-09-12 Australia recovery (provider timestamps use UTC). Start with [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [the recovery workflow](workflows/continue.md). Authorized destination: AHepi/miniReason main; source h-EPI remains unchanged. One publisher owns the ledger and main.
 
@@ -60,3 +60,5 @@ Final evidence publication is verified at remote `3e2e96e5684c1f8b464801739507a5
 ## Renewed continuation and next target
 
 The user has instructed continuation after the reported cancellation. D025 records the unchanged E021 activation through the normal provider path, conditional on successful access, then E020. D026 commissions template retention and distinct-template handoff reviews before implementation. No completed observation is overwritten; this new authorization does not claim that transport access already works. The next target is problem promotion, including a legitimate no-promotion outcome. The same template must not be run for two cycles.
+
+E021 retained five requests, no complete response and a zero-byte partial response; it has no normal summary. Original hashes are in its recovery.json. GitHub metadata confirms this repository is public, and the immutable published E021 plan contains all prompt material. E022-reason-omitted-public-retry preserves the same material/settings and passes zero-call preflight. D027 records the evidence that addresses the stated approval concern; any renewed rejection stops live work. E022 is the next normal-path attempt, followed by E020 only after successful record publication.
