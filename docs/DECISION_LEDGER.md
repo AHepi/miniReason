@@ -99,3 +99,11 @@ Choice: extend the reviewed publication transport to reuse blobs present in the 
 ### D014 outcome — Five actual-material preflights pass
 
 All five separately frozen plans pass the actual Mini compilation/material checks with zero provider calls. Exact plan/file identities and prepared manifests are in `docs/sources/reason-use-v1-preflight.json`. Source module hashes and provider settings are bound; the full offline suite remains 542 passing tests. Interpretation and correspondence files are never included in the six model-input occurrences.
+
+### D014/D015 outcome — Frozen plans and materials published
+
+Remote main `7fc2b9928a06d7f6ac75159dfcf447536a9a43bc`, local `e5968f35aa77e3fed2be6eb892e4527562dbd1b9`, shared tree `f35d384bb92919a777e85271f014cf78a95ae102`. All 53 explicit paths were scanned; whitespace and credential checks passed. Complete frozen inputs, five plans and zero-call preflight evidence are public and remote main is verified. Publication transport reused known/duplicate blobs while checking exact final-tree identity.
+
+### D016 — Activate E016 under the published plan
+
+Choice: run `E016-reason-original` with its six frozen arms and at most five simultaneous calls, using only the previously authorized DeepSeek credential at the declared `https://api.deepseek.com/v1` destination. Why: parent observations, instrument, stimuli and plan are now published and verified; the study can proceed from the actual recovered point. Contribution: obtains the original-reason response/use comparison needed by D012. The plan is `fc616ccc95cda83b1ee6c335c5c4b5987ca4717ff43b47a2eb6bcf6d33a0b7d2`; all model-visible source material is contained in the published plan/materials, and no private review or hidden reasoning is sent. The key is read only at execution and is absent from committed files. Preserve each request, public response or failure and actual usage; do not retry or dispatch E017 until this record is reviewed and published. A failure of access will be recorded as an external blocker, not semantic failure. This activation receipt is published before the call begins.
