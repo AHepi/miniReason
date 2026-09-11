@@ -32,6 +32,8 @@ Every decision needs an append-only ledger receipt stating the choice, why it wa
 
 The [construction inquiry workflow](docs/workflows/inquiry-study.md) now supports four-stage construction, criticism, proposed revision and unresolved problem promotion. It preserves the original source packet and proposed languages, provides the same conditional prompts through direct and Mini routes, and records each new output separately. Queuing a problem does not endorse its diagnosis or install a language change.
 
+The [reason-use workflow](docs/workflows/reason-use.md) provides controlled supplemental-criticism and account-availability comparisons with exact source custody and direct/Mini prompt parity. Read STATUS before starting a frozen test.
+
 ## Local setup
 
 ```sh

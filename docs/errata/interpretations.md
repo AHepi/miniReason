@@ -19,3 +19,15 @@ A supported contrast holds the conditional content fixed while varying its prose
 The E015 Mini-native promotion attributed the current objection about the asserted primary target to the selected E009 occurrence. Its own current criticism and revision support a narrower provenance account. The revision's useful conditional correction does not make the promotion's cross-episode attribution accurate. See [the complete E015 sequence](../reviews/E015-construction-review.md#mini-native-a-qualified-correction-followed-by-cross-episode-misattribution).
 
 A later source-binding intervention could preserve exact quoted spans and origin coordinates through promotion. An identifier or source hash alone would establish carriage rather than the correctness of the attributed semantic dependency. That distinction must remain part of any claimed repair.
+
+## INT-004 — Tightness gloss admits unattained endpoints
+
+E013 matched-native corrects the reservation/availability endpoint reversal but defines tightness using a bound-or-attainment disjunction (and a lower-bound-only gloss). In its own excluded-high/high case, the bounds hold while the endpoints are unattained. The literal predicates therefore fail to express the stated distinction. See [E013 recovery review](../reviews/E013-recovery-review.md#matched-native-endpoint-polarity-corrected-tightness-still-misdefined). The review independently enumerated the finite case; no model repair was run. A successor must separately state enclosure, endpoint attainment and exact-set obligations.
+
+## INT-005 — Criticism introduces an unsupported expressibility restriction
+
+E013 Mini-native accepts its critic's claim that RSS projections cannot return intervals because they return a single answer. RSS gives a scalar as an example without making it an exhaustive codomain restriction; one interval can be one structured answer. The criticism does not establish the alleged limitation. The revision also mixes an exact feasible set with its convex envelope and says an interval can become non-convex. These claims have different failure conditions. See [E013 recovery review](../reviews/E013-recovery-review.md#mini-native-an-effective-distinction-and-an-unsupported-carrier-restriction). The source remains unchanged; this is a scoped criticism of the inferred restriction, not proof that every interval interpretation conforms to RSS.
+
+## INT-006 — Generated occurrence identifier loses a digit
+
+E013 matched-native promotion prints a 63-character P9 identifier where the source identifier has 64 characters. Host origin metadata and retained source bytes are correct. The malformed reference occurs in model prose, so valid machine provenance does not repair that textual attribution. The [recovery review](../reviews/E013-recovery-review.md#matched-native-endpoint-polarity-corrected-tightness-still-misdefined) records both exact strings. No original response was edited.

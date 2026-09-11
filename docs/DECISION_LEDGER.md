@@ -53,3 +53,25 @@ The complete existing suite passed: `python -m unittest discover -s tests`, 518 
 ### D009 — Publish recovery instructions and unchanged drafts now
 
 Choice: commit the ledger, README/AGENTS/continuation instructions, updated STATUS and all four recovered review drafts as a small checkpoint before integrating successor code. Why: these recovery-critical files were uncommitted when the last window ended. Contribution: preserves decisions, old interpretations and exact continuation state immediately. The partial E013 review is explicitly labeled historical by STATUS; its completion supplement will be a separate file. Stage only these nine reviewed paths; verify whitespace and credential patterns; require remote tree identity after connector publication.
+
+### D009 outcome — Recovery checkpoint verified on main
+
+Remote main `59bc4335b7b1157bac842c748687e19755fd0013`, local `0bc33c00ba5ad32932c244b9e351959e44b54005`, shared tree `ab3488f17d8aac51c3bc7233ecae932ddfccb401`. Nine reviewed paths were published; whitespace and credential checks passed. Remote reference verification succeeded. README recovery instructions and this running ledger are now durable.
+
+### D010 — Integrate the reviewed staged reason-use route
+
+Choice: copy the three new reason-use modules and two portable tests into miniReason, preserve the staged implementation receipts as a separate review, and add a runnable workflow. Why: 24 focused tests cover actual Mini routing, exact direct/Mini parity, plan binding, empty account visibility and failure retention; the earlier four-stage route cannot provide isolation. Contribution: enables the D007 controlled study with declared source and return-path boundaries. Preserve the package initializer and existing runners. Retain two calls in the no-return staged arms to hold stage count/instructions fixed; the unused response is archived and its cost is counted. Use one shared no-return observation per route/thinking setting, not one falsely independent baseline per criticism. RU-001 through RU-008 in the linked implementation review contain the delegated component choices, rationales and goal contributions. Run the complete integrated offline suite before plan freezing.
+
+Dates in the recovery section use the user's Australia calendar date (2026-09-12); tool-generated receipts retain UTC timestamps on 2026-09-11. This distinction is temporal labeling only and changes no observation.
+
+### D010 outcome — Integrated checks passed
+
+Three new modules and two portable test modules are integrated. The full offline suite passed: `python -m unittest discover -s tests`, 542 tests in 12.921 seconds. Source bytes are now frozen for upcoming plan generation. The account-omission control removes the Mini response port and its exposure provenance while retaining the archived response and its counted cost. No live calls occurred during verification.
+
+### D011 — Preserve substantive failure findings as scoped errata
+
+Choice: publish the E013 recovery supplement and append its precise content defects to interpretation errata and semantic lessons. Why: flawless transport coexisted with wrong endpoint predicates, unsupported expressive restrictions and an incorrect generated identifier. Contribution: identifies what later language/criticism interventions must discriminate without declaring a carrier intrinsically better or replacing its original meanings. E013-REC-D1 through D6 in the recovery review contain the delegated review choices and justifications. Preserve its timing statements as review history, with current publication facts in STATUS and this ledger. The 48 valid Mini blobs and all 18 complete calls establish custody; the text findings require their separate arguments.
+
+### D012 — Select a bounded five-configuration reason-use comparison
+
+Choice: freeze original, independently reviewed recoded, different-reason and omitted supplemental criticisms as E016–E019, each with bare/native/matched/matched-native/Mini/Mini-native controls; freeze one shared no-return baseline E020 with only the four two-stage controls. Run configurations in this declared order, publishing each completed record before the next. Why: these contrasts separate supplemental content, expression and account availability; repeating identical no-return use requests for every reason condition would add samples rather than distinct interventions. Contribution: examines a concrete mechanism by which criticism and language affect subsequent use. One repetition witnesses finite cases only and does not isolate sampling variance or general creativity. Keep the inherited provider, explicit thinking settings and 32,768 completion ceiling, record actual usage, and use at most five concurrent arm calls within one test. No random ordering, padding or optimization is introduced. If provider access fails, preserve that configuration, publish its failure and stop successor dispatch until the external condition changes. Preparation may continue offline.
