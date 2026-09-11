@@ -101,3 +101,9 @@ A first live run can show whether the provider delivered a usable program, wheth
 ## Live-output review pending
 
 No live response was read for this audit. Once the first run is available, append a separate review of its exact prose, program, criticisms, revision and bounded outcomes. Preserve this pre-result task diagnosis so the interpretation cannot be rewritten around whichever arm wins.
+
+## Correction verification before live interpretation
+
+The task implementation was corrected after the initial audit. At SHA-256 `e422fcb897a68cebf5229b97bc1e98c3853478fbb45fd4a440dd8714e6397e14`, I reran the two concrete counterexamples with zero model calls. The boolean-for-integer program no longer passes the public verifier. The list-multiplication work witness now fails explicitly with `DSL_NUMBERS_REQUIRED: mul`. This verifies closure of the demonstrated TA-01 and overloaded-arithmetic instance of TA-02; it does not claim that every conceivable resource or type defect has been exhausted.
+
+The implementation agent also reports exact operator-field validation, strict boolean conditions, duplicate-key and nonfinite-number rejection, collection/number/program/output caps and charged collection work. Those changes address the original TA-11 and extend TA-02's repair; the preceding direct rerun independently verifies the two original counterexamples. The original findings remain above as the chronological instrument record. Their semantic and comparison limitations remain applicable unless separately resolved.

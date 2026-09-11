@@ -1,0 +1,119 @@
+Build an executable account of a replicated stock-reservation snapshot.
+Deliveries are an unordered bag of immutable event records. The same record may be delivered
+many times. Each booking has exactly one immutable item. For each booking, a strictly higher
+integer revision replaces ALL lower revisions. A booking/revision pair never has conflicting
+contents. The latest revision may be a hold or release. A latest hold is active exactly when
+expires_at > input.now; a latest release reserves zero. An expired latest hold does NOT make an
+older unexpired hold reappear. Revision order, not delivery order, determines the latest event.
+Quantity is the total quantity of that booking version, never an incremental delta.
+Stock is input.stock, a list of {item, capacity}; item names are unique. Events only name
+listed stock items. Produce a list in ascending item-name order, including items with no events:
+[{"item":NAME,"reserved":TOTAL_ACTIVE_LATEST_QUANTITY,"available":CAPACITY-TOTAL},...].
+Oversubscription must be visible as negative availability; never clamp, invent rejection order,
+or silently discard a booking. Capacity, quantities, revisions, and logical times are integers.
+The task is to derive one general procedure from these obligations, not memorize examples.
+Explain why replay, reordering, expiry, and later cancellation interact correctly. State what
+would falsify your account and which previously successful behavior a revision preserves.
+
+Write a JSON expression program in the commitments string, optionally wrapped as
+{"program": EXPR}. The body is unrestricted prose: explain the mechanism, assumptions,
+which observations would defeat it, and what successful behavior a change must preserve.
+An expression is a JSON literal (numbers, strings, booleans, null, lists), {"var":"name"},
+or an operation object. Literal dictionaries use {"op":"object","fields":{"key":EXPR}}.
+Input is {"var":"input"}. The available operations and exact fields are:
+get: value EXPR, key EXPR, optional default EXPR (missing keys otherwise fail).
+if: test EXPR, then EXPR, else EXPR (only selected branch evaluates).
+let: name STRING, value EXPR, do EXPR (lexical scope).
+map/filter: items EXPR, as STRING, do EXPR (filter do is boolean).
+flatmap: same fields; do returns a list; concatenate the lists.
+unique: items EXPR (first occurrence order; values compared structurally).
+sort: items EXPR (ascending numbers or strings).
+max_by/min_by: items EXPR, as STRING, key EXPR (first tie wins; empty fails).
+sum/len/not: value EXPR. sum takes a list of numbers; len a list/string/dictionary.
+add/sub/mul/eq/ne/lt/le/gt/ge/and/or/in: args [EXPR, EXPR]. Arithmetic takes numbers
+only (never booleans, strings, or lists). Boolean operations and if require booleans.
+and/or short circuit. Output values must match the task's declared JSON types exactly.
+list: items [EXPR,...] (ordinary JSON lists also evaluate their elements).
+Every field is exact: no Python, string interpolation, implicit lambdas, or unknown operators.
+Programs are limited to 30,000 expression/collection work units, 100 nesting levels,
+4,000 syntax nodes, 4,096 items per collection, 256-bit integers and finite floats,
+and 20,000 expanded output nodes. Errors are
+execution failures, not refutations of prose. Do not encode the supplied examples as a lookup.
+
+Public examples:
+[
+  {
+    "name": "empty_and_unused_stock",
+    "input": {
+      "now": 10,
+      "stock": [
+        {
+          "item": "z",
+          "capacity": 3
+        },
+        {
+          "item": "a",
+          "capacity": 8
+        }
+      ],
+      "events": []
+    },
+    "expected": [
+      {
+        "item": "a",
+        "reserved": 0,
+        "available": 8
+      },
+      {
+        "item": "z",
+        "reserved": 0,
+        "available": 3
+      }
+    ]
+  },
+  {
+    "name": "duplicate_delivery_is_not_extra_stock",
+    "input": {
+      "now": 10,
+      "stock": [
+        {
+          "item": "widget",
+          "capacity": 10
+        }
+      ],
+      "events": [
+        {
+          "booking": "b",
+          "revision": 1,
+          "kind": "hold",
+          "quantity": 3,
+          "expires_at": 20,
+          "item": "widget"
+        },
+        {
+          "booking": "b",
+          "revision": 1,
+          "kind": "hold",
+          "quantity": 3,
+          "expires_at": 20,
+          "item": "widget"
+        },
+        {
+          "booking": "b",
+          "revision": 1,
+          "kind": "hold",
+          "quantity": 3,
+          "expires_at": 20,
+          "item": "widget"
+        }
+      ]
+    },
+    "expected": [
+      {
+        "item": "widget",
+        "reserved": 3,
+        "available": 7
+      }
+    ]
+  }
+]

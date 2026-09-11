@@ -1,0 +1,36 @@
+This program computes a reservation snapshot by treating each booking as an independent register whose current value is the highest revision seen, with the event's immutable payload decided by revision order, not delivery order. The operation is a pure fold over the unordered bag of event records.
+
+Mechanism:
+1. Start from input.stock and build a lookup from item to capacity.
+2. Begin an accumulator with one entry per stock item, reserved=0. This ensures every item appears even if no event ever names it.
+3. For each event in input.events:
+   - Ignore the event if its booking is already present with a revision greater than or equal to the event's revision. If the event's revision is strictly greater, replace the stored event for that booking. Equal revisions are duplicates and can be discarded because the problem states booking/revision pairs have no conflicting contents.
+   - If the booking is new, store the event as its current latest.
+4. After all events have been folded, classify each booking's latest event:
+   - A latest hold contributes its quantity iff expires_at > now. Otherwise it contributes 0.
+   - A latest release contributes 0.
+5. Sum contributions by item and produce output sorted by item name ascending, as item, reserved, and capacity minus reserved.
+
+Why ordering, replay, expiry, and later cancellation interact correctly:
+- Replay: because the accumulator is keyed by booking and compares revisions, replaying any already-seen record cannot change the result. The fold is idempotent with respect to equal revisions, and only strictly larger revisions can replace the current event.
+- Reordering: the final stored value per booking is the maximum revision regardless of the order in which revisions arrive, because replacement is based solely on comparison, not sequence. Thus any permutation of deliveries converges to the same latest event.
+- Expiry: expiry matters only after the latest event for a booking is known. A hold is active only if its expires_at is strictly greater than now. An expired hold is treated as zero reservation and does not resurrect an older hold, since the expired event remains the latest by revision.
+- Later cancellation: a higher-revision release replaces a lower-revision hold. It contributes zero, so the reservation for that booking goes to zero without removing the booking or its item. This makes cancellation explicit rather than an absence.
+- Oversubscription: negative availability is produced naturally by subtracting total reservations from capacity. Nothing clamps or discards, so overbooking is visible.
+
+Assumptions and what would falsify the account:
+- Events are well-formed and each names a listed stock item. If an event names an unlisted item, the lookup may fail or the behavior is undefined by the contract; that would be an input-domain violation rather than a behavior of the intended program.
+- Events for the same booking and same revision never conflict. If they did, the program's discard of equal revisions would be arbitrary, because no ordering would choose one payload over another. That would falsify the mechanism.
+- Revision numbers are integers and comparable. If revisions were partially ordered or non-numeric, max-revision replacement would not be well-defined.
+- now and expires_at are logical integers and comparison is strict. If expiry semantics changed to inclusive comparison, the expiry predicate would differ.
+- Capacity and quantity arithmetic stays within the allowed numeric bounds. If integers overflowed the permitted 256-bit range, the arithmetic would fail as an execution error, not as a truthful snapshot.
+
+A change to this program must preserve these previously successful behaviors:
+- Duplicate deliveries must not increase reservations.
+- A strictly higher revision must win even if delivered earlier or later.
+- An expired latest hold must not revive an older hold.
+- A latest release must zero that booking's reservation.
+- Every stock item must appear in output, sorted by item name, including zero-event items.
+- Negative availability must remain visible, not clamped.
+
+The program below implements this mechanism with exact field names and a single fold over events.

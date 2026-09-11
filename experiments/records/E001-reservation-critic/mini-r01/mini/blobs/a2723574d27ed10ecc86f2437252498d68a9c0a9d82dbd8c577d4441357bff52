@@ -1,0 +1,172 @@
+# Criticize
+
+Inspect the actual program, the prose account, and the execution evidence separately. Identify a concrete mismatch if one exists, name the clause and smallest distinguishing case, and explain the cause. An interpreter error is a construction or translation failure, not proof the prose account is false. If no defect is supported, say unresolved or no demonstrated defect; do not invent a fault. Your commitments should be ordinary prose, not a replacement program.
+
+## The problem (problem)
+Build an executable account of a replicated stock-reservation snapshot.
+Deliveries are an unordered bag of immutable event records. The same record may be delivered
+many times. Each booking has exactly one immutable item. For each booking, a strictly higher
+integer revision replaces ALL lower revisions. A booking/revision pair never has conflicting
+contents. The latest revision may be a hold or release. A latest hold is active exactly when
+expires_at > input.now; a latest release reserves zero. An expired latest hold does NOT make an
+older unexpired hold reappear. Revision order, not delivery order, determines the latest event.
+Quantity is the total quantity of that booking version, never an incremental delta.
+Stock is input.stock, a list of {item, capacity}; item names are unique. Events only name
+listed stock items. Produce a list in ascending item-name order, including items with no events:
+[{"item":NAME,"reserved":TOTAL_ACTIVE_LATEST_QUANTITY,"available":CAPACITY-TOTAL},...].
+Oversubscription must be visible as negative availability; never clamp, invent rejection order,
+or silently discard a booking. Capacity, quantities, revisions, and logical times are integers.
+The task is to derive one general procedure from these obligations, not memorize examples.
+Explain why replay, reordering, expiry, and later cancellation interact correctly. State what
+would falsify your account and which previously successful behavior a revision preserves.
+
+Write a JSON expression program in the commitments string, optionally wrapped as
+{"program": EXPR}. The body is unrestricted prose: explain the mechanism, assumptions,
+which observations would defeat it, and what successful behavior a change must preserve.
+An expression is a JSON literal (numbers, strings, booleans, null, lists), {"var":"name"},
+or an operation object. Literal dictionaries use {"op":"object","fields":{"key":EXPR}}.
+Input is {"var":"input"}. The available operations and exact fields are:
+get: value EXPR, key EXPR, optional default EXPR (missing keys otherwise fail).
+if: test EXPR, then EXPR, else EXPR (only selected branch evaluates).
+let: name STRING, value EXPR, do EXPR (lexical scope).
+map/filter: items EXPR, as STRING, do EXPR (filter do is boolean).
+flatmap: same fields; do returns a list; concatenate the lists.
+unique: items EXPR (first occurrence order; values compared structurally).
+sort: items EXPR (ascending numbers or strings).
+max_by/min_by: items EXPR, as STRING, key EXPR (first tie wins; empty fails).
+sum/len/not: value EXPR. sum takes a list of numbers; len a list/string/dictionary.
+add/sub/mul/eq/ne/lt/le/gt/ge/and/or/in: args [EXPR, EXPR]. Arithmetic takes numbers
+only (never booleans, strings, or lists). Boolean operations and if require booleans.
+and/or short circuit. Output values must match the task's declared JSON types exactly.
+list: items [EXPR,...] (ordinary JSON lists also evaluate their elements).
+Every field is exact: no Python, string interpolation, implicit lambdas, or unknown operators.
+Programs are limited to 30,000 expression/collection work units, 100 nesting levels,
+4,000 syntax nodes, 4,096 items per collection, 256-bit integers and finite floats,
+and 20,000 expanded output nodes. Errors are
+execution failures, not refutations of prose. Do not encode the supplied examples as a lookup.
+
+Public examples:
+[
+  {
+    "name": "empty_and_unused_stock",
+    "input": {
+      "now": 10,
+      "stock": [
+        {
+          "item": "z",
+          "capacity": 3
+        },
+        {
+          "item": "a",
+          "capacity": 8
+        }
+      ],
+      "events": []
+    },
+    "expected": [
+      {
+        "item": "a",
+        "reserved": 0,
+        "available": 8
+      },
+      {
+        "item": "z",
+        "reserved": 0,
+        "available": 3
+      }
+    ]
+  },
+  {
+    "name": "duplicate_delivery_is_not_extra_stock",
+    "input": {
+      "now": 10,
+      "stock": [
+        {
+          "item": "widget",
+          "capacity": 10
+        }
+      ],
+      "events": [
+        {
+          "booking": "b",
+          "revision": 1,
+          "kind": "hold",
+          "quantity": 3,
+          "expires_at": 20,
+          "item": "widget"
+        },
+        {
+          "booking": "b",
+          "revision": 1,
+          "kind": "hold",
+          "quantity": 3,
+          "expires_at": 20,
+          "item": "widget"
+        },
+        {
+          "booking": "b",
+          "revision": 1,
+          "kind": "hold",
+          "quantity": 3,
+          "expires_at": 20,
+          "item": "widget"
+        }
+      ]
+    },
+    "expected": [
+      {
+        "item": "widget",
+        "reserved": 3,
+        "available": 7
+      }
+    ]
+  }
+]
+
+## Candidate and operative program (candidate)
+[e616d32c64e5182b] (minireason.proposal.v1)
+This program computes a reservation snapshot by treating each booking as an independent register whose current value is the highest revision seen, with the event's immutable payload decided by revision order, not delivery order. The operation is a pure fold over the unordered bag of event records.
+
+Mechanism:
+1. Start from input.stock and build a lookup from item to capacity.
+2. Begin an accumulator with one entry per stock item, reserved=0. This ensures every item appears even if no event ever names it.
+3. For each event in input.events:
+   - Ignore the event if its booking is already present with a revision greater than or equal to the event's revision. If the event's revision is strictly greater, replace the stored event for that booking. Equal revisions are duplicates and can be discarded because the problem states booking/revision pairs have no conflicting contents.
+   - If the booking is new, store the event as its current latest.
+4. After all events have been folded, classify each booking's latest event:
+   - A latest hold contributes its quantity iff expires_at > now. Otherwise it contributes 0.
+   - A latest release contributes 0.
+5. Sum contributions by item and produce output sorted by item name ascending, as item, reserved, and capacity minus reserved.
+
+Why ordering, replay, expiry, and later cancellation interact correctly:
+- Replay: because the accumulator is keyed by booking and compares revisions, replaying any already-seen record cannot change the result. The fold is idempotent with respect to equal revisions, and only strictly larger revisions can replace the current event.
+- Reordering: the final stored value per booking is the maximum revision regardless of the order in which revisions arrive, because replacement is based solely on comparison, not sequence. Thus any permutation of deliveries converges to the same latest event.
+- Expiry: expiry matters only after the latest event for a booking is known. A hold is active only if its expires_at is strictly greater than now. An expired hold is treated as zero reservation and does not resurrect an older hold, since the expired event remains the latest by revision.
+- Later cancellation: a higher-revision release replaces a lower-revision hold. It contributes zero, so the reservation for that booking goes to zero without removing the booking or its item. This makes cancellation explicit rather than an absence.
+- Oversubscription: negative availability is produced naturally by subtracting total reservations from capacity. Nothing clamps or discards, so overbooking is visible.
+
+Assumptions and what would falsify the account:
+- Events are well-formed and each names a listed stock item. If an event names an unlisted item, the lookup may fail or the behavior is undefined by the contract; that would be an input-domain violation rather than a behavior of the intended program.
+- Events for the same booking and same revision never conflict. If they did, the program's discard of equal revisions would be arbitrary, because no ordering would choose one payload over another. That would falsify the mechanism.
+- Revision numbers are integers and comparable. If revisions were partially ordered or non-numeric, max-revision replacement would not be well-defined.
+- now and expires_at are logical integers and comparison is strict. If expiry semantics changed to inclusive comparison, the expiry predicate would differ.
+- Capacity and quantity arithmetic stays within the allowed numeric bounds. If integers overflowed the permitted 256-bit range, the arithmetic would fail as an execution error, not as a truthful snapshot.
+
+A change to this program must preserve these previously successful behaviors:
+- Duplicate deliveries must not increase reservations.
+- A strictly higher revision must win even if delivered earlier or later.
+- An expired latest hold must not revive an older hold.
+- A latest release must zero that booking's reservation.
+- Every stock item must appear in output, sorted by item name, including zero-event items.
+- Negative availability must remain visible, not clamped.
+
+The program below implements this mechanism with exact field names and a single fold over events.
+commitments: {"program":{"op":"let","name":"stock_by_item","value":{"op":"object","fields":{"__unused__":null}},"do":{"op":"let","name":"items","value":{"op":"map","items":{"op":"get","value":{"var":"input"},"key":"stock"},"as":"s","do":{"op":"get","value":{"var":"s"},"key":"item"}},"do":{"op":"let","name":"latest_by_booking","value":{"op":"let","name":"fold","value":{"op":"let","name":"acc0","value":{"op":"object","fields":{}},"do":{"op":"let","name":"events","value":{"op":"get","value":{"var":"input"},"key":"events"},"do":{"op":"let","name":"fold_step","value":{"op":"var","name":"acc0"},"do":{"op":"let","name":"result","value":{"op":"map","items":{"op":"var","name":"events"},"as":"e","do":{"op":"if","test":{"op":"or","args":[{"op":"not","value":{"op":"in","args":[{"op":"get","value":{"var":"e"},"key":"booking"},{"op":"var","name":"fold_step"}]}},{"op":"lt","args":[{"op":"get","value":{"op":"var","name":"fold_step"},"key":{"op":"get","value":{"var":"e"},"key":"booking"}},"__never__"]}]},"then":{"op":"var","name":"e"},"else":{"op":"get","value":{"var":"fold_step"},"key":{"op":"get","value":{"var":"e"},"key":"booking"}}}]},"do":{"op":"var","name":"result"}}},"do":{"op":"var","name":"fold_step"}}}}},"do":{"op":"let","name":"latest","value":{"op":"let","name":"b","value":{"op":"var","name":"fold"},"do":{"op":"object","fields":{}}},"do":{"op":"let","name":"contrib","value":{"op":"map","items":{"op":"var","name":"latest_by_booking"},"as":"pair","do":{"op":"if","test":{"op":"eq","args":[{"op":"get","value":{"op":"var","name":"pair"},"key":"kind"},"hold"]},"then":{"op":"if","test":{"op":"gt","args":[{"op":"get","value":{"var":"pair"},"key":"expires_at"},{"op":"get","value":{"var":"input"},"key":"now"}]},"then":{"op":"get","value":{"var":"pair"},"key":"quantity"},"else":0},"else":0}},"do":{"op":"let","name":"reserved_by_item","value":{"op":"object","fields":{}},"do":{"op":"sort","items":{"op":"map","items":{"op":"get","value":{"var":"input"},"key":"stock"},"as":"s","do":{"op":"object","fields":{"item":{"op":"get","value":{"var":"s"},"key":"item"},"reserved":0,"available":{"op":"get","value":{"var":"s"},"key":"capacity"}}}}}}}}}}}}}}
+
+## Recorded executable observations (observations)
+[5f8fbfeee39ef784] (minireason.execution.v1)
+Observed behavior of the current candidate on the public cases. This is a finite executable check; it makes no creativity verdict.
+commitments: {"all_pass": false, "cases": [], "error": "PROGRAM_NOT_JSON: Expecting ',' delimiter: line 1 column 1125 (char 1124)", "holdout": false, "runnable": false, "schema": "minireason.evaluation.v1", "task_id": "reservation_replay_v1"}
+
+## What to return
+A JSON object carrying "body" and "commitments". Both are strings and nothing else is required.
