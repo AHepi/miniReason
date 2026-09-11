@@ -129,3 +129,11 @@ Choice: replace accumulated stale current-state paragraphs with a concise curren
 Choice: publish the complete E016 record with current recovery state, then execute the already frozen E017 recoding plan only after exact remote-tree/main verification. Why: the original treatment is complete and the independently reviewed recoding is the next predeclared contrast. Contribution: tests sensitivity to changed expression of the same selected criticism without a response-driven stimulus amendment. An independent E016 content review may finish during E017; it cannot alter E017–E020 frozen materials. This receipt records the predeclared continuation, not a new optimization choice.
 
 E016 publication whitespace exception: 2 diagnostics occur only in original experiment record bytes. They are preserved exactly rather than normalized; staged Git blob identity binds every retained file. Credential scan passed all 146 explicit paths.
+
+### D016/D017 outcome — E016 data publication and independent integrity verified
+
+E016 is published at remote `31b2db694023d4268dbbb08dbc695344475552d8`, local `154f65a595ba81a77aa75c678e188c3d7c52aac7`, shared tree `e32ff3400113e0946c94fd124b10acd87b6c8d76`. Remote main and tree identity verified. Independent review confirms all 84 strict JSON records, 74 source files, 3 probe modules, 10 distinct complete responses, exact prompt/occurrence bindings, and both Mini logs (21 events / 21 blobs each) replaying to an ended cycle. All four use answers give the stipulated numeric results. Remaining interpretation errors will be reported separately; numerical agreement is not proof that the returned account was needed. The complete 146-file checkpoint preserves two immutable-data whitespace diagnostics.
+
+### D012 execution receipt — E017 activation
+
+Choice: execute the unchanged published E017 recoding plan `f7fc6f851672928b224ac742d756632b4b1aed1a7d9a4ad75ecb4ba740eda4f9` now that E016 is durably complete. Why: the predeclared expression contrast follows the original treatment and requires no response-driven changes. Contribution: permits a finite original/recoded commitment comparison under the same common material and routes. Same authorized provider, resource settings, no retry and five-worker limit. E018 remains blocked until this result is preserved and published.

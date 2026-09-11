@@ -12,15 +12,15 @@ README/AGENTS and the ledger recovery instructions are published. The integrated
 
 | Test | Intervention | Execution state |
 |---|---|---|
-| E016-reason-original | Exact E015 J and R; account returned at use | All six arms / ten calls complete; data included in this checkpoint; independent review finishing |
-| E017-reason-recoded | Reviewed whole recoding of R | Frozen, preflight passed, not yet run |
+| E016-reason-original | Exact E015 J and R; account returned at use | All six arms / ten calls complete; published at 31b2db6; independent integrity passed, substantive review finishing |
+| E017-reason-recoded | Reviewed whole recoding of R | Activation selected after verified E016 publication; inspect records for live state |
 | E018-reason-different | Scoped capacity criticism | Frozen, preflight passed, not yet run |
 | E019-reason-omitted | Zero-byte supplemental criticism | Frozen, preflight passed, not yet run |
 | E020-reason-no-return | Empty use-account field; four staged controls | Frozen, preflight passed, not yet run |
 
 All plans and original inputs are fixed under `experiments/plans` and `experiments/materials/reason-use-v1`. Use sees only its finite domain data/questions and the account when enabled. Source/J/R are not separate use-stage ports. Prospective interpretation and decision receipts are outside model-visible inputs. E020 retains/counts its first response but does not expose it at use. One shared baseline is one observation. No scalar merit measure or automatic language installation exists.
 
-The next exact task is to verify publication of the complete E016 checkpoint, then run the unchanged E017 plan, review/publish its outcome, and continue E018, E019 and E020 in order under [the reason-use workflow](workflows/reason-use.md). Do not reuse an existing output directory. Do not dispatch a successor after publication or provider-access failure. If interrupted, inspect actual request, response, result and summary files; preserve partial evidence.
+E016 publication is verified at `31b2db694023d4268dbbb08dbc695344475552d8`. The current exact task is to complete the unchanged E017 plan, review/publish its outcome, and continue E018, E019 and E020 in order under [the reason-use workflow](workflows/reason-use.md). Do not reuse an existing output directory. Do not dispatch a successor after publication or provider-access failure. If interrupted, inspect actual request, response, result and summary files; preserve partial evidence.
 
 ```sh
 python -m minireason.reason_use_study run --plan experiments/plans/E017-reason-recoded.json --output experiments/records/E017-reason-recoded --jobs 5
