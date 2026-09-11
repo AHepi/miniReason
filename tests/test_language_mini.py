@@ -1,13 +1,16 @@
 """Real Mini execution with free-prose providers and observed stage visibility."""
 from __future__ import annotations
 
+import hashlib
 import json
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from pathlib import Path
 import tempfile
 import unittest
 from unittest import mock
 
-from minireason.language_mini import make_manifest, run_probe
+from minireason.language_mini import make_manifest, prepare_probe, run_probe
 from minireason.language_data import RAW_SYSTEM
 from minireason.language_study import stage_prompt
 from minireason.provider import ProviderFailure, Settings
@@ -69,7 +72,9 @@ class LanguageMiniTests(unittest.TestCase):
         self.assertIn(COMPILER, prompts['criticize'])
         self.assertTrue(all(r['json_output'] is False for r in provider.requests))
         self.assertEqual(result['mini_outcome']['calls'], 3)
-        self.assertEqual(result['mini_outcome']['stages_entered'], ['express', 'reinterpret', 'criticize'])
+        self.assertEqual(result['mini_outcome']['stages_entered'],
+                         ['seed_frozen_packet', 'seed_selected_language', 'seed_compiler_observation',
+                          'express', 'reinterpret', 'criticize'])
         self.assertEqual(result['interpretation_status'], 'NOT_ADJUDICATED')
         self.assertEqual(result['alarms'], [])
 
@@ -89,7 +94,7 @@ class LanguageMiniTests(unittest.TestCase):
         second_expression = provider.requests[3]['messages'][-1]['content']
         self.assertIn(PACKET, second_expression)
         self.assertNotIn('CRITICISM_CYCLE_1', second_expression)
-        self.assertEqual(json.loads((self.root/'manifest.json').read_text())['problem'], PACKET)
+        self.assertEqual((self.root/'sources/packet.txt').read_bytes(), PACKET.encode('utf-8'))
         self.assertEqual(len(result['history']), 6)
 
     def test_reader_transport_failure_retains_expression_and_loud_terminal_record(self):
@@ -110,8 +115,11 @@ class LanguageMiniTests(unittest.TestCase):
             changed = make_manifest(**{**self.arguments, name: self.arguments[name] + '\nchanged'})
             self.assertNotEqual(original['manifest_id'], changed['manifest_id'])
         reader = next(k for k in original['kinds'] if k['kind_id'] == 'minireason.language-reading.v1')
-        self.assertEqual(reader['input_ports'], [{'port_id': 'expression', 'port_type': 'expression', 'window': 'this_cycle'}])
-        self.assertNotIn('sources', original)
+        self.assertEqual([port['port_id'] for port in reader['input_ports']], ['meaning', 'expression'])
+        self.assertEqual([source['source_id'] for source in original['sources']],
+                         ['frozen_packet', 'selected_language', 'compiler_observation'])
+        self.assertNotIn(PACKET, original['problem'])
+        self.assertTrue(all(LANGUAGE not in kind['instruction'] for kind in original['kinds']))
         self.assertTrue(all('format' not in kind for kind in original['kinds']))
 
     def test_cap_mismatch_refuses_without_model_call(self):
@@ -152,6 +160,93 @@ class LanguageMiniTests(unittest.TestCase):
             self.assertGreater(transport['wrapped_utf8_bytes'], transport['raw_utf8_bytes'])
             self.assertIsNone(transport['wrapper_tokens'])
             prior.append(row)
+
+    def test_actual_frozen_packet_and_languages_exceed_inline_limits_but_reach_declared_ports(self):
+        plan_path = Path(__file__).resolve().parents[1] / 'experiments/records/E005-frozen-prose/plan.json'
+        historical = json.loads(plan_path.read_text())
+        packet = historical['packet_text']
+        self.assertGreater(len(packet), 8192)
+        for carrier, language in historical['packet']['languages'].items():
+            with self.subTest(carrier=carrier):
+                self.assertGreater(len(language), 4000)
+                arguments = {**self.arguments, 'packet_text': packet, 'selected_language_text': language,
+                             'compiler_text': 'Auxiliary evidence only.\n' * 400}
+                provider = ProseProvider()
+                root = self.root / carrier
+                result = run_probe(provider, root, **arguments)
+                self.assertEqual(result['status'], 'COMPLETE', result['alarms'])
+                self.assertEqual(result['mini_outcome']['calls'], 3)
+                self.assertEqual((root/'sources/packet.txt').read_bytes(), packet.encode('utf-8'))
+                self.assertEqual((root/'sources/selected-language.txt').read_bytes(), language.encode('utf-8'))
+                brief = json.loads((root/'requests/001-reinterpret-routed.json').read_text())['mini_brief']
+                self.assertIn(language, brief)
+                self.assertNotIn(packet, brief)
+                prior = []
+                for request, row in zip(provider.requests, result['history']):
+                    self.assertEqual(request['messages'][-1]['content'], stage_prompt(arguments, row['stage'], prior))
+                    prior.append(row)
+                bindings = json.loads((root/'material-bindings.json').read_text())
+                self.assertEqual(bindings['manifest_sha256'], hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest())
+                self.assertEqual(bindings['compiled_plan_sha256'], result['mini_outcome']['genesis'])
+
+    def test_missing_frozen_source_body_is_refused_before_first_model_call(self):
+        from creib.forge.mini.runner import render_brief as original
+        def missing(plan, state, blobs, stage, cycle=0):
+            text, exposed = original(plan, state, blobs, stage, cycle)
+            if stage.stage_id == 'express':
+                text = text.replace(PACKET, PACKET[:-1])
+            return text, exposed
+        provider = ProseProvider()
+        with mock.patch('creib.forge.mini.runner.render_brief', side_effect=missing):
+            result = run_probe(provider, self.root, **self.arguments)
+        self.assertEqual(result['status'], 'OPERATIONAL_FAILURE')
+        self.assertEqual(provider.requests, [])
+        self.assertIn('PROBE_ROUTING_MISMATCH', {alarm['code'] for alarm in result['alarms']})
+        self.assertTrue((self.root/'requests/001-express-routed.json').is_file())
+
+    def test_prepared_sources_are_compiled_once_and_isolated_between_concurrent_plans(self):
+        from creib.forge.mini.manifest import compile_manifest
+        arguments = [{**self.arguments, 'packet_text': f'UNIQUE_PACKET_{i}\n' + PACKET,
+                      'selected_language_text': f'UNIQUE_LANGUAGE_{i}\n' + LANGUAGE} for i in range(2)]
+        with mock.patch('minireason.language_mini.compile_manifest', wraps=compile_manifest) as compile_call:
+            prepared = [prepare_probe(self.root/f'prepare-{i}', **args) for i, args in enumerate(arguments)]
+            providers = [ProseProvider(), ProseProvider()]
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                futures = [pool.submit(run_probe, providers[i], self.root/f'run-{i}',
+                                       prepared=prepared[i], **args) for i, args in enumerate(arguments)]
+                results = [future.result() for future in futures]
+            self.assertEqual(compile_call.call_count, 2)
+        for i, result in enumerate(results):
+            self.assertEqual(result['status'], 'COMPLETE', result['alarms'])
+            self.assertNotEqual(prepared[0].plan.genesis, prepared[1].plan.genesis)
+            self.assertEqual((self.root/f'prepare-{i}/manifest.json').read_bytes(),
+                             (self.root/f'run-{i}/manifest.json').read_bytes())
+            for request in providers[i].requests:
+                text = request['messages'][-1]['content']
+                self.assertNotIn(f'UNIQUE_PACKET_{1-i}', text)
+                self.assertNotIn(f'UNIQUE_LANGUAGE_{1-i}', text)
+                if request['coordinate']['stage'] == 'reinterpret':
+                    self.assertIn(f'UNIQUE_LANGUAGE_{i}', text)
+                    self.assertNotIn(f'UNIQUE_PACKET_{i}', text)
+                else:
+                    self.assertIn(f'UNIQUE_PACKET_{i}', text)
+
+    def test_prepared_material_and_compiled_sources_cannot_be_silently_changed(self):
+        prepared = prepare_probe(self.root/'prepare', **self.arguments)
+        cases = [
+            ('incoming', prepared, {**self.arguments, 'packet_text': PACKET + 'changed'}, 'PROBE_PREPARED_MATERIAL_MISMATCH'),
+            ('compiled', replace(prepared, plan=replace(prepared.plan,
+                sources=(replace(prepared.plan.sources[0], raw=b'changed'),) + prepared.plan.sources[1:])),
+             self.arguments, 'PROBE_PREPARED_PLAN_MISMATCH'),
+        ]
+        for name, changed, arguments, code in cases:
+            with self.subTest(name=name):
+                provider = ProseProvider()
+                result = run_probe(provider, self.root/name, prepared=changed, **arguments)
+                self.assertEqual(result['status'], 'OPERATIONAL_FAILURE')
+                self.assertEqual(provider.requests, [])
+                self.assertIn(code, {alarm['code'] for alarm in result['alarms']})
+                self.assertTrue((self.root/name/'probe-errata.json').is_file())
 
 
 if __name__ == '__main__':

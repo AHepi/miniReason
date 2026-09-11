@@ -2,22 +2,25 @@
 
 The raw model answer is prose. A transparent adapter wraps it in Mini's transport
 artifact with the same raw text in both fields; no compiler or semantic admission gate
-is applied. The source packet is a problem port that the reinterpretation stage
-never declares. An expression or source-conditioned language may still carry
+is applied. The full source packet travels through a deterministic seed artifact
+port that the reinterpretation stage never declares. An expression or source-conditioned language may still carry
 source information: withholding the source port is not information independence.
 """
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 import hashlib
 import json
 from pathlib import Path
 import re
+import threading
 from typing import Any, Mapping
 
 from creib.forge.mini.executor import Reply, Request
 from creib.forge.mini.log import BlobStore, replay
-from creib.forge.mini.manifest import compile_manifest
+from creib.forge.mini.manifest import RunPlan, compile_manifest
+from creib.forge.mini.machines import MachineContext, MachineSeat, register_machine_seat, resolve_machine_seat
+from creib.forge.mini.common import MiniError
 from creib.forge.mini.runner import run_mini
 
 from .provider import digest, write_new
@@ -27,6 +30,15 @@ EXPRESSION = "minireason.language-expression.v1"
 READING = "minireason.language-reading.v1"
 CRITICISM = "mini.verdict.v1"
 STAGES = ("express", "reinterpret", "criticize")
+PACKET = "minireason.frozen-packet.v1"
+LANGUAGE = "minireason.frozen-language.v1"
+COMPILER = "minireason.compiler-observation.v1"
+_SOURCE_SPECS = (
+    ("packet_text", "frozen_packet", "sources/packet.txt", PACKET, "packet", "Frozen shared packet"),
+    ("selected_language_text", "selected_language", "sources/selected-language.txt", LANGUAGE, "meaning", "Selected language meaning"),
+    ("compiler_text", "compiler_observation", "sources/compiler.txt", COMPILER, "compiler", "External compiler observation"),
+)
+_SEED_LOCK = threading.Lock()
 RETURN_CONTRACT = ('## What to return\n'
                    'A JSON object carrying "body" and "commitments". Both are strings and nothing else is required.')
 
@@ -36,15 +48,39 @@ class LanguageProbeError(RuntimeError):
         super().__init__(f"{code}: {detail}")
 
 
-def make_manifest(*, packet_text: str, selected_language_text: str, carrier_directive: str,
-                  stage_instructions: Mapping[str, str], max_tokens: int,
-                  cycles: int = 1, compiler_text: str = "") -> dict[str, Any]:
-    """Freeze content and visibility, with three prose calls per completed cycle.
+@dataclass(frozen=True)
+class SourceFile:
+    source_id: str
+    path: str
+    raw: bytes
 
-    Cycles repeat this frozen first-probe design. Prior cycles do not refine the
-    language or enter later source/expression ports. Compiler text, if supplied,
-    is external evidence visible only to criticism and establishes no verdict.
-    """
+    def summary(self) -> dict[str, Any]:
+        return {"source_id": self.source_id, "path": self.path,
+                "sha256": hashlib.sha256(self.raw).hexdigest(), "utf8_bytes": len(self.raw),
+                "characters": len(self.raw.decode("utf-8"))}
+
+
+@dataclass(frozen=True)
+class PreparedProbe:
+    """Compiled once, with exact material files available to each isolated arm."""
+    manifest: dict[str, Any]
+    plan: RunPlan
+    material_digest: str
+    manifest_bytes: bytes
+    source_files: tuple[SourceFile, ...]
+    plan_header_digest: str
+
+    def summary(self) -> dict[str, Any]:
+        return {"material_digest": self.material_digest,
+                "manifest_sha256": hashlib.sha256(self.manifest_bytes).hexdigest(),
+                "compiled_plan_sha256": self.plan.genesis,
+                "compiled_header_sha256": self.plan_header_digest,
+                "sources": [source.summary() for source in self.source_files]}
+
+
+def _content(*, packet_text: str, selected_language_text: str, carrier_directive: str,
+             stage_instructions: Mapping[str, str], max_tokens: int,
+             cycles: int = 1, compiler_text: str = "") -> dict[str, Any]:
     if type(packet_text) is not str or not packet_text:
         raise ValueError("A nonempty frozen packet is required")
     for name, value in (("selected_language_text", selected_language_text),
@@ -58,41 +94,154 @@ def make_manifest(*, packet_text: str, selected_language_text: str, carrier_dire
     if any(type(stage_instructions.get(stage)) is not str or not stage_instructions[stage]
            for stage in STAGES):
         raise ValueError("Every stage needs a nonempty instruction")
-    language = "\n\n## Selected carrier\n" + carrier_directive
-    instructions = {stage: stage_instructions[stage] + language for stage in STAGES}
-    if selected_language_text:
-        instructions["reinterpret"] += "\n\n## Frozen selected language and its proposed meaning\n" + selected_language_text
-    if compiler_text:
-        instructions["criticize"] += "\n\n## External compiler observation (fallible auxiliary evidence)\n" + compiler_text
+    return {"packet_text": packet_text, "selected_language_text": selected_language_text,
+            "carrier_directive": carrier_directive, "stage_instructions": dict(stage_instructions),
+            "compiler_text": compiler_text, "cycles": cycles, "max_tokens": max_tokens}
 
-    def port(name: str) -> dict[str, Any]:
-        return {"port_id": name, "port_type": name, "window": "this_cycle"}
 
-    def kind(kind_id: str, stage: str, title: str, ports: list[str]) -> dict[str, Any]:
-        return {"kind_id": kind_id, "title": title, "instruction": instructions[stage],
-                "commitment_call": "single", "input_ports": [port(name) for name in ports],
+def _source_files(content: Mapping[str, Any]) -> tuple[SourceFile, ...]:
+    return tuple(SourceFile(source_id, path, content[field].encode("utf-8"))
+                 for field, source_id, path, _, _, _ in _SOURCE_SPECS if content[field])
+
+
+def _manifest_bytes(manifest: dict[str, Any]) -> bytes:
+    return (json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _copy_source(context: MachineContext) -> str:
+    """Copy one named frozen source, without model work or content appraisal."""
+    source_id = next((source_id for _, source_id, _, kind_id, _, _ in _SOURCE_SPECS
+                      if kind_id == context.stage.kind_id), None)
+    sources = [source for source in context.plan.sources if source.source_id == source_id]
+    if source_id is None or len(sources) != 1:
+        raise LanguageProbeError("PROBE_SOURCE_BINDING_MISSING", "The seed has no unique frozen source")
+    raw = sources[0].raw.decode("utf-8")
+    if not raw:
+        raise LanguageProbeError("PROBE_SOURCE_EMPTY", "An optional empty source must not be seeded")
+    return json.dumps({"body": raw, "commitments": raw}, ensure_ascii=False)
+
+
+def _ensure_seed_seats() -> None:
+    # Register before concurrent arms begin; never replace an existing handler.
+    with _SEED_LOCK:
+        for _, _, _, kind_id, _, _ in _SOURCE_SPECS:
+            try:
+                seat = resolve_machine_seat(kind_id)
+            except MiniError as error:
+                if error.code != "MINI_MACHINE_SEAT_UNKNOWN":
+                    raise
+                register_machine_seat(MachineSeat(kind_id, "Copy exact frozen UTF-8 source; no model or judgment", _copy_source))
+            else:
+                if seat.answer is not _copy_source:
+                    raise LanguageProbeError("PROBE_SEED_REGISTRY_MISMATCH", "A different source-seed implementation is registered")
+
+
+def make_manifest(*, packet_text: str, selected_language_text: str, carrier_directive: str,
+                  stage_instructions: Mapping[str, str], max_tokens: int,
+                  cycles: int = 1, compiler_text: str = "") -> dict[str, Any]:
+    """Build short instructions and lossless file-backed source-artifact routes.
+
+    Write the sidecars and compile with ``prepare_probe`` before dispatching any
+    experiment arm. Three model calls follow deterministic source-copy stages
+    each cycle; repeat cycles do not install changes or consume earlier replies.
+    """
+    content = _content(packet_text=packet_text, selected_language_text=selected_language_text,
+                       carrier_directive=carrier_directive, stage_instructions=stage_instructions,
+                       max_tokens=max_tokens, cycles=cycles, compiler_text=compiler_text)
+    instructions = {stage: stage_instructions[stage] + "\n\n## Selected carrier\n" + carrier_directive
+                    for stage in STAGES}
+
+    def kind(kind_id: str, instruction: str, title: str, ports: list[str]) -> dict[str, Any]:
+        return {"kind_id": kind_id, "title": title, "instruction": instruction,
+                "commitment_call": "single",
+                "input_ports": [{"port_id": name, "port_type": name, "window": "this_cycle"} for name in ports],
                 "output_port": {"port_id": "out", "produces_kind": kind_id},
                 "failure_policy": {"retries": 0, "tolerance": 0, "action": "stop"}}
 
-    kinds = [kind(EXPRESSION, "express", "Express the frozen material", ["problem"]),
-             kind(READING, "reinterpret", "Reinterpret the actual expression", ["expression"]),
-             kind(CRITICISM, "criticize", "Criticize the expression and reading", ["problem", "expression", "reading"])]
-    content = {"packet_text": packet_text, "selected_language_text": selected_language_text,
-               "carrier_directive": carrier_directive, "stage_instructions": dict(stage_instructions),
-               "compiler_text": compiler_text, "cycles": cycles, "max_tokens": max_tokens}
+    sources = [spec for spec in _SOURCE_SPECS if content[spec[0]]]
+    seeds = [kind(kind_id, "Copy the named frozen source unchanged; do not interpret or judge it.",
+                  "Frozen material: " + source_id, []) for _, source_id, _, kind_id, _, _ in sources]
+    models = [kind(EXPRESSION, instructions["express"], "Express the frozen material", ["packet"]),
+              kind(READING, instructions["reinterpret"], "Reinterpret the actual expression",
+                   (["meaning"] if selected_language_text else []) + ["expression"]),
+              kind(CRITICISM, instructions["criticize"], "Criticize the expression and reading",
+                   ["packet", "expression", "reading"] + (["compiler"] if compiler_text else []))]
+    ports = [(port, kind_id, header) for _, _, _, kind_id, port, header in sources]
+    ports += [("expression", EXPRESSION, "Actual expression"), ("reading", READING, "Independent reading")]
+    stages = [{"stage_id": "seed_" + source_id, "kind_id": spec["kind_id"], "seat": "machine", "ports": []}
+              for (_, source_id, _, _, _, _), spec in zip(sources, seeds)]
+    stages += [{"stage_id": stage, "kind_id": spec["kind_id"],
+                "ports": [entry["port_id"] for entry in spec["input_ports"]]}
+               for stage, spec in zip(STAGES, models)]
     return {"schema_version": "creib.mini.manifest.v1",
-            "manifest_id": "minireason.language-probe.v1." + digest(content)[:24],
-            "problem": packet_text, "kinds": kinds,
+            "manifest_id": "minireason.language-probe.v2." + digest(content)[:24],
+            "problem": "Study the frozen material through the declared source-artifact ports; no semantic verdict is implied.",
+            "sources": [{"source_id": source.source_id, "path": source.path} for source in _source_files(content)],
+            "kinds": seeds + models,
             "port_types": [{"port_type": name, "draws_from": {"artifact_kinds": [kind_id]},
                             "render": {"rule": "list_bodies", "header": header}}
-                           for name, kind_id, header in (("expression", EXPRESSION, "Actual expression"),
-                                                        ("reading", READING, "Independent reading"))],
-            "stages": [{"stage_id": stage, "kind_id": spec["kind_id"],
-                        "ports": [entry["port_id"] for entry in spec["input_ports"]]}
-                       for stage, spec in zip(STAGES, kinds)] + [{"stage_id": "end", "end": True}],
+                           for name, kind_id, header in ports],
+            "stages": stages + [{"stage_id": "end", "end": True}],
             "cycles": {"max_cycles": cycles, "max_calls": 3 * cycles,
                        "completion_tokens_per_call": max_tokens,
                        "max_completion_tokens": 3 * cycles * max_tokens}}
+
+
+def _archive_prepared(root: Path, prepared: PreparedProbe) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    for source in prepared.source_files:
+        path = root / source.path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("xb") as handle:
+            handle.write(source.raw)
+    with (root / "manifest.json").open("xb") as handle:
+        handle.write(prepared.manifest_bytes)
+    write_new(root / "material-bindings.json", prepared.summary())
+
+
+def _validate_prepared(prepared: PreparedProbe, content: dict[str, Any]) -> None:
+    expected = make_manifest(**content)
+    if (prepared.material_digest != digest(content)
+            or prepared.manifest != expected or prepared.manifest_bytes != _manifest_bytes(expected)
+            or prepared.source_files != _source_files(content)):
+        raise LanguageProbeError("PROBE_PREPARED_MATERIAL_MISMATCH", "Prepared manifest or source bytes differ from this frozen probe")
+    if (prepared.plan.manifest_digest != hashlib.sha256(prepared.manifest_bytes).hexdigest()
+            or digest(prepared.plan.header) != prepared.plan_header_digest
+            or [(source.source_id, source.raw) for source in prepared.plan.sources]
+            != [(source.source_id, source.raw) for source in prepared.source_files]):
+        raise LanguageProbeError("PROBE_PREPARED_PLAN_MISMATCH", "Compiled plan no longer binds the exact prepared source bytes")
+    _ensure_seed_seats()
+
+
+def prepare_probe(root: Path, *, packet_text: str, selected_language_text: str,
+                  carrier_directive: str, stage_instructions: Mapping[str, str], max_tokens: int,
+                  cycles: int = 1, compiler_text: str = "") -> PreparedProbe:
+    """Retain exact sidecars and compile once, before any provider is constructed.
+
+    Raises on malformed configuration. The experiment runner owns the failed
+    preflight's terminal record and errata; no provider exists at this boundary.
+    """
+    content = _content(packet_text=packet_text, selected_language_text=selected_language_text,
+                       carrier_directive=carrier_directive, stage_instructions=stage_instructions,
+                       max_tokens=max_tokens, cycles=cycles, compiler_text=compiler_text)
+    manifest = make_manifest(**content)
+    root = Path(root)
+    root.mkdir(parents=True, exist_ok=True)
+    source_files = _source_files(content)
+    for source in source_files:
+        path = root / source.path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("xb") as handle:
+            handle.write(source.raw)
+    manifest_bytes = _manifest_bytes(manifest)
+    with (root / "manifest.json").open("xb") as handle:
+        handle.write(manifest_bytes)
+    _ensure_seed_seats()
+    plan = compile_manifest(root / "manifest.json")
+    prepared = PreparedProbe(manifest, plan, digest(content), manifest_bytes, source_files, digest(plan.header))
+    _validate_prepared(prepared, content)
+    write_new(root / "material-bindings.json", prepared.summary())
+    return prepared
 
 
 class _ProseResponder:
@@ -122,16 +271,18 @@ class _ProseResponder:
         history = []
         for entry in kind["input_ports"]:
             name = entry["port_id"]
-            if name == "problem":
-                sections.append(re.escape("## The problem (problem)\n" + self.manifest["problem"]))
-                continue
-            preceding = "express" if name == "expression" else "reinterpret"
-            raw = self.answers.get((request.cycle, preceding))
-            if raw is None:
-                raise LanguageProbeError("PROBE_HISTORY_MISSING", "A declared prior response was not obtained")
-            history.append({"stage": preceding, "text": raw})
-            header, source_kind = (("Actual expression", EXPRESSION) if name == "expression"
-                                   else ("Independent reading", READING))
+            source_spec = next((spec for spec in _SOURCE_SPECS if spec[4] == name), None)
+            if source_spec is not None:
+                field, _, _, source_kind, _, header = source_spec
+                raw = self.material[field]
+            else:
+                preceding = "express" if name == "expression" else "reinterpret"
+                raw = self.answers.get((request.cycle, preceding))
+                if raw is None:
+                    raise LanguageProbeError("PROBE_HISTORY_MISSING", "A declared prior response was not obtained")
+                history.append({"stage": preceding, "text": raw})
+                header, source_kind = (("Actual expression", EXPRESSION) if name == "expression"
+                                       else ("Independent reading", READING))
             sections.append(re.escape(f"## {header} ({name})\n[") + r"[0-9a-f]{16}" +
                             re.escape(f"] ({source_kind})\n" + raw))
         sections.append(re.escape(RETURN_CONTRACT))
@@ -173,7 +324,8 @@ class _ProseResponder:
 
 def run_probe(provider: Any, root: Path, *, packet_text: str, selected_language_text: str,
               carrier_directive: str, stage_instructions: Mapping[str, str], max_tokens: int,
-              cycles: int = 1, compiler_text: str = "") -> dict[str, Any]:
+              cycles: int = 1, compiler_text: str = "",
+              prepared: PreparedProbe | None = None) -> dict[str, Any]:
     """Run actual Mini and retain partial artifacts and all failure signals.
 
     Return status describes completion of the probe, never semantic adequacy.
@@ -182,14 +334,13 @@ def run_probe(provider: Any, root: Path, *, packet_text: str, selected_language_
     """
     root = Path(root)
     root.mkdir(parents=True, exist_ok=True)
-    manifest = make_manifest(packet_text=packet_text, selected_language_text=selected_language_text,
-                             carrier_directive=carrier_directive, stage_instructions=stage_instructions,
-                             max_tokens=max_tokens, cycles=cycles, compiler_text=compiler_text)
-    path = root / "manifest.json"
-    write_new(path, manifest)
+    content = _content(packet_text=packet_text, selected_language_text=selected_language_text,
+                       carrier_directive=carrier_directive, stage_instructions=stage_instructions,
+                       max_tokens=max_tokens, cycles=cycles, compiler_text=compiler_text)
+    manifest = make_manifest(**content)
     result: dict[str, Any] = {"schema": "minireason.language-mini.v1", "status": "RUNNING",
                               "history": [], "final": None, "mini_outcome": None, "alarms": [],
-                              "manifest_sha256": digest(manifest), "visibility": [],
+                              "manifest_sha256": hashlib.sha256(_manifest_bytes(manifest)).hexdigest(), "visibility": [],
                               "interpretation_status": "NOT_ADJUDICATED",
                               "transport": "Raw prose stored identically in body and commitments; duplication is transport only and ports render body alone",
                               "blinding_limit": "The source packet port is hidden from reinterpretation. The expression and source-conditioned language may carry source information."}
@@ -202,7 +353,13 @@ def run_probe(provider: Any, root: Path, *, packet_text: str, selected_language_
     try:
         if provider.settings.max_tokens != max_tokens:
             raise LanguageProbeError("PROBE_COMPLETION_CAP_MISMATCH", "Provider ceiling differs from frozen manifest")
-        compiled = compile_manifest(path)
+        if prepared is None:
+            prepared = prepare_probe(root, **content)
+        else:
+            _validate_prepared(prepared, content)
+            _archive_prepared(root, prepared)
+        compiled = prepared.plan
+        result["prepared_bindings"] = prepared.summary()
         outcome = run_mini(compiled, root / "run", responder,
                            responder_id="deepseek:" + provider.settings.model, endpoint=provider.settings)
         result["mini_outcome"] = {**asdict(outcome), "root": "run", "stages_entered": list(outcome.stages_entered)}

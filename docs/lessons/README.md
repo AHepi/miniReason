@@ -8,3 +8,5 @@ Lessons name the evidence that supports them and the circumstances in which they
 | [method.md](method.md) | Comparisons, interventions and resource accounting |
 | [semantics.md](semantics.md) | What task evidence can imply under ECS |
 | [operations.md](operations.md) | Transport, reproducibility and publication |
+
+[Expression and interpretation](expressibility.md) records scoped observations about copying, modality, stage-specific evidence, language priming and fallible criticism.

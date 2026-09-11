@@ -149,6 +149,28 @@ def selected_language(packet: dict[str, Any], carrier: str) -> str:
     return packet["languages"]["lean" if carrier == "lean_candidate" else "nonlean"]
 
 
+def _material_snapshots(plan: dict[str, Any]) -> dict[str, Any]:
+    """Bind the exact source bytes, independently of filesystem location."""
+    snapshots = {}
+    for name in ("packet_text", "selected_language_text", "compiler_text"):
+        text = plan[name]
+        if type(text) is not str:
+            raise ValueError(f"MATERIAL_NOT_TEXT: {name}")
+        raw = text.encode("utf-8")
+        snapshots[name] = {"encoding": "utf-8", "sha256": hashlib.sha256(raw).hexdigest(),
+                           "bytes": len(raw), "characters": len(text)}
+    return snapshots
+
+
+def _probe_material(plan: dict[str, Any]) -> dict[str, Any]:
+    return {"packet_text": plan["packet_text"],
+            "selected_language_text": plan["selected_language_text"],
+            "carrier_directive": plan["carrier_directive"],
+            "stage_instructions": plan["stage_instructions"],
+            "max_tokens": plan["settings"]["max_tokens"],
+            "cycles": plan["cycles"], "compiler_text": plan["compiler_text"]}
+
+
 def make_probe_plan(test_id: str, packet: dict[str, Any], carrier: str, rationale: str, *,
                     arms: list[str] | None = None, repetitions: int = 1, max_tokens: int = 16384,
                     parent: str | None = None, compiler_text: str = "") -> dict[str, Any]:
@@ -162,7 +184,7 @@ def make_probe_plan(test_id: str, packet: dict[str, Any], carrier: str, rational
     if type(repetitions) is not int or not 1 <= repetitions <= 20:
         raise ValueError("INVALID_REPETITIONS")
     settings = Settings(max_tokens=max_tokens)
-    return _signed({"schema": "minireason.language-probe-plan.v1", "test_id": test_id,
+    plan = {"schema": "minireason.language-probe-plan.v1", "test_id": test_id,
                    "created_at": _now(), "parent": parent, "rationale": rationale,
                    "carrier": carrier, "packet": packet, "packet_id": packet["packet_id"],
                    "packet_text": json.dumps(packet, ensure_ascii=False, sort_keys=True, indent=2),
@@ -180,7 +202,10 @@ def make_probe_plan(test_id: str, packet: dict[str, Any], carrier: str, rational
                                      "Native completion tokens include hidden reasoning; actual use is not equalized.",
                                      "Original corpus field is omitted from reinterpretation, but source-conditioned languages and expressions may themselves quote it.",
                                      "Unconstrained prose may copy source text; this is a fidelity control, not evidence of creativity.",
-                                     "No proposed language or conjecture successor is installed."]}, "plan_id")
+                                     "No proposed language or conjecture successor is installed."]}
+    plan["material_snapshots"] = _material_snapshots(plan)
+    plan["preflight_policy"] = "Verify frozen material and compile actual Mini routes before constructing any provider; failure blocks every arm with recorded zero-call results."
+    return _signed(plan, "plan_id")
 
 
 def stage_prompt(plan: dict[str, Any], stage: str, history: list[dict[str, Any]]) -> str:
@@ -226,7 +251,8 @@ def _direct_probe(provider: Any, arm: str, plan: dict[str, Any], root: Path,
 
 
 def run_probe_arm(plan: dict[str, Any], arm: str, repeat: int, root: Path, *,
-                  provider_factory: Callable[..., Any] = DeepSeek) -> dict[str, Any]:
+                  provider_factory: Callable[..., Any] = DeepSeek,
+                  prepared: Any = None) -> dict[str, Any]:
     root.mkdir(parents=True, exist_ok=False)
     settings = _settings(plan["settings"], thinking=arm in {"native", "matched_native", "mini_native"})
     record = {"schema": "minireason.language-arm.v1", "arm": arm, "repeat": repeat,
@@ -236,16 +262,18 @@ def run_probe_arm(plan: dict[str, Any], arm: str, repeat: int, root: Path, *,
     write_new(root / "started.json", record)
     provider = None
     try:
+        if arm.startswith("mini") and prepared is None:
+            from .language_mini import prepare_probe
+            prepared = prepare_probe(root / "preflight", **_probe_material(plan))
         provider = provider_factory(settings, root / "calls")
         if arm.startswith("mini"):
             from .language_mini import run_probe
-            observation = run_probe(provider, root, packet_text=plan["packet_text"],
-                selected_language_text=plan["selected_language_text"], carrier_directive=plan["carrier_directive"],
-                stage_instructions=plan["stage_instructions"], max_tokens=settings.max_tokens,
-                cycles=1, compiler_text=plan["compiler_text"])
+            observation = run_probe(provider, root, **_probe_material(plan), prepared=prepared)
         else:
             observation = _direct_probe(provider, arm, plan, root, history=record["history"])
-        record.update(observation)
+        record.update({key: value for key, value in observation.items() if key != "schema"})
+        if "schema" in observation:
+            record["route_schema"] = observation["schema"]
         expected = 1 if arm in {"bare", "native"} else 3
         if len(record["history"]) != expected:
             raise ValueError("PROBE_ROUTE_INCOMPLETE: expected every declared artifact")
@@ -257,6 +285,58 @@ def run_probe_arm(plan: dict[str, Any], arm: str, repeat: int, root: Path, *,
     write_new(root / "result.json", record)
     write_new(root / "errata.json", {"operational": record["alarms"],
                                      "semantic_findings": "Unadjudicated; inspect original expressions, readings and criticisms"})
+    return record
+
+
+def _preflight_probe(plan: dict[str, Any], root: Path) -> tuple[Any, dict[str, Any]]:
+    """Check the actual frozen material before any arm can construct a provider."""
+    _verify_signed(plan["packet"]["corpus"], "corpus_id")
+    if plan["packet_id"] != plan["packet"]["packet_id"]:
+        raise ValueError("PACKET_ID_MISMATCH")
+    expected_packet = json.dumps(plan["packet"], ensure_ascii=False, sort_keys=True, indent=2)
+    if plan["packet_text"] != expected_packet:
+        raise ValueError("PACKET_TEXT_MISMATCH: exact canonical packet text required")
+    if plan["selected_language_text"] != selected_language(plan["packet"], plan["carrier"]):
+        raise ValueError("SELECTED_LANGUAGE_MISMATCH")
+    snapshots = _material_snapshots(plan)
+    if plan.get("material_snapshots") != snapshots:
+        raise ValueError("MATERIAL_SNAPSHOT_MISMATCH: regenerate and freeze the plan with exact source snapshots")
+    if not plan["arms"] or not set(plan["arms"]) <= ARMS or len(set(plan["arms"])) != len(plan["arms"]):
+        raise ValueError("INVALID_OR_DUPLICATE_ARMS")
+    if type(plan["repetitions"]) is not int or not 1 <= plan["repetitions"] <= 20:
+        raise ValueError("INVALID_REPETITIONS")
+    if plan["cycles"] != 1:
+        raise ValueError("FROZEN_PROBE_REQUIRES_ONE_CYCLE")
+    # Exercise every declared prompt path without producing model artifacts.
+    sentinel_history = [{"stage": "express", "text": "PREFLIGHT_EXPRESSION_PLACEHOLDER"},
+                        {"stage": "reinterpret", "text": "PREFLIGHT_READING_PLACEHOLDER"}]
+    for stage in STAGES:
+        stage_prompt(plan, stage, sentinel_history)
+    _settings(plan["settings"])
+    prepared = None
+    summary = {"status": "CONFIGURATION_PREFLIGHT_PASSED", "material_snapshots": snapshots,
+               "provider_constructions": 0, "model_calls": 0,
+               "scope": "Exact material identities, prompt construction, and declared Mini manifest compilation; no semantic assessment"}
+    if any(arm.startswith("mini") for arm in plan["arms"]):
+        from .language_mini import prepare_probe
+        prepared = prepare_probe(root / "preflight", **_probe_material(plan))
+        summary["mini"] = prepared.summary()
+    else:
+        summary["mini"] = {"status": "NOT_DECLARED"}
+    return prepared, summary
+
+
+def _blocked_probe_arm(plan: dict[str, Any], arm: str, repeat: int, root: Path,
+                       alarm: dict[str, Any]) -> dict[str, Any]:
+    root.mkdir(parents=True, exist_ok=False)
+    record = {"schema": "minireason.language-arm.v1", "arm": arm, "repeat": repeat,
+              "carrier": plan["carrier"], "plan_id": plan["plan_id"], "packet_id": plan["packet_id"],
+              "status": "CONFIGURATION_PREFLIGHT_FAILED", "history": [], "alarms": [alarm],
+              "resources": {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0},
+              "ended_at": _now(), "interpretation_status": "NOT_RUN_CONFIGURATION_FAILURE"}
+    write_new(root / "result.json", record)
+    write_new(root / "errata.json", {"operational": [alarm],
+        "semantic_findings": "No model call or semantic assessment occurred; configuration failure blocked the complete comparison"})
     return record
 
 
@@ -272,23 +352,47 @@ def run_probe_test(plan_path: Path, root: Path, *, jobs: int = 5,
     root.mkdir(parents=True, exist_ok=False)
     write_new(root / "plan.json", plan)
     write_new(root / "packet.json", plan["packet"])
+    write_new(root / "started.json", {"test_id": plan["test_id"], "plan_id": plan["plan_id"],
+                                     "started_at": _now(), "status": "CONFIGURATION_PREFLIGHT"})
     results = []
-    with ThreadPoolExecutor(max_workers=jobs) as pool:
-        futures = [pool.submit(run_probe_arm, plan, arm, repeat, root / f"{arm}-r{repeat:02d}", provider_factory=provider_factory)
-                   for repeat in range(1, plan["repetitions"] + 1) for arm in plan["arms"]]
-        for future in as_completed(futures):
-            results.append(future.result())
+    try:
+        prepared, preflight = _preflight_probe(plan, root)
+    except Exception as error:
+        alarm = {"code": "CONFIGURATION_PREFLIGHT_FAILED",
+                 "cause_code": getattr(error, "code", type(error).__name__), "detail": str(error)}
+        preflight = {"status": "CONFIGURATION_PREFLIGHT_FAILED", "alarms": [alarm],
+                     "provider_constructions": 0, "model_calls": 0}
+        for repeat in range(1, plan["repetitions"] + 1):
+            for arm in plan["arms"]:
+                results.append(_blocked_probe_arm(plan, arm, repeat, root / f"{arm}-r{repeat:02d}", alarm))
+    write_new(root / "preflight.json", preflight)
+    if preflight["status"] == "CONFIGURATION_PREFLIGHT_PASSED":
+        with ThreadPoolExecutor(max_workers=jobs) as pool:
+            futures = [pool.submit(run_probe_arm, plan, arm, repeat, root / f"{arm}-r{repeat:02d}",
+                                   provider_factory=provider_factory, prepared=prepared)
+                       for repeat in range(1, plan["repetitions"] + 1) for arm in plan["arms"]]
+            for future in as_completed(futures):
+                results.append(future.result())
     summary = {"schema": "minireason.language-test.v1", "test_id": plan["test_id"],
                "carrier": plan["carrier"], "plan_id": plan["plan_id"], "packet_id": plan["packet_id"],
-               "completed_at": _now(), "interpretation_status": "PENDING_SUBSTANTIVE_REVIEW",
+               "completed_at": _now(), "preflight": preflight,
+               "interpretation_status": "PENDING_SUBSTANTIVE_REVIEW" if preflight["status"] == "CONFIGURATION_PREFLIGHT_PASSED" else "NOT_RUN_CONFIGURATION_FAILURE",
                "arms": [{k: row[k] for k in ("arm", "repeat", "status", "resources")} for row in sorted(results, key=lambda row: (row["repeat"], row["arm"]))]}
     write_new(root / "summary.json", summary)
+    write_new(root / "errata.json", {"configuration": preflight.get("alarms", []),
+        "operational": [{"arm": row["arm"], "repeat": row["repeat"], **alarm}
+                        for row in results for alarm in row["alarms"]],
+        "semantic_findings": "Unadjudicated; configuration and transport outcomes are not semantic scores"})
     lines = [f"# {plan['test_id']}", "", plan["rationale"], "",
              "These are expression, reading and criticism records. No automated adequacy or creativity verdict has been issued.", "",
+             f"Configuration preflight: {preflight['status']}. Inspect preflight.json and errata.json for material identities and failures.", "",
              "| Arm | Repeat | Recording outcome | Calls | Completion tokens |", "|---|---:|---|---:|---:|"]
     for row in summary["arms"]:
         lines.append(f"| {row['arm']} | {row['repeat']} | {row['status']} | {row['resources']['calls']} | {row['resources']['completion_tokens']} |")
-    lines.extend(["", "Original conjectures and languages remain frozen. Inspect actual stage inputs to assess visibility and the artifact texts to assess expressive effects.", ""])
+    if preflight["status"] == "CONFIGURATION_PREFLIGHT_FAILED":
+        lines.extend(["", "The actual configuration failed before any provider was constructed. Every declared arm was blocked, and no model calls were made. This is a harness configuration failure; it supplies no evidence about model reasoning or the proposed languages.", ""])
+    else:
+        lines.extend(["", "Original conjectures and languages remain frozen. Inspect actual stage inputs to assess visibility and the artifact texts to assess expressive effects.", ""])
     (root / "REPORT.md").write_text("\n".join(lines))
     return summary
 
