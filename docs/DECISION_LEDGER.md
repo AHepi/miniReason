@@ -157,3 +157,7 @@ The frozen recoding condition completed all six arms and ten calls without opera
 ### D012 execution receipt — E018 follows verified E017
 
 Choice: after this record is verified on main, run the unchanged E018 different-reason plan. Why: the predeclared capacity criticism supplies a different relevant reason and preserves J’s tentative scope. Contribution: examines commitment-level selectivity rather than mandatory condition-specific conclusions. Same six controls, settings and five-worker limit; no retry, and no E019 dispatch until publication.
+
+### D012 publication outcome — E017 verified; E018 activation
+
+E017 record is verified on main at `8363c4cab3c39aab1223a884df109c4a5382b88a`, local `d951dd95b11e8e0d868193a4d87bf09391fdee07`, shared tree `ceb72f8d7daf35436138dd2ff6f02b6ede14ac99`. All 146 explicit paths were reviewed/scanned; original evidence bytes preserved. The unchanged E018 plan `ae1df87eba27569cc89035ce790f725cfe447e7dfb0accb1ccc6643e4349631c` is now activated under the predeclared D012 sequence. No provider or source change, hidden retry, or adaptive stimulus edit is made. Independent E018 review follows D019 with its own file and receipts.
