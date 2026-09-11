@@ -1,7 +1,9 @@
 # Current state
 
-Updated 2026-09-11. E001-reservation-critic completed all six comparison arms. Complete successful and failed observations, requests, public responses, Mini logs, resource usage and automatic errata are in [its records](../experiments/records/E001-reservation-critic/REPORT.md). This is a task calibration, not a creativity verdict. The record is being published immediately before any successor test.
+Updated 2026-09-11. E001-reservation-critic and E002-completion-allowance completed all six comparison arms. Their complete requests, public responses, Mini logs, resource usage and automatic errata are in experiments/records. These are task calibrations, not creativity verdicts. E002 changes only the completion ceiling; its record is published before any successor test.
 
-Initial source and plan were published through the authenticated GitHub connector at remote commit 4b50de5a9534ffd84275fab1a1a2e2b6eb29222b. Its tree matches local commit 7a9eed1b2d47703406899ac562674460070f5197. Git CLI has no write credential; connector publication uses a normal main ref update and verifies the exact tree.
+The active direction is the user’s frozen-proposal expressibility study: compare unrestricted prose, model-proposed Lean-compatible language and model-proposed non-Lean semantic classes. Correct semantic capture is not an initial admission gate. Study what language components permit, suppress or distort in expression, reinterpretation, criticism and later construction. Keep initial proposals frozen before gradually testing revision and epistemic integration. Prose remains legitimate throughout. See PURPOSE, PROBLEM_PROMOTION, the semantic guide and workflows.
 
-Next action: diagnose E001 failures and compare task and explanatory outcomes, then construct a deliberate successor. A proposed changed-assumption task is still preparation, not a completed experiment. Read PURPOSE, the method, task audit and errata before proceeding.
+Next action: finish original paired-language study implementation and preregistration, freeze the starting proposals and language packet, then run the controls and Mini with identical frozen materials. Each completed configuration test must be published immediately. Broader options remain open; no exhaustion or creativity claim is warranted.
+
+Git CLI lacks a write credential. Authorized publication uses the authenticated GitHub connector, a non-forced main ref update, and exact local/remote tree verification. The source h-EPI repository remains read-only.

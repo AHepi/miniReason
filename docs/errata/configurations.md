@@ -13,3 +13,7 @@ The independent task audit evaluated len(mul([0],100000)) in five charged expres
 ## CFG-003 — E001 completion allowance prevented native final output
 
 All three native-mode arms in E001 ended their first call at the 8192-token ceiling, with INCOMPLETE_GENERATION retained in their response and terminal records. No finished answer could be evaluated. The direct native and Mini-native comparison therefore remains unavailable in E001. E002 raises only that ceiling to 32768; it does not revise the reasoning template or withdraw the original failures.
+
+## CFG-004 — E002 separates some completion failures from nested encoding failures
+
+E002 retained the task and templates and raised the per-call completion ceiling to 32768. The direct native response finished and survived the recorded cases; the Mini-native first call still ended at the new ceiling. This one repetition cannot establish an inherent Mini penalty. Bare and Mini candidates repeated duplicate `do` keys in embedded program JSON. The staged native final retained extra data after the program JSON value. The staged non-native final failed outer-record parsing with extra data. Full call bytes and partition-specific errors are retained beside the record; none licenses dismissal of the accompanying prose. The nested JSON representation and the strict interpreter contract are part of the tested conjunction. Further encoding repair is deferred while the user’s expressibility study becomes the active task.

@@ -1,0 +1,322 @@
+{
+  "arms": [
+    "bare",
+    "native",
+    "matched",
+    "matched_native",
+    "mini",
+    "mini_native"
+  ],
+  "created_at": "2026-09-11T13:32:35.742060+00:00",
+  "cycles": 1,
+  "design_limit": "Bare/native are one-call practical baselines. Matched controls have equal stage counts and public feedback but different prompt serialization. Actual tokens are not matched.",
+  "feedback": true,
+  "holdout_sha256": "dab0fe3a05a39ba5b2500f29486b6aabdb3fa68eb5c64821264504428728b894",
+  "interpretation": "Task behavior under explicit conditions; no automatic ECS or creativity verdict",
+  "manifest": {
+    "cycles": {
+      "completion_tokens_per_call": 32768,
+      "max_calls": 3,
+      "max_completion_tokens": 98304,
+      "max_cycles": 1
+    },
+    "kinds": [
+      {
+        "commitment_call": "single",
+        "failure_policy": {
+          "action": "stop",
+          "retries": 0,
+          "tolerance": 0
+        },
+        "input_ports": [
+          {
+            "port_id": "problem",
+            "port_type": "problem",
+            "window": "all"
+          }
+        ],
+        "instruction": "Construct a general program and explain its mechanism. Derive the order of operations from the contract. State a discriminating failure case and what behavior must survive any revision.",
+        "kind_id": "minireason.proposal.v1",
+        "output_port": {
+          "port_id": "out",
+          "produces_kind": "minireason.proposal.v1"
+        },
+        "title": "Construct"
+      },
+      {
+        "commitment_call": "single",
+        "failure_policy": {
+          "action": "stop",
+          "retries": 0,
+          "tolerance": 0
+        },
+        "input_ports": [
+          {
+            "port_id": "candidate",
+            "port_type": "candidate",
+            "window": "this_cycle"
+          }
+        ],
+        "instruction": "Deterministic task interpreter.",
+        "kind_id": "minireason.execution.v1",
+        "output_port": {
+          "port_id": "out",
+          "produces_kind": "minireason.execution.v1"
+        },
+        "title": "Execute public cases"
+      },
+      {
+        "commitment_call": "single",
+        "failure_policy": {
+          "action": "stop",
+          "retries": 0,
+          "tolerance": 0
+        },
+        "input_ports": [
+          {
+            "port_id": "problem",
+            "port_type": "problem",
+            "window": "all"
+          },
+          {
+            "port_id": "candidate",
+            "port_type": "candidate",
+            "window": "this_cycle"
+          },
+          {
+            "port_id": "observations",
+            "port_type": "observations",
+            "window": "this_cycle"
+          }
+        ],
+        "instruction": "Inspect the actual program, the prose account, and the execution evidence separately. Identify a concrete mismatch if one exists, name the clause and smallest distinguishing case, and explain the cause. An interpreter error is a construction or translation failure, not proof the prose account is false. If no defect is supported, say unresolved or no demonstrated defect; do not invent a fault. Your commitments should be ordinary prose, not a replacement program.",
+        "kind_id": "minireason.criticism.v1",
+        "output_port": {
+          "port_id": "out",
+          "produces_kind": "minireason.criticism.v1"
+        },
+        "title": "Criticize"
+      },
+      {
+        "commitment_call": "single",
+        "failure_policy": {
+          "action": "stop",
+          "retries": 0,
+          "tolerance": 0
+        },
+        "input_ports": [
+          {
+            "port_id": "problem",
+            "port_type": "problem",
+            "window": "all"
+          },
+          {
+            "port_id": "candidate",
+            "port_type": "candidate",
+            "window": "this_cycle"
+          },
+          {
+            "port_id": "criticism",
+            "port_type": "criticism",
+            "window": "this_cycle"
+          },
+          {
+            "port_id": "observations",
+            "port_type": "observations",
+            "window": "this_cycle"
+          }
+        ],
+        "instruction": "Return the complete executable program in commitments and its explanatory account in body. Resolve the criticism by a causal repair, or retain the candidate if the criticism fails. State the operative change, why it addresses the actual failure, and which previously successful behavior is preserved. You may criticize the task interpretation or checker without being required to agree with them.",
+        "kind_id": "mini.verdict.v1",
+        "output_port": {
+          "port_id": "out",
+          "produces_kind": "mini.verdict.v1"
+        },
+        "title": "Return a completed revision"
+      }
+    ],
+    "manifest_id": "minireason.reservation_replay_v1.critic_revision_v1.feedback-True.return-True.cycles-1",
+    "port_types": [
+      {
+        "draws_from": {
+          "artifact_kinds": [
+            "minireason.proposal.v1"
+          ]
+        },
+        "port_type": "candidate",
+        "render": {
+          "header": "Candidate and operative program",
+          "rule": "list_bodies_and_commitments"
+        }
+      },
+      {
+        "draws_from": {
+          "artifact_kinds": [
+            "minireason.execution.v1"
+          ]
+        },
+        "port_type": "observations",
+        "render": {
+          "header": "Recorded executable observations",
+          "rule": "list_bodies_and_commitments"
+        }
+      },
+      {
+        "draws_from": {
+          "artifact_kinds": [
+            "minireason.criticism.v1"
+          ]
+        },
+        "port_type": "criticism",
+        "render": {
+          "header": "Criticism and its grounds",
+          "rule": "list_bodies_and_commitments"
+        }
+      },
+      {
+        "draws_from": {
+          "artifact_kinds": [
+            "mini.verdict.v1"
+          ]
+        },
+        "port_type": "previous",
+        "render": {
+          "header": "Previous completed revision",
+          "rule": "list_bodies_and_commitments"
+        }
+      }
+    ],
+    "problem": "Build an executable account of a replicated stock-reservation snapshot.\nDeliveries are an unordered bag of immutable event records. The same record may be delivered\nmany times. Each booking has exactly one immutable item. For each booking, a strictly higher\ninteger revision replaces ALL lower revisions. A booking/revision pair never has conflicting\ncontents. The latest revision may be a hold or release. A latest hold is active exactly when\nexpires_at > input.now; a latest release reserves zero. An expired latest hold does NOT make an\nolder unexpired hold reappear. Revision order, not delivery order, determines the latest event.\nQuantity is the total quantity of that booking version, never an incremental delta.\nStock is input.stock, a list of {item, capacity}; item names are unique. Events only name\nlisted stock items. Produce a list in ascending item-name order, including items with no events:\n[{\"item\":NAME,\"reserved\":TOTAL_ACTIVE_LATEST_QUANTITY,\"available\":CAPACITY-TOTAL},...].\nOversubscription must be visible as negative availability; never clamp, invent rejection order,\nor silently discard a booking. Capacity, quantities, revisions, and logical times are integers.\nThe task is to derive one general procedure from these obligations, not memorize examples.\nExplain why replay, reordering, expiry, and later cancellation interact correctly. State what\nwould falsify your account and which previously successful behavior a revision preserves.\n\nWrite a JSON expression program in the commitments string, optionally wrapped as\n{\"program\": EXPR}. The body is unrestricted prose: explain the mechanism, assumptions,\nwhich observations would defeat it, and what successful behavior a change must preserve.\nAn expression is a JSON literal (numbers, strings, booleans, null, lists), {\"var\":\"name\"},\nor an operation object. Literal dictionaries use {\"op\":\"object\",\"fields\":{\"key\":EXPR}}.\nInput is {\"var\":\"input\"}. The available operations and exact fields are:\nget: value EXPR, key EXPR, optional default EXPR (missing keys otherwise fail).\nif: test EXPR, then EXPR, else EXPR (only selected branch evaluates).\nlet: name STRING, value EXPR, do EXPR (lexical scope).\nmap/filter: items EXPR, as STRING, do EXPR (filter do is boolean).\nflatmap: same fields; do returns a list; concatenate the lists.\nunique: items EXPR (first occurrence order; values compared structurally).\nsort: items EXPR (ascending numbers or strings).\nmax_by/min_by: items EXPR, as STRING, key EXPR (first tie wins; empty fails).\nsum/len/not: value EXPR. sum takes a list of numbers; len a list/string/dictionary.\nadd/sub/mul/eq/ne/lt/le/gt/ge/and/or/in: args [EXPR, EXPR]. Arithmetic takes numbers\nonly (never booleans, strings, or lists). Boolean operations and if require booleans.\nand/or short circuit. Output values must match the task's declared JSON types exactly.\nlist: items [EXPR,...] (ordinary JSON lists also evaluate their elements).\nEvery field is exact: no Python, string interpolation, implicit lambdas, or unknown operators.\nPrograms are limited to 30,000 expression/collection work units, 100 nesting levels,\n4,000 syntax nodes, 4,096 items per collection, 256-bit integers and finite floats,\nand 20,000 expanded output nodes. Errors are\nexecution failures, not refutations of prose. Do not encode the supplied examples as a lookup.\n\nPublic examples:\n[\n  {\n    \"name\": \"empty_and_unused_stock\",\n    \"input\": {\n      \"now\": 10,\n      \"stock\": [\n        {\n          \"item\": \"z\",\n          \"capacity\": 3\n        },\n        {\n          \"item\": \"a\",\n          \"capacity\": 8\n        }\n      ],\n      \"events\": []\n    },\n    \"expected\": [\n      {\n        \"item\": \"a\",\n        \"reserved\": 0,\n        \"available\": 8\n      },\n      {\n        \"item\": \"z\",\n        \"reserved\": 0,\n        \"available\": 3\n      }\n    ]\n  },\n  {\n    \"name\": \"duplicate_delivery_is_not_extra_stock\",\n    \"input\": {\n      \"now\": 10,\n      \"stock\": [\n        {\n          \"item\": \"widget\",\n          \"capacity\": 10\n        }\n      ],\n      \"events\": [\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        },\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        },\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        }\n      ]\n    },\n    \"expected\": [\n      {\n        \"item\": \"widget\",\n        \"reserved\": 3,\n        \"available\": 7\n      }\n    ]\n  }\n]",
+    "schema_version": "creib.mini.manifest.v1",
+    "sources": [
+      {
+        "source_id": "task-contract",
+        "text": "Build an executable account of a replicated stock-reservation snapshot.\nDeliveries are an unordered bag of immutable event records. The same record may be delivered\nmany times. Each booking has exactly one immutable item. For each booking, a strictly higher\ninteger revision replaces ALL lower revisions. A booking/revision pair never has conflicting\ncontents. The latest revision may be a hold or release. A latest hold is active exactly when\nexpires_at > input.now; a latest release reserves zero. An expired latest hold does NOT make an\nolder unexpired hold reappear. Revision order, not delivery order, determines the latest event.\nQuantity is the total quantity of that booking version, never an incremental delta.\nStock is input.stock, a list of {item, capacity}; item names are unique. Events only name\nlisted stock items. Produce a list in ascending item-name order, including items with no events:\n[{\"item\":NAME,\"reserved\":TOTAL_ACTIVE_LATEST_QUANTITY,\"available\":CAPACITY-TOTAL},...].\nOversubscription must be visible as negative availability; never clamp, invent rejection order,\nor silently discard a booking. Capacity, quantities, revisions, and logical times are integers.\nThe task is to derive one general procedure from these obligations, not memorize examples.\nExplain why replay, reordering, expiry, and later cancellation interact correctly. State what\nwould falsify your account and which previously successful behavior a revision preserves.\n\nWrite a JSON expression program in the commitments string, optionally wrapped as\n{\"program\": EXPR}. The body is unrestricted prose: explain the mechanism, assumptions,\nwhich observations would defeat it, and what successful behavior a change must preserve.\nAn expression is a JSON literal (numbers, strings, booleans, null, lists), {\"var\":\"name\"},\nor an operation object. Literal dictionaries use {\"op\":\"object\",\"fields\":{\"key\":EXPR}}.\nInput is {\"var\":\"input\"}. The available operations and exact fields are:\nget: value EXPR, key EXPR, optional default EXPR (missing keys otherwise fail).\nif: test EXPR, then EXPR, else EXPR (only selected branch evaluates).\nlet: name STRING, value EXPR, do EXPR (lexical scope).\nmap/filter: items EXPR, as STRING, do EXPR (filter do is boolean).\nflatmap: same fields; do returns a list; concatenate the lists.\nunique: items EXPR (first occurrence order; values compared structurally).\nsort: items EXPR (ascending numbers or strings).\nmax_by/min_by: items EXPR, as STRING, key EXPR (first tie wins; empty fails).\nsum/len/not: value EXPR. sum takes a list of numbers; len a list/string/dictionary.\nadd/sub/mul/eq/ne/lt/le/gt/ge/and/or/in: args [EXPR, EXPR]. Arithmetic takes numbers\nonly (never booleans, strings, or lists). Boolean operations and if require booleans.\nand/or short circuit. Output values must match the task's declared JSON types exactly.\nlist: items [EXPR,...] (ordinary JSON lists also evaluate their elements).\nEvery field is exact: no Python, string interpolation, implicit lambdas, or unknown operators.\nPrograms are limited to 30,000 expression/collection work units, 100 nesting levels,\n4,000 syntax nodes, 4,096 items per collection, 256-bit integers and finite floats,\nand 20,000 expanded output nodes. Errors are\nexecution failures, not refutations of prose. Do not encode the supplied examples as a lookup.\n\nPublic examples:\n[\n  {\n    \"name\": \"empty_and_unused_stock\",\n    \"input\": {\n      \"now\": 10,\n      \"stock\": [\n        {\n          \"item\": \"z\",\n          \"capacity\": 3\n        },\n        {\n          \"item\": \"a\",\n          \"capacity\": 8\n        }\n      ],\n      \"events\": []\n    },\n    \"expected\": [\n      {\n        \"item\": \"a\",\n        \"reserved\": 0,\n        \"available\": 8\n      },\n      {\n        \"item\": \"z\",\n        \"reserved\": 0,\n        \"available\": 3\n      }\n    ]\n  },\n  {\n    \"name\": \"duplicate_delivery_is_not_extra_stock\",\n    \"input\": {\n      \"now\": 10,\n      \"stock\": [\n        {\n          \"item\": \"widget\",\n          \"capacity\": 10\n        }\n      ],\n      \"events\": [\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        },\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        },\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        }\n      ]\n    },\n    \"expected\": [\n      {\n        \"item\": \"widget\",\n        \"reserved\": 3,\n        \"available\": 7\n      }\n    ]\n  }\n]"
+      }
+    ],
+    "stages": [
+      {
+        "kind_id": "minireason.proposal.v1",
+        "ports": [
+          "problem"
+        ],
+        "stage_id": "conjecture"
+      },
+      {
+        "kind_id": "minireason.execution.v1",
+        "ports": [
+          "candidate"
+        ],
+        "seat": "machine",
+        "stage_id": "execute"
+      },
+      {
+        "kind_id": "minireason.criticism.v1",
+        "ports": [
+          "problem",
+          "candidate",
+          "observations"
+        ],
+        "stage_id": "criticise"
+      },
+      {
+        "kind_id": "mini.verdict.v1",
+        "ports": [
+          "problem",
+          "candidate",
+          "criticism",
+          "observations"
+        ],
+        "stage_id": "revise"
+      },
+      {
+        "end": true,
+        "stage_id": "end"
+      }
+    ]
+  },
+  "manifest_sha256": "fec6f8537b20b9be4f2cbc48bff3d3e4520ebf6812594b60e276358c3a7fe4e0",
+  "max_concurrent_calls": 5,
+  "max_tokens_per_call": 32768,
+  "output_rule": "last completed revise artifact for Mini; last answer for direct arms",
+  "parent": "E001-reservation-critic",
+  "rationale": "E001 native-mode arms terminated at exactly their 8192-token ceilings before complete answers. Raise only the per-call ceiling to 32768, retaining model, reasoning effort, task, original template, wiring and all six arms. This tests truncation as the cause of unusable native output. Non-native repeats also expose whether prior format failures recur; no template repair is credited to this resource change.",
+  "repetitions": 1,
+  "return_path": true,
+  "schema": "minireason.plan.v1",
+  "source": {
+    "files": {
+      "pyproject.toml": "2b1f46ecdd130fb0e77b2c2b0ba9f1174f7388702a370eafd5fdbfe050b74b16",
+      "src/creib/__init__.py": "e801c50509ac08640b7e4714982e74eb09568185ee5b82751741e59b5ac95336",
+      "src/creib/canonical.py": "0ab53379e392de837292b1d10efa0ec87bf647d1880487b2d7aaefaeb35d5077",
+      "src/creib/errors.py": "301b5e60fb00ae8c1a7b51944d9784843bd9feaa7f3d7fa9349d008c6aeb06c2",
+      "src/creib/forge/__init__.py": "965a348f651d05c23745a18d493aa5cf391ca79a974e00e9309d72f3407b6c22",
+      "src/creib/forge/conformance/__init__.py": "d388d67fb8eab061be58d0c5cb4e1ec4313a94f58556e13f1fb729fb0eb544b0",
+      "src/creib/forge/conformance/common.py": "64f6015c0bb7a895645315ffb1182f818d9c565fe09a029e04f755195ba92477",
+      "src/creib/forge/conformance/corpus.py": "a04a74d2b5ad08a4235fc54746c2bf0cf3812de0fde8ba3b2d947a786f2f141d",
+      "src/creib/forge/conformance/data/schema/conformance-appraisal.schema.json": "158d7a74a4a65dde365db2979fa04d780c5cf18ba91e799d7173b3d86167273d",
+      "src/creib/forge/conformance/data/schema/conformance-claims.schema.json": "1768b7a76095cd66611d1b3a419369498daf73c903402b5509d3c2a01264109e",
+      "src/creib/forge/conformance/data/schema/conformance-corpus.schema.json": "202f37ca1f4273b52795224b4e730933602ad39d5ce2fc93ebdffb91a22a5cca",
+      "src/creib/forge/conformance/data/schema/conformance-observation.schema.json": "e28966d0fe11873460b3b2e1e52b9da26cca7f2a9c0be095a3cb9eb59b534cfc",
+      "src/creib/forge/conformance/data/schema/conformance-observation.v2.schema.json": "2e74c94984c319196271fc868fd0dc2bdd7c84b27b485a0990aed4955f049885",
+      "src/creib/forge/conformance/data/schema/conformance-pilot-config.schema.json": "fca044011e6c05edb6a16276764ee0781afd824435d56d9f6e5b35bef45bb2c7",
+      "src/creib/forge/conformance/data/schema/conformance-run.schema.json": "d14cda04a698f26987882233e2bd7a9af52cf824efef3927cdefd7091a12411f",
+      "src/creib/forge/conformance/data/schema/conformance-run.v2.schema.json": "800718d762babc4f6e11d4ed03683548c45f2d33aa64c465eb271a8653b2ef8b",
+      "src/creib/forge/conformance/executor.py": "98f30e3d65786c3cc1dec1ea1151f1e092e7670ec1a2b93b663dce06b492e242",
+      "src/creib/forge/conformance/families.py": "3ffa952c0ba50df6f3273d73075bf977ade720d0bd87f3ba375fd66d280dd496",
+      "src/creib/forge/conformance/oracle.py": "dd726af4d4c073ee0881bb27127a4fb5aae8544381831a63202bc2d436fe0a04",
+      "src/creib/forge/conformance/records.py": "34be9d7467ca143eafdd1be0713fb711783cae99b8eb58eb7afdad990adb33d4",
+      "src/creib/forge/conformance/routing.py": "0bb2eb0b0f9482283476c6aff45ff0cb03006c92be7b529a85a8dd7c0df256ab",
+      "src/creib/forge/conformance/spec.py": "2c96e669de1c74c45e07cd28251831b6f9bbbf67aecb140140b1d9f0a9fad3f1",
+      "src/creib/forge/conformance/units.py": "fcfdae70ec3aedcd7b7c221d6438867c05326cecb8b6d573ae3cfe2327671248",
+      "src/creib/forge/mini/__init__.py": "c9369f7df906e8d9bd7fcb3fc39fdc628568839bfe3eccbcc62c1ddb1bd28fd2",
+      "src/creib/forge/mini/adjudication.py": "3df75ed262dbc9c8139a746ed2da22803a651bd166c3991ded80c90860432f83",
+      "src/creib/forge/mini/alarms.py": "e93348bf62dbd825a5c62c948ca75bff27176e6c131adad6042cf45b9979a941",
+      "src/creib/forge/mini/attention.py": "596708bda3f493a079299605502cf9a554e33d3b6e3977a884127dece4eaa8c0",
+      "src/creib/forge/mini/blindspot.py": "902e3843210dc8f7c5c7e26a877de5766487ae6a956a99b7054a0b4236335d28",
+      "src/creib/forge/mini/buildtest.py": "8f0767bb70839cd27bbdb5214ad190415c3f4cd09c5c19f92f0f6ed06c393c12",
+      "src/creib/forge/mini/campaign.py": "9d59a6bae15a269266a0f8588e2dd3dc48e5b0e453e3eafc426b5fb903e95689",
+      "src/creib/forge/mini/common.py": "03430d7a059ed10f7d57b2186f0d5c348064fa496200958dfc19319cd847cd6a",
+      "src/creib/forge/mini/compare.py": "8d59fcbf990e870bae6fe19ce2d87a9e62c8f1a053b84f7162531c563f6c78c1",
+      "src/creib/forge/mini/configspace.py": "8eb336c1f360cd8dd2131769df13a9e97b29349bca4f87d268deba11fb5f6ffd",
+      "src/creib/forge/mini/conformance_kernels.py": "6705b6c3e297b8f0c6e7b1519de4252a4af43b0545874c388ee513e55b6ddeb4",
+      "src/creib/forge/mini/data/policies/mini.policy.default.v1.json": "63e498b6b046add201e55dce961d50e5f48742433a3b3d1cb064faad4faf8892",
+      "src/creib/forge/mini/data/schema/mini-event.schema.json": "969e1da2cf0dbd1f7c77a90fdbc02e43bd333d6c1623691d35ddd6ded6b06ac9",
+      "src/creib/forge/mini/data/schema/mini-event.v1.schema.json": "c80c1b84b3204563279ac985eb3dcfffab1498c4104e8f5ac936b9dffed81d9b",
+      "src/creib/forge/mini/data/schema/mini-kind.schema.json": "f5380d30d2668cc74657ba7414bdb99bb57744737933a9ae749bcf21d5b2a302",
+      "src/creib/forge/mini/data/schema/mini-manifest.schema.json": "bc9eaa04bbb3b37e5d5f6eab523af9e25e446dbad378ff2093813ac5300af716",
+      "src/creib/forge/mini/data/schema/mini-policy.schema.json": "8994b0f01ce60ccbf6fb0138b947adc52fcec918823101c19f4419cc6cf47e42",
+      "src/creib/forge/mini/evidence.py": "0737a343afca249ca6c5196d0426add855097a2084c0b82713f8dfef7b8a9095",
+      "src/creib/forge/mini/executor.py": "2ce5ab3e736759039a7cd0774775a7bfe618c0b27b04204333b65cf33da81400",
+      "src/creib/forge/mini/failures.py": "f424834b15b398367d2a34eb2ad7e3dcb4167a7f6b5a6f7636a556376ca42583",
+      "src/creib/forge/mini/formats.py": "808e8cd6e466ac047dba7d627e90bc1496815c49223e737ce3eea062605d8692",
+      "src/creib/forge/mini/kinds.py": "3c9113dca118146c20ccabe36369925785d7f26bb42db05a88d74779be7e20ff",
+      "src/creib/forge/mini/log.py": "bc9039ca08a2e6150b5cb75cf485da579718cdac4370b4aa70df260184aca732",
+      "src/creib/forge/mini/machines.py": "7ba980561b368e83b92d9afe8cd417b8583836e2fe18c7953d2d40c0b62e14bd",
+      "src/creib/forge/mini/manifest.py": "8c4af62e3d2aac913a4d7248248b6d43b4a757084c4959eaa7285d0e0301f995",
+      "src/creib/forge/mini/openkernels.py": "8110f805c70074dcf30a6e4f47ae232dbd9b9bacacf652193ced9dc29d0feded",
+      "src/creib/forge/mini/policy.py": "e3a8937bdf47a391f6bbdb21592397cedcc3e63f02b3289053480bab6981807f",
+      "src/creib/forge/mini/ports.py": "9ce9cdcc229625b36e901533de8e7498946ca19420b1e1a1b67983ffb8df865e",
+      "src/creib/forge/mini/report.py": "d0786c7be5c710b532062c04f5173374292e9d15acfff0ea81eda9c8cf1be56a",
+      "src/creib/forge/mini/routing.py": "fbddc8668ea2a390253de9a752082ef4aa20a6c2bd2ebbf5d7ebcdde50985891",
+      "src/creib/forge/mini/runner.py": "f0f1f5b20e2c50c1a7d1976a63deb6a84a2c5b1ea593918053a52f20e8b7caab",
+      "src/creib/forge/mini/signals.py": "3649ffbefa4ecc24f234d76a74d3c763e2905c7cc9042c1ba2894ad4b88ce630",
+      "src/creib/forge/mini/stops.py": "1981d947ac10ca12b785d3268d8b1e0c18cf3bb3535c3614eaa010d1aeb81bfc",
+      "src/creib/forge/mini/usetest.py": "dbbcd156ef31d770fdc9af677030df0a0fd0ca6c124c8706b958ac269867e41f",
+      "src/creib/forge/mini/windows.py": "cbd606e5627dd240b4e14d84f45c504713e8059686fdbb74c370458d4c364521",
+      "src/creib/forge/schema_validation.py": "5abbe556e8dfcdb51f8d8a0300beee0fb87acb8a45bb13a59aa4a7794618fa6c",
+      "src/creib/strict_json.py": "62b198a40075bc3addddd676beab0a0b1ed8b841a6cfff51c6970b3172e5eab8",
+      "src/minireason/__init__.py": "2903ba49cd440743145f7507e93d802a1b37c868a7e1f25d69032fbea1084867",
+      "src/minireason/campaign.py": "70fc637212c50cda6e9fa0e212f171c1f5d799678b3cfb0c91f4116fcb25e182",
+      "src/minireason/provider.py": "d335fc55879d13cf7ecebf27cd94f5278d45c3905e5bb161708419a14dd35e2e",
+      "src/minireason/tasks.py": "e422fcb897a68cebf5229b97bc1e98c3853478fbb45fd4a440dd8714e6397e14",
+      "src/minireason/templates.py": "399433f83644ac3bdf50151552a52599600e745cd327c99a2020baa7d279ea9a"
+    },
+    "git_commit": "4f12e3a68ed4db9a3f99609ae00ac819bad4940c",
+    "source_sha256": "0a8eb0a6e5784e836cbe1cbd07967a4d62bbdbf03edcff8fbe09e8c7e78ca05d"
+  },
+  "task_id": "reservation_replay_v1",
+  "task_prompt_sha256": "fb9feb8ef6358fa3879ab2cc2dca165dfed19df4acb135b55cab4c54171d396b",
+  "template_id": "critic_revision_v1",
+  "test_id": "E002-completion-allowance"
+}

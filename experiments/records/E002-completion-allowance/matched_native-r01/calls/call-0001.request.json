@@ -1,0 +1,45 @@
+{
+  "coordinate": {
+    "cycle": 1,
+    "stage": "conjecture"
+  },
+  "request": {
+    "max_tokens": 32768,
+    "messages": [
+      {
+        "content": "You fill one artifact. Return JSON only, carrying \"body\" and \"commitments\", both strings. \"body\" is what you have to say. \"commitments\" is what you are committing to if it is taken up. If evidence blocks are listed, you may add \"citations\": each names a block id and quotes that block's own words exactly.\nReturn one JSON object conforming to: {\"properties\": {\"about\": {\"items\": {\"type\": \"string\"}, \"type\": \"array\"}, \"answers\": {\"items\": {\"type\": \"string\"}, \"type\": \"array\"}, \"body\": {\"type\": \"string\"}, \"citations\": {\"items\": {\"properties\": {\"block\": {\"minLength\": 1, \"type\": \"string\"}, \"quote\": {\"minLength\": 1, \"type\": \"string\"}}, \"required\": [\"block\", \"quote\"], \"type\": \"object\"}, \"type\": \"array\"}, \"commitments\": {\"type\": \"string\"}}, \"required\": [\"body\", \"commitments\"], \"type\": \"object\"}",
+        "role": "system"
+      },
+      {
+        "content": "Build an executable account of a replicated stock-reservation snapshot.\nDeliveries are an unordered bag of immutable event records. The same record may be delivered\nmany times. Each booking has exactly one immutable item. For each booking, a strictly higher\ninteger revision replaces ALL lower revisions. A booking/revision pair never has conflicting\ncontents. The latest revision may be a hold or release. A latest hold is active exactly when\nexpires_at > input.now; a latest release reserves zero. An expired latest hold does NOT make an\nolder unexpired hold reappear. Revision order, not delivery order, determines the latest event.\nQuantity is the total quantity of that booking version, never an incremental delta.\nStock is input.stock, a list of {item, capacity}; item names are unique. Events only name\nlisted stock items. Produce a list in ascending item-name order, including items with no events:\n[{\"item\":NAME,\"reserved\":TOTAL_ACTIVE_LATEST_QUANTITY,\"available\":CAPACITY-TOTAL},...].\nOversubscription must be visible as negative availability; never clamp, invent rejection order,\nor silently discard a booking. Capacity, quantities, revisions, and logical times are integers.\nThe task is to derive one general procedure from these obligations, not memorize examples.\nExplain why replay, reordering, expiry, and later cancellation interact correctly. State what\nwould falsify your account and which previously successful behavior a revision preserves.\n\nWrite a JSON expression program in the commitments string, optionally wrapped as\n{\"program\": EXPR}. The body is unrestricted prose: explain the mechanism, assumptions,\nwhich observations would defeat it, and what successful behavior a change must preserve.\nAn expression is a JSON literal (numbers, strings, booleans, null, lists), {\"var\":\"name\"},\nor an operation object. Literal dictionaries use {\"op\":\"object\",\"fields\":{\"key\":EXPR}}.\nInput is {\"var\":\"input\"}. The available operations and exact fields are:\nget: value EXPR, key EXPR, optional default EXPR (missing keys otherwise fail).\nif: test EXPR, then EXPR, else EXPR (only selected branch evaluates).\nlet: name STRING, value EXPR, do EXPR (lexical scope).\nmap/filter: items EXPR, as STRING, do EXPR (filter do is boolean).\nflatmap: same fields; do returns a list; concatenate the lists.\nunique: items EXPR (first occurrence order; values compared structurally).\nsort: items EXPR (ascending numbers or strings).\nmax_by/min_by: items EXPR, as STRING, key EXPR (first tie wins; empty fails).\nsum/len/not: value EXPR. sum takes a list of numbers; len a list/string/dictionary.\nadd/sub/mul/eq/ne/lt/le/gt/ge/and/or/in: args [EXPR, EXPR]. Arithmetic takes numbers\nonly (never booleans, strings, or lists). Boolean operations and if require booleans.\nand/or short circuit. Output values must match the task's declared JSON types exactly.\nlist: items [EXPR,...] (ordinary JSON lists also evaluate their elements).\nEvery field is exact: no Python, string interpolation, implicit lambdas, or unknown operators.\nPrograms are limited to 30,000 expression/collection work units, 100 nesting levels,\n4,000 syntax nodes, 4,096 items per collection, 256-bit integers and finite floats,\nand 20,000 expanded output nodes. Errors are\nexecution failures, not refutations of prose. Do not encode the supplied examples as a lookup.\n\nPublic examples:\n[\n  {\n    \"name\": \"empty_and_unused_stock\",\n    \"input\": {\n      \"now\": 10,\n      \"stock\": [\n        {\n          \"item\": \"z\",\n          \"capacity\": 3\n        },\n        {\n          \"item\": \"a\",\n          \"capacity\": 8\n        }\n      ],\n      \"events\": []\n    },\n    \"expected\": [\n      {\n        \"item\": \"a\",\n        \"reserved\": 0,\n        \"available\": 8\n      },\n      {\n        \"item\": \"z\",\n        \"reserved\": 0,\n        \"available\": 3\n      }\n    ]\n  },\n  {\n    \"name\": \"duplicate_delivery_is_not_extra_stock\",\n    \"input\": {\n      \"now\": 10,\n      \"stock\": [\n        {\n          \"item\": \"widget\",\n          \"capacity\": 10\n        }\n      ],\n      \"events\": [\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        },\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        },\n        {\n          \"booking\": \"b\",\n          \"revision\": 1,\n          \"kind\": \"hold\",\n          \"quantity\": 3,\n          \"expires_at\": 20,\n          \"item\": \"widget\"\n        }\n      ]\n    },\n    \"expected\": [\n      {\n        \"item\": \"widget\",\n        \"reserved\": 3,\n        \"available\": 7\n      }\n    ]\n  }\n]\nConstruct a general program and explain its mechanism. Derive the order of operations from the contract. State a discriminating failure case and what behavior must survive any revision.",
+        "role": "user"
+      }
+    ],
+    "model": "deepseek-flash",
+    "reasoning_effort": "high",
+    "response_format": {
+      "type": "json_object"
+    },
+    "stream": false,
+    "thinking": {
+      "type": "enabled"
+    }
+  },
+  "request_sha256": "d74afaf125397f3dfb0d91aae6d19f168448b40059682ca44a1d64482e0193d6",
+  "schema_version": "minireason.call.v1",
+  "settings": {
+    "base_url": "https://api.deepseek.com/v1",
+    "key_env": "DEEPSEEK_API_KEY",
+    "kind": "deepseek-chat",
+    "max_tokens": 32768,
+    "model": "deepseek-flash",
+    "native_reasoning_text_persisted": false,
+    "reasoning_effort": "high",
+    "seed": null,
+    "temperature": "provider-default",
+    "thinking": true,
+    "timeout_seconds": 180,
+    "top_p": "provider-default"
+  },
+  "started_at": "2026-09-11T13:32:41.448301+00:00"
+}

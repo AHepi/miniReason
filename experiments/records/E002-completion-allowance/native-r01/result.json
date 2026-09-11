@@ -1,0 +1,530 @@
+{
+  "alarms": [],
+  "arm": "native",
+  "ended_at": "2026-09-11T13:34:05.452679+00:00",
+  "final": {
+    "body": "The snapshot is computed by reducing the unordered event bag to one authoritative event per booking. For each booking name obtained by unique(events.booking), I take max_by over all events with that booking on integer revision. This makes delivery order irrelevant and collapses duplicate deliveries of the same revision to one record. That single latest event is then tested: only a latest event with kind hold and expires_at > now contributes; a release contributes zero, and an expired hold contributes zero without resurrecting any older hold. I sum the quantity of each contributing event per stock item (quantity is the total for that booking version, not a delta). Finally I sort stock item names ascending and emit every stock item, including those with no events, as item, reserved, available=capacity-reserved. Assumptions: booking/revision is unique and conflicting contents never occur; revision is an ordered integer; hold events have expires_at and release events need not; item names in events are unique in stock; quantities/capacities are integers; now is an integer. Falsifiers: a same booking/revision pair with conflicting quantity/item/kind/expires_at; a release that should reserve something; an expired hold that should reactivate an older hold; duplicate deliveries counted twice; events referring to unlisted items; delta semantics for quantity; non-integer or non-unique capacities/items; or delivery order affecting the latest revision. A higher revision preserves the invariant that earlier revisions are shadowed: it must not change any booking that has no higher revision, and it must leave all other bookings' latest-event results and the final per-item sums unchanged except for that booking's contribution.",
+    "commitments": "{\"program\":{\"op\":\"let\",\"name\":\"stock\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"input\"},\"key\":\"stock\"},\"do\":{\"op\":\"let\",\"name\":\"now\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"input\"},\"key\":\"now\"},\"do\":{\"op\":\"let\",\"name\":\"events\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"input\"},\"key\":\"events\"},\"do\":{\"op\":\"let\",\"name\":\"bookings\",\"value\":{\"op\":\"unique\",\"items\":{\"op\":\"map\",\"items\":{\"var\":\"events\"},\"as\":\"e\",\"do\":{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"booking\"}}},\"do\":{\"op\":\"let\",\"name\":\"latest_events\",\"value\":{\"op\":\"map\",\"items\":{\"var\":\"bookings\"},\"as\":\"b\",\"do\":{\"op\":\"max_by\",\"items\":{\"op\":\"filter\",\"items\":{\"var\":\"events\"},\"as\":\"e\",\"do\":{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"booking\"},{\"var\":\"b\"}]}},\"as\":\"e\",\"key\":{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"revision\"}}},\"do\":{\"op\":\"let\",\"name\":\"active_holds\",\"value\":{\"op\":\"filter\",\"items\":{\"var\":\"latest_events\"},\"as\":\"e\",\"do\":{\"op\":\"and\",\"args\":[{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"kind\"},\"hold\"]},{\"op\":\"gt\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"expires_at\"},{\"var\":\"now\"}]}]}},\"do\":{\"op\":\"let\",\"name\":\"item_names\",\"value\":{\"op\":\"sort\",\"items\":{\"op\":\"map\",\"items\":{\"var\":\"stock\"},\"as\":\"s\",\"do\":{\"op\":\"get\",\"value\":{\"var\":\"s\"},\"key\":\"item\"}}},\"do\":{\"op\":\"map\",\"items\":{\"var\":\"item_names\"},\"as\":\"n\",\"do\":{\"op\":\"let\",\"name\":\"entry\",\"value\":{\"op\":\"max_by\",\"items\":{\"op\":\"filter\",\"items\":{\"var\":\"stock\"},\"as\":\"s\",\"do\":{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"s\"},\"key\":\"item\"},{\"var\":\"n\"}]}},\"as\":\"s\",\"key\":{\"op\":\"get\",\"value\":{\"var\":\"s\"},\"key\":\"item\"}},\"do\":{\"op\":\"let\",\"name\":\"capacity\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"entry\"},\"key\":\"capacity\"},\"do\":{\"op\":\"let\",\"name\":\"reserved\",\"value\":{\"op\":\"sum\",\"value\":{\"op\":\"map\",\"items\":{\"op\":\"filter\",\"items\":{\"var\":\"active_holds\"},\"as\":\"h\",\"do\":{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"h\"},\"key\":\"item\"},{\"var\":\"n\"}]}},\"as\":\"h\",\"do\":{\"op\":\"get\",\"value\":{\"var\":\"h\"},\"key\":\"quantity\"}}},\"do\":{\"op\":\"let\",\"name\":\"available\",\"value\":{\"op\":\"sub\",\"args\":[{\"var\":\"capacity\"},{\"var\":\"reserved\"}]},\"do\":{\"op\":\"object\",\"fields\":{\"item\":{\"var\":\"n\"},\"reserved\":{\"var\":\"reserved\"},\"available\":{\"var\":\"available\"}}}}}}}}}}}}}}}}"
+  },
+  "history": [
+    {
+      "answer": {
+        "body": "The snapshot is computed by reducing the unordered event bag to one authoritative event per booking. For each booking name obtained by unique(events.booking), I take max_by over all events with that booking on integer revision. This makes delivery order irrelevant and collapses duplicate deliveries of the same revision to one record. That single latest event is then tested: only a latest event with kind hold and expires_at > now contributes; a release contributes zero, and an expired hold contributes zero without resurrecting any older hold. I sum the quantity of each contributing event per stock item (quantity is the total for that booking version, not a delta). Finally I sort stock item names ascending and emit every stock item, including those with no events, as item, reserved, available=capacity-reserved. Assumptions: booking/revision is unique and conflicting contents never occur; revision is an ordered integer; hold events have expires_at and release events need not; item names in events are unique in stock; quantities/capacities are integers; now is an integer. Falsifiers: a same booking/revision pair with conflicting quantity/item/kind/expires_at; a release that should reserve something; an expired hold that should reactivate an older hold; duplicate deliveries counted twice; events referring to unlisted items; delta semantics for quantity; non-integer or non-unique capacities/items; or delivery order affecting the latest revision. A higher revision preserves the invariant that earlier revisions are shadowed: it must not change any booking that has no higher revision, and it must leave all other bookings' latest-event results and the final per-item sums unchanged except for that booking's contribution.",
+        "commitments": "{\"program\":{\"op\":\"let\",\"name\":\"stock\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"input\"},\"key\":\"stock\"},\"do\":{\"op\":\"let\",\"name\":\"now\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"input\"},\"key\":\"now\"},\"do\":{\"op\":\"let\",\"name\":\"events\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"input\"},\"key\":\"events\"},\"do\":{\"op\":\"let\",\"name\":\"bookings\",\"value\":{\"op\":\"unique\",\"items\":{\"op\":\"map\",\"items\":{\"var\":\"events\"},\"as\":\"e\",\"do\":{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"booking\"}}},\"do\":{\"op\":\"let\",\"name\":\"latest_events\",\"value\":{\"op\":\"map\",\"items\":{\"var\":\"bookings\"},\"as\":\"b\",\"do\":{\"op\":\"max_by\",\"items\":{\"op\":\"filter\",\"items\":{\"var\":\"events\"},\"as\":\"e\",\"do\":{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"booking\"},{\"var\":\"b\"}]}},\"as\":\"e\",\"key\":{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"revision\"}}},\"do\":{\"op\":\"let\",\"name\":\"active_holds\",\"value\":{\"op\":\"filter\",\"items\":{\"var\":\"latest_events\"},\"as\":\"e\",\"do\":{\"op\":\"and\",\"args\":[{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"kind\"},\"hold\"]},{\"op\":\"gt\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"e\"},\"key\":\"expires_at\"},{\"var\":\"now\"}]}]}},\"do\":{\"op\":\"let\",\"name\":\"item_names\",\"value\":{\"op\":\"sort\",\"items\":{\"op\":\"map\",\"items\":{\"var\":\"stock\"},\"as\":\"s\",\"do\":{\"op\":\"get\",\"value\":{\"var\":\"s\"},\"key\":\"item\"}}},\"do\":{\"op\":\"map\",\"items\":{\"var\":\"item_names\"},\"as\":\"n\",\"do\":{\"op\":\"let\",\"name\":\"entry\",\"value\":{\"op\":\"max_by\",\"items\":{\"op\":\"filter\",\"items\":{\"var\":\"stock\"},\"as\":\"s\",\"do\":{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"s\"},\"key\":\"item\"},{\"var\":\"n\"}]}},\"as\":\"s\",\"key\":{\"op\":\"get\",\"value\":{\"var\":\"s\"},\"key\":\"item\"}},\"do\":{\"op\":\"let\",\"name\":\"capacity\",\"value\":{\"op\":\"get\",\"value\":{\"var\":\"entry\"},\"key\":\"capacity\"},\"do\":{\"op\":\"let\",\"name\":\"reserved\",\"value\":{\"op\":\"sum\",\"value\":{\"op\":\"map\",\"items\":{\"op\":\"filter\",\"items\":{\"var\":\"active_holds\"},\"as\":\"h\",\"do\":{\"op\":\"eq\",\"args\":[{\"op\":\"get\",\"value\":{\"var\":\"h\"},\"key\":\"item\"},{\"var\":\"n\"}]}},\"as\":\"h\",\"do\":{\"op\":\"get\",\"value\":{\"var\":\"h\"},\"key\":\"quantity\"}}},\"do\":{\"op\":\"let\",\"name\":\"available\",\"value\":{\"op\":\"sub\",\"args\":[{\"var\":\"capacity\"},{\"var\":\"reserved\"}]},\"do\":{\"op\":\"object\",\"fields\":{\"item\":{\"var\":\"n\"},\"reserved\":{\"var\":\"reserved\"},\"available\":{\"var\":\"available\"}}}}}}}}}}}}}}}}"
+      },
+      "public": {
+        "all_pass": true,
+        "cases": [
+          {
+            "actual": [
+              {
+                "available": 8,
+                "item": "a",
+                "reserved": 0
+              },
+              {
+                "available": 3,
+                "item": "z",
+                "reserved": 0
+              }
+            ],
+            "expected": [
+              {
+                "available": 8,
+                "item": "a",
+                "reserved": 0
+              },
+              {
+                "available": 3,
+                "item": "z",
+                "reserved": 0
+              }
+            ],
+            "name": "empty_and_unused_stock",
+            "pass": true,
+            "steps": 116
+          },
+          {
+            "actual": [
+              {
+                "available": 7,
+                "item": "widget",
+                "reserved": 3
+              }
+            ],
+            "expected": [
+              {
+                "available": 7,
+                "item": "widget",
+                "reserved": 3
+              }
+            ],
+            "name": "duplicate_delivery_is_not_extra_stock",
+            "pass": true,
+            "steps": 137
+          },
+          {
+            "actual": [
+              {
+                "available": 6,
+                "item": "widget",
+                "reserved": 4
+              }
+            ],
+            "expected": [
+              {
+                "available": 6,
+                "item": "widget",
+                "reserved": 4
+              }
+            ],
+            "name": "reordering_and_replacement",
+            "pass": true,
+            "steps": 122
+          },
+          {
+            "actual": [
+              {
+                "available": 10,
+                "item": "widget",
+                "reserved": 0
+              }
+            ],
+            "expected": [
+              {
+                "available": 10,
+                "item": "widget",
+                "reserved": 0
+              }
+            ],
+            "name": "release_stays_released",
+            "pass": true,
+            "steps": 106
+          },
+          {
+            "actual": [
+              {
+                "available": 10,
+                "item": "widget",
+                "reserved": 0
+              }
+            ],
+            "expected": [
+              {
+                "available": 10,
+                "item": "widget",
+                "reserved": 0
+              }
+            ],
+            "name": "latest_expired_does_not_resurrect_old",
+            "pass": true,
+            "steps": 111
+          }
+        ],
+        "holdout": false,
+        "program_sha256": "00535990ed051f8e515a8567eebedfc5b8e2b531d5a3699af0d1e69ec5a69fa7",
+        "runnable": true,
+        "schema": "minireason.evaluation.v1",
+        "task_id": "reservation_replay_v1"
+      },
+      "stage": "direct"
+    }
+  ],
+  "holdout": {
+    "all_pass": true,
+    "cases": [
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "expiry_boundary",
+        "pass": true,
+        "steps": 150
+      },
+      {
+        "actual": [
+          {
+            "available": -5,
+            "item": "widget",
+            "reserved": 15
+          }
+        ],
+        "expected": [
+          {
+            "available": -5,
+            "item": "widget",
+            "reserved": 15
+          }
+        ],
+        "name": "oversubscription_is_visible",
+        "pass": true,
+        "steps": 161
+      },
+      {
+        "actual": [
+          {
+            "available": 5,
+            "item": "widget",
+            "reserved": 5
+          }
+        ],
+        "expected": [
+          {
+            "available": 5,
+            "item": "widget",
+            "reserved": 5
+          }
+        ],
+        "name": "new_hold_after_release",
+        "pass": true,
+        "steps": 137
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "a",
+            "reserved": 2
+          },
+          {
+            "available": 6,
+            "item": "empty",
+            "reserved": 0
+          },
+          {
+            "available": -1,
+            "item": "z",
+            "reserved": 1
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "a",
+            "reserved": 2
+          },
+          {
+            "available": 6,
+            "item": "empty",
+            "reserved": 0
+          },
+          {
+            "available": -1,
+            "item": "z",
+            "reserved": 1
+          }
+        ],
+        "name": "multiple_items_and_zero_capacity",
+        "pass": true,
+        "steps": 298
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_0",
+        "pass": true,
+        "steps": 265
+      },
+      {
+        "actual": [
+          {
+            "available": 7,
+            "item": "widget",
+            "reserved": 3
+          }
+        ],
+        "expected": [
+          {
+            "available": 7,
+            "item": "widget",
+            "reserved": 3
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_1",
+        "pass": true,
+        "steps": 292
+      },
+      {
+        "actual": [
+          {
+            "available": 6,
+            "item": "widget",
+            "reserved": 4
+          }
+        ],
+        "expected": [
+          {
+            "available": 6,
+            "item": "widget",
+            "reserved": 4
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_2",
+        "pass": true,
+        "steps": 319
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_3",
+        "pass": true,
+        "steps": 335
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_4",
+        "pass": true,
+        "steps": 254
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_5",
+        "pass": true,
+        "steps": 281
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_6",
+        "pass": true,
+        "steps": 308
+      },
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "widget",
+            "reserved": 2
+          }
+        ],
+        "name": "metamorphic_replay_revision_expiry_7",
+        "pass": true,
+        "steps": 335
+      }
+    ],
+    "holdout": true,
+    "program_sha256": "00535990ed051f8e515a8567eebedfc5b8e2b531d5a3699af0d1e69ec5a69fa7",
+    "runnable": true,
+    "schema": "minireason.evaluation.v1",
+    "task_id": "reservation_replay_v1"
+  },
+  "plan_sha256": "395352c1cb2f0a931a68847f781592ea093cc7da338aa6c1a96a9bd6707539a7",
+  "public": {
+    "all_pass": true,
+    "cases": [
+      {
+        "actual": [
+          {
+            "available": 8,
+            "item": "a",
+            "reserved": 0
+          },
+          {
+            "available": 3,
+            "item": "z",
+            "reserved": 0
+          }
+        ],
+        "expected": [
+          {
+            "available": 8,
+            "item": "a",
+            "reserved": 0
+          },
+          {
+            "available": 3,
+            "item": "z",
+            "reserved": 0
+          }
+        ],
+        "name": "empty_and_unused_stock",
+        "pass": true,
+        "steps": 116
+      },
+      {
+        "actual": [
+          {
+            "available": 7,
+            "item": "widget",
+            "reserved": 3
+          }
+        ],
+        "expected": [
+          {
+            "available": 7,
+            "item": "widget",
+            "reserved": 3
+          }
+        ],
+        "name": "duplicate_delivery_is_not_extra_stock",
+        "pass": true,
+        "steps": 137
+      },
+      {
+        "actual": [
+          {
+            "available": 6,
+            "item": "widget",
+            "reserved": 4
+          }
+        ],
+        "expected": [
+          {
+            "available": 6,
+            "item": "widget",
+            "reserved": 4
+          }
+        ],
+        "name": "reordering_and_replacement",
+        "pass": true,
+        "steps": 122
+      },
+      {
+        "actual": [
+          {
+            "available": 10,
+            "item": "widget",
+            "reserved": 0
+          }
+        ],
+        "expected": [
+          {
+            "available": 10,
+            "item": "widget",
+            "reserved": 0
+          }
+        ],
+        "name": "release_stays_released",
+        "pass": true,
+        "steps": 106
+      },
+      {
+        "actual": [
+          {
+            "available": 10,
+            "item": "widget",
+            "reserved": 0
+          }
+        ],
+        "expected": [
+          {
+            "available": 10,
+            "item": "widget",
+            "reserved": 0
+          }
+        ],
+        "name": "latest_expired_does_not_resurrect_old",
+        "pass": true,
+        "steps": 111
+      }
+    ],
+    "holdout": false,
+    "program_sha256": "00535990ed051f8e515a8567eebedfc5b8e2b531d5a3699af0d1e69ec5a69fa7",
+    "runnable": true,
+    "schema": "minireason.evaluation.v1",
+    "task_id": "reservation_replay_v1"
+  },
+  "repeat": 1,
+  "resources": {
+    "calls": 1,
+    "completion_tokens": 18926,
+    "prompt_tokens": 1423
+  },
+  "schema": "minireason.arm.v1",
+  "settings": {
+    "base_url": "https://api.deepseek.com/v1",
+    "key_env": "DEEPSEEK_API_KEY",
+    "kind": "deepseek-chat",
+    "max_tokens": 32768,
+    "model": "deepseek-flash",
+    "native_reasoning_text_persisted": false,
+    "reasoning_effort": "high",
+    "seed": null,
+    "temperature": "provider-default",
+    "thinking": true,
+    "timeout_seconds": 180,
+    "top_p": "provider-default"
+  },
+  "started_at": "2026-09-11T13:32:41.443328+00:00",
+  "status": "TASK_SURVIVED"
+}
