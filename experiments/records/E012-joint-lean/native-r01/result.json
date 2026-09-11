@@ -1,0 +1,72 @@
+{
+  "activation": {
+    "allocation_reason": "Investigate the unresolved relation between criticism targets in P7 and the possible cross-booking compatibility objection in P9. The selected whole E009 criticism discusses both loci and is retained with its original provenance and unendorsed proposals. The separately attributed question fixes the new use and protected meanings without assuming that any change, missing resource or language extension is warranted. This occurrence and selection reason are identical across the three carrier conditions and all six arms. All supplied repair suggestions belong to initialization; selection for inquiry makes no claim of bearing or standing.",
+    "content_appraisal": "unresolved",
+    "disposition": "selected_for_inquiry",
+    "occurrence_id": "c5abeb308c572ef21099dc89962b88aea27a34873f18a187961808fbfbc7c615",
+    "standing_effect": "none",
+    "successor_test_id": "E012-joint-lean"
+  },
+  "alarms": [],
+  "arm": "native",
+  "content_appraisal": "unresolved",
+  "ended_at": "2026-09-11T17:00:16.022276+00:00",
+  "history": [
+    {
+      "content_appraisal": "unresolved",
+      "disposition": "queued",
+      "occurrence_id": "71b3154a88f4980c67e36599811dd521756a50a2e133dd26ad44aad54504df99",
+      "origin": {
+        "arm": "native",
+        "cycle": 1,
+        "input_provenance_meaning": "Supplied material only; no semantic dependency, about or answers edge implied",
+        "mini_artifact_id": null,
+        "plan_id": "d2cf3cc284e751283e4d76f1c76932a24958fd081065ad22e024f32c157d7413",
+        "repeat": 1,
+        "stage": "construct",
+        "supplied_input_occurrence_ids": [
+          "c5abeb308c572ef21099dc89962b88aea27a34873f18a187961808fbfbc7c615",
+          "5510d756585292b9ffbb2435e80aa3a61a162e97d9e1fcbe72937d5e03c8343a",
+          "6742a2a12b2f6e87cdfa889eed495f44a504365c1db35ef1e7d3fa6068e2cac4",
+          "117f62cbb688e023fdaea0a14c6cd0135a69f8868a34c8e76fefe631e344b0f4"
+        ],
+        "test_id": "E012-joint-lean"
+      },
+      "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+      "proposed_changes_installed": false,
+      "schema": "minireason.inquiry-occurrence.v1",
+      "stage": "construct",
+      "standing_effect": "none",
+      "text": "I take WHL as frozen and do not amend it. The Lean below is a new artifact for this inquiry only. The E009 occurrence is an unendorsed prior criticism, not warehouse evidence. P7 and P9 keep their original meanings; where I add a distinction, I mark it as added.\n\n## 1. What the sources say, and what I add\n\nP7 says a criticism can target “a reconstruction rule, a particular record, a booking's history, the snapshot as a whole, or the assumption that logical time is meaningful.” It warns that “this snapshot is inconsistent” can mean different things, and that criticizing the rule “higher revision always supersedes” differs from criticizing a record with a high revision but implausible quantity.\n\nP9 says that if there are unresolved alternatives, the sum is not well-defined; min/max give an interval, but “intervals lose correlations: booking A's high alternative might be incompatible with booking B's high alternative if they share a physical resource not named in the snapshot.” P9 presents that incompatibility as a conditional possibility, not an observation, and also records a conjecture that the snapshot is under-specified for a real warehouse and a criticism that exposing alternatives without a resolution policy pushes the problem downstream.\n\nMy added distinction is this: P7’s “reconstruction rule” is not one layer. It contains at least:\n\n- a **local record-effect rule**, like WHL’s `reserves_effect`, deciding what one record contributes under a reading of expiry/release;\n- a **global aggregation rule**, deciding how per-booking alternatives become a global availability account.\n\nSimilarly, P7’s “snapshot as a whole” can be split into:\n\n- **record population**: which records are present;\n- **constraint completeness**: whether the snapshot names all relevant joint constraints.\n\nP9’s compatibility objection can target the global aggregation rule or the completeness assumption without targeting any local record-effect rule and without targeting any particular record. That is the connection I propose. It is a target-relative reading of P9, not a restatement of it.\n\n## 2. New account: target-relative correlation binding\n\nWHL already gives `possible_reservations snap b`: the quantities a booking could reserve under the unresolved-alternatives reading. WHL also gives `availability_lower_bound` and `availability_upper_bound`, which compute an interval from per-booking minima and maxima. What WHL does not have is a relation saying which combinations of those per-booking choices are jointly compatible.\n\nSo I add, for this inquiry only, a new primitive and target vocabulary:\n\n```lean\n/- NEW ARTIFACT. Not an amendment to WHL or C0. -/\n\ninductive Target : Type\n| record : Record → Target\n| local_rule : ReservationRule → Target\n| aggregation_rule : (Snapshot → List Booking → Int × Int) → Target\n| completeness_assumption : Prop → Target\n\nstructure TargetCriticism : Type :=\n  (target : Target)\n  (claim : Prop)\n  (refutation : ¬ claim)\n\n/-- NEW relation: joint compatibility of a global choice.\n    WHL as frozen does not have this primitive. -/\naxiom JointlyCompatible : Snapshot → (Booking → Quantity) → Prop\n\n/-- P9 compatibility schema: a choice is locally possible for every booking\n    but not jointly compatible. This is conditional, not observed. -/\ndef P9CompatibilitySchema (snap : Snapshot) (bs : List Booking) : Prop :=\n  ∃ f : Booking → Quantity,\n    (∀ b, b ∈ bs → f b ∈ possible_reservations snap b) ∧\n    ¬ JointlyCompatible snap f\n```\n\nThis schema does **not** by itself refute WHL’s `availability_lower_bound` or `availability_upper_bound`. Those functions only compute arithmetic bounds from per-booking alternatives. They do not assert that every combination is jointly realizable. To make P9 a refutation, one must add a stronger claim, for example:\n\n> The WHL interval is exact: every value in the interval is the availability of some jointly compatible global selection.\n\nCall that new claim `IntervalExact`. P9’s compatibility schema refutes `IntervalExact` only when a compatibility witness actually removes an interval value that `IntervalExact` claims is achievable. Without that stronger claim, P9 remains what it says it is: a conditional objection to an independence or completeness assumption.\n\nIn P7’s sense, the target is therefore the **aggregation rule** or the **completeness assumption**, not a record and not the local supersession rule. It is a criticism of the claim that per-booking alternatives can be summed as if their joint compatibility were automatic or already named in the snapshot.\n\n## 3. A discriminating conditional example\n\nTake capacity 10. Two bookings, A and B, each have unresolved alternatives `{0, 10}`. WHL’s independent per-booking bounds give:\n\n- minimum reservation sum: `0 + 0 = 0`, so maximum availability under independence: `10 - 0 = 10`;\n- maximum reservation sum: `10 + 10 = 20`, so minimum availability under independence: `10 - 20 = -10`.\n\nSo the independent interval is `[-10, 10]`.\n\nNow suppose, as P9 allows as a possibility, that A’s high alternative and B’s high alternative are jointly incompatible because they share an unnamed physical resource. Then the compatible combinations are only `(0,0)`, `(0,10)`, and `(10,0)`. Their availability values are `10`, `0`, and `0`. The true availability set is `{0, 10}`, which is not the interval `[-10, 10]` and is not even convex.\n\nThis example is mine, not observed in C0. It shows the distinction I am adding. If the account claims only “true availability lies inside `[-10,10]`,” then P9’s conditional objection does not force a change; it only shows the interval is not tight and should not be read as exact. If the account claims “the interval is exact” or uses its endpoints as decision-relevant, then P9’s conditional objection refutes that claim. What is questioned is not A’s quantity, B’s quantity, or the rule “higher revision supersedes.” It is the aggregation assumption that all per-booking alternatives combine freely, or the completeness assumption that the snapshot names all joint constraints.\n\nThis also adds a target to P7’s list: a *constraint-model criticism*. P7 already separated record-level conflict, capacity over-reservation, and logical-time complaints. The P9 compatibility objection can be a fourth kind: the snapshot omits a joint constraint, so the global availability account is incomplete even if every record is accepted and every local rule is accepted.\n\n## 4. Discriminating question\n\nThe unresolved question becomes sharper:\n\n> For a given global availability account, is it claiming (i) only that true availability lies within the WHL interval, (ii) that the interval is exact, or (iii) that the interval is a decision-sufficient projection?\n\nIf (i), P9’s compatibility objection is an annotation: the interval is an outer bound, not a complete answer.  \nIf (ii), P9 plus a compatibility witness refutes the exactness claim.  \nIf (iii), the criticism targets the projection policy and its downstream use, not the arithmetic of WHL’s bounds.\n\nThat is what P9’s compatibility objection questions in P7’s sense: an aggregation rule or a completeness assumption, conditionally. It does not question the records or the local supersession rule unless further evidence is supplied.\n\n## 5. What remains unresolved and unsupported\n\nThe compatibility relation `JointlyCompatible` is not in WHL. My Lean sketch is schematic, not compiled, and I do not use compilation as an admission rule. WHL’s opaque `Quantity`/`Time` and missing `Int` order also obstruct a literal rendering. The selected E009 criticism already alleges that WHL lacks correlation and target primitives; I do not rely on that unendorsed occurrence as evidence. I only use it as a prior criticism.\n\nWhat would matter next is an observation or interpretation: a named shared resource and its compatibility constraints; whether the account claims exactness or only sound outer bounds; and whether downstream decisions require an exact set or can tolerate an annotated interval. Without those, P9’s compatibility objection remains a conditional criticism of an independence/completeness assumption, not a demonstrated defect in every global availability account.",
+      "text_sha256": "925c64adaeb0dd47b5855929d9826b67c9a3ca791f102e5e6d8ee50e6c1ce8d9"
+    }
+  ],
+  "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+  "plan_id": "d2cf3cc284e751283e4d76f1c76932a24958fd081065ad22e024f32c157d7413",
+  "proposed_changes_installed": false,
+  "repeat": 1,
+  "resource_accounting": "Calls include failed attempts; tokens are provider-reported totals only. Failed deliveries may have unknown cost.",
+  "resources": {
+    "calls": 1,
+    "completion_tokens": 13631,
+    "prompt_tokens": 17031
+  },
+  "schema": "minireason.inquiry-arm.v1",
+  "settings": {
+    "base_url": "https://api.deepseek.com/v1",
+    "key_env": "DEEPSEEK_API_KEY",
+    "kind": "deepseek-chat",
+    "max_tokens": 32768,
+    "model": "deepseek-flash",
+    "native_reasoning_text_persisted": false,
+    "reasoning_effort": "high",
+    "seed": null,
+    "temperature": "provider-default",
+    "thinking": true,
+    "timeout_seconds": 180,
+    "top_p": "provider-default"
+  },
+  "standing_effect": "none",
+  "started_at": "2026-09-11T16:58:53.106212+00:00",
+  "status": "OBSERVATIONS_RECORDED"
+}

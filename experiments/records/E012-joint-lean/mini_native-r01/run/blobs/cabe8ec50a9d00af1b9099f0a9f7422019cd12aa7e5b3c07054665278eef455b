@@ -1,0 +1,114 @@
+I take the P7/P9 relationship to be this: P9’s compatibility objection is not, by itself, a criticism of a record, a booking history, or the revision rule. It is a criticism of a global aggregation/projection rule and of an independence assumption. The added distinction I propose is between an availability set claimed **exact** and one claimed only as an **independent over-approximation**. P9’s objection can refute exactness under a correlation loss; it leaves a bounds-only account standing as bounds.
+
+P7 says, unchanged, that one can criticize “a reconstruction rule, a particular record, a booking’s history, the snapshot as a whole, or the assumption that logical time is meaningful,” and it stresses that one may reject a rule while accepting the data, or accept the rule while rejecting the data. P9 says, unchanged, that “intervals lose correlations: booking A’s high alternative might be incompatible with booking B’s high alternative if they share a physical resource not named in the snapshot,” and that “the snapshot does not name physical resources, so this incompatibility is invisible.” P9 also records the conjectural status of under-specification and the counter-criticism about pushing resolution downstream.
+
+My addition is a correlation-explicit account. It separates:
+
+1. local alternatives, given by WHL’s `possible_reservations`;
+2. a global choice, which selects one local alternative per booking;
+3. a feasibility relation `R` on global choices, representing whatever shared-resource constraint might exist;
+4. the strength of the availability claim: exact, over-approximate, or merely exposed.
+
+The compatibility objection targets the assumption that `R` is universal or irrelevant. It targets the aggregation rule only if that rule claims exactness while ignoring `R`. It targets the snapshot as a whole only under the further interpretation that unnamed physical resources are omitted data. It does not target the local alternative representation or the revision rule.
+
+A Lean-compatible schematic, using WHL’s names but not revising WHL:
+
+```lean
+/- New artifact: correlation-explicit availability account.
+   Assumes WHL names are in scope. Not a revision of WHL.
+   Compilation is not claimed; WHL's own bridge issues remain recorded elsewhere. -/
+
+namespace CorrelationAccount
+
+/-- Proposed extension of P7's target list for this inquiry. Not WHL. -/
+inductive Target : Type
+| reservation_rule : ReservationRule → Target
+| record : Record → Target
+| booking_history : Booking → Target
+| snapshot : Snapshot → Target
+| assumption : Prop → Target
+| aggregation_rule : ((Booking → Quantity) → Quantity) → Target
+
+/-- A global choice assigns one locally possible reservation to each booking. -/
+def LocalChoice (snap : Snapshot) (bookings : List Booking)
+    (c : Booking → Quantity) : Prop :=
+  ∀ b, b ∈ bookings → c b ∈ possible_reservations snap b
+
+/-- Totals possible from some local choice. -/
+def PossibleTotal (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity) (q : Quantity) : Prop :=
+  ∃ c, LocalChoice snap bookings c ∧ Total c = q
+
+/-- Totals feasible under a resource-compatibility relation R on global choices. -/
+def FeasibleTotal (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) (q : Quantity) : Prop :=
+  ∃ c, LocalChoice snap bookings c ∧ R c ∧ Total c = q
+
+/-- P9 correlation loss: a locally possible total that is not jointly feasible. -/
+def CorrelationLoss (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) : Prop :=
+  ∃ q, PossibleTotal snap bookings Total q ∧
+       ¬ FeasibleTotal snap bookings Total R q
+
+/-- The independence assumption attacked by P9 when R is ignored. -/
+def IndependenceAssumption (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) : Prop :=
+  ¬ CorrelationLoss snap bookings Total R
+
+/-- Exactness: reported set S is exactly the feasible totals under R. -/
+def ExactClaim (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (S : Quantity → Prop) : Prop :=
+  ∀ q, S q ↔ FeasibleTotal snap bookings Total R q
+
+/-- Independence/over-approximation: every locally possible total is reported. -/
+def IndependentClaim (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (S : Quantity → Prop) : Prop :=
+  ∀ q, PossibleTotal snap bookings Total q → S q
+
+/-- Bounds-only weakening: every feasible total is reported, but S may be larger. -/
+def OverApproxClaim (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (S : Quantity → Prop) : Prop :=
+  ∀ q, FeasibleTotal snap bookings Total R q → S q
+
+/-- Formal core: independence plus exactness is refuted by a correlation loss. -/
+theorem correlation_loss_refutes_exact_independent
+    (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (S : Quantity → Prop)
+    (hind : IndependentClaim snap bookings Total S)
+    (hexact : ExactClaim snap bookings Total R S)
+    (hloss : CorrelationLoss snap bookings Total R) : False :=
+  let ⟨q, hposs, hnotfeas⟩ := hloss;
+  hnotfeas ((hexact q).mp (hind q hposs))
+
+/-- P9's primary target in P7's vocabulary. -/
+def P9PrimaryTarget (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) : Target :=
+  Target.assumption (IndependenceAssumption snap bookings Total R)
+
+/-- P9's secondary target: the aggregation rule, if it claims exactness. -/
+def P9AggregationTarget (Total : (Booking → Quantity) → Quantity) : Target :=
+  Target.aggregation_rule Total
+
+end CorrelationAccount
+```
+
+The new content here is not that WHL already represents physical resources. It does not. The new content is the parameter `R`, the distinction between `PossibleTotal` and `FeasibleTotal`, and the claim-strength separation. WHL’s `possible_reservations` remains local and unchanged. The compatibility objection becomes: if an account uses an independent interval as its reported availability set `S`, and if it claims `S` exact, then a witness of `CorrelationLoss` refutes that exactness. If the account claims only `OverApproxClaim`, the same witness does not refute it; it only shows the interval is not tight. That is the change to an account of global availability: either add or expose `R`, or weaken the claim from exactness to over-approximation, or leave the issue unresolved.
+
+In P7’s sense, the thing questioned is therefore primarily a reconstruction rule plus a source assumption: the rule that global availability can be obtained by independent per-booking extrema, and the assumption that capacity is the only cross-booking constraint. It is not a criticism of a particular record’s quantity, nor of the revision-supersession rule, nor of a booking’s history. It can become a criticism of the snapshot as a whole only if one adds the interpretation that missing resource records are data omissions. P9 itself says the incompatibility is invisible because physical resources are not named; that is a conditional possibility, not an observation.
+
+What remains unsupported in the Lean carrier: provenance, delivery, replication, account-relative commitment, physical resources beyond capacity, and the target taxonomy itself. Those remain on the prose escape path. The E009 criticism that WHL lacks correlation and non-convexity primitives remains admissible and is not refuted by this schematic artifact. I have not installed any of E009’s proposed repairs, and I am not using compilation as an admission rule.
+
+A discriminating question for the next stage would be:
+
+> For a given availability account, does it claim its reported set is exact, over-approximate, or merely exposed? Does it include a feasibility relation `R` on global choices? If it claims exactness and omits `R`, then P9’s compatibility objection targets the aggregation rule/independence assumption in P7’s sense, and a `CorrelationLoss` witness would refute exactness. If it claims only over-approximation, P9’s objection is a warning about tightness, not a refutation. What observation would decide whether the alleged shared-resource incompatibility is a real constraint, a missing data record, or only a conditional conjecture?

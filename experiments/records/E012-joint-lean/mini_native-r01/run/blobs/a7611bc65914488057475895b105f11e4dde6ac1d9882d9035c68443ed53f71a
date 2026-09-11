@@ -1,0 +1,173 @@
+I treat the supplied criticism as having established one real defect in **J**, not in **A**, **B**, the frozen WHL carrier, or the E009 criticism. So a proposed successor to J is warranted, but only for the specific point the criticism identifies. J remains a distinct historical construct occurrence. **A** remains the P7 criticism-target occurrence; **B** remains the P9 local-alternatives/global-availability/compatibility occurrence. The successor below is a separate proposed object, not an amendment to WHL.
+
+The defect is this: J’s `CorrelationLoss` is total-level. It can be false even when a locally possible global choice is excluded by `R`. P9’s sentence is about combinations of alternatives, not only about totals. The criticism’s counterexample is decisive for that: if `R` excludes only `(10,10,0)`, but total `20` is also produced by `(0,0,20)`, then `IndependenceAssumption` in J’s sense can hold while the combination-level incompatibility is present. J’s theorem is still valid, but it refutes exactness only when the correlation loss survives projection to totals. It does not support J’s broader identification of P9’s target with J’s `IndependenceAssumption`.
+
+The successor therefore splits the notion:
+
+- `ChoiceCorrelationLoss`: some locally possible global choice is not in `R`.
+- `UniversalCompatibility`: every locally possible global choice is in `R`.
+- `TotalCorrelationLoss`: some locally possible total is not feasible.
+- `TotalIndependence`: no total-level correlation loss.
+- `ExactClaim`, `OverApproxClaim`, `IndependentClaim`: retained from J as claim-strength distinctions.
+- `P9CombinationTarget`: the assumption `UniversalCompatibility`.
+- `P9TotalTarget`: the weaker `TotalIndependence`.
+- `P9AggregationTarget`: the aggregation rule, especially if it claims exactness while ignoring `R`.
+
+Here is the proposed successor in the carrier’s Lean-compatible idiom. It assumes WHL names are in scope. It is not a revision of WHL. Compilation is not claimed.
+
+```lean
+namespace CorrelationAccountV2
+
+/-- Proposed target taxonomy for this inquiry. Not part of WHL. -/
+inductive Target : Type
+| reservation_rule : ReservationRule → Target
+| record : Record → Target
+| booking_history : Booking → Target
+| snapshot : Snapshot → Target
+| assumption : Prop → Target
+| aggregation_rule : ((Booking → Quantity) → Quantity) → Target
+| compatibility_relation : ((Booking → Quantity) → Prop) → Target
+
+/-- A global choice assigns one locally possible reservation to each booking. -/
+def LocalChoice (snap : Snapshot) (bookings : List Booking)
+    (c : Booking → Quantity) : Prop :=
+  ∀ b, b ∈ bookings → c b ∈ possible_reservations snap b
+
+/-- Choice-level feasibility under a compatibility relation R. -/
+def FeasibleChoice (snap : Snapshot) (bookings : List Booking)
+    (R : (Booking → Quantity) → Prop)
+    (c : Booking → Quantity) : Prop :=
+  LocalChoice snap bookings c ∧ R c
+
+/-- Combination-level loss: a locally possible global choice that R forbids.
+    This is the notion J's total-level CorrelationLoss did not carry. -/
+def ChoiceCorrelationLoss (snap : Snapshot) (bookings : List Booking)
+    (R : (Booking → Quantity) → Prop) : Prop :=
+  ∃ c, LocalChoice snap bookings c ∧ ¬ R c
+
+/-- The precise combination-level assumption P9 attacks. -/
+def UniversalCompatibility (snap : Snapshot) (bookings : List Booking)
+    (R : (Booking → Quantity) → Prop) : Prop :=
+  ∀ c, LocalChoice snap bookings c → R c
+
+/-- Under classical negation, absence of choice-level loss is exactly
+    universal compatibility over local choices. -/
+theorem not_choice_loss_iff_universal_compatibility
+    (snap : Snapshot) (bookings : List Booking)
+    (R : (Booking → Quantity) → Prop) :
+    ¬ ChoiceCorrelationLoss snap bookings R ↔
+      UniversalCompatibility snap bookings R := by
+  classical
+  constructor
+  · intro h c hc
+    by_contra hR
+    exact h ⟨c, hc, hR⟩
+  · intro h hloss
+    rcases hloss with ⟨c, hc, hnc⟩
+    exact hnc (h c hc)
+
+/-- Totals possible from some local choice. -/
+def PossibleTotal (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity) (q : Quantity) : Prop :=
+  ∃ c, LocalChoice snap bookings c ∧ Total c = q
+
+/-- Totals feasible under R. -/
+def FeasibleTotal (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) (q : Quantity) : Prop :=
+  ∃ c, LocalChoice snap bookings c ∧ R c ∧ Total c = q
+
+/-- Total-level loss: a locally possible total that no feasible choice realizes. -/
+def TotalCorrelationLoss (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) : Prop :=
+  ∃ q, PossibleTotal snap bookings Total q ∧
+       ¬ FeasibleTotal snap bookings Total R q
+
+/-- The weaker total-level independence condition. -/
+def TotalIndependence (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) : Prop :=
+  ¬ TotalCorrelationLoss snap bookings Total R
+
+/-- Total-level loss implies choice-level loss, but not conversely. -/
+theorem total_loss_implies_choice_loss
+    (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (hloss : TotalCorrelationLoss snap bookings Total R) :
+    ChoiceCorrelationLoss snap bookings R := by
+  rcases hloss with ⟨q, hposs, hnotfeas⟩
+  rcases hposs with ⟨c, hlocal, htotal⟩
+  refine ⟨c, hlocal, ?_⟩
+  intro hR
+  exact hnotfeas ⟨c, hlocal, hR, htotal⟩
+
+/-- Exactness: reported set S is exactly the feasible totals under R. -/
+def ExactClaim (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (S : Quantity → Prop) : Prop :=
+  ∀ q, S q ↔ FeasibleTotal snap bookings Total R q
+
+/-- Over-approximation: every feasible total is reported; S may be larger. -/
+def OverApproxClaim (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (S : Quantity → Prop) : Prop :=
+  ∀ q, FeasibleTotal snap bookings Total R q → S q
+
+/-- Independent report: every locally possible total is reported. -/
+def IndependentClaim (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (S : Quantity → Prop) : Prop :=
+  ∀ q, PossibleTotal snap bookings Total q → S q
+
+/-- J's theorem, correctly restricted: total-level loss refutes exactness
+    only when combined with the independent report condition. -/
+theorem total_loss_refutes_exact_independent
+    (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop)
+    (S : Quantity → Prop)
+    (hind : IndependentClaim snap bookings Total S)
+    (hexact : ExactClaim snap bookings Total R S)
+    (hloss : TotalCorrelationLoss snap bookings Total R) : False := by
+  rcases hloss with ⟨q, hposs, hnotfeas⟩
+  have hS : S q := hind q hposs
+  exact hnotfeas ((hexact q).mp hS)
+
+/-- P9's primary target in P7's vocabulary, at the combination level. -/
+def P9CombinationTarget (snap : Snapshot) (bookings : List Booking)
+    (R : (Booking → Quantity) → Prop) : Target :=
+  Target.assumption (UniversalCompatibility snap bookings R)
+
+/-- The weaker total-level target. This is not the same as P9's combination objection. -/
+def P9TotalTarget (snap : Snapshot) (bookings : List Booking)
+    (Total : (Booking → Quantity) → Quantity)
+    (R : (Booking → Quantity) → Prop) : Target :=
+  Target.assumption (TotalIndependence snap bookings Total R)
+
+/-- P9's secondary target: the aggregation rule, if it claims exactness. -/
+def P9AggregationTarget (Total : (Booking → Quantity) → Quantity) : Target :=
+  Target.aggregation_rule Total
+
+end CorrelationAccountV2
+```
+
+The criticized distinction changes the organization as follows. J had one `CorrelationLoss` and one `IndependenceAssumption`. The successor separates combination-level compatibility from total-level feasibility. P9’s “booking A’s high alternative might be incompatible with booking B’s high alternative” is carried by `ChoiceCorrelationLoss` or, negatively, by `UniversalCompatibility`. It is not carried by `TotalCorrelationLoss` alone. The theorem `total_loss_refutes_exact_independent` remains valid, but its scope is narrower than J suggested. It refutes an exact independent report when a total-level loss exists. It does not show that P9 targets total-level independence in general.
+
+The protected uses that remain are:
+
+- A’s distinction between criticizing a rule, a record, a booking history, a snapshot, or an assumption remains. The successor’s `Target` extends the list but does not collapse those targets.
+- B’s compatibility statement remains conditional. `ChoiceCorrelationLoss` is a proposition to be witnessed, not an observed fact.
+- WHL’s `possible_reservations` remains the local alternative source and is not amended.
+- J’s additions `R`, `PossibleTotal`, `FeasibleTotal`, and the exact/over-approximate distinction are retained as proposals. Only J’s identification of `IndependenceAssumption` with “`R` is universal or irrelevant” is corrected by splitting the notions.
+- E009’s criticism that WHL lacks correlation and non-convexity primitives remains admissible. This artifact does not add `R` to WHL.
+- The disputed position about exposing alternatives versus objecting to downstream resolution remains a disputed position, not something the successor decides.
+
+The secondary, tentative concern in the supplied criticism does not establish a defect. J’s `IndependentClaim` does not itself formalize independent per-booking extrema or interval aggregation. That is a sketch limitation, not a refutation. Linking `IndependentClaim` to a particular interval rule would be a further separate proposed extension, not installed here.
+
+A discriminating question for the next stage is:
+
+> Does the availability account claim its reported set is exact, over-approximate, or merely exposed? Does it include an explicit feasibility relation `R` on global choices? If it claims exactness and omits `R`, then P9’s compatibility objection targets the aggregation rule and the independence assumption in P7’s sense. If it claims only over-approximation, P9’s objection is a warning about tightness, not a refutation. What observation would decide whether the alleged shared-resource incompatibility is a real constraint, a missing data record, or only a conditional conjecture?

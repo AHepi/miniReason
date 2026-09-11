@@ -1,0 +1,29 @@
+{
+  "content_appraisal": "unresolved",
+  "disposition": "queued",
+  "occurrence_id": "34083b50dc40046c991e3fa32f2c22c2c6e747626f3621b483a2e030ae6c6f62",
+  "origin": {
+    "arm": "matched_native",
+    "cycle": 1,
+    "input_provenance_meaning": "Supplied material only; no semantic dependency, about or answers edge implied",
+    "mini_artifact_id": null,
+    "plan_id": "d2cf3cc284e751283e4d76f1c76932a24958fd081065ad22e024f32c157d7413",
+    "repeat": 1,
+    "stage": "criticize",
+    "supplied_input_occurrence_ids": [
+      "c5abeb308c572ef21099dc89962b88aea27a34873f18a187961808fbfbc7c615",
+      "5510d756585292b9ffbb2435e80aa3a61a162e97d9e1fcbe72937d5e03c8343a",
+      "6742a2a12b2f6e87cdfa889eed495f44a504365c1db35ef1e7d3fa6068e2cac4",
+      "117f62cbb688e023fdaea0a14c6cd0135a69f8868a34c8e76fefe631e344b0f4",
+      "2f4c0af5812df0b7c3e84d2493a3a01ab73e84bd9959d38f3da18fa6333e7a15"
+    ],
+    "test_id": "E012-joint-lean"
+  },
+  "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+  "proposed_changes_installed": false,
+  "schema": "minireason.inquiry-occurrence.v1",
+  "stage": "criticize",
+  "standing_effect": "none",
+  "text": "The criticism I can establish concerns the Lean-compatible sketch in J, specifically `p9_refutes_endpoint`. J defines:\n\n```lean\ndef endpoint_claim (snap : Snapshot) (bookings : List Booking) : Prop :=\n  (∃ sel, jointly_compatible snap bookings sel ∧\n      selected_availability snap bookings sel = pessimistic_envelope snap bookings) ∧\n  (∃ sel, jointly_compatible snap bookings sel ∧\n      selected_availability snap bookings sel = optimistic_envelope snap bookings)\n\ndef p9_refutes_endpoint (snap : Snapshot) (bookings : List Booking) : Prop :=\n  endpoint_claim snap bookings ∧\n  ¬ (∃ sel, jointly_compatible snap bookings sel ∧\n        selected_availability snap bookings sel = pessimistic_envelope snap bookings)\n```\n\nLet `A` be the first existential conjunct of `endpoint_claim`. Then `endpoint_claim` is `A ∧ B`, and `p9_refutes_endpoint` is `(A ∧ B) ∧ ¬A`. This entails `A ∧ ¬A`; it is therefore unsatisfiable in ordinary consistent logic. In Lean-like form:\n\n```lean\nexample (snap : Snapshot) (bookings : List Booking) :\n  p9_refutes_endpoint snap bookings → False :=\nfun h => h.2 h.1.1\n```\n\nThis is not primarily a compilation complaint. It is a logical-form complaint: the definition cannot be satisfied by any snapshot or booking list. If the intended point is that P9’s compatibility possibility can refute an endpoint claim, then the refuting condition should be something like the obstruction alone, or a theorem from the obstruction to the negation of `endpoint_claim`. For example:\n\n```lean\ndef endpoint_obstruction (snap : Snapshot) (bookings : List Booking) : Prop :=\n  ¬ (∃ sel, jointly_compatible snap bookings sel ∧\n        selected_availability snap bookings sel = pessimistic_envelope snap bookings)\n\ntheorem obstruction_refutes_endpoint\n  (h : endpoint_obstruction snap bookings) : ¬ endpoint_claim snap bookings :=\nfun he => h he.1\n```\n\nOr it could use WHL’s own representation of a refutation:\n\n```lean\nstructure Refutation (c : Conjecture) : Type :=\n  (snap : Snapshot)\n  (not_c : ¬ c snap)\n```\n\nJ instead conjoins the endpoint claim with the denial of one of its own conjuncts. That does not represent “P9 refutes the endpoint claim”; it represents “the endpoint claim is true and one of its necessary conditions is false.” So the formal schema loses the very distinction J’s prose tries to make: a claim, a counterexample to it, and the conjunction of the claim with its negation are different things.\n\nA distinguishing case is straightforward. Take capacity 10 and two bookings with local alternatives such that both the pessimistic and optimistic endpoints are jointly attainable. Then `endpoint_claim` may hold, but `p9_refutes_endpoint` fails because its second conjunct denies the pessimistic-endpoint existential. If instead a hidden incompatibility prevents the pessimistic endpoint, then `endpoint_claim` fails, so `p9_refutes_endpoint` fails because its first conjunct fails. There is no case where `p9_refutes_endpoint` holds. The intended reading would have the obstruction as the refuting condition and `endpoint_claim` as the refuted target, not both conjoined.\n\nThis defect is established by the definitions in J’s own sketch, not by compilation. It also marks a failure to use the selected carrier’s expressive resources: WHL already provides `Refutation` as a structure pairing a snapshot with a proof of negation. J’s `p9_refutes_endpoint` does not use that; it turns refutation into an inconsistent proposition. The prose parts of J may still carry the target-scope distinction, but the only formal definition linking P9 to endpoint refutation is vacuous, so it cannot support the claim that P9’s compatibility objection is a “refuting schema” against endpoint attainment.\n\nA weaker, merely proposed issue is that the bullet list in J says “The same P9 sentence can criticize … a policy, if the account exposes alternatives but gives no downstream resolution procedure.” That sentence belongs to P9’s separate downstream-policy criticism, not to the compatibility sentence about intervals losing correlations. J later explicitly separates them, so I would not treat this as an established defect; it is a wording risk rather than a decisive conflation. The endpoint-refutation contradiction, by contrast, is established by inspection of the sketch.",
+  "text_sha256": "127f9f154a1205271cc516c452980dabb7a8be22dea43559e1038aa24e73bf71"
+}

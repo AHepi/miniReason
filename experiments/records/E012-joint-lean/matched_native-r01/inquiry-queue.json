@@ -1,0 +1,40 @@
+{
+  "automatic_successor_started": false,
+  "content_appraisal": "unresolved",
+  "interpretation": "The entire promotion output is queued. Whether it identifies a useful inquiry remains a question.",
+  "occurrences": [
+    {
+      "content_appraisal": "unresolved",
+      "disposition": "queued",
+      "occurrence_id": "de11b497a89399135ee0f092ce7dd94d06e020a7eef5963cf24c610e6185c47f",
+      "origin": {
+        "arm": "matched_native",
+        "cycle": 1,
+        "input_provenance_meaning": "Supplied material only; no semantic dependency, about or answers edge implied",
+        "mini_artifact_id": null,
+        "plan_id": "d2cf3cc284e751283e4d76f1c76932a24958fd081065ad22e024f32c157d7413",
+        "repeat": 1,
+        "stage": "promote",
+        "supplied_input_occurrence_ids": [
+          "c5abeb308c572ef21099dc89962b88aea27a34873f18a187961808fbfbc7c615",
+          "5510d756585292b9ffbb2435e80aa3a61a162e97d9e1fcbe72937d5e03c8343a",
+          "6742a2a12b2f6e87cdfa889eed495f44a504365c1db35ef1e7d3fa6068e2cac4",
+          "117f62cbb688e023fdaea0a14c6cd0135a69f8868a34c8e76fefe631e344b0f4",
+          "2f4c0af5812df0b7c3e84d2493a3a01ab73e84bd9959d38f3da18fa6333e7a15",
+          "34083b50dc40046c991e3fa32f2c22c2c6e747626f3621b483a2e030ae6c6f62",
+          "ed1f765e40eea4334df2da24cc4702b01f55e6fff5eb4b16bb141cdd4b555aaa"
+        ],
+        "test_id": "E012-joint-lean"
+      },
+      "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+      "proposed_changes_installed": false,
+      "schema": "minireason.inquiry-occurrence.v1",
+      "stage": "promote",
+      "standing_effect": "none",
+      "text": "The next inquiry I would pursue is local to the revised scaffold **JSTR-RefSep**, but it is not the same as the established defect in J’s `p9_refutes_endpoint`. It concerns whether the revised `Selection` structure correctly represents the local alternatives that P9 says an account of global availability must aggregate.\n\n**Original occurrence and uncertainty.** P9 says:\n\n> “Per booking, one can say each booking’s reservation is the quantity of its greatest-revision active hold, or zero otherwise, or unresolved among tied greatest-revision active holds.”\n\nWHL’s `possible_reservations` comment adds:\n\n> “If no such record exists, the list is empty (booking reserves nothing).”\n\nJSTR-RefSep then defines:\n\n```lean\nstructure Selection (snap : Snapshot) (bookings : List Booking) : Type :=\n  (choose : Booking → Nat)\n  (local_mem : ∀ b, b ∈ bookings → choose b ∈ possible_reservations snap b)\n```\n\nBut WHL’s `possible_reservations` returns only the `reserves_effect` of records that are `greatest_revision_in` for the booking. It returns `[]` if no such record exists, and it never adds `0` as a live alternative when records do exist. So there is an unresolved mismatch: the global bounds `booking_lower_bound` and `booking_upper_bound` default to `0` when `possible_reservations` is empty, but `Selection.local_mem` cannot choose `0` from an empty list. A booking in `bookings` with no greatest-revision record makes `Selection` impossible, even though the envelope definitions treat it as reserving `0`.\n\nThe uncertainty is therefore whether “booking reserves nothing” is meant to be a possible local selection, a default outside the selection space, or an absence of alternatives. P9’s “or zero otherwise” and the corpus’s “or that none is” make this more than a coding detail: if zero or none is a legitimate local alternative, then `possible_reservations` is not the complete local alternative set for JSTR-RefSep’s purposes.\n\n**Why this is the warranted next inquiry.** JSTR-RefSep’s `envelope_claim`, `endpoint_claim`, `fullness_claim`, and `p9_can_refute_endpoint` all quantify over `Selection`. If the selection space is too narrow, or if it is empty for a booking that should have a zero alternative, then P9’s compatibility objection may be typed against the wrong target or may appear to refute an endpoint claim for the wrong reason. The issue is not whether P9’s hidden incompatibility exists; it is whether the formal scaffold’s local alternatives are exhaustive enough to make the compatibility objection intelligible at the aggregation level.\n\n**Different outcomes and what they change.** If zero/none is a legitimate local alternative, then `Selection` should be revised — for example, `choose : Booking → Option Nat` with `none` meaning zero, or `possible_reservations` should include a zero alternative even when records exist. That would change the computed optimistic envelope, the meaning of endpoint attainment, and the force of P9’s compatibility objection, because the selection space would be larger. If zero/none is not a legitimate local alternative, then the current `Selection` may be adequate, but the account must restrict `bookings` to bookings with at least one possible reservation, and the bounds functions’ default to `0` must be marked as an extra convention rather than a selectable alternative. In that case P9’s compatibility objection cannot be typed as targeting that convention.\n\n**Claims and uses that should remain distinguishable.** An expired hold or release reserving zero is not the same as a booking having no true story. `possible_reservations` as a list of record effects is not the same as a set of possible stories. `booking_lower_bound` and `booking_upper_bound` defaulting to zero is not the same as a `Selection` choosing zero. Envelope, endpoint, and fullness claims remain separate. A claim, an obstruction, and a refutation remain separate. J’s original `p9_refutes_endpoint` remains a distinct flawed occurrence from JSTR-RefSep’s separated `endpoint_obstruction` and `obstruction_refutes_endpoint`. And P9’s cross-booking incompatibility remains a conditional possibility, not an observed missing constraint.\n\nThis inquiry does not assume that the omission of zero/none is a defect. It asks whether the omission bears on the proposed use of JSTR-RefSep. The established contradiction in J’s `p9_refutes_endpoint` is a separate matter; whether this null-alternative issue interacts with that criticism, or with the typing of P9’s objection, is the successor problem.",
+      "text_sha256": "0468c6f202ae9773d61cf571adc726adc0d597065746239cd0a5d5dfaf7e52f7"
+    }
+  ],
+  "schema": "minireason.inquiry-queue.v1",
+  "standing_effect": "none"
+}
