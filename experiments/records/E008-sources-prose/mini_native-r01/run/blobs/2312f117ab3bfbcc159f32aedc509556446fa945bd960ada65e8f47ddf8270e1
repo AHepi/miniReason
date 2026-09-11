@@ -1,0 +1,228 @@
+The actual expression is, as presented, not a translation at all: it repeats the frozen corpus text verbatim from “A replicated warehouse snapshot is not a single ledger…” through “…the reconstruction’s only honest form.” I find no paraphrase, elision, added sentence, or changed punctuation in the supplied expression. So there is no source-to-expression translator loss to identify here. The meaningful comparison is between the frozen prose, the independent reading, and the two proposed languages.
+
+That also means the selected carrier—unconstrained ordinary prose—imposes no candidate grammar. WHL and RSS are optional reconstructions. Prose objections remain admissible even where either formalization cannot state them.
+
+## Independent reading
+
+The reading is useful as a summary of the prose’s overt content: snapshot as bag/cloud, duplicate inertness, booking-local supersession, unresolved ties, negative availability, expiry ambiguity, replication ambiguity, and inquiry over verdict. It also correctly notes that the prose leaves many things unresolved.
+
+But it introduces a distinction not present in the frozen source. It says:
+
+> “The sentence ‘Now the disagreements begin’ marks a likely prose escape: the first part reads like a reconstruction of rules, while the later part is meta-commentary…”
+
+and
+
+> “If the original source was formal or quasi-formal, those later paragraphs may not be part of it.”
+
+The frozen problem says simply: “Explore this problem in prose.” There is no formal original in the packet. The sentence “Now the disagreements begin” is part of the frozen prose, not a signal that the rest is escape. This is a reader/probe-level addition. It can block criticism of the later paragraphs as part of the material, whereas the source explicitly says:
+
+> “False or incomplete proposals are not discarded; they are part of the evidence about how people understand the system.”
+
+A proposed repair, not installed: label the “prose escape” hypothesis as a reading, not a source-genesis claim. Treat the whole frozen text as material unless the probe explicitly says otherwise.
+
+The reading’s uncertainty about whether the expression is “a faithful paraphrase, a loose commentary, or a construction” also becomes an artifact once the source is compared: the expression is the source.
+
+## Lean WHL
+
+WHL captures several source distinctions well: exact duplicate fields, booking-local revision dominance, active/expired holds, per-booking possible reservations, and negative availability via an integer-like type. Its defects are more specific.
+
+### 1. Compiler/type bridge is broken as written
+
+The comment says WHL “uses only `Nat`, `List`, `Option`, `Bool`,” but the code declares:
+
+```lean
+axiom Quantity : Type
+axiom Revision : Type
+```
+
+Then it uses `Quantity` as if it were numeric:
+
+```lean
+def reserves_effect (t : Time) (r : Record) : Quantity :=
+  match r.kind with
+  | Kind.hold => if t > r.expiry then 0 else r.quantity
+  | Kind.release => 0
+```
+
+and:
+
+```lean
+def list_min? : List Quantity → Option Quantity
+| [] => none
+| (x :: xs) => some (xs.foldl (λ acc y, if y < acc then y else acc) x)
+```
+
+and:
+
+```lean
+def availability_lower_bound (snap : Snapshot) (bookings : List Booking) : Int :=
+  let total_lower := bookings.foldl (λ acc b, acc + booking_lower_bound snap b) 0;
+  Int.sub_nat snap.capacity total_lower
+```
+
+But `Int.sub_nat` expects `Nat`, while `snap.capacity : Quantity`. There are no `OfNat Quantity`, `LT Quantity`, or `Add Quantity` instances. This is not merely a model failing to express something; the supplied code does not typecheck under the stated Lean-core-compatible constraints. It blocks compiled refutations.
+
+A proposed repair, not installed: define `Quantity := Nat` and `Revision := Nat`, or add explicit typeclass assumptions. If revisions need gap structure, `Nat` is especially relevant.
+
+### 2. The expiry-deletion reading is named but not encoded
+
+The source distinguishes two readings:
+
+> “Another reading treats expiry as deleting the record from the bag, after which revision 3 becomes greatest and active, so the booking reserves again.”
+
+WHL defines `expired_deletes_rule`, but that rule only changes the reservation effect of a record. It does not remove expired records before computing `greatest_revision_in`:
+
+```lean
+def possible_reservations_with (rule : ReservationRule) (snap : Snapshot) (b : Booking) : List Quantity :=
+  let rs := snap.records;
+  let t := snap.logical_time;
+  (rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (rule t)
+```
+
+Distinguishing case: booking `b` has revision 5 expired hold quantity 5 and revision 3 active hold quantity 3. Under the deletion reading, revision 5 is removed, revision 3 becomes greatest, and the possible reservation is `[3]`. Under WHL with `expired_deletes_rule`, revision 5 remains greatest, maps to `0`, and revision 3 stays dominated. `possible_reservations_with` gives `[0]`, not `[3]`.
+
+So the alternative reading is mentioned but not formally available. A proposed repair, not installed: parameterize greatest-revision selection by a reading that may pre-filter expired records.
+
+### 3. Non-convex availability and cross-booking correlations vanish
+
+The source says:
+
+> “availability is not a number but a set or an interval, and possibly not even a convex one.”
+
+and:
+
+> “intervals lose correlations: booking A’s high alternative might be incompatible with booking B’s high alternative…”
+
+WHL only provides lower and upper availability bounds via per-booking min/max and summation. That yields an interval, not a set of possible global reservations. Distinguishing case: two bookings each with possible reservations `{0, 10}` and capacity `10`. Possible availabilities are `10`, `0`, and `-10`. WHL’s interval would be `[-10, 10]`, which includes `5`, though `5` is not possible. The source’s non-convexity and correlation point is lost.
+
+There is also a naming issue. The source says:
+
+> “A pessimistic reading takes the maximum hold among alternatives for each booking; an optimistic reading takes the minimum.”
+
+WHL’s `booking_lower_bound` takes the minimum reservation. Then `availability_lower_bound` subtracts that minimum, yielding an optimistic upper availability value. `availability_upper_bound` subtracts the maximum, yielding the pessimistic lower availability value. The names are reversed relative to the source’s pessimistic/optimistic reading.
+
+A proposed repair, not installed: represent availability as a set of possible global totals or a partial order of compatible alternatives; rename bounds consistently.
+
+### 4. Criticism target and assumption dependence are flattened
+
+The source says:
+
+> “One can criticize a reconstruction rule, a particular record, a booking’s history, the snapshot as a whole, or the assumption that logical time is meaningful.”
+
+WHL says:
+
+```lean
+def Conjecture : Type := Snapshot → Prop
+```
+
+and:
+
+```lean
+structure Refutation (c : Conjecture) : Type :=
+  (snap : Snapshot)
+  (not_c : ¬ c snap)
+```
+
+So the only first-class refutable object is a snapshot-indexed proposition. `rules_disagree` is a `Prop`, but it is not a `Conjecture` or a target. There is no `Target` type and no assumption-dependence relation. A rule criticism must be encoded as a snapshot counterexample, which loses the source’s distinction between criticizing a rule and criticizing data. WHL itself admits: “Source assumptions are not primitive… This is an expressive limitation.”
+
+RSS is stronger here, because it has accounts, readings, and criticism targets. But even RSS does not fully formalize assumption-dependence; it only mentions it.
+
+### 5. Revision gaps and revision numerals are lost
+
+The source says:
+
+> “revision numbers are not necessarily contiguous, and treating a gap as evidence of loss is an extra assumption.”
+
+WHL declares `axiom Revision : Type` and only gives an abstract `revision_le` / `revision_lt`. It has no successor, numerals, or natural-number structure. The comment says revisions are natural numbers, but the code does not enforce that. Without extra constants, one cannot state “revision 7 and revision 5 but no revision 6” in the language itself.
+
+A proposed repair, not installed: use `Nat` for revisions or add a numeral/successor structure if gap reasoning is intended.
+
+### 6. Global availability needs an external booking list
+
+WHL’s global functions take `(bookings : List Booking)`. But the source snapshot is a bag of records; bookings are those named by records. Distinguishing case: a snapshot contains a record for booking `B`, but the caller passes an empty `bookings` list. WHL’s availability ignores `B`. That is an introduced parameter and a possible broken dependency. A proposed repair, not installed: derive the booking set from the snapshot records or require an exhaustive list with an explicit invariant.
+
+### 7. Exact duplicate inertness is defined but not operationalized
+
+WHL defines `exact_duplicate`, but `possible_reservations` maps all greatest-revision records, including exact duplicates. For min/max this may not matter, but the list can contain repeated quantities. The source says:
+
+> “Duplicate delivery of the same booking, revision, kind, quantity, and expiry adds nothing.”
+
+A proposed repair, not installed: deduplicate exact duplicates before forming alternatives, or represent the bag modulo exact-duplicate inertness for authority purposes.
+
+### 8. Inquiry materiality is absent
+
+The source’s final paragraph treats false and incomplete proposals as material. WHL has `Commitment : Type := Prop` and `Refutation`, but no inquiry state, open questions, or “material but false” status. RSS does better here: it explicitly has inquiry states and open questions.
+
+## RSS non-Lean semantic class
+
+RSS preserves more of the prose’s meta-level structure: rival stories, viewpoints, readings, accounts, open questions, criticism targets, and local commitments. Its defects are introduced commitments rather than missing structure.
+
+### 1. Exact duplication is made provenance-sensitive
+
+The source says:
+
+> “Duplicate delivery of the same booking, revision, kind, quantity, and expiry adds nothing.”
+
+RSS says:
+
+> “Exact duplication: two deliveries are exact duplicates if all record fields and provenance are equal.”
+
+That adds provenance as a condition. Distinguishing case: two deliveries have the same booking, revision, kind, quantity, and expiry, but different delivery events/provenance. The source calls this inert. RSS says they are not exact duplicates. Since RSS defines near-duplication as sharing booking and revision but differing in kind, quantity, or expiry, these two deliveries are neither exact duplicates nor near-duplicates by the stated definitions. They fall into a gap. A proposed repair, not installed: define exact duplication by the five record fields; treat provenance as optional evidence rather than an equality condition.
+
+### 2. Capacity is relativized more than the source does
+
+The source says:
+
+> “The capacity and logical time are shared coordinates.”
+
+Later it only questions logical time:
+
+> “It assumes logical current time is a single coordinate, but different replicas may have different logical times; if so, expiry is replica-relative.”
+
+RSS says:
+
+> “A coordinate can be shared or replica-relative. RSS treats coordinates as parameters of a viewpoint, not as absolute facts.”
+
+This makes capacity viewpoint-relative. That is an introduced commitment. Distinguishing case: two replicas disagree about capacity. The source’s shared-capacity reading makes over-reservation a global conflict; RSS can localize it to viewpoints. A proposed repair, not installed: keep capacity shared unless a specific conjecture varies it.
+
+### 3. Story and provenance are added primitives
+
+The source uses “rival stories” as a vivid metaphor, but its operational bag contains records. RSS says:
+
+> “A story is not a record. Records are evidence for stories. A story has a booking, a revision, a kind, a quantity, an expiry, and a provenance…”
+
+This adds an ontology of stories and provenance not present in the frozen prose. It may be a useful reconstruction, but it is not neutral. It can make it harder to see that the source’s records themselves are the claims under dispute.
+
+### 4. RSS adopts a normative stance about single answers
+
+RSS says:
+
+> “It treats any demand for a single answer as a projection that must be justified outside the semantics.”
+
+The source says a single-number availability is “a projection that discards information,” and that without a projection the snapshot cannot answer “how much is available?” But it does not go as far as saying every demand for a single answer must be justified outside the semantics. RSS strengthens the source’s methodological caution into a normative rule. That is an introduced commitment.
+
+### 5. Internal inconsistency about provenance
+
+RSS makes provenance primitive:
+
+> “A story has… a provenance (which delivery or set of deliveries it is drawn from).”
+
+But later it says:
+
+> “RSS cannot express the exact provenance of a delivery unless provenance is added.”
+
+Since provenance was already added as a primitive, this is at least a tension or editing error. It weakens the claim that RSS cleanly represents provenance-related uncertainty.
+
+### 6. It acknowledges but does not encode operational cost
+
+The source says retaining alternatives “preserves honesty but makes downstream decisions harder.” RSS says it may obstruct efficient decision-making and “cannot express the operational cost of retaining uncertainty.” That is an honest limitation, but it means a distinction present in the prose—downstream difficulty—is not represented formally.
+
+## Disposition
+
+The source-to-expression comparison yields no translator defect: the expression is the frozen prose. The defects supported by evidence are distributed as follows:
+
+- Reader/probe: the independent reading’s “prose escape” and “formal or quasi-formal original” hypotheses are not in the frozen packet and can demote material the source says remains material.
+- Lean WHL: broken type/compiler bridge; expiry-deletion reading not encoded; non-convex availability and cross-booking correlations lost; bound names reversed; criticism target and assumption dependence flattened; revision gaps lost; external booking list introduced; duplicate inertness not operationalized; inquiry materiality absent.
+- RSS: provenance added to exact duplication; capacity relativized beyond the source; story/provenance ontology added; normative stance about single answers strengthened; internal tension about provenance; operational cost acknowledged but not encoded.
+
+These are not proofs that WHL or RSS cannot in principle capture the prose. They are specific gaps in the frozen candidate languages as written. Proposed repairs should be recorded, not installed. The unresolved question of whether the later “disagreements” are part of the source or meta-commentary is acceptable as a competing interpretation, but the frozen packet as given treats the whole prose as the corpus. Substantive prose objections—such as the loss of non-convex availability or assumption-dependence—remain admissible even where the selected formal language cannot encode them.
