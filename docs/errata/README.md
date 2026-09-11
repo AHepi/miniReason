@@ -8,5 +8,6 @@ Each failure gets a durable entry naming its observation, what failed, its impac
 | [operations.md](operations.md) | Environment, transport, extraction, publication and run integrity |
 | [configurations.md](configurations.md) | Wiring, format, context, budget and task-method failures |
 | [inquiry-preparation.md](inquiry-preparation.md) | Four-stage inquiry prototype and integration defects caught before live calls |
+| [interpretations.md](interpretations.md) | Substantive interpretation and attribution defects identified in separate reviews |
 
 Per-experiment errata additionally live beside their records, so an individual test remains self-contained.
