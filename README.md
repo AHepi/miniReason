@@ -10,6 +10,10 @@ The experiment model is DeepSeek V4.1 Flash, using the official `deepseek-flash`
 
 ## Start here
 
+**If a window failed, read [DECISION_LEDGER.md](docs/DECISION_LEDGER.md) first, then [PURPOSE.md](PURPOSE.md) and [STATUS.md](docs/STATUS.md), and follow [the continuation and recovery workflow](docs/workflows/continue.md).** The ledger records choices and publication receipts; STATUS separates completed, interrupted and pending work. Compare the surviving checkout with remote `main` before running anything new. A local commit or a partial upload does not establish publication. Finish and verify any pending publication before starting its successor experiment.
+
+Every decision needs an append-only ledger receipt stating the choice, why it was made, how it contributes to the purpose, and its outcome or pending state with evidence. Record the choice before acting, then append dated outcomes and corrections. This includes design, implementation, experiments, interpretation, delegation, publication and stopping decisions. Mechanical executions of an already recorded choice belong in its evidence. Keep a running record and publish small reviewed checkpoints to `main`, including failed or interrupted work, so recovery does not depend on this conversation. Follow [the publication workflow](docs/workflows/publish.md) and record the verified remote commit and tree; connector-created commits can differ from local commits while containing the same tree.
+
 [Current state](docs/STATUS.md) records what ran and what remains open. [The workflow index](docs/workflows/README.md) tells a future operator where to read and write. [The semantic guide](docs/SEMANTIC_GUIDE.md) separates task behavior from claims about creativity. [The experiment method](docs/EXPERIMENT_METHOD.md) states the comparisons and their limits. [Language Proposal Theorems](docs/LANGUAGE_PROPOSAL_THEOREMS.md) works through twenty conditional results about expression, resources, language changes and epistemic claims. [Problem promotion](docs/PROBLEM_PROMOTION.md) explains how an encountered issue becomes a successor inquiry without turning its diagnosis into an accepted fact. [The branching research agenda](docs/RESEARCH_AGENDA.md) supplies discriminating follow-ups, an original second-domain scenario and a proposed construction-and-promotion configuration after the frozen first studies.
 
 | Location | Use |
@@ -22,6 +26,7 @@ The experiment model is DeepSeek V4.1 Flash, using the official `deepseek-flash`
 | `docs/errata/` | Failures, evidence, causes and corrections |
 | `docs/lessons/` | Separate lessons about configuration, method, semantics and operations |
 | `docs/workflows/` | Hooks for continuing, freezing proposals, testing, diagnosis, publication and review |
+| `docs/DECISION_LEDGER.md` | Append-only decision receipts, outcomes and publication checkpoints for recovery |
 | `docs/reviews/` | Independent substantive readings of explanations, criticisms and realized behavior |
 | `tests/` | Offline checks for engine integrity and experiment machinery |
 
@@ -36,4 +41,4 @@ python -m unittest discover -s tests -v
 
 Live calls read `DEEPSEEK_API_KEY` from the process environment. Keep it out of files that are committed. Calls, content, usage and failures are recorded; native hidden reasoning text is discarded. Live commands and the current experiment state are documented in [the continuation workflow](docs/workflows/continue.md).
 
-Up to five configuration tests may run concurrently. After every configuration test, preserve the original proposal, result and causes, then commit and push to `main` immediately. Do not wait for a successful outcome before publishing. Every finite stopping point must explain the remaining alternatives; reaching a resource ceiling does not mean the search space is exhausted.
+Up to five configuration tests may run concurrently. After every configuration test, preserve the original proposal, result, causes and decision receipts, then commit and push to `main` immediately. One publisher verifies the remote checkpoint before successor work starts. Do not wait for a successful outcome before publishing. Every finite stopping point must explain the remaining alternatives; reaching a resource ceiling does not mean the search space is exhausted.
