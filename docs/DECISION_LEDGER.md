@@ -107,3 +107,11 @@ Remote main `7fc2b9928a06d7f6ac75159dfcf447536a9a43bc`, local `e5968f35aa77e3fed
 ### D016 — Activate E016 under the published plan
 
 Choice: run `E016-reason-original` with its six frozen arms and at most five simultaneous calls, using only the previously authorized DeepSeek credential at the declared `https://api.deepseek.com/v1` destination. Why: parent observations, instrument, stimuli and plan are now published and verified; the study can proceed from the actual recovered point. Contribution: obtains the original-reason response/use comparison needed by D012. The plan is `fc616ccc95cda83b1ee6c335c5c4b5987ca4717ff43b47a2eb6bcf6d33a0b7d2`; all model-visible source material is contained in the published plan/materials, and no private review or hidden reasoning is sent. The key is read only at execution and is absent from committed files. Preserve each request, public response or failure and actual usage; do not retry or dispatch E017 until this record is reviewed and published. A failure of access will be recorded as an external blocker, not semantic failure. This activation receipt is published before the call begins.
+
+### D016 publication outcome — Activation receipt durable
+
+The E016 activation receipt is published at remote `0c5751468efe0f0606a1438b96587dbde820d96f`, local `d38836e9430ef94e3c187241d7cb8be9d10bb606`, shared tree `48ea06e16213f3c25b934ada7db7cfcd8aa5eafb`. After verification, the run was started and request receipts began appearing. No completion claim is made at this checkpoint.
+
+### D017 — Independently review actual E016 evidence
+
+Choice: assign an independent reviewer to reconstruct E016 requests from the frozen plan and review terminal content against the prepublished interpretation contract. Why: script success alone does not verify actual delivered information or substantive use, and a failed call must not be mistaken for a model finding. Contribution: gives the first reason-use condition an attributable integrity/content assessment before comparisons. The reviewer owns only a separately named E016 review; root owns ledger and publication. If the run is still incomplete, report that state rather than inferring completion. This review does not alter a frozen input or trigger another call.
