@@ -1,0 +1,102 @@
+{
+  "schema": "minireason.external-interruption.v1",
+  "test_id": "E011-joint-prose",
+  "plan_id": "e9795fa894cc537e76fae4c6a482b5e2a19dae2b857c996de91f9e745cc95f6b",
+  "original_summary_present": false,
+  "state": "EXTERNALLY_INTERRUPTED",
+  "external_boundary": "Automatic approval review rejected polling the executing task; subsequent poll after public-payload verification returned Unknown process id 81540.",
+  "review_rejection_reason": "The run sends private repository and prior experiment content to the external DeepSeek service across multiple calls; although the user supplied a key and authorized DeepSeek runs generally, they did not explicitly authorize this specific sensitive payload and destination.",
+  "verified_correction": "Repository is public. Exact frozen plan and renderer blobs match the published c0f5c765da454e0dd8c6c2b70130a3c92ed46e83 tree, and all five prepared initial requests render those public inputs without a credential in their messages.",
+  "transport_observation": "The native arm separately recorded a tunnel connection 403 Forbidden refusal. Its cause cannot be identified more narrowly from the retained receipt.",
+  "arms": [
+    {
+      "arm": "bare",
+      "repeat": 1,
+      "recovery_state": "INTERRUPTED_WITHOUT_TERMINAL_RESULT",
+      "prepared_request_files": 1,
+      "complete_response_records": [],
+      "incomplete_response_files": [],
+      "original_terminal_result": null,
+      "reported_resources": null,
+      "actual_sent_calls_and_billed_cost": "Not established by prepared requests or absent receipts."
+    },
+    {
+      "arm": "native",
+      "repeat": 1,
+      "recovery_state": "OPERATIONAL_FAILURE",
+      "prepared_request_files": 1,
+      "complete_response_records": [
+        {
+          "path": "native-r01/calls/call-0001.response.json",
+          "status": "TRANSPORT_OR_RESPONSE_ERROR",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "usage": null
+        }
+      ],
+      "incomplete_response_files": [],
+      "original_terminal_result": "native-r01/result.json",
+      "reported_resources": {
+        "calls": 1,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "actual_sent_calls_and_billed_cost": "Not established by prepared requests or absent receipts."
+    },
+    {
+      "arm": "matched",
+      "repeat": 1,
+      "recovery_state": "INTERRUPTED_WITHOUT_TERMINAL_RESULT",
+      "prepared_request_files": 1,
+      "complete_response_records": [],
+      "incomplete_response_files": [
+        {
+          "path": "matched-r01/calls/call-0001.response.json",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "original_terminal_result": null,
+      "reported_resources": null,
+      "actual_sent_calls_and_billed_cost": "Not established by prepared requests or absent receipts."
+    },
+    {
+      "arm": "matched_native",
+      "repeat": 1,
+      "recovery_state": "INTERRUPTED_WITHOUT_TERMINAL_RESULT",
+      "prepared_request_files": 1,
+      "complete_response_records": [],
+      "incomplete_response_files": [],
+      "original_terminal_result": null,
+      "reported_resources": null,
+      "actual_sent_calls_and_billed_cost": "Not established by prepared requests or absent receipts."
+    },
+    {
+      "arm": "mini",
+      "repeat": 1,
+      "recovery_state": "INTERRUPTED_WITHOUT_TERMINAL_RESULT",
+      "prepared_request_files": 1,
+      "complete_response_records": [],
+      "incomplete_response_files": [],
+      "original_terminal_result": null,
+      "reported_resources": null,
+      "actual_sent_calls_and_billed_cost": "Not established by prepared requests or absent receipts."
+    },
+    {
+      "arm": "mini_native",
+      "repeat": 1,
+      "recovery_state": "INTERRUPTED_WITHOUT_TERMINAL_RESULT",
+      "prepared_request_files": 0,
+      "complete_response_records": [],
+      "incomplete_response_files": [],
+      "original_terminal_result": null,
+      "reported_resources": null,
+      "actual_sent_calls_and_billed_cost": "Not established by prepared requests or absent receipts."
+    }
+  ],
+  "semantic_result": "No completed public model output is available. No construction, criticism, repair, carrier-capacity or creativity finding.",
+  "preservation": "Original request, response and result bytes remain unchanged, including the zero-byte partial matched response. This recovery file does not manufacture an original runner summary.",
+  "preserved_zero_byte_files": [
+    "matched-r01/calls/call-0001.response.json",
+    "mini_native-r01/inquiry-started.json"
+  ]
+}
