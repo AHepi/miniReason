@@ -10,6 +10,10 @@ The experiment model is DeepSeek V4.1 Flash, using the official `deepseek-flash`
 
 ## Start here
 
+**Latest research:** [explicit formal arguments and checker feedback](docs/reviews/formal-feedback-research-2026-09-12.md) now has a runnable [local diagnostic](experiments/diagnostics/formal-feedback-v1), eleven illustrative probes and nineteen passing focused tests. It exposes unsupported intermediate reuse and shows how changed meanings, vacuity and assumed conclusions can still pass formal checking. These are operator-authored local checks, with no new live model result. The [prospective feedback protocol](docs/FORMAL_FEEDBACK_PROTOCOL.md) records the paired experiment and its limits.
+
+The installed **minireason-progress-ledger** skill is now named in AGENTS. Use its active-session timer and append substantive UTC progress at least every five minutes. Mechanical activity receipts alone do not meet that requirement.
+
 **Recovery is complete.** The distinct one-cycle construction-to-successor implementation and independent review are published, with 569 passing tests in normal and optimized Python. E023 is the prepared next control; live calls are blocked pending the explicit DeepSeek disclosure approval required by automatic review. Read [current STATUS](docs/STATUS.md) and the [runnable chain workflow](docs/workflows/template-chain.md) before continuing.
 
 **If a window failed, read [DECISION_LEDGER.md](docs/DECISION_LEDGER.md) first, then [PURPOSE.md](PURPOSE.md) and [STATUS.md](docs/STATUS.md), and follow [the continuation and recovery workflow](docs/workflows/continue.md).** The ledger records choices and publication receipts; STATUS separates completed, interrupted and pending work. Compare the surviving checkout with remote `main` before running anything new. A local commit or a partial upload does not establish publication. Finish and verify any pending publication before starting its successor experiment.
