@@ -1,43 +1,61 @@
 # Current recovery and research state
 
-**E022 is complete and verified on main. E020 was interrupted by an automatic approval rejection; its partial evidence is preserved. Live dispatch is blocked while offline distinct-template implementation continues.**
+**Recovery and offline implementation are complete and published. E022 is complete and reviewed. E020 is preserved as interrupted. E023 is prepared for the owed no-return retry; E024/C001 are prepared for a later distinct-template chain. No live A-to-B chain has run.**
 
-Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [recovery workflow](workflows/continue.md). Destination: `AHepi/miniReason`, branch `main`; source h-EPI is unchanged. One publisher owns main and the ledger. Publish and verify every completed document immediately, including reviews, before proceeding to another document. Supporting ledger/STATUS updates may accompany that document. Publish every completed or interrupted configuration before successor dispatch.
+Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [AGENT_ACTIVITY](AGENT_ACTIVITY.jsonl), [PURPOSE](../PURPOSE.md) and [template-chain workflow](workflows/template-chain.md). Destination: AHepi/miniReason main. Source AHepi/h-EPI remains unchanged. One publisher owns main and the decision ledger. Every agent logs repository/staging searches, reads, edits and tests using tools/repo_activity.py. Publish each completed document immediately and each complete/partial configuration before successor work.
 
-## Exact recovery checkpoint
+## Recovered stopping point
 
-The last window completed E022 and committed it locally but stopped during upload at batch 6 of 14. Recovery finished that upload: remote `814649dba32264dddd7ccd466dbbd57e32c63bcb`, local `b4c0ae2a8e87e57fdbf2b3b06651d4110de8ebdd`, shared tree `ae6eb00407373a78b30337617c06cc7f71abbb6e`. Exact tree equality and main reference were verified. This enclosing status/ledger checkpoint is published separately. Git CLI lacks a write credential; the independently authenticated GitHub connector uses non-force updates and verifies the same intended local tree. No history is rewritten.
+The failed window had completed E022's ten calls and made local commit b4c0ae2a8e87e57fdbf2b3b06651d4110de8ebdd. Upload stopped after batch 6 of 14 while main remained 0de446c9f90beeae2a8a510a576c47174dcaded4. Recovery finished that exact tree and verified remote 814649dba32264dddd7ccd466dbbd57e32c63bcb, shared tree ae6eb00407373a78b30337617c06cc7f71abbb6e. No completed call was repeated.
 
-The recovered `docs/reviews/E022-reason-use-review.md` is an unchanged partial draft. A separate completion review is being prepared; its existence is not yet a completed interpretation. Only `successor_data.py` and partial receipts survived in external promotion staging; no finished B adapter/driver/coordinator was found. Canonical source remains unchanged pending E020.
+The recovered E022 review draft was preserved unchanged and published separately. Its [completion supplement](reviews/E022-completion-review.md) was published at 22924850b4094d34dbc92ee07799ac56954846de. It verifies all ten public outputs, exact wire/occurrence custody and two ended Mini cycles. All four use answers are numerically correct, while some accounts retain capacity, classification, attribution and modality defects. Correct use does not validate every account or show Mini advantage.
 
-## Controlled block
+## Controlled block and the actual blocker
 
-| Test | State |
+| Test | Actual state |
 |---|---|
-| E016 original reason | Six arms / ten complete calls; published; independent review complete |
-| E017 recoded reason | Six arms / ten complete calls; published; independent review complete |
-| E018 different reason | Six arms / ten complete calls; published; independent review complete |
-| E019 omission | Preserved partial: nine attempts, seven complete responses, two transport failures; no root summary |
-| E021 omission retry | Preserved partial after approval rejection: five requests, no complete response, one incomplete file; no root summary |
-| E022 public-payload omission retry | Six arms / ten complete calls, no operational alarms; 102,272 prompt and 61,500 completion tokens; publication verified above |
-| E020 no returned account | Interrupted: four first-stage requests, no complete public answer, one tunnel-403 receipt; no use call or normal summary |
+| E016 original supplemental criticism | Six arms / ten complete calls; published and reviewed |
+| E017 recoded criticism | Six arms / ten complete calls; published and reviewed |
+| E018 different criticism | Six arms / ten complete calls; published and reviewed |
+| E019 omission | Preserved partial: nine attempts, seven complete public responses, two transport failures; no normal summary |
+| E021 omission retry | Preserved partial: five requests, no complete public response; approval rejection and incomplete file |
+| E022 public-payload omission retry | Six arms / ten complete calls; 102,272 prompt + 61,500 completion tokens; published and reviewed |
+| E020 no returned account | Preserved partial: four initial requests, no complete public output, one tunnel-403 receipt, three absent initial responses and four unattempted use calls |
+| E023 no-return retry | Prepared with identical E020 model-visible messages/settings/controls; zero-call preflight passes; not activated |
 
-E019 and E021 remain unchanged interrupted records; missing costs are unknown. Public-payload evidence addressed the prior sensitivity rejection before E022 succeeded through the normal provider path. No endpoint or credential rerouting occurred. A new access rejection stops further dispatch.
+Automatic approval review rejected E020 execution polling because it judged the DeepSeek destination and project-data disclosure not explicitly authorized. Its tunnel-403 response is separate evidence; their causal relation is unknown. No live retry or alternate route followed. All 74 original E020 files are hashed in its [recovery record](../experiments/records/E020-reason-no-return/recovery.json), published at e589dacffe6aa36a68955d52a01a000d76a8d48b. Missing costs are unknown. No no-return observation or account-necessity conclusion exists.
 
-## Next exact task
+Explicit approval to send published experiment material and generated outputs to https://api.deepseek.com/v1 is the live blocker. This status does not grant that approval. The existing credential is read only at runtime through DEEPSEEK_API_KEY. The current request for continuous logging does not change the disclosure boundary imposed by automatic review.
 
-Historical E020 command below has now been attempted. Do not run it again or overwrite its output:
+## Published implementation
+
+Four new modules implement successor_discrimination_v1 and the external A-to-B coordinator; all existing source bytes are unchanged. The code checkpoint is remote d1b175e12c6b9f96ecf792d42752dd5f506574b8, local ed05c18fb7dbb998b50aea2cc4c460f0c9acfb7d, shared tree ccb19c391802e6761f749b2e02c33582d70d252f. The [independent implementation review](reviews/distinct-template-implementation-review.md) is published at ea1ce9a322c722d05b15609418ee781be1b0f55b.
+
+Normal and optimized full suites each pass 569 tests; independent focused checks pass 27. The [verification record](sources/2026-09-12-template-chain-verification.json) pins the seven source/test files. Tests run the actual Mini engine with scripted provider responses. They verify exact source/output/tree/preflight custody, common downstream input, one-cycle distinct contracts, endpoint baselines, no-promotion, duplicate dispatch refusal and failure preservation. They establish no live chain result or semantic standing.
+
+## Prepared exact continuation
+
+| Prepared artifact | Identity and state |
+|---|---|
+| E023-reason-no-return-retry | Plan 8d21ad958acb05e7b9f0cd5eeeb86a69db32f49601533a227797d2a21de331cd; published fcf7c3315b1f1927eafdb5a9e5ea3114e64696d9; zero-call proof in docs/sources/E023-retry-preflight.json |
+| E024-chain-construction | Plan d25198e56a22a3b7212136587a16a2002f70e73f1a0ea00c2c5ae636ee774568; published b421660ce78b41aabf5a2faf0e049a304a37a40d; zero-call actual-material preflight |
+| C001-construction-to-successor | Plan f54fd564b5e0e2e283a8110a133e97b565b2729fb61ecf50a575091612d733f1; published c4f0ac3c5041f6c7eb41927779752042752c1bd0; freezes E024 mini-r01, both distinct contracts and B settings/controls before A |
+| E025-chain-successor | Reserved identity only; no plan, handoff, output or live call exists because actual published A output is required |
+
+After explicit disclosure approval, inspect the output path first and execute E023 once:
 
 ```sh
-python -m minireason.reason_use_study run --plan experiments/plans/E020-reason-no-return.json --output experiments/records/E020-reason-no-return --jobs 5
+python -m minireason.reason_use_study run --plan experiments/plans/E023-reason-no-return-retry.json --output experiments/records/E023-reason-no-return-retry --jobs 5
 ```
 
-First check that this output directory does not already exist. If it does, inspect/preserve it instead of rerunning. E020 has four staged arms/eight calls and retains/counts the first response while exposing an empty account at use. Review actual account exclusion, custody and public content, then publish the result immediately. The source-bound attempt has stopped. New modules may now be integrated; any prepared retry must bind the resulting source identity and retain identical model-visible conditions. The integrated offline baseline is 542 tests passing; no code has changed since that freeze.
+Record and review its exact returned-account omission, then publish and verify the complete or partial record. Do not run E020 again. E023 preserves every old source byte and adds only the four new modules to the repository-wide identity. Old source-bound plans remain immutable.
 
-After preserving the stopped E020 record, integrate and verify the staged `successor_discrimination_v1` adapter and A-to-B coordinator under D028/D029/D033. The retained family is prose-capable `joint_construction_v1`; carrier sweeps, repetition of the arithmetic block and same-template repetition are shelved for this target. Use the [template disposition](reviews/template-disposition-for-promotion.md) and [handoff design](reviews/distinct-template-handoff-design.md). Final chain activation remains conditional on completion/review of the no-return control. The explicit DeepSeek destination/disclosure approval required by automatic review is the live blocker.
+Review E023 before activating the prospective E024/C001 allocation. The selected pair retains prose-capable joint construction once, then successor discrimination once. It shelves same-template repetition, additional carrier sweeps and reservation-program templates for this target, preserving their specimens and reopening conditions. E024 uses exact prior source/question material and the declared new allocation. All B controls receive the same preselected A mini-r01 whole-output bundle. If that arm fails, no substitution is permitted.
 
-Freeze a chain before A: A `joint_construction_v1` once, selected arm `mini-r01`; B `successor_discrimination_v1` once, locate/discriminate, separate one-cycle manifests/logs. Publish A before freezing its whole-output handoff; publish the handoff and B plan before B. All B controls receive the same preselected A output bundle. No arm substitution, automatic third episode, or forced problem promotion.
+The [workflow](workflows/template-chain.md) gives A execution, actual A publication verification, handoff freeze, B plan/preflight publication and B execution commands. No placeholder handoff or automatic third episode is allowed. Promotion is optional; suspension or no-promotion can be the reasoned outcome. Source preservation and route parity are separate from explanatory merit.
 
-## Interpretation and historical work
+## Publication and recovery mechanics
 
-E001–E018 records, initial language proposals and all earlier reviews remain available unchanged. E011/E019/E021 are partial, not negative semantic results; E006/E007 were superseded without execution. Source custody and operational success do not establish bearing, creativity, language ranking or Mini advantage. Equal matched/Mini conditional provider requests have the limitations explained in [route identifiability](reviews/reason-use-route-identifiability.md). No E020 outcome or account-necessity conclusion exists yet. Prose remains fully legitimate, and the inquiry remains open.
+Git CLI lacks a write credential; the independently authenticated GitHub connector publishes reviewed blobs/trees with non-force main updates. Local/remote commit metadata can differ; verify exact shared tree and actual main. Each completed document in this continuation received its own immediate checkpoint, with supporting activity/decision receipts. The activity stream is continuously appended, including publication checks, so the final verification events may postdate its last published snapshot. A receipt cannot contain its own future commit identity; the publisher verifies that enclosing checkpoint externally and the next ledger entry records it.
+
+All original observations, partial drafts and earlier sources remain unchanged. There is no unresolved code/test failure at this checkpoint. The remaining external blocker is explicit DeepSeek destination/disclosure approval. No additional full-suite run or live call is needed before asking for that approval.
