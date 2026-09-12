@@ -4,11 +4,9 @@ Updated 2026-09-12. The overarching goal is to explore Mini's configuration spac
 
 ## Current checkpoint and next action
 
-E024 and its review are complete and published. C001's actual handoff and E025's plan/preflight are complete and published. E025 was attempted once, then interrupted by renewed automatic disclosure review: five request records, one zero-byte response file, zero complete public responses, no terminal summary, and unknown usage. Its [recovery evidence](../experiments/records/E025-chain-successor/RECOVERY.md) is published at 96dbd892c3f4b2c18e87f03a6e0a544e471d075b. All 31 original file hashes pass preservation verification.
+**Paused for the user's actual-source decision.** The user supplied `FW5 JUMP from FW2+FW3+FW4 - Explanatory construction.md`, asked that it be read through and the research plan assessed, and requested stopping with a decision for approval. Full-source assessment is in progress under REC-20260912-F. No revised plan is adopted and no further provider call will be made before that decision.
 
-The current live task is [E025-retry-02](../experiments/attempts/E025-retry-02.json). The user explicitly answered **Yes** to the exact request to send the E024 source packet and selected outputs, E025 instructions and intermediate outputs to https://api.deepseek.com/v1/chat/completions for this prepared ten-call retry. REC-20260912-E records this fresh approval; the prior pending declaration remains historical and unchanged.
-
-Fresh actual-material preflight passes with zero provider calls, frozen source/handoff identities unchanged, and retry-02 output absent at activation. Both interrupted records pass original-file preservation checks (31 and 32 files). Publish this activation, then dispatch once. Six arms and ten calls remain fixed; no third episode is allocated.
+E025-retry-02 had explicit payload/destination approval and passed frozen-input preflight. Its process was subsequently interrupted by network policy blocking https://api.deepseek.com:443. Inspection found six COMPLETE/stop public responses, no terminal summary and no active exact runner. This is partial evidence, not a completed six-arm experiment; incurred totals remain to be reconciled and failed-delivery costs may be unknown. Preserve every original byte. The previous two failed attempts remain unchanged.
 
 | Artifact | Verified state |
 |---|---|
@@ -18,15 +16,7 @@ Fresh actual-material preflight passes with zero provider calls, frozen source/h
 | [E025 plan](../experiments/plans/E025-chain-successor.json) | Plan fae51c195662a65dd70c7f096559c24c894e50567a41e30d8b955ab571e04727; published at c4dd5aa2dd7fc1dc8c0c1659aca9d14d94be709d. Six controls, ten calls, distinct locate/discriminate template, one cycle. |
 | [E025 preflight](../experiments/preflights/E025-chain-successor) | Passed with actual source and handoff, zero provider calls; activation published at ecedc2e7489fd5f6d5d8f79a472df920e1ca35e1. |
 
-The first attempt and retry 01 remain immutable operational interruptions, with zero complete public responses and unknown usage. [Retry 01 recovery](../experiments/records/E025-chain-successor-retry-01/RECOVERY.md) explains the automatic rejection after credential provision. The user has now supplied the explicit payload/destination approval requested by that review. This authorization persists for the exact frozen attempt; do not ask again merely because the credential or repo content is involved. Honor any genuinely new runtime rejection.
-
-The approved command, after this activation publication, is:
-
-```sh
-python -m minireason.successor_study run --plan experiments/plans/E025-chain-successor.json --output experiments/records/E025-chain-successor-retry-02 --jobs 5
-```
-
-The runtime credential remains outside tracked files and enters only the child process environment. No native hidden reasoning or operator review is sent as model input. Preserve actual public outputs and usage, publish the full complete or interrupted record, then review its substance.
+The first attempt and retry 01 remain immutable operational interruptions, with zero complete public responses and unknown usage. The user explicitly approved the exact payload/destination for retry 02; its later network-policy failure is a different blocker. That disclosure approval must not be treated as missing again. The current user instruction independently pauses execution pending a source-informed research-plan decision. Do not dispatch a retry or third episode.
 
 The selected A proposed a contestable wording question. Its criticism and revision also carry source-attribution errors. B must be assessed for actual discrimination, added premises, preserved uncertainties and justified continuation/suspension/no-promotion; a queue entry is not a substantive result. This review is not supplied to the model.
 
