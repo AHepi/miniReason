@@ -18,3 +18,6 @@ The active original runner has a dedicated [frozen language workflow](language-s
 The [construction inquiry workflow](inquiry-study.md) continues from a whole frozen issue occurrence into construction, criticism, proposed revision and unresolved promotion. Use it for the first P7/P9 inquiry block and later separately justified selections. Selecting an issue is recorded as an allocation decision; the route neither installs a successor automatically nor assigns semantic standing.
 
 The [reason-use workflow](reason-use.md) compares supplemental criticisms on fixed J and tests isolated account use against an explicit no-return control. Its design amendment and limitations are frozen separately from the earlier four-stage studies.
+
+
+The [distinct-template continuation workflow](template-chain.md) covers the prepared E023 control, E024/C001 construction-to-successor chain, exact published handoff, six downstream controls and no-promotion outcome. The [activity log](../AGENT_ACTIVITY.jsonl) records every agent repository search/read/modification; use tools/repo_activity.py for atomic begin/outcome receipts. Read STATUS before execution: live dispatch remains blocked by automatic approval review pending explicit DeepSeek destination/disclosure approval.
