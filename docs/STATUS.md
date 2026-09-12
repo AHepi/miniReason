@@ -1,8 +1,18 @@
 # Current recovery and research state
 
-**Recovery and offline implementation are complete. All completed documents, code and prepared plans have been pushed to AHepi/miniReason main. The next live action is E023, blocked pending explicit DeepSeek destination/disclosure approval.**
+**Formal-feedback research and the five-minute progress skill are completed and published. The original distinct-template implementation remains complete. The next live action is still E023, blocked pending explicit DeepSeek destination/disclosure approval. No new live model result is claimed.**
 
 Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [AGENT_ACTIVITY](AGENT_ACTIVITY.jsonl), [PURPOSE](../PURPOSE.md) and [the runnable continuation](workflows/template-chain.md). Every agent logs each repository/staging search, read, edit and test through tools/repo_activity.py. One publisher commits and verifies every completed document immediately. Source h-EPI remains unchanged.
+
+## New research completed in this continuation
+
+The [formal-feedback research report](reviews/formal-feedback-research-2026-09-12.md) is verified at remote a67853b978250c69139ad0ede421b63a8fb13649. The [prospective protocol](FORMAL_FEEDBACK_PROTOCOL.md) isolates returned checker information using a shared formal draft, withheld/syntax-only/full-feedback continuations, matched prose review and bare/native baselines. Its initial single-problem block has fourteen distinct calls, correctly counting shared drafts. It is a design, not a generated E026 or a live observation. Formal carrier value and all adverse-case classes remain unisolated/unobserved unless later controls actually test them.
+
+The [local diagnostic package](../experiments/diagnostics/formal-feedback-v1) contains eleven operator-authored fixtures with matching classifications, nineteen passing focused tests, raw CLI/replay evidence and a three-step dependency demonstration. Valid steps can be reused; an undetermined intermediate blocks its descendant; contradictory starting assumptions establish no accepted step. Inadequate mapping, meaning collision, vacuity and circular support can still be formally entailed. An unchanged-base endpoint check already detects the missing consequence, so chain checking adds localization/reuse discipline, not extra deductive power. Every step includes all original assumptions; dependency IDs do not certify minimal support.
+
+Independent review found no material defect in that scope and supplied the explicit attribution limits recorded in the report. Canonical src and old frozen plans are unchanged. All new outputs are local operator-authored diagnostics with zero provider calls; the earlier 569-test suite was not rerun. A separate Mini feedback adapter, exact task material, executable plan and zero-call preflight remain needed for the new proposal. This does not delay the already prepared E023 behind new optional implementation work.
+
+The installed personal skill **minireason-progress-ledger** is named in AGENTS. It requires substantive UTC receipts at least every five minutes, a timer check at tool boundaries, and immediate verified publication of each completed document. The warning is 240 seconds and deadline 300 seconds. Thirteen timer checks and a fresh-context recovery test completed. It cannot wake an inactive conversation or guarantee timing through a blocked tool. Start a fresh session timer when resuming; preserve truthful missed-deadline receipts.
 
 ## What recovery completed
 
