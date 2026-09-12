@@ -1,0 +1,137 @@
+{
+  "cycles": {
+    "completion_tokens_per_call": 32768,
+    "max_calls": 2,
+    "max_completion_tokens": 65536,
+    "max_cycles": 1
+  },
+  "kinds": [
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [],
+      "instruction": "Copy the exact frozen UTF-8 handoff source.",
+      "kind_id": "minireason.successor-handoff.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.successor-handoff.v1"
+      },
+      "title": "Frozen material: successor_handoff"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "handoff",
+          "port_type": "handoff",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Examine the exact proposed successor and its actual parent occurrences. Identify the question or uncertainty it raises, what claim or use it could affect, and which source passages and assumptions its diagnosis depends on. Preserve the distinction between the original construction, its criticism, the proposed revision and the later suggestion. If the suggestion misattributes an earlier claim, changes the question, or supplies no distinct question, explain that possibility using the provided content. Do not presume a defect is present. A question about whether an objection bears is admissible; ordinary prose is sufficient. Do not generate another joint construction or silently amend the frozen source. No successor investigation starts from this response.",
+      "kind_id": "minireason.successor-locate.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.successor-locate.v1"
+      },
+      "title": "Locate the candidate issue in its actual sources"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "handoff",
+          "port_type": "handoff",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "actual_locate",
+          "port_type": "actual_locate",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Using the frozen material and the actual preceding examination, attempt a substantive argument or case that distinguishes the live accounts. State which facts are supplied, which premises you add, and which observations remain unavailable; a proposed test is not an executed observation. State what different outcomes would change about the original use and which claims or uses must remain distinguishable. Then give a successor investigation only if there is a reason to allocate work to it. You may instead retain the current question, suspend pending named evidence, or conclude that no further problem is presently warranted. Do not turn allocation into acceptance of a diagnosis, install a language change, or manufacture a progress verdict. Do not regenerate the original joint construction. Ordinary prose is sufficient.",
+      "kind_id": "mini.verdict.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "mini.verdict.v1"
+      },
+      "title": "Discriminate the live readings (terminal kind is transport only)"
+    }
+  ],
+  "manifest_id": "minireason.successor.v1.301ca638a27e3f0b448a7f8a",
+  "port_types": [
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.successor-handoff.v1"
+        ]
+      },
+      "port_type": "handoff",
+      "render": {
+        "header": "Whole verified parent handoff",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.successor-locate.v1"
+        ]
+      },
+      "port_type": "actual_locate",
+      "render": {
+        "header": "Actual locate output",
+        "rule": "list_bodies"
+      }
+    }
+  ],
+  "problem": "Locate and discriminate the issue in a whole verified handoff; no automatic promotion, standing or installation.",
+  "schema_version": "creib.mini.manifest.v1",
+  "sources": [
+    {
+      "path": "sources/handoff.txt",
+      "source_id": "successor_handoff"
+    }
+  ],
+  "stages": [
+    {
+      "kind_id": "minireason.successor-handoff.v1",
+      "ports": [],
+      "seat": "machine",
+      "stage_id": "seed_successor_handoff"
+    },
+    {
+      "kind_id": "minireason.successor-locate.v1",
+      "ports": [
+        "handoff"
+      ],
+      "stage_id": "locate"
+    },
+    {
+      "kind_id": "mini.verdict.v1",
+      "ports": [
+        "handoff",
+        "actual_locate"
+      ],
+      "stage_id": "discriminate"
+    },
+    {
+      "end": true,
+      "stage_id": "end"
+    }
+  ]
+}
