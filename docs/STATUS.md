@@ -1,68 +1,43 @@
 # Current recovery and research state
 
-**E022 omission retry is complete: six arms, ten responses. Publish/verify it, then run frozen E020. Distinct construction and successor-discrimination templates are selected, one cycle each; their implementation is staged separately.**
+**E022 is complete and verified on main. The next live task is the original frozen E020 no-return control. Distinct-template implementation is being recovered in separate staging.**
 
-Updated during the 2026-09-12 Australia recovery (provider timestamps use UTC). Start with [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [the recovery workflow](workflows/continue.md). Authorized destination: AHepi/miniReason main; source h-EPI remains unchanged. One publisher owns the ledger and main.
+Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [recovery workflow](workflows/continue.md). Destination: `AHepi/miniReason`, branch `main`; source h-EPI is unchanged. One publisher owns main and the ledger. Publish and verify every completed document immediately, including reviews, before proceeding to another document. Supporting ledger/STATUS updates may accompany that document. Publish every completed or interrupted configuration before successor dispatch.
 
-## What the failed window left
+## Exact recovery checkpoint
 
-E013 had completed six arms and eighteen calls, but its upload stopped after batch 1 of 53. Recovery published its exact tree at remote `e0309aef15346428b8854e3669476f44732d1eda`, matching local `506b716bb7a2b4504e9e4f0ba54966587ac36465`, tree `ebcd5631eba03a218c9a117e5407c46f2b532a67`. Four untracked reviews were preserved unchanged. E013's partial review retains its old in-progress statement; the separately published recovery supplement completes all instrument/native readings.
+The last window completed E022 and committed it locally but stopped during upload at batch 6 of 14. Recovery finished that upload: remote `814649dba32264dddd7ccd466dbbd57e32c63bcb`, local `b4c0ae2a8e87e57fdbf2b3b06651d4110de8ebdd`, shared tree `ae6eb00407373a78b30337617c06cc7f71abbb6e`. Exact tree equality and main reference were verified. This enclosing status/ledger checkpoint is published separately. Git CLI lacks a write credential; the independently authenticated GitHub connector uses non-force updates and verifies the same intended local tree. No history is rewritten.
 
-README/AGENTS and the ledger recovery instructions are published. The integrated reason-use instrument and completed E013 review were verified at remote `5201b1385d7ff433fd031da361f34a41cf3f1443`; reviewed materials, plans and zero-call preflights at `7fc2b9928a06d7f6ac75159dfcf447536a9a43bc`. Full integrated offline suite: 542 tests passed. These are instrument results, not creativity verdicts. The activation/review checkpoint preceding the current record was remote `c84999f21c2566077ac4b2e2149c07c8ac8a19cc`, local `c45b54a0688266d5c81a82e7ef5ba2fbf728bac2`, shared tree `27e6c040bfb8facf35642b46b824d028400b618e`.
+The recovered `docs/reviews/E022-reason-use-review.md` is an unchanged partial draft. A separate completion review is being prepared; its existence is not yet a completed interpretation. Only `successor_data.py` and partial receipts survived in external promotion staging; no finished B adapter/driver/coordinator was found. Canonical source remains unchanged pending E020.
 
-## Current controlled block
+## Controlled block
 
-| Test | Intervention | Execution state |
-|---|---|---|
-| E016-reason-original | Exact E015 J and R; account returned at use | All six arms / ten calls complete; published at 31b2db6; independent integrity and substantive review complete (separate review) |
-| E017-reason-recoded | Reviewed whole recoding of R | All six arms / ten calls complete; published at 8363c4c; independent review complete |
-| E018-reason-different | Scoped capacity criticism | All six arms / ten calls complete; published at 9e59d57; independent review complete |
-| E019-reason-omitted | Zero-byte supplemental criticism | Interrupted: 9 attempts, 7 complete responses, 2 transport failures; no root summary |
-| E020-reason-no-return | Empty use-account field; four staged controls | Frozen, preflight passed, not run because E019 was interrupted |
-| E021-reason-omitted-retry | Exact separately identified E019 retry | Frozen and preflighted offline; blocked pending restored authorized network access |
+| Test | State |
+|---|---|
+| E016 original reason | Six arms / ten complete calls; published; independent review complete |
+| E017 recoded reason | Six arms / ten complete calls; published; independent review complete |
+| E018 different reason | Six arms / ten complete calls; published; independent review complete |
+| E019 omission | Preserved partial: nine attempts, seven complete responses, two transport failures; no root summary |
+| E021 omission retry | Preserved partial after approval rejection: five requests, no complete response, one incomplete file; no root summary |
+| E022 public-payload omission retry | Six arms / ten complete calls, no operational alarms; 102,272 prompt and 61,500 completion tokens; publication verified above |
+| E020 no returned account | Frozen/preflighted; no calls yet; next authorized live task after this checkpoint |
 
-All plans and original inputs are fixed under `experiments/plans` and `experiments/materials/reason-use-v1`. Use sees only its finite domain data/questions and the account when enabled. Source/J/R are not separate use-stage ports. Prospective interpretation and decision receipts are outside model-visible inputs. E020 retains/counts its first response but does not expose it at use. One shared baseline is one observation. No scalar merit measure or automatic language installation exists.
+E019 and E021 remain unchanged interrupted records; missing costs are unknown. Public-payload evidence addressed the prior sensitivity rejection before E022 succeeded through the normal provider path. No endpoint or credential rerouting occurred. A new access rejection stops further dispatch.
 
-E016 publication is verified at `31b2db694023d4268dbbb08dbc695344475552d8`. E017 publication is verified at `8363c4cab3c39aab1223a884df109c4a5382b88a`. E018 publication is verified at `9e59d57696c81a34173bf0501179182eecf5f2ca`. The next exact task is to restore authorized provider access, then run E021 in its new output directory, review/publish and verify it, then run unchanged E020 under [the reason-use workflow](workflows/reason-use.md). Do not reuse an existing output directory. Do not dispatch a successor after publication or provider-access failure. If interrupted, inspect actual request, response, result and summary files; preserve partial evidence.
+## Next exact task
 
-Only after authorized network access is restored; do not attempt this under the cancelled approval:
+Run once from this checkout, with the previously authorized key supplied at runtime through `DEEPSEEK_API_KEY`:
 
 ```sh
-python -m minireason.reason_use_study run --plan experiments/plans/E021-reason-omitted-retry.json --output experiments/records/E021-reason-omitted-retry --jobs 5
+python -m minireason.reason_use_study run --plan experiments/plans/E020-reason-no-return.json --output experiments/records/E020-reason-no-return --jobs 5
 ```
 
-The authorized credential is supplied at runtime through DEEPSEEK_API_KEY and is never committed. Git CLI lacks a write credential; the independently authenticated GitHub connector publishes explicit blobs/trees with non-forced ref updates. Check actual remote main and exact tree identity before claiming publication. Local/connector commit metadata can differ. A ledger receipt cannot name its own future commit; later receipts name prior verified checkpoints.
+First check that this output directory does not already exist. If it does, inspect/preserve it instead of rerunning. E020 has four staged arms/eight calls and retains/counts the first response while exposing an empty account at use. Review actual account exclusion, custody and public content, then publish the result immediately. Keep all source files frozen until this source-bound run completes. The integrated offline baseline is 542 tests passing; no code has changed since that freeze.
 
-## Earlier observations retained
+After E020 closes, integrate and verify the staged `successor_discrimination_v1` adapter and A-to-B coordinator under D028/D029/D033. The retained family is prose-capable `joint_construction_v1`; carrier sweeps, repetition of the arithmetic block and same-template repetition are shelved for this target. Use the [template disposition](reviews/template-disposition-for-promotion.md) and [handoff design](reviews/distinct-template-handoff-design.md). Final live materials remain to be selected after control review.
 
-| Records | State and interpretation |
-|---|---|
-| E001–E002 | Completed calibration comparisons; not creativity verdicts |
-| E003–E004 | Frozen initial corpus and both language proposals |
-| E005 | Direct observations and zero-call Mini preparation failures retained |
-| E006–E007 | Superseded without execution |
-| E008–E010 | Complete source-grounded prose/Lean/non-Lean comparisons and separate reviews, published |
-| E011 | Interrupted first construction attempt; never retroactively completed |
-| E014 | One-word access probe only |
-| E015 | Separate prose retry; six arms/eighteen complete calls and review, published |
-| E012–E013 | Frozen Lean/non-Lean construction blocks; each six arms/eighteen calls and completed review coverage, published |
+Freeze a chain before A: A `joint_construction_v1` once, selected arm `mini-r01`; B `successor_discrimination_v1` once, locate/discriminate, separate one-cycle manifests/logs. Publish A before freezing its whole-output handoff; publish the handoff and B plan before B. All B controls receive the same preselected A output bundle. No arm substitution, automatic third episode, or forced problem promotion.
 
-The source packet and both original languages remain unchanged. Prose is fully legitimate. Review finds both located textual repairs and propagated errors, including endpoint attainment, presumed projection restrictions, attribution and capacity interpretation. INT-001–INT-006 and the separate reviews preserve exact arguments. No Mini advantage, universal creativity result, language ranking or search exhaustion is established. The current block investigates a particular criticism/use mechanism; other scoped interventions remain open in RESEARCH_AGENDA.
+## Interpretation and historical work
 
-## Current blocker and complete handover
-
-Read [the dated recovery/report](reviews/2026-09-12-recovery-and-reason-use.md). E019's matched-native use failed with tunnel 403; Mini-native response failed with IncompleteRead; execution polling then returned cancelled network approval with no reason. Preserve its original partial files and separate recovery.json/RECOVERY.md; neither is a normal completed summary. Failed-call token costs remain unknown. No retry or network workaround was attempted. A new window alone does not prove permission restored. E021 changes only run identity/provenance from E019 and has zero-call preflight proof in docs/sources/E021-retry-preflight.json.
-
-The frozen block remains incomplete. There is no E020 no-return observation, no account-necessity conclusion, and no general creativity or Mini-advantage verdict. Three complete new configurations and the partial fourth provide 37 complete responses; all requested offline preparation and review that can proceed without the blocked provider path is preserved in this checkpoint.
-
-Final evidence publication is verified at remote `3e2e96e5684c1f8b464801739507a5d88dc10f1c`, local `ab2ab5ecdf2e2168ba9e41681d750e6b623ffa2b`, shared tree `bde248a2f1075f82f0c82eb4adc6b2da8a95b085`. This includes every completed review and the blocked-state records above. The enclosing final receipt commit is checked separately by the publisher. No live retry was made.
-
-## Renewed continuation and next target
-
-The user has instructed continuation after the reported cancellation. D025 records the unchanged E021 activation through the normal provider path, conditional on successful access, then E020. D026 commissions template retention and distinct-template handoff reviews before implementation. No completed observation is overwritten; this new authorization does not claim that transport access already works. The next target is problem promotion, including a legitimate no-promotion outcome. The same template must not be run for two cycles.
-
-E021 retained five requests, no complete response and a zero-byte partial response; it has no normal summary. Original hashes are in its recovery.json. GitHub metadata confirms this repository is public, and the immutable published E021 plan contains all prompt material. E022-reason-omitted-public-retry preserves the same material/settings and passes zero-call preflight. D027 records the evidence that addresses the stated approval concern; any renewed rejection stops live work. E022 is the next normal-path attempt, followed by E020 only after successful record publication.
-
-D028 adopts the template dispositions in docs/reviews/template-disposition-for-promotion.md and the distinct-template architecture in docs/reviews/distinct-template-handoff-design.md. New source is being prepared outside this checkout until old source-bound controls finish. E022 has complete responses arriving through the unchanged provider path after public-payload proof; it is not yet a completed configuration.
-
-E022 terminal observation: all ten calls complete with no operational alarms. Independent review is finishing. D030 activates unchanged E020 only after E022 record verification on main.
+E001–E018 records, initial language proposals and all earlier reviews remain available unchanged. E011/E019/E021 are partial, not negative semantic results; E006/E007 were superseded without execution. Source custody and operational success do not establish bearing, creativity, language ranking or Mini advantage. Equal matched/Mini conditional provider requests have the limitations explained in [route identifiability](reviews/reason-use-route-identifiability.md). No E020 outcome or account-necessity conclusion exists yet. Prose remains fully legitimate, and the inquiry remains open.
