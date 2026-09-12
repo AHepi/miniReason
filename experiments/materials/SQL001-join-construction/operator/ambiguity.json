@@ -1,0 +1,149 @@
+{
+  "schema": "minireason.sql-ambiguity-witness.v1",
+  "operator_only": true,
+  "histories": [
+    {
+      "case_id": "hidden0",
+      "initial": {
+        "L": [
+          [
+            1,
+            7
+          ]
+        ],
+        "R": []
+      },
+      "events": [
+        {
+          "op": "insert",
+          "table": "R",
+          "row": [
+            11,
+            7,
+            "x"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hidden1",
+      "initial": {
+        "L": [
+          [
+            1,
+            7
+          ]
+        ],
+        "R": [
+          [
+            10,
+            7,
+            null
+          ]
+        ]
+      },
+      "events": [
+        {
+          "op": "insert",
+          "table": "R",
+          "row": [
+            11,
+            7,
+            "x"
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle": [
+    {
+      "case_id": "hidden0",
+      "case_sha256": "706cac1b957bf71e451b48501e245bf825de8c80adbf853465026a2971d210cf",
+      "snapshots": [
+        [
+          {
+            "row": [
+              1,
+              7,
+              null
+            ],
+            "multiplicity": 1
+          }
+        ],
+        [
+          {
+            "row": [
+              1,
+              7,
+              "x"
+            ],
+            "multiplicity": 1
+          }
+        ]
+      ]
+    },
+    {
+      "case_id": "hidden1",
+      "case_sha256": "bea2f972c4e234ba25dd0f2c9d3110d4f2b6812640157562f7e7a724528444c3",
+      "snapshots": [
+        [
+          {
+            "row": [
+              1,
+              7,
+              null
+            ],
+            "multiplicity": 1
+          }
+        ],
+        [
+          {
+            "row": [
+              1,
+              7,
+              "x"
+            ],
+            "multiplicity": 1
+          },
+          {
+            "row": [
+              1,
+              7,
+              null
+            ],
+            "multiplicity": 1
+          }
+        ]
+      ]
+    }
+  ],
+  "common_visible_packet": {
+    "schema_sql": "CREATE TABLE L(lid INTEGER PRIMARY KEY, k INTEGER);\nCREATE TABLE R(rid INTEGER PRIMARY KEY, k INTEGER, v TEXT);\n",
+    "query_sql": "SELECT ALL L.lid, L.k, R.v FROM L LEFT JOIN R ON L.k = R.k",
+    "old_view": [
+      {
+        "row": [
+          1,
+          7,
+          null
+        ],
+        "multiplicity": 1
+      }
+    ],
+    "event": {
+      "op": "insert",
+      "table": "R",
+      "row": [
+        11,
+        7,
+        "x"
+      ]
+    }
+  },
+  "common_visible_sha256": "4485f0daae4d46367940ac2e6bbb7e25a249e2741fbe6aa07b40071a015f1beb",
+  "identical_visible_inputs": true,
+  "different_required_successors": true,
+  "claim": "No deterministic function of this old visible view and event alone is correct for both admissible histories. An unconstrained guess may match either; this does not establish semantic reason use.",
+  "needed_distinction": "The equal visible NULL row can be a left-join extension or a real matched right row whose value is NULL.",
+  "limit": "No historical novelty, model limitation or specific candidate active route follows. Additional retained information can resolve this ambiguity in different ways."
+}
