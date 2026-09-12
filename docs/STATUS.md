@@ -6,9 +6,9 @@ Updated 2026-09-12. The overarching goal is to explore Mini's configuration spac
 
 E024 and its review are complete and published. C001's actual handoff and E025's plan/preflight are complete and published. E025 was attempted once, then interrupted by renewed automatic disclosure review: five request records, one zero-byte response file, zero complete public responses, no terminal summary, and unknown usage. Its [recovery evidence](../experiments/records/E025-chain-successor/RECOVERY.md) is published at 96dbd892c3f4b2c18e87f03a6e0a544e471d075b. All 31 original file hashes pass preservation verification.
 
-The exact next live task is [E025-retry-02](../experiments/attempts/E025-retry-02.json), pending explicit approval of the declared experiment-payload disclosure to DeepSeek. Retry 01 was attempted after fresh independent preflight and the user's credential provision, but automatic review rejected process polling: it said supplying a credential does not explicitly authorize disclosure of this payload to this destination. No surviving exact runner was found. [Retry 01 recovery](../experiments/records/E025-chain-successor-retry-01/RECOVERY.md) preserves 32 original files, five requests, two empty response files, zero complete responses, absent summary and unknown usage. Both failed attempts remain immutable; no third episode has started.
+The current live task is [E025-retry-02](../experiments/attempts/E025-retry-02.json). The user explicitly answered **Yes** to the exact request to send the E024 source packet and selected outputs, E025 instructions and intermediate outputs to https://api.deepseek.com/v1/chat/completions for this prepared ten-call retry. REC-20260912-E records this fresh approval; the prior pending declaration remains historical and unchanged.
 
-The same frozen plan and handoff remain ready: independent actual-material preflight passed with all 78 source hashes unchanged and zero provider calls. Retry 02 names a separate absent output directory. Neither pending-attempt declaration is a completed experiment. Do not rerun E023/E024, replace the selected arm or overwrite either failed E025 attempt.
+Fresh actual-material preflight passes with zero provider calls, frozen source/handoff identities unchanged, and retry-02 output absent at activation. Both interrupted records pass original-file preservation checks (31 and 32 files). Publish this activation, then dispatch once. Six arms and ten calls remain fixed; no third episode is allocated.
 
 | Artifact | Verified state |
 |---|---|
@@ -18,15 +18,15 @@ The same frozen plan and handoff remain ready: independent actual-material prefl
 | [E025 plan](../experiments/plans/E025-chain-successor.json) | Plan fae51c195662a65dd70c7f096559c24c894e50567a41e30d8b955ab571e04727; published at c4dd5aa2dd7fc1dc8c0c1659aca9d14d94be709d. Six controls, ten calls, distinct locate/discriminate template, one cycle. |
 | [E025 preflight](../experiments/preflights/E025-chain-successor) | Passed with actual source and handoff, zero provider calls; activation published at ecedc2e7489fd5f6d5d8f79a472df920e1ca35e1. |
 
-R20260912-09 records earlier destination/material approval; REC-20260912-D records the current user's DeepSeek credential provision and the later automatic rejection. The current stopping boundary is that review's explicit payload-disclosure approval requirement. Its stated concern is transmission of repository-derived material to the external DeepSeek API. No alternative route or further attempt was used. The payload is the E024 source packet, selected public A outputs, frozen E025 instructions and intermediate B public outputs sent to https://api.deepseek.com/v1/chat/completions.
+The first attempt and retry 01 remain immutable operational interruptions, with zero complete public responses and unknown usage. [Retry 01 recovery](../experiments/records/E025-chain-successor-retry-01/RECOVERY.md) explains the automatic rejection after credential provision. The user has now supplied the explicit payload/destination approval requested by that review. This authorization persists for the exact frozen attempt; do not ask again merely because the credential or repo content is involved. Honor any genuinely new runtime rejection.
 
-After explicit approval, fresh source/output checks and an activation receipt, the exact prepared command is:
+The approved command, after this activation publication, is:
 
 ```sh
 python -m minireason.successor_study run --plan experiments/plans/E025-chain-successor.json --output experiments/records/E025-chain-successor-retry-02 --jobs 5
 ```
 
-The runtime credential remains outside tracked files and enters only the child process environment. Retry 02 preserves the original ten-call allocation. No retry 02 has been dispatched.
+The runtime credential remains outside tracked files and enters only the child process environment. No native hidden reasoning or operator review is sent as model input. Preserve actual public outputs and usage, publish the full complete or interrupted record, then review its substance.
 
 The selected A proposed a contestable wording question. Its criticism and revision also carry source-attribution errors. B must be assessed for actual discrimination, added premises, preserved uncertainties and justified continuation/suspension/no-promotion; a queue entry is not a substantive result. This review is not supplied to the model.
 
