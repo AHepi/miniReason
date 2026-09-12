@@ -571,3 +571,7 @@ REC-20260912-B operational erratum completed and fresh attempt concretized: E025
 Verified checkpoint a8c6bf76907c78797a777b6ad77b7cdd458e808e at 2026-09-12T08:12:56.811Z: local b6c4841b3d92b1c9c96ae471fcf0759cc656c5d1, remote a8c6bf76907c78797a777b6ad77b7cdd458e808e, shared tree 7c05351fe37c79954645c7f3361b3883f2de06ee. Operational erratum and exact pending E025-retry-01 declaration durable. No further provider call; update final STATUS and README.
 
 REC-20260912-B operations lesson completed: response path count is not terminal provider completion; preserve incomplete bytes and unknown usage. Publish this transferable lesson immediately.
+
+Verified checkpoint 32a5a30eaff655a6b439cf9064236b81049f0e15 at 2026-09-12T08:14:34.122Z: local 2a701e06d7b8e102109034b622e8cab641ced407, remote 32a5a30eaff655a6b439cf9064236b81049f0e15, shared tree f10e92d33edc5ce4c0711b6e26aba3b303f1b18b. Operational lesson durable. Update final current handover with explicit remaining boundary.
+
+REC-20260912-B final STATUS completed: all 31 original interrupted E025 files retain hashes, no retry output exists, and canonical source plus original E024/C001 plans remain unchanged. Current handover names the actual renewed automatic rejection, zero completed B responses, published coverage assessment and exact pending isolated retry. Stopping choice: finish navigation/publication then request the specific disclosure approval, because the live successor remains blocked despite prior ledgered authorization. No epistemic exhaustion or successful two-template result is claimed.
