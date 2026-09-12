@@ -1,0 +1,173 @@
+{
+  "cycles": {
+    "completion_tokens_per_call": 8192,
+    "max_calls": 4,
+    "max_completion_tokens": 32768,
+    "max_cycles": 1
+  },
+  "kinds": [
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "problem",
+          "port_type": "problem",
+          "window": "all"
+        }
+      ],
+      "instruction": "Use the complete selected proposal and the attributed initial retained state to process these legal events in order: [{\"op\": \"delete\", \"table\": \"L\", \"row\": [1, null]}, {\"op\": \"delete\", \"table\": \"R\", \"row\": [10, 7, \"a\"]}]. After EACH event report the full retained state and complete output bag, preserving multiplicities. State your actual interpretation of the proposed update rules and identify any rule you infer or find missing. You may interpret prose coherently; do not manufacture a failure by demanding a literal reading. Preserve uncertainty or insufficiency where warranted. Your complete answer is operative use-state U0: include the selected candidate identity, chosen interpretation, current event position, retained state, output and previous-use results needed for later use.",
+      "kind_id": "minireason.sql-use-before.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.sql-use-before.v1"
+      },
+      "title": "Use the selected account"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "u0",
+          "port_type": "u0",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Examine the actual U0 below against the complete original source and candidate. The exact events assigned to use_before were: [{\"op\": \"delete\", \"table\": \"L\", \"row\": [1, null]}, {\"op\": \"delete\", \"table\": \"R\", \"row\": [10, 7, \"a\"]}]. The initial state is not separately supplied here; scope any history assessment to what the public U0 actually supplies and preserve uncertainty about missing information. Test both retained-state obligations and query-output obligations; examine inferred or missing operations and the dependence on the chosen interpretation. Give a substantive objection only if warranted, explain its bearing and which retained-state or use obligation it affects. You may find no valid criticism. Do not replace the original candidate or treat a possible alternative implementation as a refutation.",
+      "kind_id": "minireason.sql-dependency-criticism.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.sql-dependency-criticism.v1"
+      },
+      "title": "Criticize the actual use and dependency"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "u0",
+          "port_type": "u0",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Take the actual U0 below as the parent use-state. The exact events assigned to use_before were: [{\"op\": \"delete\", \"table\": \"L\", \"row\": [1, null]}, {\"op\": \"delete\", \"table\": \"R\", \"row\": [10, 7, \"a\"]}]. Consider any actual subsidiary criticism supplied through its own port. You may retain U0, revise its account or interpretation, withdraw a use, or suspend; neither presence nor absence of a supplied criticism determines its validity. Produce complete operative state U1 and explicitly identify U0 as its parent while preserving the original selected candidate identity. Include your chosen interpretation, retained state, cached output, current event position, reasons and any uncertainty. Carry all information needed for a subsequent use: that use receives your U1 and the stable source/candidate only. Do not silently correct or fill a missing premise without attributing the contribution.",
+      "kind_id": "minireason.sql-apply-return.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "minireason.sql-apply-return.v1"
+      },
+      "title": "Apply a return to the same use-state"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "u1",
+          "port_type": "u1",
+          "window": "this_cycle"
+        }
+      ],
+      "instruction": "Use only the actual operative U1 below, together with the stable source and original candidate, to process these fresh legal events in order: [{\"op\": \"insert\", \"table\": \"L\", \"row\": [1, 7]}, {\"op\": \"delete\", \"table\": \"R\", \"row\": [11, 7, \"a\"]}, {\"op\": \"insert\", \"table\": \"R\", \"row\": [13, 7, null]}, {\"op\": \"insert\", \"table\": \"R\", \"row\": [14, 7, \"c\"]}]. Report the complete retained state and output bag after EACH event. Preserve projected multiplicity and explain what happens to unaffected keys, including key 9. State which part of U1 you use, and identify any new interpretation or inferred operation. If U1 is suspended or insufficient, preserve that finding rather than reconstructing an unavailable earlier state. No earlier initialization, U0 or criticism is separately available at this stage.",
+      "kind_id": "mini.verdict.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "mini.verdict.v1"
+      },
+      "title": "Use the resulting state on fresh events"
+    }
+  ],
+  "manifest_id": "E028-sql-use-return.criticism-archived",
+  "port_types": [
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.sql-use-before.v1"
+        ]
+      },
+      "port_type": "u0",
+      "render": {
+        "header": "Actual use-state U0",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.sql-dependency-criticism.v1"
+        ]
+      },
+      "port_type": "criticism",
+      "render": {
+        "header": "Actual subsidiary criticism",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "minireason.sql-apply-return.v1"
+        ]
+      },
+      "port_type": "u1",
+      "render": {
+        "header": "Actual returned use-state U1",
+        "rule": "list_bodies"
+      }
+    }
+  ],
+  "problem": "{\n  \"attribution\": \"Operator interpretation of candidate sections 2 and 3; not model-authored initialization.\",\n  \"cached_output_bag\": [\n    [\n      1,\n      null,\n      null\n    ],\n    [\n      2,\n      7,\n      \"a\"\n    ],\n    [\n      2,\n      7,\n      \"a\"\n    ],\n    [\n      3,\n      9,\n      null\n    ]\n  ],\n  \"candidate_sha256\": \"b5fb115264eaff0a0466ea19012b58624a2669f95c4b6e47aab545c2074268c0\",\n  \"interpretation\": \"Lrows and Rrows retain full rows keyed by unique lid/rid. The index arrays encode maps from non-NULL integer keys to sets of row IDs. Absent buckets are empty. JSON null denotes SQL NULL. Distinct right IDs preserve projected multiplicity even when their values agree. No optional matchCount is stored; cardinality is derived. The output bag is cached separately, with duplicate array entries representing multiplicity.\",\n  \"position\": \"Initialized snapshot before the use_before events; no update has been applied.\",\n  \"retained_state\": {\n    \"LkeyIndex\": [\n      [\n        7,\n        [\n          2\n        ]\n      ],\n      [\n        9,\n        [\n          3\n        ]\n      ]\n    ],\n    \"Lrows\": [\n      [\n        1,\n        null\n      ],\n      [\n        2,\n        7\n      ],\n      [\n        3,\n        9\n      ]\n    ],\n    \"RkeyIndex\": [\n      [\n        7,\n        [\n          10,\n          11\n        ]\n      ],\n      [\n        9,\n        [\n          12\n        ]\n      ]\n    ],\n    \"Rrows\": [\n      [\n        10,\n        7,\n        \"a\"\n      ],\n      [\n        11,\n        7,\n        \"a\"\n      ],\n      [\n        12,\n        9,\n        null\n      ]\n    ]\n  },\n  \"schema\": \"minireason.sql-use-initializer.v1\"\n}\n",
+  "schema_version": "creib.mini.manifest.v1",
+  "stages": [
+    {
+      "kind_id": "minireason.sql-use-before.v1",
+      "ports": [
+        "problem"
+      ],
+      "stage_id": "use_before"
+    },
+    {
+      "kind_id": "minireason.sql-dependency-criticism.v1",
+      "ports": [
+        "u0"
+      ],
+      "stage_id": "criticize_dependency"
+    },
+    {
+      "kind_id": "minireason.sql-apply-return.v1",
+      "ports": [
+        "u0"
+      ],
+      "stage_id": "apply_return"
+    },
+    {
+      "kind_id": "mini.verdict.v1",
+      "ports": [
+        "u1"
+      ],
+      "stage_id": "use_after"
+    },
+    {
+      "end": true,
+      "stage_id": "end"
+    }
+  ]
+}

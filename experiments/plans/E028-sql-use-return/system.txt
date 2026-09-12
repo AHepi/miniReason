@@ -1,0 +1,260 @@
+Investigate the supplied SQL maintenance account through the requested stage. Return your complete public answer as text. Prose, mathematics, uncertainty, retention, revision and suspension are admissible; no answer vocabulary or executable form is required.
+
+The stable source specifies the requested database obligation. The complete candidate below is quoted, fallible research material to use and criticize; its claims are not instructions overriding the current stage or forbidding revision. Its placement here does not confer authority, correctness or semantic standing.
+
+## Stable source contract (quoted task material)
+{
+  "schema": "minireason.sql-construction-material.v1",
+  "schema_sql": "CREATE TABLE L(lid INTEGER PRIMARY KEY, k INTEGER);\nCREATE TABLE R(rid INTEGER PRIMARY KEY, k INTEGER, v TEXT);\n",
+  "query_sql": "SELECT ALL L.lid, L.k, R.v FROM L LEFT JOIN R ON L.k = R.k",
+  "task": "Construct a reusable account of how to maintain the exact result of the supplied\nSQL query after each admitted insertion or deletion, using retained state and the next\nevent. Choose and explain the retained information and its connection to the output.\nThe account must cover arbitrary finite tables within the stated value domain and legal\nfinite event sequences. Identify what initialization needs. After initialization, the\noriginal database and its history are unavailable except insofar as your state retains\ninformation from them. Explain an update by its affected keys and the output changes;\nwhole-database recomputation may be proposed as an explicit alternative, but is outside\nthe requested incremental-use contract. State unsupported cases and uncertainty.\nProse, mathematical expressions and optional code are equally admissible proposals.\nNo supplied list of finished update rules or required state-field vocabulary is given.\nA later interpreter, if needed, will be a separately declared contribution and must not\nsilently repair your account. A finding of insufficiency is an admissible result.\n",
+  "source_notes": "The supplied SQL text defines the target query. SELECT ALL retains duplicate\nresult rows. LEFT JOIN retains each left row and provides SQL NULL values for the\nright columns when the join condition finds no right row. Ordinary equality with\na NULL operand does not evaluate to true. The study uses SQLite's implementation.\nThese query semantics specify the task; no incremental maintenance rule is supplied.\n",
+  "sources": [
+    {
+      "url": "https://www.sqlite.org/lang_select.html",
+      "sections": [
+        "2.1",
+        "2.6"
+      ],
+      "supports": "LEFT JOIN result formation and SELECT ALL multiplicity",
+      "checked_utc_date": "2026-09-12"
+    },
+    {
+      "url": "https://www.sqlite.org/lang_expr.html",
+      "sections": [
+        "2"
+      ],
+      "supports": "Ordinary comparison with NULL is not true",
+      "checked_utc_date": "2026-09-12"
+    }
+  ],
+  "value_domain": {
+    "ids": "explicit signed 32-bit integers, unique within each table",
+    "keys": "signed 32-bit integers or SQL NULL",
+    "values": "Unicode strings or SQL NULL"
+  },
+  "events": {
+    "insert": "Full new row [id,key] for L or [id,key,value] for R; id must be absent",
+    "delete": "Full before-image of an existing row; deletion removes that id exactly once",
+    "order": "Apply one legal event at a time; updates are a delete followed by an insert",
+    "observations": "After each event, the output is the complete bag of [lid,key,value] rows; row order is immaterial"
+  },
+  "constraints": {
+    "initial_read": true,
+    "post_initial_database_access": false,
+    "state_vocabulary": "chosen by the candidate",
+    "prose_admissible": true,
+    "incremental_rule_supplied": false
+  }
+}
+
+
+## Complete original selected candidate (quoted fallible proposal)
+Occurrence: E027-sql-construction-continuation/mini-disabled
+SHA256: b5fb115264eaff0a0466ea19012b58624a2669f95c4b6e47aab545c2074268c0
+
+# Retained-State Maintenance Account for `L LEFT JOIN R ON L.k = R.k`
+
+## 0. Scope, commitment, and high-level result
+
+I attempt an incremental retained-state account for the supplied query
+
+```sql
+SELECT ALL L.lid, L.k, R.v
+FROM L LEFT JOIN R ON L.k = R.k
+```
+
+under the event model: one legal insert or delete at a time, applied to `L` or `R`, with full row images supplied. After initialization the base tables and their history are not directly readable; only my retained state and the next event are available. Output is the complete bag of `[lid, k, v]` triples after each event.
+
+**Finding up front (uncertainty/insufficiency preserved):** The construction below is *complete for the retained-state design and its update rules*, but it is not a fully verified executable specification. In particular, I cannot, within this answer, prove that every legal finite event sequence under SQLite's actual type/equality behavior is covered for the full declared value domain; I flag specific residual gaps in §7. So this is offered as a faithful proposal with explicit unsupported cases, not a certified total function.
+
+The central observation driving the design: the query partitions rows by the join key `k`, and the LEFT JOIN semantics mean the output for a given left row depends on whether *any* right row with the same key (under ordinary equality, NULL never equal) exists. Therefore the retained state must answer, per left row, "does a matching right row exist now?" and per right row, "which left rows currently match it?"
+
+---
+
+## 1. Output shape and the exact quantity to maintain
+
+For tables `L(lid,k)` and `R(rid,k,v)`, the query result is the bag:
+
+$$
+Q(L,R) \;=\; \biguplus_{x \in L} \; \begin{cases}
+\{(x.\text{lid},\, x.k,\, y.v) : y \in R,\; y.k = x.k\} & \text{if } \exists y\in R:\; y.k = x.k \\
+\{(x.\text{lid},\, x.k,\, \text{NULL})\} & \text{otherwise}
+\end{cases}
+$$
+
+where `⊎` is bag union (SELECT ALL preserves multiplicity) and `=` is SQL ordinary equality: `a = b` is never true if either operand is NULL.
+
+Consequences:
+- An `L` row with `k IS NULL` matches no `R` row and always emits `[lid, NULL, NULL]`, exactly once.
+- An `L` row with non-NULL `k` emits one output row per matching `R` row (`[lid, k, v]`), or a single `[lid, k, NULL]` if there are none.
+- Multiplicities are inherited from `R` matches; `R` has `rid` as PK so `(rid, k, v)` are distinct, but two right rows may share `k` (and `v`), producing multiple output rows for the same left row.
+
+Thus the maintained object is a **bag of triples**, and the smallest incremental obligation is: after each event, know exactly which triples were added and which removed.
+
+---
+
+## 2. Retained state design
+
+I retain four logical components. Naming is mine; nothing here is a supplied vocabulary.
+
+### 2.1 `Lrows`: live left rows indexed by `lid`
+For each present `L` row: `(lid, k)`. Required because a delete of an `R` row may need to discover which left rows lose (or gain) their NULL branch, and because a left delete must remove all its emitted triples without scanning `R`.
+
+### 2.2 `Rrows`: live right rows indexed by `rid`
+For each present `R` row: `(rid, k, v)`. Required because a left delete or insert needs to enumerate matches exactly, and because a right delete needs the before-image `v` to name the removed output row.
+
+### 2.3 `LkeyIndex[k]`: set/bag of `lid` whose current `k` equals the given non-NULL key
+Maps each non-NULL key value present in `L` to the set of `L` rows having that key. NULL `k` is *not* stored here (or stored under a distinguished non-key marker that must never be joined); SQL equality would not match NULL anyway. This supports: given a right row's key, find all affected left rows in time proportional to that match set rather than to `|L|`.
+
+### 2.4 `RkeyIndex[k]`: multiset of `rid` (equivalently, bag of right rows) under each non-NULL key
+Maps each non-NULL key present in `R` to its right rows. Supports: given a left row's key, decide NULL-branch vs. match branch, and enumerate matches. NULL keys are excluded for the same equality reason.
+
+### 2.5 An optional derived count: `matchCount[k] = |RkeyIndex[k]|`
+This is *derivable* from 2.4 and is not strictly required; I include it as an optimization because "is this the 0→1 transition?" and "did it drop to 0?" are the pivotal decisions for the NULL branch. Storing it is redundant state and must be kept consistent; an interpreter is free to recompute it from `RkeyIndex`. I mark it **optional and redundant** to avoid any claim that it is part of the minimal state.
+
+**Canonical retained state** (minimal): `(Lrows, Rrows, LkeyIndex, RkeyIndex)`. Everything else is derived.
+
+### 2.6 What the state must be able to answer
+1. For a left row `lid`, its key `k` (from `Lrows`).
+2. Whether `k IS NULL` (→ always NULL branch).
+3. For non-NULL `k`, whether `RkeyIndex[k]` is empty (→ NULL branch) or not.
+4. For non-NULL `k`, the multiset of matching right rows, including their `v`s (to emit one triple per match).
+5. For a right row `rid`, its key `k` and value `v`.
+6. For a non-NULL `k` of a right row, the set of left rows `LkeyIndex[k]` (to find affected left outputs).
+
+---
+
+## 3. Initialization
+
+Given the initial tables are read once:
+
+1. Scan `L`; for each `(lid,k)` store in `Lrows`; if `k IS NOT NULL`, add `lid` to `LkeyIndex[k]`.
+2. Scan `R`; for each `(rid,k,v)` store in `Rrows`; if `k IS NOT NULL`, add `rid` (and `v`) to `RkeyIndex[k]`.
+3. Optionally compute `matchCount[k]` for keys present after the scan.
+4. Emit the full initial output bag by the closed-form in §1.
+
+**Initialization uncertainty:** if the initial read is a snapshot that can change before the first event, the account assumes events are serialized after a consistent snapshot; a concurrent reader/writer model is out of scope and would require a different (e.g., transaction-log) account.
+
+---
+
+## 4. Update rules
+
+All rules are expressed as: affected keys, output deltas, and state mutations. "Output delta" is a multiset of `[lid,k,v]` triples with signed multiplicity (+ added, − removed). After applying a rule, the maintained output bag is the prior bag plus the delta, and must equal §1's closed form on the new tables.
+
+Definitions: for a non-NULL key `k`, `cnt(k) = |RkeyIndex[k]|` (number of matching right rows). `Lset(k) = LkeyIndex[k]`. NULL keys are handled separately and never go through `RkeyIndex`.
+
+I use the convention that the **NULL branch** for left row `x` is the single triple `(x.lid, x.k, NULL)`, present in the output iff (`x.k IS NULL`) or (`x.k` non-NULL and `cnt(x.k) = 0`).
+
+### 4.1 Insert into L: `+ (lid, k)`, `lid` absent
+
+Affected: only this left row. `R` is unchanged, so no other left row's branch changes.
+
+- If `k IS NULL`: add `(lid, NULL, NULL)`; store row; store in `Lrows` only (not `LkeyIndex`).
+- If `k` non-NULL:
+  - If `RkeyIndex[k]` is empty (`cnt(k)=0`): add `(lid, k, NULL)`.
+  - Else: for each matching right row `(rid,k,v)`, add `(lid, k, v)`.
+  - Store `(lid,k)` in `Lrows`; add `lid` to `LkeyIndex[k]`; update `matchCount` if kept.
+
+### 4.2 Delete from L: `- (lid, k)`, before-image
+
+Affected: only this left row (its removal cannot change other left rows' branches, since branches depend only on each left row's own key and on `R`).
+
+- If `k IS NULL`: remove `(lid, NULL, NULL)`.
+- If `k` non-NULL:
+  - If `cnt(k)=0`: remove `(lid, k, NULL)`.
+  - Else: for each matching right row `(rid,k,v)`, remove `(lid, k, v)`.
+  - Delete `lid` from `LkeyIndex[k]`; if that bucket becomes empty, drop it; delete from `Lrows`.
+
+### 4.3 Insert into R: `+ (rid, k, v)`, `rid` absent
+
+Affected left rows: exactly `LkeyIndex[k]` if `k` is non-NULL; none if `k IS NULL` (ordinary equality cannot match NULL).
+
+- If `k IS NULL`: store in `Rrows`; do **not** insert into `RkeyIndex` (or insert under a non-matching marker); output unchanged. (SQL `L.k = R.k` with `R.k NULL` is not true, so no left row gains a match.)
+- If `k` non-NULL, let `A = Lset(k)` (possibly empty), and let `wasEmpty = (cnt(k) == 0)`:
+  - For each `x` in `A`:
+    - If `wasEmpty`: remove `(x.lid, k, NULL)` and add `(x.lid, k, v)`.
+    - Else: add `(x.lid, k, v)`.
+  - Store in `Rrows`; add `rid` (with `v` reachable via `Rrows`) to `RkeyIndex[k]`; update count if kept.
+- If `A` is empty: output unchanged (no left row has this key), but state must still record the right row so future left inserts see it.
+
+### 4.4 Delete from R: `- (rid, k, v)`, before-image
+
+Affected left rows: exactly `LkeyIndex[k]` if `k` is non-NULL; none if `k IS NULL`.
+
+- If `k IS NULL`: remove from `Rrows`; output unchanged.
+- If `k` non-NULL, let `A = Lset(k)`, and define `willBeEmpty = (cnt(k) == 1)` before removal (i.e., this is the last matching right row):
+  - For each `x` in `A`:
+    - If `willBeEmpty`: remove `(x.lid, k, v)` and add `(x.lid, k, NULL)`.
+    - Else: remove `(x.lid, k, v)` (one occurrence only — multiplicity matters; the same `(x.lid,k,v)` may occur multiple times if several right rows share `(k,v)`).
+  - Remove `rid` from `Rrows` and from `RkeyIndex[k]`; if the bucket becomes empty, drop it; update count if kept.
+
+### 4.5 Update = delete then insert
+Applied as the two rules above in sequence, using the before-image and after-image supplied by the event model. No special rule is needed; the account treats updates as composite.
+
+---
+
+## 5. Why the rules track the exact bag
+
+**Invariant (I1):** After every event, for each present left row `x`:
+- if `x.k IS NULL` or `cnt(x.k)=0`, the output bag contains exactly one `(x.lid, x.k, NULL)`;
+- else for each right row `y` with `y.k = x.k`, the output bag contains `(x.lid, x.k, y.v)` with multiplicity equal to the number of such `y` sharing that `v`.
+
+**Invariant (I2):** No output triple exists whose `lid` is not a present left row.
+
+**Preservation sketch per rule:**
+- L insert/delete touch only `x`'s own triples; they cannot change another left row's right matches. I1 for all other rows is untouched.
+- R insert with key `k` changes only the branch of left rows in `Lset(k)`. If `cnt(k)` was 0, those rows were on the NULL branch (`(x.lid,k,NULL)`), which the rule removes before adding the new match triple. If `cnt(k)` was ≥1, those rows already had match triples; the rule adds one more. Left rows not in `Lset(k)` cannot match `k` (since matching requires `x.k = k` exactly, and `Lset(k)` is defined by that equality), so their I1 clauses are unaffected.
+- R delete is the inverse, with the special care that the transition `cnt: 1→0` must swap the last match triple for the NULL triple, addressed by `willBeEmpty`.
+- NULL keys are handled by exclusion, consistent with SQL ordinary equality.
+
+Multiplicity: because `RkeyIndex` is a multiset and every match contributes exactly one added/removed triple, bags are preserved; in particular, two right rows with the same `(k,v)` produce two identical output triples, and deleting one removes exactly one occurrence.
+
+---
+
+## 6. Worked mini-check (informal, illustrative not exhaustive)
+
+Initial: `L = {(1, 5), (2, NULL), (3, 7)}`, `R = {(10, 5, 'a'), (11, 5, 'a'), (12, 7, NULL)}`.
+
+Initial output by §1:
+- `(1,5,'a')`, `(1,5,'a')` (two matches)
+- `(2,NULL,NULL)`
+- `(3,7,NULL)` (one right match with value NULL)
+
+State: `LkeyIndex = {5:{1}, 7:{3}}`; `RkeyIndex = {5:{10,11}, 7:{12}}` (with values `'a','a',NULL`).
+
+Event: delete `R` row `(10,5,'a')`. `k=5` non-NULL, `A={1}`, `cnt(5)=2` → `willBeEmpty=false`. Delta: remove one `(1,5,'a')`. New output retains `(1,5,'a')` once — correct because `(11,5,'a')` remains.
+
+Event: delete `R` row `(11,5,'a')`. `cnt(5)=1` → `willBeEmpty=true`. For `x=1`: remove `(1,5,'a')`, add `(1,5,NULL)`. Correct: `L.k=5` now has no match, so NULL branch.
+
+Event: insert `L` row `(4,5)`. `cnt(5)=0` → add `(4,5,NULL)`. Correct.
+
+Event: insert `R` row `(13,5,'b')`. `A={1,4}`, `wasEmpty=true`. For `x=1`: remove `(1,5,NULL)`, add `(1,5,'b')`; for `x=4`: remove `(4,5,NULL)`, add `(4,5,'b')`. Correct.
+
+This traces the branch swaps and multiplicities, but it is a single path; see §7 for the general-coverage caveat.
+
+---
+
+## 7. Unsupported cases, residual uncertainty, and insufficiency findings
+
+I deliberately enumerate what this account does **not** establish or cover, per the task's instruction to preserve uncertainty.
+
+1. **Proof completeness not machine-checked.** The preservation argument in §5 is a human sketch, not an exhaustive case analysis. I did not enumerate every interleaving or every multiplicity collision (e.g., several right rows with identical `(k,v)` interspersed with left inserts/deletes). I believe the rules are correct, but I cannot claim verified totality.
+
+2. **NULL key representation is a semantic choice, not forced by SQL.** My `LkeyIndex`/`RkeyIndex` route NULL keys away from matching. This is correct for the supplied query because ordinary `=` never returns true with NULL, but it is *my* encoding decision. An interpreter that instead indexes NULL as a joinable key would diverge; the account therefore exposes it as a requirement, not a supplied rule.
+
+3. **Duplicate-key multiplicity inside a right "bucket"** is handled by multiset semantics, but neither the state schema nor the rules here are given in executable form. The rules say "remove one occurrence"; if a realized implementation uses sets rather than multisets it would be wrong. That failure mode is a property of the implementation, but it is also a place where this prose account is under-specified about the concrete data structure (set vs. bag, ordered vs. unordered).
+
+4. **Domain-boundary uncertainty.** The value domain is declared as signed 32-bit ints and Unicode strings with SQL NULL. I have not addressed SQLite's type affinity quirks, dynamic typing, or collation beyond default. Specifically:
+   - If `L.k` and `R.k` differ only by type affinity (e.g., integer `5` vs. text `'5'`), SQLite's comparison rules for storage-class cross-type comparison must decide equality. I did not enumerate the storage-class matrix, and my "non-NULL equal key" reasoning assumes ordinary value equality. This is a **genuine gap** relative to "arbitrary finite tables within the stated value domain," because the domain statement allows signed ints *or* NULL for `k`, but the equality semantics across int/text and collations is not pinned down here.
+   - TEXT collation (BINARY vs. NOCASE etc.) is unspecified in the inputs; different collations change the match set. I record this as an unsupported case unless the collation is fixed.
+
+5. **`rid`/`lid` uniqueness and absence.** The event model guarantees IDs are PKs and insert IDs are absent. I rely on this; I do not re-validate it, and I do not define behavior for an illegal duplicate-ID event. Legal sequences only are covered by the contract, but the account's own obligations under illegal input are left open.
+
+6. **No concurrency.** Events are assumed serialized. Interleaved readers observing a partially updated retained state are outside the account.
+
+7. **Whole-database recomputation alternative.** The task permits naming recomputation as an alternative but excludes it from the incremental contract. For clarity: recomputation (`rescan L and R, recompute §1`) would be a correct fallback and would sidestep items 2–4's encoding choices, but it violates "post-initial database access is false" and is therefore not the requested account. It is mentioned only to mark the boundary; it is not proposed as the answer.
+
+8. **Overall sufficiency verdict.** Subject to the collation/affinity ambiguity in item 4, this account is an admissible retained-state incremental design: state §2, init §3, rules §4, invariant §5, illustration §6. It is **not** claimed to be a complete executable specification, and the collation/type-affinity gap is the single most likely place where a real SQLite instance would diverge from the prose. If a later interpreter is written, it must resolve that gap explicitly rather than silently assume my choice.
+
+End of quoted candidate. Carry out the current stage task in the user message; retention, revision, criticism and suspension remain admissible.
