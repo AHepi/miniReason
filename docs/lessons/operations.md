@@ -23,3 +23,14 @@ E020 shows that an earlier successful call through the same endpoint does not es
 ## E025: a response path is not a completed observation
 
 E025 created one zero-byte response file before its attempt was interrupted. Progress counts must distinguish existing response paths, parseable terminal response records and terminal run completion. File count alone is delivery-process evidence. Preserve empty or incomplete files and unknown usage; do not manufacture a negative semantic result or infer provider receipt merely from a recorded request. A renewed automatic disclosure rejection is recorded separately from prior authorization and provider behavior. See [the E025 erratum](../errata/E025-disclosure-interruption.md).
+
+
+## E026: distinguish planned selection, actual occurrence and interruption
+
+A preselected arm is not an available candidate until its call actually returns public content. E026 stopped before mini-disabled, so using the successful direct-disabled answer as its handoff would change selection after seeing outputs. A continuation must retain the original selection rationale while naming the new actual occurrence, preserve the missing original occurrence, and report changed scheduling explicitly.
+
+The existing E001/E002 lesson applies again: an equal 8192 completion ceiling can be consumed by native reasoning before any public answer. Preserve that failed resource condition and include it in the study's accounting. Disabled-only continuation can answer a narrower question; it cannot complete the missing native comparison or establish an orchestration advantage. New budget conditions require separate freezing rather than retrospective repair.
+
+A successful shell exit and an existing response path do not establish experiment completion. E026's zero-exit CLI wrote INTERRUPTED, while the failed provider receipt still supplied token usage omitted from the generic arm summary. Use terminal status, public content, finish reason and provider usage together. Exact transport reachability, credential acceptance, complete generation and semantic appraisal are distinct observations.
+
+When an earlier fail-stop prevents independent unattempted arms, freeze a separate minimal continuation instead of replaying successful calls. Keep original request bytes and participant isolation where the scientific condition is unchanged, identify the scheduling intervention, and bind both the parent record and new implementation. The planned E027 does this for disabled arms; its preparation is not itself an observed continuation result.
