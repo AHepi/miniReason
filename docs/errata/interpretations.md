@@ -35,3 +35,10 @@ E013 matched-native promotion prints a 63-character P9 identifier where the sour
 ## INT-007 — Correct use answers coexist with inconsistent returned accounts
 
 E016's native-family accounts introduce capacity as an admissibility filter while the source permits negative reported availability. Matched-native use still correctly reports -2 and separates arithmetic from physical planning. The correct table does not make the earlier filter formulation coherent. The [E016 review](../reviews/E016-reason-use-review.md) identifies precise passages and alternative readings; it also records inaccurate attribution of supplied distinctions and occasional claims that physical freedom licenses mere arithmetic enumeration. These are separately scoped defects. No earlier response was edited and no new criticism variant was constructed from this observation; E017–E020 remain as preregistered.
+
+
+## INT-008 — Omission permits correct use while returned accounts still lose distinctions
+
+E022 supplies no supplemental criticism occurrence, while J and common-source criticisms remain. All four staged use answers give the stipulated reporting/planning numbers, and several responses reconstruct the aggregation-as-rule rival. Yet bare and Mini later reinstate an unestablished exclusion from rule criticism; native and Mini-native display hard-capacity filters that exclude the source-permitted negative reporting case; several outputs misattribute P7's examples or overread the earlier modal warning. Mini-native use correctly follows the stipulated unfiltered reporting calculation without identifying its own parent's filter as the departure.
+
+The [E022 completion review](../reviews/E022-completion-review.md) locates each passage, its competing reading and finite consequence. These defects are in proposed content, separate from verified wire/replay custody and correct numerical answers. E022 always returns the account; it does not establish that the account is unnecessary. E020 produced no complete response or use observation, and E023 is prepared only. No original source, account or response was amended.
