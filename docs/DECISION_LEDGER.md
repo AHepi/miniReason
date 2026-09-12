@@ -324,3 +324,8 @@ D040 verification outcome: actual integrated full suite passes 569 tests in 31.8
 D040 implementation publication: remote d1b175e12c6b9f96ecf792d42752dd5f506574b8, local ed05c18fb7dbb998b50aea2cc4c460f0c9acfb7d, shared tree ccb19c391802e6761f749b2e02c33582d70d252f. Four new modules, three test files, verification evidence and OPS-015 are durable.
 
 D037 final review outcome: independent implementation review completed, SHA-256 fe22f1a774af634e8101eaaf4416b2a94de3d97c7679ecdd42b15c1ea5c65e0d; no remaining defect within the tested contract. CLI verify-to-plan-to-preflight succeeds with zero live calls; final source omission and actual-preflight contradictions are rejected. HA1–HA3 record review, concrete probe, and final artifact choices. Publish this document immediately. Its staging-era limits remain historically accurate; D040 supplies subsequent integrated 569/569-test evidence.
+
+
+### D041 — Prepare a separately identified no-return retry without live dispatch
+
+Choice: create E023-reason-no-return-retry from E020 using exactly the same input occurrences, task, instructions, account omission, four controls and provider settings, and bind the now-integrated source identity. Why: E020 is a preserved interrupted attempt and its old source identity excludes the four newly added modules. Contribution: leaves a concrete reproducible next run after explicit DeepSeek destination/disclosure approval while preserving the old observation. New test/parent/creation/source identities are disclosed; all existing source bytes and reason-use module identities must remain equal. Compare rendered respond/use prompts byte-for-byte and run actual-material zero-call preparation. Do not activate E023 this turn, edit E020, or describe this as a no-return outcome.
