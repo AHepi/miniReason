@@ -1,68 +1,35 @@
-# Current recovery and research state
+# Current research status
 
-**The user explicitly approved DeepSeek disclosure. E023 completed all eight calls and its record and substantive review are published. E024/C001 is now the authorized next live experiment; no repeat permission is required for this prepared continuation.**
+Updated 2026-09-12. The overarching goal is to explore Mini's configuration space and test ECS 2.0 to identify gaps that can be filled. Language expression, formal feedback and this distinct-template chain are subset tests. See [PURPOSE](../PURPOSE.md) and the append-only [ledger](DECISION_LEDGER.md).
 
-Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [AGENT_ACTIVITY](AGENT_ACTIVITY.jsonl), [PURPOSE](../PURPOSE.md) and [the runnable continuation](workflows/template-chain.md). Every agent logs each repository/staging search, read, edit and test through tools/repo_activity.py. One publisher commits and verifies every completed document immediately. Source h-EPI remains unchanged.
+## Current checkpoint and next action
 
-## Approved live continuation and completed E023
+E024 and its review are complete and published. C001's actual handoff and E025's plan are now frozen from the preselected mini-r01 occurrence; no alternative arm or operator review was substituted. Actual-material zero-call preflight passes. The next action after publishing this activation checkpoint is to run E025 once, preserve/publish its complete or partial evidence, then review it. No third episode is automatic.
 
-The user explicitly approved sending published experimental material and generated outputs to the declared DeepSeek endpoint and supplied the runtime credential. R20260912-09 records this authority; it supersedes the earlier approval blocker. Keep the key outside tracked files and logs.
-
-E023 completed four arms and eight calls, totaling 68,216 prompt and 44,880 completion tokens. Record publication: remote 4033a17a7f86bc5926ffc6cd469689a2ef62f7ce, shared tree 87887d057428b203b66e6f22790fe88dad415c1c. The [substantive review](reviews/E023-no-return-review.md) is published at f71193ef9170bbc949e4f3c8c00e61e622dca2bb. Exact empty-account use and direct/Mini payload parity are verified. All four final numerical answers are correct, with one isolated pair-label defect and retained modality, attribution, capacity and interval errors. The returned account is unnecessary for these cued witnessed obligations; this is not a general no-effect or creativity result.
-
-E023 is complete: do not rerun it. R20260912-13 retains E024/C001 because the next question concerns substantive successor inquiry, not account necessity for arithmetic. E024 actual-material zero-call validation passes against unchanged source. No A or B result exists yet.
-
-The installed progress skill now has independent substantive-ledger and verified-publication clocks. Both have a five-minute deadline; completed documents still publish immediately. An actual 431.615-second publication interval occurred while the full E023 record upload was in flight and is explicitly ledgered. Publish a small reviewed progress checkpoint before every later large evidence upload, and do not count uploaded blobs as a verified push. Preserve the original v1 clock state; the active session uses the v2 timer.
-
-## New research completed in this continuation
-
-The [formal-feedback research report](reviews/formal-feedback-research-2026-09-12.md) is verified at remote a67853b978250c69139ad0ede421b63a8fb13649. The [prospective protocol](FORMAL_FEEDBACK_PROTOCOL.md) isolates returned checker information using a shared formal draft, withheld/syntax-only/full-feedback continuations, matched prose review and bare/native baselines. Its initial single-problem block has fourteen distinct calls, correctly counting shared drafts. It is a design, not a generated E026 or a live observation. Formal carrier value and all adverse-case classes remain unisolated/unobserved unless later controls actually test them.
-
-The [local diagnostic package](../experiments/diagnostics/formal-feedback-v1) contains eleven operator-authored fixtures with matching classifications, nineteen passing focused tests, raw CLI/replay evidence and a three-step dependency demonstration. Valid steps can be reused; an undetermined intermediate blocks its descendant; contradictory starting assumptions establish no accepted step. Inadequate mapping, meaning collision, vacuity and circular support can still be formally entailed. An unchanged-base endpoint check already detects the missing consequence, so chain checking adds localization/reuse discipline, not extra deductive power. Every step includes all original assumptions; dependency IDs do not certify minimal support.
-
-Independent review found no material defect in that scope and supplied the explicit attribution limits recorded in the report. Canonical src and old frozen plans are unchanged. All new outputs are local operator-authored diagnostics with zero provider calls; the earlier 569-test suite was not rerun. A separate Mini feedback adapter, exact task material, executable plan and zero-call preflight remain needed for the new proposal. This does not delay the already prepared E023 behind new optional implementation work.
-
-The installed personal skill **minireason-progress-ledger** is named in AGENTS. It requires substantive UTC receipts at least every five minutes, a timer check at tool boundaries, and immediate verified publication of each completed document. The warning is 240 seconds and deadline 300 seconds. Thirteen timer checks and a fresh-context recovery test completed. It cannot wake an inactive conversation or guarantee timing through a blocked tool. Start a fresh session timer when resuming; preserve truthful missed-deadline receipts.
-
-## What recovery completed
-
-E022 had ten complete responses and local commit b4c0ae2, but its upload stopped at batch 6 of 14. Recovery completed the exact tree and verified remote 814649dba32264dddd7ccd466dbbd57e32c63bcb, shared tree ae6eb00407373a78b30337617c06cc7f71abbb6e. The recovered partial review remains unchanged; the separate [completion review](reviews/E022-completion-review.md) is published at 22924850b4094d34dbc92ee07799ac56954846de.
-
-The new successor data/driver/Mini adapter and template coordinator are integrated and published at d1b175e12c6b9f96ecf792d42752dd5f506574b8. All original source files remain unchanged. The [independent implementation review](reviews/distinct-template-implementation-review.md) is published at ea1ce9a322c722d05b15609418ee781be1b0f55b. Normal and optimized full suites each pass 569 tests; the independent focused suite passes 27. Tests use scripted provider responses with the actual Mini engine. There is no live A-to-B observation or problem-promotion result.
-
-The user's latest requested activity checkpoint is verified at remote a2c7c8c7adb5ad70a47b88bbbc67c973eb58d5cd, local 5de75f089d903be3fab5d23f28240130e13c2b9a, shared tree f165e76aa30b698b7e71d0c364b6a43dadfa12ec. This enclosing handover is published separately. Connector commit metadata differ from local history; verify exact tree correspondence and fresh remote main rather than rewriting either history.
-
-## Observations and limits
-
-| Record | Actual state |
+| Artifact | Verified state |
 |---|---|
-| E016/E017/E018 | Each six arms and ten complete calls; data and separate reviews published. |
-| E019 | Preserved partial: nine attempts, seven complete responses, two transport failures; no normal summary. |
-| E021 | Preserved partial after approval rejection: five requests, no complete response, one incomplete file. |
-| E022 | Complete and reviewed: six arms, ten responses, 102,272 prompt + 61,500 completion tokens; all four use answers numerically correct. |
-| E020 | Interrupted after renewed automatic approval rejection: four first-stage requests, zero complete public answers, one tunnel-403 receipt; no use call or normal summary. |
+| [E023](../experiments/records/E023-reason-no-return-retry/REPORT.md) | Four arms, eight complete calls; [review](reviews/E023-no-return-review.md) published. Returned account unnecessary for the witnessed cued arithmetic; source/interpretation defects remain. Do not rerun. |
+| [E024](../experiments/records/E024-chain-construction/REPORT.md) | Six arms, eighteen complete calls, 404,937 total tokens. Record remote 9c876cc21686bd0e309449a4ca7dcbd9b737539c; [review](reviews/E024-construction-review.md) remote 0d828bd7f7d4279ba6eef94682a6d0ba6f5c13fb. Do not rerun. |
+| [C001 handoff](../experiments/materials/C001-handoff.json) | Actual whole selected A bundle; freeze/verification pass. Published at 90f0766dad2e9e578b50fc77b81957b2139df3cd. |
+| [E025 plan](../experiments/plans/E025-chain-successor.json) | Plan fae51c195662a65dd70c7f096559c24c894e50567a41e30d8b955ab571e04727; published at c4dd5aa2dd7fc1dc8c0c1659aca9d14d94be709d. Six controls, ten calls, distinct locate/discriminate template, one cycle. |
+| [E025 preflight](../experiments/preflights/E025-chain-successor) | Passed with actual source and handoff, zero provider calls. No live E025 output exists at this activation checkpoint. |
 
-E020's 74 original files are hashed in its [recovery record](../experiments/records/E020-reason-no-return/recovery.json) and published with [RECOVERY.md](../experiments/records/E020-reason-no-return/RECOVERY.md) at e589dacffe6aa36a68955d52a01a000d76a8d48b. Missing costs are unknown. Do not rerun E020 or overwrite E019/E021. The approval rejection and tunnel error are distinct events with unknown causal relation.
-
-E022's accounts still contain classification, capacity, attribution and modality defects; correct use does not validate the whole account. The omitted supplemental occurrence was absent, but common-source criticisms remained. No account-necessity, general Mini-advantage, language ranking or creativity verdict follows. All earlier observations and proposals remain unchanged.
-
-## Prepared next steps
-
-| Prepared artifact | Identity and state |
-|---|---|
-| E023-reason-no-return-retry | Completed and reviewed: four arms, eight complete calls; see approved continuation above. Frozen plan remains 8d21ad958acb05e7b9f0cd5eeeb86a69db32f49601533a227797d2a21de331cd. |
-| E024-chain-construction | Plan d25198e56a22a3b7212136587a16a2002f70e73f1a0ea00c2c5ae636ee774568; published at b421660ce78b41aabf5a2faf0e049a304a37a40d; zero-call preflight passes. Exact original source/issue/parents, prose carrier, six controls and one cycle. |
-| C001-construction-to-successor | Plan f54fd564b5e0e2e283a8110a133e97b565b2729fb61ecf50a575091612d733f1; published at c4f0ac3c5041f6c7eb41927779752042752c1bd0. Predeclares A mini-r01 and whole-output mapping into distinct B. |
-| E025-chain-successor | Contract/settings/controls are fixed by C001. No B plan or handoff exists: both must be frozen from actual published A output. |
-
-E023 is complete. No E024 or E025 run directory exists at this activation checkpoint. Do not create fake completion or handoff records from the offline fixtures. The retained mechanisms and shelved alternatives, commands, publication boundaries and analysis obligations are in [template-chain.md](workflows/template-chain.md).
-
-## Exact next live action
-
-Disclosure approval is already recorded. After this activation checkpoint is published, execute the existing E024 plan once:
+The existing user approval explicitly covers sending these declared materials and generated outputs to DeepSeek. It persists; do not ask again for the same permission. The credential enters DEEPSEEK_API_KEY only in the run process. Use the frozen settings and output path:
 
 ```sh
-python -m minireason.inquiry_study run --plan experiments/plans/E024-chain-construction.json --output experiments/records/E024-chain-construction --jobs 5
+python -m minireason.successor_study run --plan experiments/plans/E025-chain-successor.json --output experiments/records/E025-chain-successor --jobs 5
 ```
 
-Publish and verify complete or partial A evidence before any successor. If preselected A mini-r01 does not complete, leave C001 unavailable and never substitute another arm. Otherwise write the actual A publication receipt, freeze the exact handoff and E025 plan using [template-chain.md](workflows/template-chain.md), validate/publish them, and run the distinct B template once. B can investigate, suspend or decline promotion. No third episode is automatic. Preserve source and frozen plan identities and record any external failure honestly.
+The selected A proposed a contestable wording question. Its criticism and revision also carry source-attribution errors. B must be assessed for actual discrimination, added premises, preserved uncertainties and justified continuation/suspension/no-promotion; a queue entry is not a substantive result. This review is not supplied to the model.
+
+## Research limits and preserved work
+
+The [formal-feedback report](reviews/formal-feedback-research-2026-09-12.md), [protocol](FORMAL_FEEDBACK_PROTOCOL.md) and local diagnostic are complete. The prototype has eleven operator-authored fixtures, nineteen focused tests and chain-localization evidence. No live formal-feedback intervention exists; adapter/materials/frozen plan remain future work. These diagnostics do not establish semantic fidelity or creativity.
+
+E019, E020 and E021 remain immutable interrupted records. E022 is complete and reviewed; original partial reviews remain unchanged. Existing source, frozen plans and observations are preserved. Normal/optimized integrated suites previously passed 569 tests; this continuation uses the specific actual-material preflight rather than repeating that suite.
+
+The attached ECS 2.0 is byte-identical to [the stored source](sources/ECS-2.0.pdf), SHA256 67bcb9512dd0fe93f2768cc429e71a8c5579a6a52b098d62da82a2f45d62138b. Gaps in definitions, candidate semantic counterexamples and implementation limitations must be reported separately. New interpretations or proposed repairs are new claims, not silent changes to ECS.
+
+## Recovery discipline
+
+Use the installed minireason-progress-ledger skill, one publisher and atomic activity logging. During active work, independently check both five-minute deadlines, publish every completed document immediately, and preserve stable partial evidence during larger uploads. Earlier cadence misses remain ledgered; no inactive period is claimed as monitored work. Verify remote main and exact local/remote trees. The [template-chain workflow](workflows/template-chain.md) supplies commands, but its original prepared-state descriptions are historical; this status and the latest ledger receipts give the current state.
