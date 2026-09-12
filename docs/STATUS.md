@@ -4,9 +4,11 @@ Updated 2026-09-12. The overarching goal is to explore Mini's configuration spac
 
 ## Current checkpoint and next action
 
-**Paused for the user's actual-source decision.** The user supplied `FW5 JUMP from FW2+FW3+FW4 - Explanatory construction.md`, asked that it be read through and the research plan assessed, and requested stopping with a decision for approval. Full-source assessment is in progress under REC-20260912-F. No revised plan is adopted and no further provider call will be made before that decision.
+**Stopped for the user's research-plan decision.** Root and an independent reader each read all 1,502 lines of the actual supplied FW5 source. [The proposed decision](reviews/FW5-research-plan-decision.md) recommends a targeted source-and-roadmap update: distinguish the designated FW5/ECS1 reading edition from ECS2 additions, retain existing controls and evidence, make construction with deployment and operative return the next concrete priority, and keep independent semantic counterexamples as a separate workstream. The exact source is archived as assessment evidence. No plan, source theory, frozen experiment or runner has been revised; the proposal awaits user approval.
 
-E025-retry-02 had explicit payload/destination approval and passed frozen-input preflight. Its process was subsequently interrupted by network policy blocking https://api.deepseek.com:443. Inspection found six COMPLETE/stop public responses, no terminal summary and no active exact runner. This is partial evidence, not a completed six-arm experiment; incurred totals remain to be reconciled and failed-delivery costs may be unknown. Preserve every original byte. The previous two failed attempts remain unchanged.
+E025-retry-02 remains a partial experiment, fully preserved and published at e36c03bd26afffa639ea74a6068dd9b6dd90a373. It has nine request records, six COMPLETE/stop public responses, completed bare/matched/Mini arm records, and no terminal test summary. The six completed calls report 146,174 total tokens; additional attempted-call costs are unknown. [Its recovery supplement](../experiments/records/E025-chain-successor-retry-02/RECOVERY.md) records the network-policy interruption, which followed explicit payload/destination approval. No exact runner remains active, no automatic retry is selected, and the current user pause independently prevents further execution.
+
+If the user approves the proposed decision, the next authorized work is the specified documentation/source mapping update and concrete preparation of the new study and semantic challenge. Do not silently resume E025, amend FW5, or start a third episode. Preserve all historical plans and partial observations.
 
 | Artifact | Verified state |
 |---|---|
