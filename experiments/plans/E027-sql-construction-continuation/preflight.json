@@ -1,0 +1,40 @@
+{
+  "both_requests_equal": true,
+  "captured_requests": [
+    {
+      "brief": "# Construct a retained-state update account\n\nAnswer the supplied construction task. Preserve uncertainty, unsupported cases, and any finding of insufficiency in your account.\n\n## The problem (problem)\n{\n  \"schema\": \"minireason.sql-construction-material.v1\",\n  \"schema_sql\": \"CREATE TABLE L(lid INTEGER PRIMARY KEY, k INTEGER);\\nCREATE TABLE R(rid INTEGER PRIMARY KEY, k INTEGER, v TEXT);\\n\",\n  \"query_sql\": \"SELECT ALL L.lid, L.k, R.v FROM L LEFT JOIN R ON L.k = R.k\",\n  \"task\": \"Construct a reusable account of how to maintain the exact result of the supplied\\nSQL query after each admitted insertion or deletion, using retained state and the next\\nevent. Choose and explain the retained information and its connection to the output.\\nThe account must cover arbitrary finite tables within the stated value domain and legal\\nfinite event sequences. Identify what initialization needs. After initialization, the\\noriginal database and its history are unavailable except insofar as your state retains\\ninformation from them. Explain an update by its affected keys and the output changes;\\nwhole-database recomputation may be proposed as an explicit alternative, but is outside\\nthe requested incremental-use contract. State unsupported cases and uncertainty.\\nProse, mathematical expressions and optional code are equally admissible proposals.\\nNo supplied list of finished update rules or required state-field vocabulary is given.\\nA later interpreter, if needed, will be a separately declared contribution and must not\\nsilently repair your account. A finding of insufficiency is an admissible result.\\n\",\n  \"source_notes\": \"The supplied SQL text defines the target query. SELECT ALL retains duplicate\\nresult rows. LEFT JOIN retains each left row and provides SQL NULL values for the\\nright columns when the join condition finds no right row. Ordinary equality with\\na NULL operand does not evaluate to true. The study uses SQLite's implementation.\\nThese query semantics specify the task; no incremental maintenance rule is supplied.\\n\",\n  \"sources\": [\n    {\n      \"url\": \"https://www.sqlite.org/lang_select.html\",\n      \"sections\": [\n        \"2.1\",\n        \"2.6\"\n      ],\n      \"supports\": \"LEFT JOIN result formation and SELECT ALL multiplicity\",\n      \"checked_utc_date\": \"2026-09-12\"\n    },\n    {\n      \"url\": \"https://www.sqlite.org/lang_expr.html\",\n      \"sections\": [\n        \"2\"\n      ],\n      \"supports\": \"Ordinary comparison with NULL is not true\",\n      \"checked_utc_date\": \"2026-09-12\"\n    }\n  ],\n  \"value_domain\": {\n    \"ids\": \"explicit signed 32-bit integers, unique within each table\",\n    \"keys\": \"signed 32-bit integers or SQL NULL\",\n    \"values\": \"Unicode strings or SQL NULL\"\n  },\n  \"events\": {\n    \"insert\": \"Full new row [id,key] for L or [id,key,value] for R; id must be absent\",\n    \"delete\": \"Full before-image of an existing row; deletion removes that id exactly once\",\n    \"order\": \"Apply one legal event at a time; updates are a delete followed by an insert\",\n    \"observations\": \"After each event, the output is the complete bag of [lid,key,value] rows; row order is immaterial\"\n  },\n  \"constraints\": {\n    \"initial_read\": true,\n    \"post_initial_database_access\": false,\n    \"state_vocabulary\": \"chosen by the candidate\",\n    \"prose_admissible\": true,\n    \"incremental_rule_supplied\": false\n  }\n}\n\n\n## What to return\nA JSON object carrying \"body\" and \"commitments\". Both are strings and nothing else is required.",
+      "brief_sha256": "3b32bdaab834cd50abe0ae66e80b25320fa4cad3a50223b13c9e3444bc24986a",
+      "cycle": 1,
+      "phase": "both",
+      "stage": "construct"
+    }
+  ],
+  "compiled_header_sha256": "9a8fdc8afc27370c9de8682016fee124a050610f0b905aed586bd86e9f9dfccd",
+  "compiled_plan_id": "e203aa206f1cc63d404d50f36499ab127fd0dc4344abbb83e3cdc6c7c9f28d77",
+  "opaque_prose_preserved": true,
+  "operator_material_read_by_adapter": false,
+  "parent_outputs_in_prompts": false,
+  "parent_plan_id": "f8c3ab9ecb3285ea3d1d167427e413be2a30a1583a05fd5a411210430390a197",
+  "parent_record_id": "c8d9bae1b7aa0ebb785d1ef310ebbb6d3abfd204233643fb5def30b4f30d08f0",
+  "plan_id": "514cd8501082360fa5d6ef292543b19b7d4d5a145d17b92a984ea70aeace53dd",
+  "provider_calls": 0,
+  "requests_byte_identical_to_parent": true,
+  "run_outcome": {
+    "calls": 1,
+    "completion_tokens": 1,
+    "cycles_completed": 1,
+    "genesis": "e203aa206f1cc63d404d50f36499ab127fd0dc4344abbb83e3cdc6c7c9f28d77",
+    "root": "offline-probe",
+    "run_id": "e203aa206f1cc63d",
+    "stages_entered": [
+      "construct"
+    ],
+    "state_digest": "0c37eaaf56ab2e418082b8beac76111c4e4ed4ba086d182b595a7e75e4d003af",
+    "stop_reason": "cycle_cap"
+  },
+  "scripted_engine_calls": 1,
+  "source_allowlist": [
+    "participant-source.json"
+  ],
+  "status": "OFFLINE_PREFLIGHT_PASSED"
+}
