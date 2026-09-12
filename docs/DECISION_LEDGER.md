@@ -567,3 +567,7 @@ REC-20260912-C assessment completed: configuration coverage separates actual obs
 Verified checkpoint fb58b3fcca38e7f2d5126b518e4df5e4979300b7 at 2026-09-12T08:12:36.903Z: local b151582e978299e632bf4308a1297b7698e8502e, remote fb58b3fcca38e7f2d5126b518e4df5e4979300b7, shared tree d6c07b3d84db4db75e8ac34a540cd914078d1612. Completed configuration coverage and challenged P1 candidate assessment durable; no ECS refutation or filled semantic gap claimed. Finish interruption handover next.
 
 REC-20260912-B operational erratum completed and fresh attempt concretized: E025-retry-01 retains the exact frozen ten-call plan, declared DeepSeek destination and original selected handoff, with a separate absent output directory. It is pending explicit approval required by the renewed automatic rejection, not dispatched. Erratum corrects response-path counting and preserves unknown costs. Publish this completed erratum/declaration immediately.
+
+Verified checkpoint a8c6bf76907c78797a777b6ad77b7cdd458e808e at 2026-09-12T08:12:56.811Z: local b6c4841b3d92b1c9c96ae471fcf0759cc656c5d1, remote a8c6bf76907c78797a777b6ad77b7cdd458e808e, shared tree 7c05351fe37c79954645c7f3361b3883f2de06ee. Operational erratum and exact pending E025-retry-01 declaration durable. No further provider call; update final STATUS and README.
+
+REC-20260912-B operations lesson completed: response path count is not terminal provider completion; preserve incomplete bytes and unknown usage. Publish this transferable lesson immediately.
