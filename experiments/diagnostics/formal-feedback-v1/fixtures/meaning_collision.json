@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "problem": "A service stores each write on two replicas, A and B. The client receives an acknowledgement. Can the client treat that acknowledged write as surviving permanent loss of either one replica? What should the service do if only one replica has persisted it? State the assumptions and unresolved questions.",
+  "atoms": {
+    "ack": "The client receives acknowledgement for this write.",
+    "persisted": "Collapsed phrase used for both at least one persisted replica and both replicas persisted.",
+    "safe": "This write remains available after permanent loss of either one replica, assuming the other persisted replica remains accessible."
+  },
+  "premises": [
+    {
+      "id": "ack_one_copy",
+      "formula": {
+        "implies": [
+          "ack",
+          "persisted"
+        ]
+      }
+    },
+    {
+      "id": "two_copies_survive",
+      "formula": {
+        "implies": [
+          "persisted",
+          "safe"
+        ]
+      }
+    }
+  ],
+  "goal": {
+    "id": "goal",
+    "formula": {
+      "implies": [
+        "ack",
+        "safe"
+      ]
+    }
+  },
+  "prose_objections": [
+    "Does a successful disk write really establish durable persistence after a power cut?",
+    "Availability of the surviving replica and the timing of the failure need independent scrutiny; this Boolean artifact has no temporal semantics."
+  ],
+  "provenance": "Operator-authored illustrative diagnostic probes; not model-generated research samples and not evidence of LLM benefit."
+}

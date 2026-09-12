@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "provenance": "Operator-authored illustrative diagnostic probes; not model-generated research samples and not evidence of LLM benefit.",
+  "problem": "A service stores each write on two replicas, A and B. The client receives an acknowledgement. Can the client treat that acknowledged write as surviving permanent loss of either one replica? What should the service do if only one replica has persisted it? State the assumptions and unresolved questions.",
+  "fixtures": [
+    {
+      "id": "conditional_entailment",
+      "input": "conditional_entailment.json",
+      "expected_classification": "entailed",
+      "purpose": "A conditional consequence under explicitly supplied assumptions.",
+      "operator_case_argument": "The two premises classically imply ack → safe. The retention assumption, timing and meaning of safe remain outside checker validation. This does not answer the full operational prose question."
+    },
+    {
+      "id": "inconsistent_candidate",
+      "input": "inconsistent_candidate.json",
+      "expected_classification": "inconsistent",
+      "purpose": "Prevent inconsistent premises from certifying any goal.",
+      "operator_case_argument": "Acknowledgement forces both persistence atoms and hence safe, while an explicit premise denies safe. All submitted premise IDs are returned, without claiming an inconsistent core or minimum subset."
+    },
+    {
+      "id": "refuted_claim",
+      "input": "refuted_claim.json",
+      "expected_classification": "refuted",
+      "purpose": "A claim contradicted by every satisfying valuation.",
+      "operator_case_argument": "Every premise model has ack true and safe false, so the conditional goal is false. Equating single-failure survivability with two persisted replicas is an operator-supplied assumption, not a theorem about all distributed systems."
+    },
+    {
+      "id": "underdetermined_claim",
+      "input": "underdetermined_claim.json",
+      "expected_classification": "undetermined",
+      "purpose": "Expose a goal countermodel and a negation countermodel under the same premises.",
+      "operator_case_argument": "One persisted replica satisfies the premises but defeats safe; both persisted replicas also satisfy them and support safe. The recorded observations do not distinguish these two cases."
+    },
+    {
+      "id": "consistent_inadequate_mapping",
+      "input": "consistent_inadequate_mapping.json",
+      "expected_classification": "entailed",
+      "purpose": "A perfectly consistent translation answers an easier question.",
+      "operator_case_argument": "The original prose asks about survival after loss of either replica. Here safe explicitly means present existence on at least one replica. Entailment is correct for that changed target, but does not bear on the original guarantee without further argument. The checker intentionally cannot detect this mismatch."
+    },
+    {
+      "id": "meaning_collision",
+      "input": "meaning_collision.json",
+      "expected_classification": "entailed",
+      "purpose": "One atom collapses two materially different persistence conditions.",
+      "operator_case_argument": "The first premise uses persisted as at least one replica; the second uses it as both replicas. One-copy-before-failure and two-copy-before-failure are distinct states of the prose scenario. Collapsing them makes a formal derivation available, and validation deliberately does not police the prose meanings."
+    },
+    {
+      "id": "valid_symbol_recoding",
+      "input": "valid_symbol_recoding.json",
+      "expected_classification": "entailed",
+      "purpose": "A bijective symbol replacement preserving every atom meaning.",
+      "operator_case_argument": "Replacing ack/a/b/safe by q/r/s/t preserves the Boolean relation and its meanings. A test compares complete sets of premise models after reversing the replacement, rather than merely comparing the classification."
+    },
+    {
+      "id": "invalid_symbol",
+      "input": "invalid_symbol.json",
+      "expected_classification": "invalid",
+      "purpose": "An undeclared symbol prevents evaluation while retaining the entire prose artifact.",
+      "operator_case_argument": "This is a formal artifact error, not a semantic rejection of the question or any prose objection."
+    },
+    {
+      "id": "out_of_budget",
+      "input": "out_of_budget.json",
+      "expected_classification": "unsupported",
+      "purpose": "Eleven declared atoms exceed the fixed limit of ten.",
+      "operator_case_argument": "Declared atoms count even when unused. The checker declines this material route without calling the prose question false, illegitimate or exhausted."
+    },
+    {
+      "id": "vacuous_conditional",
+      "input": "vacuous_conditional.json",
+      "expected_classification": "entailed",
+      "purpose": "A conditional is true only because acknowledgement is excluded.",
+      "operator_case_argument": "Premises are satisfiable, but every premise model has ack false. The goal ack → safe is therefore entailed regardless of safety. This gives no coverage of an actual acknowledged write. Classical checking reports the exact entailment and does not certify semantic coverage."
+    },
+    {
+      "id": "circular_support",
+      "input": "circular_support.json",
+      "expected_classification": "entailed",
+      "purpose": "The requested conclusion is supplied as its own premise.",
+      "operator_case_argument": "A premise identical to the goal logically entails that goal. The artifact offers no independent basis for the reliability claim; the checker cannot turn this derivation into such a basis."
+    }
+  ]
+}

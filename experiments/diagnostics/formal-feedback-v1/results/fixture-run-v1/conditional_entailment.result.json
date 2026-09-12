@@ -1,0 +1,94 @@
+{
+  "checker": "finite-explicit-argument-v1",
+  "limits": {
+    "max_input_bytes": 131072,
+    "max_atoms": 10,
+    "max_premises": 64,
+    "max_formula_nodes": 512,
+    "max_total_formula_nodes": 2048,
+    "max_formula_depth": 24,
+    "max_text_chars": 20000
+  },
+  "original_argument": {
+    "schema_version": 1,
+    "problem": "A service stores each write on two replicas, A and B. The client receives an acknowledgement. Can the client treat that acknowledged write as surviving permanent loss of either one replica? What should the service do if only one replica has persisted it? State the assumptions and unresolved questions.",
+    "atoms": {
+      "ack": "The client receives acknowledgement for this write.",
+      "a": "Replica A has durably persisted this write before the possible failure.",
+      "b": "Replica B has durably persisted this write before the possible failure.",
+      "safe": "This write remains available after permanent loss of either one replica, assuming the other persisted replica remains accessible."
+    },
+    "premises": [
+      {
+        "id": "ack_policy",
+        "formula": {
+          "implies": [
+            "ack",
+            {
+              "and": [
+                "a",
+                "b"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "retention_assumption",
+        "formula": {
+          "implies": [
+            {
+              "and": [
+                "a",
+                "b"
+              ]
+            },
+            "safe"
+          ]
+        }
+      }
+    ],
+    "goal": {
+      "id": "goal",
+      "formula": {
+        "implies": [
+          "ack",
+          "safe"
+        ]
+      }
+    },
+    "prose_objections": [
+      "Does a successful disk write really establish durable persistence after a power cut?",
+      "Availability of the surviving replica and the timing of the failure need independent scrutiny; this Boolean artifact has no temporal semantics."
+    ],
+    "provenance": "Operator-authored illustrative diagnostic probes; not model-generated research samples and not evidence of LLM benefit."
+  },
+  "issues": [],
+  "valuations_checked": 16,
+  "premise_model_count": 8,
+  "premise_ids": [
+    "ack_policy",
+    "retention_assumption"
+  ],
+  "satisfying_witness": {
+    "a": false,
+    "ack": false,
+    "b": false,
+    "safe": false
+  },
+  "goal_countermodel": null,
+  "negation_countermodel": {
+    "a": false,
+    "ack": false,
+    "b": false,
+    "safe": false
+  },
+  "classification": "entailed",
+  "feedback": {
+    "formal_limit": "Classical propositional logic with independent Boolean atoms, exhaustive valuations, and exactly the submitted premises. No quantifiers, time, probability, executable code, or external evidence are interpreted. Atom meanings and prose objections are preserved but not evaluated. Entailment, refutation, and consistency do not establish that a mapping captures the prose problem, that assumptions are true, or that a next inquiry should be promoted. Vacuity and circular support can pass.",
+    "possible_next_inquiry": "Scrutinize whether premises and atom meanings capture the original question, including an impossible antecedent or an assumed conclusion; seek an independent prose objection or evidence.",
+    "inquiry_is_suggestion_only": true,
+    "automatic_problem_promotion": false,
+    "semantic_endorsement": false
+  }
+}
