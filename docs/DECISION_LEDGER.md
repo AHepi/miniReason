@@ -539,3 +539,7 @@ REC-20260912-C PURPOSE completed: overarching programme now explicitly covers Mi
 Verified checkpoint 184e5ae250a51f139ee7548ba23371e9d5ecb1b7 at 2026-09-12T07:59:08.269Z: local dbbeb05387b7ab83ad0bf86d39fc8fc8d6b46727, remote 184e5ae250a51f139ee7548ba23371e9d5ecb1b7, shared tree 704081239612a77d5e8902242837dc6fef7aa13c. User-corrected overarching PURPOSE and recovered receipts are durable. Next fixed C001 handoff; original experiments unchanged.
 
 REC-20260912-B C001 handoff completed: freeze-handoff and verify-handoff passed against the actual complete selected E024 mini-r01 occurrence and independently verified E024 publication tree. Zero model calls; original source plus all four public A outputs are retained, with no operator review injected. Publish the frozen handoff and factual publication receipt now before preparing B.
+
+Verified checkpoint 90f0766dad2e9e578b50fc77b81957b2139df3cd at 2026-09-12T08:01:26.146Z: local 6d863a0fe8060622942261689ab4616e4d7a6703, remote 90f0766dad2e9e578b50fc77b81957b2139df3cd, shared tree b78837e3077a6c04c1ce67202add9a2268623811. Actual C001 handoff verified and durable; zero provider calls. Prepare the separately identified E025 plan next.
+
+REC-20260912-B E025 plan completed: actual handoff 1e87696cc8fd25d06c9595d4d90521b002443e797470ffc40d4d736982478dd1 now binds the predeclared six controls to successor_discrimination_v1, one cycle and ten planned calls, with original C001 settings preserved. Publish plan immediately; zero-call preflight follows.
