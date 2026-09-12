@@ -10,6 +10,8 @@ The experiment model is DeepSeek V4.1 Flash, using the official `deepseek-flash`
 
 ## Start here
 
+**Recovery is complete.** The distinct one-cycle construction-to-successor implementation and independent review are published, with 569 passing tests in normal and optimized Python. E023 is the prepared next control; live calls are blocked pending the explicit DeepSeek disclosure approval required by automatic review. Read [current STATUS](docs/STATUS.md) and the [runnable chain workflow](docs/workflows/template-chain.md) before continuing.
+
 **If a window failed, read [DECISION_LEDGER.md](docs/DECISION_LEDGER.md) first, then [PURPOSE.md](PURPOSE.md) and [STATUS.md](docs/STATUS.md), and follow [the continuation and recovery workflow](docs/workflows/continue.md).** The ledger records choices and publication receipts; STATUS separates completed, interrupted and pending work. Compare the surviving checkout with remote `main` before running anything new. A local commit or a partial upload does not establish publication. Finish and verify any pending publication before starting its successor experiment.
 
 **Publish every completed document to `main` immediately, with remote verification.** This applies to each review, report and completed documentation update as well as each configuration result. One publisher serializes the checkpoints; do not wait for another document or an entire experiment. Preserve partial recovered drafts and publish their completion reviews separately.
