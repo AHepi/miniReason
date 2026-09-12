@@ -1,10 +1,33 @@
-# A branching agenda for expression and later integration
+# A branching agenda for configuration research
 
-The active inquiry concerns what model-proposed languages and semantic classes let Mini express and do under its actual material conditions, and whether their components expand or hinder creative inquiry. Correct capture of the posed problem is not an initial admission gate. The first specimens are frozen; prose, Lean-oriented proposals and non-Lean semantic classes are legitimate. This agenda chooses further probes by the mechanism exposed in a completed record, not by a progress percentage or an arbitrary number of configurations.
+The active goal is exploring Mini's configuration space and testing the designated [FW5 explanatory-construction source](sources/FW5-explanatory-construction.md) for gaps. Language expression, formal feedback, construction, evidence access, tool use, attention and template composition are deliberately chosen dimensions. Correct capture and formal translation are not admission gates. The earlier expression agenda below remains useful historical and prospective subset work; it is not the entire programme.
 
-E001 and E002 concern the earlier executable reservation calibration. The current expression study instead preserves a model-generated prose corpus, obtains initial model-proposed schemes, and compares expression, independent reinterpretation and criticism. The agenda below does not claim that any proposed language has already exhibited a listed feature or failure. It identifies conditional branches to instantiate only after inspecting the actual frozen material and completing its initial comparisons.
+The [source decision](reviews/FW5-research-plan-decision.md), implemented by continuation receipt REC-20260912-G, changes priority and source mapping. FW5 is the designated source; ECS 2.0 additions remain separately identified hypotheses. Existing observations retain their frozen identities and source assumptions. E023's cued use result motivates a stronger need-for-relation case. E024 and E025 remain the original construction/discrimination chain, not a retroactive construction/deployment test.
 
-Read [PURPOSE](../PURPOSE.md), [Language Proposal Theorems](LANGUAGE_PROPOSAL_THEOREMS.md), [Problem promotion](PROBLEM_PROMOTION.md) and the [continuation workflow](workflows/continue.md) before selecting a branch. The bare model, supported native reasoning and candidate Mini comparisons remain essential. Each completed configuration test, including unsuccessful tests, is published immediately to main; at most five tests run concurrently, with publication serialized.
+## Immediate work: construction, use and operative return
+
+Prepare incremental SQL LEFT JOIN maintenance under duplicate-preserving bag and NULL semantics. The construction input supplies schema, query and event contract, not a completed incremental maintenance rule. The model may propose prose, formal content or code. An operator-side ambiguity witness establishes why a downstream use needs more than the visible old view and incoming event: an unmatched left row and a matched row with a NULL value can have identical visible output, yet the same new match produces different required bags.
+
+The precise state distinction is a target for construction, not an operator solution to insert when the candidate fails. A failed or insufficient candidate remains a result. Oracle recomputation evaluates bounded SQL outcomes and does not establish origin, understanding or creativity. A fresh direct full-source reconstruction baseline is separate from an arm deliberately deprived of source/history. Any advantage from additional information must be named as such.
+
+| Stage or contrast | Prospective purpose | Required interpretation boundary |
+|---|---|---|
+| Construct | Propose reusable relation, retained state and update account from source contract | Preserve original candidate; no reference incremental rule substituted |
+| Use | Apply candidate on preselected later sequences | Demonstrate where the relation is actually required; separate state initialization from the relation itself |
+| Scrutinize and return | Criticize a witnessed dependency, interpretation or use method; route the result to the same parent's use-state | Distinct templates, one cycle each, explicit correspondence and alternative results permitting different states |
+| Archive without return | Retain identical proposal/criticism bytes outside operative input | Measures access/return intervention, not a fully informed baseline |
+| Recoding and changed content | Compare same interpreted reason, changed reason and irrelevant carrier change | Preserve actual role mapping; no assumption every candidate has the planned defect |
+| Direct/native and matched workflow | Establish same-model source/resource comparisons and isolate extra calls from Mini mechanisms | Record actual inputs, model mode, usage and effective policies; absent comparisons remain absent |
+
+The initial preparation is offline and must state which stages are merely proposed. The existing two-episode coordinator targets construction plus issue discrimination; renaming its stage does not implement operative return. Freeze any new bridge and runner before live evidence. Selection of a subsidiary criticism follows a predeclared rationale tied to the actual candidate, and criticism may correctly result in retention or suspension. The return path may change a represented method or interpretation; executable code installation is optional. A finite chain does not prove recursive critical capacity.
+
+## Independent source-theory challenge
+
+Attempt an Account sufficiency case in non-causal mathematics while preserving the original obstruction question. The first concrete specimen concerns why every odd-order real skew-symmetric matrix is singular: an exhaustive determinant expansion is assessed against the same question as the transpose/parity argument. Fix entry-level algebraic grain, real-field boundary, and contrasts removing skewness or odd order before the check. A less elegant proof is not thereby non-explanatory; the independent absence-of-bearing argument must survive agreement on all five Account conditions.
+
+If the attempt fails, report the exact obstruction to the counterexample and leave the theory unconfirmed. Necessity challenges, representation/integration failures and (EK) challenges remain separate branches. A formalization-specific failure is not exclusion under every organization-preserving interpretation. Do not change the question or grain after seeing the candidate to preserve either a counterexample or FW5.
+
+Read [PURPOSE](../PURPOSE.md), [the semantic guide](SEMANTIC_GUIDE.md), [the method](EXPERIMENT_METHOD.md) and [STATUS](STATUS.md) before dispatch. Every completed document and configuration record is published immediately with exact remote/tree verification. No E025 retry, third episode, additional live budget or exhaustive sweep is selected by this agenda. The remaining sections supply reusable expression and integration branches under their stated assumptions.
 
 ## Preserve the initial specimen
 
