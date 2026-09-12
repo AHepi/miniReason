@@ -1,0 +1,29 @@
+{
+  "content_appraisal": "unresolved",
+  "disposition": "queued",
+  "occurrence_id": "3f2ad6683d4fa67f9a29517d880fae993eee396dbd5a21609f12f685f4cf6732",
+  "origin": {
+    "arm": "matched_native",
+    "cycle": 1,
+    "input_provenance_meaning": "Supplied material only; no semantic dependency, about or answers edge implied",
+    "mini_artifact_id": null,
+    "plan_id": "d25198e56a22a3b7212136587a16a2002f70e73f1a0ea00c2c5ae636ee774568",
+    "repeat": 1,
+    "stage": "criticize",
+    "supplied_input_occurrence_ids": [
+      "c5abeb308c572ef21099dc89962b88aea27a34873f18a187961808fbfbc7c615",
+      "5510d756585292b9ffbb2435e80aa3a61a162e97d9e1fcbe72937d5e03c8343a",
+      "6742a2a12b2f6e87cdfa889eed495f44a504365c1db35ef1e7d3fa6068e2cac4",
+      "117f62cbb688e023fdaea0a14c6cd0135a69f8868a34c8e76fefe631e344b0f4",
+      "bc184a8ab0a4e85b08c3d19727769110589e59756e623b50009230f75b874157"
+    ],
+    "test_id": "E024-chain-construction"
+  },
+  "packet_id": "85558cab828cc4f2ae010403169473ca56e6217526690587eb165b9f71555f09",
+  "proposed_changes_installed": false,
+  "schema": "minireason.inquiry-occurrence.v1",
+  "stage": "criticize",
+  "standing_effect": "none",
+  "text": "One defect I can substantiate is that J treats the cross-booking compatibility assumption as the sole missing condition under which the independent per-booking min/max interval becomes the complete global availability. That adds an unsupported relationship and loses a distinction already present in the frozen material.\n\nJ says:\n\n> “the interval produced by independent per-booking minima and maxima is the availability object only under an added assumption that all combinations of local alternatives are compatible. If that assumption is not stated, the interval is a projection, not a complete global availability.”\n\nThe P9 source, however, describes the interval as a bound, not as an availability object whose only obstacle is correlation:\n\n> “One can compute a lower bound by taking the minimum reservation per booking and an upper bound by taking the maximum. That gives an interval, but intervals lose correlations: booking A’s high alternative might be incompatible with booking B’s high alternative if they share a physical resource not named in the snapshot.”\n\nThe word “only” in J is the problem. Even if all combinations of local alternatives are compatible, the set of possible total reservations need not be an interval. A simple distinguishing case: two bookings, each with alternatives `{0, 10}`, and capacity 15. All four combinations are compatible. The possible totals are `0`, `10`, `10`, `20`; the possible availabilities are `15`, `5`, `5`, `-5`. The independent min/max interval is `[-5, 15]`, but availability `0` is not achievable. So compatibility is not sufficient for the interval to be the complete availability object.\n\nThe full frozen corpus already preserves this distinction:\n\n> “If different bookings have unresolved alternatives, availability is not a number but a set or an interval, and possibly not even a convex one.”\n\nJ’s account collapses that into “interval plus compatibility relation.” It thereby mistakes one route by which an interval can fail to be exact — cross-booking correlation — for the only route. The remedy J proposes is also incomplete: adding a compatibility relation or weakening to “bounds under independence” does not address the non-convexity or discreteness of the possible sums.\n\nThis is an established defect under J’s own wording, because J later distinguishes an “exhaustive” claim from something that is “merely a bound.” If “availability object” is read loosely as just a bound, then J’s phrase “complete global availability” becomes an equivocation. If it is read as an exact representation, the “only under” claim is false. The selected language, unconstrained prose, can express the missing distinction without difficulty, so this is not a language limitation. The defect is in J’s added relationship, not in the source or the question.",
+  "text_sha256": "5bc0c186e22f34c193fea845d819fca069d35ac769f361e67c2972c5defcc444"
+}
