@@ -1,6 +1,6 @@
 # Current recovery and research state
 
-**E022 is complete and verified on main. The next live task is the original frozen E020 no-return control. Distinct-template implementation is being recovered in separate staging.**
+**E022 is complete and verified on main. E020 was interrupted by an automatic approval rejection; its partial evidence is preserved. Live dispatch is blocked while offline distinct-template implementation continues.**
 
 Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [recovery workflow](workflows/continue.md). Destination: `AHepi/miniReason`, branch `main`; source h-EPI is unchanged. One publisher owns main and the ledger. Publish and verify every completed document immediately, including reviews, before proceeding to another document. Supporting ledger/STATUS updates may accompany that document. Publish every completed or interrupted configuration before successor dispatch.
 
@@ -20,21 +20,21 @@ The recovered `docs/reviews/E022-reason-use-review.md` is an unchanged partial d
 | E019 omission | Preserved partial: nine attempts, seven complete responses, two transport failures; no root summary |
 | E021 omission retry | Preserved partial after approval rejection: five requests, no complete response, one incomplete file; no root summary |
 | E022 public-payload omission retry | Six arms / ten complete calls, no operational alarms; 102,272 prompt and 61,500 completion tokens; publication verified above |
-| E020 no returned account | Frozen/preflighted; no calls yet; next authorized live task after this checkpoint |
+| E020 no returned account | Interrupted: four first-stage requests, no complete public answer, one tunnel-403 receipt; no use call or normal summary |
 
 E019 and E021 remain unchanged interrupted records; missing costs are unknown. Public-payload evidence addressed the prior sensitivity rejection before E022 succeeded through the normal provider path. No endpoint or credential rerouting occurred. A new access rejection stops further dispatch.
 
 ## Next exact task
 
-Run once from this checkout, with the previously authorized key supplied at runtime through `DEEPSEEK_API_KEY`:
+Historical E020 command below has now been attempted. Do not run it again or overwrite its output:
 
 ```sh
 python -m minireason.reason_use_study run --plan experiments/plans/E020-reason-no-return.json --output experiments/records/E020-reason-no-return --jobs 5
 ```
 
-First check that this output directory does not already exist. If it does, inspect/preserve it instead of rerunning. E020 has four staged arms/eight calls and retains/counts the first response while exposing an empty account at use. Review actual account exclusion, custody and public content, then publish the result immediately. Keep all source files frozen until this source-bound run completes. The integrated offline baseline is 542 tests passing; no code has changed since that freeze.
+First check that this output directory does not already exist. If it does, inspect/preserve it instead of rerunning. E020 has four staged arms/eight calls and retains/counts the first response while exposing an empty account at use. Review actual account exclusion, custody and public content, then publish the result immediately. The source-bound attempt has stopped. New modules may now be integrated; any prepared retry must bind the resulting source identity and retain identical model-visible conditions. The integrated offline baseline is 542 tests passing; no code has changed since that freeze.
 
-After E020 closes, integrate and verify the staged `successor_discrimination_v1` adapter and A-to-B coordinator under D028/D029/D033. The retained family is prose-capable `joint_construction_v1`; carrier sweeps, repetition of the arithmetic block and same-template repetition are shelved for this target. Use the [template disposition](reviews/template-disposition-for-promotion.md) and [handoff design](reviews/distinct-template-handoff-design.md). Final live materials remain to be selected after control review.
+After preserving the stopped E020 record, integrate and verify the staged `successor_discrimination_v1` adapter and A-to-B coordinator under D028/D029/D033. The retained family is prose-capable `joint_construction_v1`; carrier sweeps, repetition of the arithmetic block and same-template repetition are shelved for this target. Use the [template disposition](reviews/template-disposition-for-promotion.md) and [handoff design](reviews/distinct-template-handoff-design.md). Final chain activation remains conditional on completion/review of the no-return control. The explicit DeepSeek destination/disclosure approval required by automatic review is the live blocker.
 
 Freeze a chain before A: A `joint_construction_v1` once, selected arm `mini-r01`; B `successor_discrimination_v1` once, locate/discriminate, separate one-cycle manifests/logs. Publish A before freezing its whole-output handoff; publish the handoff and B plan before B. All B controls receive the same preselected A output bundle. No arm substitution, automatic third episode, or forced problem promotion.
 
