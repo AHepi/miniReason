@@ -1,8 +1,18 @@
 # Current recovery and research state
 
-**Formal-feedback research and the five-minute progress skill are completed and published. The original distinct-template implementation remains complete. The next live action is still E023, blocked pending explicit DeepSeek destination/disclosure approval. No new live model result is claimed.**
+**The user explicitly approved DeepSeek disclosure. E023 completed all eight calls and its record and substantive review are published. E024/C001 is now the authorized next live experiment; no repeat permission is required for this prepared continuation.**
 
 Updated 2026-09-12 UTC. Read [DECISION_LEDGER](DECISION_LEDGER.md), [AGENT_ACTIVITY](AGENT_ACTIVITY.jsonl), [PURPOSE](../PURPOSE.md) and [the runnable continuation](workflows/template-chain.md). Every agent logs each repository/staging search, read, edit and test through tools/repo_activity.py. One publisher commits and verifies every completed document immediately. Source h-EPI remains unchanged.
+
+## Approved live continuation and completed E023
+
+The user explicitly approved sending published experimental material and generated outputs to the declared DeepSeek endpoint and supplied the runtime credential. R20260912-09 records this authority; it supersedes the earlier approval blocker. Keep the key outside tracked files and logs.
+
+E023 completed four arms and eight calls, totaling 68,216 prompt and 44,880 completion tokens. Record publication: remote 4033a17a7f86bc5926ffc6cd469689a2ef62f7ce, shared tree 87887d057428b203b66e6f22790fe88dad415c1c. The [substantive review](reviews/E023-no-return-review.md) is published at f71193ef9170bbc949e4f3c8c00e61e622dca2bb. Exact empty-account use and direct/Mini payload parity are verified. All four final numerical answers are correct, with one isolated pair-label defect and retained modality, attribution, capacity and interval errors. The returned account is unnecessary for these cued witnessed obligations; this is not a general no-effect or creativity result.
+
+E023 is complete: do not rerun it. R20260912-13 retains E024/C001 because the next question concerns substantive successor inquiry, not account necessity for arithmetic. E024 actual-material zero-call validation passes against unchanged source. No A or B result exists yet.
+
+The installed progress skill now has independent substantive-ledger and verified-publication clocks. Both have a five-minute deadline; completed documents still publish immediately. An actual 431.615-second publication interval occurred while the full E023 record upload was in flight and is explicitly ledgered. Publish a small reviewed progress checkpoint before every later large evidence upload, and do not count uploaded blobs as a verified push. Preserve the original v1 clock state; the active session uses the v2 timer.
 
 ## New research completed in this continuation
 
@@ -40,21 +50,19 @@ E022's accounts still contain classification, capacity, attribution and modality
 
 | Prepared artifact | Identity and state |
 |---|---|
-| E023-reason-no-return-retry | Plan 8d21ad958acb05e7b9f0cd5eeeb86a69db32f49601533a227797d2a21de331cd; published at fcf7c3315b1f1927eafdb5a9e5ea3114e64696d9; zero-call preflight passes. Same E020 model-visible prompts/settings/controls; source adds only four new modules. |
+| E023-reason-no-return-retry | Completed and reviewed: four arms, eight complete calls; see approved continuation above. Frozen plan remains 8d21ad958acb05e7b9f0cd5eeeb86a69db32f49601533a227797d2a21de331cd. |
 | E024-chain-construction | Plan d25198e56a22a3b7212136587a16a2002f70e73f1a0ea00c2c5ae636ee774568; published at b421660ce78b41aabf5a2faf0e049a304a37a40d; zero-call preflight passes. Exact original source/issue/parents, prose carrier, six controls and one cycle. |
 | C001-construction-to-successor | Plan f54fd564b5e0e2e283a8110a133e97b565b2729fb61ecf50a575091612d733f1; published at c4f0ac3c5041f6c7eb41927779752042752c1bd0. Predeclares A mini-r01 and whole-output mapping into distinct B. |
 | E025-chain-successor | Contract/settings/controls are fixed by C001. No B plan or handoff exists: both must be frozen from actual published A output. |
 
-No E023, E024 or E025 run directory exists. Do not create fake completion or handoff records from the offline fixtures. The retained mechanisms and shelved alternatives, commands, publication boundaries and analysis obligations are in [template-chain.md](workflows/template-chain.md).
+E023 is complete. No E024 or E025 run directory exists at this activation checkpoint. Do not create fake completion or handoff records from the offline fixtures. The retained mechanisms and shelved alternatives, commands, publication boundaries and analysis obligations are in [template-chain.md](workflows/template-chain.md).
 
-## Exact live blocker and continuation
+## Exact next live action
 
-Automatic approval review rejected E020 because it judged the external DeepSeek destination and project-data disclosure not explicitly authorized. No retry or workaround followed. Obtain explicit approval to send the published experiment material and generated outputs to https://api.deepseek.com/v1/chat/completions. Use the existing authorized credential only at runtime through DEEPSEEK_API_KEY; never store it in committed files.
-
-After that approval, verify the prepared plan/source and absence of its output directory, then execute:
+Disclosure approval is already recorded. After this activation checkpoint is published, execute the existing E024 plan once:
 
 ```sh
-python -m minireason.reason_use_study run --plan experiments/plans/E023-reason-no-return-retry.json --output experiments/records/E023-reason-no-return-retry --jobs 5
+python -m minireason.inquiry_study run --plan experiments/plans/E024-chain-construction.json --output experiments/records/E024-chain-construction --jobs 5
 ```
 
-Review and publish E023 before activating E024. If the control defeats the prospective allocation, supersede the plan with a separately identified decision. Otherwise run A once, publish/verify A, freeze/publish its exact handoff and B plan, then run distinct B once and analyze its actual output. A failure of the preselected A mini-r01 arm leaves the chain unavailable; do not substitute another arm. B may propose further investigation, suspend or conclude no promotion is warranted. No third episode is automatic. The inquiry is externally blocked, not exhausted.
+Publish and verify complete or partial A evidence before any successor. If preselected A mini-r01 does not complete, leave C001 unavailable and never substitute another arm. Otherwise write the actual A publication receipt, freeze the exact handoff and E025 plan using [template-chain.md](workflows/template-chain.md), validate/publish them, and run the distinct B template once. B can investigate, suspend or decline promotion. No third episode is automatic. Preserve source and frozen plan identities and record any external failure honestly.
