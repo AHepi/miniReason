@@ -2,7 +2,7 @@
 
 Read [the purpose](../PURPOSE.md) and [the semantic guide](SEMANTIC_GUIDE.md) before proposing a template. Every template answers a specific causal hypothesis about information flow, criticism, revision or deployment. A configuration search is not an evolutionary competition: diagnose the observed failure, explain the mechanism of the proposed repair, and test the prediction on declared conditions.
 
-The current initial stage freezes model-proposed languages and semantic classes, including non-Lean proposals, to study relative expression under Mini's actual resources. Correctness of capture is not an admission requirement, and prose need not pass a formal translation gate. Repair and adequacy tests below apply when those stronger claims become the declared question; they do not replace the initial exploratory question. Preserve each first proposal unchanged and identify later integrations as successor experiments.
+The historical initial stage freezes model-proposed languages and semantic classes, including non-Lean proposals, to study relative expression under Mini's actual resources. Correctness of capture is not an admission requirement, and prose need not pass a formal translation gate. Repair and adequacy tests below apply when those stronger claims become the declared question; they do not replace the initial exploratory question. Preserve each first proposal unchanged and identify later integrations as successor experiments.
 
 This method distinguishes required comparison obligations from capabilities implemented in a particular runner. A missing arm, ablation or semantic witness remains missing; the method is not a claim that all its experiments have run.
 
@@ -12,7 +12,7 @@ Before relevant model evidence, record the question, task family, instance const
 
 Commit the preregistration before the first live test. A subsequent revision has its own identity and claim. Development failures may guide that revision, but evaluation then needs fresh instances or a clearly named assisted-repair comparison. Do not treat an example inserted into a revised prompt as an independent held-out success.
 
-The initial campaign can use exact executable or constraint-checking tasks with interactions such as replay, expiry, atomicity, duplicate delivery, parsing or preservation of protected cases. Machine checks establish bounded correctness. Explanatory claims receive separate review against §2.2 of ECS, with the task outcome and its interpretation kept distinct.
+The initial campaign can use exact executable or constraint-checking tasks with interactions such as replay, expiry, atomicity, duplicate delivery, parsing or preservation of protected cases. Machine checks establish bounded correctness. Explanatory claims receive separate review against FW5 “A structural answer,” equation (E), with the task outcome and its interpretation kept distinct.
 
 ## Required comparisons
 
@@ -60,15 +60,21 @@ If a safe policy DSL replaces arbitrary generated code, record its primitives, i
 
 The verifier executes only the declared task contract and records exact witnesses. It should include unseen combinations and protected behavior. An independent explanatory review checks structural anchors, the question and respect actually answered, compositional claims, non-circular dependence and a compatible baseline. Review outcomes may remain unresolved where the source or model trace does not supply the necessary evidence. Do not ask a judge for an ungrounded overall creativity score.
 
-A verifier's success does not immunize the specification, interpretation or relevance of its checks (ECS §5.4). A failed check contradicts a conjunction of candidate, auxiliaries and interpretation. Preserve the original account, the machine reading and the test assumptions so that a diagnosis can land on the layer that actually failed.
+A verifier's success does not immunize the specification, interpretation or relevance of its checks (FW5 “Evidence receipts without false certainty”). A failed check contradicts a conjunction of candidate, auxiliaries and interpretation. Preserve the original account, the machine reading and the test assumptions so that a diagnosis can land on the layer that actually failed.
 
 All final holdout data stays outside live conjecture, critic, translator and summarizer packs. If the experiment reveals feedback during a run, name it development feedback and keep a separate final holdout. Revisions informed by final holdouts require new instances for independent evaluation. Holdout identity can be committed without exposing its bytes to live arms.
 
 ## Reason-use and return-path contrasts
 
-A readable criticism or artifact citation demonstrates exposure. ECS §§5.1–5.2 additionally requires content-governed dependence. A continuation probe therefore compares a content-preserving recoding, a relevant content change, removal of the operative reason and irrelevant padding. The preserved meaning should preserve the relevant response; changing the bound reason should change it as the declared deliberative rule predicts. Use matched inputs where possible so length or salience does not explain the change.
+The designated source for new semantic claims is [FW5](sources/FW5-explanatory-construction.md); ECS 2.0 additions are separate hypotheses. Historical frozen experiments retain their original source mappings.
 
-For operative return, compare installing a constructed change with retaining identical bytes without installation. Then ask both resulting systems to address the same fresh case. Evidence of a difference supports a bounded active-route attribution at the declared boundary. It does not reveal the complete model's prior repertoire or prove universal capability.
+A readable criticism or artifact citation demonstrates exposure. FW5 “Reason use is causal organization, not an output comparison” additionally requires content-governed dependence. A continuation probe therefore compares a content-preserving recoding, a relevant content change, removal of the operative reason and irrelevant padding. The preserved meaning should preserve the relevant response; changing the bound reason should change it as the declared deliberative rule predicts. Use matched inputs where possible so length or salience does not explain the change.
+
+For operative return, compare installing a constructed change with retaining identical bytes without installation. Then ask both resulting systems to address the same fresh case. Evidence of a difference is a bounded behavioral contrast. An active-route attribution additionally needs a role-preserving interpretation of the represented content in the operative transition; endpoint differences alone do not supply it. It does not reveal the complete model's prior repertoire or prove universal capability.
+
+A downstream need claim should have an independent ambiguity or dependency witness. In the SQL study, two underlying database states share the same visible old view and delta but require distinct new output bags. Such a witness proves an information limitation at that boundary; it does not identify which sufficient state or method the candidate must construct. Operator reference solutions remain outside the construction route. If the candidate does not construct enough information, retain that failure.
+
+Treat the archive/no-return contrast as a declared information-flow intervention. Retain fully informed bare/native and matched direct-workflow controls before attributing an advantage to Mini. Give recodings identical meanings at declared roles, and identify substantive changed-content contrasts. Criticism is selected against actual material under a predeclared policy; a task-specific defect must not be assumed before the construction exists. Protected obligations apply to subsequent use after return. Withdrawal, retention and suspension remain legitimate responses.
 
 ## Failure records that do not corrupt semantic verdicts
 
@@ -84,7 +90,7 @@ For operative return, compare installing a constructed change with retaining ide
 | Effective inputs differ under one supposed configuration identity | Identity defect | Preserve conflicting bytes, repair identity and rerun affected comparisons |
 | Publication fails or remote identity is unverified | Operational publication failure | Preserve locally and repair publication; do not claim the test is durably published |
 
-V1.3 §1 explicitly says a containment kill must not mint a warrant. ECS §5.5 likewise separates failed delivery from content evidence. Operational failure may disqualify a comparison but is not evidence that the model lacks an explanatory capacity.
+V1.3 §1 explicitly says a containment kill must not mint a warrant. FW5 likewise separates failed delivery from content evidence. Operational failure may disqualify a comparison but is not evidence that the model lacks an explanatory capacity.
 
 Each erratum includes the observation, affected run and config, initial diagnosis, competing causes, remediation and verification. Mark causes as established, supported hypotheses or unresolved. Later corrections append to the record instead of rewriting the earlier interpretation. Deterministic fixtures can establish that a repaired path now runs; they are instrumentation tests and do not join live semantic results.
 
@@ -100,7 +106,7 @@ Repository hooks direct future work to the purpose, effective configuration map,
 
 ## When further testing has no grounded next step
 
-The configuration space is open-ended. A campaign cannot prove that all possible configurations are exhausted or infer a universal barrier from one frozen implementation (ECS §8.2). Its stopping judgment is local and reasoned.
+The configuration space is open-ended. A campaign cannot prove that all possible configurations are exhausted or infer a universal barrier from one frozen implementation (FW5 “Extensibility is not a historical certificate of universality”). Its stopping judgment is local and reasoned.
 
 Inspect every remaining failure. Each currently supported causal hypothesis should have a tested repair, a tested reason that the repair does not help, or a named external dependency preventing a valid next test. Required comparisons and meaningful ablations must be complete. Apparent improvements need fresh instances and preserved obligations. Continue whenever the evidence supports a concrete new mechanism with a distinguishing prediction.
 
