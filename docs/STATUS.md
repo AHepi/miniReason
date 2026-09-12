@@ -1,6 +1,6 @@
 # Current recovery and research state
 
-**E022 omission retry is running through restored normal access; E020 follows its verified publication. Retain joint construction, then a distinct successor-discrimination template, one cycle each. Problem promotion may be declined.**
+**E022 omission retry is complete: six arms, ten responses. Publish/verify it, then run frozen E020. Distinct construction and successor-discrimination templates are selected, one cycle each; their implementation is staged separately.**
 
 Updated during the 2026-09-12 Australia recovery (provider timestamps use UTC). Start with [DECISION_LEDGER](DECISION_LEDGER.md), [PURPOSE](../PURPOSE.md) and [the recovery workflow](workflows/continue.md). Authorized destination: AHepi/miniReason main; source h-EPI remains unchanged. One publisher owns the ledger and main.
 
@@ -64,3 +64,5 @@ The user has instructed continuation after the reported cancellation. D025 recor
 E021 retained five requests, no complete response and a zero-byte partial response; it has no normal summary. Original hashes are in its recovery.json. GitHub metadata confirms this repository is public, and the immutable published E021 plan contains all prompt material. E022-reason-omitted-public-retry preserves the same material/settings and passes zero-call preflight. D027 records the evidence that addresses the stated approval concern; any renewed rejection stops live work. E022 is the next normal-path attempt, followed by E020 only after successful record publication.
 
 D028 adopts the template dispositions in docs/reviews/template-disposition-for-promotion.md and the distinct-template architecture in docs/reviews/distinct-template-handoff-design.md. New source is being prepared outside this checkout until old source-bound controls finish. E022 has complete responses arriving through the unchanged provider path after public-payload proof; it is not yet a completed configuration.
+
+E022 terminal observation: all ten calls complete with no operational alarms. Independent review is finishing. D030 activates unchanged E020 only after E022 record verification on main.
