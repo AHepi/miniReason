@@ -84,3 +84,9 @@ Problem promotion remains a second, genuinely distinct template. Feed the whole 
 Complete the adapter, exact task material, generated plan, relevant parity/failure tests and zero-call preflight, then publish and verify those artifacts before any live request. Preserve E023's owed no-return control and review its bearing on the existing allocation before E024. The formal-feedback study is an additional candidate mechanism, not a reason to bypass that control.
 
 Automatic approval review previously rejected disclosure of project material to the DeepSeek endpoint. This protocol does not supply the missing approval or authorize a workaround. Its current deliverable is a concrete design and local checker diagnostic. Live model benefit, actual Mini integration for this new protocol and the proposed successor investigation remain unobserved.
+
+## Independent review clarification before activation
+
+The initial design tests availability of checker information. It does not isolate an advantage of formal syntax: the prose and formal drafts differ in content and instructions, and full feedback supplies information absent from withheld feedback. A later carrier-only comparison must render identical diagnostic facts in prose and formal forms under matched conditions. It is additional work with separately counted calls, not a result implied by this protocol.
+
+The five adverse classes are covered by operator-authored offline checker fixtures and are predeclared lenses for interpreting whatever live drafts actually occur. One generated draft per thinking setting does not guarantee witnessing all classes. Missing live classes must be reported as unobserved. If the later executable plan adds separate task variants to elicit them, fourteen distinct calls applies per complete variant block, and all additional calls must be declared. The initial fourteen-call block remains one fixed prose problem.
