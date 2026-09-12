@@ -38,6 +38,8 @@ The [construction inquiry workflow](docs/workflows/inquiry-study.md) now support
 
 The [reason-use workflow](docs/workflows/reason-use.md) provides controlled supplemental-criticism and account-availability comparisons with exact source custody and direct/Mini prompt parity. Read STATUS before starting a frozen test.
 
+The [distinct-template workflow](docs/workflows/template-chain.md) now implements one construction episode followed by one successor-discrimination episode through an exact published handoff. The integrated normal and optimized suites each pass 569 tests. E023 is prepared for the interrupted no-return control, and E024/C001 predeclare the later chain. No live A-to-B chain has run; STATUS records the explicit DeepSeek disclosure approval required by automatic review before live continuation.
+
 ## Local setup
 
 ```sh
