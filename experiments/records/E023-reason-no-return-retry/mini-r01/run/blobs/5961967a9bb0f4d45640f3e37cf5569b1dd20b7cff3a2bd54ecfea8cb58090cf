@@ -1,0 +1,113 @@
+## Case A
+
+The reporting specification is explicit: subtract the sum of the selected quantities from capacity and return an integer.
+
+Capacity = 9.  
+Selected quantities = 6 and 5.  
+Sum = 11.  
+Result = 9 - 11 = -2.
+
+So the reporting result for case A is **-2**.
+
+What follows about the selected entries is limited. The calculation follows mechanically from the stipulation that the selected entries are an active hold of 6 for K and an active hold of 5 for L, that each booking has exactly one selected entry, that there are no ties, releases, or expired holds in this file, and that the reporting rule is to subtract the selected total from capacity. Under those stipulated premises, the selected total exceeds capacity by 2 units.
+
+Nothing in case A by itself says that either booking is invalid, that either hold should be released, that the file is inconsistent with some external reality, or that the holds cannot coexist physically. The result is a reporting result relative to the stated capacity and selected quantities. It shows that the selected quantities sum to more than capacity under the given arithmetic. Because there is no separate inspection report, we do not have supplied evidence about shared resources, timing, priority, substitution, or whether one of the selected entries should not have been selected.
+
+A stronger conclusion would need an additional premise. For example, if the further premise were that capacity is a hard upper bound on the sum of active selected holds in the same reservation unit, then the file would be over capacity by 2 units. If instead the further premise were that one of the holds is provisional, or that the capacity number is stale, or that holds are measured in different units, then the significance of -2 would change. Case A itself does not supply such a premise, so the only direct conclusion is the arithmetic one plus the limited observation that the selected total is 11 against capacity 9.
+
+## Case B before and after the inspection file
+
+### Specified reporting procedure
+
+Capacity = 23.  
+U has alternatives 0 or 8.  
+V has alternatives 0 or 11.
+
+The procedure forms every pair and displays 23 - u - v.
+
+Pairs:
+
+- U=0, V=0: 23 - 0 - 0 = **23**
+- U=0, V=11: 23 - 0 - 11 = **12**
+- U=8, V=0: 23 - 8 - 0 = **15**
+- U=8, V=11: 23 - 8 - 11 = **4**
+
+So the specified reporting procedure yields the values **23, 12, 15, and 4**, corresponding to those four pairs.
+
+### Planner’s request when the inspection file is available
+
+The inspection file stipulates that U=8 and V=11 both need the same single-use jig at the same time, so the pair (8,11) cannot be performed jointly. Every other listed pair can be performed jointly.
+
+Therefore, for pairs that can be performed jointly:
+
+- (0,0): allowed. 23 - 0 - 0 = **23**
+- (0,11): allowed. 23 - 0 - 11 = **12**
+- (8,0): allowed. 23 - 8 - 0 = **15**
+- (8,11): not allowed jointly, so it is excluded from the planner’s requested results.
+
+The planner’s requested values are therefore **23, 12, and 15** for the jointly performable pairs.
+
+The value **4** remains part of the specified reporting procedure’s full pair enumeration, but it is not among the values requested by the planner for jointly performable pairs under the inspection evidence. That exclusion is not an arithmetic correction; it is a filtering of the pair list by the inspection file’s joint-performability stipulation.
+
+### Reader with only the snapshot and reporting procedure
+
+A reader who has only the snapshot and the reporting procedure, without the inspection file, can support:
+
+- The capacity is 23.
+- U is listed as 0 or 8.
+- V is listed as 0 or 11.
+- The procedure enumerates all four pairs.
+- The arithmetic outputs are 23, 12, 15, and 4 for those four pairs.
+- If the procedure is used exactly as specified, all four pairs are reported.
+
+That reader cannot support, from the snapshot alone:
+
+- That any particular pair is physically jointly performable.
+- That any particular pair is impossible.
+- That U=8 and V=11 conflict over a shared resource.
+- That the pair (8,11) should be excluded from a planner’s list.
+- That the value 4 is infeasible in any sense beyond being the arithmetic result for the pair (8,11).
+
+The reader may notice that the procedure produces a value of 4 for the (8,11) pair, and that 4 is low relative to 23, but low remaining capacity is not by itself evidence of a physical conflict. The reader may also notice that the snapshot lists alternatives rather than a commitment, but that does not identify which alternatives can be combined. So the reader’s supported conclusion is the arithmetic one over all listed pairs; joint performability remains open.
+
+## The reviewer’s remark before the inspection
+
+The reviewer wrote: “Each listed quantity may be defensible on its own, yet a pairing might fail to be jointly performable. A resource that the snapshot does not name might matter.”
+
+At the time it was made, before the inspection file, this remark does not supply any observed resource and does not identify any impossible pair. It is a general caution about joint performability. It challenges a possible commitment that the snapshot’s listed quantities plus the arithmetic procedure are sufficient to determine which pairs can be performed jointly. More precisely, it challenges any use of the snapshot that treats pair-level arithmetic as if it settled pair-level feasibility.
+
+Where would this affect the use of an account? If an account were to say, “Because the snapshot lists U and V alternatives, and because the procedure computes 23-u-v for every pair, the planner may treat all four pairs as jointly available,” then the reviewer’s remark challenges that account. It says that per-item defensibility does not automatically imply joint performability. It also flags that an unnamed resource could matter, which would affect any account that treats the snapshot’s fields as complete for feasibility purposes.
+
+There are at least two defensible readings of the remark:
+
+1. **Weak cautionary reading:** The remark is only a reminder that joint feasibility is not guaranteed by per-item feasibility. It does not assert that any pair is impossible. Under this reading, it challenges an overbroad inference, but it does not change the reporting procedure or any listed quantity.
+
+2. **Strong warning reading:** The remark suggests there may be a hidden shared resource that could make some pair impossible. Under this reading, it challenges the completeness of the snapshot for joint-feasibility purposes, but it still does not identify which pair or resource. It would justify withholding a feasibility claim, not asserting a specific exclusion.
+
+A case or observation that would distinguish them is the inspection file itself. The inspection file identifies a specific shared single-use jig and a specific impossible pair, (8,11). That distinguishes the strong warning reading as having been prescient in this finite case, or at least consistent with the later evidence. But the inspection file was not available to the reviewer at the time. The weak reading would have been sufficient to caution against treating all four pairs as jointly performable. The strong reading would have additionally suggested that some specific pair might fail, but without the inspection file it could not name it.
+
+Does anything in the remark alone require changing a listed quantity or the reporting calculation? No. The remark supplies no observed resource and no identified impossible pair. It does not say that U=8 is wrong, that V=11 is wrong, that capacity 23 is wrong, or that 23-u-v should be computed differently. It challenges an inference about joint performability, not the arithmetic. So the listed quantities and the reporting calculation remain unchanged by the remark alone. What changes, if the inspection file is later supplied, is the planner-facing filtering of pairs by joint performability.
+
+## Relating the reviewer to the numerical answers
+
+The numerical answers are:
+
+- Case A: **-2**.
+- Case B specified reporting procedure: **23, 12, 15, 4**.
+- Case B planner results with inspection: **23, 12, 15**, excluding the (8,11) pair whose arithmetic result is 4.
+- Reader with only snapshot and procedure: can support **23, 12, 15, 4** as arithmetic outputs over all listed pairs; cannot support joint-performability exclusions.
+
+The reviewer’s remark sits between the snapshot-only reader’s position and the inspection-file planner’s position. It does not alter the arithmetic outputs. It does caution that the snapshot-only reader should not conclude that all four pairs are jointly performable merely because all four can be arithmetically evaluated. In that sense, the reviewer’s remark is compatible with the later inspection result: the arithmetic value 4 for (8,11) is still a valid arithmetic output, but the pair is not jointly performable under the inspection evidence.
+
+There is a tension, but it is not a contradiction. The tension is between two uses of the same numbers:
+
+- The reporting procedure uses all listed pairs and returns arithmetic values.
+- The planner uses the inspection file to filter pairs by joint performability.
+
+The arithmetic value 4 is not “wrong” for (8,11). It is simply excluded from the planner’s requested list because the pair cannot be performed jointly. If one treated the reporting procedure as automatically answering the planner’s question, one would wrongly include 4. If one treated the inspection file as changing the arithmetic, one would wrongly alter the reporting procedure. The distinction is between computation over listed alternatives and feasibility filtering under additional evidence.
+
+An unresolved issue is how to describe the status of the value 4 without the inspection file. It is a legitimate output of the specified reporting procedure. It is not, once the inspection file is available, a value for a jointly performable pair. The reviewer’s remark alone does not resolve that status; it only warns against assuming that the procedure’s outputs are jointly performable. The inspection file resolves it for this finite case by naming the shared jig and the impossible pair.
+
+## Account
+
+No separate account is supplied beyond the case material and the reviewer’s remark. I have therefore used the supplied case stipulations and the inspection file as the grounds for the numerical results. I have qualified the reviewer’s remark by treating it as a caution about inference rather than as evidence of a specific resource or impossible pair. I have departed from any reading that would treat the reviewer’s remark alone as requiring a change to the listed quantities or the reporting calculation, because the remark supplies no such resource or pair. If an account were later supplied that asserted a specific hidden resource or a different filtering rule, its bearing would depend on whether it identified the resource and pair as the inspection file does, or whether it merely repeated the reviewer’s general caution.
