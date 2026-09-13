@@ -1170,3 +1170,7 @@ VERIFIED ea48fd676520f63417c9856f08e6058c1f6feb49 TREE aa1056199555bd180c030f7eb
 REC-20260913-L 2026-09-13 12:13:41 UTC: Root completed the candidate card requested by the user: prose_audit_return_v1, best use supervised auditing of prose specifications and stateful rules. Links to actual existing manifest/material/helper;20steps meansfourfive-stageblocks. No claim of language novelty, generic runnable H004 replay, superiority or autonomous reliability. Astra's operational draft informed the mechanics; all selection and scientific interpretation are root's. Previous verified publication: To https://github.com/AHepi/miniReason.git
    ea48fd6..459ca77  HEAD -> main
 VERIFIED 459ca775750f2d4998080337a2539014d25c0ac6 TREE b8c08eeaabb0b6af6cb110cbc8960e626cfd0d5e. Publish completed document immediately, normal main push with remote commit/tree verification.
+
+REC-20260913-L 2026-09-13 12:15:03 UTC: Root completed the final failure-guide supplement: H004closed/no replay, false delivery/provenance allegations, current-vs-earlier context, premature read, wave-specific public proof and truthful cadence recovery. Astra is separately checking only relative file-link existence for the report/review/candidate; no delegated semantic review. Previous verified publication: To https://github.com/AHepi/miniReason.git
+   459ca77..14e1a75  HEAD -> main
+VERIFIED 14e1a75e72b1f19664082bb3dc65bef95fc4b797 TREE 9e2de4d41094357eece2480d7dfd1304baa6934d. Publish completed document immediately, normal main push with remote commit/tree verification.
