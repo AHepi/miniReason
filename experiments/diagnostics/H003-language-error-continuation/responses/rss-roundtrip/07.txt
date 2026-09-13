@@ -1,0 +1,115 @@
+# Cycle 7 — Criticism of my cycle-6 response to MEMO B
+
+## 0. Material and method
+
+I work from the declared contract R1–R8, from MEMO B as a fallible prose memo, from the original WHL and RSS specimens as fallible representational resources, and from my own cycle-6 response as the actual target of criticism (R8: it is reopened as a target by this task, and I work from the supplied passage, not from memory). The instruction is to criticize what that response actually says — its assumptions, omissions, representation choices, appraisal method — state why a criticism is warranted, and say what consequence it has, retaining sound commitments and not manufacturing a defect.
+
+The use policy is RSS with explicit conversion back to prose. I will use RSS only as a representation aid, render back into prose, and check the conversion against the actual source claims, exposing any added or lost commitment.
+
+I have looked for defects under the following heads: (i) misreadings of MEMO B's actual wording; (ii) misreadings of the contract; (iii) attribution errors; (iv) scope errors in my own appraisals; (v) representational or appraisal-method choices that do work the sources do not support. Some of these I have found; some of my cycle-6 moves hold.
+
+---
+
+## 1. Criticism 1 — I misidentified which instant B3 is about, and therefore overstated B3's defect
+
+This is the most consequential defect I find in my cycle-6 response.
+
+**What cycle-6 actually says (B3 section).** I wrote: "B3 says the hold expires at time 5; at current time 5 the hold is still active." I then invoked R4 ("strict less-than") and concluded: "at current time 5 with expiry 5, equality holds, and the contract's reading gives reserves zero — the hold is *not* active." I further claimed: "the WHL specimen's `reserves_effect` … is the opposite of the contract's R4."
+
+**Why this is warranted as a criticism.** Look at what B3 actually states (B3 as supplied): "The hold expires at time 5. At current time 5 it is still active, because its effect should persist through the named expiry instant." The phrase "the named expiry instant" is doing specific work: B3 is asserting that the *instant named as the expiry* is itself inside the interval of activity. That is a claim that the interval of activity is *closed* at the expiry endpoint — the hold is active *at* the named expiry instant, not merely "not yet past it."
+
+Under R4, "a hold reserves its quantity exactly when current time is strictly less than expiry; at equality or later it reserves zero." So at t = expiry, R4 gives not-active. B3's claim at t = expiry is not-active *contradicted* — that part of my cycle-6 reading is right. But my diagnosis went further and is the defect: I framed the disagreement as "strict less-than vs `t ≤ expiry`," i.e. as a disagreement about whether *equality* counts as active. That framing is correct as an abstract statement about the two conventions, but I then placed B3 on the *WHL side* of it, namely the side that treats t = expiry as still active. Look at the WHL specimen's `reserves_effect`:
+
+```
+| Kind.hold => if t > r.expiry then 0 else r.quantity
+```
+
+This reserves `r.quantity` whenever `t ≤ r.expiry`. At t = expiry it reserves the quantity: *active*. So the WHL reading is in fact the *same* side as B3's closing claim ("still active at the expiry instant"), and the *opposite* of R4's strict-less-than. That is what I said in cycle 6: "the WHL `reserves_effect` (`t ≤ expiry` reserves) agrees with B3 and disagrees with the declared R4." That sentence is correct.
+
+So where is the defect? **The defect is in my explanatory gloss, not in the pairing.** I wrote that the WHL `reserves_effect` "is the opposite of the contract's R4," which is true, and separately that B3 "asserts an alternative reading that would change this." Both halves are true. But I then called B3 "defective as a claim about this warehouse under R4" — which is correct — while also treating the disagreement as though the *interesting* fact were that B3 sat on the WHL side. The interesting fact is that the WHL specimen and B3 *agree with each other* and *both disagree with the declared contract R4*, on the closed-vs-half-open expiry convention. My cycle-6 text mostly says this, but its framing ("I do not fold it into A1") risks making it sound like a minor footnote about `reserves_effect`, when the disagreement is *between R4 and the WHL specimen considered as a formal resource* — i.e. a disagreement internal to the supplied representational material, not merely a stray phrase.
+
+**Consequence.** The expiry-strictness disagreement should be promoted from "lower-grade item" (cycle-6 §5) to a named **contract-versus-specimen disagreement**: R4 and the WHL `reserves_effect` are inconsistent on whether `t = expiry` is active. Under R4 governing (per the contract's declared status), B3 is defective on its closing claim. But the WHL specimen, *taken as a reader might use it*, licenses B3 — so a reasoner whose only resource was the WHL specimen would produce exactly B3's result. This is a real and exploitable difference between the two supplied representational resources, and it deserves to be stated as such, not held back.
+
+**What I retain.** The claim that B3 is defective under R4 as a claim about this warehouse; the existence of a rival reading; that neither reading is a fact about the warehouse.
+
+---
+
+## 2. Criticism 2 — My B1 treatment applies an evidential standard I did not state, and I should either state it or weaken the verdict
+
+**What cycle-6 actually says (B1 section).** I concluded that B1's third clause ("two agreeing reports still provide two independent evidential routes") is defective because X and Y share a common cause (the same intermediate file). I called this "single-route support," invoked R7, and said the "two independent routes" conclusion could be re-supported if Y "reached the same intermediate value through a separate derivation."
+
+**Why this warrants criticism.** The verdict turns on an unstated standard of *evidence independence*: on what counts as "the same route." I asserted the standard ("independence requires the two routes not share the single thing that could be wrong") without flagging that this is *my* imported principle, not one declared in R1–R8. R7 does say "rejection of one supporting assumption can defeat that support route without proving its conclusion false," and R7 also says to distinguish what a source states, what is observed, what follows under an assumption, and what is proposed. R7 does *not* define evidential independence. So my B1 verdict rests on an assumption I brought in and did not label as such.
+
+**Consequence.** Under the declared material, the safer claim is weaker: *given* the admitted shared provenance, the reading on which the two agreements are one route is licensed and is the natural one; but the stronger claim that they *are not* two independent routes presupposes an independence standard that the contract does not supply. I should have marked that presupposition. I retain the substance — that shared provenance defeats the *bare* assertion "two independent routes" — but I overstate the contract's reach when I say the provenance "contradicts the independence it asserts." It does not contradict it *as a matter of contract*; it contradicts it under a stated standard of independence.
+
+**Fix.** Either state the standard as an imported assumption (as R7's "assumption" category allows) or weaken to "the independence asserted in B1 is not supported by the admitted provenance, and its support would require an independence standard that has not been stated." The latter is the honest form.
+
+**RSS conversion check.** RSS's "provenance is a set of deliveries" does represent X and Y as sharing a delivery, so RSS can *display* the common cause; but RSS explicitly does not rank accounts, and its "exact duplication adds no authority" clause is about duplicate stories, not about evidential independence of reports. So RSS does not supply the independence standard either. My B1 verdict needs its imported assumption named regardless of RSS.
+
+---
+
+## 3. Criticism 3 — My B5 treatment conflates two distinct criticisms and lets the stronger one ride on the weaker
+
+**What cycle-6 says (B5 section).** I said B5 is defective because bound agreement leaves open "which intermediate alternatives were admitted, which joint choices were realized, and whether any were suppressed," and I invoked R6's rule that bounds may be reported as bounds but not equated with an exact set unless every intervening admitted integer occurs.
+
+**Why this is warranted as a criticism.** These are two different criticisms:
+
+(a) *The bounds do not fix the exact set.* This follows from R6 directly, and I have it right.
+
+(b) *Bound agreement does not answer every criticism of the represented alternatives.* This is *not* the same claim as (a). One could accept (a) — bounds are lossy — and still accept B5, on the view that the *only* criticism in question is some specific criticism that bounds happen to answer. B5's word "every" is what makes it false, but the falsity of "every X is answered" requires exhibiting an X that is not answered, *not* merely showing that bounds are lossy in general. My cycle-6 text uses (a) as if it established (b), but the transition needs the extra step: *there exists some criticism of the represented alternatives that bounds agreement leaves open* (e.g. a criticism that a specific intermediate value was fabricated by flattening to an interval). That existence claim is what the cycle-5 Case A interval/set gap supplies, so the argument can be completed, but my text does not complete it explicitly; it slides from R6's general bound-vs-set rule to B5's universal-quantifier falsity.
+
+**Consequence.** The verdict on B5 stands, but on a cleaner argument than I gave: B5 fails on its "every," and the cycle-5 Case A gap is the exhibited counterexample-criticism. The general R6 observation (a) is a *supporting* fact, not the refutation. R6 remains the operative rule.
+
+**Retained.** Verdict (defective); R6 as grounds; the interval/set gap as the specimen.
+
+---
+
+## 4. Criticism 4 — My B2 treatment is correct but I under-defended the distinction the reader actually relies on
+
+**What cycle-6 says (B2 section).** I said a "latest-visible-revision" reader is silent about earlier deliveries, so B2's inference is defective; I tied it to "display is not delivery" and to the WHL/RSS distinction between structural supersession and evaluative expiry. This is sound.
+
+**Possible criticism.** One could object that a reader whose *specification* says "displays only the latest visible revision" might itself be *specified* over a delivery log whose latest-visible-revision property has a defined semantics (e.g. "visible" might mean "present in the delivered set and greatest revision"), in which case the reader would be *entitled* to conclude something about delivery. Cycle-6 did not address whether B2's reader might be *so specified*.
+
+**Consequence.** The criticism is *available* but is not *supported by the supplied material*: MEMO B's B2 says only that the reader "displays only the latest visible revision," which is a display-policy description, not a delivery-log specification. I do not manufacture the specification MEMO B does not give (R8: "do not invent a new problem"). So I record this as a *scope note on B2* rather than as a defect in my cycle-6 treatment: my B2 verdict is warranted *on the premise B2 gives*, and would need re-examination only if B2's reader were respecified to operate over a delivered-payload bag. I retain my B2 verdict and add the scope note.
+
+---
+
+## 5. Criticism 5 — My A1 verdict did not register the expiry disagreement as a *second*, independent WHL/contract tension
+
+**What cycle-6 says (A1 section).** I said A1 (WHL `expired_deletes_rule` as the reading) remains defeated as a description of this warehouse, and I added that "the `reserves_effect`/R4 expiry disagreement surfaced by B3 is a *different* WHL/contract disagreement … about the strictness of expiry, not about supersession — and it is now on the record … I do not fold it into A1."
+
+**Why this is warranted as a criticism.** "I do not fold it into A1" is correct as far as A1's *content* goes. But the WHL specimen now exhibits *two distinct disagreements with R4*: (i) `expired_deletes_rule` treats expiry as deleting the record, which would let a lower revision become greatest — that is the supersession disagreement A1 is about; and (ii) `reserves_effect` treats t = expiry as active, which is the closed-endpoint disagreement. Both are disagreements between the WHL specimen and R4, but they concern different rules (supersession-vs-effect, and endpoint convention). My cycle-6 A1 section correctly distinguishes them, but its phrasing suggests the second is only "surfaced by B3" contextually, when in fact it is a *standing property of the WHL specimen* independent of B3. B3 merely points at it.
+
+**Consequence.** Reformulate: the WHL specimen contains at least two distinct deviations from R4 — the expiry-deletes reading (`expired_deletes_rule`, targeting supersession) and the closed-endpoint reading (`reserves_effect`, targeting the active/expired boundary). A1 covers the first; the second should be carried as a *second specimen-vs-contract tension*, not tied to B3's occurrence. B3 is one place the second tension is *used*, not its origin.
+
+---
+
+## 6. Criticism 6 — My B6 treatment is sound but my "older result" phrase risks over-committing
+
+**What cycle-6 says (B6 section).** I said rejecting booking-independence opens a real coupling question; that the cycle-5 exact set {3, −2} was computed under the originally specified independent-choice task and remains "a distinct conditional claim"; and that investigating coupling without manufacturing a policy would require a coupling rule and, where relevant, a resource model.
+
+**Check.** R5 specifies independent admissibility *for this task* and calls it a task scope, not a universal claim. So (a) rejecting independence raises the coupling question — sound; (b) the old result is conditional on the specified task — sound; (c) supplying a coupling rule (and, where needed, a resource model) is what investigation would require — sound; (d) no policy to be manufactured — sound and in line with the WHL/RSS notes on the resource-model limitation.
+
+**Where the phrasing is soft.** Saying the cycle-5 result "remains a distinct conditional claim" is fine, but the *antecedent* of the conditional should be stated in the contract's own terms: "under R5's specified per-task independent admissibility of booking alternatives." That is the antecedent under which {3, −2} was computed. Naming the antecedent as "originally specified independent-choice task" is true but less precise than necessary; the contract has a specific name for the scope (R5). I retain the verdict; I tighten the antecedent.
+
+---
+
+## 7. What I retain unchanged
+
+- **B1 verdict (substance).** Under admitted shared provenance, the bare "two independent routes" claim is not supported; the source of support is shared with the single thing that could be wrong. I now require the independence standard to be stated as an imported assumption (Criticism 2).
+- **B2 verdict.** Display-only readers are silent about earlier deliveries; the inference "therefore no earlier record was ever delivered" does not follow (Criticism 4 adds a scope note).
+- **B3 verdict.** Under R4, t = expiry is not active; B3 asserts a rival reading; the WHL `reserves_effect` sits on B3's side (Criticism 1 promotes the specimen-vs-contract tension).
+- **B4.** Sound as an operating claim about the difference between a conditional consequence and applicability to a particular warehouse.
+- **B5 verdict.** Defective, on the strengthened argument that B5's "every" fails and the interval/set gap is an exhibited unanswered criticism; R6 governs (Criticism 3).
+- **B6.** Sound; the {3, −2} result remains a conditional claim under R5's task scope (Criticism 6 tightens the antecedent).
+- **A1–A6.** Cycle-1/4/5 appraisals retained with the reformulation in Criticism 5 for A1's neighborhood; A2 still defective; A3 sound; A4 defeated; A5 sound; A6 sound and B6 is its scope-keeping sequel.
+
+---
+
+## 8. RSS conversion check for MEMO B, re-done
+
+- **B1.** RSS represents Y and X as sharing a delivery (the intermediate file). RSS does not supply an independence standard, because RSS does not rank accounts and treats provenance as a set, not as an evidential tier. So RSS can *display* the common cause but cannot by itself finish the B1 verdict; the standard must be stated outside RSS. Added commitment by RSS if used naively: none wanted. Lost commitment: the contract-fixed notion of "route," which RSS also does not have. Net: RSS is a display aid here, not a grounds-supplier. (Consistent with cycle 6, now explicit.)
+- **B2.** RSS's distinction between a viewpoint (what is seen) and a delivery bag (raw material) *does* corroborate "display is not delivery," and this is a genuine additive commitment from RSS that R1 also supports. No over-claim.
+- **B3.** RSS explicitly represents both expiry readings and does not choose. That corroborates the "rival reading" framing but does not license B3 as operative — exactly the discipline cycle 6 applied. The new element (Criticism 1) is that the *WHL specimen itself* is on B3's side, which RSS records without resolving.
+- **B4.** RSS's "a projection is always a loss of information" is consistent with B4's conditional-vs-applicability distinction and does not strengthen it into a license to ignore applicability. No change.
+- **B5.** RSS's "a projection is always a loss of information" corroborates the bound-vs-set gap but, as in cycle
