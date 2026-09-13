@@ -1,0 +1,100 @@
+## What this cycle asks, and the material I am working from
+
+This is cycle 10, a fresh use. Unlike the immediately previous cycles, the current task is not purely a return to the Memo B verdicts. It is a double exercise: apply the working account to two fresh finite snapshots (case B as the "new" case, case A as a protected repeat), and read Memo B's six claims in light of that use. The re-presented target this time is my own cycle-5 response (artifact 82ee19d5…, SHA 7d1d4bf3…), and "previous" is the cycle-9 verdict. The contract R1–R8 governs; WHL and RSS are fallible resources; the memos and my own earlier responses are targets of inquiry, not instructions. I work in ordinary prose.
+
+One immediate discipline has to be stated up front: I do not treat the supplied old answer for case A as an oracle, and I do not treat cycle 5 as an oracle either. Case A is recomputed below from the contract, and only after computing do I compare with the earlier result.
+
+## Fresh case B — the operative computation
+
+Contract rules at work: R2 (payload identity vs. delivery provenance), R3 (greatest revision is selected among all delivered payloads before effect is considered), R4 (release reserves zero; hold reserves its quantity strictly when time < expiry; at equality or later, zero; expiry changes effect, not authority), R5 (one payload alternative per booking; different bookings independently admissible), R6 (availability = capacity − sum of reservations; exact set, bounds separate).
+
+**Booking U.** Payloads: u1 (rev 1, hold, qty 4, exp 5). Only one payload, so it is trivially the greatest revision. At current time 5 with expiry 5, R4's strict comparison gives 5 < 5 false, so t = expiry means zero reservation. The record nevertheless retains revision authority. Booking U contributes exactly {0}.
+
+Note: this is exactly the boundary case that Memo B3's example ("the hold expires at time 5; at current time 5 it is still active") concerns. Under R4 B3 is wrong: the hold reserves zero at equality. Under WHL's `reserves_effect` (which returns the quantity when `t > expiry` is false) it would reserve 4. That divergence is exposed below, not resolved here; the contract's strict reading governs this task.
+
+**Booking V.** Payloads: v1 (rev 5, hold, qty 3, exp 10), v0 (rev 4, release, qty 0, exp 99). Greatest revision among delivered payloads is 5, so v1 is selected; v0 is superseded regardless of its own kind, quantity, or expiry (R3). At t = 5 with expiry 10, 5 < 10 is true, so v1 reserves 3. Booking V contributes exactly {3}. This exercises R3's explicit clause "a lower-revision release does not cancel a higher-revision hold": v0 is a release at rev 4, v1 is a hold at rev 5, and the release cannot reach the higher revision.
+
+**Booking W.** Payloads: w1 (rev 2, hold, qty 2, exp 8), w1-copy (same booking, revision, kind, quantity, expiry as w1 — an exact repeated payload under different delivery provenance), w2 (rev 2, hold, qty 6, exp 8). Greatest revision is 2. w1 and w1-copy are exact duplicates by the five-field payload comparison (R2), so w1-copy conveys no additional authority and is inert. w1 (qty 2) and w2 (qty 6) are different payloads at the same greatest revision, therefore alternatives. Both are alive at t = 5 (5 < 8). Booking W contributes {2, 6}.
+
+**Availability set.** Capacity 10. Each booking's reservation is chosen independently (R5). U has one option (0), V one option (3), W two options ({2, 6}). Admissible sums:
+
+- 0 + 3 + 2 = 5 → availability 10 − 5 = 5
+- 0 + 3 + 6 = 9 → availability 10 − 9 = 1
+
+Exact achievable availability set: **{5, 1}**, equivalently {1, 5} in ascending order. Two values, not an interval.
+
+**Bounds, reported separately (R6).** Per booking:
+- U lower = upper = 0.
+- V lower = upper = 3.
+- W lower = 2, upper = 6.
+
+Global lower availability bound = 10 − (0 + 3 + 6) = 1 (corresponding to maximal reservation: W = 6). Global upper availability bound = 10 − (0 + 3 + 2) = 5 (corresponding to minimal reservation: W = 2). So the interval [1, 5] may be stated as bounds, but it must not be equated with the exact set {1, 5}. Intervening integers 2, 3, 4 do not occur, because W admits only 2 or 6, never an intermediate value, and the other two bookings are fixed.
+
+**On negative availability.** No negative value arises in case B because the maximal possible reservation (0 + 3 + 6 = 9) does not exceed capacity 10. That is a fact about this case, not a rule; R6 permits negative availability and nothing here contradicts it.
+
+## Fresh case A — recomputed, then compared
+
+**Booking A.** Payloads: a1 (rev 1, hold 8, exp 20), a2 (rev 2, hold 9, exp 9). Greatest revision among all delivered payloads is 2; a2 is selected; a1 is superseded regardless of a2's expiry (R3). At t = 10 with expiry 9, 10 < 9 is false, so a2 reserves zero (R4). a1 does not become effective. Booking A contributes exactly {0}.
+
+**Booking B.** Payloads: b1 (rev 1, hold 3, exp 20), b1-copy (same payload as b1: same booking, revision, kind, quantity, expiry; different delivery label), b2 (rev 1, hold 8, exp 20). Greatest revision 1. b1 and b1-copy are exact payload duplicates (R2), so b1-copy is inert and adds no authority. Different payloads at the same greatest revision are b1 (3) and b2 (8); both alive at t = 10 (10 < 20). Booking B contributes {3, 8}.
+
+**Booking C.** Payload: c1 (rev 1, release, qty 99, exp 0). A release reserves zero irrespective of its other fields (R4). Booking C contributes exactly {0}.
+
+**Availability set.** Capacity 6. Independent admission across bookings (R5). Admissible sums: 0 + 3 + 0 = 3 → 6 − 3 = 3; and 0 + 8 + 0 = 8 → 6 − 8 = −2. Exact achievable availability set: **{3, −2}**.
+
+**Bounds, reported separately.** Global lower availability bound = 6 − (0 + 8 + 0) = −2 (maximal reservation). Global upper availability bound = 6 − (0 + 3 + 0) = 3 (minimal reservation). The interval [−2, 3] is permitted as bounds; it must not be equated with the exact set {−2, 3}, because −1, 0, 1, 2 are not admitted. Negative availability −2 is allowed by R6 and identifies neither a corrupt record nor a physical stock discrepancy.
+
+**Comparison with the supplied old answer.** My independent recomputation matches the earlier case-A result: selected alternatives A → {a2}, B → {b1, b2} (b1-copy inert), C → {c1}; reservation effects A → {0}, B → {3, 8}, C → {0}; exact availability set {−2, 3}; bounds min −2, max 3. I did not use the old answer as an oracle; the match is a confirmation of the working account, not a consequence of copying. Any earlier sound consequence (specifically: expired-highest-revision still blocks the lower revision; exact duplicates inert regardless of label; same-revision different payloads as alternatives; exact set distinct from interval) is preserved.
+
+## Discrepancies exposed between specimens and the current contract
+
+I expose these rather than smooth them:
+
+- **WHL at t = expiry.** `active_hold` uses `¬(t > r.expiry)` and `reserves_effect` uses `if t > r.expiry then 0 else r.quantity`; on natural numbers both classify t = expiry as "not expired" and "reserves the quantity." R4 instead says a hold reserves zero "at equality or later." So under the contract, WHL's `reserves_effect` at t = expiry gives 4 in case B's booking U where the contract gives 0. The specimen is not internally split — its two definitions agree — but it disagrees with R4 at the boundary. This is the divergence cycle 7 correctly re-attributed away from an intra-specimen split, and it is exactly what would make B3 defensible-under-WHL / wrong-under-contract. I retain that attribution.
+
+- **WHL `possible_reservations` as a list.** It may contain duplicates and the specimen warns bag equality is not declared. The contract speaks of the *set* of possible availability values (R6). On cases A and B this makes no difference (no duplicates among the greatest-revision effects), but the specimen would in general allow repeated entries that the contract's "exact set" collapses.
+
+- **WHL `expired_deletes_rule`** is offered as an *alternative reading* the language does not choose between. The contract R3/R4 chooses the retained-expiry reading. Case A is a live illustration: under the deletion reading, a2's expiry would delete it and revive a1, yielding A's contribution 8 and availability {0, −2} (not {3, −2}). The contract excludes this. So a reader who silently adopts the deletion reading on case A gets a different exact set than the contract yields.
+
+- **RSS near-duplicate handling.** RSS "does not decide whether near-duplicates are duplicates or alternatives." In case B, w1 and w2 are different payloads at the same greatest revision — the contract's R2 calls them alternatives; RSS only "records the disagreement." The contract is sharper. For w1/w1-copy, RSS and the contract agree (exact duplicates convey no authority); RSS would say the *provenance* differs (different delivery events) while the payload does not, which the contract R2 also separates: "payload identity and delivery provenance are different questions."
+
+- **R3's clause on lower-revision release vs. higher-revision hold.** Neither specimen states it as flatly as the contract does; RSS lists both readings (cancellation possible / not possible) as readings; WHL makes release zero-effect via `reserves_effect` but frames the choice as a reading. The contract takes one. Case B's booking V exercises this clause operatively: v0 (rev 4, release) is superseded by v1 (rev 5, hold), so the release cannot touch the hold.
+
+## Attribution of interpretation changes and extensions
+
+No new interpretation change is introduced in this answer. The reading I apply is the one established across earlier cycles and retained in cycle 9: contract-controlling; greatest revision chosen before effect; exact duplicates inert regardless of delivery labels; same-revision different-payload records as alternatives; availability as an exact set with bounds reported separately; bookings independently admissible. Two attributions to keep clean:
+
+- The withdrawal of the intra-specimen disagreement at t = expiry (which had been asserted in cycle 6) is **cycle 7's**, and I retain it. I do not read the withdrawal back into what cycle 6 originally said.
+- The withdrawal of "deletion-side" as a characterization of R4's boundary behavior is **cycle 7's**; cycle 6 originally used that phrase, and I do not report that the specimen already avoided it.
+- Cycle 8's refinement — that the divergence belongs to reservation effect under a retained record, with `active_hold` as a liveness predicate kept separate — is adopted here as a clarification, not as a new finding.
+
+Case B's booking U exercises the boundary that this whole thread was about, and my use of it is an application, not a new change. The one genuine scope question I preserve is Memo B6's: rejecting "bookings are independent" opens a legitimate question about a missing coupling policy, and the old independent-choice result remains a distinct conditional claim. I do not resolve it or invent a coupling.
+
+## Relevant earlier criticism, connected but not credited as causal
+
+The re-presented cycle-5 criticism's substantive findings connect directly to both fresh cases, and I mark the connections without claiming the criticism caused the correct answer:
+
+- The sequencing point (expired highest-revision payload still holds authority over a lower live payload) is exercised in case A's booking A (a2 supersedes a1 but reserves 0) and in case B's booking V (v0 superseded regardless of kind/quantity/expiry). Removing the record before deciding authority would revive a1 → A contributes 8 → availability becomes {0, −2}; it would also let v0's release reach past v1.
+- The bounds-vs-exact-set point is exercised in both cases: [−2, 3] is not {−2, 3} (A); [1, 5] is not {1, 5} (B).
+- The label-vs-authority point is exercised by b1-copy (A) and w1-copy (B): different delivery labels, identical payloads, no extra authority.
+- The cross-booking independence point is exercised by the fact that {3, −2} in case A and {5, 1} in case B are generated under R5's specified scope; the case would look different under a coupled scope, which is not supplied.
+
+Cycle 9's B1–B6 verdicts bear as follows. B1: copying defeats evidential independence under R8 — directly relevant if someone cited case A's old answer as independent confirmation of my fresh computation. It is not independent; it is a re-presentation. B2: visibility is not delivery (R2, WHL `dominated_in`, RSS projection). B3 is the boundary claim contradicted by R4 and by case B's booking U. B4 is sound under R7/R8. B5 is false: bound agreement does not exhaust criticism of the exact alternatives. B6 is sound and carries the open coupling scope. A correct answer does not by itself prove the criticism caused it, and I do not claim that.
+
+## Remaining problem
+
+Two residuals, both carried forward rather than resolved.
+
+First, the residual named in cycle 9 and even sharper here: the contract R3/R4 jointly prescribe cases where a booking (U in case B; A in case A) has full revision authority and yet contributes zero to availability, while an older still-unexpired hold in the same booking (a1 in A) is *live by expiry* but *inert by authority*. That is coherent under R3/R4, not a contradiction, but it is exactly the joint that ordinary prose reasoning ("the older hold hasn't expired, so it must still count") slips past. The open question is whether the representation makes that joint visible enough to a prose reader; case A and case B together make it more audible because it recurs even when the superseding record has a small quantity (case B's U is single-payload, so the effect is only the boundary; case A's A has a live-and-inert older hold).
+
+Second, the RSS/WHL both decline to choose between the retained-expiry and deletion readings; the contract chooses retained expiry as a specification, not a discovery. On case A that choice changes the exact set from {0, −2} (deletion reading) to {3, −2} (retained reading). Which reading a user actually means is a scope question carried forward, not settled by either fresh case.
+
+On the task's scope instruction: B6's coupled-booking question is the one genuine scope issue, and to investigate it without manufacturing a policy the material would have to supply a non-capacity cross-booking constraint as data (an incompatibility relation, a shared resource with its own capacity, a preference over global combinations), or an explicit coupling rule extending R5, or a resource model added to RSS as a primitive. Absent any of those, any specific coupled availability number would be manufactured policy, and I do not supply one.
+
+## Summary
+
+Case B: selected greatest-revision payload alternatives — U → {u1}; V → {v1} (v0 superseded); W → {w1, w2} (w1-copy inert). Reservation effects at t = 5: U → {0} (t = expiry ⇒ zero under R4); V → {3}; W → {2, 6}. Exact achievable availability set: **{5, 1}**. Bounds reported separately: min 1, max 5; the interval [1, 5] must not be equated with {1, 5}.
+
+Case A: selected greatest-revision payload alternatives — A → {a2}; B → {b1, b2} (b1-copy inert); C → {c1}. Reservation effects at t = 10: A → {0}; B → {3, 8}; C → {0}. Exact achievable availability set: **{3, −2}**. Bounds reported separately: min −2, max 3; the interval [−2, 3] must not be equated with {3, −2}.
+
+Attribution: no interpretation change introduced; the contract-controlling working account with retained-expiry, supersession-before-effect, duplicate-payload-inert, same-revision-different-payload-as-alternatives, and independence-as-specified-scope is retained. Case B's booking U exercises the t = expiry boundary that cycle 7's re-attribution concerned; case B's booking V exercises R3's release-vs-higher-revision-hold clause, which neither specimen states as flatly as the contract; the deletion reading (`expired_deletes_rule`) would change case A's exact set, so the contract's choice of reading is operative, not free. The B6 coupling question and the retained-vs-deletion reading question are carried forward as open scope questions, not resolved.

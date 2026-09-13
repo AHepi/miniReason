@@ -986,3 +986,5 @@ REC-20260913-K cycle9 completion at 2026-09-13T10:48:21.6645993Z : original prov
 REC-20260913-K cycle10 preparation at 2026-09-13T10:48:34.3248130Z : completed prior evidence publication verified To https://github.com/AHepi/miniReason.git
    0e4f1a1..edb5d59  HEAD -> main
 VERIFIED edb5d59208be043e78c01ab04b86fd8f4afc26a2 TREE 5721518b69c0a403be80a8b6dd0406cfc1336b98. Prepare exact own-arm dependencies and current frozen task; no root criticism or operator expectations added. Continue within the root-accepted block gate, at most5 concurrent requests,4096completioneach,no retries. Publish these exact inputs before dispatch.
+
+REC-20260913-K cycle10 completion at 2026-09-13T10:49:26.0064617Z : original provider call artifacts and full public answers retained, canonical request/response custody checked, actual usage and stop states recorded in checkpoint10.json. This is an operational receipt; root semantic block review remains separate. Publish the completed cycle now before any dependent preparation. No retries, no original-source edits.
