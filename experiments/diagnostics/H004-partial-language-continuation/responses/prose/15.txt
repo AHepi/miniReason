@@ -1,0 +1,89 @@
+# Cycle 15: fresh case C, protected repeat case A, and Memo C against the working account
+
+## Grounds for this answer
+
+I work from the declared contract R1–R8, which governs this task; from the two fallible specimens WHL and RSS; from the current task's Memo C (C1–C6), including its C6 governing note; from the delivery-status note (h004.delivery.v1) and the reopened cycle-5 item (h003.reopen.v1); and from the immediately previous own-arm response (cycle 14, mini.verdict.v1), which is a fallible target, not an oracle. The delivery note tells me annotations identify observations, not semantic adequacy, so delivery labels, revision counts, hashes and reopening events do not by themselves establish any semantic conclusion. Memo C is a target of inquiry. Both original language texts remain unchanged and available as historical targets. I answer in ordinary prose.
+
+## Fresh case C: the operative computation
+
+Contract rules at work: R2 (payload identity is distinct from delivery provenance; exact repeated payloads convey no additional authority), R3 (greatest revision is selected from all delivered payloads before any effect is considered; a lower revision remains superseded regardless of what happens to the higher one), R4 (a release reserves zero regardless of its other fields; a hold reserves its quantity exactly when current time is strictly less than expiry, and zero at equality or later; expiry changes effect, not authority), R5 (exactly one payload alternative is selected per booking; alternatives of different bookings are independently admissible), R6 (availability = capacity minus the sum of reservations; report the exact set of achievable values, and report bounds separately; negative availability is permitted).
+
+The snapshot: capacity 3, time 0.
+
+Deliveries:
+- a1: booking A, rev 4, hold, qty 1, expiry 10
+- a2: booking A, rev 4, hold, qty 4, expiry 10
+- b1: booking B, rev 1, hold, qty 2, expiry 10
+- b2: booking B, rev 1, hold, qty 6, expiry 10
+
+**Booking A.** Delivered payloads are a1 and a2, both at revision 4. Greatest revision is 4, and both payloads sit there. They are not exact duplicates: same booking, same revision, same kind, same expiry, but quantities 1 and 4. Under R2 and R5 they are alternatives at the greatest revision; neither supersedes the other. At t = 0, expiry 10 satisfies 0 < 10, so both are active holds and each reserves its quantity: a1 reserves 1, a2 reserves 4. Booking A contributes the alternative set **{1, 4}**.
+
+**Booking B.** Delivered payloads are b1 and b2, both at revision 1. They differ in quantity (2 versus 6) and are therefore alternatives. At t = 0, expiry 10 is strictly later, so both are active. b1 reserves 2, b2 reserves 6. Booking B contributes **{2, 6}**.
+
+No other bookings appear.
+
+**Admissible combinations.** R5 makes A's and B's alternatives independently admissible, so the four sums of reservations are 1+2 = 3, 1+6 = 7, 4+2 = 6, 4+6 = 10. Capacity is 3, so availability is 3 minus each sum: 3−3 = 0, 3−7 = −4, 3−6 = −3, 3−10 = −7. The exact set of achievable availability values is **{0, −3, −4, −7}** — four values, not an interval.
+
+**Bounds, reported separately (R6).** Per booking: A has minimum possible reservation 1 and maximum 4; B has minimum 2 and maximum 6. Since more reservation lowers availability, the *maximum* availability comes from the *minimal* total reservation (1+2 = 3), giving upper bound 3−3 = 0; the *minimum* availability comes from the *maximal* total reservation (4+6 = 10), giving lower bound 3−10 = −7. So the bounds are −7 and 0. The interval [−7, 0] may be stated as bounds but must **not** be equated with the exact set {0, −3, −4, −7}, because the intervening integers −1, −2, −5, −6 are not produced by any admissible combination. Here the discrepancy is not merely a hypothetical: 3−(−1) would require a reservation of 4, which no combination yields; 3−(−2) would require a reservation of 5, likewise unattainable; 3−(−5) would require 8 and 3−(−6) would require 9, and neither A nor B can reserve those. The interval covers the set but does not coincide with it.
+
+**Negative availability.** The values −3, −4 and −7 are permitted under R6 and identify neither a corrupt record nor a physical stock discrepancy. They simply record that the sum of reservations in some admissible combination exceeds capacity.
+
+## Protected repeat case A: recomputed, not taken from the old answer
+
+Capacity 6, time 10.
+
+Deliveries:
+- a1: booking A, rev 1, hold, qty 8, expiry 20
+- a2: booking A, rev 2, hold, qty 9, expiry 9
+- b1: booking B, rev 1, hold, qty 3, expiry 20
+- b1-copy: booking B, rev 1, hold, qty 3, expiry 20
+- b2: booking B, rev 1, hold, qty 8, expiry 20
+- c1: booking C, rev 1, release, qty 99, expiry 0
+
+**Booking A.** Greatest revision is 2 (a2). Under R3, a2 is the authoritative payload and a1 is superseded regardless of a2's fate. At t = 10, expiry 9 satisfies 10 ≥ 9, so a2 reserves 0 by R4; but it remains authoritative, and a1 does not revive. Booking A contributes **{0}**. This is where Memo A1's sequencing fails: expiring-before-deciding-authority would revive a1 and yield 8.
+
+**Booking B.** b1 and b1-copy have all five fields equal (booking B, rev 1, hold, qty 3, expiry 20), so they are exact repeated payloads; under R2 b1-copy is inert and conveys no additional authority. At revision 1 there are two distinct payloads: qty 3 and qty 8. Both are active at t = 10 (10 < 20). Booking B contributes **{3, 8}**.
+
+**Booking C.** c1 is a release, and under R4 a release reserves zero regardless of its other fields. Booking C contributes **{0}**.
+
+**Admissible combinations.** Capacity 6, and A and C have single alternatives while B has {3, 8}. Sums: 0+3+0 = 3, and 0+8+0 = 8. Availability: 6−3 = 3 and 6−8 = −2. Exact set **{3, −2}**. Bounds reported separately are 3 (maximum, from minimal reservation) and −2 (minimum, from maximal reservation). The interval [−2, 3] is not the exact set, because −1, 0, 1, 2 do not occur.
+
+**Preserved earlier sound consequence.** Under the contract-controlling reading, booking A's authoritative payload is the expired a2, whose reservation is 0 while authority remains with it; a1 does not contribute 8. This consequence was reached in the previous cycle and is unchanged by the recomputation. I am not using the old answer as an oracle; the result follows from R3 and R4 directly, and it happens to agree with what was reported.
+
+## Discrepancies between the specimens and the contract, in this use
+
+- **WHL `reserves_effect` versus contract R4.** WHL writes `if t > r.expiry then 0 else r.quantity`, which reserves zero exactly when time strictly exceeds expiry. R4 reserves the quantity exactly when time is strictly less than expiry, and zero at equality or later. The two agree in effect (each reserves zero when t ≥ expiry), but they *state* the rule at different boundaries: WHL's condition is a comparison on the "greater than" side, R4's is a comparison on the "strictly less than" side. They coincide here; the divergence to expose is that R4 is the governing statement and WHL's formulation is a specimen, not a competing authority. This matters because a reader who takes WHL's phrasing as itself the rule might miss that the equality case is fixed by R4, not by WHL.
+
+- **WHL does not select among readings.** WHL offers both `reserves_effect` (retained-expiry) and `expired_deletes_rule` (deletion), and says it "does not choose between them." The contract's R3/R4 choose the retained-expiry reading and make supersession structural. In case C this makes no difference because no higher-revision record has expired; in case A it makes all the difference, because the deletion reading would have revived a1 and produced a very different availability set. The contract's choice is a specification, not something the specimens prove.
+
+- **WHL `possible_reservations` returns a list that may contain duplicates.** R6 speaks of the *set* of achievable availability values. For cases A and C the two coincide because no path produces a duplicate availability value twice in a way that would change the set, but the representational difference is real and would matter if, for instance, A and B shared an alternative that produced the same availability by different paths. R6's "duplicate ways of obtaining a value do not create a different value" is sharper than WHL's list.
+
+- **RSS on alternatives at the same greatest revision.** RSS says exact duplicates convey no authority and that near-duplicates are "candidates for conflict," recording the disagreement without deciding. R2 *decides*: different payloads at the same greatest revision are alternatives, and each is admissible. In case C this is exactly the operative clause — a1 and a2, and b1 and b2, are not "recorded as conflicting" and then left open; they are both admitted as alternatives by R2's sharper rule, and both contribute to the exact availability set. RSS would have represented the same material but declined to draw R2's conclusion.
+
+- **R3's explicit "a lower-revision release does not cancel a higher-revision hold."** Neither specimen states this as flatly as R3; WHL's `reserves_effect` gives releases zero effect, and RSS lists the cancellation reading among its readings. Case A's booking C has a release alone at revision 1, so it exercises only R4's release-zero clause, not R3's higher-revision-hold clause. Case C exercises neither. The clause is cited but not operative in either case.
+
+## Memo C as a target, connected to this use
+
+The task asks me to continue the inquiry and to distinguish a defect in a proposed language clause from a defect in an individual application. Memo C is a set of clause-shaped claims, and I evaluate each against the contract and the specimens.
+
+**C1.** "Our representation calls rejection of a supporting assumption a refutation. Therefore when account B rejects an assumption used by account A, A's conclusion has been established false for every account." This is defective. R7 explicitly distinguishes defeating a support route from proving a conclusion false, and RSS's refutations are account-local. The conclusion outruns the premise: from "A's route is defeated" nothing follows about A's conclusion for every account. Cycle 14's species-refinement — RSS lists three species of refutation, only one of which defeats the conjecture within the producing account — is retained. I do not attribute case A's or C's computation to this criticism; the computation follows from R2–R6 regardless. But the criticism is relevant to how one would read a report that cited A's or B's rejection as settling the other's claim.
+
+**C2.** "Once any account commits to a conjecture, no unresolved question concerning that conjecture can remain anywhere." Defective for the reason cycle 14 recorded and the previous cycle also recorded: commitment is account-local, "open" is state-relative, and a commitment in one account does not erase a question open in the inquiry state. Case C illustrates the general point in a positive way: even with the contract-controlling reading adopted (a commitment), the question "which alternative for A is intended by a particular user" remains open in the sense that the report of the *set* {1, 4} does not select a single one; the commitment to *how to compute* the set does not close the question of *which value a downstream physical decision should use*. I am not claiming this is the open question RSS had in mind; I am claiming it is the same shape.
+
+**C3.** "Every projection must lose information. This also holds on a singleton input domain and when the projection is injective over the admitted domain." Cycle 14 restored the cycle-11 verdict: defective as worded. The RSS sentence "A projection is always a loss of information" is a generalization about maps to a single answer, not a stipulation that defines "projection"; a stipulative reading would render the sentence circular, because RSS has already defined a projection functionally as a map from (viewpoint, reading) to a single answer. On a non-degenerate domain the claim is true for the reason RSS gives; on a singleton admitted-alternative domain, or for an injective map on the admitted domain, the "must ... also holds" wording is false. Case C makes the distinction vivid without rescuing C3: A's alternative set is not a singleton, so the lossiness point applies straightforwardly, and the availability set {0, −3, −4, −7} is not a single reported value that recovers the alternatives. The *motivation* of RSS's sentence — do not confuse a single reported value with the admitted alternatives — converges with R6's requirement that the bounds not be equated with the exact set. That convergence is a constraint on *reporting*, not a rescue of C3's quantifier.
+
+**C4.** "A semantic proposal supplies no conflict-resolution algorithm. That omission alone proves that the represented problem is mathematically noncomputable." Defective in the word "alone." RSS declares itself deliberately noncomputable; that declaration plus the absence of an algorithm does not prove the underlying problem noncomputable. To earn the noncomputability claim one would need a reduction from a known undecidable problem or a diagonal argument, which RSS does not supply. Case C's computation is fully decidable given the contract, which shows that the *representation of a single snapshot's alternatives* is not what a genuine noncomputability result would concern; the noncomputability, if any, would concern selecting a reading or resolving conflicts globally, and that has not been shown.
+
+**C5.** "A Lean predicate's existence proves that its name faithfully captures the source prose and that its application is adequate." Defective. WHL says it "declares a language, not a translation of any particular corpus," so the existence of `greatest_revision_in` or `reserves_effect` does not prove faithfulness to any source. Cycle 14 located the correct ground in WHL's disclaimers, and I retain that; the R4-versus-`reserves_effect` boundary difference is a difference in how two statements of a reading are worded, not evidence that the Lean predicate is unfaithful. Case C uses the *contract's* rules, not WHL's predicates, so C5's claim is not even exercised — which is exactly the point: a Lean predicate's existence is not needed to compute, and its existence does not establish anything about the prose.
+
+**C6.** "Being able to express a false claim is not a defect by itself. The question includes what distinctions the representation allows us to inspect, criticize and use." Endorsed, and load-bearing. In case C the representation lets us inspect all four alternative sums {3, 7, 6, 10}, criticize a report that collapses them into [−7, 0], and use the exact set {0, −3, −4, −7}. In case A it lets us inspect the joint that R3/R4 create (a2 authoritative but expired) and use the correct set {3, −2}. WHL's ability to state `expired_deletes_rule` and RSS's ability to state a reading under which a lower-revision release cancels a higher-revision hold do not make those readings defects of the representations; they make them inspectible and criticizable.
+
+## Attribution of interpretation changes and extensions
+
+The contract-controlling reading applied here was adopted earlier and is unchanged in this cycle. I state explicitly what I am not doing: I am not changing R1–R8, I am not rewriting what any earlier occurrence said, and I am not treating the re-presented cycle-5 item (h003.reopen.v1) as an oracle. The one clarification I add, and attribute as my own specification for this answer, is that on both fresh case C and protected repeat case A I read R4's "strictly less than expiry" as the governing formulation and treat WHL's `if t > r.expiry then 0 else r.quantity` as a specimen that agrees in effect at the boundary but does not itself settle the rule. That is a specification of which source controls, not a rewrite of WHL or of any earlier response.
+
+I also distinguish, as the task requires, a defect in a proposed clause from a defect in an application. C1–C5 as worded are clause-shaped and defective in the ways given. The cycle-11 application of the R4-versus-`reserves_effect` case as evidence of predicate unfaithfulness was a defective application of fine material, and cycle 12's correction and cycle 13's re-affirmation of that correction stand. Conversely, the correct computation of case A's {3, −2} is not itself evidence that the memo criticism caused it; it is a result of R2–R6, and it happens to make the criticism's point visible.
+
+## Relevant earlier criticism, connected but not credited as causal
+
+Memo A's specific defects are visible in case A again. A1's sequencing would revive a1 under booking A and produce 8 rather than 0. A2's interval collapse would report [−2, 3] where the exact set is {3, −2}. A4 would narrow booking B's alternatives to a "confirmed" 3 versus a "lone dissenting" 8, which the contract's R2 and R5 exclude. A6's imported cross-booking rule
