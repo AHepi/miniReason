@@ -1,0 +1,164 @@
+# Use-State U1
+
+## Parent and identity
+
+- **Parent use-state:** U0, identifier `[7a7798c900490b12]`, schema `minireason.sql-use-before.v1`.
+- **Parent U0 event position:** after consuming 2 events (`delete L [1,null]`, `delete R [10,7,"a"]`), ready for the next event.
+- **Selected candidate identity (preserved):** SHA-256 `b5fb115264eaff0a0466ea19012b58624a2669f95c4b6e47aab545c2074268c0`, "Retained-State Maintenance Account for `L LEFT JOIN R ON L.k = R.k`", occurrence `E027-sql-construction-continuation/mini-disabled`.
+- **Provided initializer schema:** `minireason.sql-use-initializer.v1` (as carried through U0).
+- **Position after this use:** U0's two-event sequence is unchanged; this use re-applies the *same* two exact events that U0 named — `delete L [1, null]` (Event 1) and `delete R [10, 7, "a"]` (Event 2) — against U0's **pre-event** snapshot, then reports the resulting state. In other words, this use re-derives U0's after-Event-2 position from U0's recorded initial snapshot and the same event pair, and confirms the reproduction.
+
+**Interpretation note on the task's phrasing "return to the same use-state."** The prompt says "Take the actual U0 below as the parent use-state. The exact events assigned to `use_before` were: [delete L [1,null]; delete R [10,7,'a']]." U0's *body* already shows those two events applied. There are two coherent readings:
+
+- **(a) Re-run reading.** U0's stored retained state is the *before* snapshot (initialized, 0 events consumed); the two events in the prompt are the use_before events applied *now*. U0's body text that shows "after Event 1" and "after Event 2" would then be the expected outcome that this use reproduces.
+- **(b) Idempotent-closure reading.** U0 already consumed those two events; "return to the same use-state" means re-affirm U0's after-Event-2 snapshot as the operative U1.
+
+Both readings converge on the **same** post-event retained state and the **same** output bag whenever the initial snapshot is the one U0's body derived from. I adopt reading (a) as the operative reading, because it makes the events the task of *this* use and keeps U0 well-defined as the pre-event parent; I note that under reading (b) the result is identical, so the choice does not change U1's content. This is an interpretive contribution I am making; it is not supplied by the candidate or by U0.
+
+---
+
+## Chosen interpretation of the update rules (inherited from U0, unchanged)
+
+- §4.1/§4.2 (L insert/delete) affect only the touched `lid`; `Rrows`/`RkeyIndex` untouched.
+- §4.3/§4.4 (R insert/delete) affect exactly `LkeyIndex[k]` when `k` is non-NULL; a NULL `R.k` leaves output unchanged (ordinary `=` never true with NULL).
+- `RkeyIndex` buckets are **multisets of `rid`**; output deltas are single-occurrence multiset operations (bag removal, not set removal). This was U0's inferred rule (§7 item 3 of the candidate flagged it as under-specified); I retain that inference and continue to attribute it to U0, not to the candidate.
+- `matchCount` is **not** retained; `cnt(k) = |RkeyIndex[k]|` is derived on demand.
+- Before-images supplied in delete events are authoritative and are expected to agree with retained state.
+
+No subsidiary criticism was supplied through its own port; I do not invent one. The candidate's §7 residual gaps (proof completeness, NULL-index encoding, bag-vs-set under-specification, collation/affinity, id uniqueness, no-concurrency, recomputation-as-alternative, overall sufficiency) are carried forward unchanged.
+
+---
+
+## Initial snapshot used by this use (U0 pre-event position)
+
+U0's body reports the initialized retained state before any use_before event as:
+
+```json
+{
+  "Lrows":      [[1, null], [2, 7], [3, 9]],
+  "Rrows":      [[10, 7, "a"], [11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":  [[7, [2]], [9, [3]]],
+  "RkeyIndex":  [[7, [10, 11]], [9, [12]]],
+  "output_bag": [[1, null, null], [2, 7, "a"], [2, 7, "a"], [3, 9, null]]
+}
+```
+
+(`lid = 1` has NULL key → single NULL-branch triple; `lid = 2` matches both `rid = 10` and `rid = 11`, both `v = "a"` → duplicate triple; `lid = 3` matches `rid = 12` whose `v` is NULL — a matched NULL, not a no-match NULL.)
+
+---
+
+## Event 1 — `delete L [1, null]`
+
+`lid = 1` is present with `k = NULL`. Per §4.2:
+
+- Output delta: remove one occurrence of `(1, NULL, NULL)`.
+- Delete `lid = 1` from `Lrows`.
+- `LkeyIndex` untouched (NULL keys are excluded from the index).
+- `Rrows`/`RkeyIndex` untouched.
+
+### Retained state after Event 1
+
+```json
+{
+  "Lrows":      [[2, 7], [3, 9]],
+  "Rrows":      [[10, 7, "a"], [11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":  [[7, [2]], [9, [3]]],
+  "RkeyIndex":  [[7, [10, 11]], [9, [12]]],
+  "output_bag": [[2, 7, "a"], [2, 7, "a"], [3, 9, null]]
+}
+```
+
+---
+
+## Event 2 — `delete R [10, 7, "a"]`
+
+`rid = 10` present in `Rrows` with `k = 7`, `v = "a"`. Key non-NULL:
+
+- `A = LkeyIndex[7] = {2}`.
+- `cnt(7)` before removal = `|{10, 11}| = 2`; `willBeEmpty = (cnt == 1)` → **false**; no NULL-branch swap.
+- Delta per `x = 2`: remove **one occurrence** of `(2, 7, "a")`.
+- Remove `rid = 10` from `RkeyIndex[7]` → `[11]` (kept).
+- Remove `(10, 7, "a")` from `Rrows`.
+
+### Retained state after Event 2 (this use's U1)
+
+```json
+{
+  "Lrows":      [[2, 7], [3, 9]],
+  "Rrows":      [[11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":  [[7, [2]], [9, [3]]],
+  "RkeyIndex":  [[7, [11]], [9, [12]]],
+  "output_bag": [[2, 7, "a"], [3, 9, null]]
+}
+```
+
+This matches U0's reported after-Event-2 state exactly. The reproduction is faithful; there is no silent correction.
+
+### Complete output bag
+
+| lid | k | v |
+|-----|---|---|
+| 2 | 7 | "a" |
+| 3 | 9 | NULL |
+
+Multiplicity check: `(2,7,"a")` now appears once (from surviving `rid = 11`); `(3,9,NULL)` unchanged (matched right `rid = 12` with value NULL — matched-NULL, not no-match-NULL).
+
+---
+
+## Cached output bag
+
+**Cached output bag at U1:** `[[2, 7, "a"], [3, 9, null]]`.
+
+Row order is immaterial (SELECT ALL preserves multiplicity, not order).
+
+---
+
+## Current event position
+
+- Events consumed in this use: 2 (`delete L [1, null]`, `delete R [10, 7, "a"]`).
+- Cumulative event position (counting from the initialized snapshot): 2.
+- State: ready for the next `use_before` event, or for closure.
+
+---
+
+## Branch status of each live L row
+
+- `lid = 2`, `k = 7`, match branch, `cnt(7) = 1`.
+- `lid = 3`, `k = 9`, match branch, `cnt(9) = 1`.
+- No live L row is currently on the NULL branch.
+
+---
+
+## Reasons for the choices made in this use
+
+1. **Adopted U0's interpretation verbatim.** The candidate's §4.1/§4.2/§4.3/§4.4 rules are read as in U0; no re-interpretation was needed because no subsidiary criticism was supplied and the rules were unambiguous for these events.
+2. **NULL-key exclusion from indexes is applied.** Event 1 removed `lid = 1` without touching `LkeyIndex` or any right-side structure. This matches the candidate's §2.3/§2.4 exclusion of NULL keys and §4.2's NULL branch.
+3. **Bag semantics, not set semantics, for output deltas.** Event 2 required removing *one occurrence* of the duplicate triple `(2,7,"a")`. This is U0's inferred rule; it is attributed to U0 and, downstream, to the interpreter, not to the candidate.
+4. **No whole-database recomputation.** All updates were computed from retained state and the next event, per the contract.
+5. **Event before-images agreed with retained rows.** If they had not, the candidate leaves the behavior unspecified (U0 §7 item 2); this did not arise.
+6. **No SQL executive was invoked.** The output bag follows the candidate's closed form and update rules as interpreted.
+
+---
+
+## Information needed for a subsequent use
+
+A subsequent use receiving **U1 + the stable source/candidate** (and no other state) has:
+
+- **Parent chain:** U0 `[7a7798c900490b12]`, whose parent is the initializer `minireason.sql-use-initializer.v1` applied to candidate `b5fb115264eaff0a0466ea19012b58624a2669f95c4b6e47aab545c2074268c0`.
+- **Retained state at U1:** `Lrows = {(2,7),(3,9)}`; `Rrows = {(11,7,"a"),(12,9,null)}`; `LkeyIndex = {7:{2}, 9:{3}}`; `RkeyIndex = {7:{11}, 9:{12}}`.
+- **Cached output bag at U1:** `[(2,7,"a"), (3,9,null)]`.
+- **Current event position:** 2 events consumed since initialization.
+- **Interpretation in force:** U0's four bullet points, plus the two inferred rules (bag-not-set removal; `matchCount` derived, not stored).
+- **Preserved uncertainty:** candidate §7 items 1–8 carried forward; additionally, U0 §7 items 1–5 carried forward. Notably, the collation/affinity gap (§7 item 4) and the bag-vs-set under-specification (§7 item 3) remain open and are the two most likely places a realized SQLite execution or a set-based interpreter would diverge.
+- **Contribution attribution:** The bag-removal rule and the NULL-key-exclusion encoding are U0's inferences, not the candidate's stated rules. The reading-(a)-vs-reading-(b) choice for "return to the same use-state" is *this* use's interpretive contribution; it does not alter U1's content.
+
+---
+
+## Uncertainty and unsupported cases preserved
+
+1. **Bag vs. set removal (candidate §7 item 3; U0 §7 item 1).** Event 2 turned on this. A later interpreter that uses set semantics would diverge. Attribution: U0's inferred rule; the candidate did not fix it.
+2. **Before-image disagreement (U0 §7 item 2).** Not exercised; candidate leaves the case unspecified.
+3. **Collation/affinity (candidate §7 item 4).** Not exercised (all keys are non-NULL integers, no cross-type comparison). Remains an open unsupported case for later events involving text keys, mixed storage classes, or non-default collations.
+4. **Proof completeness (candidate §7 item 1).** The two-event reproduction here is a single path; it does not upgrade the candidate's §5 argument to a verified totality claim.
+5. **Idempotence under re-application is a use-level property, not a candidate-level one.** If a later use re-applies Events 1–2 against U1's *post*-event state, it would corrupt the bag (the L row and R row are already absent). The candidate's event model assumes one legal event applied once; this use does not change that. A downstream use must treat U1 as post-event-2 and only consume *further* events.
+6. **No subsidiary criticism was supplied or invented.** Retention, revision, and suspension remain admissible for later uses; none was triggered here.
