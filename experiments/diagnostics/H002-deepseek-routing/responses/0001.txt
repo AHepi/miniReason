@@ -1,0 +1,153 @@
+# Use-State U0
+
+## Selected candidate identity
+
+- **Candidate SHA-256:** `b5fb115264eaff0a0466ea19012b58624a2669f95c4b6e47aab545c2074268c0`
+- **Selected candidate:** "Retained-State Maintenance Account for `L LEFT JOIN R ON L.k = R.k`", occurrence `E027-sql-construction-continuation/mini-disabled`.
+- **Provided initializer schema:** `minireason.sql-use-initializer.v1`, with the attributed retained state and cached output bag above.
+- **Position:** Initialized snapshot before the first `use_before` event. No update applied yet.
+
+## Chosen interpretation of the proposed update rules
+
+I read the candidate's §4 rules as follows, applying them literally but coherently:
+
+- §4.1/§4.2 (L insert/delete) affect only the touched `lid`: remove all currently-emitted triples for that `lid` and, if it survives, re-emit according to the new key. `LkeyIndex` and `Lrows` are mutated; `Rrows`/`RkeyIndex` are not.
+- §4.3/§4.4 (R insert/delete) affect exactly the left rows whose key equals the right row's non-NULL key. The NULL key case (`R.k IS NULL`) touches only `Rrows` and leaves output unchanged, because ordinary `=` is never true with a NULL operand. On the non-NULL case, every left row `x ∈ LkeyIndex[k]` loses/regains its NULL branch according to whether the matching set of right rows goes `0→1` or `1→0`.
+- Multiplicity is preserved by treating `RkeyIndex` buckets as multisets (bags) of `rid` — distinct `rid`s under the same `(k,v)` produce duplicate output triples.
+- The candidate does **not** retain `matchCount`; cardinality `cnt(k) = |RkeyIndex[k]|` is derived on demand from the bucket. I honor that: I will not store `matchCount`.
+- Whole-row before-images supplied in the event (`[lid,k]` for L, `[rid,k,v]` for R) are used as the authoritative deletion target, and the retained state is expected to agree with them.
+
+## Missing / inferred rule I must supply
+
+The candidate's §4.2 and §4.4 describe the delta in terms of `cnt(k)` and the matching right rows, but they do not spell out the bookkeeping when the **whole non-NULL bucket empties**. To apply §4.4 literally for `R.rid = 10` with `k = 7`:
+
+- I must compute `cnt(7)` *before* removal and detect the `1→0` transition across all affected left rows. Here `cnt(7) = 2`, so no transition.
+- I must remove exactly one occurrence of `(x.lid, 7, 'a')` from the cached output bag for each `x ∈ LkeyIndex[7] = {2}`. "One occurrence" is the inferred rule: with duplicates, the removal is by count, not by value identity. This is consistent with the candidate's multiset semantics and is what I use.
+- I must then remove `rid = 10` from the `RkeyIndex[7]` bucket and from `Rrows`, dropping the bucket only if it empties (it does not).
+
+I record this as an **inferred rule**: deltas on the output bag are single-occurrence multiset operations, never set operations. The candidate flagged (§7 item 3) that this distinction is under-specified in prose; I adopt bag removal here.
+
+---
+
+## Event 1 — `delete L [1, null]`
+
+Touches `lid = 1`, which is present in `Lrows` with `k = NULL`.
+
+Per §4.2, the NULL branch for `x = 1` is the single triple `(1, NULL, NULL)`. The delta is:
+
+- Remove `(1, NULL, NULL)` from the output bag.
+- Delete `lid = 1` from `Lrows`.
+- `LkeyIndex` is untouched (the account excludes NULL keys from the index).
+
+No other left row's branch depends on `lid = 1`; `RkeyIndex`/`Rrows` are untouched.
+
+### Retained state after Event 1
+
+```json
+{
+  "Lrows": [
+    [2, 7],
+    [3, 9]
+  ],
+  "Rrows": [
+    [10, 7, "a"],
+    [11, 7, "a"],
+    [12, 9, null]
+  ],
+  "LkeyIndex": [
+    [7, [2]],
+    [9, [3]]
+  ],
+  "RkeyIndex": [
+    [7, [10, 11]],
+    [9, [12]]
+  ],
+  "output_bag": [
+    [2, 7, "a"],
+    [2, 7, "a"],
+    [3, 9, null]
+  ]
+}
+```
+
+### Complete output bag after Event 1
+
+| lid | k | v |
+|-----|---|---|
+| 2 | 7 | "a" |
+| 2 | 7 | "a" |
+| 3 | 9 | NULL |
+
+Multiplicities preserved: `(2,7,"a")` appears twice because both `rid = 10` and `rid = 11` share `(k=7, v="a")`; `(3,9,NULL)` appears once because `rid = 12` provides a matching right row with value NULL (a non-NULL match, so the LEFT JOIN emits the *matched* right value, which happens to be NULL — this is not the "no match" NULL branch).
+
+---
+
+## Event 2 — `delete R [10, 7, "a"]`
+
+Touches `rid = 10`. The event model requires a matching before-image; state agrees: `Rrows` contains `(10, 7, "a")`. Key is non-NULL, so:
+
+- `A = LkeyIndex[7] = {2}`.
+- `cnt(7)` before removal = `|RkeyIndex[7]| = |{10, 11}| = 2`.
+- `willBeEmpty = (cnt(7) == 1)` → **false**. So no NULL-branch swap.
+- Delta per `x = 2`: remove **one occurrence** of `(2, 7, "a")`.
+- Remove `rid = 10` from `RkeyIndex[7]` → bucket becomes `[11]` (non-empty, kept).
+- Remove `(10, 7, "a")` from `Rrows`.
+
+No other left row is affected (`LkeyIndex[7] = {2}` only; no other key equals 7).
+
+### Retained state after Event 2
+
+```json
+{
+  "Lrows": [
+    [2, 7],
+    [3, 9]
+  ],
+  "Rrows": [
+    [11, 7, "a"],
+    [12, 9, null]
+  ],
+  "LkeyIndex": [
+    [7, [2]],
+    [9, [3]]
+  ],
+  "RkeyIndex": [
+    [7, [11]],
+    [9, [12]]
+  ],
+  "output_bag": [
+    [2, 7, "a"],
+    [3, 9, null]
+  ]
+}
+```
+
+### Complete output bag after Event 2
+
+| lid | k | v |
+|-----|---|---|
+| 2 | 7 | "a" |
+| 3 | 9 | NULL |
+
+Multiplicity check: `(2,7,"a")` now appears once, from the surviving `rid = 11`. `(3,9,NULL)` unchanged, still from the matched right row `rid = 12` with value NULL.
+
+---
+
+## Previous-use results needed for later use
+
+- **Authoritative output bag at U0:** `[[2,7,"a"], [3,9,null]]`.
+- **Authoritative retained state at U0:** as in the JSON after Event 2 above.
+- **Events consumed:** 2 of 2 (`delete L [1,null]`, `delete R [10,7,"a"]`).
+- **Position after Events:** ready for the next event, or for closure.
+- **Branch status of each live L row:** `lid=2` on match branch with `cnt(7)=1`; `lid=3` on match branch with `cnt(9)=1`. No NULL branch currently in force for any live L row (both have at least one matching R row with the same non-NULL key).
+- **NULL-key handling in state:** `Lrows` retains full row images including NULL; `LkeyIndex` contains only non-NULL keys, consistent with the candidate's §2.3/§2.4 exclusions.
+
+## Preserved uncertainty and gaps
+
+1. **Bag vs. set removal.** Event 2 required "remove one occurrence" of `(2,7,"a")`. The candidate's prose (§4.4, §7 item 3) does not itself fix set vs. bag; I inferred multiset semantics from the SELECT ALL framing and the candidate's own note that `RkeyIndex` is a multiset. If a later interpreter treats buckets or output as sets, it will diverge from this use-state on any event that hits duplicate `(k,v)`.
+2. **Before-image agreement.** I relied on the supplied before-images matching retained rows (they did). Behavior for a delete whose before-image disagrees with retained state is unspecified by the candidate; I did not exercise or resolve it.
+3. **No whole-database recomputation** was used; only retained state and the next event, per contract.
+4. **No SQL executive was invoked.** The output bag above follows the candidate's closed form and update rules as interpreted, not a fresh scan of `L`/`R`. If the SQLite execution of the same event sequence diverged from this bag, the divergence would be evidence against the candidate's or my inferred rule, not against the retained-state construction's internal consistency.
+5. **Collation/affinity gap** (§7 item 4) is not exercised by these two events — all keys are non-NULL integers and no cross-type comparison arises. It remains an open unsupported case for later events.
+
+End of use-state U0.
