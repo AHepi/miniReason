@@ -1,0 +1,30 @@
+{
+  "schema": "minireason.h004.final-custody-audit.v1",
+  "h004_terminal_receipts": 65,
+  "h004_attempt_markers": 65,
+  "combined_unique_coordinates": 100,
+  "combined_unique_provider_coordinates": 100,
+  "pending_markers": 0,
+  "h004_status_counts": {
+    "PARTIAL": 45,
+    "COMPLETE": 20
+  },
+  "canonical_request_and_trace_equality_checked": 65,
+  "protected_trees_unchanged": {
+    "src": true,
+    "experiments/plans": true,
+    "experiments/records": true
+  },
+  "credential_pattern_matching_files_and_counts": {},
+  "credential_scan_files": 4081,
+  "scope": "All tracked repository files plus H004 files. Mechanical custody audit; no semantic adjudication or provider request.",
+  "final_ready": true,
+  "reviewer": "root",
+  "draft_assistance": "Astra supplied mechanical audit draft; root adapted and executed it.",
+  "executed_at_utc": "2026-09-13 12:11:45 UTC",
+  "verified_evidence_commit": "8d0c87ed483f3951bc5275d3a3d3684024895afd",
+  "verified_evidence_tree": "548f8936d45a01ef2481deb6d7da819ba91b3692",
+  "provider_process_sessions_exited": true,
+  "root_session_store_credential_removed": true,
+  "audit_source": "import json, re, subprocess\nfrom pathlib import Path\nfrom tools import partial_language_continuation as p\nh=p.h\nrepo=Path.cwd()\nout=repo/'experiments/diagnostics/H004-partial-language-continuation'\ndata,plan=p.verify(repo,out)\nseed=p.seed_path(out,plan)\ndef coordinates(root, category):\n result=set()\n for path in (root/category).glob('*/*.json'):\n  row=h.load(path); c=(row['arm'],row['cycle'])\n  assert c not in result and path.parent.name==c[0] and int(path.stem)==c[1]\n  result.add(c)\n return result\nexpected_seed={(a,n) for a,f in p.FRONTIERS.items() for n in range(1,f+1)}\nexpected_new={(a,n) for a,f in p.FRONTIERS.items() for n in range(f+1,21)}\nold=coordinates(seed,'responses');new=coordinates(out,'responses');attempts=coordinates(out,'attempts')\nassert old==expected_seed and not(old&new)\nstatuses={}\nfor arm,cycle in sorted(new):\n request,trace=p.render_arm(repo,out,arm,cycle,(data,plan))\n assert h.load(h.at(out,'requests',arm,cycle))==request\n assert h.load(h.at(out,'traces',arm,cycle))==trace\n receipt=p.read_terminal(out,arm,cycle)\n statuses[receipt['status']]=statuses.get(receipt['status'],0)+1\nprovider=set()\nfor root in (seed,out):\n for path in (root/'provider').glob('*/*/call-*.request.json'):\n  row=h.load(path)['coordinate'];c=(row['arm'],row['cycle'])\n  assert c not in provider\n  provider.add(c)\nexpected_trees={'src':'fbfb243fb21a8f7b86357d01b859047321ec3c38','experiments/plans':'5c5a85c6182a5527389c83a17bd44a13eace6400','experiments/records':'e40e1b847b751d49cdc41f41230c8daba84af28b'}\nchecks={}\nfor name,expected in expected_trees.items():\n actual=h.git(repo,'rev-parse','HEAD:'+name).decode().strip()\n unchanged=subprocess.run(['git','diff','--quiet','HEAD','--',name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0\n untracked=h.git(repo,'ls-files','--others','--exclude-standard','-z','--',name)\n checks[name]=actual==expected and unchanged and not untracked\n# Scan every tracked repository file plus all H004 files; never print matching values.\nfiles={repo/x for x in h.git(repo,'ls-files','-z').decode().split('\\0') if x}\nfiles.update(x for x in out.rglob('*') if x.is_file())\npatterns=[re.compile(rb'\\bsk-[A-Za-z0-9_-]{20,}\\b'),re.compile(rb'\\bgh[pousr]_[A-Za-z0-9]{20,}\\b'),re.compile(rb'\\bgithub_pat_[A-Za-z0-9_]{20,}\\b')]\nhits={}\nfor path in sorted(files):\n raw=path.read_bytes();n=sum(len(pattern.findall(raw)) for pattern in patterns)\n if n:hits[path.relative_to(repo).as_posix()]=n\nresult={'schema':'minireason.h004.final-custody-audit.v1','h004_terminal_receipts':len(new),'h004_attempt_markers':len(attempts),'combined_unique_coordinates':len(old|new),'combined_unique_provider_coordinates':len(provider),'pending_markers':len(attempts-new),'h004_status_counts':statuses,'canonical_request_and_trace_equality_checked':len(new),'protected_trees_unchanged':checks,'credential_pattern_matching_files_and_counts':hits,'credential_scan_files':len(files),'scope':'All tracked repository files plus H004 files. Mechanical custody audit; no semantic adjudication or provider request.'}\nresult['final_ready']=new==attempts==expected_new and provider==(expected_seed|expected_new) and not(attempts-new) and 'STOPPED' not in statuses and all(checks.values()) and not hits\nprint(json.dumps(result,indent=2))\nassert result['final_ready']\n"
+}
