@@ -1174,3 +1174,7 @@ VERIFIED 459ca775750f2d4998080337a2539014d25c0ac6 TREE b8c08eeaabb0b6af6cb110cbc
 REC-20260913-L 2026-09-13 12:15:03 UTC: Root completed the final failure-guide supplement: H004closed/no replay, false delivery/provenance allegations, current-vs-earlier context, premature read, wave-specific public proof and truthful cadence recovery. Astra is separately checking only relative file-link existence for the report/review/candidate; no delegated semantic review. Previous verified publication: To https://github.com/AHepi/miniReason.git
    459ca77..14e1a75  HEAD -> main
 VERIFIED 14e1a75e72b1f19664082bb3dc65bef95fc4b797 TREE 9e2de4d41094357eece2480d7dfd1304baa6934d. Publish completed document immediately, normal main push with remote commit/tree verification.
+
+REC-20260913-L 2026-09-13 12:15:40 UTC: Root completed the operations lesson: partial contribution admission preserves original failure status, custody descriptions are fallible, scheduling and public proof are occurrence-specific, and H004completed coordinates must not be replayed. Astra's mechanical file-link check found alltargets resolved. Previous verified publication: To https://github.com/AHepi/miniReason.git
+   14e1a75..2b6affd  HEAD -> main
+VERIFIED 2b6affd4a13ccf42afa747e09d274783969080cc TREE 2e164837198e6d3bead228bfd056c1806b171894. Publish completed document immediately, normal main push with remote commit/tree verification.
