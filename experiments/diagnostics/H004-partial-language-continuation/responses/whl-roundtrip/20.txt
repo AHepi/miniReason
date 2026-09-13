@@ -1,0 +1,162 @@
+# Cycle 20 answer: fresh case D under the working account, a recomputed protected case A, and the one discrepancy that this block exposes
+
+I use the declared material: contract R1–R8; the original WHL specimen; the original RSS specimen; the selected use policy (WHL with explicit conversion back to prose); delivery note h004.delivery.v1; the current task h003.task.v1 (Cycle 20 of 20, block 4, fresh use, Memo D, fresh case D, protected repeat case A); and the explicitly re-presented target h003.reopen.v1 (the Cycle-5 answer, complete public contribution, SHA256 7a526ce2…, receipt 652781e8…). The task says the re-presentation is an experimental input, not evidence of unaided recall, and that continuing inquiry is not a repeated first discovery. I take both literally. I do not treat the supplied old answer as an oracle for protected case A; I recompute it under the same contract, and I say separately where the recomputation agrees with the Cycle-5 result and why that agreement is *not* itself a proof that the earlier criticism caused the correctness.
+
+---
+
+## Part 1 — Fresh case D
+
+### 1. The snapshot, read as records
+
+Case D: capacity 8, time 7. Each delivery becomes a record `(booking, revision, kind, quantity, expiry)`; the delivery label is provenance, not authority.
+
+| label | booking | revision | kind | quantity | expiry |
+|---|---|---|---|---|---|
+| a1 | A | 1 | hold | 6 | 20 |
+| a3h | A | 3 | hold | 2 | 7 |
+| a3r | A | 3 | release | 9 | 99 |
+| b2a | B | 2 | hold | 2 | 10 |
+| b2b | B | 2 | hold | 5 | 10 |
+| b2b-copy | B | 2 | hold | 5 | 10 |
+| c2 | C | 2 | release | 0 | 0 |
+| c1 | C | 1 | hold | 7 | 20 |
+
+### 2. Greatest revision per booking, selected from all delivered payloads *before* effect is considered (R3)
+
+- **A:** revisions present are 1 and 3. Greatest is **3**. The records at revision 3 are a3h and a3r. a1 (revision 1) is dominated and is not an alternative; it does not become live merely because a3h is at expiry, because R3 selects greatest revision before expiry is evaluated and R4 keeps an expired hold's revision authority while changing only its effect.
+- **B:** the only revision present is 2. All three B records are at the greatest revision.
+- **C:** revisions present are 1 and 2. Greatest is **2**. c2 is the only record at revision 2; c1 is dominated and is not an alternative, even though c2 is a release that reserves zero.
+
+This is exactly the reading WHL keeps statable but **does not choose**: `expired_deletes_rule` / `deletion_changes_greatest` would delete a3h first and let a1 (revision 1, active) become greatest; alternatively a lower-revision release reading could let c1 surface. The contract R3/R4 fixes the other reading. I expose the disagreement rather than letting WHL's silence select a semantics.
+
+### 3. Alternatives at the greatest revision (R2, R5) — payload identity separated from provenance
+
+- **A:** a3h and a3r are both at revision 3 and are **not** exact duplicates (kind differs: hold vs release; quantity differs: 2 vs 9; expiry differs: 7 vs 99). They are two distinct payload alternatives. a1 is not an alternative.
+- **B:** b2b and b2b-copy are identical in all five record fields (`B, 2, hold, 5, 10`), so by `exact_duplicate` they are inert with respect to each other — **one** payload, not two. b2a differs in quantity (2 vs 5), so it is a genuine second alternative. Booking B therefore has **two** distinct payload alternatives: the `quantity 2` payload and the `quantity 5` payload, the latter occurring under two different delivery labels.
+- **C:** c2 alone. The delivery label c2 does not silently re-import c1; c1 is dominated by revision 2.
+
+The distinct labels `b2b` and `b2b-copy` are distinct occurrences, but under R1 a label records an occurrence, not additional booking authority, and under R2 exact repeated payloads convey no additional authority even when the labels differ. So the copy adds nothing here, and a "two confirmations beat one" style inference is not licensed by the selected representation.
+
+### 4. Reservation effects (R4), time = 7
+
+`reserves_effect`: a release reserves zero regardless of other fields; a hold reserves its quantity exactly when `current time < expiry`, else zero.
+
+- **a3h:** hold, quantity 2, expiry 7. 7 < 7 is false (equality is already expired under R4's strict inequality), so a3h reserves **0**.
+- **a3r:** release, reserves **0** regardless of its quantity 9 and expiry 99.
+- **b2a:** hold, quantity 2, expiry 10. 7 < 10, so reserves **2**.
+- **b2b:** hold, quantity 5, expiry 10. 7 < 10, so reserves **5**.
+- **b2b-copy:** identical to b2b; effect 5, but contributes no additional payload alternative.
+- **c2:** release, reserves **0**.
+
+Note that A's two alternatives both reserve 0: a3h because it is expired (not because it is lowest), a3r because it is a release. The choice between them is still a genuine choice of *payload*, but it does not change A's reservation.
+
+### 5. Per-booking possible reservations
+
+- **A:** two payload alternatives, effects 0 and 0 — so the set of possible reservations for A is **{0}**. (Duplicate ways of getting 0 do not create a different reservation value; R6.)
+- **B:** two distinct payload alternatives, effects 2 and 5 — so **{2, 5}**.
+- **C:** effect 0 — so **{0}**.
+
+### 6. Admissible combinations and the exact availability set (R5, R6)
+
+Exactly one payload alternative is selected per booking; alternatives of different bookings are independently admissible because no cross-booking constraint has been supplied. Availability = capacity − sum of reservations, capacity = 8.
+
+- A = 0 (both payload choices happen to give 0), B = 2, C = 0: 8 − (0 + 2 + 0) = **6**
+- A = 0, B = 5, C = 0: 8 − (0 + 5 + 0) = **3**
+
+**The exact set of possible availability values is {3, 6}.**
+
+No negative value occurs in case D; a negative would occur only if capacity were smaller than a forced reservation, which it is not here.
+
+### 7. Bounds, kept distinct from the exact set
+
+Per-booking minima and maxima from the possible-reservation sets:
+
+- A: min 0, max 0
+- B: min 2, max 5
+- C: min 0, max 0
+
+WHL bound functions (capacity minus summed lower/upper reservation bounds):
+
+- `availability_lower_bound` = 8 − (0 + 2 + 0) = **6** (subtracts the minimum total reservation; this is the maximum-availability bound)
+- `availability_upper_bound` = 8 − (0 + 5 + 0) = **3** (subtracts the maximum total reservation; this is the minimum-availability bound)
+
+In ordinary orientation, availability lies in the interval **[3, 6]**. Because the only attainable values are 3 and 6 and the intervening integers 4 and 5 are not admitted combinations here (A and C contribute only 0, and B contributes either 2 or 5 with nothing between), **the bound interval [3, 6] strictly contains the exact set {3, 6} and must not be equated with it.** Reporting "availability is somewhere between 3 and 6" as though it meant "availability could be 4 or 5" would be the specific mistake the contract R6 forbids, and it is the same shape of error previously identified in the Cycle-5 target as A2. Note that in case D, unlike case A, the exact set is entirely non-negative — the interval-exact-set gap is not confined to negative availability.
+
+The WHL function names are stated in their own orientation ("capacity minus summed lower bounds" for `availability_lower_bound`), so the name-to-number correspondence must be read carefully: the function *named* lower bound produces 6, which is the *upper* end of the availability interval. That is a naming-versus-orientation slippage inside WHL that the contract does not cure; it can be reported as an ordinary obstacle to an unwary reader, not as a change to the numbers. I attribute that observation to this answer.
+
+---
+
+## Part 2 — Protected repeat case A, recomputed
+
+I recompute from the supplied snapshot, not from the Cycle-5 answer.
+
+Case A: capacity 6, time 10.
+
+| label | booking | revision | kind | quantity | expiry |
+|---|---|---|---|---|---|
+| a1 | A | 1 | hold | 8 | 20 |
+| a2 | A | 2 | hold | 9 | 9 |
+| b1 | B | 1 | hold | 3 | 20 |
+| b1-copy | B | 1 | hold | 3 | 20 |
+| b2 | B | 1 | hold | 8 | 20 |
+| c1 | C | 1 | release | 99 | 0 |
+
+**Greatest revision.** A: revisions 1, 2 → greatest 2, so a2 is the A payload and a1 is dominated. B: only revision 1 → b1, b1-copy, b2 all at greatest. C: only revision 1 → c1.
+
+**Alternatives.** A: a2 alone. B: b1 and b1-copy are exact duplicates (five-field identity), so one payload; b2 differs in quantity → second payload. C: c1 alone.
+
+**Effects at time 10.** a2: hold, qty 9, expiry 9; 10 < 9 false, so **0**. b1: hold, qty 3, expiry 20; 10 < 20, so **3**. b1-copy: effect 3, no new alternative. b2: hold, qty 8, expiry 20; **8**. c1: release → **0**.
+
+**Per-booking possible reservations.** A: {0}. B: {3, 8}. C: {0}.
+
+**Admissible combinations.** 6 − (0 + 3 + 0) = **3**; 6 − (0 + 8 + 0) = **−2**.
+
+**Exact availability set: {−2, 3}.**
+
+**Bounds.** `availability_lower_bound` = 6 − (0 + 3 + 0) = 3; `availability_upper_bound` = 6 − (0 + 8 + 0) = −2. Ordinary interval orientation: [−2, 3]. The intervening values −1, 0, 1, 2 are not attainable, so the interval strictly contains the exact set.
+
+This agrees with the recomputation-sensible content of the Cycle-5 target. I am stating that as **observed agreement**, not as evidence that the Cycle-5 criticism caused this recomputation; the task explicitly denies that inference, and I do not draw it. The Cycle-5 target is a fallible input in the same sense as the WHL and RSS specimens; where it matches, that is one finite agreement, and where it had added a label ("declared standard reading") that the current working account locates in the contract rather than in WHL, I do not silently restore it — the attribution of that label was already corrected and remains so.
+
+### Cross-check between the two cases
+
+- **Case D** gave A's two payload alternatives *both* effect 0; **case A** gave B's two payload alternatives effects 3 and 8. So a "the two greatest-revision alternatives must reserve different quantities" generalization is false even across the two cases supplied here; the possible-reservation set can collapse to a singleton despite a genuine payload conflict. That is a new statement this block makes possible, attributed to this answer.
+- **Case A** exhibited the exact-set/bound gap in the negative region, **case D** in the non-negative region. The gap is thus not tied to the sign of availability.
+
+---
+
+## Part 3 — Discrepancy between the original representation and the task contract
+
+Two things must be kept apart, exactly as R7 requires, because "WHL" is being used as a representational resource that the contract binds for this task, and where they disagree I must expose the disagreement.
+
+1. **Expiry and authority (real disagreement, not resolved quietly).** WHL states `reserves_effect` (expiry changes effect; the record keeps its revision authority) **and** `expired_deletes_rule` with `deletion_changes_greatest` as a *possible disagreement*, and explicitly declines to choose between them. The contract R3/R4 fixes the first reading: greatest revision is selected from all delivered payloads before effect is considered; a lower revision remains superseded even when the greatest-revision hold has expired; a lower-revision release does not cancel a higher-revision hold. Case D exercises this precisely: a3h is at expiry (7 = 7) and yet a3h and a3r remain the greatest-revision A alternatives; a1 (revision 1, active) is *not* promoted. Under `expired_deletes_rule` the answer for A would change, and under a lower-revision-release reading the answer for C could change. Exposing this disagreement is required; adopting the deletion reading is not licensed by the contract.
+
+2. **Exact set versus bounds (a gap WHL leaves, and the contract closes).** WHL supplies `availability_lower_bound` and `availability_upper_bound` but no primitive for the exact attainable set of availability values. R6 requires reporting the exact set when asked and explicitly forbids equating a bounds interval with the exact set unless every intervening admitted integer value occurs. Cases A and D both exhibit strict inclusion [3, 6] ⊋ {3, 6} and [−2, 3] ⊋ {−2, 3}, so the gap is shown by data, not merely asserted. It should be compensated in prose by enumerating admissible combinations, not patched by reading the bound functions as if they returned the set.
+
+3. **A third item, this time a naming/orientation slippage internal to WHL, not a contract/disagreement case.** The function *named* `availability_lower_bound` computes capacity minus summed *lower* reservation bounds, which is the *upper* end of the availability interval in ordinary orientation. The contract does not change this; it just does not rescue the naming. I report it as a representational point about WHL and as a labelling caution for the next use.
+
+Nothing in the contract additions (labels carry no booking authority; independent admissibility of different bookings' alternatives; permission of negative availability; requirement to report the exact set) contradicts any WHL declaration *other than* by fixing the reading WHL left open. The RSS specimen keeps both readings as readings, which is consistent with WHL's neutrality and, for this task, is superseded by the contract's selection — I attribute that selection to the contract, not to either specimen.
+
+---
+
+## Part 4 — Interpretation changes and extensions declared here
+
+No earlier occurrence is rewritten. The items below are the changes I am making *in this response* and that must be attributed to it.
+
+1. **Case-D-specific:** I state, as a consequence of this fresh snapshot, that a genuine payload conflict at the greatest revision can have **both** alternatives reserve zero. Under the contract this is not an error or an empty conflict; it is a real conflict with no reservation consequence. This is new to this response; it is not written back into any earlier text.
+2. **Case-A-and-D generalization:** I state that the bounds-vs-exact-set gap is not confined to negative availability. This, too, is attributed to this response.
+3. **Naming observation:** the orientation slippage in the WHL bound-function names is recorded here; the earlier texts did not raise it.
+4. **Attribution of the "declared standard reading" label:** the current working account continues to locate the deciding authority for the expiry reading in the contract, not in WHL. That attribution was already corrected in earlier cycles and I do not restore the earlier label.
+
+I do not change the interpretation of WHL's own un-choosing of expiry policy; that remains as stated in the specimen.
+
+---
+
+## Part 5 — Memo D, used only where it bears on this use
+
+Memo D is fallible prose. I take only the items it is actually load-bearing for here.
+
+- **D1 (omission from a later summary proves no earlier achievement and no creative process).** Not used. The current task does not rest on that inference, and the delivery note already marks re-presentation as an experimental input, not an achievement measure. I do not derive any verdict about earlier cycles from a summary's silence.
+- **D2 (re-presentation makes later criticism illegitimate; unaided recall is required).** Not used. The task explicitly says the mechanical re-presentation is an input, not evidence of unaided recall.
+- **D3 (record vs. present interpretation can differ, and the difference must not be attributed to the original statement).** Used as a governing discipline: the current working account differs from the Cycle-5 target by locating the expiry authority in the contract rather than in WHL, and I say so here, at this point of use, without rewriting the Cycle-5 text.
+- **D4 (twenty cycles prove unbounded reach).** Not used, and not implied by this answer. Two worked cases and two intervals are all that is in the supplied material; the declared WHL and RSS limitations (no replication primitive, no delivery-provenance primitive, no cross-booking resource model, one logical time) remain.
+- **D5 (a correction can expose a previously unnoticed dependency; naming the problem need not settle the diagnosis).** Fit here. The case-D/case-A comparison exposes the dependency "a payload conflict may have no reservation consequence

@@ -1,0 +1,111 @@
+# Cycle 20 — fresh case D on the working account, with case A recomputed, the memory/late-discovery targets from MEMO D, and one remaining problem
+
+I work from the declared contract R1–R8 as the ground; the WHL and RSS specimens as fallible representational resources; the task note `h003.task.v1` (MEMO D) and the delivery-status note `h004.delivery.v1`; the reopened cycle-5 target as actually supplied; and the previous-own-arm cycle-19 verdict text quoted above. Use policy: RSS with explicit conversion back to ordinary prose, checked against the actual source claims, with any added or lost commitment exposed. Attribution is made in this response; I do not rewrite what an earlier occurrence originally said, and I do not invent a correction or a problem where the sources do not support one.
+
+A note on the reopened target, because it bears on the block. The re-presented cycle-5 text opens with "the current working account (my cycle-4 operative return) and the declared contract R1–R8." That vocabulary — "R1–R8," "declared contract" — is the vocabulary of the current task note, not of the original WHL/RSS specimens. The re-presentation is therefore not a verbatim reproduction of a cycle-5 occurrence but a late reconstruction in the current contract's idiom; its provenance is cycle 5, its present wording is supplied here. I use it as an input, not as an oracle, and I do not treat it as evidence that cycle 5 on its date used those labels.
+
+---
+
+## 1. What the working account supplies before I touch case D
+
+From cycle 19 and its retained predecessors, operative: structural supersession with evaluative expiry (R3/R4); greatest revision selected from all delivered payloads before effect; delivery labels record occurrences and add no booking authority, payload identity being a separate question from provenance (R1/R2); exact repeated payloads convey no additional authority even with different labels (R2); the exact set of availability values is reported, and a bounds interval is not equated with the set unless every intervening admitted integer occurs (R6); negative availability is permitted as a signal that alone locates neither corruption nor a responsible booking (R6); alternatives of different bookings are independently admissible, no cross-booking constraint supplied (R5); criticism targets a rule, data, an interpretation, an earlier criticism, or a representation, and rejecting one supporting assumption defeats only a support route (R7). The R4-versus-WHL tension at expiry equality — R4 reserves strictly below expiry, WHL's `reserves_effect` reserves on `¬ (t > expiry)`, hence reserves at equality — is retained, named by cycle 7, sourced to R4 and WHL. Case A (capacity 6, time 10) had exact set {3, −2} and bounds [−2, 3], the bounds explicitly not claimed exhaustive.
+
+---
+
+## 2. Fresh case D: greatest-revision payload alternatives, then effects
+
+Case D: capacity 8, time 7, eight deliveries. I select the greatest revision per booking from all delivered payloads *before* considering effect, then apply the effect rule (a hold reserves its quantity exactly when current time is strictly less than expiry; at equality or later it reserves zero; a release reserves zero regardless of its other fields — R4).
+
+**Booking A.** Payloads: a1 (rev 1, hold, 6, exp 20), a3h (rev 3, hold, 2, exp 7), a3r (rev 3, release, 9, exp 99). Greatest revision is 3. Both a3h and a3r are at revision 3, and they are not exact duplicates (different kind, quantity, expiry), so they are genuine alternatives at the greatest revision — not superseded records and not duplicates. a1 at revision 1 is superseded and does not return. Effects at time 7: a3h is a hold with expiry 7; the rule reserves only when time is strictly less than expiry, and 7 is not strictly less than 7, so a3h reserves **0**. a3r is a release and reserves **0** regardless. A's reservation alternatives: **{0}**. That a1's lower-revision active hold (expiry 20) is silenced by a revision-3 alternative is R3 applied, not a defect in the display.
+
+**Booking B.** Payloads: b2a (rev 2, hold, 2, exp 10), b2b (rev 2, hold, 5, exp 10), b2b-copy (rev 2, hold, 5, exp 10). All at greatest revision 2. b2b and b2b-copy are exact repeated payloads (all five record fields equal) with different delivery labels; by R2 they collapse to one payload alternative. The genuine payload alternatives at the greatest revision are the distinct payloads {qty 2, qty 5}, both holds with time 7 strictly less than expiry 10, so both active and reserving their quantities. B's reservation alternatives: **{2, 5}**.
+
+**Booking C.** Payloads: c2 (rev 2, release, 0, exp 0), c1 (rev 1, hold, 7, exp 20). Greatest revision is 2; c2 is selected and c1 is superseded. c2 is a release and reserves **0** regardless of its quantity or expiry. C's reservation alternatives: **{0}**.
+
+Discrepancy to note in passing: c2 is a revision-2 release whose lower-revision partner c1 would have reserved 7. Under R4 the release reserves zero and under R3 the lower revision does not return. So C reserves nothing even though a live-looking lower-revision hold sits beneath it — the same structural pattern as A, now via a release rather than an expired hold.
+
+---
+
+## 3. Exact set of availability values (R6)
+
+Availability = capacity minus the sum of the selected reservations, one payload alternative chosen per booking, alternatives of different bookings independently admissible (R5).
+
+Independent per-booking alternatives: A: {0}; B: {2, 5}; C: {0}.
+Sums: {0+2+0, 0+5+0} = {2, 5}.
+Availability = 8 − sum ∈ {8−2, 8−5} = **{6, 3}**.
+
+**Exact set of possible availability values: {6, 3}.** Two values. No negative value arises on this case, and the duplicate b2b-copy adds no third value because exact repeats are inert (R2, R6).
+
+---
+
+## 4. Bounds, kept separate from the exact set (R6)
+
+Per-booking reservation bounds: A ∈ [0, 0]; B ∈ [2, 5]; C ∈ [0, 0].
+Global lower bound: 8 − (0 + 2 + 0) = **6**. Global upper bound: 8 − (0 + 5 + 0) = **3**. Reported as bounds: the interval from 3 to 6, endpoints 3 and 6.
+
+On this case the interval [3, 6] happens to contain exactly the endpoints 3 and 6 as admitted values, and every integer between them (4, 5) is not produced by any admissible combination. The exact set is {6, 3}; the interval between the bounds is [3, 6]. The bounds coincide here with the extremes of the set, but the interval still contains 4 and 5, which no combination yields. So the non-equation of bounds with the exact set still has bite on case D, though the case is milder than A, where the interval contained four unproduced integers.
+
+---
+
+## 5. Discrepancies between the original representations and the declared contract
+
+Two are worth naming for case D specifically.
+
+**The release reading.** WHL carries a release's quantity and expiry without forcing a single meaning, and RSS represents a lower-revision release cancelling a higher-revision hold as one reading among others. The declared contract is stricter: a release reserves zero regardless of its other fields (R4), and a lower revision does not cancel a higher one (R3). Case D is a clean instance of the contract's choice, on C: c2's release reserves zero and c1 does not return. Under the rival reading, c1's active hold could have been argued to survive beneath the revision-2 release. The contract forbids that, giving C ∈ {0}. RSS's permissiveness here does not decide the case; the contract does.
+
+**Expiry equality.** R4 reserves a hold exactly when time is strictly less than expiry, so at time equal to expiry the hold reserves zero. WHL's `reserves_effect` reserves on `¬ (t > expiry)`, so at equality it would reserve the quantity. Case D's a3h is exactly at equality (time 7, expiry 7). The contract yields A ∈ {0}; WHL's rule as written would yield A ∈ {2}. This is the same tension cycle 7 named, now with a case that lands precisely on it. I attribute the name "tension" to cycle 7 in the earlier account; the discrepancy itself is between R4 and WHL's stated effect rule.
+
+**Labels versus payload authority.** b2b and b2b-copy have different delivery labels but identical payloads; they collapse (R2). b2a and b2b share the greatest revision but differ in quantity; they are alternatives (R2, R5). If labels conferred authority, the b2b duplication would outvote b2a and B would reserve 5 alone. The contract yields B ∈ {2, 5}, hence availability {6, 3}. The case separates the two readings by result.
+
+---
+
+## 6. Recomputing protected case A under the same contract
+
+I recompute A from the contract and the data, treating the earlier answer as a prior claim, not an oracle.
+
+Case A: capacity 6, time 10. Booking A: a1 (rev 1, hold, 8, exp 20), a2 (rev 2, hold, 9, exp 9). Greatest revision 2; a2 selected, a1 superseded even though a2's expiry has passed (R3). a2's effect at time 10: hold, expiry 9; 10 is not strictly less than 9, so it reserves 0. A ∈ {0}. Booking B: b1 (rev 1, hold, 3, exp 20), b1-copy (rev 1, hold, 3, exp 20), b2 (rev 1, hold, 8, exp 20), all at greatest revision 1. b1 and b1-copy are exact repeats and collapse; the distinct payload alternatives are {3, 8}, both active at time 10 (expiry 20). B ∈ {3, 8}. Booking C: c1 (rev 1, release, 99, exp 0); it is a release, reserves 0. C ∈ {0}.
+
+Sums: {0+3+0, 0+8+0} = {3, 8}. Availability = 6 − sum ∈ {3, −2}. **Exact set: {3, −2}.** Bounds: lower 6 − (0+3+0) = 3, upper 6 − (0+8+0) = −2, interval [−2, 3], not to be equated with the set because −1, 0, 1, 2 occur in the interval but not in the set. This reproduces the retained consequence. No earlier A-dependent consequence is overturned; the −2 is permitted and alone does not locate B as its source (R6).
+
+---
+
+## 7. MEMO D: the memory and late-discovery lines, judged as fallible prose
+
+The block asks me to distinguish provenance, present deployability, and the question addressed, and not to make perfect recall or an iteration tally the criterion of a correction. Judging D1–D6 on the supplied targets:
+
+- **D1 — defective.** An omission from a later working summary is a fact about the summary; it does not prove that no earlier achievement occurred or that no creative process was involved. The first clause is an observation, the second a general claim about process that the observation cannot support. The clause/application separation is what makes the over-promotion visible.
+- **D2 — defective.** Re-presenting the original passage is a mechanical supply of evidence; it does not make later criticism illegitimate, and it does not impose recovery from unaided memory as a criterion. R8 makes the re-presentation an experimental input, not a claim of recall.
+- **D3 — sound.** The record of an earlier statement and the current interpretation can differ, and that difference must not be hidden by attributing a correction to the original statement. This is the discipline I applied in §1 to the reopened target, and it is what R7 and R8 require.
+- **D4 — unsupported in both clauses.** Twenty finished cycles do not establish that the process can sustain every finite chain of criticisms, nor that it can address every future domain. The specimen self-attributed limits (WHL's header, RSS's "may obstruct" list) are evidence about representations, not about what any reasoner-process can address; they support neither an induction nor a negative of it.
+- **D5 — sound.** A new problem can arise when a correction exposes a previously unnoticed dependency, and identifying it need not already settle its diagnosis. The reopened target in §1 and the A-case hazard in §9 below are instances where a dependency is exposed without being settled.
+- **D6 — defective.** Continuing inquiry is not the repeated first-discovery of the same initial result. Re-presentation supplies evidence; it is not a criterion of novelty, and it is not the criterion of a correction.
+
+---
+
+## 8. Connection to relevant earlier criticism, with attribution
+
+- The reopened cycle-5 target rehearsed the A1–A6 verdicts (defective deletion reading of expiry, interval-for-set, labels-as-authority, cross-booking constraint, negative availability, criticism scope) on protected case A. On fresh case D the corresponding instantiations recur: A1's deletion reading separates from the contract at a3h (equality) and at c2's release; A2's interval-for-set mistake has bite because [3, 6] contains 4 and 5 the set does not; A4's labels-as-authority would suppress B ∈ {2, 5}; A6's cross-booking constraint is unsupplied, so the independent combination stands. I state these as relevance, not causation. A correct case-D answer stands on R1–R6 independently of whether any earlier criticism anticipated it.
+- Cycle 19's retained positions carry forward without change: exact set over bounds with the non-equation explicit; R5's independence scope; the R4-versus-WHL tension at equality, named by cycle 7. Case D does not disturb them and supplies a second instance of the equality tension.
+- The cycle-19 open items (the status of any cycle-1 contribution, the diagnosis of the earlier §2-dependency, the completion of a truncated classification) are not resolved by case D and are not claimed to be. I neither invent their endings nor treat their absence as evidence.
+
+---
+
+## 9. A remaining problem, if warranted
+
+One is warranted and is grounded in the cases themselves. A revision can silence a lower-revision record whose effect would have been nonzero, even when the silencing record's own effect is zero. Case D shows it twice without any expiry of the greatest record: a3h at revision 3 reserves 0 by expiry equality and thereby prevents the revision-1 active hold a1 from reserving 6, and c2 at revision 2 is a release reserving 0 and thereby prevents the revision-1 hold c1 from reserving 7. Case A shows it once via an expired greatest hold. The contract is correct to have the greatest revision selected before effect (R3), and it prescribes zero for both, but the structural hazard — a zero-effect record suppressing a nonzero-effect lower revision — is a genuine operational cost of the structural-supersession-with-evaluative-expiry reading. RSS and WHL both mark the rival deletion reading as a reading, not a fact, and decline to choose; the declared contract chooses structural supersession. So the hazard is carried forward as an open question about which reading an operational report ought to use, not as a defect in the case computations. Identifying this dependency does not settle its diagnosis (D5).
+
+A lesser note, already grounded: the interval between bounds and the exact set must not be conflated downstream, since case D's interval [3, 6] contains 4 and 5 that no admissible combination yields, and case A's interval contains four unproduced integers. The negative availability permitted under R6 does not arise on case D; on case A it does, and alone it does not locate B as its source.
+
+---
+
+## 10. Working account for the next use
+
+Operative contract positions: R1–R6 as previously retained, with the exact-set rule and the explicit non-equation of bounds with the set, R5's independent-admissibility scope, and the R4-versus-WHL strictness tension at expiry equality. Method positions: provenance (recorded by digests and status, mechanically supplied) is distinct from content-deployability (whether a target's legible text bears on the current question) and from present deployability (whether a usable ending exists); a criticism may target a rule, data, an interpretation, an earlier criticism or a representation; rejection of one supporting assumption defeats only a support route; correcting an earlier statement is attributed to the current response, never to the original text; a mechanical re-presentation is evidence, not a claim of recall, and not a criterion of a correction.
+
+**Fresh case D, this response's computation:** greatest-revision alternatives — A: {a3h=0, a3r=0}, so A ∈ {0}; B: {b2a=2, b2b=5} (b2b-copy inert), so B ∈ {2, 5}; C: {c2=0}, so C ∈ {0}. Exact set of availability values: **{6, 3}**. Bounds: interval **[3, 6]**, explicitly not equated with the set.
+
+**Protected case A, recomputed:** exact set **{3, −2}**; bounds **[−2, 3]**, explicitly not equated with the set. Earlier consequence preserved.
+
+**MEMO D verdicts, this response's:** D3 and D5 sound; D1, D2, D4, D6 defective or unsupported on their own grounds.
+
+**Open item carried forward, unresolved:** the operational hazard that a zero-effect greatest-revision record (expired hold or release) suppresses a nonzero-effect lower revision — visible twice in case D and once in case A — to be settled as a question about which reading an operational

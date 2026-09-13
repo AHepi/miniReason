@@ -1,0 +1,152 @@
+# Cycle 15 — Fresh case C, protected repeat case A, and the memo-C targets
+
+I work from the declared contract R1–R8, the original WHL specimen as the selected representation, the original RSS specimen as a fallible rival, memo C as fallible analyst prose (R7), the delivery annotation `[h004.delivery.v1]` as an observation about annotations and not a semantic authority, and the two re-presented own-arm texts (cycle 5, cycle 14) as experimental inputs under R8. Neither re-presented text is an oracle; I recompute and check.
+
+Two things from the current block govern the shape of the answer. First, this cycle treats "the selected representation and your own appraisal practice" as admissible criticism targets. Second, it asks me to "distinguish a defect in a proposed language clause from a defect in an individual application." I will do that explicitly at each point where a memo-C clause is implicated, rather than re-running the full C1–C6 ledger (cycle 14's ledger is retained, not re-derived).
+
+---
+
+## 1. Fresh case C — selection, effects, exact set, bounds
+
+I read each delivery as a WHL `Record` (booking, revision, kind, quantity, expiry) plus a delivery label. Capacity 3, logical time 0.
+
+**Booking A.** Payloads: `a1` = (A, rev 4, hold, 1, exp 10); `a2` = (A, rev 4, hold, 4, exp 10).
+
+- Greatest revision for A is 4. Both carried records are at 4, and A has no higher revision. So both are greatest-revision payloads.
+- `exact_duplicate a1 a2`? No — quantities 1 and 4 differ. Under `alternatives_at_greatest`, they are alternatives at A's greatest revision. R2 confirms: different payloads at the same greatest revision are alternatives.
+- Effects at t = 0: both are holds with expiry 10 > 0, so both are active. `reserves_effect 0 a1 = 1`, `reserves_effect 0 a2 = 4`.
+- `possible_reservations A = [1, 4]`. Bound pair for A is (1, 4).
+
+**Booking B.** Payloads: `b1` = (B, rev 1, hold, 2, exp 10); `b2` = (B, rev 1, hold, 6, exp 10).
+
+- Greatest revision for B is 1. Both records at 1. No higher revision present.
+- `exact_duplicate b1 b2`? No — quantities 2 and 6 differ. They are alternatives at B's greatest revision.
+- Effects at t = 0: both active holds (expiry 10 > 0). `reserves_effect 0 b1 = 2`, `reserves_effect 0 b2 = 6`.
+- `possible_reservations B = [2, 6]`. Bound pair (2, 6).
+
+**Exact availability set.** Admissible per-booking choices, independently (R5):
+
+- A ∈ {1, 4}
+- B ∈ {2, 6}
+
+Joint selections (capacity 3):
+
+- A=1, B=2: sum 3, availability = 0
+- A=1, B=6: sum 7, availability = −4
+- A=4, B=2: sum 6, availability = −3
+- A=4, B=6: sum 10, availability = −7
+
+**Exact set: {0, −4, −3, −7}.**
+
+**Bounds.** `booking_lower_bound`/`booking_upper_bound` take min/max of `possible_reservations` per booking:
+
+- A: lower 1, upper 4
+- B: lower 2, upper 6
+
+Sum of lower bounds = 1 + 2 = 3. Sum of upper bounds = 4 + 6 = 10.
+
+- `availability_lower_bound` (capacity − Σ upper) = 3 − 10 = **−7**
+- `availability_upper_bound` (capacity − Σ lower) = 3 − 3 = **0**
+
+In display order, the interval is [−7, 0].
+
+**Exact set vs bounds — a sharper instance than either case A previously seen.** Four admissible joint selections, four attained values. The interval [−7, 0] contains −6, −5, −2, −1 which are not attained. But there is a *second* discrepancy worth naming, and it is new relative to what cycle 14's ledger and cycle 5's case A show:
+
+- Cycle 5's case A had attained values {3, −2} with bounds [−2, 3]; the *attained* set was the two endpoints of the interval.
+- Fresh case C has attained values {0, −3, −4, −7} with bounds [−7, 0]; the *attained* set is four values inside the interval, of which −3 and −4 are strictly interior.
+
+So case C is the case where "bounds coincide with endpoints but interiors fill in" (case A's diagnosis) does not even hold cleanly: the attained set here is not closed upward toward the upper bound from below either. The endpoint 0 is attained (A=1, B=2), and the endpoint −7 is attained (A=4, B=6). But the interiors −3, −4 are *specific* interior points attained by particular joint selections, while −1, −2, −5, −6 are not.
+
+This is the discipline R6 states: "An interval may be reported as bounds but must not be equated with an exact set unless all intervening admitted integer values occur." Case C does not satisfy that condition. So the bound interval [−7, 0] is **not** the exact set. Reporting it as the exact set would attribute attainability to −1, −2, −5, −6, which no admissible joint selection supports.
+
+**Attribution.** The observation that a case can have attained *interior* points while missing *other* interior points is attributed to this response. Cycle 5 framed the issue as "attained endpoints, missing interiors." Case C shows the missing-interiors phenomenon is not confined to the endpoint case; it can leave attained interiors and unattained interiors side by side. **This does not change any verdict** — R6 already forbids the substitution — but it shows that "report the exact set" is doing work that "report bounds" cannot do, in a wider range of cases than the endpoint-coincidence case. That is a case-level observation, not a proposed language change.
+
+---
+
+## 2. Protected repeat case A — recompute, do not treat the prior answer as an oracle
+
+Capacity 6, time 10. Six deliveries.
+
+**Booking A.** Payloads: (A, rev 1, hold, 8, exp 20); (A, rev 2, hold, 9, exp 9).
+
+- Greatest revision for A is 2: only the `a2` payload is at 2. `a1` (rev 1) is dominated by rev 2 via `higher_revision` (same booking, `revision_lt 1 2`).
+- R3: selection happens before effect; the lower revision remains superseded even though the greatest-revision hold has expired.
+- Effect: `reserves_effect 10 (hold, 9, exp 9)` — under R4 (operative contract) "at equality or later it reserves zero"; 10 > 9 so reserves zero regardless of the equality clause. Under WHL's `reserves_effect`, `if t > r.expiry then 0 else q`, also zero here. Both rules agree at this datum.
+- `possible_reservations A = [0]`. Bound pair (0, 0).
+
+The temptation noted in cycle 5 is live again: this looks like a natural place for the *deleted-record* reading (`expired_deletes_rule`, `deletion_changes_greatest`) to apply, because A's greatest-revision hold is expired and there is a lower-revision live hold. Under the selected representation that reading is **not** used; `greatest_revision_in` consults only `higher_revision` (booking equality plus `revision_lt`) and never looks at expiry. Result stands: A reserves 0, once.
+
+**Booking B.** Payloads: (B, rev 1, hold, 3, exp 20) label `b1`; (B, rev 1, hold, 3, exp 20) label `b1-copy`; (B, rev 1, hold, 8, exp 20) label `b2`.
+
+- Greatest revision for B is 1, all three at 1.
+- `b1` and `b1-copy` are exact duplicates (`exact_duplicate` holds: same booking, revision, kind, quantity, expiry). Under WHL's `alternatives_at_greatest`, exact duplicates are not alternatives. R2 confirms: exact repeated payloads convey no additional authority even when delivery labels differ. The label `b1-copy` is a delivery occurrence, not extra weight.
+- `b2` is not an exact duplicate of `b1` (quantity 8 ≠ 3). So `b1` (equivalently `b1-copy`) and `b2` are alternatives at B's greatest revision.
+- Effects at t = 10: both holds, expiry 20 > 10, active. `reserves_effect 10 b1 = 3`, `reserves_effect 10 b2 = 8`.
+- `possible_reservations B = [3, 8]`. Bound pair (3, 8).
+
+Note: the duplicate `b1-copy` does not enter the alternatives list, so it does not appear as a *third* quantity. It would still be a mistake to write `possible_reservations B = [3, 3, 8]` even though the language tolerates duplicate quantities in the list per the spec's "may contain duplicates" remark — because `possible_reservations` filters on `greatest_revision_in`, and `greatest_revision_in` for `b1-copy` is *not excluded* per se. I check this carefully. WHL's `possible_reservations` is:
+
+> `(rs.filter (λ r, r.booking = b ∧ greatest_revision_in rs r)).map (reserves_effect t)`
+
+It filters by `greatest_revision_in` alone. Both `b1` and `b1-copy` *satisfy* `greatest_revision_in` for B (each is in the list and not dominated). So under the WHL code as written, `possible_reservations B = [3, 3, 8]` — a list with a duplicate quantity. The bound functions `list_min?` and `list_max?` fold this to (3, 8), and the *set* interpretation is {3, 8}. R6 says "duplicate ways of obtaining a value do not create a different value." So the binding result is the same: possible reservations for B are the quantities 3 and 8.
+
+This is a real discrepancy between the WHL code's *list* output and the *set* reading required by R2/R6, and I expose it rather than smooth it over.
+
+**Booking C.** Payload: (C, rev 1, release, 99, exp 0).
+
+- Greatest revision for C is 1; sole payload.
+- `reserves_effect 10 c1 = 0` (release reserves zero per R4 and per `reserves_effect`'s `Kind.release` branch).
+- `possible_reservations C = [0]`. Bound pair (0, 0).
+
+**Exact availability set (capacity 6).**
+
+- A ∈ {0}
+- B ∈ {3, 8}
+- C ∈ {0}
+
+Joint selections:
+
+- A=0, B=3, C=0: sum 3, availability = 3
+- A=0, B=8, C=0: sum 8, availability = −2
+
+**Exact set: {3, −2}.**
+
+**Bounds.**
+
+- Booking lower bounds: A 0, B 3, C 0 → Σ lower = 3
+- Booking upper bounds: A 0, B 8, C 0 → Σ upper = 8
+
+- `availability_lower_bound` = 6 − 8 = **−2**
+- `availability_upper_bound` = 6 − 3 = **3**
+
+Interval form: [−2, 3]. Attained: {3, −2}. Interior values −1, 0, 1, 2 unattained. **Bounds ≠ exact set.** Same verdict as cycle 5.
+
+**Preserved sound consequence from cycle 5.** The exact set {3, −2} is preserved; the bound interval [−2, 3] is preserved; the equality clash in cycle 5 §3 between WHL `reserves_effect` at `t = expiry` and R4 is preserved but not exercised at either booking here (t = 10, expiries 20 and 9 and 20 all differ from 10). The display-order warning from cycle 5 persists: WHL's `availability_lower_bound` (=−2) is *smaller* than `availability_upper_bound` (=3) here, which is *not* the inverted order cycle 5 warned about. This is worth stating carefully because cycle 5's case happened to have the inversion, and case A here does not. More precisely: cycle 5's case A had `lower_bound` = 3 > `upper_bound` = −2; the inversion was made vivid by that. Case A here has `lower_bound` = −2 < `upper_bound` = 3, i.e. no inversion. The naming point from cycle 5 is still correct — "lower bound in the WHL function sense" = capacity − Σ upper booking bounds — but the *numeric* inversion is not a universal feature of these cases, only a feature when the reservation spread exceeds capacity. Fresh case C is at capacity 3 with reservation tops summing to 10, so `availability_lower_bound` = −7 and `availability_upper_bound` = 0, i.e. lower < upper, no inversion either. So the inversion pattern is case-dependent, not definitional.
+
+**Attribution.** This observation (the numeric inversion is case-dependent, not intrinsic to the WHL bound functions) is attributed to this response. Cycle 5's display-order warning was about *naming*; I now refine it: the naming is what can be misleading, but the numeric ordering relative to capacity/sum is not fixed.
+
+---
+
+## 3. Discrepancies between the original WHL text and the contract, on this cycle's data
+
+**R4 vs WHL `reserves_effect` at `t = expiry`.** Unchanged from cycle 5. WHL's `if t > r.expiry then 0 else r.quantity` returns the hold's quantity at equality; R4 returns zero at equality. The contract operates. Neither fresh case C (t = 0, expiries 10) nor protected case A (t = 10, expiries 9, 20) exercises equality. I record the disagreement again; no new contrast is forced. **Defect in a proposed language clause**, not in an individual application: it is a disagreement between two written rules, not a mistake in applying one.
+
+**R2/R6 vs WHL `possible_reservations` output form.** The WHL code returns a list that *may contain duplicates* (the file itself says "may contain duplicates"). For case A's booking B, this yields `[3, 3, 8]`. Under R2 and R6, the duplicate `3` is a duplicate *way*, not a different value; the possible reservations as a set are {3, 8}. WHL's `list_min?`/`list_max?` bound functions are insensitive to the duplicate, so bounds are unaffected. But an exact-set report built naively from `possible_reservations` would double-count quantity 3. This is a *discrepancy between WHL's list-valued output and the set semantics required by R2/R6*, and it matters precisely for the "exact set" part of the current task. **This is a defect in the language's output shape (list vs. set), not in the rule it encodes**; the rule (exact duplicates carry no additional authority) is correctly encoded by `alternatives_at_greatest`, but `possible_reservations` does not itself deduplicate.
+
+**R5 vs WHL note.** Unchanged. WHL's own file says the language "cannot express incompatibility between alternatives of different bookings except through the capacity sum." R5 supplies the independent-admissibility assumption that WHL's notes flag as a would-be extension. Case C and case A both depend on R5 to permit the joint selections enumerated. No defect in WHL here; a supplied contract clause.
+
+**R6 vs WHL.** Unchanged. WHL supplies the bound functions but not the prohibition on equating bounds with the exact set. R6 supplies the prohibition.
+
+---
+
+## 4. Memo C, applied to this cycle's two cases
+
+Memo C is fallible prose; the block asks me to treat "the selected representation and your own appraisal practice" as criticism targets. I do not re-derive the full C1–C6 ledger (cycle 14 retains it). I assess memo C only where this cycle's material bears on it.
+
+**C1** — "Our representation calls rejection of a supporting assumption a refutation. Therefore when account B rejects an assumption used by account A, A's conclusion has been established false for every account."
+
+Rule-clause check: WHL's `Refutation` is a counterexample (`snap` plus `¬ c snap`) and its notes declare that "source assumptions are not primitive … does not encode a notion of assumption dependence." So WHL does not encode C1's rule **and states that it does not**. RSS lists type-(c) refutation (assumption-dependence) as one refutation form but scopes it locally ("Refutations are local to accounts and do not force global agreement"). So the *universal* half ("for every account") is contradicted by RSS by construction.
+
+Applied to cases A and C: neither case supplies an account. There is no A/B pair in either snapshot, no assumption in play except the contract's own rules. C1 has nothing here to argue against as an individual application, and its clause-level status is unchanged.
+
+**Verdict on C1 (retained from cycle 14):** invalid as a language-clause criticism of either WHL or RSS; valid only against an application that globalised
