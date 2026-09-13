@@ -1,0 +1,161 @@
+# Cycle 15 answer: fresh case C and the protected repeat of case A, under Memo C and the current contract
+
+## Grounds and scope
+
+I use the declared contract R1–R8, the original WHL specimen, the original RSS specimen, the selected use policy (WHL with explicit conversion back to prose), the delivery-status note, the current task with Memo C, the reopened Cycle-5 target (available here only as a receipt hash and a label, not as recoverable text), the previous own-arm response (the Cycle-14 answer, itself visibly truncated mid-sentence), and the two snapshots supplied in the task. Nothing else is treated as ground. Where the Cycle-14 answer ends mid-word, I do not invent the ending; I apply the same rule the delivery note applies to the Cycle-11 prefix.
+
+The task asks for: the selected greatest-revision payload alternatives, their reservation effects, the exact availability set, and separate bounds for fresh case C; a recomputation of protected repeat case A under the same contract; an exposure of discrepancies between the original representation and the task contract; attribution of any interpretation change or extension; a connection only to relevant earlier criticism; and identification of a remaining problem if warranted. It also asks me to distinguish a defect in a proposed language clause from a defect in an individual application, as this block admits both the selected representation and my appraisal practice as targets.
+
+## The contract's reading, fixed before the data is read
+
+R3: greatest revision per booking is selected from all delivered payloads before effect is considered. A lower revision stays superseded even if the greatest-revision hold has expired. R4: a release reserves zero regardless of its fields; a hold reserves its quantity exactly when current time is strictly less than expiry, and zero at equality or later. R2 and R5: exact repeated payloads are inert with respect to each other even when labels differ; different payloads at the same greatest revision are alternatives; alternatives of different bookings are independently admissible. R6: availability = capacity − sum of per-booking reservations; report the exact set; a bound interval may be reported but not equated with the exact set unless every intervening admitted integer occurs.
+
+This is the governing reading for both snapshots. Where WHL leaves a reading open that the contract has closed, I say so and do not let WHL's openness silently select the semantics.
+
+## Fresh case C
+
+Time = 0, capacity = 3, deliveries a1, a2, b1, b2.
+
+**Greatest-revision selection (R3), before effect.**
+
+- Booking A: revisions present are 4 and 4 (a1 and a2 both at revision 4). Both are at the greatest revision.
+- Booking B: both deliveries are at revision 1. Both are at the greatest revision.
+
+No lower-revision record exists in this snapshot, so R3's supersession clause has nothing to suppress here; the point of R3 is simply that expiry is not consulted at this step.
+
+**Payload alternatives (R2, R5).**
+
+- Booking A: a1 = (A, 4, hold, 1, 10) and a2 = (A, 4, hold, 4, 10). They differ in quantity, so they are two distinct payload alternatives, not an exact-duplicate pair. The labels a1 and a2 differ, but under R1 labels record occurrences, not authority; the payloads genuinely differ, so the alternatives stand.
+- Booking B: b1 = (B, 1, hold, 2, 10) and b2 = (B, 1, hold, 6, 10). Differ in quantity; two distinct payload alternatives.
+
+**Reservation effects (R4), time = 0.**
+
+- a1: hold, quantity 1, expiry 10. 0 < 10, so reserves **1**.
+- a2: hold, quantity 4, expiry 10. 0 < 10, so reserves **4**.
+- b1: hold, quantity 2, expiry 10. 0 < 10, so reserves **2**.
+- b2: hold, quantity 6, expiry 10. 0 < 10, so reserves **6**.
+
+No release and no expired hold occur in this snapshot, so only the active-hold branch of R4 is exercised. This is worth stating explicitly: case C does not test R4's boundary clause (`t = expiry`) at all, unlike case A where a2 sits exactly at expiry. The two cases are therefore not interchangeable as R4 probes, and I do not treat case C as evidence about the boundary.
+
+**Per-booking possible reservations.**
+
+- A: {1, 4}
+- B: {2, 6}
+
+**Admissible combinations and exact availability set (R5, R6).**
+
+Alternatives of different bookings are independently admissible. Every combination is an independent pick from A's set and B's set:
+
+- (1, 2): 3 − 3 = **0**
+- (1, 6): 3 − 7 = **−4**
+- (4, 2): 3 − 6 = **−3**
+- (4, 6): 3 − 10 = **−7**
+
+The exact set of possible availability values is **{−7, −4, −3, 0}**.
+
+**Bounds, kept distinct from the exact set.**
+
+Per-booking minima: A gives 1, B gives 2. Capacity − summed minima = 3 − 3 = **0**. Per-booking maxima: A gives 4, B gives 6. Capacity − summed maxima = 3 − 10 = **−7**. So the bound functions output 0 and −7, and the bound interval is [−7, 0].
+
+The exact set is {−7, −4, −3, 0}. The intervening integers −6, −5, −2, −1 are not attainable. So the interval strictly contains the exact set and must not be equated with it (R6). This is the same bound-versus-set gap already exercised on case A; case C confirms it a second time, again by concrete enumeration rather than by argument.
+
+## Protected repeat: case A
+
+Time = 10, capacity = 6. I recompute from the fields and the contract, not from any prior answer.
+
+Records: a1 = (A, 1, hold, 8, 20); a2 = (A, 2, hold, 9, 9); b1 = (B, 1, hold, 3, 20); b1-copy = (B, 1, hold, 3, 20); b2 = (B, 1, hold, 8, 20); c1 = (C, 1, release, 99, 0).
+
+**Greatest revision per booking (R3).**
+
+- A: revisions 1 and 2 present, so greatest is 2. Only a2 sits there; a1 is dominated.
+- B: only revision 1, so b1, b1-copy, b2 are all at greatest.
+- C: only revision 1, so c1 is at greatest.
+
+**Payload alternatives.**
+
+- A: a2 alone — one alternative.
+- B: b1 and b1-copy are identical in all five fields, so under R2 they are an exact-duplicate pair and inert with respect to each other. That leaves b1 (= b1-copy) and b2 as two distinct payload alternatives in quantity (3 vs 8).
+- C: c1 alone.
+
+Delivery labels "b1" and "b1-copy" record occurrences and confer no additional booking authority (R1). So the copy does not weight the 3 against the 8.
+
+**Reservation effects (R4), time = 10.**
+
+- a2: hold, quantity 9, expiry 9. Time 10 is not strictly less than 9, so reserves **0**. (This is R4's boundary clause, on the expired side.)
+- b1: hold, 3, expiry 20; 10 < 20, so **3**.
+- b1-copy: duplicate of b1, effect **3** but no additional alternative.
+- b2: hold, 8, expiry 20; 10 < 20, so **8**.
+- c1: release; reserves **0** regardless of quantity 99 and expiry 0.
+
+**Per-booking possible reservations.** A: {0}. B: {3, 8}. C: {0}.
+
+**Exact availability set.** Independent pick per booking:
+
+- (0, 3, 0): 6 − 3 = **3**
+- (0, 8, 0): 6 − 8 = **−2**
+
+Exact set = **{−2, 3}**.
+
+**Bounds.** Minima A:0, B:3, C:0 → 6 − 3 = 3. Maxima A:0, B:8, C:0 → 6 − 8 = −2. Bound interval [−2, 3], strictly containing the exact set; intervening values −1, 0, 1, 2 are not attainable under the admitted readings.
+
+This matches the Cycle-5's sound consequence as far as that consequence is recoverable here — namely, the same exact-set-versus-bounds gap and the same disposition of a2. I do not treat the re-presented Cycle-5 text as an oracle; the receipt hash and label in the task are the only re-presented material, and the numeric agreement above is derived, not copied.
+
+## Discrepancies between the original representation and the current contract
+
+I state these at the correct level. The distinction the task asks for — clause-defect versus application-defect — requires three levels to be separated: (a) clauses of the WHL specimen as written; (b) the contract R1–R8, which governs this task; (c) applications of WHL-shaped structure to a given snapshot under the contract.
+
+**1. Expiry boundary.** The specimen's `reserves_effect` and `active_hold` both use `¬ (t > expiry)`, i.e. `t ≤ expiry`, so a hold at exactly `t = expiry` reserves its quantity on the specimen's reading. R4 requires `t < expiry`, so a hold at exactly `t = expiry` reserves zero. This is a clause-level divergence between the specimen and the contract. Case A's a2 sits exactly on that boundary (t = 10, expiry = 9 is not the boundary; the boundary case would be expiry = 10 with t = 10, which does not occur here — see below). Precisely: the boundary case is `t = expiry`. Case A has `t = 10, expiry = 9`, so it is in the "strictly later than expiry" region where both clauses agree on zero. So *this* snapshot, like case C with `expiry = 10 > 0`, does not actually probe the boundary in dispute. The divergence remains a real clause-level divergence; neither snapshot supplied this cycle exercises it. I state this rather than pretending either case settles R4-versus-specimen.
+
+**2. Expiry-deletes-authority reading.** The specimen states `expired_deletes_rule` and `deletion_changes_greatest` as a possible alternative reading and declines to choose. R3 chooses: the expired greatest-revision hold still governs, and lower revisions do not revive. This is a clause-level divergence between the specimen's openness and the contract's decision, and it is real. Case A would look different under the deletion rule (a1 would revive); the contract excludes that reading.
+
+**3. Delivery labels and authority.** The specimen's `exact_duplicate` matches R2's five-field identity and its notes distinguish payload identity from provenance; the specimen does not itself model deliveries as first-class. R1 supplies the delivery label as an occurrence marker and explicitly denies it booking authority. So the specimen and the contract agree on the substance; the contract adds the label clause. Not a defect in either, just an extension of vocabulary at the contract layer.
+
+**4. Availability bounds versus exact set.** The specimen supplies `availability_lower_bound` and `availability_upper_bound` but no primitive for the exact attainable set. R6 requires reporting the exact set when asked and forbids equating it with the bounds unless every intervening integer is admitted. Both case A and case C exhibit strict containment, so the specimen's primitives underdetermine what R6 requires. This is a clause-level underdetermination of the specimen relative to the contract. It is not a refutation of WHL: WHL's notes explicitly allow stating per-booking possibilities and comparing readings, and the contract's combination rule supplies what WHL omits. But the omission is real.
+
+**5. Cross-booking coupling.** The specimen has no global choice function and never licenses cross-booking coupling; `possible_reservations` is per booking. The contract states independent admissibility (R5). Agreement, not divergence. Any "protection of a nonexistent conflict" via cross-booking exclusivity is an application-level error, not a clause-level one.
+
+The naming point: the specimen's function names `availability_lower_bound` / `availability_upper_bound` are oriented as "capacity minus summed per-booking lower/upper reservations", and in both cases here the naming produces the counterintuitive orientation (the "lower" bound function outputs the higher number and vice versa, once both are mapped to the ordinary signed interval). That is a naming-orientation issue at the clause-method level, not a defect in the substantive rule. I note it only so the reporting in this answer is unambiguous; I do not treat it as a fault in the contract.
+
+## Memo C, adjudicated once, with scope, for this cycle
+
+Memo C is fallible prose. It also carries its own scope discipline: "an objection to a language clause is not automatically an objection to all uses of that language." The task repeats that discipline. I use it.
+
+**C1.** Rule rejected: under R7, rejecting a support route defeats that route, not the conclusion, and certainly not for every account. Observation retained: rejection and refutation are different operations.
+
+**C2.** Universal rejected: R7 and R8 keep questions open through retention, withdrawal, and suspension; commitment is account-local. Local kernel retained.
+
+**C3.** Universal rejected: the memo itself names the exceptions (singleton domain; injectivity on admitted domain). Correct version: information is lost when the target is strictly coarser than the admitted domain. The set-versus-bounds instance is the through-line: bounds are strictly coarser than the exact set on both snapshots here, so C3's operative interior case is sound; its universal form is not.
+
+**C4.** Inference rejected: RSS's noncomputability is a design property of choosing a single reading, not a theorem about the reservations-and-availability problem. Under R3–R6 with a fixed reading, the exact set is finite and computable — case C and case A are both enumerated above in finitely many steps.
+
+**C5.** Retained as a methodological negative: predicate existence is a hypothesis of coverage, not a certificate. Applied here, it forecloses treating `reserves_effect` or `availability_lower_bound` as automatically capturing R4/R6; the specimen's boundary clause and the missing exact-set primitive are the concrete witnesses.
+
+**C6.** Retained: being able to state a false claim is not by itself a defect; what matters is what distinctions the representation lets us inspect. The specimen lets us inspect the per-booking possibility sets, the exact supersession structure, and the alternatives; it does *not* let us inspect the exact global availability set directly. That is the residual scope question, and I mark it as open between the specimen's expressive reach and R6's requirement.
+
+## Attribution of interpretation changes and extensions
+
+Attributed to this answer, not to the original texts:
+
+1. The three-level separation just given — (a) specimen clause, (b) contract clause, (c) application of WHL-shaped structure under the contract — is stated here as the required frame for the "clause-defect versus application-defect" distinction the task asks for. The Cycle-14 answer had begun to state a similar three-way split; the current task explicitly requires it, and I state it as my own.
+
+2. The observation that *neither* case A nor case C exercises R4's strict-inequality boundary (`t = expiry`) is a fresh observation of this cycle. Case A is on the strictly-later side, case C is on the strictly-earlier side. So the R4/specimen divergence at the boundary is *not* sampled by either snapshot this cycle, and I state that rather than letting the correct numeric results suggest the boundary was tested. Earlier cycles called case A a boundary case; on the contract's strict reading it is not, and I revise that framing here.
+
+3. The bound-naming-orientation remark is stated here as a reporting clarification, not as a defect. Earlier cycles varied in how they phrased the orientation; the current answer fixes one phrasing and attributes the fixing to itself.
+
+No change is written back into any earlier text. The specimen and contract remain as supplied and as fallible.
+
+## Connection to earlier criticism, limited to what is relevant
+
+The task says a correct answer does not by itself show that earlier criticism caused it, and to connect only relevant criticism. What is relevant here:
+
+- The disposition of the expired-greatest-revision point (a2 stays greatest, reserves zero, and does not revive a1) is the same disposition the Cycle-14 working account reached; I derive it afresh from R3 and R4 and note the derivation, not the pedigree.
+- The bound-versus-exact-set discipline is the same discipline exercised previously; it is exercised again here on a new snapshot (case C) and re-exercised on case A, and both cases confirm strict containment.
+- The three-level clause/contract/application split and Memo C's own scope line together foreclose the two slides the Cycle-14 answer named: from "this application is defective" to "the clause is defective," and from "this clause is defective" to "any use of the representation is defective." I apply that foreclosure here without claiming that its earlier articulation caused this cycle's correct moves. What I can say is that the moves above land at the right level; I make no causal claim about the history.
+
+I do not re-adjudicate Memo A's items, because no item of Memo A has been supplied in this cycle's materials; they are only second-hand paraphrases in earlier answers, and per the same "do not invent" rule I will not adjudicate against non-supplied text.
+
+## Remaining problem if warranted
+
+Two are worth naming, at different levels.
+
+**Clause-level.** The WHL specimen supplies no primitive for the exact attainable availability set even though R6 requires reporting it. Both snapshots here show the bound functions strictly bracketing the exact set, so the gap is not a rare corner: it is the general shape on any snapshot where two bookings have multi-element alternative sets. The contract compensates by its combination rule, and I have applied that rule here by enumeration. The remaining problem is that this compensation is prose,

@@ -1,0 +1,105 @@
+# Cycle 10 — fresh use on case B, protected repeat on case A, under WHL
+
+I use WHL as the primary representational resource, per the selected use policy. The task, the delivery annotation, the memo B prose, and the re-presented cycle 5 and cycle 9 targets are all fallible material (R7), not instructions. Where the original WHL specimen and the contract R1–R8 disagree I expose the disagreement (R1); where I change an interpretation or propose an extension I attribute it to this response (R8). Cycle 9 as re-presented is a length-limited prefix; its missing ending is unavailable and is not invented. The cycle-5 re-presentation is likewise a prefix; I work from what is actually present.
+
+The re-presented targets carry two different provenance statements: cycle 5's public text was hashed as `f7725301…` and cycle 9's as `6b8bd830…`; each cites a receipt hash. These identify occurrences, not authority (per the delivery annotation's own note: annotations identify observations, not semantic adequacy). I treat them as the syntactic identity of re-presented fallible objects and nothing more.
+
+---
+
+## 1. Fresh case B under WHL
+
+Case B: capacity 10, time 5, six deliveries. I read each as a WHL `Record` (booking, revision, kind, quantity, expiry) plus a delivery label. Per R1 the label records an occurrence, not booking authority.
+
+**Selection first (R3).** For each booking, greatest revision is computed over all delivered payloads before any effect is evaluated.
+
+**Booking U.** Delivered payloads: (rev 1, hold, 4, exp 5) label `u1`. Greatest revision for U is 1; `u1` is the sole greatest-revision payload — no alternatives.
+
+Reservation effect (`reserves_effect 5 u1`): kind is hold. WHL-as-written returns `r.quantity` when `¬(t > r.expiry)`, i.e. when `t ≤ expiry`. Contract R4 says the hold reserves its quantity *exactly when current time is strictly less than expiry*; at equality or later it reserves zero. Here `t = 5` and `expiry = 5`: `t > expiry` is false, so WHL returns 4; R4's stricly-less rule returns 0. **This case exercises the equality case that case A did not.** The contract governs, so the booking's only admissible reservation is 0. `possible_reservations U = [0]`; bound pair (0, 0). I record the WHL-vs-R4 divergence (§4) without repairing either text.
+
+**Booking V.** Delivered payloads: (rev 5, hold, 3, exp 10) label `v1`; (rev 4, release, 0, exp 99) label `v0`. Greatest revision is 5; `v1` is the sole greatest-revision payload. `v0` is dominated (`higher_revision` holds: same booking, `revision_lt 4 5`). Per R3 a lower revision remains superseded regardless of effect, so `v0`'s release status does not bring it back.
+
+Reservation effect of `v1` at t = 5: hold with `expiry 10 > 5`, so `¬(t > expiry)` is true and R4's "strictly less" also holds — both readings give 3. `possible_reservations V = [3]`; bound pair (3, 3).
+
+**Booking W.** Delivered payloads: `w1` (rev 2, hold, 2, exp 8); `w1-copy` (rev 2, hold, 2, exp 8); `w2` (rev 2, hold, 6, exp 8). All at revision 2, which is W's greatest — no higher revision present.
+
+- `w1` and `w1-copy` have identical record payloads (booking, revision, kind, quantity, expiry all equal). Per R2, exact repeated record payloads convey no additional authority even when delivery labels differ; per WHL's `alternatives_at_greatest`, exact duplicates are excluded from the alternatives relation. They neither double-count nor add weight to quantity 2.
+- `w2`'s payload (W, 2, hold, 6, exp 8) is *not* an exact duplicate of `w1`. So `w1` (equivalently `w1-copy`) and `w2` are alternatives at W's greatest revision. R2 confirms "different payloads at the same greatest revision are alternatives"; R5 confirms the intra-booking multiplicity is genuine — one payload alternative is selected for the booking at its greatest revision.
+
+Reservation effects at t = 5: both are holds with `expiry 8 > 5`, so active; both readings agree. `reserves_effect 5 w1 = 2`; `reserves_effect 5 w2 = 6`. `possible_reservations W = [2, 6]`; bound pair (2, 6).
+
+Summary of selected greatest-revision payload alternatives and effects:
+
+| booking | greatest-rev payload(s) | alternatives at greatest rev | reservation effects |
+|---|---|---|---|
+| U | u1 (hold,4,exp5) | {u1} | {0} (R4 at equality) |
+| V | v1 (hold,3,exp10) | {v1} | {3} |
+| W | w1 / w1-copy / w2 | {w1 (≅ w1-copy), w2} | {2, 6} |
+
+**Exact availability set (R6).** Admissible per-booking choices: U∈{0}, V∈{3}, W∈{2,6}. R5 licenses independent cross-booking selections (see §5 for what would have to be supplied to change this). Joint selections and sums:
+
+- U=0, V=3, W=2 → sum = 5, availability = 10 − 5 = **5**.
+- U=0, V=3, W=6 → sum = 9, availability = 10 − 9 = **1**.
+
+**Exact set of availability values: {5, 1}.**
+
+**Bounds (WHL `availability_lower_bound` / `availability_upper_bound`).** Per-booking lower/upper of `possible_reservations`: U (0, 0); V (3, 3); W (2, 6). Sum of lowers = 0 + 3 + 2 = 5; sum of uppers = 0 + 3 + 6 = 9.
+
+- `availability_lower_bound` = 10 − 9 = **1** (capacity minus sum-upper).
+- `availability_upper_bound` = 10 − 5 = **5** (capacity minus sum-lower).
+- Displayed as an increasing interval: **[1, 5]**.
+
+**Exact set vs. bounds.** The set {5, 1} is the two endpoints of [1, 5]; the interior integers 2, 3, 4 are not attained. R6 forbids equating the interval with the exact set: "an interval may be reported as bounds but must not be equated with an exact set unless all intervening admitted integer values occur." So the interval [1, 5] is *not* the exact set. Case B is an interior-filling-free instance: the two attained values straddle three unattained interior values.
+
+Note on display order: as flagged in cycle 5 (attributed there), WHL's function name `availability_lower_bound` returns the *larger* number (capacity minus the sum of per-booking maxima), and `availability_upper_bound` returns the *smaller*; displayed as an increasing interval the pair is [upper_bound_function, lower_bound_function] = [1, 5]. This naming/display flip was attributed to cycle 5's response, and I carry it forward here as attributed.
+
+---
+
+## 2. Protected repeat of case A, recomputed under the same contract
+
+Case A: capacity 6, time 10, six deliveries. Recomputed from the current material, not taken from the old answer as an oracle.
+
+**Booking A.** Payloads `a1` (rev 1, hold, 8, exp 20), `a2` (rev 2, hold, 9, exp 9). Greatest revision 2; `a2` sole greatest-revision payload; `a1` dominated. `a2`'s effect at t = 10: `t > expiry` (10 > 9) → 0 under both WHL and R4. `possible_reservations A = [0]`; (0, 0).
+
+**Booking B.** Payloads `b1` (rev 1, hold, 3, exp 20), `b1-copy` (rev 1, hold, 3, exp 20), `b2` (rev 1, hold, 8, exp 20). All at rev 1; `b1` ≅ `b1-copy` (exact duplicates, R2); `b2` is an alternative. Effects at t = 10: both `¬(t > expiry)` and "strictly less" hold (10 < 20), → 3 and 8. `possible_reservations B = [3, 8]`; (3, 8).
+
+**Booking C.** Payload `c1` (rev 1, release, 99, exp 0). Sole greatest-revision payload; release effect 0 (R4, WHL both). `possible_reservations C = [0]`; (0, 0).
+
+**Exact set.** Joint selections: (A=0, B=3, C=0) → sum 3 → avail 6 − 3 = **3**; (A=0, B=8, C=0) → sum 8 → avail 6 − 8 = **−2**. **Exact set {3, −2}.** Bounds: sum-lowers 3, sum-uppers 8; `availability_lower_bound` = 6 − 8 = −2; `availability_upper_bound` = 6 − 3 = 3. Display interval **[−2, 3]**. Interior integers −1, 0, 1, 2 are not attained; R6 forbids equating [−2, 3] with {3, −2}.
+
+**Preserved earlier sound consequences.** The cycle-5 results under the same contract — Booking A reserves 0 (its expired greatest-revision hold does not resurrect the dominated lower-revision payload); the `b1`/`b1-copy` pair is inert per R2; `possible_reservations B = [3, 8]`; exact set {3, −2}; bounds [−2, 3] as display interval — are recomputed and preserved. The interpretation of the deletion reading (`expired_deletes_rule`, `deletion_changes_greatest`) as a *not-chosen* alternative remains: R3 selects structural supersession, so the deletion reading is not applied to case A, and case B's U likewise does not resurrect any lower-revision payload (there is none).
+
+**One point of the cycle-5 record that case B now exercises.** Cycle 5 stated the WHL-vs-R4 equality divergence but noted case A did not exercise it (both readings gave 0 for `a2` at t=10 > expiry 9, and 3/8 for `b1`/`b2` at t=10 < expiry 20). Case B *does* exercise the equality: booking U with `t = 5 = expiry`. Under WHL-as-written `reserves_effect 5 u1 = 4`; under R4 = 0. Both cycle A and cycle B use the same declared contract, under which R4 governs. So the two cases are consistent under R4 and would diverge from each other if WHL-as-written were the operative rule. I preserve R4 as operative and keep the divergence visible (§4).
+
+---
+
+## 3. Memo B — placement of B1–B6, and the new coupling problem
+
+B1–B4: separate evidential routes that separately derive the bound (B1); display-of-latest is not a claim about non-delivery (B2, correct on WHL's "delivery is not modelled" note, not on `dominated_in`/`greatest_revision_in`); R4 governs equality, and R3 keeps lower-revision supersession independent of effect (B3, correct only in the operative-contract sense; WHL's own code returns quantity at equality); a conditional consequence may be true without its assumptions applying to a particular physical warehouse (B4). B5 is the overreach: bound agreement is endpoint agreement (WHL's `availability_lower_bound`/`_upper_bound`), and does not answer criticisms of the *represented exact alternatives* or the *reading under which alternatives were admitted* — cycle B itself supplies a live demonstration: two accounts agreeing on [1, 5] can still disagree about whether `possible_reservations W = [2, 6]` should have been the alternative set at all (e.g. if near-duplicates were treated as a single alternative). The A2-pairing move as evidential support for B5 is not reintroduced (withdrawn, per cycle 9's settlement).
+
+### 3.1 The "new problem" from the task's cycle-9 memo B
+
+**What kind of problem it is.** Withdrawing R5's independence rule opens a genuinely new question — *what couples alternatives across bookings?* — and preserves case-A's and case-B's results as *conditional* claims under the originally specified independent-choice scope. This is **scope-open**, not expressive-open (I attribute this classification — already drawn in cycle 8 and settled in cycle 9 — to those responses; I do not introduce it now).
+
+- *Expressive-open* would mean WHL cannot represent the coupling at all, so a *language extension* is required. WHL's own note says it "cannot express incompatibility between alternatives of different bookings except through the capacity sum." That is a stated expressive limitation.
+- *Scope-open* means R5 supplies independence as a specified task scope ("this is a specified task scope, not a universal claim about physical warehouses"), and the scope can be revised by a contract change or case stipulation without language extension.
+
+Because B6's sentence ("rejecting the rule that bookings are independent opens a legitimate question") targets the *rule*, not WHL's capacity-only primitive, it is scope-open.
+
+**What would have to be supplied to investigate it without manufacturing a policy.** The four prerequisites from cycle 9 are retained, sharpened here in light of both fresh cases:
+
+1. **What couples the bookings.** A statement of which physical resource other than aggregate capacity is shared, or which *pairing* of cross-booking alternatives is incompatible. WHL's `Snapshot` carries only `capacity`; any coupling must be supplied from outside the current `Snapshot`.
+2. **Restriction on selections vs. reinterpretation of liveness.** WHL separates `ReservationRule` (`Time → Record → Quantity`) from per-booking alternative structure generated by `possible_reservations : Snapshot → Booking → List Quantity`. A joint-selection restriction lives on the *product* of per-booking alternatives, which WHL does not currently carry. Naming which of these is proposed is required before any computation.
+3. **Case assumption vs. language extension.** If a case assumption, it can be stated in the current vocabulary; if a language extension, it must be declared and attributed (R8). This is exactly the register R8 furnishes.
+4. **Whether the coupling changes the availability *set*, the *bounds*, or only which *endpoints* are acceptable.** R6 makes the set/interval distinction load-bearing. A coupling can collapse the interval onto the set, or push the set outside the old interval. The supply must state which, because "the old result remains a distinct conditional claim" (the task's own wording) is protectable only if the coupling's effect is characterized before it is applied.
+
+Case B, like case A, has two attained availability values and three unattained interior integers in the displayed interval. A coupling that admitted new joint selections could, in principle, fill some or all of those interior values; a coupling that excluded admissibility could leave the endpoints but shrink the *set* further or move it. Without (1)–(4) I do not compute a coupled result. I record the prerequisites and leave the coupling open, per the task's instruction not to manufacture a policy.
+
+**Connection to earlier criticism, kept to what actually bears.** Cycle 9's distinction between *scope-open* and *expressive-open* applies directly to B6 and is therefore relevant here. Cycle 9's withdrawal of the "third reading" label is also relevant: case B's equality case at U is not a third reading, it is WHL's first named reading at its equality boundary — WHL's `reserves_effect` returns quantity at `t = expiry`; R4 supplies zero at `t = expiry`. The label correction is not reintroduced. Nothing else from cycles 6–9 is required to execute this use; I do not claim that cycle 5's or cycle 9's correct statements caused this answer, only that they correspond (a correct answer does not by itself prove that a criticism caused it).
+
+---
+
+## 4. Discrepancies between the original WHL text and the contract, exposed where case B exercises them
+
+- **R4 vs. WHL at equality (exercised by case B).** R4: "A hold reserves its quantity exactly when current time is strictly less than expiry; at equality or later it reserves zero." WHL `reserves_effect`: `if t > r.expiry then 0 else r.quantity` — returns quantity at `t = expiry`. Case B is the concrete contrast: at `t = expiry = 5` for booking U, R4 gives 0 and WHL-as-written gives 4. R4 governs; both texts preserved. This is the equality divergence cycle 5 flagged as unexercised and case B now exercises. I attribute the explicit use of case B as an exercise of this divergence to this response; cycle 5 only flagged its non-exercise in case A.
+- **R3 vs. WHL selection.** R3's "greatest revision is selected ... before considering their effect" matches WHL's `greatest_revision_in` (booking equality plus `revision_lt`), which does not consult expiry. Alignment, no divergence.
+- **R2 vs. WHL duplicate discipline.** R2's "exact repeated record payloads convey no additional authority even when delivery labels differ" matches WHL's `exact_duplicate`
