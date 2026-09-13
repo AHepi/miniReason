@@ -1,0 +1,240 @@
+# Use of U1 on the fresh event sequence
+
+## Governing instrument
+
+The operative retained state at the start of this stage is U1 `[e249c2e959c69e67]`, whose content (after re-applying U0's two events) is:
+
+```json
+{
+  "Lrows":      [[2, 7], [3, 9]],
+  "Rrows":      [[11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":  [[7, [2]], [9, [3]]],
+  "RkeyIndex":  [[7, [11]], [9, [12]]],
+  "output_bag": [[2, 7, "a"], [3, 9, null]]
+}
+```
+
+## Which part of U1 I use, and what I must infer
+
+From U1 I use, without modification:
+
+- The retained-state schema: `Lrows`, `Rrows`, `LkeyIndex`, `RkeyIndex`, cached `output_bag` (candidate §2.1–2.4, 2.6, adopted verbatim by U1).
+- The update rules as U1 fixed them: candidate §4.1/4.2 (L-only effects), §4.3/4.4 (R effects scoped to `LkeyIndex[k]` for non-NULL `k`, NULL `R.k` inert), §4.5 (no special update rule).
+- U1's two interpretive inferences: (i) `RkeyIndex` buckets are multisets of `rid`, and output deltas remove **one occurrence** (bag, not set); (ii) `matchCount` is derivable, not stored, with `cnt(k) = |RkeyIndex[k]|`.
+- U1's NULL-key exclusion: NULL `k` never enters `LkeyIndex`/`RkeyIndex`; an L row with NULL `k` always occupies the NULL branch; a matched right row whose **value** `v` is NULL is a *matched-NULL* triple `(lid, k, NULL)`, not a no-match NULL.
+
+**New interpretation / inferred operation at this stage:** None is required. Every fresh event below is a case the candidate's §4.1, §4.3, and §4.4 already cover for these inputs (all keys non-NULL integers; no cross-storage-class comparison; no before-image disagreement; IDs absent on insert, present on delete). I therefore add no new rule. The only stage-level choices are procedural: (a) I treat U1's `output_bag` as authoritative and apply signed bag deltas to it; (b) I record the affected-key scope explicitly per event, including the untouched status of key 9. U1's reading (a)/(b) interpretive note concerns U0's history and does not bear on these fresh events.
+
+**Suspension/insufficiency status:** U1 is not suspended or insufficient for this sequence. The candidate §7 gaps (proof completeness; bag-vs-set under-specification; collation/affinity; id re-validation; concurrency) are carried forward unchanged and are not exercised by these events. I do **not** reconstruct any earlier state beyond what U1 already contains.
+
+---
+
+## Event 1 — `insert L [1, 7]`
+
+`lid = 1` is absent from `Lrows` (was deleted as a NULL-key row in U0). Rule §4.1. `R` unchanged, so no other L row's branch can change.
+
+- `k = 7` is non-NULL.
+- `RkeyIndex[7] = [11]` (shown by `cnt(7) = 1`, non-empty) → **match branch**.
+- Output delta: **add** `(1, 7, "a")`, one occurrence, from the single matching right row `(11, 7, "a")`.
+- State mutation: `Lrows += (1,7)`; `LkeyIndex[7]` becomes `[1, 2]` (or `{1,2}`).
+- `Rrows`, `RkeyIndex`, `output_bag` for keys other than 7: untouched.
+
+### Retained state after Event 1
+
+```json
+{
+  "Lrows":      [[1, 7], [2, 7], [3, 9]],
+  "Rrows":      [[11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":  [[7, [1, 2]], [9, [3]]],
+  "RkeyIndex":  [[7, [11]], [9, [12]]],
+  "output_bag": [[1, 7, "a"], [2, 7, "a"], [3, 9, null]]
+}
+```
+
+### Complete output bag after Event 1
+
+| lid | k | v |
+|-----|---|---|
+| 1 | 7 | "a" |
+| 2 | 7 | "a" |
+| 3 | 9 | NULL |
+
+**Unaffected keys:** key 9 is untouched — `LkeyIndex[9] = [3]`, `RkeyIndex[9] = [12]`, and the triple `(3, 9, NULL)` (a matched-NULL triple from `R.v = NULL`) is unchanged. No NULL-branch L row exists.
+
+---
+
+## Event 2 — `delete R [11, 7, "a"]`
+
+`rid = 11` present in `Rrows` with `k = 7`, `v = "a"`. Rule §4.4. Before-image agrees with retained state.
+
+- `k = 7` non-NULL → affected L set `A = LkeyIndex[7] = {1, 2}`.
+- `cnt(7)` before removal `= |{11}| = 1` → `willBeEmpty = (cnt == 1)` = **true**: this is the **1→0 transition** on key 7.
+- For each `x ∈ A`:
+  - `x = 1`: remove `(1, 7, "a")`, add `(1, 7, NULL)`.
+  - `x = 2`: remove `(2, 7, "a")`, add `(2, 7, NULL)`.
+- State mutation: remove `(11, 7, "a")` from `Rrows`; remove `rid = 11` from `RkeyIndex[7]`, leaving the bucket **empty** → drop `RkeyIndex[7]`. (Under U1's derived-count convention, `LkeyIndex[7]` is kept because `1` and `2` remain live L rows.)
+- No other key is touched.
+
+### Retained state after Event 2
+
+```json
+{
+  "Lrows":      [[1, 7], [2, 7], [3, 9]],
+  "Rrows":      [[12, 9, null]],
+  "LkeyIndex":  [[7, [1, 2]], [9, [3]]],
+  "RkeyIndex":  [[9, [12]]],
+  "output_bag": [[1, 7, null], [2, 7, null], [3, 9, null]]
+}
+```
+
+### Complete output bag after Event 2
+
+| lid | k | v |
+|-----|---|---|
+| 1 | 7 | NULL |
+| 2 | 7 | NULL |
+| 3 | 9 | NULL |
+
+**Critical semantics note on the two `NULL` values in columns `v` for `lid = 1` and `lid = 2`:** these are **no-match NULLs** (the left row has a non-NULL key `7` with an empty right bucket). They are *not* the same phenomenon as `(3, 9, NULL)`, which is a **matched NULL** (`R.v` is NULL on the surviving `rid = 12`). The output triple shape `[lid, k, NULL]` cannot distinguish the two, but the retained state does: `RkeyIndex` retains `[9, [12]]` and has dropped key 7.
+
+**Unaffected keys:** key 9 is again untouched throughout Event 2 — `LkeyIndex[9]`, `RkeyIndex[9] = [12]`, and `(3, 9, NULL)` are unchanged. Key 7's left rows flipped from the match branch to the NULL branch en bloc; that flip is scoped entirely by membership in `LkeyIndex[7]`.
+
+---
+
+## Event 3 — `insert R [13, 7, null]`
+
+`rid = 13` is absent. Rule §4.3. `R.k = 7` is **non-NULL** → this is a *key match* on `7`, not a NULL-key event. The fact that the inserted **value** `v` is NULL is irrelevant to matching; ordinary equality `L.k = R.k` compares keys only.
+
+- `A = LkeyIndex[7] = {1, 2}`.
+- `cnt(7)` before insertion `= 0` (bucket was dropped) → `wasEmpty = true`: this is the **0→1 transition** on key 7.
+- For each `x ∈ A`:
+  - `x = 1`: remove `(1, 7, NULL)` (the no-match NULL triple), add `(1, 7, NULL)` — but note: the *added* triple is a **matched-NULL** triple, `(1, 7, 13→NULL v)`. In the output bag these are textually identical to the removed triple, so the **bag delta is zero** for `lid = 1` on the triple-as-written; the *semantic* branch changes from no-match to matched-NULL.
+  - `x = 2`: same — delta zero on the triple text, semantic branch flips to matched-NULL.
+- State mutation: `Rrows += (13, 7, NULL)`; `RkeyIndex[7]` re-created as `[13]`.
+- `LkeyIndex`, `Lrows`, key 9: untouched.
+
+### Retained state after Event 3
+
+```json
+{
+  "Lrows":      [[1, 7], [2, 7], [3, 9]],
+  "Rrows":      [[12, 9, null], [13, 7, null]],
+  "LkeyIndex":  [[7, [1, 2]], [9, [3]]],
+  "RkeyIndex":  [[7, [13]], [9, [12]]],
+  "output_bag": [[1, 7, null], [2, 7, null], [3, 9, null]]
+}
+```
+
+### Complete output bag after Event 3
+
+| lid | k | v |
+|-----|---|---|
+| 1 | 7 | NULL |
+| 2 | 7 | NULL |
+| 3 | 9 | NULL |
+
+The output bag is **textually identical** to Event 2's, but the retained state differs (`RkeyIndex[7] = [13]` now exists). This is exactly the kind of latent distinction the retained state must capture: a subsequent delete of `rid = 13` must restore the no-match-NULL branch, whereas a subsequent insert of a right row under key 7 with a non-NULL value must remove a no-match triple and add a matched one with a different `v`.
+
+**Unaffected keys:** key 9 is untouched. `LkeyIndex[9] = [3]`, `RkeyIndex[9] = [12]`, and `(3, 9, NULL)` (matched-NULL) unchanged. Key 7 was affected at the *branch* level only; the output-bag text did not move.
+
+**Attribution note:** This "text-preserving branch flip" is a direct consequence of U1's inherited rules (§4.3's `wasEmpty` branch), not a new inference. It depends on U1's matched-NULL / no-match-NULL distinction, which is the candidate's §2.3–2.4 NULL-key exclusion applied consistently.
+
+---
+
+## Event 4 — `insert R [14, 7, "c"]`
+
+`rid = 14` absent. Rule §4.3.
+
+- `A = LkeyIndex[7] = {1, 2}`.
+- `cnt(7)` before insertion `= |{13}| = 1` → `wasEmpty = false`: this is a **matched-addition**, not a branch flip.
+- For each `x ∈ A`:
+  - `x = 1`: add `(1, 7, "c")`.
+  - `x = 2`: add `(2, 7, "c")`.
+  - No removal from the NULL branch (`cnt(7) ≥ 1` already; the no-match NULL was already gone from Event 3's semantic state).
+- State mutation: `Rrows += (14, 7, "c")`; `RkeyIndex[7]` becomes `[13, 14]`.
+- Key 9 and all other structures untouched.
+
+### Retained state after Event 4 (final)
+
+```json
+{
+  "Lrows":      [[1, 7], [2, 7], [3, 9]],
+  "Rrows":      [[12, 9, null], [13, 7, null], [14, 7, "c"]],
+  "LkeyIndex":  [[7, [1, 2]], [9, [3]]],
+  "RkeyIndex":  [[7, [13, 14]], [9, [12]]],
+  "output_bag": [[1, 7, null], [1, 7, "c"], [2, 7, null], [2, 7, "c"], [3, 9, null]]
+}
+```
+
+### Complete output bag after Event 4
+
+| lid | k | v |
+|-----|---|---|
+| 1 | 7 | NULL |
+| 1 | 7 | "c" |
+| 2 | 7 | NULL |
+| 2 | 7 | "c" |
+| 3 | 9 | NULL |
+
+Multiplicity: `(lid, 7, NULL)` appears once for `lid ∈ {1,2}` (matched-NULL, from `rid = 13`), and `(lid, 7, "c")` appears once for `lid ∈ {1,2}` (from `rid = 14`). No two rows collide, because `rid = 13` and `rid = 14` have different `v` values. Had there been a third right row under key 7 with `v = "c"`, the `(lid, 7, "c")` triple would appear with multiplicity 2 for each matched `lid`; the bag semantics of U1 (multiset `RkeyIndex`, one occurrence per match) would produce that automatically.
+
+**Unaffected keys:** key 9 remains unchanged throughout: `LkeyIndex[9] = [3]`, `RkeyIndex[9] = [12]`, triple `(3, 9, NULL)` still present exactly once (matched-NULL). No event in this sequence touched `lid = 3`, `rid = 12`, or key 9, and none changed the branch status of any row with key 9.
+
+---
+
+## Summary of key-9 behavior across the sequence
+
+Key 9 was **never affected** by any of the four fresh events:
+
+| Event | Action on key 9 | Contribution to key 9 output |
+|-------|-----------------|------------------------------|
+| Insert L [1, 7] | none | unchanged `(3, 9, NULL)` |
+| Delete R [11, 7, "a"] | none | unchanged |
+| Insert R [13, 7, null] | none | unchanged |
+| Insert R [14, 7, "c"] | none | unchanged |
+
+The retained state shows this structurally: `LkeyIndex[9] = [3]` and `RkeyIndex[9] = [12]` are the same before and after the sequence, and `cnt(9) = 1` throughout, so `lid = 3` remained on the match branch with a single matched-NULL right row. The fact that `R.v = NULL` for `rid = 12` is the reason `(3, 9, NULL)` looks like a no-match triple — but per U1's inherited rules it is a matched-NULL triple and would survive, one occurrence, as long as `rid = 12` is live.
+
+---
+
+## Trajectory of key 7 across the sequence (affected-key summary)
+
+| Event | `cnt(7)` before | Transition | Delta to bag |
+|-------|-----------------|-----------|--------------|
+| Insert L [1, 7] | 1 | new left row on match branch | `+= (1, 7, "a")` |
+| Delete R [11, 7, "a"] | 1 | 1 → 0 | for `lid ∈ {1,2}`: `-= (lid, 7, "a")`, `+= (lid, 7, NULL)` |
+| Insert R [13, 7, null] | 0 | 0 → 1 | for `lid ∈ {1,2}`: remove no-match NULL, add matched-NULL — textually net-zero |
+| Insert R [14, 7, "c"] | 1 | 1 → 2 | for `lid ∈ {1,2}`: `+= (lid, 7, "c")` |
+
+---
+
+## What is preserved, and what is not
+
+- **Not recomputed from base tables.** Every event was processed against U1's retained state via the next event alone, per the incremental contract of the stable source.
+- **Multiplicity preserved.** Every bag operation was a single-occurrence add or remove; no set semantics were used.
+- **U1's interpretation in force.** NULL keys excluded from indexes; matched-NULL vs no-match-NULL distinguished in state though not in the triple text; `RkeyIndex` as a multiset of `rid`.
+- **Uncertainty preserved.** Candidate §7 items 1–8 and U1's inherited caveats remain open. In particular:
+  - §7 item 3 (bag vs. set) is central here: Events 2 and 4 both turn on multiplicity-preserving deltas. A set-based interpreter would collapse `(1, 7, NULL)` and `(1, 7, "c")` incorrectly across different right rows.
+  - §7 item 4 (collation/affinity) is not exercised — all keys are Java/SQL-typical non-NULL integers, no cross-type comparison, no text keys.
+  - §7 item 2 (before-image disagreement) is not exercised — Event 2's before-image matched retained `Rrows` exactly.
+  - §7 item 5 (id re-validation) is not exercised — `lid = 1` was genuinely absent before Event 1; `rid = 13`, `rid = 14` genuinely absent before Events 3, 4.
+  - §7 item 1 (proof completeness) remains a sketch; this four-event trace is a single path, not a totality proof.
+- **No new inference was added by this stage.** All four events fall inside the literal scope of candidate §4.1, §4.3, §4.4 as U1 fixed them; the stage contributed only clean application and the explicit key-9 bookkeeping.
+
+## Cached state to hand forward
+
+**Final retained state (post-Event-4):**
+
+```
+Lrows      = [[1, 7], [2, 7], [3, 9]]
+Rrows      = [[12, 9, null], [13, 7, null], [14, 7, "c"]]
+LkeyIndex  = [[7, [1, 2]], [9, [3]]]
+RkeyIndex  = [[7, [13, 14]], [9, [12]]]
+output_bag = [[1, 7, null], [1, 7, "c"], [2, 7, null], [2, 7, "c"], [3, 9, null]]
+```
+
+**Event position:** 4 fresh events consumed since U1 was taken as the operative parent; 6 events consumed since the original initialization.
+
+**Branch status of each live L row:** `lid = 1` matched (key 7, `cnt = 2`); `lid = 2` matched (key 7, `cnt = 2`); `lid = 3` matched (key 9, `cnt = 1`, matched-NULL). No live L row is on the no-match NULL branch.
+
+No earlier state was reconstructed beyond what U1 supplied; no unavailable U0 detail was invented; U1 is used as-is; and the insufficiency findings attached to the candidate and U1 are preserved.
