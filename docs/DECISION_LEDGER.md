@@ -1149,3 +1149,7 @@ VERIFIED 166ac59ad45d8e50c9f327d8270aa921c88d3095 TREE f29aa03f5209332ffe71a0a0a
 
 REC-20260913-L wave 17 completion at 2026-09-13 12:06:14 UTC: original provider records and public texts preserved; exact request, response, seed and runtime custody revalidated in checkpoint-wave17.json. Full and partial contributions remain distinct; unknown usage remains unknown. No retries. Publish completed evidence before any dependent wave. This receipt is operational; root semantic gates remain separate.
 Public-byte evidence: {"wave":17,"commit":"a01079ff5e08e72652248d39ece82aa79c03ffc2","public_payload_proof":[{"arm":"whl","cycle":19,"bytes":161944,"sha256":"940a859fc8eb37d9cc671fe10eb15f0ec1b2a8d9f00081d5348ca7656549dcd7","anonymous_fetch_matches_local":true,"attempt_exists":false}]}
+
+REC-20260913-L wave 18 preparation at 2026-09-13 12:06:57 UTC: previous completed evidence publication verified To https://github.com/AHepi/miniReason.git
+   a01079f..4e9532f  HEAD -> main
+VERIFIED 4e9532fd57cba3238a221b89a8fc93c70f3db66d TREE 5119eb20d9dcd026eb889dd5d26a08e1eba4b6a8. Prepare only each eligible arm's next frozen coordinate and exact own-arm dependencies. Continue inside the accepted root gate, maximum five simultaneous calls, 4096 completion tokens each, no retries. No operator diagnoses or revised task material enter participant input. Publish these bytes before dispatch.
