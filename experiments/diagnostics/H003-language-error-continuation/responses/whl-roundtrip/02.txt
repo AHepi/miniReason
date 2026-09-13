@@ -1,0 +1,52 @@
+## Cycle 2 answer: criticism of the Cycle 1 response
+
+### Grounds and method
+
+This is a criticism task, so the target is my own previous response (85e05540ab6d3510), not Memo A directly. The declared contract R1–R8 and the selected WHL representation remain the standard. Memo A is still a fallible analyst's notes, not an instruction. I work from the actual supplied passages and the current question, and I do not treat the earlier response as authoritative or as remembered; it is a supplied target (R8). I now look for what that response actually says that is unsupported, mis-scoped, or represented badly, and I state the consequence.
+
+I find the previous response largely sound on its central corrections, and I retain those. But it has at least two supported defects of its own, one of them consequential for the method it claims to follow.
+
+### First criticism: the response enforces a single "declared standard reading" that the contract does not actually declare
+
+The previous response repeatedly says A1 "silently switched readings," that WHL represents the expired-deletes reading as a "rival reading, not as the standard one," and that using the deletion reading "must be announced and justified." That framing imports a distinction — *the* declared/standard reading versus rival readings — that the supplied material does not clearly establish.
+
+Check against the actual sources:
+
+- The contract (R3, R4) does fix the semantics it is asking about: greatest revision is selected from all delivered payloads before expiry is considered; a lower revision remains superseded even when the greater-revision hold has expired; expiry changes a retained record's effect, not its revision authority. That is the *task's* rule, and A1 does conflict with it. So far the previous response is right.
+- But the WHL specimen itself does not present `reserves_effect` as uniquely declared. Its notes say: "the alternative reading where expiry deletes the record is represented by `expired_deletes_rule`, but the language does not choose between them." The specimen explicitly declines to rank the readings, and `deletion_changes_greatest` is introduced as "a possible disagreement, not resolved." So within WHL there is no "standard reading" superseding an "alternative" — there are two represented readings, with the language neutral between them.
+
+The previous response does not exactly deny this, but it overstates by calling the deletion reading a mere rival and by saying its use "must be announced and justified" as though justification were the special burden. The accurate scoping is narrower and cleaner: A1 conflicts with the *contract* (R3/R4). It does not conflict with WHL's neutrality, because WHL has no declared winner. The two frameworks say different things here, and the response should have exposed that disagreement rather than smoothing it into "WHL's standard reading versus WHL's rival reading." The contract even instructs (preamble to R1) that where the original specimens disagree with the contract, the disagreement should be exposed rather than silently resolved.
+
+Consequence: the previous response's central correction survives in substance, but its *label* misattributes to WHL a preference WHL disclaims. That matters because a later cycle could then cite "WHL's standard reading" as authority for R3/R4 when WHL supplies no such authority; the only authority for R3/R4 is the declared contract. The correction should be reattributed: A1 is wrong *under the contract*, and WHL is neutral as between the two readings. This is a correction of attribution and scope, not of the substantive verdict on A1.
+
+### Second criticism: the response's own availability treatment is looser than the WHL encoding it invokes
+
+The previous response says availability is reported as "the exact set of attainable values," and elsewhere lists "global availability bounds (as intervals over integers)." It uses `availability_lower_bound` and `availability_upper_bound` as the relevant WHL vocabulary without noting that these per-booking bound functions are computed from *minimum* and *maximum* reservation per booking, summed independently, and can therefore be wider than the true attainable set. R6 forbids equating an interval with the exact set unless every intervening admitted integer occurs — and the response itself invokes that rule against A2. But the response does not turn the same rule on the WHL bound machinery it endorses. The lower/upper bound construction sums per-booking extrema; the resulting interval may include values not jointly attainable across bookings (this is exactly the cross-booking independence issue that A6 mishandles in the opposite direction). So the response should have flagged that the WHL bounds are bounds, not the exact set, and that the exact set is obtained from the *set of admissible combinations*, not from the summed extrema.
+
+Consequence: an answer that took the WHL bounds as the exact set would commit the same defect it corrected in A2, at the global level. The response is internally consistent about the *rule* but not fully applied to its *own* chosen vocabulary. The fix is explicit: quote `availability_lower_bound`/`availability_upper_bound` as bounds only; obtain the exact attainable set from the sum over independently-but-exactly chosen per-booking reservations (each from its own `possible_reservations`), and check R6's intervening-value condition before ever presenting an interval as the exact set.
+
+### Third observation, offered as scope rather than as a defect
+
+The previous response says of A4 that "even RSS does not convert distinct provenance into 'more authority' for a shared reservation." That is defensible: RSS says exact duplicates require equal provenance, treats near-duplicates as candidates for conflict, and "does not decide whether they are duplicates or alternatives; it records the disagreement." RSS is noncomputable and refuses to rank readings (its own account says it "does not rank them"). So RSS neither endorses nor forbids authority-weighting; it simply does not supply it. The previous response's claim that A4's weighting is "unsupported in both sources" is therefore correct but slightly overstated: RSS is silent on the weighting rather than opposed to it, and RSS is not the selected representation anyway. This is a small scope correction, not a change of verdict on A4.
+
+### What is retained from Cycle 1
+
+- A3 sound: negative availability alone identifies neither corrupt data nor a physical discrepancy (R6). Retained.
+- A5 sound and correctly weak: an objection should identify its target, and a defect in an interpretation need not discredit every record it used (R7). Retained.
+- A1 defective: as a description of the *contract's* rule it is wrong; its phenomenon is real and WHL can state it. Retained, with the reattribution above.
+- A2 defective: substituting [−3,2] for {−3,2} is not exact unless every intervening admitted integer occurs (R6). Retained in full.
+- A4 defective: delivery labels record occurrences, not extra booking authority (R1, R2). Retained, with the minor scope note that RSS is silent rather than opposed.
+- A6 defective: R5 supplies no cross-booking selection constraint; capacity constrains the arithmetic of sums, not the admissibility of combinations. Retained.
+- The "consequential new problem" framing — that A1, A2, A4, A6 each import an unsupplied reading or outside policy — is retained but should be restated more carefully: A1 substitutes a reading *the contract excludes*; A2, A4, A6 import policies *neither the contract nor the selected representation supplies*.
+
+### Why these criticisms are warranted, and their consequences
+
+The first criticism is warranted because the previous response's authority claim mattered: it named WHL as endorsing the R3/R4 reading when WHL is explicitly neutral, and the contract itself asks for such disagreements to be exposed. Its consequence is a corrected attribution: the R3/R4 rule is contract-fixed, not WHL-declared, and both readings remain statable in WHL.
+
+The second criticism is warranted because the response endorsed the very bound-as-exact conflation it criticized in A2, at the level of its own chosen vocabulary; the contract's R6 is the standard, and it should apply to `availability_lower_bound`/`availability_upper_bound` as well. Its consequence is a tighter reporting instruction: the exact attainable set comes from the admissible combinations; the WHL bound functions give bounds only.
+
+The third observation is a scope refinement, not a defect to fix; RSS is silent rather than opposed, so A4's verdict stands and the reasoning around it shrinks slightly.
+
+### Retention, attribution, and openness
+
+I retain the substantive verdicts on all six items of Memo A, with the corrected attribution on A1 and the tightened availability instruction. I do not manufacture a new error where the sources do not support one: the third observation is a scope reduction, not an added defect. I mark the WHL/contract disagreement about expiry supremacy as an exposed disagreement, not something to be resolved silently. Where a reading is genuinely open (expiry deletion policy, release-cancellation policy, whether a given interval is exact), I keep it open (R6, R7). Any later change should be attributed at the point of change; I do not rewrite what the Cycle 1 response originally said, only state what is corrected and why.
