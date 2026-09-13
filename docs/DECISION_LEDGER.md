@@ -1182,3 +1182,7 @@ VERIFIED 2b6affd4a13ccf42afa747e09d274783969080cc TREE 2e164837198e6d3bead228bfd
 REC-20260913-L 2026-09-13 12:16:26 UTC: Root updated current STATUS to terminal H004 state, candidate/use case, exact counts/usage, no active provider sessions, preserved historical studies and the next discriminating question. Historical status paragraphs remain intact and explicitly superseded where prospective. Previous verified publication: To https://github.com/AHepi/miniReason.git
    2b6affd..0ecef26  HEAD -> main
 VERIFIED 0ecef2654df3d2e8e9cd94b682196c54b0abe31b TREE 9303f2f80c8322fcbe42cefd00c2bb5f06e3a591. Publish completed document immediately, normal main push with remote commit/tree verification.
+
+REC-20260913-L 2026-09-13 12:17:05 UTC: Root replaced the stale README start-here paragraph with H004 terminal evidence, candidate card and exact scope. Kept original study history unchanged. Entry pages now distinguish completed coordinates, preserved partials and prospective causal-control research. Previous verified publication: To https://github.com/AHepi/miniReason.git
+   0ecef26..2c51466  HEAD -> main
+VERIFIED 2c514664c2b6bfd58286c7aa292b477678ddeb86 TREE 651a83da2be2aa39fde1983e80e5d2378ff35cda. Publish completed document immediately, normal main push with remote commit/tree verification.
