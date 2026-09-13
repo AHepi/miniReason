@@ -1,12 +1,14 @@
 # Current research status
 
-## H003 active checkpoint — 2026-09-13, after cycle 5
+## H003 closed; H004 preparation — 2026-09-13
 
-The [first-block root review](../experiments/diagnostics/H003-language-error-continuation/block01-root-review.md) is published. H003 has22 provider calls:21 complete answers and one WHL cycle2 truncation at4096completiontokens, preserved without retry. Prose, RSS, WHL conversion and RSS conversion each completed five cycles. All four report the correct fresh exact set but retain explanatory defects; prose criticism introduced a false interval rule and later scrutiny endorsed it. Usage is213865prompt+59867completion=273732total tokens. Five call intervals overlapped initially; four eligible arms continue after WHL stopped.
+[H003 terminal report](../experiments/diagnostics/H003-language-error-continuation/REPORT.md) is published:35calls,30complete answers and5partial answers,348362prompt+103516completion=451878total tokens. Every arm stopped at the4096completion-token ceiling under H003's frozen full-delivery rule. Complete-answer counts are prose10, WHL1, RSS7, WHL conversion6 and RSS conversion6; last attempted coordinates are11,2,8,7,7. This is not a twenty-cycle completion or a workspace crash. Exact evidence and stopped markers remain immutable.
 
-Root accepted frozen cycles6–10 next, including evidence/visibility/applicability criticism, expiry equality, a new finite case and protected case A. The full authorized study remains bounded at20cycles/100calls/4096completiontokens per call, without automatic retries. Earlier targets may be re-presented for later error discovery; perfect memory is not a criterion. Root performs all reviews. The pure-routing fixture does not qualify the unsupported Windows durable scheduler. Original E028 remains unrecovered; no export request or replay is needed.
+Root selected [H004 partial-contribution continuation](reviews/partial-contribution-continuation-decision-2026-09-13.md): carry those exact prefixes forward as explicitly incomplete targets, then attempt only unvisited coordinates through20. Maximum65new calls, combined100unique calls and20coordinates per arm; same4096completion cap, original DeepSeek provider, at most5 concurrent requests, no retries. The user emphasizes continuity for later error identification, not perfect memory. The changed admission policy is root's attributed enabling contribution, not a retroactive H003 success or a model-authored repair.
 
-The source-led opening decision and earlier checkpoints follow below; use this latest checkpoint and the append-only ledger for continuation.
+Astra is implementing the separate helper and focused offline tests under REC-20260913-L. Root performs all reviews and must accept code/material, freeze seed/source hashes and verify publication before H004 provider calls. No H004 provider call has occurred at this checkpoint. Original FW5 authority, H003 materials/observations and original source/plans/records remain unchanged. The Windows route is still a pure-routing fixture; unsupported durable-scheduler qualification and unrecovered Android E028 remain separate.
+
+Earlier source-led checkpoints follow below; use this latest section and the append-only ledger for continuation.
 
 Updated 2026-09-13. The overarching goal is to explore Mini's configuration space and test the designated FW5 explanatory-construction account to identify gaps that can be filled. ECS 2.0 is retained as a separately identified successor hypothesis source. Language expression, formal feedback and this distinct-template chain are subset tests. See [PURPOSE](../PURPOSE.md) and the append-only [ledger](DECISION_LEDGER.md).
 
