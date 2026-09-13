@@ -1090,3 +1090,7 @@ Public-byte evidence: {"wave":10,"commit":"c081a1808e5e620adb75966588a4370b360b9
 REC-20260913-L wave10 root gate at 2026-09-13 11:45:00 UTC: completed wave10-root-review.md.49new calls/17complete/32partial, combined84calls/47complete/37partial;705852prompt+189283completion=895135newtokens. Prose reached20coordinates with11full/9partial; D/A exact results correct but collision claim contradicts its own explanation. Late criticism corrects the location of a truncated sentence while preserving false availability criticism. Root accepts unchanged waves11–15; prose receives no additional call,16newcalls remain total. Full/partial and operational/semantic outcomes stay distinct. Last verified To https://github.com/AHepi/miniReason.git
    c081a18..5d153f5  HEAD -> main
 VERIFIED 5d153f56417bea7b925959e7d402bb94cb7dce74 TREE 122acb4ece0ad01105db7cc4fba252ad298a7588. Publish review immediately.
+
+REC-20260913-L recovery STATUS updated at 2026-09-13 11:45:50 UTC: replace stale H004preparation heading with the verified wave10 state and16remainingcalls, partial/full distinction and root-owned review findings. Review publication verified To https://github.com/AHepi/miniReason.git
+   5d153f5..0557249  HEAD -> main
+VERIFIED 0557249bff5a437de52f74677de63776d5b5f0bf TREE 8120a66a9a85b8fc016075f71e1f9554c220642f. Publish completed STATUS immediately before waves11–15.
