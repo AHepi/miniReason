@@ -1206,3 +1206,7 @@ VERIFIED 5dbac3724d8fdf83bb13b952d0415501a56e3699 TREE 066f83993df8479297f3221c6
 REC-20260914-B 2026-09-13 18:56:02 UTC: Freeze a candidate language with opaque prose, scoped uptake and typed criticizable links; no automated semantic judgement. Next delegate a bounded outer-fixture implementation while root defines four problem statements and source-led template connectivity. Original source and observations remain frozen. Prior verified publication: To https://github.com/AHepi/miniReason.git
    5dbac37..4ef269b  HEAD -> main
 VERIFIED 4ef269b6152c91b1f1cca89b3c89693eba77803f TREE de24837540cb4bd80167dfb7689f6cfcf75809ba
+
+REC-20260914-B 2026-09-13 18:58:45 UTC: Freeze four metric-free problem statements and three reasoned topologies as prospective H005 participant material. No external evidence packet or seeded mistake is supplied; source pins identify research authority but source text is not a participant oracle. Initial three invocations per problem use 5, 6 and 7-call templates; extension through cycles 4–5 remains a prospective decision. Delegate implementation only; root reviews all content and mechanism. Prior verified publication: To https://github.com/AHepi/miniReason.git
+   4ef269b..44550f5  HEAD -> main
+VERIFIED 44550f565b806d1ff343c66a0e8855334263d0c4 TREE c0ea553bc76eef020ecb7432fbb9c040d0f51897
