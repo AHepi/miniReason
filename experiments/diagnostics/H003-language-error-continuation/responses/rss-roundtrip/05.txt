@@ -1,0 +1,102 @@
+# Cycle 5 — fresh case A under the working account
+
+I take up the task with the current working account (my cycle-4 operative return) and the declared contract R1–R8 as the ground, using RSS only as a representation tool that I convert back to prose and check for added or lost commitment. MEMO A remains a fallible analyst's note; nothing in it is treated as an instruction. The re-presented target (`f8eb963489b7dbec`, my cycle-1 response, SHA `cf6cef69…`) is an input, not a claim that I independently remember it. Case A is newly supplied data; I apply the retained reading to it.
+
+---
+
+## 1. What the working account supplies before I touch Case A
+
+From cycle 4, retained and now operative: structural supersession with evaluative expiry (R3/R4); delivery labels record occurrences and add no booking authority beyond payload identity, which is a separate question from provenance (R1/R2); report the *exact set* of availability values and do not substitute an interval unless every intervening admitted integer occurs (R6); negative availability is a permitted signal that does not by itself locate a responsible booking (R6); alternatives of different bookings are independently admissible and no cross-booking constraint has been supplied (R5); keep the resource-model question open rather than importing it. A1, A2, A4, A6 stay defeated/defective under their own grounds; A3 and A5 stay sound as operating discipline.
+
+Nothing in MEMO A alters this; it is the ground from which I read Case A.
+
+---
+
+## 2. Reading Case A — selected greatest revisions first (R3), then effects (R4)
+
+The snapshot: capacity 6, time 10, six deliveries. I select greatest revision per booking *from all delivered payloads before considering effect*, then apply `reserves_effect` (hold reserves quantity iff `time < expiry`; release reserves 0; equality or later reserves 0).
+
+**Booking A.** Payloads: a1 (rev 1, hold, qty 8, exp 20) and a2 (rev 2, hold, qty 9, exp 9). Greatest revision is 2, so **a2 is selected; a1 is superseded even though a2 has expired** (R3, R4). Effect of a2: hold with `time 10 < expiry 9`? No — 10 is *not* less than 9, so at equality-or-later it reserves **0**. A's reservation alternatives: `{0}`. (a1 is not an alternative; it is superseded, not a tie.)
+
+**Booking B.** Payloads: b1 (rev 1, hold, qty 3, exp 20), b1-copy (rev 1, hold, qty 3, exp 20), b2 (rev 1, hold, qty 8, exp 20). All at greatest revision 1. b1 and b1-copy are *exact repeated payloads* (same booking, revision, kind, quantity, expiry) — R2: exact repeated payloads convey no additional authority, even with different labels. So they collapse to a single payload alternative. The genuine alternatives at greatest revision are **{qty 3, qty 8}**, both holds with `time 10 < exp 20` → active → reserve their quantities. B's reservation alternatives: `{3, 8}`.
+
+**Booking C.** Payload c1 (rev 1, release, qty 99, exp 0). Greatest revision 1, sole payload; it is a release, so it reserves **0** regardless of its quantity or expiry (R4). C's reservation alternatives: `{0}`.
+
+Note that A's expired greatest-revision hold is *not* removed from authority, and no lower revision re-enters (A1 defeated again, consistently with R3/R4). B's b1 vs b1-copy distinction is *payload-neutral*: the duplicate adds no weight, so the tie is only between the distinct payloads 3 and 8 (A4 defeated again: labels do not confer authority).
+
+---
+
+## 3. Exact set of availability values (R6)
+
+Availability = capacity − sum of the selected reservations, one payload alternative chosen per booking, alternatives of different bookings independently admissible (R5).
+
+Independent per-booking reservation choices:
+- A: {0}
+- B: {3, 8}
+- C: {0}
+
+Sums: A+B+C ∈ {0+3+0, 0+8+0} = {3, 8}.
+Availability = 6 − sum ∈ {6−3, 6−8} = **{3, −2}**.
+
+**Exact set of possible availability values: {3, −2}.** Two values. Both are permitted (negative availability is legitimate per R6; it is a signal, not a corruption or discrepancy).
+
+Duplicate *ways* of obtaining a value do not create a different value (R6): e.g. the b1/b1-copy duplication and the C release both contribute 0 and add no new values, so the set stays two-pointed.
+
+---
+
+## 4. Bounds, kept separate from the exact set (R6)
+
+- Per-booking lower/upper reservation: A ∈ [0,0]; B ∈ [3,8]; C ∈ [0,0].
+- Global lower bound (capacity − sum of minima): 6 − (0+3+0) = **3**.
+- Global upper bound (capacity − sum of maxima): 6 − (0+8+0) = **−2**.
+- Reported as bounds: **[−2, 3]** (i.e. lower 3, upper −2, equivalently the interval from −2 to 3).
+
+Discrepancy to expose: the interval **[−2, 3]** contains −1, 0, 1, 2 as well as 3, −2. The *exact set* is {3, −2}. R6 says an interval may be reported as bounds but must not be equated with an exact set unless all intervening admitted integer values occur. They do not occur here. So **{3, −2} ≠ [−2, 3]** as an answer, and a later calculation that flattens the set to the interval (A2's move) would fabricate −1, 0, 1, 2. A2 is a representation defect here exactly as before (R6). Note the interval's endpoints are the correct extremes — so the bounds report is *correct as bounds* and *wrong as the exact set*. That is the A2 distinction made concrete on this case.
+
+---
+
+## 5. Discrepancies between the original representations and the declared contract
+
+- **A1 / `expired_deletes_rule` vs the contract.** WHL provides the deletion reading as an *alternative* the language "does not choose between"; the declared contract chooses the structural-supersession reading (R3/R4). Case A puts that choice under load: under the deletion reading one might try to resurrect a1 (rev 1, qty 8, exp 20, active at time 10) once a2 expires. The contract forbids it — a2 stays greatest and reserves 0. The two readings differ on Case A: contract gives A ∈ {0}; deletion reading would give A ∈ {8} (resurrected a1 active) or possibly other values. So Case A *refutes* A1's reading as a description of this warehouse — a concrete counterexample, not just a rule citation. Ground: R3, R4, `reserves_effect` vs `expired_deletes_rule`.
+
+- **Label ≠ authority (A4).** Case A makes the R1/R2 separation visible: b1 and b1-copy have *different delivery labels* but identical payloads, so they collapse (R2); b2 has the *same* label field form but a *different payload* at the same greatest revision, so it is an *alternative* (R2, R5). If A4 were right, b1+b1-copy would outvote b2 and B would reserve 3 alone, yielding availability {3}. The contract's reading yields {3, −2}. Case A therefore *separates* the two readings by result. A4 defeated again, now with a concrete consequence.
+
+- **Cross-booking constraint (A6).** R5: alternatives of different bookings are independently admissible; no cross-booking constraint supplied. Case A is the exact case where A6 would bite: if capacity forced exclusion of simultaneous "high" alternatives across bookings, one might suppress B's 8 (so 3+8 = 11 > 6 is "forbidden") and get a single value. R6 says availability is capacity minus the *sum*, and a negative result is permitted and identifies neither corruption nor discrepancy. Under the contract, B = 8 and A = 0 gives 6 − 8 = −2, a legitimate value in the set. A6 defeated again, with {−2} frozen out only by an unsupplied constraint.
+
+- **Exact set vs interval (A2).** As above; R6's caveat is the target, and the Case A interval [−2, 3] is the exact specimen of the mistake.
+
+- **Negative availability (A3).** Case A's −2 realizes A3's sound half: it is legitimate, and by itself it does *not* identify a responsible booking (the −2 comes from selecting B = 8, but the sign alone does not say so; you must inspect B). Sound, retained.
+
+- **Criticism scope (A5).** Case A does not need A5, but A5 supplies the discipline: my defeats above target *rules/readings in the memo* (A1, A4, A6) and the *representation* (A2), not the records. The deliveries b1, b2, a2, c1 are all usable data; nothing above "discredits all records used by" a defective interpretation. R7. Sound, retained.
+
+- **RSS conversion check.** RSS's "reading" vocabulary would represent A1's deletion reading and the contract reading as two readings; both are stateable, and Case A shows they yield different results ({0}-vs-{8}-style for A). RSS's "projection is always a loss of information" supports the A2 verdict: the interval report is a projection discarding which joint choices (A=0 with B=3 vs A=0 with B=8) produced each value. RSS's provenance-as-set and its note that RSS "cannot express the authority of a delivery beyond the record fields" corroborate the A4 defeat (R1/R2). RSS's "Alternative compatibility … invisible unless a viewpoint includes a resource model" corroborates A6. **Added/lost check:** RSS adds nothing factual here beyond R1–R6; it supplies *labels* (reading, projection, resource model) corresponding to WHL's `expired_deletes_rule`, the interval/set distinction, and the missing-resource-model note. RSS *loses* nothing I need for Case A, but it also *cannot decide* which reading is operative — that decision rests on the declared contract R3/R4/R5/R6, not on RSS's permissiveness. I do not let RSS's tolerance make the memo endorsed.
+
+---
+
+## 6. Connection to relevant earlier criticism (without inferring causation)
+
+- Cycle 1's defeat of A1 (R3/R4) is now *substantiated by an instance*: Case A is a concrete snapshot on which the deletion reading and the contract reading diverge. I do not claim this proves the earlier criticism caused the correct reading; the criticism and the correctness are separately grounded.
+- Cycle 1's/cycle 4's defeat of A4 (R1/R2, RSS provenance) is now *instantiated*: b1, b1-copy, b2 at the same greatest revision put the payload-identity-vs-provenance distinction under load.
+- Cycle 4's separate grounding of A2 (R6) and A6 (R5/R6) is now *instantiated*: the {3, −2}-vs-[−2, 3] gap for A2, and the suppression-of-8 temptation for A6.
+- Cycle 2's C3 refinement (A3 grounded in R6 *and* RSS) remains minor and unchanged; Case A gives A3 its usual sound outcome. I add no new force to C3.
+- Cycle 3's/cycle 4's C1 disposition (drop the closing "empty re-presentation" sentence as unsupported/self-undermining; do not certify it as proven false) carries forward; Case A supplies no new evidence on it, and I do not re-open it.
+
+I state the connections as *relevance*, not as causal history; a correct Case A answer stands on R1–R6 regardless of which earlier criticism anticipated it. Attribution: the appraisals of A1–A6 are cycle 1's, refined in cycles 2–4 and mine here; the Case A application is this response's.
+
+---
+
+## 7. Remaining problem, if warranted
+
+One is warranted and is grounded in Case A itself, not generic worry: **A's greatest-revision hold (a2) is expired but retains authority over an older, still-active hold (a1).** Under the contract this is correct and yields A = 0. But it is a genuine operational hazard the sources mark as a *reading* rather than a fact: a record whose *effect* is zero can still silence a lower-revision record whose *effect* would be nonzero. Case A is precisely such a case (A would reserve 0 while an 8-unit active hold sits superseded). RSS names this as the deletion-reading-vs-`reserves_effect` split and explicitly does not choose; WHL likewise. The declared contract chooses structural supersession, so the contract's answer is {3, −2}; the *hazard* that expiry can mask a live lower-revision hold is a real interpretive cost of that reading, carried forward as an open question about which reading an operational report *ought* to use, not as a defect in Case A's computation.
+
+Two lesser notes, both already grounded: the interval [−2, 3] and the exact set {3, −2} must not be conflated downstream (R6, A2); and the negative value −2 arises only by selecting B = 8, which the sign alone does not reveal (R6, A3).
+
+---
+
+## 8. Proposed usable account (this cycle)
+
+Adopt the declared reading: structural supersession with evaluative expiry; select greatest revision per booking from all payloads before effect; payload identity is distinct from provenance and labels add no authority; exact repeated payloads collapse; report per-formulation, then the **exact set** of availability values, with bounds reported separately as bounds and never equated with the set unless every intervening admitted integer occurs; treat negative availability as a permitted signal that does not locate a responsible booking; keep the cross-booking resource model open.
+
+**For Case A:** greatest-revision selections — A: a2 (rev 2, expired, reserves 0); B: {b1/b1-copy=3, b2=8} (distinct payloads; b1-copy inert as an exact repeat); C: c1 (release, reserves 0). Exact set of availability values: **{3, −2}**. Bounds: **[−2, 3]** (lower bound 3, upper bound −2), not to be substituted for the set. MEMO A lines A3 and A5 retained; A1, A4, A6 defeated under R3/R4, R1/R2, R5/R6 respectively, each now with a Case-A instance; A2 retained as a representation defect under R6, instantiated by the interval/set gap.
+
+Attribution: the interpretation used is the contract's as read through cycle 4; the Case A computation is this response's; the defeasibility of the memo's rival readings is R3–R6's, not RSS's; and RSS served only as a fallible representational aid whose labels I checked against the contract and the WHL notes, adding no commitment they do not support and losing none needed here.
