@@ -1,5 +1,13 @@
 # Current research status
 
+## H003 active checkpoint — 2026-09-13, after cycle 5
+
+The [first-block root review](../experiments/diagnostics/H003-language-error-continuation/block01-root-review.md) is published. H003 has22 provider calls:21 complete answers and one WHL cycle2 truncation at4096completiontokens, preserved without retry. Prose, RSS, WHL conversion and RSS conversion each completed five cycles. All four report the correct fresh exact set but retain explanatory defects; prose criticism introduced a false interval rule and later scrutiny endorsed it. Usage is213865prompt+59867completion=273732total tokens. Five call intervals overlapped initially; four eligible arms continue after WHL stopped.
+
+Root accepted frozen cycles6–10 next, including evidence/visibility/applicability criticism, expiry equality, a new finite case and protected case A. The full authorized study remains bounded at20cycles/100calls/4096completiontokens per call, without automatic retries. Earlier targets may be re-presented for later error discovery; perfect memory is not a criterion. Root performs all reviews. The pure-routing fixture does not qualify the unsupported Windows durable scheduler. Original E028 remains unrecovered; no export request or replay is needed.
+
+The source-led opening decision and earlier checkpoints follow below; use this latest checkpoint and the append-only ledger for continuation.
+
 Updated 2026-09-13. The overarching goal is to explore Mini's configuration space and test the designated FW5 explanatory-construction account to identify gaps that can be filled. ECS 2.0 is retained as a separately identified successor hypothesis source. Language expression, formal feedback and this distinct-template chain are subset tests. See [PURPOSE](../PURPOSE.md) and the append-only [ledger](DECISION_LEDGER.md).
 
 ## Current checkpoint and next action
