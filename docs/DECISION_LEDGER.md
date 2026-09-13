@@ -1022,3 +1022,5 @@ VERIFIED 8d07a7733ea482ca139080c7955295fc0b0f02b7 TREE 115b1052b7b0af2a6884266e0
 REC-20260913-L wave 2 preparation at 2026-09-13 11:19:20 UTC: previous completed evidence publication verified To https://github.com/AHepi/miniReason.git
    8d07a77..1a2bccf  HEAD -> main
 VERIFIED 1a2bccf24fa3f5b38dd5d38161ca46215ca5616b TREE 0f52d513aeddd073ab771fea61b8892cd96a0378. Prepare only each eligible arm's next frozen coordinate and exact own-arm dependencies. Continue inside the accepted root gate, maximum five simultaneous calls, 4096 completion tokens each, no retries. No operator diagnoses or revised task material enter participant input. Publish these bytes before dispatch.
+
+REC-20260913-L wave 2 completion at 2026-09-13 11:20:36 UTC: original provider records and public texts preserved; exact request, response, seed and runtime custody revalidated in checkpoint-wave02.json. Full and partial contributions remain distinct; unknown usage remains unknown. No retries. Publish completed evidence before any dependent wave. This receipt is operational; root semantic gates remain separate.
