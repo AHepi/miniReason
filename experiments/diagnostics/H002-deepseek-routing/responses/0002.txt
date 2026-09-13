@@ -1,0 +1,50 @@
+## Criticism of U0’s actual use and dependency
+
+I do **not** find a substantive error in the two event applications themselves. U0’s Event 1 and Event 2 deltas are consistent with the quoted candidate’s §4.2 and §4.4 under the bag/multiset reading the candidate itself supports (`SELECT ALL`; `RkeyIndex` as a multiset; “remove one occurrence”). The U0 final output bag `[[2,7,"a"], [3,9,null]]` is also internally correct under the interpretation U0 declares.
+
+However, there is a **real dependency problem worth recording**, not as a refutation of the candidate but as a limitation on what U0 can establish.
+
+### 1. U0’s “initial state” is not sourced from the public U0
+
+U0’s retained state before Event 1 is never explicitly given as an initializer list in the public U0. It is reconstructed implicitly from the deltas: the reader must infer that, before any event, the state contained `Lrows = {(1,NULL),(2,7),(3,9)}`, `Rrows = {(10,7,"a"),(11,7,"a"),(12,9,NULL)}`, `LkeyIndex = {7:[2], 9:[3]}`, `RkeyIndex = {7:[10,11], 9:[12]}`, and `output_bag` with `(1,NULL,NULL)`, two copies of `(2,7,"a")`, and `(3,9,NULL)`.
+
+U0 even says so in the header: “**Provided initializer schema:** … with the attributed retained state and cached output bag above,” and “The initial state is not separately supplied here.” But the JSON-shaped initial state is not actually printed anywhere before Event 1. It is only recoverable by inverse-applying Event 1 and Event 2. That is a legitimate reconstruction, yet it means:
+
+- **Retained-state obligation affected:** the correctness of U0’s post-Event-2 state as a *maintained* state depends jointly on (a) the candidate rules, (b) the bag interpretation, and (c) the unshown initializer. U0 verifies (a)+(b) against an assumed (c), not against a publicly supplied (c).
+- **Query-output obligation affected:** the “complete output bag after Event 2” cannot be checked by a third party against a supplied initial output bag; it is only checkable against an output bag reconstructed by the same inverse reasoning U0 uses. This weakens the evidentiary force of U0’s output claims.
+
+This is not an error in U0’s arithmetic. It is a scope limitation that U0 partially acknowledges but still largely depends on.
+
+### 2. U0’s “inferred rule” is doing more work than U0 admits
+
+U0 declares in “Missing / inferred rule I must supply” that single-occurrence multiset removal is inferred, and cites the candidate’s §7 item 3 as under-specification. That is honest. But U0 then treats this inferred rule as if it were essentially forced, and its final uncertainty note frames the risk as something a *later* interpreter might mishandle. In fact, the candidate itself never fixes bag-vs-set removal in §4.4’s delta text; §4.4 only says “remove `(x.lid,k,v)` (one occurrence only — multiplicity matters; the same `(x.lid,k,v)` may occur multiple times if several right rows share `(k,v)`).”
+
+That parenthetical *does* lean bag-ward, so U0’s reading is fair. But the parenthetical is the only support; elsewhere the candidate describes state components in set-flavored language (`set/bag`, “set of `lid`”), and the closed form is the only place multiplicity is fully pinned. So:
+
+- **Retained-state obligation affected:** `RkeyIndex[k]` being a *multiset of rid* (rather than a set) is load-bearing for Event 2. U0 correctly makes it a multiset, but the source text is not fully decisive; a stricter reading would weaken U0’s ability to claim the delta is “the” candidate delta rather than “a” candidate delta.
+- **Use obligation affected:** U0’s deltas are not derivable from the candidate alone without this interpretive choice. U0 does disclose this, so it is a limitation on strength, not a defect.
+
+### 3. Event 2’s “no NULL-branch swap” relies on `cnt(7) = 2` before removal, which requires per-key cardinality not stored by U0’s chosen state
+
+U0 correctly refuses to store `matchCount` (per the candidate’s optionality note), so it derives `cnt(7) = 2` by counting `RkeyIndex[7]`. That is consistent. But notice the dependency:
+
+- To decide *no swap*, U0 must compare `cnt(k)` before removal against 1. If `RkeyIndex` were ever allowed to hold a stale or multi-source-counted bucket, the decision flips. U0’s argument therefore relies on `RkeyIndex[7]` being exactly `{10,11}` at that moment — which in turn depends on the unshown initializer from point 1.
+- This is a second reason the public U0’s evidentiary completeness is limited: the entire branch-swap test hinges on a bucket whose pre-event contents are not publicly listed, only inferred.
+
+### 4. No criticism on the points U0 handles correctly
+
+For completeness:
+
+- Event 1’s NULL-key handling (remove `(1,NULL,NULL)`, leave `LkeyIndex` alone, leave `R` state alone) is faithful to §4.2 and the NULL-equality semantics.
+- Event 2’s `willBeEmpty = false` branch and single-occurrence removal are faithful to §4.4 under bag semantics.
+- U0 does not smuggle in whole-database recomputation, does not invoke an SQL executive, and does not silently repair the candidate.
+- U0’s preserved uncertainties (bag vs. set, before-image disagreement, collation/affinity) are appropriate and not disguised as resolved.
+
+### Bearing and verdict
+
+The bearing is on **evidential adequacy**, not on local correctness. U0’s two-event application is internally consistent with the candidate under a stated bag interpretation. What is under-supported is:
+
+- the public traceability of the pre-event retained state and output bag (they are reconstructed, not supplied), and
+- the extent to which the bag-removal and bucket-cardinality decisions are forced by the candidate rather than chosen by U0.
+
+These affect the retained-state obligation (the reconstructed initializer and the multiset reading of `RkeyIndex`) and the query-output obligation (the “complete output bag” at U0 is only checkable against the same reconstruction). They do not establish that U0 is wrong. A substantive objection is warranted only to the extent U0 might be read as independently confirming the candidate’s rules; as a confirmation, it is weaker than its presentation suggests, because its initializer is inferred rather than public and its key interpretive choice is disclosed but not entailed.
