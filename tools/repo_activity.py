@@ -8,23 +8,48 @@ verdict. Decisions remain explained in docs/DECISION_LEDGER.md.
 from __future__ import annotations
 import argparse
 import datetime
-import fcntl
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import uuid
+
+if os.name == "nt":
+    import msvcrt
+else:
+    import fcntl
 
 ROOT = Path(__file__).resolve().parents[1]
 LOG = ROOT / "docs" / "AGENT_ACTIVITY.jsonl"
 
 def append(event):
     event = {"timestamp_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), **event}
-    with LOG.open("a", encoding="utf-8") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
-        handle.write(json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n")
-        handle.flush()
-        fcntl.flock(handle, fcntl.LOCK_UN)
+    record = (json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    # Unbuffered binary append keeps every part of a UTF-8 record under the lock,
+    # including short writes; closing after an error cannot flush unlocked bytes.
+    with LOG.open("ab", buffering=0) as handle:
+        if os.name == "nt":
+            # Always lock the same byte, even when the file is initially empty.
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            handle.seek(0, os.SEEK_END)
+            remaining = memoryview(record)
+            while remaining:
+                written = handle.write(remaining)
+                if not written:
+                    raise OSError("Incomplete activity log write")
+                remaining = remaining[written:]
+            handle.flush()
+        finally:
+            if os.name == "nt":
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(handle, fcntl.LOCK_UN)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
