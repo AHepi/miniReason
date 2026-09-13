@@ -27,3 +27,13 @@ H002 completed six calls under its frozen sequential, no-retry plan. Its two pos
 ## Evidence and scope
 
 Primary evidence is the append-only [decision ledger](../DECISION_LEDGER.md): REC-20260913-I recovery, durability containment and 403 outcomes; REC-20260913-J assessment, public-payload proof, CRLF note, approval-timeout outcomes, H002 completion and operational-guidance delegation. [Current status](../STATUS.md) and the [SQL use/return workflow](../workflows/sql-use-return.md) retain historical E028 and conditional Linux qualification boundaries. The Store-shim and current concurrency details also reflect the active session's recorded operational instructions and latest explicit user correction. Root reviewed this guidance against the recorded failures on 2026-09-13. Astra drafted it; root accepted its classifications and concurrency correction. No provider calls, source edits or tests were performed to create or review it.
+
+## H003 length stops and H004 partial continuity
+
+H003 closed after five output-length stops, not workspace, Windows durability or GitHub failures. Its 35 calls produced 30 complete answers and five preserved prefixes; each stopped response reported `INCOMPLETE_GENERATION/length` at 4,096 completion tokens. Keep its evidence and stopped markers unchanged.
+
+H004 separately admits exact nonempty prefixes as PARTIAL contributions only when request/source custody, settings and reported usage validate, including exactly 4,096 completion tokens, with no reasoning or credential mismatch. Preserve the original text and label delivery status and provenance; never invent the missing ending or relabel it complete. The admission-policy change belongs to the operator.
+
+Continue only each arm's next unvisited coordinate: at most 65 new calls, 100 combined with H003. This is prospective continuation, with no retry of a stopped answer. Other delivery or custody failures stop the affected arm. Publish and verify required inputs before dependent dispatch. Twenty covered coordinates do not mean twenty complete answers or establish universal critical capacity.
+
+Evidence: [H003 terminal report](../../experiments/diagnostics/H003-language-error-continuation/REPORT.md), [H004 decision](../reviews/partial-contribution-continuation-decision-2026-09-13.md), and REC-20260913-L in the ledger. Root reviewed this supplement; Astra supplied the operational draft. First-wave custody checks succeeded with two complete and three partial contributions and five overlapping helper intervals; subsequent semantic review remains root's responsibility.
