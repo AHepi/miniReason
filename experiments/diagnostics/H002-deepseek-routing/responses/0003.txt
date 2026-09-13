@@ -1,0 +1,135 @@
+# Use-State U1
+
+## Parent and candidate identity
+
+- **U1 parent:** `U0` — `[7a7798c900490b12] (minireason.sql-use-before.v1)`, "Use-State U0", itself the initialized snapshot derived from the selected candidate below.
+- **Selected candidate identity (unchanged):** SHA-256 `b5fb115264eaff0a0466ea19012b58624a2669f95c4b6e47aab545c2074268c0`, occurrence `E027-sql-construction-continuation/mini-disabled`, "Retained-State Maintenance Account for `L LEFT JOIN R ON L.k = R.k`".
+- **Subsidiary criticism considered:** `[5ddb6c689a2f2326] (minireason.sql-dependency-criticism.v1)` — conclusions: no local error in U0's two event applications; but (1) U0's pre-event initializer/output bag are only reconstructable by inverse-applying the events, not publicly printed; (2) the bag-removal choice is disclosed but not forced by the candidate; (3) the "no NULL-branch swap" decision depends on `RkeyIndex[7] = {10,11}`, which in turn depends on the unshown initializer; (4) no criticism on points U0 handles correctly.
+
+## Retention / revision / suspension decision
+
+I **retain** the candidate identity, the chosen interpretation, and the two event deltas exactly as U0 applied them. I do **not** revise the post-Event-2 state or output bag. I **accept** the criticism as a scope/evidentiary correction and inline it, because it identifies a genuine deficiency in U0's *presentation* of provenance — not in its arithmetic.
+
+Specifically I adopt the criticism's two substantive points:
+
+- **(P1) Public initializer.** The pre-Event-1 retained state was reconstructed, not laid out publicly. I now print it in full as an **attributed reconstruction**, clearly marked as not supplied by U0's body, and I attribute that reconstruction to the inverse application of Events 1–2 under the candidate's §4.2/§4.4 and the declared bag reading. This does not change any value; it makes the dependency traceable and honest.
+- **(P2) Bag-removal is chosen, not entailed.** I downgrade from treating single-occurrence multiset removal as "the" candidate delta to treating it as **U1's declared interpretation** of the candidate's under-specified delta text (§4.4 parenthetical, §7 item 3). The candidate's §2.3/§2.4 use set-flavored language ("set/bag", "set of `lid`") alongside multiset language; the closed form in §1 is the only place multiplicity is fully pinned. I therefore record the interpretive choice as load-bearing and not unique.
+
+No use is withdrawn; no suspension is required. The criticism is admissible as a *strength limitation*, not a refutation.
+
+---
+
+## Chosen interpretation (carried forward, unchanged in substance)
+
+- §4.1/§4.2 (L insert/delete): affect only the touched `lid`; NULL-key left rows are not entered into `LkeyIndex`.
+- §4.3/§4.4 (R insert/delete): affect exactly `LkeyIndex[k]` for the right row's non-NULL key `k`; `R.k IS NULL` leaves output unchanged (ordinary `=` never true with NULL).
+- **Declared interpretive choice (P2):** output-bag and `RkeyIndex`-bucket deltas are **single-occurrence multiset operations**, not set operations. This is *my* reading of the candidate, adopted because `SELECT ALL` and the §4.4 parenthetical ("one occurrence only — multiplicity matters") support it; it is **not** entailed by the candidate's text alone.
+- **Declared interpretive choice:** `cnt(k) = |RkeyIndex[k]|` is derived on demand; `matchCount` is not stored (per candidate §2.5).
+- Before-images from the event model are authoritative deletion targets; retained state is expected to agree.
+
+---
+
+## Publicly reconstructed pre-Event-1 state (attributed, not supplied by U0)
+
+**Attribution:** This is *not* printed anywhere in public U0. It is reconstructed in U1 by inverse-applying U0's Event 1 (§4.2 on `lid=1`, `k=NULL`) and Event 2 (§4.4 on `rid=10`, `k=7`) under the candidate's rules and U1's bag reading. The criticism's point (P1) is accepted: the pre-event state and output below are **reconstructed**, not sourced from a publicly printed initializer.
+
+```json
+{
+  "Lrows":    [[1, null], [2, 7], [3, 9]],
+  "Rrows":    [[10, 7, "a"], [11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":[[7, [2]], [9, [3]]],
+  "RkeyIndex":[[7, [10, 11]], [9, [12]]],
+  "output_bag":[[1, null, null], [2, 7, "a"], [2, 7, "a"], [3, 9, null]]
+}
+```
+
+This reconstruction is now the traceable starting point; the previously inferred status is replaced by an explicitly declared reconstruction. Value-for-value it agrees with what U0's deltas required.
+
+---
+
+## Events consumed (2 of 2, unchanged)
+
+**Event 1 — `delete L [1, null]`.** Per §4.2: remove `(1, NULL, NULL)`; delete `lid=1` from `Lrows`; `LkeyIndex`, `Rrows`, `RkeyIndex` untouched.
+
+**Event 2 — `delete R [10, 7, "a"]`.** Non-NULL key. `LkeyIndex[7] = {2}`; `cnt(7)` before removal = `|RkeyIndex[7]| = 2`; `willBeEmpty = (cnt(7) == 1) = false`. Delta: remove **one occurrence** of `(2, 7, "a")`. Remove `rid=10` from `RkeyIndex[7]` → bucket `[11]`, non-empty. Remove `(10, 7, "a")` from `Rrows`.
+
+Both deltas are as U0 applied them; U1 does not alter them.
+
+---
+
+## Retained state at U1
+
+```json
+{
+  "Lrows":    [[2, 7], [3, 9]],
+  "Rrows":    [[11, 7, "a"], [12, 9, null]],
+  "LkeyIndex":[[7, [2]], [9, [3]]],
+  "RkeyIndex":[[7, [11]], [9, [12]]]
+}
+```
+
+## Cached output bag at U1
+
+```
+[[2, 7, "a"], [3, 9, null]]
+```
+
+Tabular form:
+
+| lid | k | v |
+|-----|---|---|
+| 2 | 7 | "a" |
+| 3 | 9 | NULL |
+
+Multiplicity notes:
+- `(2,7,"a")` once — from surviving `rid=11`.
+- `(3,9,NULL)` once — from matched right row `rid=12` whose `v` is NULL. This is a *matched* NULL value, not the no-match NULL branch.
+
+## Branch status of live L rows
+
+- `lid=2`, `k=7`: match branch; `cnt(7)=1`; emits one row.
+- `lid=3`, `k=9`: match branch; `cnt(9)=1`; emits one row (with matched value NULL).
+- No live left row is on the NULL branch.
+
+## Current event position
+
+- **Events consumed:** 2 of 2 from U0's `use_before` (`delete L [1,null]`, `delete R [10,7,"a"]`).
+- **Position:** ready for the next event, or for closure. No update pending.
+- **Original database / history:** unavailable except as retained above. No whole-database recomputation was used.
+
+---
+
+## Reasons (why U1 retains U0's accounting)
+
+1. The candidate's §4.2 prescribes exactly the Event-1 delta U0 applied; no amendment is warranted.
+2. The candidate's §4.4 with `willBeEmpty = false` prescribes exactly the Event-2 delta, and U1's bag reading is disclosed as chosen, not entailed — so no delta change follows from the criticism.
+3. The criticism's points target *evidentiary provenance and interpretive compulsion*, not the resulting retained state or output bag. Those targets are addressed by:
+   - printing the reconstructed initializer with explicit attribution (P1), and
+   - relabeling the multiset reading as a **declared interpretation** rather than a forced derivation (P2).
+4. The criticism explicitly states it does not establish U0 is wrong; no revision to values is justified.
+
+---
+
+## Uncertainty and unsupported cases retained
+
+1. **Bag-vs-set removal (P2).** Now explicitly an interpretation, not a candidate entailment. A stricter set-flavored reading of §2.3/§2.4 would give a different (weaker) delta rule and could diverge on any event involving duplicate `(k,v)` in the same bucket. U1 does not resolve which reading the candidate "really" intends.
+2. **Provenance of the initializer (P1).** The pre-Event-1 state and output bag are reconstructed, not publicly supplied by U0. Consequently, U1's post-Event-2 output bag is checkable against the candidate rules + U1's declaration + a *reconstructed* initializer, but not against a publicly printed initializer. This limits the evidentiary weight of U1 as a confirmation of the candidate.
+3. **Before-image agreement.** U0/U1 rely on the supplied before-images matching retained rows (they do). Behavior on disagreement is unspecified and unimplemented.
+4. **Collation / type-affinity gap** (candidate §7 item 4). Not exercised by Events 1–2 (all non-NULL integer keys); remains open for later events.
+5. **No SQL executive invoked.** The output bag is derived from the candidate rules and U1's declared interpretation, not from a fresh scan of `L`/`R`. A divergence of a real SQLite execution from this bag would be evidence against the candidate or U1's reading, not internal inconsistency.
+6. **Whole-database recomputation** was not used and remains outside the incremental contract; it is only an admissible boundary alternative.
+
+---
+
+## What a subsequent use receives
+
+Passing U1 forward means the next use receives:
+
+- this U1 in full (parent = U0, candidate SHA-256 as above),
+- the reconstructed pre-Event-1 state of §"Publicly reconstructed pre-Event-1 state" as an attributed reconstruction,
+- the post-Event-2 retained state and output bag,
+- the declared interpretive choices (multiset removal; NULL-key exclusion from key indexes; `cnt` derived, not stored),
+- the criticism's bearing recorded as a scope limitation on evidentiary strength,
+- the preserved uncertainties 1–6 above.
+
+The original selected candidate identity is preserved unchanged; no silent correction or repair of the candidate is claimed.
