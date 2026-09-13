@@ -1,0 +1,182 @@
+{
+  "cycles": {
+    "completion_tokens_per_call": 4096,
+    "max_calls": 20,
+    "max_completion_tokens": 81920,
+    "max_cycles": 20
+  },
+  "kinds": [
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [],
+      "instruction": "Use only the declared material and identify the grounds of your answer.",
+      "kind_id": "h003.task.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "h003.task.v1"
+      },
+      "title": "Current task"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [],
+      "instruction": "Use only the declared material and identify the grounds of your answer.",
+      "kind_id": "h003.reopen.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "h003.reopen.v1"
+      },
+      "title": "Re-presented targets"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [],
+      "instruction": "Use only the declared material and identify the grounds of your answer.",
+      "kind_id": "h004.delivery.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "h004.delivery.v1"
+      },
+      "title": "Delivery status and provenance"
+    },
+    {
+      "commitment_call": "single",
+      "failure_policy": {
+        "action": "stop",
+        "retries": 0,
+        "tolerance": 0
+      },
+      "input_ports": [
+        {
+          "port_id": "delivery",
+          "port_type": "delivery",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "task",
+          "port_type": "task",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "reopened",
+          "port_type": "reopened",
+          "window": "this_cycle"
+        },
+        {
+          "port_id": "previous",
+          "port_type": "previous",
+          "window": "previous_cycle"
+        }
+      ],
+      "instruction": "Use only the declared material and identify the grounds of your answer.",
+      "kind_id": "mini.verdict.v1",
+      "output_port": {
+        "port_id": "out",
+        "produces_kind": "mini.verdict.v1"
+      },
+      "title": "Continue the inquiry"
+    }
+  ],
+  "manifest_id": "h004.partial-continuation.rss",
+  "port_types": [
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "h003.task.v1"
+        ]
+      },
+      "port_type": "task",
+      "render": {
+        "header": "Current task",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "h003.reopen.v1"
+        ]
+      },
+      "port_type": "reopened",
+      "render": {
+        "header": "Explicitly re-presented targets",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "mini.verdict.v1"
+        ]
+      },
+      "port_type": "previous",
+      "render": {
+        "header": "Previous own-arm response",
+        "rule": "list_bodies"
+      }
+    },
+    {
+      "draws_from": {
+        "artifact_kinds": [
+          "h004.delivery.v1"
+        ]
+      },
+      "port_type": "delivery",
+      "render": {
+        "header": "Delivery status and provenance",
+        "rule": "list_bodies"
+      }
+    }
+  ],
+  "problem": "H003 language/error continuation through declared ports.",
+  "schema_version": "creib.mini.manifest.v1",
+  "stages": [
+    {
+      "kind_id": "h003.task.v1",
+      "ports": [],
+      "seat": "machine",
+      "stage_id": "task"
+    },
+    {
+      "kind_id": "h003.reopen.v1",
+      "ports": [],
+      "seat": "machine",
+      "stage_id": "reopened"
+    },
+    {
+      "kind_id": "h004.delivery.v1",
+      "ports": [],
+      "seat": "machine",
+      "stage_id": "delivery"
+    },
+    {
+      "kind_id": "mini.verdict.v1",
+      "ports": [
+        "delivery",
+        "task",
+        "reopened",
+        "previous"
+      ],
+      "stage_id": "inquire"
+    },
+    {
+      "end": true,
+      "stage_id": "end"
+    }
+  ]
+}
