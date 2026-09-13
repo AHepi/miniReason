@@ -1094,3 +1094,7 @@ VERIFIED 5d153f56417bea7b925959e7d402bb94cb7dce74 TREE 122acb4ece0ad01105db7cc4f
 REC-20260913-L recovery STATUS updated at 2026-09-13 11:45:50 UTC: replace stale H004preparation heading with the verified wave10 state and16remainingcalls, partial/full distinction and root-owned review findings. Review publication verified To https://github.com/AHepi/miniReason.git
    5d153f5..0557249  HEAD -> main
 VERIFIED 0557249bff5a437de52f74677de63776d5b5f0bf TREE 8120a66a9a85b8fc016075f71e1f9554c220642f. Publish completed STATUS immediately before waves11–15.
+
+REC-20260913-L wave 11 preparation at 2026-09-13 11:46:02 UTC: previous completed evidence publication verified To https://github.com/AHepi/miniReason.git
+   0557249..d310795  HEAD -> main
+VERIFIED d310795fae84039222c68fcb82f5167777f705ce TREE 3f623f16f4a160af5401927e37cca6293b0b5489. Prepare only each eligible arm's next frozen coordinate and exact own-arm dependencies. Continue inside the accepted root gate, maximum five simultaneous calls, 4096 completion tokens each, no retries. No operator diagnoses or revised task material enter participant input. Publish these bytes before dispatch.
