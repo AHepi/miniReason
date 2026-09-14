@@ -628,6 +628,22 @@ def _load_config(config_path: str | Path, budget_override: int | None = None,
     return config
 
 
+def _config_dir_of(config: Any, config_path: str | Path | None) -> Path | None:
+    """Where this config was loaded from, however the caller holds it.
+
+    A path handed in as the config is its own answer; a caller holding a loaded
+    ``LoopConfig`` says where it came from with ``config_path=``.  The CLI must
+    do the latter, because it validates ``--mode`` and ``--publish-ref`` by
+    loading the config first and would otherwise hand S0 an object with no
+    directory behind it - which is exactly how the first live S0 ended in a
+    refusal that named no bundle at all.
+    """
+
+    if not isinstance(config, LoopConfig):
+        return Path(config)
+    return None if config_path is None else Path(config_path)
+
+
 def _occurrence_dirs(root: Path, names: Iterable[str]) -> list[Path]:
     return [root / str(name) for name in names]
 
@@ -1065,10 +1081,17 @@ def _mark_cells(drv: _Driver) -> list[Any]:
 
 def preregister(config: LoopConfig | str | Path, *,
                 modules: Modules | None = None,
-                budget_override: int | None = None) -> Mapping[str, Any]:
-    """S0 - freeze the config, mint ``loop_plan_id``, write and open the bundle."""
+                budget_override: int | None = None,
+                config_path: str | Path | None = None) -> Mapping[str, Any]:
+    """S0 - freeze the config, mint ``loop_plan_id``, write and open the bundle.
 
-    config_path = None if isinstance(config, LoopConfig) else Path(config)
+    ``config_path`` is how a caller that has **already loaded** the config says
+    where it was loaded from.  It is not a second config and changes no value:
+    it is the directory S0 stages the bundle from, and without it a caller
+    holding a ``LoopConfig`` leaves S0 with nowhere to look.
+    """
+
+    config_path = _config_dir_of(config, config_path)
     if not isinstance(config, LoopConfig):
         config = _load_config(config, budget_override)
     drv = _Driver(config, modules, config_path)
@@ -1165,7 +1188,8 @@ def preregister(config: LoopConfig | str | Path, *,
 # --------------------------------------------------------------------------- #
 
 def preflight(config: LoopConfig | str | Path, *,
-              modules: Modules | None = None) -> Mapping[str, Any]:
+              modules: Modules | None = None,
+              config_path: str | Path | None = None) -> Mapping[str, Any]:
     """S1 - the offline check of design 4.1 S1.
 
     No socket and no credential: the seat plan is built off the frozen
@@ -1176,7 +1200,7 @@ def preflight(config: LoopConfig | str | Path, *,
     a planned-call figure larger than ``config.max_calls`` is refused by name.
     """
 
-    config_path = None if isinstance(config, LoopConfig) else Path(config)
+    config_path = _config_dir_of(config, config_path)
     if not isinstance(config, LoopConfig):
         config = _load_config(config)
     drv = _Driver(config, modules, config_path)
@@ -1316,10 +1340,11 @@ def run(config: LoopConfig | str | Path, *,
         modules: Modules | None = None,
         budget_override: int | None = None,
         acknowledge: str | None = None,
-        reason: str | None = None) -> Mapping[str, Any]:
+        reason: str | None = None,
+        config_path: str | Path | None = None) -> Mapping[str, Any]:
     """S2..S15.  Resume is calling this again on the same run (design 4.3)."""
 
-    config_path = None if isinstance(config, LoopConfig) else Path(config)
+    config_path = _config_dir_of(config, config_path)
     if not isinstance(config, LoopConfig):
         config = _load_config(config, budget_override)
     drv = _Driver(config, modules, config_path)
@@ -2670,15 +2695,22 @@ def main(argv: list[str] | None = None, *,
         config = _load_config(args.config, getattr(args, "cycles", None),
                               getattr(args, "mode", None),
                               getattr(args, "publish_ref", None))
+        # The validated config AND the path it was validated from: ``--mode``
+        # and ``--publish-ref`` are checked by loading it, and the bundle S0
+        # stages is found beside it.  Handing on one without the other is what
+        # stopped the first live S0.
+        where = Path(args.config)
         if name == "preregister":
-            preregister(config, modules=modules, budget_override=args.cycles)
+            preregister(config, modules=modules, budget_override=args.cycles,
+                        config_path=where)
             return 0
         if name == "preflight":
-            preflight(config, modules=modules)
+            preflight(config, modules=modules, config_path=where)
             return 0
         if name == "run":
             run(config, modules=modules, budget_override=args.cycles,
-                acknowledge=args.acknowledge, reason=args.reason)
+                acknowledge=args.acknowledge, reason=args.reason,
+                config_path=where)
             return 0
     except LoopError as exc:
         print(f"{exc.code}: {exc.detail}", file=sys.stderr)

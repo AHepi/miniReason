@@ -1046,7 +1046,20 @@ class TheBundleIsStagedBeforeAnythingReadsIt(DriverFixture):
                               modules=self.modules())
         self.assertEqual(seen, [Path(config_path)])
 
-    def test_the_cli_reports_the_code_and_exits_non_zero(self):
+    def test_the_cli_stages_the_bundle_beside_the_config_it_was_given(self):
+        # The CLI validates ``--mode`` and ``--publish-ref`` by LOADING the
+        # config, and then handed S0 the loaded object alone: S0 had no
+        # directory to stage from, and the first live S0 refused naming no
+        # bundle at all.  The path travels beside the object now.
+        config_path = self.bundle()
+        with no_sockets(self.counter):
+            code = auto_loop.main(["preregister", "--config", str(config_path)],
+                                  modules=self.modules())
+        self.assertEqual(code, 0)
+        self.assertTrue(self.paths.obligations.is_file())
+        self.assertTrue(self.paths.plan.is_file())
+
+    def test_the_cli_reports_the_code_and_the_paths_it_looked_in(self):
         config_path = self.bundle()
         (config_path.parent / "obligations.json").unlink()
         stderr = io.StringIO()
@@ -1054,7 +1067,24 @@ class TheBundleIsStagedBeforeAnythingReadsIt(DriverFixture):
             code = auto_loop.main(["preregister", "--config", str(config_path)],
                                   modules=self.modules())
         self.assertEqual(code, 1)
-        self.assertIn("OBLIGATIONS_FILE_MISSING", stderr.getvalue())
+        printed = stderr.getvalue()
+        self.assertIn("OBLIGATIONS_FILE_MISSING", printed)
+        # Both places, named - not "no bundle directory", which is what a CLI
+        # that dropped the path could only ever say.
+        self.assertIn(str(self.paths.obligations), printed)
+        self.assertIn(str(config_path.parent / "obligations.json"), printed)
+        self.assertNotIn("no bundle directory", printed)
+
+    def test_the_cli_carries_the_path_into_preflight_too(self):
+        config_path = self.bundle()
+        with no_sockets(self.counter):
+            self.assertEqual(
+                auto_loop.main(["preregister", "--config", str(config_path)],
+                               modules=self.modules()), 0)
+            self.assertEqual(
+                auto_loop.main(["preflight", "--config", str(config_path)],
+                               modules=self.modules()), 0)
+        self.assertTrue((self.paths.run_root / "preflight.json").is_file())
 
 
 # --------------------------------------------------------------------------
