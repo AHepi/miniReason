@@ -217,3 +217,46 @@ in L001 the moment it was noticed. A refusal record needs somewhere else to go.
 committed unchanged, `run.lock` included, as the record. It is superseded by L002 under a new
 `loop_plan_id`. No reading, mark, decision or evidence about any arm, model, family or account was
 produced by it, and none is claimed.
+
+## OPS-20260915-RUNNERNATIVE — A pre-registration declared a dispatch occurrence of a study its runner cannot read
+
+**What happened.** L002 (`REC-20260914-AL`) declared
+`experiments/diagnostics/C001-contrast-triple/occurrence-03` as its dispatch leg, to be staged
+before S0 under C001's frozen plan. S0 exited 0; S1 exited 1 with `OCCURRENCE_NOT_DISPATCHABLE`,
+offline, before any publication, at **zero** provider calls. Staging was then attempted and
+**stopped before writing anything**.
+
+**Cause, and it is a schema fact rather than a missing file.** Runner v2
+(`tools/multicycle_commitment_study_multi_v2.py`) is the driver's only dispatch seam (WAVE5 S4/S6),
+and it verifies and dispatches **only H005-style occurrences**: `verify()` requires `material.json`
+at schema `minireason.h005.material.v1`, a `plan.json` byte-equal to the runner's own `plan_body`
+(`minireason.h005.plan.v1`) and `manifests/<tid>.json` at their pinned digests, and `prepare_wave`
+iterates `material['problems']` and its templates, cycles and nodes. C001's material is
+`minireason.c001.material.v1`, indexed by endpoint, arm, case and replicate. **No occurrence of
+C001 can ever verify there.** L002's `p13` was therefore unsatisfiable as written, and its '20
+calls under `plan_id 328b9452…`' was impossible twice over: `tools/contrast_triple_study.py` at
+that id plans 240 calls, and the twenty coordinates belong to occurrence-02's id `1d9f47ac…`.
+
+**A second premise, corrected by measurement.** L002's bundle said no published occurrence can be
+verified. Measured over every occurrence in `experiments/diagnostics/` with runner v2's own
+`verify()` and `pending_wave()`: **F001 occurrence-07 and occurrence-08 verify, `pending_wave`
+`None`**, `max_calls` 11 each; F001 occurrence-01…06 refuse `IMMUTABLE_PLAN_MISMATCH`; F002
+occurrence-01…03 refuse `ARM_FIELDS`; H005 occurrence-01 refuses `FileNotFoundError`; both C001
+occurrences refuse `MATERIAL_SCHEMA`. The real constraint is that **nothing that verifies may be
+dispatched into, because it is published** — a rule of this programme, not a limit of the runner.
+
+**Lesson, and it is the transferable one.** A pre-registration that names a dispatch occurrence
+must assert, before it is frozen, that the occurrence is **native to the runner that will dispatch
+it** — same material schema, same plan body, same wave iteration — and not merely that it belongs
+to a study with a frozen plan. `OPS-20260914-LOOPOCCURRENCE` asked for verifiability and got a
+missing `arms.json`; this erratum sharpens it to schema-nativeness, which is the question that
+actually decides dispatchability and which no amount of staging can repair for a foreign study.
+The successor bundle (L003) stages a new occurrence of a runner-v2-native study through the
+runner's **own** `initialize`, proves `verify()` passes before publication, and asserts it in
+`validate.py` — asserting that the occurrence **verifies**, where L002's asserted only that it was
+absent.
+
+**Status.** L002 is closed as an operational refusal and is not resumed; it published nothing and
+spent nothing. Its run directory is committed exactly as the driver left it — with **no `run.lock`
+and no `steps/`**, because `run` was never invoked. No reading, mark, decision or evidence about
+any arm, model, family or account was produced by it, and none is claimed.
