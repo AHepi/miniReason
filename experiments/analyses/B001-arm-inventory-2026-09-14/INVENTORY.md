@@ -1,0 +1,411 @@
+# B001 arm inventory
+
+**This is an inventory of published bytes, not a reading of them.** It lists which arms exist, under which plan identity, at which ceiling and clock, which coordinates carry a terminal artifact, and whether the published use-relation instrument would read each arm's commitment surface at all. It scores nothing, ranks nothing, classifies nothing and compares no contribution with any other. `reads_commitment_surface` is a mechanical fact about `minireason.graph_import_h005.FCL_SURFACE_ARMS`, an exact arm-NAME membership test; it says nothing about whether an arm's contribution is good, complete or relevant. Whether an already-published arm answers a question, and whether a proposed arm would be a replay of one, are root's calls and are left to root.
+
+Instrument `b001_arm_inventory/1`, schema `b001.arm-inventory.v1`.
+
+`graph_import_h005.FCL_SURFACE_ARMS` = `['mini_fcl']`.
+
+## `F001-fork5-multifamily/occurrence-01`
+
+plan_id `fd25a5a4ec8480b0aa9b29ba0d7ac771c16e32ce9d68709312b84c98296c3980`, runner `a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80`, provider mode `live`, `max_calls` 12, scope `{"cycles": [1], "problems": ["daily"]}`, 12 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `deepseek-flash` | 8192 | None / 180 | None | yes |
+| `mini_prose` | mini | prose | `arms_json` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+| `native` | native | prose | `arms_json` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+
+Terminal artifacts, 12 of 12 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/carry` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+- `daily/native/cycle01/answer` - artifact present
+
+## `F001-fork5-multifamily/occurrence-02`
+
+plan_id `951ad3c58cb341f12ac922cab580e02879138d5d6cc626a0f9825af3ed29b3db`, runner `a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 11 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/gpt-oss-120b` | 8192 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/gpt-oss-120b` | 8192 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/gpt-oss-120b` | 8192 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 11 of 11 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/carry` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F001-fork5-multifamily/occurrence-03`
+
+plan_id `52d7b596c10fcc194dc326d6a47addecda93eb604baf1ce1dbc4e594e8bdeba4`, runner `a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 11 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/qwen3.5-397b` | 8192 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/qwen3.5-397b` | 8192 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/qwen3.5-397b` | 8192 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 11 of 11 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/carry` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F001-fork5-multifamily/occurrence-04`
+
+plan_id `e2e3357ef2d67dda270a53f65151c6b1e94265000d487876e0cad735a9cc83c1`, runner `a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 8 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/glm-5.3` | 8192 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/glm-5.3` | 8192 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/glm-5.3` | 8192 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 5 of 5 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F001-fork5-multifamily/occurrence-05`
+
+plan_id `620ee8bc7e6653dde7b16c221d8c2e0e2ace4968acdad2eeb34c4925380d1e4c`, runner `a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 10 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/kimi-k3` | 8192 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/kimi-k3` | 8192 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/kimi-k3` | 8192 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 8 of 8 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F001-fork5-multifamily/occurrence-06`
+
+plan_id `84a5fea6e8ad6f3184874cfad980df348e5b65265818f132f52b9669a5634264`, runner `a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 11 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/gemma4-31b` | 8192 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/gemma4-31b` | 8192 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/gemma4-31b` | 8192 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 11 of 11 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/carry` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F001-fork5-multifamily/occurrence-07`
+
+plan_id `77aa01f46f57471838e6cb46c96eb3ad9adfc2c1053376051dc098edd58d306d`, runner `8f7eb9d73e8c497f6a2aabf826a8409bb3c60682b36aaa361f650a9e870adbd0`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 9 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/glm-5.3` | 32768 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/glm-5.3` | 32768 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/glm-5.3` | 32768 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 8 of 8 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F001-fork5-multifamily/occurrence-08`
+
+plan_id `04c26f24812a4e48d41cfd6f6ef16785ba25ea183894bfafe86d6eb0e35af8ee`, runner `8f7eb9d73e8c497f6a2aabf826a8409bb3c60682b36aaa361f650a9e870adbd0`, provider mode `live`, `max_calls` 11, scope `{"cycles": [1], "problems": ["daily"]}`, 11 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | bare | prose | `arms_json` | `ollama/kimi-k3` | 32768 | None / 180 | 7 | **no** |
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/kimi-k3` | 32768 | None / 180 | 7 | yes |
+| `mini_prose` | mini | prose | `arms_json` | `ollama/kimi-k3` | 32768 | None / 180 | 7 | **no** |
+
+Terminal artifacts, 10 of 10 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+
+## `F002-fork5-raised-clock/occurrence-01`
+
+plan_id `9aa92a837569bd56a86b172eb56dd80dbc69c519a86286d3387b020c2709a0d5`, runner `ccbb1165fd3bb1d14e6c9247821e9c4e67fbea09a2153339984bd7eaff5cc42e`, provider mode `live`, `max_calls` 5, scope `{"cycles": [1], "problems": ["daily"]}`, 4 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/glm-5.3` | 32768 | 600 / 600 | 7 | yes |
+
+Terminal artifacts, 3 of 3 listed coordinates:
+
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+
+## `F002-fork5-raised-clock/occurrence-02`
+
+plan_id `a59debaf6382ce7c01c4c07d14894890736e2a960b66d4323f9eb84ac72b1163`, runner `ccbb1165fd3bb1d14e6c9247821e9c4e67fbea09a2153339984bd7eaff5cc42e`, provider mode `live`, `max_calls` 5, scope `{"cycles": [1], "problems": ["daily"]}`, 5 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `mini_fcl` | mini | fcl | `arms_json` | `ollama/kimi-k3` | 32768 | 600 / 600 | 7 | yes |
+
+Terminal artifacts, 5 of 5 listed coordinates:
+
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/carry` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+
+## `H005-open-prose-commitments/occurrence-01`
+
+plan_id `21e3cf1dff73423785d2e6faab5d32971cd2295cb5ce7c5ca07bbd45eb2396a6`, runner `None`, provider mode `None`, `max_calls` 240, scope `null`, 17 provider call records.
+
+| arm | kind | surface | kind source | endpoint | max_tokens | clock (declared/effective) | seed | use-relation reads it? |
+|---|---|---|---|---|---:|---|---:|---|
+| `bare` | *not recorded* | *not recorded* | `plan_settings` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+| `matched` | *not recorded* | *not recorded* | `plan_settings` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+| `mini_fcl` | *not recorded* | *not recorded* | `plan_settings` | `deepseek-flash` | 8192 | None / 180 | None | yes |
+| `mini_prose` | *not recorded* | *not recorded* | `plan_settings` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+| `native` | *not recorded* | *not recorded* | `plan_settings` | `deepseek-flash` | 8192 | None / 180 | None | **no** |
+
+> not recorded: this occurrence's plan was written by the owner's runner, whose `arms` is a list of names and whose `settings` is a transport view. Arm kind and commitment surface were module constants there, so no published byte of this occurrence carries them and this tool does not infer them from the arm's name (U3).
+
+Terminal artifacts, 17 of 17 listed coordinates:
+
+- `daily/bare/cycle01/answer` - artifact present
+- `daily/matched/cycle01/account` - artifact present
+- `daily/matched/cycle01/carry` - artifact present
+- `daily/matched/cycle01/objection` - artifact present
+- `daily/matched/cycle01/response` - artifact present
+- `daily/matched/cycle01/rival` - artifact present
+- `daily/mini_fcl/cycle01/account` - artifact present
+- `daily/mini_fcl/cycle01/carry` - artifact present
+- `daily/mini_fcl/cycle01/objection` - artifact present
+- `daily/mini_fcl/cycle01/response` - artifact present
+- `daily/mini_fcl/cycle01/rival` - artifact present
+- `daily/mini_prose/cycle01/account` - artifact present
+- `daily/mini_prose/cycle01/carry` - artifact present
+- `daily/mini_prose/cycle01/objection` - artifact present
+- `daily/mini_prose/cycle01/response` - artifact present
+- `daily/mini_prose/cycle01/rival` - artifact present
+- `daily/native/cycle01/answer` - artifact present
+
+## Proposed arm placed beside the published ones
+
+Proposal, verbatim:
+
+```json
+{
+  "arm": "bare",
+  "cycle": 1,
+  "endpoint": "deepseek-flash",
+  "kind": "bare",
+  "max_tokens": 8192,
+  "problem": "daily",
+  "seed": null,
+  "surface": "prose",
+  "timeout_seconds": 180
+}
+```
+
+A row whose `differs on` column is empty and whose problem/cycle match is `yes` reports that every compared field of this proposal already stands published at that coordinate. **This tool does not call that a replay**; it reports the fields. What follows is root's (U7).
+
+| published arm | problem/cycle match | terminal artifacts | identical on | differs on |
+|---|---|---:|---|---|
+| `F001-fork5-multifamily/occurrence-01/bare` | yes | 1 | `endpoint`, `kind`, `surface`, `max_tokens`, `timeout_seconds`, `seed` | **nothing** |
+| `F001-fork5-multifamily/occurrence-02/bare` | yes | 1 | `kind`, `surface`, `max_tokens`, `timeout_seconds` | `endpoint`, `seed` |
+| `F001-fork5-multifamily/occurrence-03/bare` | yes | 1 | `kind`, `surface`, `max_tokens`, `timeout_seconds` | `endpoint`, `seed` |
+| `F001-fork5-multifamily/occurrence-04/bare` | yes | 1 | `kind`, `surface`, `max_tokens`, `timeout_seconds` | `endpoint`, `seed` |
+| `F001-fork5-multifamily/occurrence-05/bare` | yes | 1 | `kind`, `surface`, `max_tokens`, `timeout_seconds` | `endpoint`, `seed` |
+| `F001-fork5-multifamily/occurrence-06/bare` | yes | 1 | `kind`, `surface`, `max_tokens`, `timeout_seconds` | `endpoint`, `seed` |
+| `F001-fork5-multifamily/occurrence-07/bare` | yes | 1 | `kind`, `surface`, `timeout_seconds` | `endpoint`, `max_tokens`, `seed` |
+| `F001-fork5-multifamily/occurrence-08/bare` | yes | 1 | `kind`, `surface`, `timeout_seconds` | `endpoint`, `max_tokens`, `seed` |
+| `H005-open-prose-commitments/occurrence-01/bare` | yes | 1 | `endpoint`, `max_tokens`, `timeout_seconds`, `seed` | `kind`, `surface` |
+
+## Files read
+
+| path | sha256 |
+|---|---|
+| `F001-fork5-multifamily/occurrence-01/arms.json` | `5165c89e2179b4fa82c8b7f2529063c0ded25c9b4c0466107be17c98e0fc5aa1` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/bare/cycle01/answer.json` | `44e1de8ffb17a5a986483e84209f3b988c69a0c83f1df63f25f20e9ac0018dbb` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_fcl/cycle01/account.json` | `61016c4955d08a97f30d21c69d8cd8d7c0af0ba16b5fe61a7aa162bba0bcd6f0` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_fcl/cycle01/carry.json` | `ece57747fc6f573aedc0695d22c0492864c820b753f3fe82ee47c1597292e587` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_fcl/cycle01/objection.json` | `837afc39f263be01471367b9c4bae44ce248960e4ebfe48b7e9436cd0d7c5bdf` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_fcl/cycle01/response.json` | `2fb7525c7ed516096e6c19db528c12372d7edbaf9c9a68dfa7c1bb9f0eeaa3f5` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_fcl/cycle01/rival.json` | `d2731fe88de3f53a3656f983c75814f8168281edc218cf7fec7c3db7758ebd69` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_prose/cycle01/account.json` | `6c31a55824b06279f5e11564b47d3688f44b4d32a449708a79a33e979f89c8df` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_prose/cycle01/carry.json` | `29d1d9caa299708e852e694aaec603e12b80592d1e5af84222685d48bd3b8b3f` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_prose/cycle01/objection.json` | `16b96dba473d9469946e99533396add0b80118f8cf4eb543862f8140c9da1288` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_prose/cycle01/response.json` | `9cafb0718055c4c02209978851b3e3dc73274e96f2be2781cb63a92febb970ba` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/mini_prose/cycle01/rival.json` | `115093ff57135d44019e0bb7a6ee764562c0f7a7ea0677e06f8691e16fd37297` |
+| `F001-fork5-multifamily/occurrence-01/artifacts/daily/native/cycle01/answer.json` | `c584244b1b1b3e5118367f6892a7a65a1dafdeda4cd80db93fe2eca8bf5bd4d3` |
+| `F001-fork5-multifamily/occurrence-01/plan.json` | `6992988f7c70c6af9e1df91c5bd30c676ed2bbd1f4cf23ff707489e82b6f7d55` |
+| `F001-fork5-multifamily/occurrence-02/arms.json` | `32019959b2506763d8061ee033d274857c7593018214f26bb1cb804795588750` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/bare/cycle01/answer.json` | `f9fccbf0829879365eb9e2590482cd77b1dc21dbb9a89be7446d5e4ce1496843` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_fcl/cycle01/account.json` | `d42bb4fe95dd750a782409ea27b0967442f841a050b54e9f103a6e314d255931` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_fcl/cycle01/carry.json` | `b65a344869c39a49b162ebdb68790d44faa606865cef4b62111ee2ac22a31ba0` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_fcl/cycle01/objection.json` | `de866de7fdbadea24291ecfa6a74027fa6d6b95620005e38752612c3a20cbb09` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_fcl/cycle01/response.json` | `213d67082128cd0e13fda2b39c45b6f2aa67e863f57a9f0e2b388ecffdeb2d4b` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_fcl/cycle01/rival.json` | `0ada966d21486a6952db0eeeff99d233246021acc53248eaa7c5f5e651e5d515` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_prose/cycle01/account.json` | `f464fa0feb6c4cf9d08b43ec65cd7874bf1f07d856690a1bda83b3fb9c265f57` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_prose/cycle01/carry.json` | `7f9fabdf5fa0a7b12f3545eff8744d3031c2febc55a9289ec0a0a415aadb31cf` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_prose/cycle01/objection.json` | `02c4d8e4fea7d1c605754c7755eadf6507040dc5961b17c89fca8d9de722556f` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_prose/cycle01/response.json` | `ba8a3d41440cce94aee5d864bb7e68380f49ab8f91abd4b6f05b0e280b83cf66` |
+| `F001-fork5-multifamily/occurrence-02/artifacts/daily/mini_prose/cycle01/rival.json` | `84c2c602b38c22ce1f3d3457bd1dac50617f976a088c8d5f5eea065d05cda66f` |
+| `F001-fork5-multifamily/occurrence-02/plan.json` | `6609038beaa616d7c27467470dde0cb842071c9ec7006530c3f49ffab13ee58e` |
+| `F001-fork5-multifamily/occurrence-03/arms.json` | `22cd4ea2542f621b68751345cf135e38210b5d654d937efad281c2887dc6dd51` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/bare/cycle01/answer.json` | `1a0cfda179d837a427ad9e8091c7e658fad96abe9ae98f95d0a8f81c74915d8b` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_fcl/cycle01/account.json` | `68a181ab635859cb21020a95e9700bd056509d44160b42fa4b8c8cfbe417d55a` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_fcl/cycle01/carry.json` | `60f477a1782e760594c15b58ee4386121adb0bd3564d4e5e4d578ca890cdb486` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_fcl/cycle01/objection.json` | `905de875e846cd93b026129e0fa7e41c18a4db0a5e9ccb55192a7518b8746edc` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_fcl/cycle01/response.json` | `70e09e1f5bdc914237e2a46b33aed70c19277c0ee243f7a2a4e6fce16008c4f4` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_fcl/cycle01/rival.json` | `4eaf7b12319d74d5a28c22e73a7f13c0248709f9da767fb8832486b0396e4f47` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_prose/cycle01/account.json` | `9dd02cbe27cab440bd2028bec2ad7a5bb2cdae2ce8589b93d185a670148cc308` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_prose/cycle01/carry.json` | `cece31dd208559941fd2a735da8e80b11bcb3e66947430bd3a5dac0d524a2e76` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_prose/cycle01/objection.json` | `5f8b6117dde25213c9e334d9d8f62d1d7cbc93bea1ddf9017f4813e5538c1ad7` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_prose/cycle01/response.json` | `f89710455a6ee4f231c0db223a63678c2bf18f28d4b80a4916aee596413003dd` |
+| `F001-fork5-multifamily/occurrence-03/artifacts/daily/mini_prose/cycle01/rival.json` | `ad617038191076557d0caa100fe1c2c808252c72aab8751c11bcde744a2edded` |
+| `F001-fork5-multifamily/occurrence-03/plan.json` | `5d3d2cd0a6d342f9ef8ea11a4c7e3b26b6ec311af4c835c9cb682a847be86e2d` |
+| `F001-fork5-multifamily/occurrence-04/arms.json` | `ca5bdcc8a58b6484ca9d5766690a157443884ac374fbc1a921af3b3ed4d5c984` |
+| `F001-fork5-multifamily/occurrence-04/artifacts/daily/bare/cycle01/answer.json` | `caf27324cf87d3e3f7a5999d35c6035545c5cb0c88297c062dbb474fd9ebb242` |
+| `F001-fork5-multifamily/occurrence-04/artifacts/daily/mini_fcl/cycle01/account.json` | `f34da0cb4b9a31c5b4072596258b04eb94849fd08380b1899a5cad1e14bc09a6` |
+| `F001-fork5-multifamily/occurrence-04/artifacts/daily/mini_prose/cycle01/account.json` | `561294d73c77e7778ab70f3fe86033bbda54b3c34b58d31eb401f1928031725a` |
+| `F001-fork5-multifamily/occurrence-04/artifacts/daily/mini_prose/cycle01/objection.json` | `2896cf1b3bda4e1423c637c05c4197003982e162c63ca06d005cbd81f3675354` |
+| `F001-fork5-multifamily/occurrence-04/artifacts/daily/mini_prose/cycle01/rival.json` | `09e9828de01550b78b05073041beb53ba1088c6f9708848882740576a60002f5` |
+| `F001-fork5-multifamily/occurrence-04/plan.json` | `7d06bdaae719af403cf1df715cee213e87ca310ebaf71a85a92ab5f9ba9ffc1f` |
+| `F001-fork5-multifamily/occurrence-05/arms.json` | `f06eebde55d74c33b4ad2707b0582453db73d9320b21e34e9e9375427f0cb35c` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/bare/cycle01/answer.json` | `5f8649f563fa59dba1f9e507130ee0470ba3afe7e22127921fe641ccba0d95df` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_fcl/cycle01/account.json` | `199fdfce722f92d5341a2b28b03c95856bced948fe10704985fd6caeff313ebf` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_fcl/cycle01/objection.json` | `68257ce650e37d87cc23869e7793e10282aba93bc37c59e8d9d4922b2747ba9e` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_fcl/cycle01/rival.json` | `7fa39b7cb4264888b550828e662b0127e6b97f0fc62bd704c06cc7fc40795741` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_prose/cycle01/account.json` | `399e611599467995f5a3fa41c772b23ddc49be66f362aaf9181cdf4285ed4ce3` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_prose/cycle01/objection.json` | `3796177d5680ea1913ee8eb939fcbc7a755e97204a99926735161dc5e879a53c` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_prose/cycle01/response.json` | `3066b5652c09dab4fde54829d2dcf7c36f181058f8b62fd3402ab2d7ba3e194b` |
+| `F001-fork5-multifamily/occurrence-05/artifacts/daily/mini_prose/cycle01/rival.json` | `8872042f76fa0e877e0369decd8b48ec89f38b54a3a05e54907e895352463950` |
+| `F001-fork5-multifamily/occurrence-05/plan.json` | `4a756b51d9ceb45b787b9741b025104caa5e8e2627bea0d94c85e48622956342` |
+| `F001-fork5-multifamily/occurrence-06/arms.json` | `80f846ad4e67c2d7ef6eae6ee6a008ef39ef1d806fac581c1e5e0838f43d0b4c` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/bare/cycle01/answer.json` | `705882f310a357815e8aa76b776b8bd0049cc5776a133f81451189d58b1119c3` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_fcl/cycle01/account.json` | `a4d341fde4cc7ba67574b09e0720ba91aea9ec131f1189ae7a9f792651be9067` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_fcl/cycle01/carry.json` | `fbb91d32d6173ccacdfc1f6bcb46cfde3e4eacfa895e4be54a4ebb3302015c7d` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_fcl/cycle01/objection.json` | `1be20731a470709231d4fdff9cf062c3a1130c6fb0c2bea350346fc541e2753f` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_fcl/cycle01/response.json` | `25f2997e8bd6433a485fffa01f76e8dcda794c29959e4f802429cf991b158e58` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_fcl/cycle01/rival.json` | `043882fc7b920ac73f460f4309c7e19dcc8083551d961521c7955a7f1174062f` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_prose/cycle01/account.json` | `3d7fc6ef6c8d4700a3ddb544651591f9b3624e33ddd405377c9a77d269fa97cd` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_prose/cycle01/carry.json` | `e38ff0b8ca674e274e84b1df7e3117192777abeb815fadb840b71f88a102a586` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_prose/cycle01/objection.json` | `314e3fb2551beb9682d90a2f9da1aee903613b8d6de18c91f1e994e912c7d23e` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_prose/cycle01/response.json` | `c3e46a926e4a1f7e32ad4cd8b904b7278c5e5c42dfb44c9e97eb9692c00064f4` |
+| `F001-fork5-multifamily/occurrence-06/artifacts/daily/mini_prose/cycle01/rival.json` | `8ce7b1c63f0c77c9a5283a1c219610fdcd1ef487fcdec81b793269b01406a4ea` |
+| `F001-fork5-multifamily/occurrence-06/plan.json` | `ee565d3fb40bf4c96c555dbb7994c09ce6e1899011d9b53c8b7bd8632f11e8ad` |
+| `F001-fork5-multifamily/occurrence-07/arms.json` | `16742fd92972a2d3c80b0d061d0eba51c74a644c761ead984d884eaa46a69199` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/bare/cycle01/answer.json` | `5d22c22df477cba40210537253c905b6d962b9d0a7c8c93589f3d8add529c64e` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_fcl/cycle01/account.json` | `47f1448f11a7fe22af3d5ce14e965390b2ca6e0aff867962319f68acec12ee71` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_fcl/cycle01/rival.json` | `2e6699a1fb6a43d2e024223f2a1b6fc0ac52292e221b9344648f12f42bccf64b` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_prose/cycle01/account.json` | `d21296d960f2d1b8dd853299caba7bdcb816cc8612e02c11eca4ca35c16e9213` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_prose/cycle01/carry.json` | `92bb3d68e3e8222a659321171608d2e480cd236cd078ace32da9ebeb9ca5e19a` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_prose/cycle01/objection.json` | `cc83ca89e521eae8552f71f2519d9cd965f31ad3c6284b84790c374e3d3d6de5` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_prose/cycle01/response.json` | `4bbdddeb83fab3257237d44bb2877df3efb21dec6efbc24b0e2fd825759e3611` |
+| `F001-fork5-multifamily/occurrence-07/artifacts/daily/mini_prose/cycle01/rival.json` | `ee88630a8354f99c95c5270bd499182db0bc72d34453f0ae565f5ca136ac4c41` |
+| `F001-fork5-multifamily/occurrence-07/plan.json` | `1e34079c4af43132440d131e5d7a480dabc4cc15fb501cd4c38eeb6d7f97fb3e` |
+| `F001-fork5-multifamily/occurrence-08/arms.json` | `5f7cab0797a758e7e2de86e113d404f33b7a0e514482a7e8334398f3fec1e3b6` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/bare/cycle01/answer.json` | `2b9d51b870073f2fd1395027af01eb466207db016ac475e55ccdbcb73df50a32` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_fcl/cycle01/account.json` | `1c9c81fec4eaecb74a13684d92293a1a8b7fb1c545195e525982045d920d2a75` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_fcl/cycle01/objection.json` | `b74c3351c02ee4f98590cce6cd984be6d87d88e370dde7d778921a6fe2b87907` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_fcl/cycle01/response.json` | `2324e79a0a3739e2d57691df66124b9f64444b0c27192b4f15a6c4d7647e3770` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_fcl/cycle01/rival.json` | `313c6e0876cb4be25b9b0c8b76fcabfc825d0c3ee56b9264d4bda6acac6f58ad` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_prose/cycle01/account.json` | `e91563ae39a2679e03342edbb5d6d13cc8da753cbcc3a17e3a93cfdd8ef0b46d` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_prose/cycle01/carry.json` | `a92dec0e7cf88e32694d11395eb2669550f999875cae0d3d0bfccc6ecc7820d8` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_prose/cycle01/objection.json` | `f4918bfbc72a19806a8fee7b4b8389a6d8e27b8db0c1f438848b2efa702ee306` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_prose/cycle01/response.json` | `8d72427bb0cc42f61db62dfd6e263c6ab73db6c95525a589b052cf6095a72c49` |
+| `F001-fork5-multifamily/occurrence-08/artifacts/daily/mini_prose/cycle01/rival.json` | `b7fd76b43708ffbf5419a1db7d65c4e302d5ff37505157655cff10134252bcd7` |
+| `F001-fork5-multifamily/occurrence-08/plan.json` | `028c551106cc37c6f568fe559c79e784abe7c849f5372447291e22216e61a5f2` |
+| `F002-fork5-raised-clock/occurrence-01/arms.json` | `2a181f80eae29f0716be1fdcae1f67c38df38f096b6cbd7c7a344acbdf013b3b` |
+| `F002-fork5-raised-clock/occurrence-01/artifacts/daily/mini_fcl/cycle01/account.json` | `1ea4937b3d84e5aa06286e388d54b19d0e9db4e517993ff71b94b2c98c42ee5e` |
+| `F002-fork5-raised-clock/occurrence-01/artifacts/daily/mini_fcl/cycle01/objection.json` | `f1a838bfb9f6d172d5c4e3d37645f6c31b757525df47ad198ef0ddc74e449adb` |
+| `F002-fork5-raised-clock/occurrence-01/artifacts/daily/mini_fcl/cycle01/rival.json` | `65d7e4485db366af63e30d37aca2b2b8ef8a83e9b6970625bf9ba141de4ee8d2` |
+| `F002-fork5-raised-clock/occurrence-01/plan.json` | `bed7e150c5b116fcb60feaf1e9893f39d23c957af815e86c7c3400984f74e995` |
+| `F002-fork5-raised-clock/occurrence-02/arms.json` | `117d9584d9c559a5be9e7103ffdcd4864740f89a65aca9ee804b5384fb989cef` |
+| `F002-fork5-raised-clock/occurrence-02/artifacts/daily/mini_fcl/cycle01/account.json` | `968aa1c41706a929e97b35590df51f4f6f9b8228b33e3accf9ee4b6e582a2e51` |
+| `F002-fork5-raised-clock/occurrence-02/artifacts/daily/mini_fcl/cycle01/carry.json` | `aff3f6ca406a47739ae38526ef96ad601840e2ff6a3af7d5c5a7ae3b7e5b28c1` |
+| `F002-fork5-raised-clock/occurrence-02/artifacts/daily/mini_fcl/cycle01/objection.json` | `5d5b6e79dee79b52281c4d166d415e64e4dfef0c28f2956ef60b42518f7d59e2` |
+| `F002-fork5-raised-clock/occurrence-02/artifacts/daily/mini_fcl/cycle01/response.json` | `ad579ff00b132485b97455fa171c86b35f1158712bae6ef9fa41bb4b594d42e0` |
+| `F002-fork5-raised-clock/occurrence-02/artifacts/daily/mini_fcl/cycle01/rival.json` | `f18b99266bacec85a48c89bee4496f971be0265a7115361cb9ffc69917ab1a8b` |
+| `F002-fork5-raised-clock/occurrence-02/plan.json` | `a4420dfbaff1ea9f5a3971be1f2b2ac9396e7edca7fde70daec9a49a39c7ef54` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/bare/cycle01/answer.json` | `e28f6bd07d8acab50b870d613dcca840c8a1ef96f4c8ac99dac61baa4ded13c7` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/matched/cycle01/account.json` | `4a53987178e4fcaf1ea3f3f61602c5cc50845d1bbaa657cf58827e65decad544` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/matched/cycle01/carry.json` | `19078bf2ed169e74e18e9a682795f3fb5f8c63bf3bb1d53297a26fefa3970526` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/matched/cycle01/objection.json` | `0bbcb5ee57a41ef655f687d3b0f8d9f8ffa399c893d48dae0995c72eb0e5bf8f` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/matched/cycle01/response.json` | `dcd92f6694e2e0f216e24acd013515dcb4d30418a7cc371ae70a7a5e11b29684` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/matched/cycle01/rival.json` | `aebb15d63ba6eebdc354896f6f113643df3e64e2081b2c702d09023a61afa167` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/account.json` | `b8de6a8d579c358cade3296a7e8260a03c6e80269cd0486aae43c134999732e6` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/carry.json` | `cfd3844e4207455171e31093b1f0c57ca0ca11ce1e456d0639b34d62a3401e79` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/objection.json` | `810913b5c31f94a4d697da0e90e74205ac6b7abc7b217d44188852f2562110db` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/response.json` | `a1d4f48d5246608ade51b63604beafc82de9770465d2a7fd7c2340ee8a4e55d3` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/rival.json` | `b0b15d8d44c7dcd706879a9ced41e3f26a592ec5a25c2a961e01e32ea748e8cd` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/account.json` | `11bdb5753d4fe7e0bcf2b357cf37afe751e38157e9f1d676f9e32ce63e3f1005` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/carry.json` | `4a48f31e01d69c604fc516445534d36e8063802f5c6a148f93cdc34e5d5a5932` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/objection.json` | `7a331fe944fe20018b3087531e131ddcf3f0dd9eee3255e8a239036b0280ad06` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/response.json` | `442f65eaa131703c11cc0cbb9f9e55bf69c2a7d0dead6af41757749b17ae2df7` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/rival.json` | `e60b3d93f1bf628f637c05a03de32f0cc72441f3ef93a820747325cef0a6df52` |
+| `H005-open-prose-commitments/occurrence-01/artifacts/daily/native/cycle01/answer.json` | `2a1c9b736de2300dbd6caab605d7bd07b7fbfbf5cd172d88ac5725b8bc5ba95e` |
+| `H005-open-prose-commitments/occurrence-01/plan.json` | `99cda29f3c6788d564448f7587c7448a6542d30a9bd5e48dc219925e2cc464c3` |
