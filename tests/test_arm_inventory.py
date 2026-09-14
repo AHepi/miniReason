@@ -120,7 +120,12 @@ class PublishedArmTests(unittest.TestCase):
     def test_f001_declares_a_bare_arm_in_every_occurrence(self):
         inventory = ai.build_inventory(study(F001))
         readable = [o for o in inventory.occurrences if o.readable]
-        self.assertEqual(len(readable), 8)
+        # Nine since REC-20260914-AM staged occurrence-09 through runner v2's own
+        # `initialize` as the automated loop's dispatch leg: it declares the same
+        # three arms as occurrence-08, whose material and arms bytes it copies, and
+        # carries no deliveries yet.  The count is kept exact rather than loosened,
+        # so a further occurrence still has to be declared here.
+        self.assertEqual(len(readable), 9)
         for occ in readable:
             self.assertIn("bare", [a.arm for a in occ.arms], occ.occurrence)
 
