@@ -120,3 +120,58 @@ they survive the decision:
 - A decision to run *new* occurrences on spec machinery rather than replay
   finished ones into it. That is a different decision from this one, with a
   different claim ceiling, and it is not taken here.
+
+## Correction (2026-09-14, REC-20260914-P)
+
+The text above stands unedited; this section is appended, not a rewrite.
+
+The Finding paragraph says the repository's research question is at present
+asked "with no mechanical notion of a criticism *landing*: no att edge, no
+warrant, no label, nothing that distinguishes a criticism taken up from one
+written down beside the thing it criticises." That sentence overstates what an
+attack edge can show. It treats the absence of `att`, of a warrant and of a
+label as the absence of the thing they were supposed to mark, and so implies
+that supplying them would supply the distinction. It would not.
+
+Under FW5, as read at the line in
+[`fw5-vs-harness-spec-2026-09-14.md`](fw5-vs-harness-spec-2026-09-14.md) §1
+R3–R4, §3.1 and finding CU-1, an adverse edge is neither necessary nor
+sufficient for a criticism being taken up. Not necessary: reason use is causal
+organization under a three-case contrast contract, and its witness "must
+preserve internal role bindings, not merely the endpoint string" (FW5:628) —
+a later organization can take a criticism up in its content while declaring no
+adverse relation at all, which one finished cycle exhibits, where a `response`
+record concedes an objection in its own words and produces no edge. Not
+sufficient: standing is appraisal-indexed and enacted by the actor whose
+content it is, and the actor can violate it (FW5:638, :642-651, :653), while
+prompt appearance is a delivery fact and actual use is "not automatically
+machine-maintainable" (FW5:640) — an edge records that someone declared an
+adverse relation, which is a different fact from a later organization
+depending on it. The same cycle exhibits that failure too, where the import
+reinstates one artifact only because a third artifact attacked a second.
+
+The import's labels are therefore bookkeeping over criticism the authors
+themselves declared, not evidence that the criticism was used. This is what
+the importer's own invariant I7 already says, and this correction makes the
+decision record agree with it: the grounded extension of a declared attack
+relation, plus a support cascade over declared dependence, is a recomputed and
+non-curated record of which declarations survive which — which is worth
+having, and is what §2 of the review credits the spec with — but no label it
+computes is a semantic attribution, and none of them is a use relation.
+
+The corrected instrument is the review's proposal **P1, a use-relation
+instrument**: for each cross-document reference in a finished occurrence,
+record whether the later node's *content* re-deploys, qualifies,
+rejects-with-reason, repairs or retains the earlier content, citing the
+passage, and record the authors' declared `uptake` and its divergences
+separately — with no labels, no `att` and no `dep` among its inputs. Its
+ceiling is stated with it: a declared, witnessed-by-reading relation, never
+FW5:628's witness, since a transcript supplies no active-route map and an
+unresolved cell stays unresolved (FW5:634). Reading P1 alongside the review's
+P2 and P3 is the route to a stronger claim; supplying edges is not.
+
+Nothing else in this record changes. Decision 1 is unaffected: the vendored
+core remains the right machinery to replay finished evidence into, and the
+review's §2 gives the reasons that survive refutation. What changes is the
+warrant claimed for the import's output, and the instrument that would answer
+the question the Finding paragraph names.
