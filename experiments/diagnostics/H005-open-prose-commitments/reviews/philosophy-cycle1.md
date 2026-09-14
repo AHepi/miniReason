@@ -1,0 +1,37 @@
+# H005 philosophy: first complete cycle
+
+Root scientific review, 2026-09-14. Fork5 is one complete invocation per multi-call arm; bare and native each use one call. Waves 0037–0041 contain 17 unique calls: all COMPLETE/stop with AUTHORED outer envelopes, 33,163 prompt + 22,066 completion = 55,229 tokens. Root read every body and commitment string. This review and external sources are not participant inputs.
+
+## Initial conjectures and fallible criticism
+
+All five arms distinguish unchosen causal origins from the person's present relation to motives, practical standpoint or responsiveness to reasons. Bare separates ownership and answerability from ultimate origination, while admitting that desert and normative standing remain difficult. Native offers a practice-based graded account. Its “only” claim is stronger than its argument establishes. The problem asks whether responsibility can make sense; it does not require any one metaphysical answer or itself assert a self-authorship condition.
+
+Matched account proposes stance-availability. Its manipulation/upbringing contrast is a burden for the proposal to explain, not a demonstrated account of every such case. Objection usefully presses for grounds that do not merely presuppose a desired verdict. But its requirement that the rational register provide a genuine break from the causal register is not established; a reasons-based explanation need not deny causal shaping. The account already explicitly flags the regress as unresolved, rather than dismissing it as a formal nuisance.
+
+Mini prose's objection asks how its factors combine, a legitimate question for the proposed use. Its stronger entanglement argument assumes that the account needs independent factors and that dependence would remove analytic value. The account did not specify an additive rule; interacting factors can still explain. The taxonomy was also explicitly tentative about how different forces bear. The account's attribution of a false chosen/unchosen dichotomy to the original question is itself mistaken: the question does not assert binary degrees of responsibility.
+
+FCL objection presses a positive justification beyond declaring ultimacy optional. That is useful, but the suggested endorsement/attribution tautology overstates what reason-responsiveness plus attribution says. Its grading criticism also treats alternative dimensions as if one must be selected exclusively; the account had already mentioned responsiveness and available alternatives together. Distinguishing attributability, accountability and liability does not by itself claim their complete independence.
+
+The rivals explore responsibility as a normative practice, including its purposes and constraints on power. Matched rival's claim that an agent-status account conflates being responsible and holding responsible is not shown. Different practices also do not by themselves exclude common underlying constraints. Prose rival's claim that importing any agent capacities would make the practice view merely a relabeling overlooks possible hybrid explanations.
+
+## Changes that reach a later contribution
+
+Matched response/carry demote the manipulation/upbringing contrast to an illustration and keep the account as a conjecture, while allocating status and activity questions to different accounts. Carry identifies a further burden: if the status account is abandoned, the surviving practice account cannot inherit the work without defending its constraints. This changes how the proposals are presented and used. But the exclusion of the contrast as any evidence is stronger than warranted; a descriptive difference may remain evidence without itself explaining the difference. Response/carry also falsely say objection suggests discarding ownership, despite its explicit refusal to call ownership false. Their claim that the original question fuses status and activity is unestablished.
+
+Mini prose response finds that the original wording does not require one form of answer. It then extends possible factor entanglement into a reason to abandon unified accounts. Final carry pushes back, retaining a weaker descriptive unity and distinguishing non-additivity from abandoning unity altogether. This is criticism of a criticism changing the adopted proposal. The carry sketches a coercive-group case and proposes another comparison. Its predicted low-responsibility result is not a completed demonstration; the commitments acknowledge that the work remains. The comparison also needs an account of how factors can be held fixed while their mutually constitutive relations vary. These proposed conditions are model-authored and criticizable, not study scoring rules.
+
+Prose response also says rival accepts objection, although rival received account body only and no objection.
+
+FCL response correctly says a causally shaped standpoint does not by itself refute the origin/stance distinction. But it then characterizes all three prior contributions as requiring a provenance-exempt terminal ground. The critic's request was for positive justification short of ultimacy. Replacing a stopping-point question with upstream defeaters does not automatically answer that request.
+
+Response c2–c4 introduce incapacity, ignorance and alienation, explain coercion as alienation plus constrained alternatives, and propose grading by the number and extent of defeaters. These are new, unsupported substantive proposals. Coercion need not bypass a person's practical identity: a hypothetical threat to someone they value can induce conduct through that very commitment. The source account of alienation therefore does not make the proposed compound analysis necessary.
+
+Final FCL carry c3/o1/p1 corrects the response's claim that its reframing dissolves the specification demand. It makes the demand operative against the new proposal: why these defeaters, and why do they apply? It declines to claim exhaustivity or an established explanation of coercion and makes revision available. This is a specific correction with a later consequence for uptake. Calling this node a new invocation is inaccurate; it completes the same five-call cycle.
+
+## Relation to primary literature and comparison
+
+These responsibility proposals use familiar philosophical resources. Wolf examines why self-revision alone may be insufficient, while denying that literal self-creation is required. Her alternative still needs a defense beyond agreement with an intuitive case verdict. This supports identifying a live issue, not treating her conclusion as the experiment's answer key. [Wolf, “Sanity and the Metaphysics of Responsibility”](https://static1.1.sqspcdn.com/static/f/1011404/27295223/1476811121213/Wolf.pdf).
+
+Fischer argues for a historical component to owning a reasons-responsive mechanism, including manipulation cases with matching current features. This provides a concrete rival to explaining every manipulation/upbringing difference by present capacity alone. [Fischer, “Responsibility, History and Manipulation”](https://andrewmbailey.com/jmf/Responsibility_History_Manipulation.pdf).
+
+Several arms revise proposals and expose new problems. FCL makes the target of one correction explicit, but controls also return criticism to earlier claims. One complete cycle cannot establish three-cycle preservation or superiority. No final theory of responsibility is required for validity. Frozen return6 and weave7 follow.
