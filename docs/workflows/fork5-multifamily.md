@@ -169,3 +169,68 @@ either instrument, and none may be read off their counts.**
 * Adversarial review closure: [`docs/sources/multicycle-commitment-study-multi-review-fixes.md`](../sources/multicycle-commitment-study-multi-review-fixes.md)
 * Transport: [provider-openai-compat](provider-openai-compat.md)
 * Suite: `PYTHONPATH=src python -X utf8 -m unittest tests.test_multicycle_commitment_study_multi`
+
+## The v2 successor runner — a raised completion ceiling
+
+Added 2026-09-14, for occurrences 07 and 08. Read the register's
+[`Successor occurrences 07 and 08 under runner v2`](../../experiments/diagnostics/F001-fork5-multifamily/PLAN.md)
+section before running anything under it.
+
+**The published runner is never edited.** `tools/multicycle_commitment_study_multi.py`
+pins its own sha256 into every plan it has written, as `runner_sha256` and
+`helper_sha256`, both folded into `plan_id`; one changed byte invalidates every
+published plan and every custody check that reads one. A runner change is
+therefore a *successor file with its own identity*, never an edit:
+`tools/multicycle_commitment_study_multi_v2.py`, a byte copy with a declared and
+proven difference list.
+
+v2's four differences, each marked `# V2:` in its source and listed in its
+header: the provenance header; `CAP = 8192` split by role, so the bound
+`validate_arms` enforces becomes `MAX_CEILING = 393216` (the provider's own
+bound, mirrored from `provider_openai_compat`) while the default an undeclared
+arm receives stays `DEFAULT_CEILING = 8192`; `manifest_for` deriving
+`cycles.completion_tokens_per_call` and `cycles.max_completion_tokens` from the
+occurrence's declared arm ceilings instead of the constant; and a docstring that
+says v2. `tests/test_multicycle_commitment_study_multi_v2.py::V2DiffProofTests`
+normalises the header away, diffs the two files and refuses any hunk that is not
+on that list — so *the ceiling is the only behavioural difference between the two
+runners*, and that is checked by the suite rather than promised by a comment.
+
+The command sequence is the one above with the v2 file in place of the v1 file.
+`S=experiments/diagnostics/F001-fork5-multifamily`, and every command runs with
+`PYTHONPATH=src python -X utf8 tools/multicycle_commitment_study_multi_v2.py`:
+
+```
+... initialize   --study $S --output $S/occurrence-0N
+... verify       --study $S --output $S/occurrence-0N
+... prepare-wave --study $S --output $S/occurrence-0N --problem daily --cycle 1
+... send-round   --study $S --publish-ref origin/<branch> \
+      --occurrences occurrence-07 occurrence-08
+... audit        --study $S --output $S/occurrence-0N
+```
+
+Everything else is unchanged and still binds: one commit and push per round
+covering the whole transitive closure, `send-round` refusing unless HEAD equals
+the publication ref and every required path is byte-identical to the committed
+bytes, at most five concurrent requests per credential through one process-wide
+gate, `retries` 0, one FAILED node ending its arm for the rest of the occurrence,
+and the same offline follow-up with `tools/import_h005.py` and
+`tools/use_relation_h005.py` into `experiments/analyses/`.
+
+Two things that are easy to get wrong:
+
+* **Declare the ceiling per arm.** A raised `MAX_CEILING` is only a bound. An arm
+  that declares no `max_tokens` still gets 8,192 under v2, exactly as under v1 —
+  by design, so that the successor changes nothing it was not asked to change.
+  The ceiling reaches the wire because `arms.json` says `"max_tokens": 32768` on
+  each arm, and `plan["ceilings"]` is where to read back what each arm actually
+  got.
+* **A raised ceiling is a budget, not a repair.** A node truncated at the new
+  ceiling is still PARTIAL (and OPAQUE if its envelope will not parse), preserved
+  and never relabelled; a node returning zero bytes is still FAILED with
+  `INCOMPLETE_GENERATION` and still ends its arm. Occurrences at two ceilings are
+  two occurrences, not a before and an after: the earlier records are never
+  re-sent, superseded or corrected by the later ones.
+
+Suite: `PYTHONPATH=src python -X utf8 -m unittest tests.test_multicycle_commitment_study_multi_v2`
+(and the v1 suite must keep passing unchanged beside it).

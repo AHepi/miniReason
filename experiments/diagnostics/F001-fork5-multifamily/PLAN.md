@@ -404,3 +404,187 @@ instrument.
 
 No step in this register runs anything live on its own authority; dispatch is
 the operator's act, after publication.
+
+## Successor occurrences 07 and 08 under runner v2 — appended 2026-09-14
+
+**Appended after the first run; nothing above this line is altered.** Occurrences
+01–06 were dispatched under `tools/multicycle_commitment_study_multi.py` (v1),
+and their evidence, audits and analysis are published and closed. This section
+pre-registers two further occurrences under a successor runner, and is written
+and published before either occurrence is initialized.
+
+### Why: what occurrence-04 and occurrence-05 actually recorded
+
+Occurrences 04 (`ollama/glm-5.3`) and 05 (`ollama/kimi-k3`) are the two the
+completion ceiling truncated. Their published audits —
+`experiments/analyses/F001-fork5-multifamily-2026-09-14/occurrence-04/audit.json`
+and `.../occurrence-05/audit.json` — record COMPLETE 4 / PARTIAL 1 / FAILED 3 /
+OPAQUE 1 with `unvisited` 3, and COMPLETE 7 / PARTIAL 1 / FAILED 2 / OPAQUE 1
+with `unvisited` 1, both with `unresolved_attempts` 0 and `out_of_scope` 0. All
+seven non-COMPLETE terminal records of the whole six-occurrence run are on these
+two occurrences, and every one of them carries the same `failure_code`,
+`INCOMPLETE_GENERATION`, with `finish_reason: length` at exactly **8,192
+completion tokens** and `reasoning_content_present: true`:
+
+| Occurrence | Coordinate | Terminal | `failure_code` | completion tokens | raw `responses/*.txt` |
+|---|---|---|---|---|---|
+| 04 | `daily/mini_fcl/cycle01/objection` | FAILED | `INCOMPLETE_GENERATION` | 8,192 | **0 bytes** |
+| 04 | `daily/mini_fcl/cycle01/rival` | FAILED | `INCOMPLETE_GENERATION` | 8,192 | **0 bytes** |
+| 04 | `daily/mini_prose/cycle01/objection` | PARTIAL / OPAQUE | `INCOMPLETE_GENERATION` | 8,192 | 288 bytes |
+| 04 | `daily/mini_prose/cycle01/response` | FAILED | `INCOMPLETE_GENERATION` | 8,192 | **0 bytes** |
+| 05 | `daily/mini_fcl/cycle01/response` | FAILED | `INCOMPLETE_GENERATION` | 8,192 | **0 bytes** |
+| 05 | `daily/mini_fcl/cycle01/rival` | PARTIAL / OPAQUE | `INCOMPLETE_GENERATION` | 8,192 | 7,112 bytes |
+| 05 | `daily/mini_prose/cycle01/carry` | FAILED | `INCOMPLETE_GENERATION` | 8,192 | **0 bytes** |
+
+Disclosure 2 declared in advance that reasoning tokens are billed against
+`max_tokens` on these families. **Five of the seven spent the whole 8,192-token
+ceiling on reasoning and returned zero bytes of public content**, so there was
+nothing to record as a partial contribution and the arm ended for the rest of the
+occurrence. That is a transport-budget fact and not a fact about the
+contributions: on those coordinates these two families produced no observable
+commitment surface at all, so nothing about their surfaces can be read off 04
+and 05 — not that they parse, not that they fail to parse, not that they are
+short, not that they are absent.
+
+### What 07 and 08 are
+
+The same frozen material, the same arms, the same scope, the same no-retry
+discipline and the same per-key ceiling. Two things differ from 04 and 05: the
+runner identity, and the completion ceiling.
+
+| Occurrence | Endpoint | Key | Arms | `max_tokens` per arm | Calls |
+|---|---|---|---|---|---|
+| occurrence-07 | `ollama/glm-5.3` | `OLLAMA_API_KEY` | `bare`, `mini_fcl`, `mini_prose` | 32,768 | 11 |
+| occurrence-08 | `ollama/kimi-k3` | `OLLAMA_API_KEY` | `bare`, `mini_fcl`, `mini_prose` | 32,768 | 11 |
+
+**22 provider calls in all**, and `plan["max_calls"]` is the authorisation for
+each occurrence exactly as it is for 01–06. `scope` is frozen at
+`{"problems": ["daily"], "cycles": [1]}` and enforced as `SCOPE_EXCLUDED`; `seed`
+is 7 on every arm, as on 04 and 05; `automatic_retries` is 0; `provider_mode` is
+`live`; the timeout is the endpoint record's and no arm declares one.
+`occurrence-07/arms.json` is `occurrence-04/arms.json` with `max_tokens` 32768 in
+place of 8192 on each of its three arms, and `occurrence-08/arms.json` is
+`occurrence-05/arms.json` under the same single substitution. Nothing else in
+either declaration differs — not an endpoint, not a surface, not a kind, not a
+seed, not the scope.
+
+### The declared difference, and the proof that it is the only one
+
+07 and 08 run under a successor runner,
+`tools/multicycle_commitment_study_multi_v2.py`. They must: v1 refuses a per-arm
+ceiling above 8,192 with `ARM_CEILING`, and v1's bytes may not be edited, because
+v1 pins its own sha256 into every plan it has already written — as
+`runner_sha256` and `helper_sha256`, both folded into `plan_id` — so one changed
+byte would invalidate the six published plans and every custody check that reads
+them.
+
+v2 is a byte copy of v1 at sha256
+`a56fed415bd72395470f40c18d9985ec6fcde8a851662006a9b6fecbfe57ec80` with four
+differences, listed in its own header and each marked `# V2:` in its source:
+
+* **(a)** the provenance header itself;
+* **(b)** v1's `CAP = 8192` is replaced. The *bound* `validate_arms` enforces on
+  a declared per-arm ceiling becomes `MAX_CEILING = 393216` — the provider's own
+  bound, mirrored from
+  `provider_openai_compat._RecordedCaller._validate_call_args`, which refuses any
+  `max_tokens` outside `1 <= n <= 393216` — and `validate_arms` now accepts any
+  per-arm ceiling in `1..MAX_CEILING`. The *default* an arm that declares no
+  `max_tokens` receives keeps v1's value under the name `DEFAULT_CEILING = 8192`,
+  so an undeclared arm is settled exactly as v1 settles it. (v1's
+  `EndpointSettings.__post_init__` already admitted the provider bound;
+  `validate_arms` was the only place that capped an arm at 8,192.) The two roles
+  are separated by name deliberately: raising both would have moved the default
+  as well, which is a behavioural change the ceiling question does not need and
+  this register does not want.
+* **(c)** `manifest_for` takes the occurrence's frozen arm mapping and derives
+  `cycles.completion_tokens_per_call` and `cycles.max_completion_tokens` from the
+  ceilings the arms actually declare instead of from the module constant. A
+  manifest is per template and shared by every arm, so the derivation is the
+  maximum declared per-arm ceiling of the occurrence: a pure function of
+  `arms.json`, a true upper bound for every arm, and identical to v1's figure
+  wherever every arm sits at the default. Without it, raising the bound alone
+  would leave every manifest declaring 8,192 while its arms ran at 32,768, and
+  raising the constant alone would write 393,216 into manifests no arm asked for.
+* **(d)** the docstring says v2; `argparse` prints it as the tool description.
+
+`tests/test_multicycle_commitment_study_multi_v2.py::V2DiffProofTests` **proves**
+that list rather than asserting it. With the module docstring normalised away it
+diffs v2 against v1 and asserts that the only hunks are exactly the ten the
+header declares, that every hunk is marked `# V2:` in the source, that the only
+definitions differing from v1 are the six the ceiling touches (`EndpointSettings`,
+`validate_arms`, `settings_for`, `manifest_for`, `plan_body`, `initialize`), and
+that where no arm declares a ceiling v2's frozen arm mapping and manifest bytes
+are v1's to the byte. The rest of the v2 suite is the v1 suite re-pointed, so
+node topologies, projection text, payload bytes, `write_new`, `plan_id`/`verify`,
+waves, attempts, `NO_REPLAY`, artifacts, traces, the provider record layout, the
+per-key gate and the publication check are all still under test and all still
+v1's.
+
+**So the declared difference between 04/05 and 07/08 is exactly two things — the
+runner identity and the completion ceiling — and the runner identity carries no
+behavioural difference beyond that ceiling. The ceiling is the only behavioural
+difference.** v2 writes its own sha256 as `runner_sha256` and `helper_sha256`, so
+no v2 `plan_id` can collide with a v1 `plan_id`: 07 and 08 are two new
+occurrences with their own identities, not a re-run of 04 and 05.
+
+### What is not changed, and what is not claimed
+
+* **Reasoning is not manipulated.** No thinking control is set, requested or
+  disabled on either family. `provider_openai_compat` refuses a thinking control
+  anywhere but DeepSeek and `ARM_NATIVE_WIRE_UNKNOWN` still refuses a `native`
+  arm here; reasoning is emitted by default on both families, billed against
+  `max_tokens`, recorded per node as `reasoning_content_present`, and never
+  persisted, returned or fed to another call (`reasoning_content_persisted`
+  remains a hard refusal). A ceiling is a transport budget. Raising it buys the
+  model more tokens; it does not ask it to reason differently, and no claim that
+  it does may be read off these occurrences.
+* **No retries.** `retries` is 0 at every layer, one `complete` is one request on
+  the wire or none, an attempted coordinate with no terminal evidence is audited
+  and never re-sent, and one FAILED node still ends that arm for the rest of the
+  occurrence. Nothing from 04 or 05 is re-sent, relabelled, repaired or
+  superseded; those records stand exactly as published.
+* **A cell that hits the raised ceiling stays PARTIAL or unresolved.** A node
+  returning `finish_reason: length` at 32,768 with non-empty content is recorded
+  PARTIAL — OPAQUE too if its envelope does not parse after the one declared
+  repair — preserved, usable, never retried and never relabelled. A node that
+  returns zero bytes is FAILED with `INCOMPLETE_GENERATION` and ends its arm, and
+  the audit signal is the same one this register already names: `FAILED` >= 1
+  with `unvisited` > 0 and a `"complete": false` invocation row. **32,768 is not
+  predicted to be sufficient and nothing here treats it as a fix.** The raised
+  ceiling may change nothing at all; that outcome is reported exactly as any
+  other, and an occurrence that truncates again is evidence, not a failed run.
+* **07 and 08 are not a correction of 04 and 05.** They are the same two families
+  at a second ceiling. Together the four occurrences are one frozen material run
+  under two runner identities whose only behavioural difference is the ceiling
+  bound, and the only comparison they license is *what these two families return
+  at 8,192 completion tokens versus at 32,768*. Everything in *What counts as
+  evidence*, *Falsifier* and *Claim ceiling* above applies to them unchanged: no
+  merit claim, no ranking, no cross-family reading, and parser success, more
+  objections, longer documents, more refs, more ν nodes and a larger graph are
+  not repair.
+* **The declared asymmetries still hold.** `bare` is a default direct baseline on
+  both occurrences, reasoning-on, and is not the reasoning-disabled control
+  occurrence-01 carries; `native` is unavailable on both; and an OPAQUE rate here
+  is still not comparable with H005 occurrence-01, `strict_parse_would_succeed`
+  being the comparable figure.
+
+### Operating sequence
+
+Identical to the sequence above, with
+`tools/multicycle_commitment_study_multi_v2.py` in place of the v1 runner and
+`--occurrences occurrence-07 occurrence-08`: `initialize` then `verify` for each
+occurrence at zero provider calls, one publication of the frozen plans and
+manifests, then per round `prepare-wave` for each occurrence with ready
+coordinates, **one** commit and push covering every required input path, **one**
+`send-round` over both occurrences against that published commit, and **one**
+commit and push of the new records before the next round is prepared. Then
+`audit` per occurrence, then `tools/import_h005.py` and
+`tools/use_relation_h005.py` at full scope into
+`experiments/analyses/F001-fork5-multifamily-2026-09-14/occurrence-07/` and
+`.../occurrence-08/`.
+
+Both occurrences spend `OLLAMA_API_KEY`, so one `send-round` process drives them
+through one shared gate of five in flight. The measured cadence for a three-arm
+occurrence is 3 / 4 / 2 / 2 = 11, so the two together are 6 / 8 / 4 / 4 = **22 in
+four rounds** if no arm is truncated, and fewer if one is — the shortfall being
+the truncation rule removing coordinates from the queue, never a refusal.
