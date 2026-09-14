@@ -4,12 +4,12 @@ The project explores Mini's configuration space and tests the designated [FW5 ex
 
 ## Source identity and authority
 
-FW5 is the user-supplied ECS 1.0 reading edition, SHA-256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a`, 142,113 bytes. This identifies this edition, not an unavailable original manuscript. The [source assessment](reviews/FW5-research-plan-decision.md) remains the historical proposal; the continuation decision in [the ledger](DECISION_LEDGER.md) implements its mapping. ECS 2.0 remains a separate successor, and Conjecture–Criticism Harness v1.3 remains a mechanism reference. Neither Mini's interfaces nor that mechanism specification redefine FW5.
+FW5 is the user-supplied ECS 1.0 reading edition, SHA-256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a`, 142,113 bytes. This identifies this edition, not an unavailable original manuscript. The [source assessment](reviews/FW5-research-plan-decision.md) remains the historical proposal; the continuation decision in [the ledger](DECISION_LEDGER.md) implements its mapping. ECS 2.0 is **archived for historical consideration** and is **no longer a source of hypotheses for template construction or testing** (owner ruling 17, 2026-09-14): FW5 is the sole semantic target, every template construction and template test is guided exclusively by FW5, and a clause found only in ECS 2.0 carries no weight for or against FW5. The stored ECS 2.0 PDF is **preserved unchanged** as a historical artifact. Conjecture–Criticism Harness v1.3 remains a mechanism reference. Neither Mini's interfaces nor that mechanism specification redefine FW5.
 
 | Source | Current use | Limits |
 |---|---|---|
 | FW5 reading edition | Designated source for new semantic claims | Constitutive adequacy remains conjectural; supplied physical and semantic interpretations need substantive arguments |
-| ECS 2.0 PDF | Preserved successor and source of separately labeled hypotheses | Typed restriction algebra, graded accounting, intrinsic variation and stronger understanding admissibility are additions; several formulas are missing or clipped in the rendered PDF |
+| ECS 2.0 PDF | Preserved unchanged, archived for historical consideration; **not** a source of hypotheses for template construction or testing (ruling 17) | Typed restriction algebra, graded accounting, intrinsic variation and stronger understanding admissibility are additions; several formulas are missing or clipped in the rendered PDF |
 | Harness v1.3 | Mechanism design reference | Mini kind records do not implement all its epistemic graph semantics; citations to a separate calculus supply no FW5 proof |
 | Earlier frozen studies | Historical evidence under their actual declared source and inputs | Their prompts, plans and published interpretations are not relabeled retrospectively |
 
