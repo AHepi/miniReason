@@ -1,5 +1,31 @@
 # Current research status
 
+## Session orchestration report published — 2026-09-14
+
+REC-20260914-W refreshed the staged session orchestration report so that every statement in it is true of
+the published record, and published it at
+[`reviews/session-orchestration-report-2026-09-14.md`](reviews/session-orchestration-report-2026-09-14.md)
+(VERIFIED `dc5491e0e6d992ecd2e36b2f6c2adf7e854fe91c` TREE `7034b1266a8aca02b39d368d00e10a1d131e2c9c`). The
+draft had been written at HEAD `f50db28`, before REC-20260914-U and REC-20260914-V existed, and described
+C001 as untracked, unreceipted and undispatched; that section is rewritten from the published receipts,
+`audit.json`, `comparison.json` and the provider records of both occurrences, and the branch facts, the
+receipt range, the suite figure (**1397 OK, skipped=1**) and the two source identities are re-measured.
+
+The report adds one new section, **"Automated end-to-end loop: decision record"**, recording the owner's
+standing requirement that the harness run end to end with no human in the loop (ruling 6, a human being an
+optional appellate and never a required step), the three-angle design competition and the synthesis that
+won it, the 24-module wave plan, and the claim ceiling of an automated run — a reading is a registered,
+attackable judge-role artifact, never a finding and never FW5:628's witness; unresolved is first-class and
+reinstates by computation; no count is a warrant. **None of that work is published**: its wave 0 exists
+only in an isolated staging clone and every sentence about it is marked *Staged*.
+
+Every sentence of the report is marked **Measured**, **Interpretation** or **Staged**. It adds no reading,
+fills no cell and evaluates no falsifier.
+
+**Next authorized task is unchanged: the reading, which is root's and is not done.** Thirteen C001
+juxtapositions and ninety use-table rows are published and unread. No further C001 provider call is
+authorized. Publication to `main` remains pending owner merge.
+
 ## C001 occurrence-02 completed — 2026-09-14
 
 REC-20260914-V published a **successor** driver and a second occurrence of the frozen C001 contrast-triple
