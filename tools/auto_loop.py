@@ -844,21 +844,90 @@ class _Driver:
 # S0 PREREGISTER
 # --------------------------------------------------------------------------- #
 
+def _bundle_dir(drv: _Driver) -> Path | None:
+    """The directory the pre-registration bundle lives in: the config's own.
+
+    ``config.obligations_path`` names where the file will live **under the run
+    root**, not where it is read from before the run root exists; the bundle
+    that supplies it sits beside ``config.json``.  A config handed in as a
+    ``LoopConfig`` object carries no path, so there is no bundle to stage from
+    and the run root must already hold what it needs.
+    """
+
+    if drv.config_path is None:
+        return None
+    return Path(drv.config_path).resolve().parent
+
+
+def _stage_file(drv: _Driver, target: Path, name: str, code: str) -> Path:
+    """Put one bundle file where the plan will pin it, or refuse by code.
+
+    Three places are looked in, in this order, and the refusal names every one
+    of them: the target itself (already staged, or a previous run's), the
+    bundle directory beside the config, and - for a target the config points
+    somewhere else entirely - nothing further.  **Nothing here raises a bare
+    exception**: a missing bundle file is a stated refusal with a code and a
+    path, because S0 is the step an operator runs first and a traceback is not
+    an answer they can act on.
+    """
+
+    if target.is_file():
+        return target
+    source = None
+    bundle_dir = _bundle_dir(drv)
+    if bundle_dir is not None:
+        candidate = bundle_dir / name
+        if candidate.is_file() and candidate.resolve() != target.resolve():
+            source = candidate
+    if source is None:
+        looked = [str(target)] + ([str(bundle_dir / name)]
+                                  if bundle_dir is not None
+                                  else ["no bundle directory: the config was "
+                                        "handed in as an object, not a path"])
+        raise _fail(code, f"{name} is absent; looked in {', '.join(looked)}")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(source.read_bytes())
+    return target
+
+
 def _stage_bundle(drv: _Driver) -> None:
-    """Put obligations, the ceiling and the calibration rows under the run root."""
+    """Copy the bundle into the run root, then read and pin what is there.
+
+    Design 4.2 puts ``obligations.json``, ``CEILING.md`` and the calibration
+    rows under ``experiments/loops/<RUN-ID>/``, and PREREG.md says the bundle
+    is copied there at S0 - so the copy must happen **before** anything reads
+    or pins any of it.  It did not: the obligations file was read straight off
+    ``root / config.obligations_path``, which for a config whose
+    ``obligations_path`` points *inside the run root* is a file nothing had
+    written yet, and the first live S0 ended in a bare ``FileNotFoundError``.
+    """
 
     root = drv.modules.root()
     obligations_src = root / drv.config.obligations_path
+    # Where the config says the file lives.  When that is inside the run root
+    # it is also where the bundle copy goes; when it is elsewhere in the tree
+    # it is read there and copied into the run root, which is what the pin map
+    # and every later step address.
+    _stage_file(drv, obligations_src, drv.paths.obligations.name,
+                "OBLIGATIONS_FILE_MISSING")
     body = obligations_src.read_bytes()
     drv.obligations = obligations_module.load_obligations(obligations_src)
     if drv.paths.obligations.resolve() != obligations_src.resolve():
         drv.paths.obligations.write_bytes(body)
     drv.paths.ceiling.write_text(standard_module.CEILING_TEXT, encoding="utf-8")
     target = drv.paths.run_root / _CALIBRATION_NAME
-    if not target.is_file() and drv.config_path is not None:
-        source = Path(drv.config_path).resolve().parent / _CALIBRATION_NAME
-        if source.is_file() and source.resolve() != target.resolve():
-            target.write_bytes(source.read_bytes())
+    if not target.is_file():
+        if drv.config.audit.period:
+            # The audit schedule makes the calibration set o5's evidence, so a
+            # missing one is a refusal here rather than a silence PREFLIGHT
+            # discovers later.
+            _stage_file(drv, target, _CALIBRATION_NAME, "CALIBRATION_NOT_FOUND")
+        else:
+            bundle_dir = _bundle_dir(drv)
+            source = (None if bundle_dir is None
+                      else bundle_dir / _CALIBRATION_NAME)
+            if source is not None and source.is_file():
+                target.write_bytes(source.read_bytes())
 
 
 def _open_inventory(drv: _Driver) -> dict[str, Any]:
@@ -1005,6 +1074,15 @@ def preregister(config: LoopConfig | str | Path, *,
     drv = _Driver(config, modules, config_path)
     budget = effective_budget(config, budget_override)
     drv.budget = budget
+    # S0 is idempotent against a run root a FAILED staging left behind, and
+    # only against that: a run root already carrying a plan is frozen, and a
+    # second pre-registration over it would overwrite an identity later steps
+    # have already published against.
+    if drv.paths.plan.is_file():
+        raise _fail("WRITE_ONCE_VIOLATION",
+                    f"{drv.paths.plan} already carries a frozen plan; a second "
+                    "pre-registration is a new run id, never an overwrite")
+    preexisted = drv.paths.run_root.is_dir()
     drv.paths.run_root.mkdir(parents=True, exist_ok=True)
     if budget_override is not None:
         _write_overrides(drv.paths.run_root, {"cycle_budget": budget})
@@ -1049,6 +1127,10 @@ def preregister(config: LoopConfig | str | Path, *,
                           for key in config.reading_set},
         "block_streak_definition": BLOCK_STREAK_DEFINITION,
         "receipt_id": drv.receipt_id,
+        # Stated rather than silent: a run root that already existed when S0
+        # ran is usually the residue of a staging that failed, and the plan
+        # says so where a reader of the record can see it.
+        "run_root_preexisted": preexisted,
         "activity": ("bracketed through receipts.activity"
                      if drv.receipt_id != _NO_LEDGER_RECEIPT
                      else "not bracketed: this tree carries no decision ledger, "
@@ -1074,6 +1156,7 @@ def preregister(config: LoopConfig | str | Path, *,
             "cycle_budget": budget,
             "calibration_sha256": calibration_sha,
             "opened_cells": inventory,
+            "run_root_preexisted": preexisted,
             "preregistration_receipt": drv.receipt_id}
 
 
@@ -2445,11 +2528,15 @@ def dry_run(config: LoopConfig | str | Path | None = None,
             repo_root=bound.repo_root, sleep=bound.sleep)
     verdict["staged"] = _stage_dry_run_material(bound.root(), cfg, seed=seed)
     paths = run_paths(bound.root(), cfg.run_id)
+    # The **path** is handed on, never the loaded object: the bundle S0 stages
+    # from is the config's own directory, and a config passed as a LoopConfig
+    # carries no directory to find it in.
+    handed: LoopConfig | Path = cfg if isinstance(config, LoopConfig) else Path(config)
     if not paths.plan.is_file():
-        verdict["preregister"] = dict(preregister(cfg, modules=bound))
-        verdict["preflight"] = dict(preflight(cfg, modules=bound))
+        verdict["preregister"] = dict(preregister(handed, modules=bound))
+        verdict["preflight"] = dict(preflight(handed, modules=bound))
     try:
-        verdict["run"] = run(cfg, modules=bound)
+        verdict["run"] = run(handed, modules=bound)
     except LoopError as exc:
         # A dry run that refused is a dry run that reported: the verdict is
         # written with the refusal on it rather than lost with the exception.

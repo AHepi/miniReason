@@ -39,6 +39,7 @@ import importlib.util
 import io
 import json
 import re
+import shutil
 import socket
 import subprocess
 import sys
@@ -925,6 +926,135 @@ class AnAppealAppliedAtTheNextInvocationFlipsALabel(DriverFixture):
         with self.assertRaises(LoopError) as second:
             auto_loop.appeal(self.paths.run_root, path=empty, modules=self.modules())
         self.assertEqual(second.exception.code, "APPEAL_TARGET_INVALID")
+
+
+# --------------------------------------------------------------------------
+# S0 stages the bundle before anything reads it (the first live run's finding)
+# --------------------------------------------------------------------------
+
+class TheBundleIsStagedBeforeAnythingReadsIt(DriverFixture):
+    """The first live ``preregister`` ended in a bare ``FileNotFoundError``.
+
+    ``config.obligations_path`` names where the file lives **under the run
+    root**; the bundle that supplies it sits beside ``config.json``, and
+    nothing had copied it in when ``_stage_bundle`` read it.  These tests put
+    the bundle where a real pre-registration keeps it - a directory of its own,
+    outside the run root - and take the run root away.
+    """
+
+    def bundle(self) -> Path:
+        """The config and its bundle beside it, with an empty run root."""
+
+        bundle = self.repo / "bundle"
+        bundle.mkdir(parents=True, exist_ok=True)
+        run_root = self.paths.run_root
+        for name in ("obligations.json", "calibration.json"):
+            (bundle / name).write_bytes((run_root / name).read_bytes())
+            (run_root / name).unlink()
+        config_path = bundle / "config.json"
+        config_path.write_bytes(json.dumps(self.config_body(), indent=1).encode())
+        return config_path
+
+    def test_s0_stages_every_bundle_file_from_the_configs_own_directory(self):
+        config_path = self.bundle()
+        self.assertFalse(self.paths.obligations.is_file())
+        with no_sockets(self.counter):
+            out = auto_loop.preregister(config_path, modules=self.modules())
+        for name in ("obligations.json", "calibration.json", "CEILING.md",
+                     "config.json", "plan.json"):
+            with self.subTest(name=name):
+                self.assertTrue((self.paths.run_root / name).is_file(), name)
+        # What was staged is what the plan pins, byte for byte.
+        plan = self.plan()
+        staged = custody.sha256_path(self.paths.obligations)
+        self.assertEqual(
+            plan["pins"][self.paths.obligations.relative_to(self.repo).as_posix()],
+            staged)
+        self.assertEqual(out["calibration_sha256"],
+                         custody.sha256_path(self.paths.run_root / "calibration.json"))
+        self.assertIs(out["run_root_preexisted"], True)
+
+    def test_a_run_root_left_empty_by_a_failed_staging_is_not_an_obstacle(self):
+        config_path = self.bundle()
+        shutil.rmtree(self.paths.run_root)
+        self.paths.run_root.mkdir(parents=True)
+        self.assertEqual(list(self.paths.run_root.iterdir()), [])
+        with no_sockets(self.counter):
+            out = auto_loop.preregister(config_path, modules=self.modules())
+        self.assertIs(out["run_root_preexisted"], True)
+        self.assertIs(self.plan()["run_root_preexisted"], True)
+        self.assertTrue(self.paths.plan.is_file())
+
+    def test_a_run_root_that_never_existed_says_so_too(self):
+        config_path = self.bundle()
+        shutil.rmtree(self.paths.run_root)
+        with no_sockets(self.counter):
+            out = auto_loop.preregister(config_path, modules=self.modules())
+        self.assertIs(out["run_root_preexisted"], False)
+
+    def test_a_second_preregistration_over_a_frozen_plan_is_refused_by_code(self):
+        config_path = self.bundle()
+        with no_sockets(self.counter):
+            auto_loop.preregister(config_path, modules=self.modules())
+        first = self.plan()["loop_plan_id"]
+        with self.assertRaises(LoopError) as caught:
+            auto_loop.preregister(config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "WRITE_ONCE_VIOLATION")
+        self.assertIn(str(self.paths.plan), caught.exception.detail)
+        self.assertEqual(self.plan()["loop_plan_id"], first,
+                         "a refused pre-registration still rewrote the plan")
+
+    def test_a_missing_bundle_file_is_a_coded_refusal_that_names_the_paths(self):
+        config_path = self.bundle()
+        (config_path.parent / "obligations.json").unlink()
+        with self.assertRaises(LoopError) as caught:
+            auto_loop.preregister(config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "OBLIGATIONS_FILE_MISSING")
+        self.assertIn(str(self.paths.obligations), caught.exception.detail)
+        self.assertIn(str(config_path.parent / "obligations.json"),
+                      caught.exception.detail)
+        self.assertFalse(self.paths.plan.exists())
+
+    def test_a_missing_calibration_under_a_declared_schedule_is_refused_at_s0(self):
+        config_path = self.bundle()
+        (config_path.parent / "calibration.json").unlink()
+        self.assertTrue(self.config().audit.period)
+        with self.assertRaises(LoopError) as caught:
+            auto_loop.preregister(config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "CALIBRATION_NOT_FOUND")
+        self.assertIn("calibration.json", caught.exception.detail)
+
+    def test_dry_run_hands_the_config_path_on_so_the_bundle_can_be_found(self):
+        # The same defect one layer up: ``dry_run`` loaded the config into a
+        # ``LoopConfig`` and passed THAT to S0, which left S0 with no directory
+        # to stage the bundle from and a refusal naming no bundle at all.
+        config_path = self.bundle()
+        seen: list = []
+
+        class Stop(Exception):
+            pass
+
+        def watching(config, **kwargs):
+            seen.append(config)
+            raise Stop()
+
+        original = auto_loop.preregister
+        auto_loop.preregister = watching
+        self.addCleanup(setattr, auto_loop, "preregister", original)
+        with self.assertRaises(Stop), no_sockets(self.counter):
+            auto_loop.dry_run(config_path, self.root / "dry-out",
+                              modules=self.modules())
+        self.assertEqual(seen, [Path(config_path)])
+
+    def test_the_cli_reports_the_code_and_exits_non_zero(self):
+        config_path = self.bundle()
+        (config_path.parent / "obligations.json").unlink()
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            code = auto_loop.main(["preregister", "--config", str(config_path)],
+                                  modules=self.modules())
+        self.assertEqual(code, 1)
+        self.assertIn("OBLIGATIONS_FILE_MISSING", stderr.getvalue())
 
 
 # --------------------------------------------------------------------------
