@@ -234,3 +234,81 @@ before dispatch plus one final push of round 4's records — five in all.
 
 No step in this register runs anything live on its own authority; dispatch is the
 operator's act, after publication.
+
+## Occurrence-03 — the same chain re-asked, and the close recurs
+
+**Appended 2026-09-14 (REC-20260914-Z). Nothing above this line is altered.** No
+record of occurrence-01 or occurrence-02 is modified, relabelled, repaired,
+re-sent or superseded, and nothing is written inside `F001-fork5-multifamily/`.
+
+**Why a third occurrence.** Occurrence-01 ended at its `response` node with
+`TRANSPORT_OR_RESPONSE_ERROR` and the error `"Remote end closed connection
+without response"` at **300,270 ms** against an applied 600-second clock — a wall
+this register had not declared and did not predict, distinct from both the
+ceiling and the read timeout. Under the no-retry rule that ended the arm, `carry`
+was never dispatched, and F001 occurrence-07's two residual coordinates
+(`response`, `carry`) were left without any terminal COMPLETE record. At the time
+that was one record in the whole tree. **Occurrence-03 asks one question and no
+other: does the close recur?** It is a resource observation; no semantic claim is
+made, sought or available from it.
+
+**What it declares.** The same arm chain from `account` down — the smallest unit
+this register already argues is honestly re-dispatchable — on `ollama/glm-5.3`,
+`mini_fcl`, `max_tokens` 32,768, `timeout_seconds` 600, `seed` 7, scope
+`{"problems": ["daily"], "cycles": [1]}`, **five calls and no more**. Its
+`arms.json` is byte-identical to occurrence-01's.
+
+**Plan identity, stated plainly.** `plan_id` is a digest over the material, the
+frozen arms and scope, the runtime and provider pins and the runner, and it
+**carries no occurrence name**, so occurrence-03 mints occurrence-01's own
+`plan_id` `9aa92a837569bd56a86b172eb56dd80dbc69c519a86286d3387b020c2709a0d5`.
+It has its own **occurrence** identity — its own waves, attempt markers, provider
+bytes and receipts — and shares occurrence-01's **plan** identity by
+construction. The seed was deliberately left at 7: the runner has no plan-level
+replay refusal to evade (`NO_REPLAY` is per coordinate inside one occurrence
+directory), and changing the seed to manufacture a distinct `plan_id` would have
+changed the condition under observation. Two occurrences of one frozen plan are
+two observations, not a before and an after.
+
+**Concurrency.** Occurrence-03 was dispatched alone, one occurrence per
+`send-round`, so at most **two** requests were ever in flight on `OLLAMA_API_KEY`
+from this process — below the runner's per-key gate of five — because that
+credential was shared with a concurrent worker battery holding up to eight of the
+owner's authorised ten.
+
+**What happened.** Two rounds, not four: `wave0001` `account`; `wave0002`
+`objection` + `rival`. `account` COMPLETE at 12,489 completion tokens and
+114,364 ms; `rival` COMPLETE at 19,700 tokens and **234,864 ms**, past the
+180-second wall the endpoint record declares; **`objection` FAILED** with
+`TRANSPORT_OR_RESPONSE_ERROR`, `"Remote end closed connection without response"`,
+at **300,453 ms** against an applied 600-second clock, no `finish_reason`, no
+usage, no content. The truncation rule then ended the arm — `prepare-wave`
+returns `{"coordinates": [], "wave_id": null}` — so `response` and `carry` were
+**never dispatched** and the occurrence spent **3 of its 5 authorised calls**.
+`finish_reason: "length"` occurs zero times; neither declared bound was reached.
+
+**The finding, in the only terms the records support.** The close **recurs**, and
+the undeclared ~300-second wall is the binding constraint on this host. Five
+closes carrying that exact error string are known: 300.270 s (occurrence-01
+`response`, `glm-5.3`), 300.286 / 300.348 / 300.377 s (three requests of a
+separate worker process on `ollama/kimi-k3`, cited with their provenance and
+their limits in REC-20260914-Z) and 300.453 s (occurrence-03 `objection`,
+`glm-5.3`) — a **183-millisecond band across two model families, two client
+processes and two different fork5 nodes**, so it follows neither a node, nor a
+position in the chain, nor one endpoint. **This register's 600-second clock
+therefore cannot be exercised past 300 s on this host, and the arithmetic above
+that justified 600 s describes calls this host will close before the slowest of
+them can finish.** Why the remote closes is **not known and is not guessed at**:
+nothing here says whether 300 s is fixed policy, whether the closing party is the
+provider or something between, or whether payload, model, concurrency or
+credential load bear on it. **No retry was made at any layer and none is
+authorised.**
+
+**What occurrence-03 does not do.** It does not close F001 occurrence-07's
+residue: `mini_fcl/response` and `mini_fcl/carry` still have **no terminal
+COMPLETE record anywhere**. Three occurrences have now ended that arm early, for
+three different reasons at three different nodes, and this register reports that
+rather than a shortfall dressed as something else. **A fourth occurrence is not
+authorised by this section**: re-asking the chain under an undeclared wall that is
+now known to sit below the declared clock would be a new decision, needing its own
+receipt and its own reason, and none is taken here.

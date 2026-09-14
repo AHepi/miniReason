@@ -368,3 +368,87 @@ timeout, then F002 met an upstream connection close at about five minutes on
 ones, so read the `error` string of every `TRANSPORT_OR_RESPONSE_ERROR` before
 calling it a timeout: `"The read operation timed out"` at the clock value is the
 client's deadline, and anything else is not.
+
+## Occurrence-03, and a bound nobody declared — appended 2026-09-14 (REC-20260914-Z)
+
+**Nothing above this line is altered.** The section above closes with a lesson
+from F002's one failure — *a bound you declare is not the only bound you will
+meet* — and tells you to read the `error` string of every
+`TRANSPORT_OR_RESPONSE_ERROR` before calling it a timeout. Occurrence-03 was
+dispatched to test the obvious next question about that failure, and the answer
+changes how the page's own advice should be used.
+
+**The question.** F002 occurrence-01 `mini_fcl/response` ended with
+`"Remote end closed connection without response"` at **300,270 ms** against an
+applied 600-second clock. One record is one record. **Does it recur?**
+
+**The method.** A third occurrence of the same study: the same `mini_fcl` arm
+chain re-run from `account` on `ollama/glm-5.3` at 32,768 / 600 s, seed 7,
+`arms.json` byte-identical to occurrence-01's, dispatched alone so that at most
+two requests were ever in flight on the shared credential. Five calls
+authorised.
+
+**Read this before copying the pattern: a re-run of an identical `arms.json`
+does not get a new `plan_id`.** `plan_body` digests the material, the frozen arms
+and scope, the runtime and provider pins and the runner, and **no occurrence
+name**, so occurrence-03 minted occurrence-01's own
+`9aa92a837569bd56a86b172eb56dd80dbc69c519a86286d3387b020c2709a0d5`; its
+`plan.json`, `material.json` and all three manifests are byte-identical, and so
+is `wave0001`'s `account` request hash. There is no plan-level replay refusal to
+work around — `NO_REPLAY` is per coordinate inside one occurrence directory, and
+`OCCURRENCE_EXISTS` only guards a non-empty output directory — so **nothing
+forces the seed to differ, and changing it to manufacture a distinct `plan_id`
+would change the condition you are trying to observe.** An occurrence has its own
+identity through its directory, waves, attempt markers, provider bytes and
+receipts; sharing a plan identity is what "the same question, asked again" means.
+Say so in the receipt before the run, not after it.
+
+**The result: it recurs.** Two rounds, not four. `account` COMPLETE at 114,364 ms;
+`rival` COMPLETE at **234,864 ms**, past the 180-second endpoint wall;
+**`objection` FAILED** at **300,453 ms** with the same error string, no
+`finish_reason`, no usage, no content, against `settings.timeout_seconds` 600.
+The truncation rule then ended the arm and `response` and `carry` were never
+dispatched — **3 of 5 authorised calls spent**.
+
+**The bound, as precisely as the records state it.** Five closes carrying that
+exact string are known, inside a **183-millisecond band around 300.3 s**:
+300.270 s and 300.453 s on `ollama/glm-5.3` (F002 occurrences 01 and 03, 63
+minutes apart, at *different* nodes) and 300.286 / 300.348 / 300.377 s on
+`ollama/kimi-k3` from a separate worker process at 600 s and 32,768 (transcripts
+cited with their provenance and their limits in REC-20260914-Z — another
+harness's schema, **not** `minireason.call.v2` records). Two model families, two
+client processes, two different fork5 nodes. **A host gateway closes a request
+still open at about 300 seconds, and a declared 600-second clock cannot be
+exercised past 300 s on this host.**
+
+**What this means for the v3 runner and for the next raise.**
+
+* **`timeout_seconds: 600` is still correct to declare and is still not the
+  binding constraint.** The runner applies it, the provider record proves it, and
+  `TIMEOUT_NOT_APPLIED` still guards it. What 600 buys you here is the right to
+  wait; the host does not grant it.
+* **Budget against 300 s, not 600.** F002's own arithmetic — 77.9–151.0
+  completion tokens per second, a full 32,768 taking 217–421 s — describes calls
+  this host will close before the slower half of them can finish. A ceiling you
+  cannot spend inside the gateway's window is not a ceiling you have.
+* **Read the error string, and now also read the elapsed value against 300 s.**
+  `"The read operation timed out"` at the clock value is the client's deadline;
+  `"Remote end closed connection without response"` at ~300 s is this wall; they
+  are different facts and neither is the other.
+* **Do not retry it.** There is no retry at any layer in this harness and none
+  was made. A close is a resource fact; re-sending a coordinate inside its own
+  occurrence is refused as `NO_REPLAY`, and re-sending it as a new occurrence is a
+  new decision that needs its own receipt and its own reason.
+* **Nothing semantic follows.** `ollama/glm-5.3` is not less reliable than
+  `ollama/kimi-k3`, or the reverse, because of where a socket closed; two closes
+  on one and three on another rank nothing. **A closed socket is never a verdict.**
+
+**What is still open.** F001 occurrence-07's `mini_fcl/response` and
+`mini_fcl/carry` have **no terminal COMPLETE record anywhere**: three occurrences
+have now ended that arm early, for three different reasons at three different
+nodes. Why the gateway closes at ~300 s — fixed policy or not, provider or
+intermediary, payload- or load-dependent — is **not known and is not guessed at**
+here. The counts, the custody table and both instruments' output for
+occurrence-03 are in
+`experiments/analyses/F002-fork5-raised-clock-2026-09-14/README.md`; the decision
+and its per-coordinate table are REC-20260914-Z.

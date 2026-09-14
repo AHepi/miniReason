@@ -1,5 +1,65 @@
 # Current research status
 
+## F002 occurrence-03 dispatched — the 300-second close recurs — 2026-09-14
+
+REC-20260914-Z added a **third occurrence** to the published F002 study and dispatched it, to ask one
+question: does the `"Remote end closed connection without response"` that ended occurrence-01's `response`
+node at **300,270 ms** recur? **It does.** Occurrence-03 re-ran the same `mini_fcl` arm chain from `account`
+on `ollama/glm-5.3` at `max_tokens` 32,768, `timeout_seconds` 600 and `seed` 7, with an `arms.json`
+byte-identical to occurrence-01's, and its `objection` node FAILED with the same error at **300,453 ms**
+against an applied 600-second clock.
+
+**A re-run of an identical `arms.json` does not get a new `plan_id`, and this was recorded before the run
+rather than discovered after it.** `plan_id` digests the material, the frozen arms and scope, the runtime and
+provider pins and the runner, and carries **no occurrence name**, so occurrence-03 minted occurrence-01's own
+`9aa92a837569bd56a86b172eb56dd80dbc69c519a86286d3387b020c2709a0d5`; `plan.json`, `material.json` and all
+three manifests are byte-identical, and so is `wave0001`'s `account` request hash. The runner has no
+plan-level replay refusal to evade, so the seed stayed at 7 deliberately — changing it to manufacture a
+distinct identity would have changed the condition under observation. Occurrence-03 has its own **occurrence**
+identity and shares occurrence-01's **plan** identity by construction.
+
+**Three calls spent of five authorised, in two rounds and not four: 2 COMPLETE, 1 FAILED, 2 never
+dispatched.** `account` COMPLETE, `"stop"`, 12,489 completion tokens, 114,364 ms; `rival` COMPLETE,
+`"stop"`, 19,700 tokens, **234,864 ms** — past the 180-second wall the endpoint record declares, and the
+third F002 call to run past it and return; `objection` **FAILED**, `TRANSPORT_OR_RESPONSE_ERROR`, no
+`finish_reason`, no usage, zero bytes, **300,453 ms**. The no-retry truncation rule then ended the arm, so
+`response` and `carry` were never dispatched. **Neither declared bound was reached**: `finish_reason:
+"length"` occurs zero times and the largest completion is 19,700 of 32,768.
+
+**The wall is undeclared and sits below the declared clock.** Five closes carrying that exact error string
+are now known, inside a **183-millisecond band around 300.3 s**: 300.270 s and 300.453 s on
+`ollama/glm-5.3` (F002 occurrences 01 and 03, 63 minutes apart, at *different* nodes), and 300.286 /
+300.348 / 300.377 s on `ollama/kimi-k3` from a separate worker process also at 600 s and 32,768 — those
+three cited in REC-20260914-Z with their provenance and their limits, being another harness's untracked
+transcripts and **not** `minireason.call.v2` records. Two model families, two client processes, two different
+fork5 nodes. **A host gateway closes a request still open at about 300 seconds, so F002's declared
+600-second clock cannot be exercised past 300 s on this host, and the arithmetic that justified 600 s
+describes calls this host will close before the slower half of them can finish.** Why it closes is **not
+known and is not guessed at**, and **no retry was made at any layer**.
+
+The [analyses](../experiments/analyses/F002-fork5-raised-clock-2026-09-14/README.md) carry occurrence-03's
+audit and both instruments at full scope. The import exits 0 with custody **verified 18 of 18**: 26 events,
+4 artifacts, **0 `att` edges, 0 warrants**, 52 references of which all 52 resolved and none dangled, and **no
+error-severity residue fired at all**. FCL-1 surface on the two nodes that reached the importer: `read_fcl1`
+**2 of 2**, no `parse_failure`, no `schema_failure`, no `unavailable_decode_failure`. The use table has **0
+rows** (`cross_document_rows` is 0) with every interpretive column empty.
+
+**F001 occurrence-07's residue is still open.** `mini_fcl/response` and `mini_fcl/carry` have **no terminal
+COMPLETE record anywhere**: three occurrences have now ended that arm early, for three different reasons at
+three different nodes, and that is reported as the outcome rather than dressed as anything else.
+
+**Nothing semantic follows from any of it.** A closed socket is a resource fact and never a verdict; no
+family is ranked, and no F001 or F002 record is modified, relabelled, repaired, re-sent or superseded.
+Suite: `PYTHONPATH=src python3 -X utf8 -m unittest discover -s tests` reports **Ran 1450 tests, OK
+(skipped=1)**. Dispatch held `OLLAMA_API_KEY` alone with `DEEPSEEK_API_KEY` removed, at most **two** requests
+in flight on a credential shared with a concurrent worker battery, zero retries at every layer, each round's
+inputs committed, pushed and read back before that round was sent.
+
+**No further F002 provider call is authorized.** A fourth occurrence, a retry of either closed coordinate, or
+a run under a clock chosen against the ~300-second wall would each be a new decision needing its own receipt.
+**The next authorized task is still the reading, which is root's and is not done.** Publication to `main`
+remains pending owner merge.
+
 ## B001 published as a register, its dispatch refused — 2026-09-14
 
 REC-20260914-Y published **B001, the commissioned bare-model and native-reasoning matched comparison, as an
