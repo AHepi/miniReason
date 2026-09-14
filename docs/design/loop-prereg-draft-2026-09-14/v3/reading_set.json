@@ -1,0 +1,574 @@
+{
+  "schema": "minireason.loop.reading-set.v1",
+  "run_id": "L002-loop-first-live-2026-09-14",
+  "config_reading_set_matches": true,
+  "size": {
+    "total": 16,
+    "c001_mark_cells": 16,
+    "h005_rows": 0
+  },
+  "order_rationale": [
+    "1. The C001 occurrence-02 grid comes first because its delivery record is clean: all 20 replicates across all four cases are `delivery_status: COMPLETE`, `comparable: true`, `state: PRESENT` and `fcl.parse: OK`, and the published `unresolved_cells` list is empty. G10(b)'s three-resolved-replicates rule is therefore satisfiable for every case by inspection of the published record, before a single call is made.",
+    "2. Inside the C001 leg the within-ORIGINAL baseline row comes first, because PLAN §8a requires it - 'the baseline note is written first and is not revised afterwards' - and G8 makes that physically irreversible by pinning its sha256 into every later call record. The four baseline cells cost no calls; they are the seal the rest of the leg depends on.",
+    "3. The three cross-case comparisons then follow in falsifier order: ORIGINAL vs CONTROL (D1), vs RECODING (F2), vs CARRIER (F3); and within each comparison the registers follow PLAN §8a's own order T, E, D, G. The order is the frozen plan's, not the loop's.",
+    "4. No H005 row is in this set. The published H005 occurrence-01 cannot be declared in `config.occurrences` - runner v2 cannot verify it and this run may not write the `arms.json` it never had - and `config.occurrences` is the same list S8 imports and S9 builds the use table from, so declaring it refuses the run at S1 before anything is published. The 22 rows are named `unread` - unreached by spend - and stay protected by p10 and p1.",
+    "5. C001 occurrence-01 is deliberately NOT in this set. Its `deepseek-flash`/`fcl` juxtaposition delivered 1 of 20 replicates COMPLETE at that occurrence's 8192/180 s ceiling and carries 19 unresolved cells, so G10(b) pre-empts marking for it; its other eleven juxtapositions would need 132 further cross-case cells (11 x 12), well past the declared boundary. All **twelve** of occurrence-01's juxtapositions are therefore unread, the pre-empted `deepseek-flash`/`fcl` one included: the reading set names occurrence-02 only, so nothing in this run reads any of them. Twelve is the count of the `tables` array in `occurrence-01/comparison.json` - six endpoint slugs by two arms, twelve distinct `(endpoint_slug, arm)` pairs - and the earlier 'eleven' in `PREREG.md` was the eleven that remain after setting the pre-empted one aside, which is not the unread inventory (REVIEW-PREREG PR-13). Its cells are named `unread` - unreached by spend - and are protected as unresolved by obligation p10. They are never rendered as unresolved by inquiry.",
+    "6. The published figure of 90 use-table rows counts the H005 golden and full tables separately. Their `rows` arrays are byte-identical (22 rows each, all in `daily/mini_fcl/cycle01`); the `full` scope covers 17 coordinates but yields no additional row. The reading set names those 22 distinct rows once. Reading them twice would be re-reading the same cell, which G11 forbids without a `reopen_reason`.",
+    "7. The dispatch leg runs alongside and is read by nobody in this run. `experiments/diagnostics/C001-contrast-triple/occurrence-03` is staged before S0, dispatched at S4-S7, imported at S8 and its use table built at S9; its rows are not pre-registered because they do not exist before first look, so they are `unread` under o7 and the run claims nothing from them. The occurrence is the C001 study's own next occurrence and its material is for a successor pre-registration to read."
+  ],
+  "max_calls_derivation": {
+    "guarded_row_cost_h005": {
+      "critic": 1,
+      "defender": 1,
+      "judges_canonical_order": 2,
+      "judges_swapped_order_G6": 2,
+      "variator_one_call_yielding_TRIAL_PARAPHRASE_N_2": 1,
+      "judges_re_ruling_each_paraphrase_G7": 4,
+      "total_worst_case": 11,
+      "arithmetic": "1 + 1 + 2 + 2 + 1 + (2 judges x 2 paraphrases = 4) = 11",
+      "best_case": 1,
+      "best_case_note": "critic answers `relation: none`; the row ends at one call and the cell stays unresolved",
+      "deviation_from_design": "§9.1 estimates 'roughly nine calls' for a fully guarded row. That prose estimate does not say whether each paraphrase is re-ruled by both judge seats. This pre-registration declares the strict reading - both seats re-rule both paraphrases, because G7 blocks on 'any flip, or any split on a paraphrase', and a split is only observable if both seats rule - so the budgeted worst case is 11, not 9. Paraphrase re-rulings run in the canonical presentation order only; G6's doubling applies to the adjudication, not to the spot-check."
+    },
+    "guarded_mark_cost_c001": {
+      "marker_seats_canonical_order": 2,
+      "marker_seats_swapped_order_G6": 2,
+      "variator_one_call_yielding_TRIAL_PARAPHRASE_N_2": 1,
+      "marker_seats_re_marking_each_paraphrase_G7": 4,
+      "total_worst_case": 9,
+      "arithmetic": "2 + 2 + 1 + (2 seats x 2 paraphrases = 4) = 9",
+      "note": "The marker reuses the judge pair (`standard.GUARD_PARAMETERS['marker_reuses_judge_seats'] is True`). One call per (cell, comparison, register): a marker pack never carries more than one register, so no call can trade registers off."
+    },
+    "legs": [
+      {
+        "leg": "c001-mark (baseline)",
+        "cells": 4,
+        "cost_each": 0,
+        "subtotal": 0,
+        "why": "the within-ORIGINAL grid is computed and sealed by markprep at S0 before any cross-case pack renders (G8); no provider call"
+      },
+      {
+        "leg": "c001-mark (cross-case)",
+        "cells": 12,
+        "cost_each": 9,
+        "subtotal": 108,
+        "why": "3 comparisons (ORIGINAL vs CONTROL / RECODING / CARRIER) x 4 registers (T, E, D, G), over published occurrence-02 bytes"
+      },
+      {
+        "leg": "h005-row",
+        "cells": 0,
+        "cost_each": 11,
+        "subtotal": 0,
+        "why": "no H005 row is declared: the published occurrence cannot be verified by runner v2 and may not be written into, so its rows are named `unread`"
+      },
+      {
+        "leg": "audit window",
+        "cells": 1,
+        "cost_each": 46,
+        "subtotal": 46,
+        "why": "one window at cycle 2 only, as before; a ceiling, not a prediction"
+      },
+      {
+        "leg": "dispatch (S4-S7 runner v2, C001 occurrence-03)",
+        "cells": 1,
+        "cost_each": 20,
+        "subtotal": 20,
+        "why": "4 cases (original, recoding, carrier, control) x 5 replicates x 1 arm x 1 endpoint = 20, the same narrow dispatch_scope shape occurrence-02 declared and spent (its plan.json records planned_calls 20). The scope itself is fixed by occurrence-03's OWN staging receipt under C001's frozen plan, before dispatch, not by this file."
+      }
+    ],
+    "max_calls": 174,
+    "arithmetic": "0 + 108 + 0 + 46 + 20 = 174",
+    "boundary_statement": "174 is a declared attention-and-spend boundary, not a prediction and not an adjudication. PREFLIGHT refuses a plan whose planned call count exceeds it. The expected spend is lower: G10(d) is expected to remove the six T and D cross-case cells from the hot path entirely, and G7 runs only on a sustained ruling. Where the boundary is reached, the stop is `resource_boundary`, the unreached entries are printed as `unread`, and the record says which boundary was reached and what would reopen the question. It is never reported as the inquiry running out of things to say.",
+    "audit_schedule_declaration": "An audit window is due in a cycle n where n mod audit.period == 0. With audit.period = 2 and cycle_budget = 3 that is cycle 2 and only cycle 2: exactly one window, 46 calls. §2.5 says 'every AUDIT_PERIOD cycles' without fixing the phase, so a schedule of {1, 3} is a second reading of the same words and would cost two windows. The phase is declared here, before the first call, and PREFLIGHT's planned == expected assertion refuses rather than overspending if the implementation schedules otherwise. ACCOUNT FOR audit.period = 2, settled at the pre-registration review of 2026-09-14 and not provisional. `period` is a cadence, not a bound on any reading: it fixes how often the instrument is audited and nothing else. Two rather than one, because an audit window costs 46 budgeted calls of a 396-call boundary and auditing every cycle would spend a third of the boundary on the instrument rather than on the material; two rather than three, because inside `cycle_budget` = 3 a period of three would place the only window at cycle 3, after the last cycle that could act on it, and an audit nothing can respond to is a record rather than a repair. At period 2 with phase `n mod period == 0` the window falls at cycle 2: readings from cycle 1 exist for its paraphrase-invariance and premise-deletion arms, and cycle 3 is still available to carry its consequences. Crossing nothing: `period` fires no stop, adjudicates no cell and enters no clause of O or P; o5 reads what an audit record declares it covers and never this number. This account lives here rather than in `config.json` because `types.AuditConfig` accepts exactly five keys and refuses an unknown one, so a `period_account` field cannot be added without a clone edit; see CLONE-PATCH.md item 3. Until that field exists the account is pinned by this file's sha256 in `plan.json` rather than by `loop_plan_id`'s config block, and that difference is stated rather than hidden.",
+    "whose_budget_the_dispatch_calls_are": "BOTH, and the record says both rather than choosing one and hiding the other. They are the **C001 study's own calls**: occurrence-03 is an occurrence of C001, minted under C001's frozen plan_id `328b9452c66fed52203015c540652d3b8ad3107d44dece56b55ebe721da341c8`, its arms, cases, replicates, seeds and endpoint set are C001's and not this loop's, and its staging receipt fixes them before dispatch. And they are **inside this loop's `max_calls` = 174**, because the loop's own driver issues them in-process through runner v2's `send_round` and a bound on spend that does not bound everything the process spends is not a bound (ruling 7: thresholds the harness carries are bounds on spend). Counting them twice in two records is not double-spending; it is one spend appearing in the two budgets that each have a claim on it, and PREFLIGHT's planned-versus-`max_calls` check reads this one."
+  },
+  "entries": [
+    {
+      "order": 1,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "T",
+      "carries_falsifier": [],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 2,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "E",
+      "carries_falsifier": [],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 3,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "D",
+      "carries_falsifier": [],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 4,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 5,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "T",
+      "carries_falsifier": [
+        "D1"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 6,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "E",
+      "carries_falsifier": [
+        "D1"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(c): a bare id token shared with the account document forces `unresolved` for this register and never `differs`; only the prefix-resolved residue reaches a trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 7,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "D",
+      "carries_falsifier": [
+        "D1"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 8,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "no program pre-empt; the mark is decided by a guarded pairwise trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 9,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "T",
+      "carries_falsifier": [
+        "F2"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 10,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "E",
+      "carries_falsifier": [
+        "F2"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(c): a bare id token shared with the account document forces `unresolved` for this register and never `differs`; only the prefix-resolved residue reaches a trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 11,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "D",
+      "carries_falsifier": [
+        "F2"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 12,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "no program pre-empt; the mark is decided by a guarded pairwise trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 13,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "T",
+      "carries_falsifier": [
+        "F3"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 14,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "E",
+      "carries_falsifier": [
+        "F3"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(c): a bare id token shared with the account document forces `unresolved` for this register and never `differs`; only the prefix-resolved residue reaches a trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 15,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "D",
+      "carries_falsifier": [
+        "F3"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 16,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "no program pre-empt; the mark is decided by a guarded pairwise trial",
+      "budgeted_calls": 9
+    }
+  ],
+  "resource_conditions": {
+    "declared_before_first_call": true,
+    "why_here": "Design 8 fixes 'the guard parameters' before first look and AGENTS.md requires the comparison to be respected 'under declared information and resource conditions' with 'settings, configurations' preserved. A per-call generation ceiling is a declared resource condition. These values live in `reading_set.json` and not in `config.json` because `types.LoopConfig` accepts a closed key set and refuses an unknown one; `validate.py` asserts every value below equal to the module constant that will actually be sent, so the declaration is checkable rather than decorative (REVIEW-PREREG PR-10).",
+    "role_max_tokens": {
+      "critic": 2048,
+      "defender": 1024,
+      "judge": 2048,
+      "marker": 1024,
+      "variator": 4096
+    },
+    "role_max_tokens_derivation": "`roles.ROLE_MAX_TOKENS`, derived per role from that role's own contract word limits at 1.6 tokens per English word plus 64 tokens of JSON scaffolding, rounded up to the next power of two. The variator's entry is `seats.paraphrase_n` x `roles.VARIATOR_TOKENS_PER_PARAPHRASE` = 2 x 2048 = 4096; raising `paraphrase_n` re-derives it and is a new `loop_plan_id`.",
+    "gateway_wall_seconds": 300,
+    "gateway_wall_rule": "The wall in force for a seat is `min(seat.timeout_seconds, 300)` - the smaller of the two, never the larger. Rulings 13 and 14: the Ollama cloud host closes any request still open at 300 s whatever the endpoint declares, observed five times on 2026-09-14 in a 183 ms band across two families and two client processes (F002 occurrence-01 glm-5.3 at 300,270 ms, occurrence-03 at 300,453 ms, and three kimi-k3 worker calls at 300-301 s). All 24 entries of `endpoints.json` declare `timeout_seconds: 180`, so for every seat of this run the wall is 180 s and the 300 s gateway is never reached. Neither this number nor `timeouts.step_seconds` may be used to raise the section 4.4 layer-1 timeout, which stays the endpoint's own declaration and is what `TIMEOUT_NOT_APPLIED` guards.",
+    "wall_ceiling_arithmetic": "floor(min(timeout_seconds, 300) x GENERATION_SHARE x OBSERVED_TOKENS_PER_SECOND) = floor(180 x 0.5 x 90) = 8100 tokens for every seat of this run. The bound actually sent is `min(role_budget, wall_ceiling)`, which for every role here is the role budget. A seat whose ceiling fell below `roles.MIN_MAX_TOKENS` = 256 would be refused with `ROLE_TOKEN_BUDGET_UNREACHABLE` rather than dispatched to be truncated.",
+    "generation_share": 0.5,
+    "observed_tokens_per_second": 90,
+    "min_max_tokens": 256,
+    "gateway_wall_tolerance_seconds": 5,
+    "gateway_wall_block": "A transport or response error on a request open at or past `300 - GATEWAY_WALL_TOLERANCE_SECONDS` = 295 s is recorded with reason `roles.PROVIDER_GATEWAY_WALL` under block code `blocked:provider`. It is a delivery fact about the host and is never a reading of the cell.",
+    "temperature": 0.0,
+    "seed": "derived from the coordinate token, `sha256(coordinate.token)[:8]`; declared, not a determinism guarantee from any provider",
+    "thinking": "Off where the endpoint honours the control, and not sent otherwise: `thinking` is sent as `False` on a `deepseek`-family seat - in this run that is the variator, `deepseek-flash` - and is never sent to any other family, because the control is DeepSeek's and the transport refuses it elsewhere. `ollama-cloud/deepseek` is a different family label and gets nothing. Switching it off keeps native reasoning text from being generated at all, which is how 'reasoning text is never persisted' is honoured on that seat. **Declared consequence:** the four Ollama seats - `kimi-k3`, `gemma4-31b`, `gpt-oss-120b`, `qwen3.5-397b` - are reasoning models that receive no `thinking` control, so reasoning tokens are generated inside the role ceiling (2048 for critic and judge, 1024 for defender and marker). The foreseeable failure is a truncated JSON body refused as `blocked:schema` at `schema_repair_budget` = 0. That is a declared resource condition of this run and an undeclared budget choice is exactly what it must not be read as: a block register carrying `blocked:schema` on those seats is the instrument's ceiling declining to read and is never an absence of relations (ruling 13(c)).",
+    "concurrency": "`provider_openai_compat.slots_for` holds five concurrent calls per `key_env` process-wide; all 24 registry entries declare `max_concurrency: 5`. Four seats share `OLLAMA_API_KEY` and one holds `DEEPSEEK_API_KEY`, so wave capacity is 5 x 2 = 10. `config.max_per_key` = 5 mirrors the transport and adds no third gate.",
+    "seat_evidence_does_not_transfer": "The seat table's evidence column in `PREREG.md` section 2 cites deliveries gathered at `max_tokens` 32768 and `timeout_seconds` 600. **This run asks none of those seats under those conditions.** It asks them at 1024-4096 tokens inside a 180 s wall. The evidence is therefore evidence that these endpoints delivered complete responses on a published occasion at a wider ceiling; it is not evidence about delivery at this run's ceiling, it does not transfer, and the pre-registration says so rather than letting the column read as a prediction. The same confound the bundle already names for the variator - its 19 PARTIALs in C001 occurrence-01 were a parameter of that occurrence, not a property of the endpoint - applies in the other direction to all five."
+  },
+  "vocabularies": {
+    "why_here": "Every clause of `obligations.json` and every narrowing the claim ceiling calls part of the claim is written against a symbol in `minireason.loop`, which is not a bundle file. A claim a later reader cannot check against the record is not yet part of it (REVIEW-PREREG PR-25). Each list below is reproduced verbatim from the module constant named beside it, `PREREG.md` section 4 prints the same lists for a human reader, and `validate.py` asserts every one of them equal to its module constant, so a drift in either direction fails the bundle rather than passing unnoticed.",
+    "reading_vocabulary": {
+      "source": "standard.READING_VOCABULARY",
+      "values": [
+        "re-deploys",
+        "qualifies",
+        "rejects-with-reason",
+        "repairs",
+        "retains",
+        "unresolved"
+      ]
+    },
+    "nominable_relations": {
+      "source": "standard.NOMINABLE_RELATIONS",
+      "values": [
+        "re-deploys",
+        "qualifies",
+        "rejects-with-reason",
+        "repairs",
+        "retains"
+      ]
+    },
+    "marks": {
+      "source": "standard.MARKS",
+      "values": [
+        "differs",
+        "same",
+        "unresolved"
+      ]
+    },
+    "difference_kinds": {
+      "source": "standard.DIFFERENCE_KINDS",
+      "values": {
+        "D": [
+          "disposition_value",
+          "disposition_carrier_field"
+        ],
+        "E": [
+          "record_engaged",
+          "engagement_form"
+        ],
+        "G": [
+          "grounds_source"
+        ],
+        "T": [
+          "target_set_membership",
+          "target_prefix_source"
+        ]
+      }
+    },
+    "block_codes": {
+      "source": "types.BLOCK_CODES",
+      "values": [
+        "blocked:baseline-forced-same",
+        "blocked:constitution",
+        "blocked:ensemble-split",
+        "blocked:operative-target",
+        "blocked:order-swap",
+        "blocked:outside-vocabulary",
+        "blocked:paraphrase-flip",
+        "blocked:provider",
+        "blocked:referential-integrity",
+        "blocked:schema"
+      ]
+    },
+    "ceiling_block_reasons": {
+      "source": "types.CEILING_BLOCK_REASONS",
+      "values": [
+        "ensemble-split",
+        "referential-integrity",
+        "operative-target",
+        "order-swap",
+        "paraphrase-flip",
+        "outside-vocabulary",
+        "schema",
+        "provider",
+        "baseline-forced-same"
+      ]
+    },
+    "block_register_headings": {
+      "source": "report.BLOCK_REGISTER_HEADINGS",
+      "values": [
+        "ensemble-split",
+        "referential-integrity",
+        "operative-target",
+        "order-swap",
+        "paraphrase-flip",
+        "outside-vocabulary",
+        "schema",
+        "provider",
+        "baseline-forced-same",
+        "constitution"
+      ]
+    },
+    "cell_states": {
+      "source": "obligations.CELL_STATES",
+      "values": [
+        "read",
+        "unresolved",
+        "machine-unresolved",
+        "unread"
+      ]
+    },
+    "reopen_reasons": {
+      "source": "standard.REOPEN_REASONS",
+      "values": [
+        "new-material",
+        "repaired-guard",
+        "appellate-ruling"
+      ]
+    },
+    "stop_reasons": {
+      "source": "types.STOP_REASONS",
+      "values": [
+        "all_arms_ended",
+        "custody_halt",
+        "instrument_fault",
+        "no_new_reading_changes",
+        "obligations_discharged",
+        "protected_loss",
+        "resource_boundary"
+      ]
+    },
+    "forbidden_keys": {
+      "source": "standard.FORBIDDEN_KEYS",
+      "values": [
+        "best",
+        "better",
+        "creativity",
+        "grade",
+        "grades",
+        "merit",
+        "novelty",
+        "percentile",
+        "points",
+        "quality",
+        "rank",
+        "ranking",
+        "ranks",
+        "rating",
+        "ratings",
+        "score",
+        "scores",
+        "scoring",
+        "verdict",
+        "weight",
+        "weights",
+        "win",
+        "winner",
+        "worse",
+        "worst"
+      ]
+    },
+    "calibration_anchor_kinds": {
+      "source": "standard.CALIBRATION_ANCHORS ids",
+      "values": [
+        "self-juxtaposition",
+        "no-shared-reference",
+        "quotes-and-rejects",
+        "clean-control-lexical-overlap-only",
+        "clean-control-framing-only-passage"
+      ]
+    }
+  },
+  "dispatch_and_reading_legs": {
+    "why_this_changed": "L001 was refused at S1 PREFLIGHT with `OCCURRENCE_NOT_DISPATCHABLE`. The cause, from the repaired driver's own record and not from inference: `config.occurrences` is simultaneously the DISPATCH list (S4 `prepare_wave`, S6 `send_round`), the IMPORT list (S8 `graph_import_h005.import_occurrence`) and the USE-TABLE list (S9 `use_relation_h005.build_use_table`) - `tools/auto_loop.py` iterates `_occurrence_dirs(root, config.occurrences)` in all three - and S1 now verifies every member of it through runner v2's own `verify()` and `pending_wave()` before anything is published. L001 declared `experiments/diagnostics/H005-open-prose-commitments/occurrence-01`, a published, closed study that carries no `arms.json` (so `verify()` raises) and a prepared, never-sent `waves/wave0006.json` of five `daily`/cycle-2 coordinates with requests and no attempts (so `pending_wave()` never clears and `prepare_wave` would refuse `PREPARED_WAVE_PENDING`). Checked here against the published trees: **no** C001 or H005 occurrence carries an `arms.json` - occurrence-01 and occurrence-02 of C001 do not either - so **no published occurrence of either study can be declared at all**.",
+    "the_three_options_and_the_one_taken": "The ledger names three, each minting a new `loop_plan_id`. (1) Write the `arms.json` the published study never had: refused, because it writes into published material and p11 forbids it. (2) A reading-only run with no dispatch arm: not available, because `LoopConfig` refuses an empty `occurrences` (`occurrences names no occurrence`) and every published occurrence fails `verify()`, so there is no declarable reading-only occurrence. (3) A different occurrence: taken. L002 declares a **new** occurrence of the C001 contrast study, `experiments/diagnostics/C001-contrast-triple/occurrence-03`, minted under C001's frozen plan and declared before dispatch exactly as F002 occurrence-03 was (ruling 14). Nothing published is re-dispatched and nothing published is written to.",
+    "which_cells_read_published_material": "All sixteen. The four within-ORIGINAL baseline cells and the twelve cross-case juxtaposition cells are marked over `experiments/diagnostics/C001-contrast-triple/occurrence-02`, a published, closed occurrence, through its published `comparison.json`. Design section 3(b) registers those bytes as `E_cell` material with `provenance.role = IMPORT` before any call, and section 3(c) opens one `C_open` per cell; the marks are readings of published bytes and cost no dispatch. This is where the driver decides the matter and not the bundle: S0's `seal_baselines` reads the contrast occurrence's `comparison.json` (`_contrast_cells` skips an occurrence that has none), and a new occurrence has no `comparison.json` until `tools/contrast_triple_study.py` builds one after its dispatch closes. **No step S0-S15 builds it.** So the twelve juxtapositions and the four baselines cannot be marked over the new occurrence's material inside this run, and saying otherwise would pre-register a cell the program can never open.",
+    "which_cells_are_marked_over_the_new_occurrence": "None, by name, and the reason is pre-registered rather than discovered. The new occurrence's product reaches this run through S8 IMPORT and S9 USE_TABLE, which build a use table from `config.occurrences` - occurrence-03 - and therefore from commitments that do not exist until S6 has sent them. A reading-set key must be named before first look and PREFLIGHT self-tests each declared key for admissibility and injectivity, so rows of a table the run has not yet built **cannot be pre-registered** and any that appear are `unread` under o7. What occurrence-03 is dispatched for is stated plainly: it is the C001 study's own next occurrence, and its material is **material for a successor run to read**, not evidence this run claims. A run that dispatches and reads nothing it dispatched is a smaller claim than L001's and is the honest one available.",
+    "the_22_h005_rows": "Dropped from the reading set and named `unread` - unreached, not unresolved by inquiry. They remain **reading-only precedent material**: the published H005 occurrence-01 use tables stay pinned by p1 and are what `calibration.json`'s anchors are assembled from, and the twelve C001 occurrence-01 juxtapositions and these twenty-two rows are together what a successor pre-registration would reach. They are not declared here because declaring them means declaring their occurrence in `config.occurrences`, and that is the refusal L001 already bought at the cost of a published plan."
+  }
+}
