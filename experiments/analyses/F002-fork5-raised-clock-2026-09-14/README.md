@@ -239,3 +239,175 @@ on this surface and none was set — and `reasoning_content_present` is 3 of 3 a
 5 of 5 here. Two occurrences of one arm are two observations, not a sample.
 **Root alone reads the content**, and no count here is a substitute for reading
 the artifacts.
+
+## Occurrence-03 — appended 2026-09-14 (REC-20260914-Z)
+
+**Nothing above this line is altered.** Occurrence-03 is a third occurrence of
+the same study, added after occurrences 01 and 02 were published and audited. It
+re-asks the **same `mini_fcl` arm chain from `account`** on `ollama/glm-5.3` at
+`max_tokens` 32,768, `timeout_seconds` 600 and `seed` 7, to observe **whether the
+300-second connection close that ended occurrence-01's `response` node recurs**.
+No record of occurrence-01 or occurrence-02 is modified, relabelled, repaired,
+re-sent or superseded by it, and nothing is written inside
+`F001-fork5-multifamily/`.
+
+Its `arms.json` is byte-identical to occurrence-01's, so the runner mints **the
+same content-addressed `plan_id`**
+`9aa92a837569bd56a86b172eb56dd80dbc69c519a86286d3387b020c2709a0d5`: `plan_id` is
+a digest over the material, the frozen arms and scope, the runtime and provider
+pins and the runner, and carries no occurrence name. Occurrence-03 has its own
+occurrence identity — its own waves, attempt markers, provider bytes and receipts
+— and shares occurrence-01's **plan** identity by construction. `plan.json`,
+`material.json` and all three manifests are byte-identical to occurrence-01's,
+and so is `wave0001`'s `account` request hash `679a6146…`; the answers are not.
+
+### Every coordinate, as the records carry it
+
+| occ | endpoint | node | status | `failure_code` | `finish_reason` | completion tokens | content bytes | `elapsed_ms` |
+|---|---|---|---|---|---|---|---|---|
+| 03 | `ollama/glm-5.3` | account | COMPLETE | — | stop | 12,489 | 10,454 | 114,364 |
+| 03 | `ollama/glm-5.3` | objection | **FAILED** | TRANSPORT_OR_RESPONSE_ERROR | — | — | 0 | **300,453** |
+| 03 | `ollama/glm-5.3` | rival | COMPLETE | — | stop | 19,700 | 13,567 | **234,864** |
+| 03 | `ollama/glm-5.3` | response | — (no attempt) | — | — | — | — | — |
+| 03 | `ollama/glm-5.3` | carry | — (no attempt) | — | — | — | — | — |
+
+`reasoning_content_present` is true on both COMPLETE records and null on the
+FAILED one, which has no usage at all. No `reasoning_tokens` field is present in
+any usage block. **Three calls spent of five authorised.** The other two are
+`response` and `carry`, removed from the queue by the no-retry truncation rule
+after `objection` failed: no attempt marker, no request, no provider record, no
+receipt. They were never dispatched and are not failures of anything.
+
+### Transport and decode (from `occurrence-03/audit.json`)
+
+| | 03 `ollama/glm-5.3` |
+|---|---|
+| authorised calls (`max_calls`) | 5 |
+| spent | 3 |
+| COMPLETE | 2 |
+| PARTIAL | 0 |
+| FAILED | 1 |
+| OPAQUE | 0 |
+| unvisited (arm ended) | 2 |
+| unresolved attempts | 0 |
+| out of scope | 0 |
+| invocation `complete` | false |
+| `fence_stripped` | 2 |
+| `lenient_control_chars` | 0 |
+| `strict_parse_would_succeed` | 0 / 2 |
+| `reasoning_content_present` | 2 |
+| known completion tokens | 32,189 |
+| known total tokens | 34,333 |
+| calls with unknown usage | 1 |
+
+### The two declared bounds, and the undeclared one
+
+| | value | reached | largest observed | headroom |
+|---|---|---|---|---|
+| `timeout_seconds` | 600 | **no** | 300,453 ms (the FAILED call); 234,864 ms among calls that returned | 49.9 % / 60.9 % unused |
+| `max_tokens` | 32,768 | **no** | 19,700 completion tokens | 39.9 % unused |
+| host gateway close | ~300 s (**undeclared**) | **yes** | 300,453 ms | 0.2 % over |
+
+**`finish_reason: "length"` occurs zero times across all three spent calls**, so
+nothing here is ceiling-caused, and **no call was refused by the 600-second
+clock**. One call ran past the 180-second wall the endpoint record declares and
+returned: `rival` at 234,864 ms.
+
+### The one FAILED coordinate — the close recurred
+
+occurrence-03 `mini_fcl/objection`: `failure_code` `TRANSPORT_OR_RESPONSE_ERROR`,
+error **`"Remote end closed connection without response"`**, at **300,453 ms**
+against a declared and applied `settings.timeout_seconds` of **600**. No
+`finish_reason`, no `usage`, zero bytes of content. Occurrence-01's README entry
+above says of the same error that "why the remote closed is not known and is not
+guessed at"; that stands, and what **is** now known is only that it recurs. Five
+closes carrying that exact string are known to this publisher, all inside a
+**183-millisecond band** around 300.3 s: **300.270 s** (occurrence-01 `response`,
+`ollama/glm-5.3`, 10:20 UTC), **300.286 / 300.348 / 300.377 s** (three requests
+of a separate worker process on `ollama/kimi-k3` at 11:07 UTC, transcripts cited
+in REC-20260914-Z — untracked scratchpad files in another harness's schema, **not
+`minireason.call.v2` records and not observations of this study**) and
+**300.453 s** (occurrence-03 `objection`, `ollama/glm-5.3`, 11:23 UTC). Across
+**two model families, two client processes and two different fork5 nodes**, so it
+follows neither a node, nor a position in the chain, nor one endpoint. The
+reading this supports and no more: **a host gateway closes a request still open
+at about 300 seconds, and F002's declared 600-second clock cannot be exercised
+past 300 s on this host.** Why it closes is still not known and is not guessed
+at; whether 300 s is fixed policy, whether the closing party is the provider or
+something between, and whether payload, model, concurrency or credential load
+bear on it are all unanswered here. **No retry was made at any layer.**
+
+### FCL-1 commitment surface, `mini_fcl` arm (from `occurrence-03/import/report.json`)
+
+| | 03 |
+|---|---|
+| `mini_fcl` nodes reaching the importer | 2 |
+| `read_fcl1` | **2** |
+| `parse_failure` | 0 |
+| `schema_failure` | 0 |
+| `unavailable_decode_failure` | 0 |
+| `opaque_envelope` | 0 |
+
+### Graph facts (from `occurrence-03/import/report.json`)
+
+| | 03 |
+|---|---|
+| events | 26 |
+| artifacts labelled | 4 |
+| refs seen | 52 |
+| refs resolved | **52** |
+| refs dangling | **0** |
+| ref extensions | 0 |
+| refs to task artifact | 4 |
+| `depends_cross_document` | 0 |
+| `depends_intra_document` | 15 |
+| warrants | 0 |
+| `att` edges | 0 |
+| `dep` edges | 0 |
+| ν artifacts (`validity_node_minted_unasserted`) | 0 |
+| ν nodes appearing in `att` (ν-attacks) | 0 |
+| `criticism_of_criticism_retargeted` | 0 |
+| reinstatements | 0 |
+| labels — `accepted` | 4 |
+| labels — `refuted` | 0 |
+| use-table rows | **0** |
+
+**No error-severity residue fired at all on this occurrence** — the importer's
+`error_severity_residue` is empty, where occurrence-01's carries
+`ref_unresolved` 28 and occurrence-02's 153. That is a difference in what these
+two documents happened to reference, not a merit difference between runs, and
+nothing may be read off it about either. Every `accepted` here is
+**accept-by-position**: there are no `att` edges, so no artifact is attacked and
+no `refuted` label can arise. The use table has 0 rows because
+`cross_document_rows` is 0 — all 52 references resolved, 48 intra-document and 4
+to the exposed task artifact, none unresolved — and the instrument walks
+cross-document references and nothing else.
+
+### Custody
+
+The import exits 0 and every cross-file and self-consistency check is
+**verified — 18 of 18**, with `event_ts_nondecreasing` true. The single skip is
+the usual structural one: `projection_source` runs 1 of 2, the other projection
+having no exposed source because the slot is absent on the first invocation
+(`daily/mini_fcl/cycle01/account#p.account.0`). The use table exits 0 with no
+node left unread and no unresolved reference.
+
+### What occurrence-03 did and did not settle
+
+**Did**: it re-asked the chain and the close recurred, at a different node, on a
+different request, 63 minutes later — so the 300-second close is **reproducible
+and not a one-off**, which is the whole of what this occurrence was added to
+observe.
+
+**Did not**: it does not close F001 occurrence-07's two residual coordinates.
+`mini_fcl/response` and `mini_fcl/carry` still have **no terminal COMPLETE record
+anywhere** — F001's 07 never dispatched them, F002's 01 lost `response` to the
+close and never dispatched `carry`, and F002's 03 lost `objection` to the close
+and never dispatched either. Three occurrences have now ended that arm early, and
+this directory reports that rather than a shortfall dressed as anything else.
+
+**May not be read from any of it**: that `ollama/glm-5.3` reasons worse, better
+or differently; that a longer clock repairs or degrades anything; that two closes
+on one endpoint and three on another rank the endpoints; or that any F001 or
+F002 record is corrected by these. **A closed socket is a resource fact and never
+a verdict.** Root alone reads the content.
