@@ -165,3 +165,185 @@ scheduler (which does not execute here), about any family's behaviour on another
 problem or another cycle, or about any family not listed. Six families with one
 invocation each is six observations, not a sample. **Root alone reads the
 content**, and no count here is a substitute for reading the artifacts.
+
+---
+
+## Appended 2026-09-14 — occurrences 07 and 08, the same two families at a second ceiling
+
+**Appended after the six-occurrence run; nothing above this line is altered, and
+no record above it is re-sent, relabelled, repaired or superseded.** Everything
+the banners at the top of this page say applies here without exception: these
+are counts of what the published instruments could compute, no count ranks a
+family, invariant I7 holds, and the four interpretive columns of both new use
+tables are empty in every row.
+
+Occurrences 07 (`ollama/glm-5.3`) and 08 (`ollama/kimi-k3`) are **the same two
+families as occurrences 04 and 05**, on the same frozen material (`material.json`
+sha256 `8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff`, the
+same bytes as all six above), the same arms, the same scope
+`{"problems": ["daily"], "cycles": [1]}`, the same `seed: 7`, the same
+`timeout_seconds: 180` read from the endpoint record, `automatic_retries` 0 and
+no thinking control anywhere. Two things differ and nothing else does: the
+per-arm completion ceiling, **8,192 on 04/05 and 32,768 on 07/08**, and the
+runner identity, `tools/multicycle_commitment_study_multi.py` on 04/05 and
+`tools/multicycle_commitment_study_multi_v2.py` on 07/08.
+
+**04/05 and 07/08 are the same families at two ceilings under two runner
+identities whose only behavioural difference is the ceiling bound.** v2 is a byte
+copy of v1 with four declared differences — a provenance header, the ceiling
+constant split so that the bound becomes the provider's own `MAX_CEILING =
+393216` while the default an undeclared arm receives stays `DEFAULT_CEILING =
+8192`, `manifest_for` deriving its completion figures from the occurrence's
+declared arm ceilings, and a docstring that says v2 — and
+`tests/test_multicycle_commitment_study_multi_v2.py::V2DiffProofTests` proves
+that list by normalising the module docstring away, diffing the two files and
+refusing any hunk that is not on it. The register's *Successor occurrences 07 and
+08 under runner v2* section carries the full statement. Pre-registration,
+publication and dispatch are REC-20260914-T.
+
+| Occurrence | Endpoint | `plan_id` |
+|---|---|---|
+| occurrence-07 | `ollama/glm-5.3` | `77aa01f46f57471838e6cb46c96eb3ad9adfc2c1053376051dc098edd58d306d` |
+| occurrence-08 | `ollama/kimi-k3` | `04c26f24812a4e48d41cfd6f6ef16785ba25ea183894bfafe86d6eb0e35af8ee` |
+
+Neither can collide with a v1 plan: v2 writes its own sha256
+(`8f7eb9d73e8c497f6a2aabf826a8409bb3c60682b36aaa361f650a9e870adbd0`) as
+`runner_sha256` and `helper_sha256`, both folded into `plan_id`.
+
+### The two new rows
+
+| Occurrence | Endpoint | ceiling | runner | authorised | spent | COMPLETE | PARTIAL | FAILED | OPAQUE | unvisited | unresolved | out of scope | `fence_stripped` | `lenient_control_chars` | `strict_parse_would_succeed` | `reasoning_content_present` | completion tokens | nodes over 8,192 | `finish_reason: length` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| occurrence-07 | `ollama/glm-5.3` | 32,768 | v2 | 11 | 9 | 8 | 0 | 1 | 0 | 2 | 0 | 0 | 7 | 0 | 1 / 8 | 8 / 8 | 85,266 | 6 of 8 | **0** |
+| occurrence-08 | `ollama/kimi-k3` | 32,768 | v2 | 11 | 11 | 10 | 0 | 1 | 1 | 0 | 0 | 0 | 4 | 0 | 5 / 10 | 10 / 10 | 67,796 | 4 of 10 | **0** |
+
+Run total: **20 calls spent of 22 authorised**, 18 COMPLETE, 0 PARTIAL, 2 FAILED,
+1 OPAQUE, 0 unresolved attempts, 0 out of scope, 11 `fence_stripped`, 0
+`lenient_control_chars`, 6 `strict_parse_would_succeed` of 18. The two unspent
+calls are `mini_fcl/response` and `mini_fcl/carry` on occurrence-07, removed from
+the queue by the no-retry truncation rule after that arm's round-2 failure; they
+were never dispatched.
+
+Beside the same two rows at the earlier ceiling, for reading the pair:
+
+| | 04 glm-5.3 @ 8,192 (v1) | 07 glm-5.3 @ 32,768 (v2) | 05 kimi-k3 @ 8,192 (v1) | 08 kimi-k3 @ 32,768 (v2) |
+|---|---|---|---|---|
+| authorised calls | 11 | 11 | 11 | 11 |
+| COMPLETE | 4 | 8 | 7 | 10 |
+| PARTIAL | 1 | 0 | 1 | 0 |
+| FAILED | 3 | 1 | 2 | 1 |
+| OPAQUE | 1 | 0 | 1 | 1 |
+| unvisited (arm ended) | 3 | 2 | 1 | 0 |
+| unresolved attempts | 0 | 0 | 0 | 0 |
+| out of scope | 0 | 0 | 0 | 0 |
+| `fence_stripped` | 4 | 7 | 5 | 4 |
+| `lenient_control_chars` | 0 | 0 | 0 | 0 |
+| `strict_parse_would_succeed` | 0 / 8 | 1 / 8 | 2 / 10 | 5 / 10 |
+| `reasoning_content_present` | 8 | 8 | 10 | 10 |
+| completion tokens | 51,830 | 85,266 | 58,950 | 67,796 |
+| terminal records with `failure_code: INCOMPLETE_GENERATION` | 4 | **0** | 3 | **0** |
+| terminal records with `failure_code: TRANSPORT_OR_RESPONSE_ERROR` | 0 | **1** | 0 | **1** |
+
+**Every non-COMPLETE terminal record changed kind.** At 8,192 all seven
+non-COMPLETE records on 04 and 05 were `INCOMPLETE_GENERATION` /
+`finish_reason: length` at exactly the ceiling, five of them with a zero-byte raw
+response. At 32,768 **no node on either occurrence reached the ceiling at all**:
+`finish_reason: length` occurs zero times, and the largest single completion is
+16,871 tokens (occurrence-07 `mini_prose/response`). Ten of the eighteen
+COMPLETE nodes — six of eight on occurrence-07 and four of ten on occurrence-08 —
+spent more than 8,192 completion tokens, so ten calls that returned a
+contribution here are calls the earlier ceiling would have cut off.
+
+The two FAILED nodes are a different transport fact and are reported as such:
+**occurrence-07 `mini_fcl/objection`** and **occurrence-08 `mini_fcl/carry`**,
+both `failure_code: TRANSPORT_OR_RESPONSE_ERROR`, both `"The read operation timed
+out"` at 180,368 ms and 180,456 ms against the endpoint record's **180-second
+timeout, which is not a per-arm declaration and did not move with the ceiling**.
+Neither carries a `finish_reason`, a `usage` or any content; neither was retried;
+each ended `mini_fcl` for the rest of its occurrence, which is why occurrence-07
+shows `unvisited` 2 and `"complete": false` on that arm's invocation row. That a
+longer permitted generation can meet a fixed wall-clock timeout is a resource
+fact about this transport, recorded here and not interpreted.
+
+### FCL-1 commitment surface, `mini_fcl` arm only (from `import/report.json`)
+
+| | 04 | 07 | 05 | 08 |
+|---|---|---|---|---|
+| `mini_fcl` nodes reaching the importer | 1 | 2 | 3 | 4 |
+| `read_fcl1` | 0 | 2 | 2 | 3 |
+| `parse_failure` | 0 | 0 | 0 | 0 |
+| `schema_failure` | 1 | 0 | 0 | 1 |
+| `unavailable_decode_failure` | 0 | 0 | 1 | 0 |
+| prose-arm nodes reaching the importer (`bare` + `mini_prose`) | 3 | 6 | 5 | 6 |
+| `prose_commitment_surface` | 3 | 6 | 5 | 5 |
+| `unavailable_decode_failure` on a prose arm | 0 | 0 | 0 | 1 |
+
+Occurrence-08's one prose `unavailable_decode_failure` is `mini_prose/rival`, the
+occurrence's single OPAQUE node: a COMPLETE delivery whose envelope no declared
+repair rescues, so the importer had no decodable commitment surface to read from
+it. Occurrence-08's one `schema_failure` is `mini_fcl/rival`.
+
+### Graph facts (from `import/report.json`)
+
+| | 04 | 07 | 05 | 08 |
+|---|---|---|---|---|
+| events | 6 | 35 | 24 | 29 |
+| artifacts labelled | 5 | 11 | 15 | 13 |
+| refs seen | 0 | 39 | 34 | 66 |
+| refs resolved | 0 | 33 | 34 | 30 |
+| refs dangling | 0 | 0 | 0 | 36 |
+| ref extensions | 0 | **6** | 0 | 0 |
+| refs to task artifact | 0 | 0 | 0 | 0 |
+| `depends_cross_document` | 0 | 0 | 0 | 0 |
+| `depends_intra_document` | 0 | 13 | 7 | 10 |
+| warrants | 0 | 1 | 5 | 0 |
+| `att` edges | 0 | 1 | 1 | 0 |
+| `dep` edges | 0 | 0 | 0 | 0 |
+| ν artifacts (`validity_node_minted_unasserted`) | 0 | 1 | 5 | 0 |
+| ν nodes appearing in `att` (ν-attacks) | 0 | 0 | 0 | 0 |
+| `criticism_of_criticism_retargeted` | 0 | 0 | 0 | 0 |
+| reinstatements | 0 | 0 | 0 | 0 |
+| labels — `accepted` | 5 | 10 | 14 | 13 |
+| labels — `refuted` | 0 | 1 | 1 | 0 |
+| use-table rows | 0 | 6 | 12 | 0 |
+
+`depends_cross_document` is **0 in all eight occurrences of this study**, at
+either ceiling, on every family. Occurrence-07's six `ref_extension` are the
+first non-zero count of that kind anywhere in F001; they are counted and not
+interpreted. Error-severity residue, as the importer prints it above its own
+label table: occurrence-07 **none**; occurrence-08 `ref_unresolved` 36 and
+`schema_failure` 1. Read the residue before reading any label. A use table has 0
+rows where the surfaces read declared no cross-document reference — occurrence-08
+read three FCL-1 documents and still has 0 rows, because the refs its documents
+declare resolve nowhere the instrument may follow.
+
+### Custody
+
+Both imports exit 0. Every cross-file and self-consistency check is **verified**
+in both — material pin, manifest pins, receipt presence, artifact bytes against
+receipt, status against receipt, public text, attempt against receipt, request
+record, trace pinning, provider bytes, wave placement — with the one skip pattern
+every F001 occurrence produces, `projection_source` skipping 3 of 12 structurally
+absent `previous`/`origin` slots in each. `event_ts_nondecreasing` is `no` in
+both, the importer's own declared deviation for concurrently run waves and not a
+fault. The two occurrence audits report `max_calls` against COMPLETE + PARTIAL +
+FAILED + unvisited exactly (8 + 0 + 1 + 2 and 10 + 0 + 1 + 0, both 11), with
+`out_of_scope` 0 and `unresolved_attempts` 0.
+
+### What a reader may and may not take from these two rows
+
+**May**: that these counts differ between 8,192 and 32,768 on these two
+families, and by how much, on this one `fork5` invocation of the `daily` problem,
+cycle 1, at `timeout_seconds` 180 with `seed: 7`; and that at 32,768 no node
+reached the ceiling while at 8,192 seven did.
+
+**May not**: that either family reasons better, worse, or differently at the
+higher ceiling; that a raised ceiling improves, repairs or degrades anything;
+that more tokens, more refs, more events, more warrants, a larger graph or a
+parsed FCL-1 document is a better contribution; or that the earlier records are
+in any way corrected by these. A ceiling is a transport budget. Reasoning was not
+manipulated on either family at either ceiling — no thinking control is available
+on this surface and none was set — and `reasoning_content_present` is 8 of 8 and
+10 of 10 here exactly as it was 8 and 10 there. The only comparison these rows
+license is *what these two families returned at 8,192 completion tokens versus at
+32,768*, and the reading of any contribution is root's, by reading it.
