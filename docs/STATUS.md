@@ -1,5 +1,69 @@
 # Current research status
 
+## The automated loop is published complete through wave 6, and it has run end to end offline — 2026-09-14
+
+REC-20260914-AF publishes the **driver**, the **operator page** and the **end-to-end acceptance
+proof**, with the three documents that record them and the record of the executed dry run. Ruling
+6's standing requirement — that the harness run end to end without a human in the loop — is **met
+offline**: one command walks S0 to S15 against a real bare git remote with every provider offline.
+
+**What completed.** [`tools/auto_loop.py`](../tools/auto_loop.py) is the S0…S15 driver, and
+[`docs/workflows/automated-loop.md`](workflows/automated-loop.md) is the operator page, now at
+`docs/workflows/` because it is integrated and its code tables are generated from the modules as
+published. `tests/loop/` grows from twenty-two files to **twenty-five** — `test_auto_loop.py`,
+`test_dry_run_end_to_end.py` (the 51-test acceptance proof) and `test_docs_pins.py`, which pins the
+page against the modules from inside `tests/` where the suite discovers it. `src/minireason/loop/`
+stays at **24 files**; three modules changed (`types.py`, eight driver codes folded and
+`AuditConfig.period_account` made optional; `roles.py`; and `synthetic.py`, three wave-6 changes).
+`types.FAILURE_CODES` now carries **218** members, `types.BLOCK_CODES` **10** and
+`types.STOP_REASONS` **7**. Waves 5 and 6 were **drafted by Kimi K3 under ruling 16 and integrated
+by Opus 5**, and the kept-versus-rewritten record, with the reason for each and a "Declined"
+section, is [`WAVE5-INTERFACE.md`](design/loop-impl/WAVE5-INTERFACE.md) §5 and
+[`WAVE6-INTERFACE.md`](design/loop-impl/WAVE6-INTERFACE.md) §2 — the draft's six declared seam
+dependencies D1–D6, five of them deleted — and §3, the ten defects the acceptance proof found and
+the change that closed each. Gate: `PYTHONPATH=src python3 -X utf8 -m unittest discover -s tests`
+reports **`Ran 3112 tests in 352.621s`, `OK (skipped=2)`** — the 2,989 on record at
+`REC-20260914-AE` plus the loop's 123 new tests, and the arithmetic is exact.
+`PYTHONPATH=src python3 …/v2/validate.py` from the repository root still reports **48 `PASS` lines
+and `ALL CHECKS PASSED`**, so the module edits moved no pin the bundle carries. **The dry run was
+re-executed by the publisher** against a fresh temp run root and a fresh temp bare remote and
+reproduces [`DRYRUN-RECORD.md`](design/loop-impl/DRYRUN-RECORD.md): exit **0** with empty output,
+the same `loop_plan_id`, **three cycles**, **43 step receipts** of which **eleven are publications
+each carrying its own `VERIFIED` sidecar** (the last one's commit is the temp remote's `main`),
+`stop_reason` **`no_new_reading_changes`**, **`planned_calls` 232** inside the pre-registered
+**`max_calls` 396**, and under a provider-module counter **0 live transports, 0 requests opened,
+218 offline providers**. Neither `DEEPSEEK_API_KEY` nor `OLLAMA_API_KEY` was in the child
+environment, asserted by name before the call. **Zero provider calls under this receipt and no
+credential read.** `docs/design/loop-impl/W6-DOC-draft/` is **removed as superseded by content** —
+the integrated page carries all ten of the draft's sections plus three new subsections, every one of
+the draft's 204 backticked codes and all ten `blocked:` codes, and the ceiling byte-identical, while
+the draft's own text says the driver does not exist yet and pins the code table at 201.
+
+**What this does not establish.** **The loop has still never run live.** Every number above is a
+test result or an offline rehearsal result, and the dry run read `synthetic`'s **eight fabricated
+rows**, not the pre-registered twenty-two H005 rows: nothing here is evidence about any arm, model,
+family or account. The pre-registration bundle is **still a DRAFT** and stops being one only when
+the driver mints it at S0 under its own receipt. `WAVE6-INTERFACE.md` §5 lists eleven questions the
+rehearsal could not reach; three of them are the live run's first act — the **300 s host gateway
+wall** (rulings 13 and 14; a `TRANSPORT_OR_RESPONSE_ERROR` at ~300 s is the host closing the arm,
+never a verdict), the **key gates**, never contended because no credential was ever acquired, and
+the **real `publish_ref`**, a non-forcing push onto this shared branch where the dry run pushed to
+`origin/main` of a throwaway bare repository. The cadence receipt is still unwired by an explicit
+decision. One condition in the acceptance proof is **built by the fixture and says so**. The
+cold-cache `-W error` defect in `src/minireason/use_relation_h005.py:301` is **not repaired**; the
+repair stays with `SRC-003`.
+
+**Next authorized task: the first live run, L001.** It is launched by the operator command sequence
+in [`WAVE6-INTERFACE.md`](design/loop-impl/WAVE6-INTERFACE.md) §6 — `preregister`, `preflight`,
+`run`, from the repository root with the two credential names present in that shell and nowhere else
+— and it **mints its own receipt at S0**; no receipt written in advance can name it, as this
+checkpoint's own re-execution showed by minting the next free letter from the ledger in the tree it
+dispatched for. It is a new decision and needs its own opening receipt before the first command.
+**No other publisher may run while the driver holds the branch**: the driver publishes to
+`origin/claude/project-state-direction-j5rbun` at every `PUBLISH_*` step and verifies each push, and
+a concurrent publisher would move the ref under it and turn a verified publication into three
+non-converging attempts.
+
 ## The automated loop's waves 3-4 are published as a recoverable checkpoint — 2026-09-14
 
 REC-20260914-AE publishes the **trial runner, the audits, the report renderer, the cross-family

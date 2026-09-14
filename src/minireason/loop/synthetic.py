@@ -1235,13 +1235,62 @@ class ScriptedProviders:
     """
 
     def __init__(self, *, seed: int = DEFAULT_SEED, induce: Iterable[str] = (),
-                 strict: bool = False) -> None:
+                 strict: bool = False,
+                 aliases: Mapping[str, str] | None = None) -> None:
         self.seed = int(seed)
         self.induce = _checked(induce)
         self.strict = bool(strict)
         self.script = canned_responses(self.seed, induce=self.induce)
         self.calls = 0
         self.handed: list[tuple[str, str]] = []
+        #: caller coordinate prefix -> the script key it answers to.  The loop
+        #: addresses a reading row by the admissible coordinate its driver folds
+        #: the pre-registered row key into, and this module scripts by its own
+        #: short row names; the caller that knows both supplies the map.
+        self.aliases = {str(key): str(value)
+                        for key, value in dict(aliases or {}).items()}
+
+    # -- addressing ----------------------------------------------------- #
+
+    @staticmethod
+    def seat_key(seat: str) -> str:
+        """:data:`JUDGE_SEATS`' own name for a caller's judge seat label.
+
+        W2-ROLES spells a judge seat ``judge#N`` and may carry a credential
+        name after an ``@``; this module scripts by its own two seat names.  A
+        label already in :data:`JUDGE_SEATS` is returned unchanged, so a caller
+        that knows the script's spelling is unaffected.
+        """
+
+        label = str(seat).split("@", 1)[0]
+        if label in JUDGE_SEATS:
+            return label
+        head, _, index = label.partition("#")
+        if head == "judge" and index.isdigit() and 1 <= int(index) <= len(JUDGE_SEATS):
+            return JUDGE_SEATS[int(index) - 1]
+        raise SyntheticError("SYNTHETIC_COORDINATE_UNSCRIPTED",
+                             f"{seat!r} is not one of {JUDGE_SEATS}")
+
+    def address(self, coordinate: str) -> str:
+        """The script key one caller-side coordinate answers to.
+
+        Three rules, in order: an alias the caller declared (longest prefix
+        first, keeping whatever derived suffix follows it, so a re-read, a
+        paraphrase and a swapped presentation all reach their row's own
+        script); a mark coordinate ``contrast/<case>/<comparison>/<register>``,
+        which is this module's ``mark/<case>/<register>/<replicate>`` written
+        the marker's way; anything else unchanged.
+        """
+
+        text = str(coordinate)
+        for prefix in sorted(self.aliases, key=len, reverse=True):
+            if text == prefix or text.startswith(prefix + "#"):
+                return self.aliases[prefix] + text[len(prefix):]
+        parts = text.split("/")
+        if len(parts) >= 4 and parts[0] == "contrast":
+            register = parts[3].split("#", 1)[0]
+            return f"mark/{parts[1]}/{register}/{CONTRAST_REPLICATES[0]}"
+        return text
 
     # -- the script ----------------------------------------------------- #
 
@@ -1249,20 +1298,24 @@ class ScriptedProviders:
                    seat: str | None = None) -> tuple[dict[str, Any], ...]:
         """The ordered script for one key; one entry per call that key will make."""
 
+        label = self.seat_key(seat) if (role == "judge" and seat is not None) else seat
         entries = self.script.get((role, coordinate))
         if entries is None:
             if self.strict:
                 raise SyntheticError(
                     "SYNTHETIC_COORDINATE_UNSCRIPTED",
                     f"({role!r}, {coordinate!r}) is not in the script")
-            entries = (_entry(json.dumps(
-                _default_output(role, coordinate, seat or "", self.seed, self.induce),
-                ensure_ascii=False, sort_keys=True), self.seed, f"{role}:{coordinate}"),)
-        if role == "judge" and seat is not None:
-            if seat not in JUDGE_SEATS:
-                raise SyntheticError("SYNTHETIC_COORDINATE_UNSCRIPTED",
-                                     f"{seat!r} is not one of {JUDGE_SEATS}")
-            index = JUDGE_SEATS.index(seat)
+            # The fallback is built FOR this seat, so it is one entry and must
+            # not then be sliced by seat index: slicing it handed the second
+            # judge seat an empty script, and an empty script is how a provider
+            # failure is expressed - a derived coordinate would have read as a
+            # delivery failure it never had.
+            return (_entry(json.dumps(
+                _default_output(role, coordinate, label or "", self.seed, self.induce),
+                ensure_ascii=False, sort_keys=True), self.seed,
+                f"{role}:{label or ''}:{coordinate}"),)
+        if role == "judge" and label is not None:
+            index = JUDGE_SEATS.index(label)
             return entries[index:index + 1] if index < len(entries) else ()
         return entries
 
@@ -1281,13 +1334,14 @@ class ScriptedProviders:
                  endpoint: Endpoint | None = None) -> OfflineProvider:
         """One ``OfflineProvider`` scripted for this key. Opens no socket."""
 
-        if self._times_out(role, coordinate):
-            raise SyntheticStepTimeout(f"{role}:{coordinate}")
+        key = self.address(coordinate)
+        if self._times_out(role, key):
+            raise SyntheticStepTimeout(f"{role}:{key}")
         self.calls += 1
-        self.handed.append((role, coordinate))
+        self.handed.append((role, key))
         return OfflineProvider(endpoint or self.endpoint_for(role, seat),
                                records_dir,
-                               self.script_for(role, coordinate, seat=seat))
+                               self.script_for(role, key, seat=seat))
 
     def _times_out(self, role: str, coordinate: str) -> bool:
         return ("step_timeout" in self.induce and role == "delivery"
@@ -1316,10 +1370,12 @@ class ScriptedProviders:
 
 
 def provider_factory(*, seed: int = DEFAULT_SEED, induce: Iterable[str] = (),
-                     strict: bool = False) -> ScriptedProviders:
+                     strict: bool = False,
+                     aliases: Mapping[str, str] | None = None) -> ScriptedProviders:
     """The scripted offline provider factory, keyed by (seat role, coordinate)."""
 
-    return ScriptedProviders(seed=seed, induce=induce, strict=strict)
+    return ScriptedProviders(seed=seed, induce=induce, strict=strict,
+                             aliases=aliases)
 
 
 # --------------------------------------------------------------------- #

@@ -564,6 +564,21 @@ FAILURE_CODES: frozenset[str] = frozenset({
     # is a member of BLOCK_CODES and is returned on the row, never raised.
     "MARKER_INPUT_MALFORMED",
     "MARKER_RESIDUE_CONTRADICTED",
+    # the S0-S15 driver (tools/auto_loop.py, W5-DRIVER), folded in by the
+    # wave-5 integrator. The driver lives OUTSIDE this package, so the scan in
+    # tests/loop/test_types.py does not walk it: these eight are listed in that
+    # file's UNREACHED table naming the driver, and
+    # tests/loop/test_auto_loop.py runs the same token scan over
+    # tools/auto_loop.py and asserts each is reached there. None is a block
+    # code and none is an outcome.
+    "RUN_NOT_FOUND",
+    "APPEAL_PATH_INVALID",
+    "APPEAL_TARGET_INVALID",
+    "READING_ROW_UNRESOLVED",
+    "READING_KEY_INADMISSIBLE",
+    "BLOCK_STREAK_DEFINITION_MISMATCH",
+    "REGISTER_CELLS_DISAGREE",
+    "CALIBRATION_NOT_FOUND",
     # configuration and layout (raised by this module)
     "CONFIG_NOT_A_MAPPING",
     "CONFIG_NOT_FOUND",
@@ -1022,14 +1037,23 @@ class AuditConfig:
     streak_max: int
     judge_err_max_account: str
     streak_max_account: str
+    #: The account of ``period``, optional (CLONE-PATCH item 3). ``period`` is a
+    #: cadence and fires no stop, so a bundle may keep its account beside the
+    #: reading set and pin it there instead; a bundle that states it HERE puts
+    #: it inside ``loop_plan_id``'s config block, which is the difference the
+    #: two placements make and the reason this key exists. It is omitted from
+    #: ``as_dict`` when empty, so a config that does not declare it mints the
+    #: same plan identity it minted before this field existed.
+    period_account: str = ""
 
     _REQUIRED = frozenset({"period", "judge_err_max", "streak_max",
                            "judge_err_max_account", "streak_max_account"})
+    _OPTIONAL = frozenset({"period_account"})
 
     @classmethod
     def from_mapping(cls, raw: Mapping[str, Any]) -> "AuditConfig":
         raw = _mapping(raw, "audit")
-        _keys(raw, "audit", required=cls._REQUIRED, optional=frozenset())
+        _keys(raw, "audit", required=cls._REQUIRED, optional=cls._OPTIONAL)
         return cls(
             period=_whole(raw["period"], "audit.period", low=1, high=99),
             judge_err_max=_fraction(raw["judge_err_max"], "audit.judge_err_max"),
@@ -1037,13 +1061,18 @@ class AuditConfig:
             judge_err_max_account=_text(raw["judge_err_max_account"],
                                         "audit.judge_err_max_account"),
             streak_max_account=_text(raw["streak_max_account"],
-                                     "audit.streak_max_account"))
+                                     "audit.streak_max_account"),
+            period_account=_text(raw["period_account"], "audit.period_account")
+            if "period_account" in raw else "")
 
     def as_dict(self) -> dict[str, Any]:
-        return {"period": self.period, "judge_err_max": self.judge_err_max,
+        body = {"period": self.period, "judge_err_max": self.judge_err_max,
                 "judge_err_max_account": self.judge_err_max_account,
                 "streak_max": self.streak_max,
                 "streak_max_account": self.streak_max_account}
+        if self.period_account:
+            body["period_account"] = self.period_account
+        return body
 
 
 @dataclass(frozen=True)

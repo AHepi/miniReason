@@ -1,16 +1,18 @@
-"""Pins for the W6-DOC operator page, docs/workflows/automated-loop.md.
+"""Pins for the operator page, ``docs/workflows/automated-loop.md``.
 
-The page is a draft: the driver (W5-DRIVER) does not exist in this tree, so
-what can be pinned now is pinned here — byte-identity of the ceiling block,
-completeness of the generated code tables against the modules, the two
-narrowings, the two-credential concurrency fact, and the design markers. What
-cannot be pinned yet is marked on the page ("codes the driver adds are
-appended at integration"; "the driver's actual argv is pinned at
-integration").
+The page is **generated** from the modules and from the driver's own argument
+parser (wave 5); this file is what keeps it true. Every mechanical thing on the
+page is pinned against the source it came from - the ceiling block against the
+bytes of ``data/ceiling_v1.md``, the failure and block tables against
+``types``, the stop vocabulary against ``types.STOP_REASONS``, the argv and the
+state table against ``tools/auto_loop.py`` - so a code or a flag added without
+regenerating the page fails here.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
+import importlib.util
 import sys
 import unittest
 from pathlib import Path
@@ -19,6 +21,17 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "src"))
 
 from minireason.loop import obligations, standard, types  # noqa: E402
+
+if "auto_loop" in sys.modules:
+    auto_loop = sys.modules["auto_loop"]
+else:
+    _spec = importlib.util.spec_from_file_location(
+        "auto_loop", REPO / "tools" / "auto_loop.py")
+    auto_loop = importlib.util.module_from_spec(_spec)
+    # Registered BEFORE exec: ``dataclasses`` resolves a class's own module out
+    # of ``sys.modules`` and a module absent from it breaks every @dataclass.
+    sys.modules["auto_loop"] = auto_loop
+    _spec.loader.exec_module(auto_loop)
 
 PAGE_PATH = REPO / "docs" / "workflows" / "automated-loop.md"
 
@@ -95,7 +108,8 @@ class EveryFailureCodeTheModulesOwnIsOnThePage(unittest.TestCase):
 
     def test_the_failure_table_carries_one_row_per_code(self):
         rows = [line for line in page_lines()
-                if line.startswith("| `") and "minireason/loop/" in line
+                if line.startswith("| `")
+                and ("minireason/loop/" in line or "tools/auto_loop.py" in line)
                 and not line.startswith("| `blocked:")]
         seen = set()
         for row in rows:
@@ -105,19 +119,22 @@ class EveryFailureCodeTheModulesOwnIsOnThePage(unittest.TestCase):
         self.assertEqual(seen, set(types.FAILURE_CODES))
 
     def test_every_table_row_names_a_module_that_owns_the_code(self):
+        # Every module of the package, read off the tree rather than listed:
+        # a wave that adds one must not have to edit this test to be attributed.
         sources = {
-            name: (REPO / "src/minireason/loop" / f"{name}.py").read_text(
-                encoding="utf-8")
-            for name in (
-                "types", "custody", "contracts", "standard", "receipts",
-                "publish", "steps", "surface", "seats", "graph", "obligations",
-                "synthetic", "packs", "roles", "markprep", "decide")
+            path.stem: path.read_text(encoding="utf-8")
+            for path in sorted((REPO / "src/minireason/loop").glob("*.py"))
+            if path.stem != "__init__"
         }
+        sources["auto_loop"] = (REPO / "tools" / "auto_loop.py").read_text(
+            encoding="utf-8")
         for line in page_lines():
             if not line.startswith("| `"):
                 continue
             cells = [cell.strip() for cell in line.split("|")]
-            if len(cells) < 4 or "minireason/loop/" not in cells[2]:
+            if len(cells) < 4:
+                continue
+            if "minireason/loop/" not in cells[2] and "auto_loop.py" not in cells[2]:
                 continue
             code = cells[1].strip("`")
             if code not in types.FAILURE_CODES:
@@ -131,9 +148,15 @@ class EveryFailureCodeTheModulesOwnIsOnThePage(unittest.TestCase):
         self.assertIn("`HTTP_<status>`", text)
         self.assertIn("`HTTP_429`", text)
 
-    def test_the_driver_marker_is_present(self):
-        self.assertIn("codes the driver adds are appended at integration",
-                      page_flat())
+    def test_every_code_the_driver_itself_adds_is_on_the_page(self):
+        flat = page_flat()
+        for code, reason in auto_loop.NEW_CODES.items():
+            with self.subTest(code=code):
+                self.assertIn(f"`{code}`", flat)
+                # and its one-line reason, as the driver writes it
+                self.assertIn(" ".join(reason.split())[:60], flat)
+        self.assertIn("Every code the driver itself adds is in this table",
+                      flat)
 
 
 class EveryBlockCodeTheModulesOwnIsOnThePage(unittest.TestCase):
@@ -171,10 +194,16 @@ class EveryBlockCodeTheModulesOwnIsOnThePage(unittest.TestCase):
 class TheNarrowingsAndConcurrencyFacts(unittest.TestCase):
 
     def _design_clause(self) -> str:
-        text = (REPO / "design/design-s6-claim-ceiling.md").read_text(
-            encoding="utf-8")
-        start = text.index("**Two published instruments were narrowed")
-        clause = text[start:text.index("\n\n", start)]
+        """Design section 6's narrowing clause, read off the FROZEN ceiling.
+
+        The design document is not in this tree and the ceiling is: the clause
+        is one of ``CEILING_REQUIRED_SENTENCES``, so quoting it from the bytes
+        the plan pins is quoting it from the one owner rather than from a copy.
+        """
+
+        flat = " ".join(standard.CEILING_TEXT.split())
+        start = flat.index("**Two published instruments were narrowed")
+        clause = flat[start:flat.index("**What would reopen this:", start)]
         return " ".join(clause.split())
 
     def _sentence(self, start_marker: str, end_marker: str) -> str:
@@ -233,9 +262,27 @@ class TheTemplatesAndMarkers(unittest.TestCase):
         ):
             self.assertIn(line, page())
 
-    def test_the_argv_marker_is_present(self):
-        self.assertIn("the driver's actual argv is pinned at integration",
-                      page_flat())
+    def test_every_subcommand_and_flag_of_the_driver_is_on_the_page(self):
+        parser = auto_loop._parser()
+        sub = [action for action in parser._actions
+               if isinstance(action, argparse._SubParsersAction)][0]
+        flat = page_flat()
+        for name, entry in sub.choices.items():
+            with self.subTest(command=name):
+                self.assertIn(name, flat)
+                for action in entry._actions:
+                    for option in action.option_strings:
+                        if option in ("-h", "--help"):
+                            continue
+                        self.assertIn(option, flat, f"{name} {option}")
+
+    def test_every_state_names_the_function_that_runs_it(self):
+        flat = page_flat()
+        for label, kind, function in auto_loop.STATE_RESPONSIBILITIES:
+            with self.subTest(state=label):
+                self.assertIn(f"| {label} | `{kind}` | `auto_loop.{function}` |",
+                              " ".join(page().split("\n")))
+        self.assertIn("`AUDIT`", flat)
 
     def test_the_resource_boundary_discipline_is_stated(self):
         text = page()

@@ -982,10 +982,19 @@ def _claim(records_dir: Path | str, coordinate: Coordinate) -> Path:
 
     The directory is the claim, and it is made **before** anything could be
     sent, so a process killed mid-call leaves a coordinate that is visibly
-    spent.  A claimed directory with no ``call.json`` is therefore
+    spent.  A claimed directory with no call record is therefore
     ``INDETERMINATE`` in W1-STEPS' sense - a request with no response - and is
-    never re-sent by this module: ``scan_coordinates`` reads it as started, and
-    the resume plan, not a retry, decides what follows.
+    never re-sent by this module: the resume plan, not a retry, decides what
+    follows.
+
+    **Corrected at wave-5 integration (WAVE4-INTERFACE section 8, item 2).**
+    An earlier wording said ``steps.scan_coordinates`` reads this claim as
+    started.  It does not, and cannot: that function reads a
+    ``requests/``-``attempts/``-``responses/`` tree, which is runner v2's
+    dispatch layout, while this one is ``<records_dir>/<key>/<role>/`` with a
+    ``provider`` subdirectory.  The reading arm's list is
+    ``reader.unanswered_coordinates``, which reads *this* layout; W5-DRIVER
+    files both lists side by side at READ and neither stands in for the other.
     """
 
     target = fenced(records_dir, coordinate.slug)

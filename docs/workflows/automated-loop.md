@@ -1,25 +1,26 @@
-# W6-DOC — Operating the automated end-to-end harness loop
+# Operating the automated end-to-end harness loop
 
 This is the operator page for the automated loop of *The automated end-to-end
 harness loop — FINAL design of record*. It states the command, the config, the
 run directory layout, every failure code and block code the loop can emit, the
-pre-registration template, the obligations template, and the claim ceiling
-text verbatim.
+pre-registration template, the obligations template, and the claim ceiling text
+verbatim.
 
-**Status of this page.** The loop modules exist under `src/minireason/loop/`;
-the **driver does not exist yet**. Everything marked *as designed* is quoted
-from the design of record; the driver's actual argv is pinned at integration.
-Every code table on this page is **generated from the modules** and pinned by
-`tests/loop/test_docs_pins.py`; codes the driver adds are appended at integration.
+**How this page is kept true.** Every table below is **generated from the
+modules and from the driver's own argument parser** by the wave-5 integration,
+and `tests/loop/test_docs_pins.py` pins each one against its source: the
+failure table against `types.FAILURE_CODES`, the block table against
+`types.BLOCK_CODES`, the stop vocabulary against `types.STOP_REASONS`, the
+argv against `tools/auto_loop.py`'s own parser, and the ceiling block against
+the bytes of `src/minireason/loop/data/ceiling_v1.md`. A code a later wave adds
+without regenerating this page fails that test file.
 
 A budget stop is a **resource boundary** — an attention-and-spend boundary —
 never a claim that an inquiry ran out of things to say. No record this loop
-mints carries a score, a rank or a meter, and the one token the stop
-vocabulary refuses is named by its refusal in `types.py`.
+mints carries a score, a rank or a meter, and the one token the stop vocabulary
+refuses is named by its refusal in `types.py`.
 
 ## 1. The command
-
-*As designed (design section 4.1/4.2); the driver's actual argv is pinned at integration.*
 
 One command — S0 PREREGISTER through S15 CLOSE as a state machine:
 
@@ -27,23 +28,74 @@ One command — S0 PREREGISTER through S15 CLOSE as a state machine:
 python tools/auto_loop.py run --config <path>
 ```
 
-Subcommands and flags, as designed:
+The subcommands and flags below are generated from the driver's own parser, so
+the page cannot drift from the program:
 
 ```
-tools/auto_loop.py {preregister|preflight|run|status|adjudicate|appeal|reopen|close|dry-run}
-  --config PATH          frozen loop config (required for all but status)
-  --cycles N             override the declared budget DOWNWARD only; upward => BUDGET_RAISED
-  --mode live|offline    offline forces OfflineProvider everywhere
-  --acknowledge KEY --reason TEXT   resume past a sticky halt (itself recorded)
-  --ruling PATH          reopen only
-  --publish-ref REF      default: the branch's upstream
-  --dry-run-out DIR      dry-run only
+python tools/auto_loop.py {preregister|preflight|run|status|adjudicate|appeal|reopen|close|dry-run}
+  --acknowledge   resume past a sticky halt, with --reason; itself recorded   [run]
+  --config        the frozen loop config   [dry-run, preflight, preregister, run]
+  --cycles        override the declared budget DOWNWARD only; upward is BUDGET_RAISED   [preregister, run]
+  --dry-run-out   dry-run only: where the synthetic occurrence is built   [dry-run]
+  --mode          live|offline; a mode outside PROVIDER_MODES is CONFIG_INVALID_VALUE   [preflight, preregister, run]
+  --path          appeal only: the ruling to stage   [appeal]
+  --publish-ref   default: the branch's upstream   [preregister, run]
+  --reason        the text --acknowledge and reopen record   [reopen, run]
+  --ruling        reopen only: a ruling document carrying reopen_reason   [reopen]
+  --run           the run root a read-only or after-the-fact entry is pointed at   [adjudicate, appeal, close, reopen, status]
 ```
 
 `auto_loop dry-run` is the build's acceptance gate: the whole machine walks
-S0→S15 against `OfflineProvider` and a real bare git repository in a temp dir,
-with one induced instance of each failure family named by code on the closing
-receipt, and zero network calls asserted by a provider-module counter.
+S0→S15 against `OfflineProvider` and a real bare git repository in a temp
+directory, with one induced instance of each failure family named by code on
+the closing receipt, and zero network calls asserted by a provider-module
+counter.
+
+### 1.1 The states, and what runs each
+
+| state | step kind | the function that runs it | what it does |
+|---|---|---|---|
+| S0 | `PREREGISTER` | `auto_loop.preregister` | freeze the config, mint `loop_plan_id`, stage the bundle, seal every contrast baseline, open every reading, register and juxtaposition cell |
+| S1 | `PREFLIGHT` | `auto_loop.preflight` | offline: verify every pin, build the seat plan, self-test every reading key's coordinate and the guard-block streak definition, compare the opened register cells with what `markprep.program_marks` will produce, and refuse a planned-call figure past `max_calls` |
+| S2 | `PUBLISH_PLAN` | `auto_loop.run/_publish_plan` | commit + push + verify the plan, and write the VERIFIED line three ways |
+| S3 | `CYCLE_OPEN` | `auto_loop.run/_cycle_open` | the custody check, the budget check, the cycle receipt |
+| S4 | `PREPARE` | `auto_loop.run/_prepare` | runner v2 `prepare_wave` per occurrence and problem, in-process |
+| S5 | `PUBLISH_IN` | `auto_loop.run/_publish_in` | commit + push + verify the prepared wave inputs — before any socket |
+| S6 | `SEND` | `auto_loop.run/_send` | runner v2 `send_round` in-process over one published HEAD; an ended arm is recorded from runner v2's own `arm_stopped` |
+| S7 | `PUBLISH_EV` | `auto_loop.run/_publish_ev` | commit + push + verify the wave's records |
+| S8 | `IMPORT` | `auto_loop.run/_import` | `graph_import_h005.import_occurrence` per occurrence, then the pins verified again |
+| S9 | `USE_TABLE` | `auto_loop.run/_use_table` | `use_relation_h005.build_use_table` and `write_use_table`; every root cell starts empty |
+| S10 | `READ` | `auto_loop.run/_read` | `reader.read_table` over the pre-registered rows, through the real guard |
+| S11 | `MARK` | `auto_loop.run/_mark` | `marker.mark_cell` per contrast cell, against the baseline sealed at S0 |
+| S12 | `ADJUDICATE` | `auto_loop.adjudicate` | render the tables, register the `rendered_files` record, read the situation |
+| S13 | `DECIDE` | `auto_loop.run/_decide` | `decide.decide` — exactly one outcome — and `decision.json` |
+| S14 | `PUBLISH_CY` | `auto_loop.run/_publish_cycle` | commit + push + verify the cycle, `CYCLE.md` included |
+| S15 | `CLOSE` | `auto_loop.close` | `report.render_closing`, the ceiling verbatim, and the closing publication |
+| — | `AUDIT` | `auto_loop._audit` | the section 2.5 audits when the schedule is due, as their own spending step |
+
+Every transition writes exactly one write-once receipt. `PREPARE`,
+`PUBLISH_IN`, `SEND` and `PUBLISH_EV` repeat, once per wave, until runner v2's
+`ready_coordinates` is empty for the cycle; the wave label is read off the
+occurrence's own wave files, so a resumed cycle re-enters at the wave the tree
+is actually at.
+
+### 1.2 The codes the driver itself adds
+
+`tools/auto_loop.py` lives outside `src/minireason/loop/`, so these are folded
+into `types.FAILURE_CODES` by hand and reached only from the driver;
+`tests/loop/test_auto_loop.py` scans the driver's source and asserts each one
+is raised there.
+
+| code | why it exists |
+|---|---|
+| `APPEAL_PATH_INVALID` | appeal() was given no ruling path to stage, or a path that is not a readable appellate ruling document. |
+| `APPEAL_TARGET_INVALID` | an appellate ruling names no registered target: a validity node, the standard, a prior ruling, or a cell:register token. |
+| `BLOCK_STREAK_DEFINITION_MISMATCH` | PREFLIGHT's self-test of the guard-block streak counter did not reproduce the definition config.audit.streak_max_account states, so the account beside the number would be false. |
+| `CALIBRATION_NOT_FOUND` | the run declares an audit schedule and its run root carries no calibration.json, so o5's planted-flaw clause could never be discharged by the program that evaluates it. |
+| `READING_KEY_INADMISSIBLE` | a pre-registered reading-set key folds to a coordinate W2-ROLES refuses, or two keys fold to one coordinate, so a call could not be addressed or two rows would share one records tree. |
+| `READING_ROW_UNRESOLVED` | a pre-registered reading-set key names no row of the use table this cycle built, so the row could be neither read nor honestly reported as read. |
+| `REGISTER_CELLS_DISAGREE` | the register cells opened at PREREGISTER are not the set markprep.program_marks will produce, so a mark would be refused after its calls were spent. |
+| `RUN_NOT_FOUND` | status(), adjudicate(), appeal(), reopen() or close() could not locate a written plan for the run it was pointed at. |
 
 ## 2. The config — `minireason.loop.config.v1`
 
@@ -69,6 +121,32 @@ pin list — prompt templates, `obligations.json`, `CEILING.md`, the standard
 body, each attached study's `PLAN.md` and `material.json`, and W2-DECIDE's own
 `decide.py` pin under `decide.MODULE_PIN_KEY` — is the driver's to supply at
 PREREGISTER.
+
+### 2.1 The pins the driver supplies at S0
+
+Beside the six fixed paths, `plan.json` carries, as this driver writes it: the
+loop sources whose constants the plan leans on (`roles.py` — the declared
+resource conditions are its constants, `decide.py`, `standard.py`,
+`audits.py`), the run's own `obligations.json`, `CEILING.md` and
+`calibration.json`, each occurrence's `plan.json` and `material.json`, each
+attached contrast occurrence's `comparison.json` and `material.json`, and four
+**named** module pins that are constants rather than paths —
+`minireason.loop.standard.STANDARD_BODY_SHA256`,
+`minireason.loop.standard.CEILING_SHA256`,
+`minireason.loop.audits.CALIBRATION_EXCHANGES_SHA256` and
+`minireason.loop.decide.DECIDE_SHA256` — plus the ceiling under its own pin key
+`src/minireason/loop/data/ceiling_v1.md`, which is what the renderers refuse without.
+`plan.json` also carries `calibration_sha256`, the digest of the run's
+`calibration.json`, which every `AuditReport` this run registers writes back so
+that `obligations.audit_in_force` can read it.
+
+**A reading-set key is not a coordinate.** `roles.Coordinate` admits only
+`[A-Za-z0-9][A-Za-z0-9._#-]*` per `/` segment, and a pre-registered key may
+carry `->`. The driver folds each key to an admissible spelling and appends a
+twelve-character digest of the exact key (`auto_loop.cell_key_for`); the
+correspondence is written into `plan.json` under `reading_cells`, PREFLIGHT
+asserts admissibility and injectivity over the declared set, and the plan's own
+spelling stays the `row_key` on every record.
 
 ## 3. The directory layout
 
@@ -101,9 +179,10 @@ with `UNRESOLVED_STEP`. Resume past a sticky halt is
 
 ## 4. Failure codes the loop can emit
 
-Generated from `types.FAILURE_CODES` (201 members, complete for all sixteen
-loop modules after wave 2) with the module that owns each, computed from the
-module sources. **Codes the driver adds are appended at integration.**
+Generated from `types.FAILURE_CODES` (218 members, every
+loop module and the driver folded in) with the module that owns each, computed
+from the sources. Every code the driver itself adds is in this table and in
+section 1.2.
 
 The one parameterised family: `HTTP_<status>` for a three-digit status in
 classes 1–5 (`types.is_failure_code` admits it; `HTTP_429` stays an explicit
@@ -119,26 +198,30 @@ member).
 | `ACTIVITY_RAW_COMMAND_TEXT` | `minireason/loop/receipts.py` |
 | `ACTIVITY_TOOL_MISSING` | `minireason/loop/receipts.py` |
 | `APPEAL_MALFORMED` | `minireason/loop/graph.py` |
+| `APPEAL_PATH_INVALID` | `tools/auto_loop.py` |
+| `APPEAL_TARGET_INVALID` | `tools/auto_loop.py` |
 | `APPEAL_TARGET_UNKNOWN` | `minireason/loop/graph.py` |
 | `ARTIFACT_NOT_DERIVED_FROM_DELIVERY` | `minireason/loop/steps.py` |
 | `AUDIT_KIND_UNKNOWN` | `minireason/loop/graph.py` |
-| `BASELINE_NOT_FIRST` | `minireason/loop/packs.py` |
+| `BASELINE_NOT_FIRST` | `minireason/loop/markprep.py` |
 | `BASELINE_RESEALED` | `minireason/loop/markprep.py` |
 | `BASELINE_SEAL_BROKEN` | `minireason/loop/markprep.py` |
 | `BLOCK_CODE_UNKNOWN` | `minireason/loop/types.py` |
-| `BUDGET_RAISED` | `minireason/loop/types.py` |
+| `BLOCK_STREAK_DEFINITION_MISMATCH` | `tools/auto_loop.py` |
+| `BUDGET_RAISED` | `tools/auto_loop.py` |
 | `CADENCE_BACKDATED` | `minireason/loop/receipts.py` |
 | `CADENCE_THRESHOLDS_INVERTED` | `minireason/loop/receipts.py` |
 | `CADENCE_THRESHOLD_INVALID` | `minireason/loop/receipts.py` |
-| `CEILING_TEXT_MALFORMED` | `minireason/loop/standard.py` |
+| `CALIBRATION_NOT_FOUND` | `tools/auto_loop.py` |
+| `CEILING_TEXT_MALFORMED` | `minireason/loop/report.py` |
 | `CELL_KEY_INVALID` | `minireason/loop/graph.py` |
 | `CELL_NOT_IN_OCCURRENCE` | `minireason/loop/markprep.py` |
 | `CELL_NOT_OPEN` | `minireason/loop/graph.py` |
 | `CHECK_TARGET_UNKNOWN` | `minireason/loop/publish.py` |
 | `COMPARISON_SCHEMA_UNKNOWN` | `minireason/loop/markprep.py` |
-| `CONCURRENCY_LIMIT_CONFLICT` | `minireason/loop/seats.py` |
-| `CONFIG_INVALID_VALUE` | `minireason/loop/seats.py` |
-| `CONFIG_MISSING_KEY` | `minireason/loop/seats.py` |
+| `CONCURRENCY_LIMIT_CONFLICT` | `minireason/loop/roles.py` |
+| `CONFIG_INVALID_VALUE` | `minireason/loop/audits.py` |
+| `CONFIG_MISSING_KEY` | `minireason/loop/audits.py` |
 | `CONFIG_NOT_A_MAPPING` | `minireason/loop/seats.py` |
 | `CONFIG_NOT_FOUND` | `minireason/loop/types.py` |
 | `CONFIG_SCHEMA_UNKNOWN` | `minireason/loop/types.py` |
@@ -168,16 +251,18 @@ member).
 | `GUARD_PARAMETER_MISSING` | `minireason/loop/standard.py` |
 | `GUARD_PARAMETER_UNKNOWN` | `minireason/loop/standard.py` |
 | `HISTORY_REWRITE_REFUSED` | `minireason/loop/publish.py` |
-| `HTTP_429` | `minireason/loop/steps.py` |
+| `HTTP_429` | `minireason/loop/types.py` |
 | `IDENTIFIER_INVALID` | `minireason/loop/graph.py` |
-| `INDETERMINATE` | `minireason/loop/steps.py` |
-| `INPUT_NOT_PUBLISHED` | `minireason/loop/publish.py` |
+| `INDETERMINATE` | `minireason/loop/obligations.py` |
+| `INPUT_NOT_PUBLISHED` | `minireason/loop/steps.py` |
 | `KEY_MISSING` | `minireason/loop/roles.py` |
 | `LEDGER_APPEND_NOT_VERIFIED` | `minireason/loop/receipts.py` |
 | `LEDGER_APPEND_REENTERED` | `minireason/loop/receipts.py` |
 | `LEDGER_EMPTY_PARAGRAPH` | `minireason/loop/receipts.py` |
 | `LEDGER_INCOMPLETE_WRITE` | `minireason/loop/receipts.py` |
 | `LEDGER_NOT_FOUND` | `minireason/loop/receipts.py` |
+| `MARKER_INPUT_MALFORMED` | `minireason/loop/marker.py` |
+| `MARKER_RESIDUE_CONTRADICTED` | `minireason/loop/marker.py` |
 | `MARKPREP_INPUT_MALFORMED` | `minireason/loop/markprep.py` |
 | `MARK_REGISTER_MISSING` | `minireason/loop/graph.py` |
 | `MARK_REGISTER_UNEXPECTED` | `minireason/loop/graph.py` |
@@ -185,7 +270,7 @@ member).
 | `MOMENT_NOT_DATETIME` | `minireason/loop/receipts.py` |
 | `NEW_PREREGISTRATION_REQUIRED` | `minireason/loop/types.py` |
 | `NOT_DISPATCHED` | `minireason/loop/obligations.py` |
-| `NO_REPLAY` | `minireason/loop/synthetic.py` |
+| `NO_REPLAY` | `minireason/loop/roles.py` |
 | `OBLIGATIONS_DIGEST_MISMATCH` | `minireason/loop/obligations.py` |
 | `OBLIGATIONS_FILE_MISSING` | `minireason/loop/obligations.py` |
 | `OBLIGATIONS_MALFORMED` | `minireason/loop/obligations.py` |
@@ -205,13 +290,13 @@ member).
 | `PACK_ADJUDICATION_KEY` | `minireason/loop/packs.py` |
 | `PACK_INPUT_INVALID` | `minireason/loop/packs.py` |
 | `PATH_ESCAPES_RUN_ROOT` | `minireason/loop/custody.py` |
-| `PATH_INVALID` | `minireason/loop/receipts.py` |
+| `PATH_INVALID` | `minireason/loop/types.py` |
 | `PATH_IS_REPO_ROOT` | `minireason/loop/publish.py` |
 | `PATH_MISSING` | `minireason/loop/publish.py` |
 | `PATH_NOT_EXPLICIT` | `minireason/loop/publish.py` |
 | `PATH_NOT_RESOLVABLE` | `minireason/loop/custody.py` |
 | `PATH_OUTSIDE_REPO` | `minireason/loop/publish.py` |
-| `PIN_INVALID` | `minireason/loop/custody.py` |
+| `PIN_INVALID` | `minireason/loop/types.py` |
 | `PIN_MAP_MISSING` | `minireason/loop/custody.py` |
 | `PLAN_ID_MISMATCH` | `minireason/loop/steps.py` |
 | `PLAN_MIRROR_MALFORMED` | `minireason/loop/standard.py` |
@@ -229,6 +314,11 @@ member).
 | `PUBLISH_REF_CHANGED` | `minireason/loop/publish.py` |
 | `PUBLISH_REF_INVALID` | `minireason/loop/publish.py` |
 | `PUBLISH_REF_UNRESOLVED` | `minireason/loop/publish.py` |
+| `READER_OUTCOME_UNKNOWN` | `minireason/loop/reader.py` |
+| `READER_ROW_DUPLICATE` | `minireason/loop/reader.py` |
+| `READER_ROW_INVALID` | `minireason/loop/reader.py` |
+| `READING_KEY_INADMISSIBLE` | `tools/auto_loop.py` |
+| `READING_ROW_UNRESOLVED` | `tools/auto_loop.py` |
 | `READING_TOKEN_UNKNOWN` | `minireason/loop/graph.py` |
 | `READING_TOKEN_UNRESOLVED` | `minireason/loop/graph.py` |
 | `RECEIPT_BODY_AMBIGUOUS` | `minireason/loop/receipts.py` |
@@ -238,6 +328,7 @@ member).
 | `RECEIPT_SUFFIX_MALFORMED` | `minireason/loop/receipts.py` |
 | `RECORD_NOT_SERIALISABLE` | `minireason/loop/custody.py` |
 | `RECORD_WRITE_FAILED` | `minireason/loop/custody.py` |
+| `REGISTER_CELLS_DISAGREE` | `tools/auto_loop.py` |
 | `REGISTER_SET_MISMATCH` | `minireason/loop/standard.py` |
 | `REGISTER_TEXT_EMPTY` | `minireason/loop/standard.py` |
 | `REGISTER_UNKNOWN` | `minireason/loop/markprep.py` |
@@ -262,9 +353,10 @@ member).
 | `ROLE_TOKEN_BUDGET_UNREACHABLE` | `minireason/loop/roles.py` |
 | `ROLE_UNKNOWN` | `minireason/loop/roles.py` |
 | `RUNNER_NOT_IMPORTABLE` | `minireason/loop/seats.py` |
-| `RUNTIME_SOURCE_CHANGED` | `minireason/loop/custody.py` |
+| `RUNTIME_SOURCE_CHANGED` | `minireason/loop/steps.py` |
 | `RUN_ID_INVALID` | `minireason/loop/types.py` |
 | `RUN_LOCKED` | `minireason/loop/steps.py` |
+| `RUN_NOT_FOUND` | `tools/auto_loop.py` |
 | `SCHEMA_INVALID` | `minireason/loop/contracts.py` |
 | `SCORING_KEY_FORBIDDEN` | `minireason/loop/contracts.py` |
 | `SEAT_COUNT_INSUFFICIENT` | `minireason/loop/seats.py` |
@@ -280,7 +372,7 @@ member).
 | `SPEC_ID_MISMATCH` | `minireason/loop/standard.py` |
 | `STANDARD_ARGUMENT_REFUSED` | `minireason/loop/standard.py` |
 | `STANDARD_BODY_MALFORMED` | `minireason/loop/standard.py` |
-| `STANDARD_DATA_MALFORMED` | `minireason/loop/standard.py` |
+| `STANDARD_DATA_MALFORMED` | `minireason/loop/report.py` |
 | `STANDARD_DATA_MISSING` | `minireason/loop/standard.py` |
 | `STANDARD_NOT_REGISTERED` | `minireason/loop/graph.py` |
 | `STANDARD_SCHEMA_MISMATCH` | `minireason/loop/standard.py` |
@@ -303,8 +395,12 @@ member).
 | `TRANSCRIPT_MALFORMED` | `minireason/loop/graph.py` |
 | `TRANSCRIPT_NOT_CONFORMING` | `minireason/loop/graph.py` |
 | `TRANSCRIPT_POINT_NOT_UNIQUE` | `minireason/loop/graph.py` |
-| `TRANSPORT_OR_RESPONSE_ERROR` | `minireason/loop/synthetic.py` |
+| `TRANSPORT_OR_RESPONSE_ERROR` | `minireason/loop/roles.py` |
 | `TRANSPORT_PIN_MISMATCH` | `minireason/loop/steps.py` |
+| `TRIAL_ARGUMENT_INVALID` | `minireason/loop/trial.py` |
+| `TRIAL_MODE_UNEXPECTED` | `minireason/loop/trial.py` |
+| `TRIAL_PRIOR_STATE_UNREADABLE` | `minireason/loop/trial.py` |
+| `TRIAL_SEAT_PLAN_INVALID` | `minireason/loop/trial.py` |
 | `UNEXPECTED_STAGED_FILES` | `minireason/loop/publish.py` |
 | `UNRESOLVED_NOT_IN_VOCABULARY` | `minireason/loop/standard.py` |
 | `UNRESOLVED_STEP` | `minireason/loop/steps.py` |
@@ -320,14 +416,14 @@ one parameterised member `preregistered_condition:<id>`:
 
 | stop reason | what it names |
 |---|---|
-| `all_arms_ended` | guard rail: every arm ended on a provider failure |
+| `all_arms_ended` | guard rail: every declared arm ended on a delivery failure |
 | `custody_halt` | guard rail: a custody failure halted the loop; never worked around |
-| `instrument_fault` | guard rail: the instrument signalled a fault (audits) |
-| `no_new_reading_changes` | clause 4: the cycle changed no reading (set identity) |
+| `instrument_fault` | guard rail: a guard-block streak past `streak_max`, or a calibration error share past `judge_err_max`; it stops the reading arm and spawns audit-the-reader |
+| `no_new_reading_changes` | clause 4: this cycle's `(cell, register, mark)` set is identical to the previous cycle's — a set identity, never a count |
 | `obligations_discharged` | clause 3: every failed obligation of O now holds |
 | `protected_loss` | clause 1: a protected obligation held and no longer does |
-| `resource_boundary` | clause 5: a declared budget — an attention-and-spend boundary, never a claim the inquiry ran out of things to say |
-| `preregistered_condition:<id>` | the declared-condition clause; `types.is_stop_reason` refuses an id carrying the refused stem |
+| `resource_boundary` | clause 5: a declared budget or `max_calls` — an attention-and-spend boundary, never a claim the inquiry ran out of things to say |
+| `preregistered_condition:<id>` | the declared-condition clause, evaluated after clause 5 so it masks nothing; `types.is_stop_reason` refuses an id carrying the refused stem |
 
 ### 4.2 Outcome codes
 
@@ -336,40 +432,47 @@ one parameterised member `preregistered_condition:<id>`:
 
 | outcome code | owning module | what it names |
 |---|---|---|
-| `APPELLATE_RULING_APPLIED` | `minireason/loop/synthetic.py` | an appellate ruling was ingested and pass 1 recomputed under it, so a label moved. W1-SYNTHETIC induces exactly this in the dry run and the closing receipt names it; it is never a refusal and never a block. |
+| `APPELLATE_RULING_APPLIED` | `minireason/loop/synthetic.py` | an appellate ruling was ingested and pass 1 recomputed under it, so a label moved. The driver files it at S3 and the closing record names it; it is never a refusal and never a block. |
 
 ## 5. Block codes the guard can emit
 
 A block registers nothing, leaves the cell unresolved, and is counted by its
 code; a high block rate is the instrument declining to read, never an absence
 of relations. Spelled `blocked:<name>` and built only through
-`types.block_code(reason)`. Generated from `types.BLOCK_CODES` (ten members):
-nine are exactly the reasons the frozen ceiling's block-register clause names
-in its own order (`types.CEILING_BLOCK_REASONS`); `blocked:constitution` is
-the one extra (the G0 channel), reported outside the printed register.
+`types.block_code(reason)`. Generated from `types.BLOCK_CODES` (10
+members): nine are exactly the reasons the frozen ceiling's block-register
+clause names in its own order (`types.CEILING_BLOCK_REASONS`);
+`blocked:constitution` is the one extra (the G0 channel), reported outside the
+printed register.
 
-| block code | owning module(s) | what it names |
+Every row names `types.py` in its middle column, and that is the point
+(REVIEW-PREREG PR-12): **no module writes a `blocked:` prefix in a string
+literal.** `types.BLOCK_CODES` is the one owner of every spelling and
+`types.block_code(reason)` is the one builder; `trial` and `marker` import the
+codes they return. The right-hand column names the guard that returns each.
+
+| block code | where the spelling lives | which guard returns it |
 |---|---|---|
-| `blocked:baseline-forced-same` | `minireason/loop/types.py`, `minireason/loop/standard.py`, `minireason/loop/obligations.py`, `minireason/loop/synthetic.py`, `minireason/loop/markprep.py` | the program wrote `same` over a `differs` the sealed baseline forbids |
-| `blocked:constitution` | `minireason/loop/types.py`, `minireason/loop/standard.py` | the constitution guard declined the coordinate; the one block code the frozen ceiling does not print in its register |
-| `blocked:ensemble-split` | `minireason/loop/types.py`, `minireason/loop/standard.py`, `minireason/loop/synthetic.py` | the judge ensemble did not rule unanimously; the cell stays unresolved |
-| `blocked:operative-target` | `minireason/loop/types.py`, `minireason/loop/standard.py`, `minireason/loop/surface.py` | the citation resolved outside the declared referring record, target record or listed body passage |
-| `blocked:order-swap` | `minireason/loop/types.py`, `minireason/loop/standard.py`, `minireason/loop/packs.py` | the ruling did not survive reading the exchange in both orders |
-| `blocked:outside-vocabulary` | `minireason/loop/types.py`, `minireason/loop/contracts.py`, `minireason/loop/standard.py`, `minireason/loop/receipts.py`, `minireason/loop/obligations.py` | the reading wrote outside the closed six-value vocabulary; the text is preserved and the cell forced unresolved |
-| `blocked:paraphrase-flip` | `minireason/loop/types.py`, `minireason/loop/standard.py`, `minireason/loop/synthetic.py` | the ruling did not survive the pre-registered meaning-preserving paraphrases; no warrant is registered |
-| `blocked:provider` | `minireason/loop/types.py`, `minireason/loop/custody.py`, `minireason/loop/contracts.py`, `minireason/loop/standard.py`, `minireason/loop/receipts.py`, `minireason/loop/publish.py`, `minireason/loop/steps.py`, `minireason/loop/surface.py`, `minireason/loop/seats.py`, `minireason/loop/graph.py`, `minireason/loop/obligations.py`, `minireason/loop/synthetic.py`, `minireason/loop/packs.py`, `minireason/loop/roles.py`, `minireason/loop/markprep.py`, `minireason/loop/decide.py` | delivery ended the arm; no semantic verdict is issued for its coordinates |
-| `blocked:referential-integrity` | `minireason/loop/types.py`, `minireason/loop/standard.py`, `minireason/loop/surface.py`, `minireason/loop/synthetic.py`, `minireason/loop/packs.py` | the cited passage does not re-resolve to a unique offset on its surface |
-| `blocked:schema` | `minireason/loop/types.py`, `minireason/loop/contracts.py`, `minireason/loop/standard.py`, `minireason/loop/receipts.py`, `minireason/loop/steps.py`, `minireason/loop/surface.py`, `minireason/loop/seats.py`, `minireason/loop/graph.py`, `minireason/loop/obligations.py`, `minireason/loop/synthetic.py`, `minireason/loop/packs.py`, `minireason/loop/roles.py`, `minireason/loop/markprep.py`, `minireason/loop/decide.py` | a role's output did not conform to its contract (the sub-reason rides on `contracts.SCHEMA_REASONS`) |
+| `blocked:baseline-forced-same` | `minireason/loop/types.py` | G9: the program wrote `same` over a `differs` whose difference kind the sealed within-ORIGINAL baseline already exhibits |
+| `blocked:constitution` | `minireason/loop/types.py` | G0: the seat constitution declined the coordinate before anything was dispatched; the one block code the frozen ceiling does not print in its register |
+| `blocked:ensemble-split` | `minireason/loop/types.py` | G5: the two judge seats did not agree at the as-declared presentation; both rulings are recorded verbatim and nothing is voted |
+| `blocked:operative-target` | `minireason/loop/types.py` | G3: the citation resolved outside the declared referring record, target record or listed body passage |
+| `blocked:order-swap` | `minireason/loop/types.py` | G6: a seat's ruling did not survive reading the exchange in both presentation orders |
+| `blocked:outside-vocabulary` | `minireason/loop/types.py` | G4/D6: the critic wrote outside the closed six-value vocabulary; the text is preserved verbatim and the cell stays unresolved |
+| `blocked:paraphrase-flip` | `minireason/loop/types.py` | G7: the ruling did not survive the pre-registered meaning-preserving paraphrases; no warrant is registered |
+| `blocked:provider` | `minireason/loop/types.py` | the route did not deliver: the transport's own stable code rides beside it, and a delivery failure mints no warrant |
+| `blocked:referential-integrity` | `minireason/loop/types.py` | G2: the cited passage does not resolve to a unique offset on its surface |
+| `blocked:schema` | `minireason/loop/types.py` | G1: a role's output did not conform to its contract; the sub-reason rides on `contracts.SCHEMA_REASONS` |
 
 ## 6. The two narrowings of published instruments
 
 The run narrows two published instruments to make the reading cells
-machine-fillable, and the narrowing is part of the claim. Quoted from design
-section 6:
+machine-fillable, and the narrowing is part of the claim. Quoted from the frozen
+ceiling's own clause:
 
-> `ROOT_READING_VOCABULARY` is published as a > suggestion that a row may exceed and that root may write outside; this run closes it to > six values and routes anything outside to `unresolved:outside-vocabulary` with the text > preserved.
+> **Two published instruments were narrowed to make these cells machine-fillable, and the narrowing is part of the claim.** `ROOT_READING_VOCABULARY` is published as a suggestion that a row may exceed and that root may write outside; this run closes it to six values and routes anything outside to `unresolved:outside-vocabulary` with the text preserved.
 
-> nd where the published instrument says "the reading is root's", this table > says the reading is a guarded `judge`-role artifact and **root has not read it**. > > **What would reopen this:** an appellate ruling; a successful attack on > `std:reading-rubric/v1` or on a register definition, which collapses every ν citing it > in pass 1; a custody correction; a third judge family; more replicates; a raised budget > under a new `loop_plan_id`.
+> And where the published instrument says "the reading is root's", this table says the reading is a guarded `judge`-role artifact and **root has not read it**.
 
 Both narrowings are in the claim ceiling below and in every rendered table.
 
@@ -498,10 +601,10 @@ not-evaluable is never a failure — FW5 R5):
 
 ## 10. The claim ceiling, verbatim
 
-The text below is **byte-identical to `src/minireason/loop/data/ceiling_v1.md`**
-(`standard.CEILING_TEXT`, `standard.CEILING_SHA256`); the driver freezes it as
-the run's `CEILING.md` at S0, folds its sha256 into `loop_plan_id`, and the
-renderer refuses to emit any table or report without it. Pinned by the test.
+The bytes below are `src/minireason/loop/data/ceiling_v1.md` at sha256
+`1e26be087483fd1b9c8e2c403cfae646fb07ebc773f23434a0c4dfab3ed04c1e`, reproduced byte for byte.
+`report.py` refuses to render any table or record without it, and
+`tests/loop/test_docs_pins.py` asserts this block equals the file.
 
 <!-- CEILING:BEGIN -->
 **What this run claims.** Under registered standard `std:reading-rubric/v1` (digest …), a cross-family judge ensemble unanimously sustained relation *r* for this cell, citing a passage that resolves by program to a unique byte offset [s,e) inside the declared referring record, target record or listed body passage; the ruling survived order-swap and *N* meaning-preserving paraphrases of the exchange; the seats' audit record at ruling time was *A*. The reading is a registered, attackable artifact of `provenance.role = critic` carrying the literal role name `judge`, and it falls automatically if the standard, the evidence, or the seats' reliability is successfully attacked.
@@ -527,5 +630,4 @@ renderer refuses to emit any table or report without it. Pinned by the test.
 **Two published instruments were narrowed to make these cells machine-fillable, and the narrowing is part of the claim.** `ROOT_READING_VOCABULARY` is published as a suggestion that a row may exceed and that root may write outside; this run closes it to six values and routes anything outside to `unresolved:outside-vocabulary` with the text preserved. And where the published instrument says "the reading is root's", this table says the reading is a guarded `judge`-role artifact and **root has not read it**.
 
 **What would reopen this:** an appellate ruling; a successful attack on `std:reading-rubric/v1` or on a register definition, which collapses every ν citing it in pass 1; a custody correction; a third judge family; more replicates; a raised budget under a new `loop_plan_id`.
-
 <!-- CEILING:END -->

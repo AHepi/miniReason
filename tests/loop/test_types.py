@@ -50,6 +50,9 @@ from minireason.loop.types import (  # noqa: E402
 )
 
 PACKAGE = Path(loop_types.__file__).resolve().parent
+#: W5-DRIVER. Outside the package by the wave plan's own path, and folded into
+#: the tables like any module of it (see ``collect``).
+DRIVER_SOURCE = PACKAGE.parents[2] / "tools" / "auto_loop.py"
 
 CONFIG = {
     "schema": CONFIG_SCHEMA,
@@ -449,6 +452,14 @@ class TheCodeTablesAreComplete(unittest.TestCase):
         ("contracts", "ContractError"): 0,
         # W1 modules, folded into the tables by the wave-1 integrator with the
         # argument position each author asked for.
+        # W5-DRIVER (tools/auto_loop.py). ``_fail`` is its own one-line
+        # constructor and ``CustodyMismatch`` is custody's, raised here so that
+        # a custody halt at CYCLE_OPEN or IMPORT carries custody's own code.
+        ("auto_loop", "_fail"): 0,
+        ("auto_loop", "CustodyMismatch"): 0,
+        # PREFLIGHT's local ``refuse``: it writes the refused report before it
+        # returns ``_fail(code, detail)``, so the literal is at ITS call sites.
+        ("auto_loop", "refuse"): 0,
         ("seats", "_fail"): 0,
         ("seats", "SeatsRefused"): 0,
         ("surface", "SurfaceInvalid"): 0,
@@ -518,7 +529,7 @@ class TheCodeTablesAreComplete(unittest.TestCase):
     FOLDED_IN = ("types", "standard", "contracts", "custody", "receipts", "publish",
                  "seats", "surface", "obligations", "graph", "steps", "synthetic",
                  "packs", "roles", "markprep", "decide", "audits", "report",
-                 "trial", "reader", "marker")
+                 "trial", "reader", "marker", "auto_loop")
 
     #: The wave being written now. Its modules' tokens are still checked for
     #: spelling by the scan above; that wave's integrator folds each module's
@@ -631,10 +642,18 @@ class TheCodeTablesAreComplete(unittest.TestCase):
         return tokens
 
     def collect(self) -> dict[str, set[str]]:
-        """Every stable token the package can put on an exception, by module."""
+        """Every stable token the package can put on an exception, by module.
+
+        ``tools/auto_loop.py`` is walked beside the package: W5-DRIVER lives
+        outside ``src/minireason/loop/`` by the wave plan's own path, and a
+        scan that stopped at the package boundary would let the driver's codes
+        into ``FAILURE_CODES`` unreached and unchecked. It is the one file
+        outside the package this scan reads, and it is named here rather than
+        globbed so a second tool cannot join it silently.
+        """
 
         found: dict[str, set[str]] = {}
-        sources = sorted(PACKAGE.rglob("*.py"))
+        sources = sorted(PACKAGE.rglob("*.py")) + [DRIVER_SOURCE]
         self.assertTrue(sources)
         for source in sources:
             found.setdefault(source.stem, set()).update(
@@ -715,7 +734,9 @@ class TheCodeTablesAreComplete(unittest.TestCase):
     def test_every_module_of_the_package_is_folded_in(self):
         """The frontier is empty after wave 1: every module's codes are declared."""
 
-        stems = {path.stem for path in PACKAGE.rglob("*.py")} - {"__init__"}
+        self.assertTrue(DRIVER_SOURCE.is_file(), DRIVER_SOURCE)
+        stems = ({path.stem for path in PACKAGE.rglob("*.py")}
+                 | {DRIVER_SOURCE.stem}) - {"__init__"}
         self.assertEqual(stems - set(self.FOLDED_IN) - set(self.FRONTIER), set(),
                          "a module of the package declares none of its codes; fold its "
                          "NEW_CODES into FAILURE_CODES and add its stem to FOLDED_IN")
