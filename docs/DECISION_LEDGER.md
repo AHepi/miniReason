@@ -1224,3 +1224,5 @@ REC-20260914-B 2026-09-14 00:19:17 UTC: Root checked the fixed material SHA256 2
 REC-20260914-B 2026-09-14 00:21:09 UTC: Implementation draft's first write failed before execution with Windows error206. No helper bytes or H005 calls resulted. Apply the already-recorded command-length workaround as explicit <10000character native write chunks; wait for module-ready before root acceptance. Test draft exists; no passing test claim yet. Prior verified publication: To https://github.com/AHepi/miniReason.git
    d30829a..ca7db9a  HEAD -> main
 VERIFIED ca7db9a3b4ab06999fd2262d5875e3be6d79817e TREE 7d87b80cb3274011779322f11b81b6680eb90237
+
+REC-20260914-B 2026-09-14 00:22:08 UTC: Add the H005 error206 recovery lesson to the existing required failure guide, with explicit sub10000character native write chunks and no acceptance of partial files. This is operational guidance only; no H005 provider call or scientific result yet. Prior verified commit/tree: 1cdbdf3e0fa05980229ac8c87794c68e4ce2dec2 / f3eb47ce4faf49015addd0d45a94b852a9d61186
