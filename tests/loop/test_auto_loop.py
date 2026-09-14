@@ -1088,6 +1088,148 @@ class TheBundleIsStagedBeforeAnythingReadsIt(DriverFixture):
 
 
 # --------------------------------------------------------------------------
+# An occurrence the loop cannot dispatch for (the first live run's finding)
+# --------------------------------------------------------------------------
+
+class AnOccurrenceTheLoopCannotDispatchFor(DriverFixture):
+    """The first live run spun sixty-four waves and said ``STEP_BODY_FAILED``.
+
+    Its occurrence - a **published** H005 study - carries no ``arms.json``, so
+    runner v2 refuses to verify it, and it carries a prepared wave nobody ever
+    sent, so ``pending_wave`` never clears.  Between them: ``_prepare`` skipped
+    the occurrence silently, ``_pending_waves`` stayed non-empty so the loop's
+    early return never fired, ``send_round`` returned its refusal **as data**
+    which the driver digested into a COMPLETE receipt, and the wave label -
+    minted from the wave files on disk - never advanced, so every later
+    iteration re-keyed three steps that were already COMPLETE and skipped them.
+    Four minutes, zero provider calls, and a code that named nothing.
+    """
+
+    OCCURRENCE = "occurrence-01"
+
+    def occurrence(self) -> Path:
+        return self.repo / self.OCCURRENCE
+
+    def leave_a_prepared_wave_unsent(self) -> str:
+        """Prepare one wave through runner v2 and never send it."""
+
+        built = self.runner.prepare_wave(self.repo, self.occurrence(),
+                                         synthetic.PROBLEM_ID, 1)
+        self.assertTrue(built["coordinates"])
+        self.assertIsNotNone(self.runner.pending_wave(self.occurrence()))
+        return str(built["wave_id"])
+
+    # -- what S1 must catch, before anything is published ------------------
+
+    def test_preflight_refuses_an_occurrence_runner_v2_cannot_verify(self):
+        with no_sockets(self.counter):
+            auto_loop.preregister(self.config_path, modules=self.modules())
+            (self.occurrence() / "arms.json").unlink()
+            with self.assertRaises(LoopError) as caught:
+                auto_loop.preflight(self.config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "OCCURRENCE_NOT_DISPATCHABLE")
+        self.assertIn(self.OCCURRENCE, caught.exception.detail)
+        self.assertIn("FileNotFoundError", caught.exception.detail)
+        # And it refused BEFORE the plan was published: no step exists at all.
+        self.assertFalse(self.paths.steps.exists()
+                         and list(self.paths.steps.iterdir()))
+
+    def test_preflight_refuses_an_occurrence_carrying_an_unsent_wave(self):
+        with no_sockets(self.counter):
+            auto_loop.preregister(self.config_path, modules=self.modules())
+            wave_id = self.leave_a_prepared_wave_unsent()
+            with self.assertRaises(LoopError) as caught:
+                auto_loop.preflight(self.config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "OCCURRENCE_NOT_DISPATCHABLE")
+        self.assertIn(wave_id, caught.exception.detail)
+        self.assertIn("no response", caught.exception.detail)
+
+    def test_preflight_names_every_occurrence_it_verified(self):
+        with no_sockets(self.counter):
+            auto_loop.preregister(self.config_path, modules=self.modules())
+            report = auto_loop.preflight(self.config_path, modules=self.modules())
+        check = [row for row in report["checks"]
+                 if row["check"] == "occurrences"][0]
+        self.assertEqual([row["occurrence"] for row in check["occurrences"]],
+                         [self.OCCURRENCE])
+        row = check["occurrences"][0]
+        self.assertTrue(row["verified"])
+        self.assertIsNone(row["pending_wave"])
+        self.assertEqual(row["refusal"], "")
+
+    # -- what the dispatch loop must do when S1 was not run ----------------
+
+    def test_a_delivery_runner_v2_refused_fails_the_send_step_by_code(self):
+        # The row `send_round` returns for an occurrence it could not send is
+        # a refusal expressed as data.  It is produced here for real: the
+        # occurrence's `arms.json` is removed at the moment SEND begins, which
+        # is what `verify` reads, so runner v2's own refusal comes back rather
+        # than one this test wrote.
+        original = self.runner.send_round
+
+        def breaking(repo, outputs, **kwargs):
+            (self.occurrence() / "arms.json").unlink()
+            return original(repo, outputs, **kwargs)
+
+        self.runner.send_round = breaking
+        self.addCleanup(setattr, self.runner, "send_round", original)
+        with no_sockets(self.counter):
+            auto_loop.preregister(self.config_path, modules=self.modules())
+            with self.assertRaises(LoopError) as caught:
+                auto_loop.run(self.config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "OCCURRENCE_NOT_DISPATCHABLE")
+        self.assertIn("FileNotFoundError", caught.exception.detail)
+        rows = [row for row in self.ledger().records()
+                if row.receipt.kind == "SEND"]
+        self.assertEqual(len(rows), 1, "a refused SEND was retried")
+        self.assertEqual(rows[0].receipt.status, "FAILED")
+        self.assertEqual(rows[0].receipt.failure_code,
+                         "OCCURRENCE_NOT_DISPATCHABLE")
+        self.assertIn("delivery_refusals", rows[0].receipt.outputs_sha256)
+
+    def test_a_cycle_that_cannot_drain_refuses_after_two_waves_not_sixty_four(self):
+        # The live shape exactly: a wave pending that nothing can send, so
+        # every iteration would mint one label and skip three COMPLETE steps.
+        with no_sockets(self.counter):
+            auto_loop.preregister(self.config_path, modules=self.modules())
+            self.leave_a_prepared_wave_unsent()
+            (self.occurrence() / "arms.json").unlink()
+            with self.assertRaises(LoopError) as caught:
+                auto_loop.run(self.config_path, modules=self.modules())
+        self.assertEqual(caught.exception.code, "OCCURRENCE_NOT_DISPATCHABLE")
+        kinds = self.kinds()
+        self.assertLessEqual(kinds.count("PREPARE"), 2,
+                             f"the cycle spun: {kinds}")
+        self.assertLess(len(kinds), auto_loop.MAX_WAVES_PER_CYCLE,
+                        "the loop ran the whole wave budget again")
+        self.assertNotIn("STEP_BODY_FAILED",
+                         [row.receipt.failure_code
+                          for row in self.ledger().records()])
+
+    def test_a_skipped_occurrence_says_on_its_receipt_why_it_prepared_nothing(self):
+        with no_sockets(self.counter):
+            auto_loop.preregister(self.config_path, modules=self.modules())
+            self.leave_a_prepared_wave_unsent()
+            (self.occurrence() / "arms.json").unlink()
+            with self.assertRaises(LoopError):
+                auto_loop.run(self.config_path, modules=self.modules())
+        prepare = [row for row in self.ledger().records()
+                   if row.receipt.kind == "PREPARE"][0]
+        self.assertIn("prepared", prepare.receipt.outputs_sha256)
+
+    def test_the_finding_reads_the_same_facts_the_records_carry(self):
+        drv = auto_loop._Driver(self.config(), self.modules(), self.config_path)
+        clean = auto_loop.occurrence_finding(drv, self.occurrence())
+        self.assertTrue(clean["verified"])
+        self.assertEqual(clean["refusal"], "")
+        wave_id = self.leave_a_prepared_wave_unsent()
+        stuck = auto_loop.occurrence_finding(drv, self.occurrence())
+        self.assertEqual(stuck["pending_wave"], wave_id)
+        self.assertGreater(stuck["unsent_coordinates"], 0)
+        self.assertIn(wave_id, stuck["refusal"])
+
+
+# --------------------------------------------------------------------------
 # PREFLIGHT's self-tests (design 4.1 S1; CLONE-PATCH items 1, 2, 5 and 6)
 # --------------------------------------------------------------------------
 
@@ -1101,7 +1243,8 @@ class PreflightSelfTestsWhatTheRunLeansOn(DriverFixture):
         self.assertEqual(self.counter.offline + self.counter.live, 0)
         names = [check["check"] for check in report["checks"]]
         self.assertEqual(names, ["pins", "seats", "reading_cells", "block_streak",
-                                 "register_cells", "calibration", "planned_calls"])
+                                 "register_cells", "occurrences", "calibration",
+                                 "planned_calls"])
 
     def test_the_block_streak_definition_is_asserted_by_self_test(self):
         with no_sockets(self.counter):

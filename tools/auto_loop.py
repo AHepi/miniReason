@@ -197,6 +197,8 @@ NEW_CODES: Mapping[str, str] = MappingProxyType({
         "the register cells opened at PREREGISTER are not the set markprep.program_marks will produce, so a mark would be refused after its calls were spent.",
     "CALIBRATION_NOT_FOUND":
         "the run declares an audit schedule and its run root carries no calibration.json, so o5's planted-flaw clause could never be discharged by the program that evaluates it.",
+    "OCCURRENCE_NOT_DISPATCHABLE":
+        "a declared occurrence cannot be dispatched for: runner v2 refuses to verify it, or it carries a prepared wave the loop cannot drain, so the dispatch chain could never make progress and a cycle would spin instead of stopping.",
 })
 
 #: The fixed text the closing receipt and CYCLE.md print for an arm a delivery
@@ -1289,6 +1291,21 @@ def preflight(config: LoopConfig | str | Path, *,
             f"{len(declared)} were opened at PREREGISTER")
     report["checks"].append({"check": "register_cells", "cells": len(wanted)})
 
+    # Every declared occurrence, verified through runner v2's OWN contract,
+    # before anything is published.  The first live run discovered at S6 - four
+    # minutes and one published plan later - that its occurrence carries no
+    # ``arms.json`` and so cannot be verified at all; S1 is the step that exists
+    # to find that, and it was not asking.
+    dispatchable: list[dict[str, Any]] = []
+    for occurrence in _occurrence_dirs(drv.modules.root(), config.occurrences):
+        finding = occurrence_finding(drv, occurrence)
+        dispatchable.append(finding)
+        if finding["refusal"]:
+            raise refuse("OCCURRENCE_NOT_DISPATCHABLE",
+                         f"{finding['occurrence']}: {finding['refusal']}")
+    report["checks"].append({"check": "occurrences",
+                             "occurrences": dispatchable})
+
     if config.audit.period and not (drv.paths.run_root / _CALIBRATION_NAME).is_file():
         raise refuse("CALIBRATION_NOT_FOUND",
                      f"{drv.paths.run_root / _CALIBRATION_NAME} is absent and "
@@ -1527,6 +1544,52 @@ def _waves_on_disk(drv: _Driver) -> int:
     return total
 
 
+def occurrence_finding(drv: "_Driver", occurrence: Path) -> dict[str, Any]:
+    """What runner v2 says about one declared occurrence, and nothing else.
+
+    Three facts and one refusal sentence, all of them read through runner v2's
+    own entries: whether it **verifies** (``arms.json``, ``material.json`` and
+    the plan it freezes), which wave if any is **pending**, and whether that
+    pending wave is one this loop could ever drain.  A pending wave whose
+    coordinates carry a request and no attempt is a wave a *previous* study
+    prepared and never sent; the loop may not send it - the occurrence is
+    published material and re-entering it would be a replay - and it may not
+    ignore it either, because runner v2 refuses to prepare a second wave while
+    one is pending.  Either way the cycle can never drain, and saying so once
+    is the whole of the repair.
+    """
+
+    runner = runner_v2()
+    row: dict[str, Any] = {"occurrence": drv.rel(occurrence),
+                           "verified": False, "pending_wave": None,
+                           "unsent_coordinates": 0, "refusal": ""}
+    try:
+        runner.verify(drv.modules.root(), occurrence)
+        row["verified"] = True
+    except Exception as exc:  # runner v2's own refusal, whatever shape it takes
+        detail = str(exc) or type(exc).__name__
+        row["refusal"] = (f"runner v2 refuses to verify it "
+                          f"({type(exc).__name__}: {detail})")
+        return row
+    try:
+        wave = runner.pending_wave(occurrence)
+    except Exception as exc:
+        row["refusal"] = f"its wave record is unreadable ({type(exc).__name__})"
+        return row
+    if wave is None:
+        return row
+    row["pending_wave"] = str(wave.get("wave_id"))
+    unsent = [coordinate for coordinate in wave.get("coordinates", ())
+              if not runner.at(occurrence, "responses", coordinate).exists()]
+    row["unsent_coordinates"] = len(unsent)
+    row["refusal"] = (
+        f"it carries the prepared wave {row['pending_wave']} with "
+        f"{len(unsent)} coordinate(s) that have no response; runner v2 refuses "
+        "to prepare a second wave while one is pending, so this cycle can "
+        "never drain")
+    return row
+
+
 def _pending_waves(drv: _Driver) -> list[str]:
     runner = runner_v2()
     pending = []
@@ -1546,15 +1609,37 @@ def _dispatch(drv: _Driver, cycle: int) -> None:
     already keyed.
     """
 
+    seen: tuple[Any, ...] | None = None
     for _ in range(MAX_WAVES_PER_CYCLE):
         wave = f"wave{_waves_on_disk(drv) + 1:04d}"
         _prepare(drv, cycle, wave)
-        if not _pending_waves(drv):
+        pending = _pending_waves(drv)
+        if not pending:
             return
+        # A wave that prepared nothing while one is pending is the ORDINARY
+        # resume: that pending wave is precisely what SEND must now send, at
+        # coordinate grain, skipping what is already terminal.  What can never
+        # be right is arriving here twice in the same state - the same wave
+        # label over the same pending set - because the next iteration would
+        # key the same three steps, skip all three and come back unchanged.
+        # The first live run did that sixty-four times and then reported
+        # STEP_BODY_FAILED, which named nothing and pointed nowhere.
+        state = (wave, tuple(pending))
+        if state == seen:
+            findings = [occurrence_finding(drv, occurrence)
+                        for occurrence in _occurrence_dirs(
+                            drv.modules.root(), drv.config.occurrences)]
+            stuck = [row for row in findings if row["refusal"]]
+            detail = "; ".join(f"{row['occurrence']}: {row['refusal']}"
+                               for row in stuck) or f"pending {list(pending)}"
+            raise _fail("OCCURRENCE_NOT_DISPATCHABLE",
+                        f"cycle {cycle} made no progress in two waves at "
+                        f"{wave}: {detail}")
+        seen = state
         _publish_in(drv, cycle, wave)
         _send(drv, cycle, wave)
         _publish_ev(drv, cycle, wave)
-    raise _fail("STEP_BODY_FAILED",
+    raise _fail("OCCURRENCE_NOT_DISPATCHABLE",
                 f"cycle {cycle} did not drain in {MAX_WAVES_PER_CYCLE} waves")
 
 
@@ -1566,7 +1651,15 @@ def _prepare(drv: _Driver, cycle: int, wave: str) -> None:
         prepared: list[dict[str, Any]] = []
         for occurrence in _occurrence_dirs(drv.modules.root(),
                                            drv.config.occurrences):
-            if runner.pending_wave(occurrence) is not None:
+            waiting = runner.pending_wave(occurrence)
+            if waiting is not None:
+                # Recorded rather than passed over in silence: an occurrence
+                # skipped for a pending wave is the one fact that explains a
+                # wave which prepared nothing.
+                prepared.append({"occurrence": drv.rel(occurrence),
+                                 "problem": None, "wave_id": None,
+                                 "coordinates": 0,
+                                 "skipped": f"pending {waiting.get('wave_id')}"})
                 continue
             for problem in _problem_ids(drv, occurrence):
                 try:
@@ -1636,6 +1729,21 @@ def _send(drv: _Driver, cycle: int, wave: str) -> None:
                                  notify=lambda *_a, **_k: None,
                                  publish_ref=drv.config.publish_ref or None)
         handle.record_output("dispatched", rows)
+        # ``send_round`` catches every exception per occurrence and returns it
+        # as an ``error`` field in that occurrence's row, so a wave that never
+        # sent comes back as data.  Digesting that row and completing the step
+        # is how the first live run recorded a delivery that did not happen as
+        # a step that succeeded.  An arm a PROVIDER ended is a different thing
+        # and stays exactly where it is, below: ``arm_stopped`` says so, the
+        # arm ends and the others run on.
+        refused = {name: row.get("error") for name, row in rows.items()
+                   if isinstance(row, Mapping) and row.get("error")}
+        if refused:
+            handle.record_output("delivery_refusals", refused)
+            raise _fail("OCCURRENCE_NOT_DISPATCHABLE",
+                        "runner v2 sent nothing for " + "; ".join(
+                            f"{drv.rel(Path(name))}: {code}"
+                            for name, code in sorted(refused.items())))
         ended = _record_ended_arms(drv, cycle, occurrences, runner)
         if ended:
             handle.record_output("arm_ended", ended)

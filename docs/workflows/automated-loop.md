@@ -92,6 +92,7 @@ is raised there.
 | `APPEAL_TARGET_INVALID` | an appellate ruling names no registered target: a validity node, the standard, a prior ruling, or a cell:register token. |
 | `BLOCK_STREAK_DEFINITION_MISMATCH` | PREFLIGHT's self-test of the guard-block streak counter did not reproduce the definition config.audit.streak_max_account states, so the account beside the number would be false. |
 | `CALIBRATION_NOT_FOUND` | the run declares an audit schedule and its run root carries no calibration.json, so o5's planted-flaw clause could never be discharged by the program that evaluates it. |
+| `OCCURRENCE_NOT_DISPATCHABLE` | a declared occurrence cannot be dispatched for: runner v2 refuses to verify it, or it carries a prepared wave the loop cannot drain, so the dispatch chain could never make progress and a cycle would spin instead of stopping. |
 | `READING_KEY_INADMISSIBLE` | a pre-registered reading-set key folds to a coordinate W2-ROLES refuses, or two keys fold to one coordinate, so a call could not be addressed or two rows would share one records tree. |
 | `READING_ROW_UNRESOLVED` | a pre-registered reading-set key names no row of the use table this cycle built, so the row could be neither read nor honestly reported as read. |
 | `REGISTER_CELLS_DISAGREE` | the register cells opened at PREREGISTER are not the set markprep.program_marks will produce, so a mark would be refused after its calls were spent. |
@@ -287,6 +288,7 @@ member).
 | `OBLIGATION_IN_BOTH_SETS` | `minireason/loop/obligations.py` |
 | `OBLIGATION_MEMBERSHIP_UNKNOWN` | `minireason/loop/obligations.py` |
 | `OBLIGATION_UNKNOWN` | `minireason/loop/obligations.py` |
+| `OCCURRENCE_NOT_DISPATCHABLE` | `tools/auto_loop.py` |
 | `PACK_ADJUDICATION_KEY` | `minireason/loop/packs.py` |
 | `PACK_INPUT_INVALID` | `minireason/loop/packs.py` |
 | `PATH_ESCAPES_RUN_ROOT` | `minireason/loop/custody.py` |
