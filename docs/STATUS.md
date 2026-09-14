@@ -1,5 +1,47 @@
 # Current research status
 
+## A001 is published as an in-progress record — the Account challenge of FW5 — 2026-09-14
+
+REC-20260914-AB publishes **A001**, the independent Account sufficiency/necessity challenge to the
+designated FW5 reading edition that PURPOSE.md names in parallel with the construction-and-use
+programme ("an independent Account sufficiency or necessity challenge tests FW5 itself"), and that
+session ruling 9(b) recorded as an untested gap. It existed only in an ephemeral scratchpad until
+now.
+
+**What completed.** [The record](reviews/A001-account-challenge-2026-09-14.md) — the revision-4
+staging **verbatim** under a short added header — with its [cell
+register](reviews/A001-account-challenge-2026-09-14-cells.md) and a twelve-file [audit
+trail](reviews/A001-account-challenge-2026-09-14-history/) of three earlier staging revisions, two
+earlier cell registers, three revision-history maps, three adversarial review rounds and the narrow
+verification, all unchanged. The record passed **three adversarial review rounds** (F1–F29,
+F30–F50, F51–F67) and a **narrow verification** returning seven verdicts and "PUBLISHABLE AS
+IN-PROGRESS RECORD: yes"; its **eleven residual open items are carried verbatim as the record's
+final section** so that a later reviewer attacks them first. The FW5 edition hash
+`8105925b…e33ee63a` and all five register pins re-hashed **exact** at publication. **Zero provider
+calls**: every leg is offline and no credential was read.
+
+**What it does not establish.** A001 **does not refute FW5**, offers **no counterexample to
+sufficiency and none to necessity**, and records two authored prose cases as failures — one of them
+disposed only under **(P-Ans)**, a premise A001 supplies and the edition does not, with the
+alternative reading filed as the missing definition **D22**. One reading of one cycle's records
+cannot **decide the constitutive conjecture**. **No cell is filled and no reading is offered**, so
+nothing here is a finding about the bare, native, matched, `mini_prose` or `mini_fcl` arms. The
+"Testing FW5 itself" deliverable — a candidate counterexample and the clause that would have to
+change — **remains owed**. The record's §7 proposes five publication paths; **two are published
+here and the other four are not**, so `docs/reviews/A001-gap-filling-proposals-2026-09-14.md` and
+`experiments/diagnostics/A001-account-challenge/` do not exist and **the executable leg is not
+pre-registered**.
+
+**Next authorized task for A001: attack the eleven open items**, in the record's own order — items
+3–7 (the unrecorded (b6) edit, the X3/X1 witness collision, the missing `not-free` condition in the
+X2/X2b/X1/X1b witnesses, the weak "searched, none exhibited" record, and the three seams in the
+class table) before anything else, since each is a defect in A001's own instrument that the reading
+step would otherwise inherit; then items 8–10 (whether (r3) is the rule A001 wants, the surviving
+"under every λ" phrase at §5(a)(i), and the carried-forward debts including (P-Ans) and the owed
+deliverable). **No re-run and no reading step is authorised**, and **no provider call is authorised
+by anything above**; pre-registering the executable leg, filling any cell, or dispatching anything
+would each be a new decision with its own receipt.
+
 ## The automated loop's waves 0-2 checkpoint was verified and refused — 2026-09-14
 
 REC-20260914-AA set out to make the automated end-to-end harness loop **recoverable work on this
