@@ -35,18 +35,23 @@ from deepreason_core.ontology import Interface
 
 from minireason.graph_import_h005 import (
     COMMITMENT_SURFACE_STATES,
+    EXTENSION_RESIDUE_CODES,
     MULTI_ARM_FRAMING_TAIL,
+    REF_FIELDS,
     RESIDUE_CODES,
+    UNRESOLVED_RESIDUE_CODES,
     Coordinate,
     CustodyError,
     ImportReport,
     MappingError,
     OutRootRefused,
+    ReferenceRecord,
     SelectorMatchedNothing,
     _Importer,
     _Node,
     _Reader,
     import_occurrence,
+    iter_references,
     parse_fcl1_document,
     study_digest,
 )
@@ -1842,6 +1847,127 @@ class CoreDependencyTest(unittest.TestCase):
             self.assertIn("CORE_CLOCK_UNSUPPORTED", str(caught.exception))
         finally:
             library.Harness = original
+
+
+class IterReferencesTest(unittest.TestCase):
+    """``iter_references`` is the import's own resolution step, published.
+
+    The point of the public walk is that two readers of the same documents
+    cannot drift. So the test is not "does it produce plausible numbers" but
+    "is it the same map ``map_records`` builds" - spied through a real import,
+    on the same scope.
+    """
+
+    @staticmethod
+    def resolution_map_from_map_records(**scope):
+        """``(coordinate, record_id, field, ref) -> (owner key, record id)``.
+
+        Built by spying on the resolver during a real ``map_records`` run, so
+        it is whatever the import actually did, not a restatement of it.
+        """
+        importer = _Importer(OCCURRENCE, scope.get("problems"), scope.get("arms"),
+                             scope.get("cycles"))
+        from minireason.graph_import_h005 import verify_custody
+
+        custody = verify_custody(importer.reader, importer.ledger)
+        importer.load_nodes(
+            importer.discover_scope(custody["material"], custody["plan"]), custody["plan"])
+        importer.parse_documents()
+        seen = {}
+        original = _Importer.resolve_ref
+
+        def spy(self, node, ref, record, field_name):
+            owner, record_id = original(self, node, ref, record, field_name)
+            key = (node.coord.key, None if record is None else record.get("id"),
+                   field_name, ref)
+            seen[key] = (None if owner is None else owner.key, record_id)
+            return owner, record_id
+
+        _Importer.resolve_ref = spy
+        try:
+            importer.map_records()
+        finally:
+            _Importer.resolve_ref = original
+        return seen, importer.resolution
+
+    @staticmethod
+    def resolution_map_from_iter_references(**scope):
+        walked = {}
+        records = list(iter_references(OCCURRENCE, **scope))
+        for entry in records:
+            key = (entry.coordinate.key, entry.record_id, entry.field, entry.raw_ref)
+            walked[key] = (
+                None if entry.owner_coordinate is None else entry.owner_coordinate.key,
+                entry.target_record_id,
+            )
+        return walked, records
+
+    def test_the_golden_scope_walk_is_84_refs_82_resolved_2_by_extension(self):
+        _walked, records = self.resolution_map_from_iter_references(**SCOPE)
+        self.assertEqual(len(records), 84)
+        counts = {}
+        for entry in records:
+            counts[entry.resolution] = counts.get(entry.resolution, 0) + 1
+        self.assertEqual(counts, {"resolved": 82, "extension": 2})
+        self.assertEqual(sum(1 for r in records if r.resolution == "unresolved"), 0)
+        self.assertEqual(sum(1 for r in records if r.resolution == "task"), 0)
+        self.assertEqual(
+            sorted(r.residue_code for r in records if r.resolution == "extension"),
+            ["bare_label_ref", "qualified_ref_body_pseudo_local"])
+        for entry in records:
+            self.assertIsInstance(entry, ReferenceRecord)
+            if entry.resolution in {"resolved", "extension"}:
+                self.assertIsNotNone(entry.owner_coordinate)
+            else:
+                self.assertIsNone(entry.owner_coordinate)
+
+    def test_the_walk_equals_the_map_records_resolution_on_the_golden_scope(self):
+        spied, counters = self.resolution_map_from_map_records(**SCOPE)
+        walked, records = self.resolution_map_from_iter_references(**SCOPE)
+        self.assertEqual(walked, spied)
+        self.assertEqual(len(records), counters["refs"])
+        self.assertEqual(
+            sum(1 for r in records if r.resolution in {"resolved", "task"}),
+            counters["resolved"])
+        self.assertEqual(sum(1 for r in records if r.resolution == "extension"),
+                         counters["extensions"])
+        self.assertEqual(sum(1 for r in records if r.resolution == "unresolved"),
+                         counters["dangling"])
+
+    def test_the_walk_equals_the_map_records_resolution_on_the_full_occurrence(self):
+        spied, counters = self.resolution_map_from_map_records()
+        walked, records = self.resolution_map_from_iter_references()
+        self.assertEqual(walked, spied)
+        self.assertEqual(len(records), counters["refs"])
+
+    def test_a_node_with_no_readable_document_is_still_available_in_wave_order(self):
+        # The registration a document-less node gets in map_records (via
+        # _name_artifact) must be reproduced here, or a ref that projects from
+        # such a node is reported as "outside the imported scope" - which is
+        # false, and is the reconstruction PROTOCOL.md forbids.
+        spied, _counters = self.resolution_map_from_map_records(**MATCHED_SCOPE)
+        walked, _records = self.resolution_map_from_iter_references(**MATCHED_SCOPE)
+        self.assertEqual(walked, spied)
+
+    def test_the_published_residue_classification_partitions_the_ref_codes(self):
+        ref_codes = {code for code, meta in RESIDUE_CODES.items() if meta["unit"] == "ref"}
+        self.assertTrue(UNRESOLVED_RESIDUE_CODES <= ref_codes)
+        self.assertTrue(EXTENSION_RESIDUE_CODES <= ref_codes)
+        self.assertFalse(UNRESOLVED_RESIDUE_CODES & EXTENSION_RESIDUE_CODES)
+        self.assertEqual(REF_FIELDS,
+                         ("mentions", "revises", "withdraws", "target", "depends"))
+
+    def test_the_walk_writes_nothing_and_mints_no_artifact_id(self):
+        with tempfile.TemporaryDirectory(prefix="h005-iterrefs-") as directory:
+            occurrence = copy_occurrence(Path(directory) / "occurrence")
+            before = tree_hashes(occurrence)
+            records = list(iter_references(occurrence, **SCOPE))
+            self.assertEqual(tree_hashes(occurrence), before)
+        self.assertEqual(len(records), 84)
+        for entry in records:
+            for _code, reason in entry.notes:
+                self.assertNotIn("use-relation:in-scope", reason)
+
 
 
 if __name__ == "__main__":

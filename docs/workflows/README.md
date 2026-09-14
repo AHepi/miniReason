@@ -13,6 +13,8 @@ Use [continue](continue.md) at session start, [experiment](experiment.md) before
 | Test finishes | Full record and diagnosis | Immediate main commit and verified push |
 | Stop or hand over | Untried mechanisms and outstanding confounds | Honest stopping rationale and reopening conditions |
 | Re-express a finished occurrence in the harness-spec vocabulary | [graph-import-h005](graph-import-h005.md), the occurrence's own artifacts, attempts, receipts and traces | Offline import report, residue table and custody ledger; no label it computes is a semantic attribution |
+| Read what a finished occurrence's authors declared about using one another | [use-relation-h005](use-relation-h005.md), the occurrence's own FCL-1 commitment surfaces, the passages it quotes | Offline juxtaposition table whose four interpretive cells root fills by reading; the instrument classifies nothing, and a lexical overlap is not evidence of use |
+| Call a declared endpoint other than the DeepSeek arm's | [provider-openai-compat](provider-openai-compat.md), `src/minireason/data/endpoints.json` and the credential environment names it declares | Write-once request and response records outside the repository, request bytes hashed before the send, credentials redacted on write; `src/minireason/provider.py` remains the DeepSeek arm's transport and is not touched |
 
 The active original runner has a dedicated [frozen language workflow](language-study.md), including setup ordering, controls, withheld-source limits and publication points.
 

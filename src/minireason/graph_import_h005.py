@@ -41,7 +41,7 @@ import shutil
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Callable, Iterator, Sequence
 
 from jsonschema import Draft202012Validator
 
@@ -135,6 +135,38 @@ RESIDUE_CODES: dict[str, dict[str, str]] = {
     "schema_failure": {"severity": "error", "unit": "document"},
     "dependence_cycle_rejected": {"severity": "error", "unit": "edge"},
 }
+
+#: The ref-valued FCL-1 record fields, in the order the importer walks them
+#: within one record: ``_map_mention_refs`` first (``mentions``, ``revises``,
+#: ``withdraws``, and ``target`` on a non-objection record), then
+#: ``_map_depends_refs``. An objection's ``target`` is walked in pass 2, after
+#: the carrier is registered, and is therefore not in this tuple. Published so
+#: that a second reader of the same documents walks them in the same order
+#: instead of keeping its own copy of an importer-internal ordering.
+REF_FIELDS: tuple[str, ...] = ("mentions", "revises", "withdraws", "target", "depends")
+
+#: Residue codes that mean "this ref resolved to nothing". The severity/unit
+#: metadata in :data:`RESIDUE_CODES` cannot make this distinction on its own -
+#: ``ref_through_unexposed_view`` is also severity ``error`` on unit ``ref``
+#: yet attaches to refs that DID resolve - so the classification is published
+#: here rather than hand-copied by each reader.
+UNRESOLVED_RESIDUE_CODES: frozenset[str] = frozenset({
+    "ref_unresolved",
+    "ref_through_absent_projection",
+    "ref_to_unregistered_target_dropped",
+})
+
+#: Residue codes that mean "this ref resolved, by a declared extension to the
+#: proposition's own rule" (deviations D1 and D2).
+EXTENSION_RESIDUE_CODES: frozenset[str] = frozenset({
+    "qualified_ref_body_pseudo_local",
+    "bare_label_ref",
+})
+
+#: The residue code that means "this ref resolves to the exposed task
+#: artifact", which this import registers as the root Problem rather than as an
+#: artifact: a resolution, to something that is not a contribution.
+TASK_RESIDUE_CODE: str = "ref_to_task_artifact"
 
 #: Every coordinate component the importer turns into a path segment must
 #: match this. Nothing else may ever be joined onto the occurrence root: a
@@ -1149,6 +1181,16 @@ class _Importer:
         self.names: dict[str, str] = {}
         self.planned_events: list[dict[str, Any]] = []
         self.resolution = {"refs": 0, "resolved": 0, "extensions": 0, "dangling": 0, "task": 0}
+        #: How hop 2 decides whether an owning node is available to be resolved
+        #: against. ``None`` keeps the historical behaviour exactly:
+        #: ``bool(owner_node.spec_id)``, i.e. ``map_records`` has already named
+        #: that artifact, which it does for EVERY node in ``self.order``,
+        #: document or not. A caller that registers nothing (see
+        #: :func:`iter_references`) supplies its own predicate instead of
+        #: writing a sentinel into ``_Node.spec_id``, so ``spec_id`` stops
+        #: doubling as a registration proxy and no fabricated artifact id can
+        #: leak into ``residue[*].carrier.spec_artifact_id``.
+        self.is_available: Callable[[_Node], bool] | None = None
         self.events_count = 0
         self.first_ts = ""
         self.last_ts = ""
@@ -1709,7 +1751,11 @@ class _Importer:
             return None, None
         owner = Coordinate.from_dict(source.get("coordinate"))
         owner_node = self.nodes.get(owner)
-        if owner_node is None or not owner_node.spec_id:
+        available = (
+            bool(owner_node.spec_id) if self.is_available is None
+            else self.is_available(owner_node)
+        ) if owner_node is not None else False
+        if not available:
             self._unresolved(
                 node, record, field_name, ref,
                 f"the owning artifact {owner.key} is outside the imported scope or is not "
@@ -3226,6 +3272,165 @@ def _verify_event_log(harness: Harness, importer: _Importer) -> bool:
         if stored.warrants:
             raise MappingError(f"CARRIAGE_WRITTEN_ONTO_ARTIFACT:{stored.id}")
     return monotone
+
+
+# --------------------------------------------------------------------------- #
+# public reference walk                                                         #
+# --------------------------------------------------------------------------- #
+
+
+@dataclass(frozen=True)
+class ReferenceRecord:
+    """One authored FCL-1 ref and what the importer's resolver made of it.
+
+    Every field is a fact about the occurrence bytes or about the resolver's
+    own verdict on them. Nothing here is a graph, an edge, a status or a label:
+    this is the resolution step of :meth:`_Importer.map_records`, published so
+    that a second reader of the same documents cannot drift from it.
+
+    ``resolution`` is one of:
+
+    ``"resolved"``
+        the ref names a record or a contribution that exists in scope;
+        ``owner_coordinate`` is set (``target_record_id`` is set too when the
+        ref named a record rather than a whole contribution).
+    ``"extension"``
+        resolved, but by one of the two declared deviations from the
+        proposition's own rule (``bare_label_ref``, D2, and
+        ``qualified_ref_body_pseudo_local``, D1). ``owner_coordinate`` is set
+        and ``target_record_id`` is ``None``: the ref names the contribution.
+    ``"unresolved"``
+        resolved to nothing and dropped, never invented. ``owner_coordinate``
+        is ``None``.
+    ``"task"``
+        resolves to the exposed task artifact, which this import registers as
+        the root Problem and not as an artifact. ``owner_coordinate`` is
+        ``None`` - there is no owning contribution - and this is a resolution,
+        not a dangling ref.
+
+    ``residue_code`` is the code that decided ``resolution``, or ``None`` when
+    the ref resolved locally with nothing to report. ``notes`` carries every
+    note the resolver attached to this ref, ``(code, reason)``, verbatim - a
+    ref can carry more than one (a ``BODY`` pseudo-local through a
+    ``commitments`` view carries both its extension code and
+    ``ref_through_unexposed_view``).
+    """
+
+    coordinate: Coordinate
+    record_id: str | None
+    record_type: str | None
+    field: str
+    raw_ref: str
+    owner_coordinate: Coordinate | None
+    target_record_id: str | None
+    resolution: str
+    residue_code: str | None
+    notes: tuple[tuple[str, str], ...] = ()
+
+
+def _classify_reference(notes: Sequence[tuple[str, str]]) -> tuple[str, str | None]:
+    """``(resolution, residue_code)`` from the notes one ``resolve_ref`` raised."""
+
+    for code, _reason in notes:
+        if code == TASK_RESIDUE_CODE:
+            return "task", code
+    for code, _reason in notes:
+        if code in UNRESOLVED_RESIDUE_CODES:
+            return "unresolved", code
+    for code, _reason in notes:
+        if code in EXTENSION_RESIDUE_CODES:
+            return "extension", code
+    return "resolved", None
+
+
+def iter_references(
+    occurrence_dir: Path | str,
+    *,
+    problems: Sequence[str] | None = None,
+    arms: Sequence[str] | None = None,
+    cycles: Sequence[int] | None = None,
+) -> Iterator[ReferenceRecord]:
+    """Yield every authored ref in scope, resolved exactly as the import does.
+
+    Custody, scope discovery, node loading, document parsing and reference
+    resolution are the importer's own; nothing is reimplemented and nothing is
+    written. The occurrence is read-only, through the same path-confined,
+    sha256-recording reader :func:`import_occurrence` uses, and this function
+    builds no graph, mints no artifact and computes no label.
+
+    The walk order is ``map_records``' order, and it is load-bearing: hop 2
+    resolves a ref only against an owning node that is **available**, and
+    ``map_records`` makes each node available in wave order, between its own
+    non-objection refs and its objection ``target`` refs. That two-phase split
+    is performed here explicitly - every node becomes available when it is
+    reached, whether or not it has a readable FCL-1 document, which is what
+    ``_name_artifact`` does for every node in ``self.order`` - and it is
+    supplied as :attr:`_Importer.is_available` rather than by writing into
+    ``_Node.spec_id``. A node whose commitment surface was prose or undecodable
+    is therefore reported as what it is (``the owning artifact has no readable
+    FCL-1 document``) instead of as an out-of-scope coordinate.
+
+    Raises the same errors :func:`import_occurrence` raises for the same
+    reasons: :class:`CustodyError`, :class:`SelectorMatchedNothing`,
+    :class:`MappingError`.
+    """
+
+    importer = _Importer(Path(occurrence_dir), problems, arms, cycles)
+    custody = verify_custody(importer.reader, importer.ledger)
+    scope = importer.discover_scope(custody["material"], custody["plan"])
+    importer.load_nodes(scope, custody["plan"])
+    importer.parse_documents()
+
+    available: set[Coordinate] = set()
+    importer.is_available = lambda node: node.coord in available
+
+    def walk(node: _Node, record: dict[str, Any] | None, field_name: str,
+             ref: str) -> ReferenceRecord:
+        before = len(importer.residue)
+        owner, record_id = importer.resolve_ref(node, ref, record, field_name)
+        notes = tuple(
+            (entry["code"], entry["reason"])
+            for entry in importer.residue[before:]
+            if entry.get("ref") == ref and entry.get("field") == field_name
+        )
+        resolution, residue_code = _classify_reference(notes)
+        return ReferenceRecord(
+            coordinate=node.coord,
+            record_id=None if record is None else record.get("id"),
+            record_type=None if record is None else record.get("type"),
+            field=field_name,
+            raw_ref=ref,
+            owner_coordinate=owner,
+            target_record_id=record_id,
+            resolution=resolution,
+            residue_code=residue_code,
+            notes=notes,
+        )
+
+    for coord in importer.order:
+        node = importer.nodes[coord]
+        if node.document is None:
+            # No document, so no authored ref - but the node is in scope and
+            # is registered here in wave order, exactly as _name_artifact
+            # registers it in map_records. A later ref that projects from it
+            # must resolve, and be reported, against that fact.
+            available.add(coord)
+            continue
+        records = node.records
+        for record in records:
+            for field_name in REF_FIELDS:
+                if field_name == "target" and record.get("type") == "objection":
+                    continue
+                for ref in record.get(field_name) or []:
+                    yield walk(node, record, field_name, ref)
+        for ref in list((node.document or {}).get("uptake") or []):
+            yield walk(node, None, "uptake", ref)
+        available.add(coord)
+        for record in records:
+            if record.get("type") != "objection":
+                continue
+            for ref in record.get("target") or []:
+                yield walk(node, record, "target", ref)
 
 
 # --------------------------------------------------------------------------- #
