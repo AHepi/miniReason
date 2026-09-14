@@ -1,0 +1,92 @@
+{
+  "coordinate": {
+    "arm": "mini_fcl",
+    "cycle": 1,
+    "node": "carry",
+    "problem": "daily"
+  },
+  "dependencies": [
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "response",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "account",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "objection",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "rival",
+      "problem": "daily"
+    }
+  ],
+  "messages": [
+    {
+      "content": "Work on the problem using the material actually exposed in this request and your background knowledge. The problem has no supplied answer key or scoring rule. Claims, criticisms and methods are fallible. Do not invent a source, an observation, an earlier event, or a dependency to fill a field. A missing view says what you can currently see; it does not establish what happened earlier. Return a JSON object with exactly two independently authored string fields: body and commitments. Body is your public prose contribution. Commitments says what taking your contribution up would involve. An empty commitment surface is allowed when none can be identified. Do not repeat the body wholesale into commitments.\n\nUse FCL-1 for the commitment surface, encoded as a JSON document inside the commitments string: {\"language\":\"FCL-1\",\"records\":[...],\"uptake\":[...]}. Each record has unique local id, type (claim|commitment|objection|use|problem), and text (unrestricted prose). Optional prose fields: scope, action, consequence, grounds, bearing. Optional arrays of references: target, depends, mentions, revises, withdraws. References are local IDs or exposed-artifact-label#local-ID; do not invent hidden IDs. A commitment proposes a scoped use, action, application or consequence; an objection alleges a defect whose bearing can itself be criticized; a use proposes an uptake or response; a problem states an unresolved question. depends asserts reliance; mentions only locates material. uptake lists the records you currently propose to use, not certified truths. No record type or optional field must be present. Empty records and uptake are allowed. Express uncertainty or an unrepresentable relation in prose rather than inventing a relation. The body remains unrestricted prose.\n\nReturn one JSON object with exactly two string fields: \"body\" and \"commitments\". Write the actual commitments separately; do not copy the body into that field as a storage shortcut.",
+      "role": "system"
+    },
+    {
+      "content": "# carry\n\nProduce the present account and commitment interface for the next complete template invocation. The material may support a revision, an unresolved problem, or retaining something. Preserve the grounds needed for whatever uptake you propose.\n\n## Original problem (task)\n[d31d61f36df18c74] (h005.task.v1)\nI share a flat with two friends. We keep arguing about ordinary household chores. Sometimes we agree on who will do something, but later we disagree about what the agreement meant. Our work schedules change, and one friend has started avoiding the conversations. What should I do?\n\n## Selected input response (p.carry.0)\n[9d6fd771b92bfed9] (h005.fork5.p.carry.0)\nSource response: daily/mini_fcl/cycle-1/response; selected view: both\nArtifact: b926df2969b3958efe676cfc93bf747f14dcbf0de19a1ccbf593efe8bf660781\nOriginal body SHA256: db9b29d262b18c947e1cd97391d8c4e04723734078bb3644756689b0d3d9dcde\nOriginal commitments SHA256: 28f78f0a47efce6c5bffd8a94ea64890708619c7eff955d24bd077413af8a4ca\nDelivery: COMPLETE; envelope: AUTHORED\nBODY\nThe inquiry reveals that household conflict stems from two layers of ambiguity: procedural (who does what) and semantic (what counts as done). The original account correctly identifies verbal ambiguity but underestimates the maintenance burden of static systems in dynamic schedules. The objection rightly notes that without defined ownership, tracking systems become new sources of friction. The rival adds a critical dimension: mismatched standards. A solution must address standards before tracking. Re-engaging the avoiding friend should focus on aligning expectations ('what does clean look like to you?') rather than system design, which reduces perceived labor. I propose adopting a hybrid approach: define finished states first, then select a low-maintenance tracking tool with explicit rotation for updates.\nCOMMITMENTS\n{\"language\":\"FCL-1\",\"records\":[{\"id\":\"syn-001\",\"type\":\"claim\",\"text\":\"Conflict arises from both procedural ambiguity and mismatched standards.\",\"depends\":[\"h005.fork5.p.response.0#loc-001\",\"h005.fork5.p.response.2#r1\"]},{\"id\":\"syn-002\",\"type\":\"objection\",\"text\":\"Static tracking systems introduce maintenance burdens if ownership is undefined.\",\"depends\":[\"h005.fork5.p.response.1#crit-001\",\"h005.fork5.p.response.1#crit-003\"]},{\"id\":\"syn-003\",\"type\":\"commitment\",\"text\":\"Define finished states for chores before assigning tasks.\",\"action\":\"negotiate-standards\",\"depends\":[\"h005.fork5.p.response.2#r3\"]},{\"id\":\"syn-004\",\"type\":\"commitment\",\"text\":\"Assign or rotate responsibility for updating the tracking system.\",\"action\":\"assign-maintenance\",\"depends\":[\"h005.fork5.p.response.1#crit-003\"]},{\"id\":\"syn-005\",\"type\":\"use\",\"text\":\"Frame re-engagement as aligning expectations rather than designing tools.\",\"bearing\":\"re-engagement\",\"depends\":[\"h005.fork5.p.response.0#loc-004\",\"h005.fork5.p.response.2#r4\"]}],\"uptake\":[\"syn-001\",\"syn-002\",\"syn-003\",\"syn-004\",\"syn-005\"]}\n\n## Selected input account (p.carry.1)\n[2a6913bd406f3252] (h005.fork5.p.carry.1)\nSource account: daily/mini_fcl/cycle-1/account; selected view: commitments\nArtifact: a1433eaa96790cf638ef36cbfe8f532da2ab32eaacec154e2c4ae5f335c71540\nOriginal body SHA256: 6ff421b85cd28b710f310cc83e1190040aed277195b31b2ef15d68d8ff91b62f\nOriginal commitments SHA256: 05f5b50464ada3996429ed2149ef66de7b98e12c6f7d9718384f1088a9f6eb4d\nDelivery: COMPLETE; envelope: AUTHORED\nCOMMITMENTS\n{\"language\":\"FCL-1\",\"records\":[{\"id\":\"loc-001\",\"type\":\"claim\",\"text\":\"Ambiguity in verbal agreements drives the conflict.\",\"depends\":[\"h005.task.v1#aceac4253907a8e6\"]},{\"id\":\"loc-002\",\"type\":\"problem\",\"text\":\"How to frame the invitation to the avoiding friend.\"},{\"id\":\"loc-003\",\"type\":\"commitment\",\"text\":\"Adopt a visible tracking system.\",\"action\":\"implement-system\"},{\"id\":\"loc-004\",\"type\":\"use\",\"text\":\"Frame the meeting as system design.\",\"bearing\":\"re-engagement\"}],\"uptake\":[\"h005.task.v1#aceac4253907a8e6\"]}\n\n## Selected input objection (p.carry.2)\n[281a8dae471e2e00] (h005.fork5.p.carry.2)\nSource objection: daily/mini_fcl/cycle-1/objection; selected view: commitments\nArtifact: 810a5fbdf06797ffda8b882bb603886630f4a760da6e0c218fccbadac344b041\nOriginal body SHA256: 39a74ef6c6381e4783cbc1ac5b0cc79ce05c641d961f7b3859c8df997a43ba2f\nOriginal commitments SHA256: d47a12f711a88b0dd84923fde0496c717a2cd055fa91f006b48cb8b34f4da8f9\nDelivery: COMPLETE; envelope: AUTHORED\nCOMMITMENTS\n{\"language\":\"FCL-1\",\"records\":[{\"id\":\"crit-001\",\"type\":\"objection\",\"text\":\"Static tracking systems conflict with dynamic schedule requirements.\",\"target\":[\"h005.fork5.p.objection.0#loc-003\"],\"grounds\":\"Maintenance requires negotiation.\"},{\"id\":\"crit-002\",\"type\":\"objection\",\"text\":\"Design invitations may increase perceived labor for avoiding individuals.\",\"target\":[\"h005.fork5.p.objection.0#loc-004\"],\"grounds\":\"Avoidance may signal overwhelm.\"},{\"id\":\"crit-003\",\"type\":\"problem\",\"text\":\"Ownership of system maintenance remains undefined.\",\"bearing\":\"implementation-risk\"}],\"uptake\":[\"h005.task.v1#aceac4253907a8e6\"]}\n\n## Selected input origin (p.carry.3)\n[7c368d2c806fb1a0] (h005.fork5.p.carry.3)\nSource origin: absent in the first template invocation; selected view both.\n\n## What to return\nA JSON object carrying \"body\" and \"commitments\". Both are strings and nothing else is required.",
+      "role": "user"
+    }
+  ],
+  "messages_sha256": "a793e12b249f035e5bfbe0efba240282ee4ed65355d91ce8b4a565d5d6c90ae8",
+  "paired_template_id": "fork5",
+  "plan_id": "52d7b596c10fcc194dc326d6a47addecda93eb604baf1ce1dbc4e594e8bdeba4",
+  "provider_payload": {
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "content": "Work on the problem using the material actually exposed in this request and your background knowledge. The problem has no supplied answer key or scoring rule. Claims, criticisms and methods are fallible. Do not invent a source, an observation, an earlier event, or a dependency to fill a field. A missing view says what you can currently see; it does not establish what happened earlier. Return a JSON object with exactly two independently authored string fields: body and commitments. Body is your public prose contribution. Commitments says what taking your contribution up would involve. An empty commitment surface is allowed when none can be identified. Do not repeat the body wholesale into commitments.\n\nUse FCL-1 for the commitment surface, encoded as a JSON document inside the commitments string: {\"language\":\"FCL-1\",\"records\":[...],\"uptake\":[...]}. Each record has unique local id, type (claim|commitment|objection|use|problem), and text (unrestricted prose). Optional prose fields: scope, action, consequence, grounds, bearing. Optional arrays of references: target, depends, mentions, revises, withdraws. References are local IDs or exposed-artifact-label#local-ID; do not invent hidden IDs. A commitment proposes a scoped use, action, application or consequence; an objection alleges a defect whose bearing can itself be criticized; a use proposes an uptake or response; a problem states an unresolved question. depends asserts reliance; mentions only locates material. uptake lists the records you currently propose to use, not certified truths. No record type or optional field must be present. Empty records and uptake are allowed. Express uncertainty or an unrepresentable relation in prose rather than inventing a relation. The body remains unrestricted prose.\n\nReturn one JSON object with exactly two string fields: \"body\" and \"commitments\". Write the actual commitments separately; do not copy the body into that field as a storage shortcut.",
+        "role": "system"
+      },
+      {
+        "content": "# carry\n\nProduce the present account and commitment interface for the next complete template invocation. The material may support a revision, an unresolved problem, or retaining something. Preserve the grounds needed for whatever uptake you propose.\n\n## Original problem (task)\n[d31d61f36df18c74] (h005.task.v1)\nI share a flat with two friends. We keep arguing about ordinary household chores. Sometimes we agree on who will do something, but later we disagree about what the agreement meant. Our work schedules change, and one friend has started avoiding the conversations. What should I do?\n\n## Selected input response (p.carry.0)\n[9d6fd771b92bfed9] (h005.fork5.p.carry.0)\nSource response: daily/mini_fcl/cycle-1/response; selected view: both\nArtifact: b926df2969b3958efe676cfc93bf747f14dcbf0de19a1ccbf593efe8bf660781\nOriginal body SHA256: db9b29d262b18c947e1cd97391d8c4e04723734078bb3644756689b0d3d9dcde\nOriginal commitments SHA256: 28f78f0a47efce6c5bffd8a94ea64890708619c7eff955d24bd077413af8a4ca\nDelivery: COMPLETE; envelope: AUTHORED\nBODY\nThe inquiry reveals that household conflict stems from two layers of ambiguity: procedural (who does what) and semantic (what counts as done). The original account correctly identifies verbal ambiguity but underestimates the maintenance burden of static systems in dynamic schedules. The objection rightly notes that without defined ownership, tracking systems become new sources of friction. The rival adds a critical dimension: mismatched standards. A solution must address standards before tracking. Re-engaging the avoiding friend should focus on aligning expectations ('what does clean look like to you?') rather than system design, which reduces perceived labor. I propose adopting a hybrid approach: define finished states first, then select a low-maintenance tracking tool with explicit rotation for updates.\nCOMMITMENTS\n{\"language\":\"FCL-1\",\"records\":[{\"id\":\"syn-001\",\"type\":\"claim\",\"text\":\"Conflict arises from both procedural ambiguity and mismatched standards.\",\"depends\":[\"h005.fork5.p.response.0#loc-001\",\"h005.fork5.p.response.2#r1\"]},{\"id\":\"syn-002\",\"type\":\"objection\",\"text\":\"Static tracking systems introduce maintenance burdens if ownership is undefined.\",\"depends\":[\"h005.fork5.p.response.1#crit-001\",\"h005.fork5.p.response.1#crit-003\"]},{\"id\":\"syn-003\",\"type\":\"commitment\",\"text\":\"Define finished states for chores before assigning tasks.\",\"action\":\"negotiate-standards\",\"depends\":[\"h005.fork5.p.response.2#r3\"]},{\"id\":\"syn-004\",\"type\":\"commitment\",\"text\":\"Assign or rotate responsibility for updating the tracking system.\",\"action\":\"assign-maintenance\",\"depends\":[\"h005.fork5.p.response.1#crit-003\"]},{\"id\":\"syn-005\",\"type\":\"use\",\"text\":\"Frame re-engagement as aligning expectations rather than designing tools.\",\"bearing\":\"re-engagement\",\"depends\":[\"h005.fork5.p.response.0#loc-004\",\"h005.fork5.p.response.2#r4\"]}],\"uptake\":[\"syn-001\",\"syn-002\",\"syn-003\",\"syn-004\",\"syn-005\"]}\n\n## Selected input account (p.carry.1)\n[2a6913bd406f3252] (h005.fork5.p.carry.1)\nSource account: daily/mini_fcl/cycle-1/account; selected view: commitments\nArtifact: a1433eaa96790cf638ef36cbfe8f532da2ab32eaacec154e2c4ae5f335c71540\nOriginal body SHA256: 6ff421b85cd28b710f310cc83e1190040aed277195b31b2ef15d68d8ff91b62f\nOriginal commitments SHA256: 05f5b50464ada3996429ed2149ef66de7b98e12c6f7d9718384f1088a9f6eb4d\nDelivery: COMPLETE; envelope: AUTHORED\nCOMMITMENTS\n{\"language\":\"FCL-1\",\"records\":[{\"id\":\"loc-001\",\"type\":\"claim\",\"text\":\"Ambiguity in verbal agreements drives the conflict.\",\"depends\":[\"h005.task.v1#aceac4253907a8e6\"]},{\"id\":\"loc-002\",\"type\":\"problem\",\"text\":\"How to frame the invitation to the avoiding friend.\"},{\"id\":\"loc-003\",\"type\":\"commitment\",\"text\":\"Adopt a visible tracking system.\",\"action\":\"implement-system\"},{\"id\":\"loc-004\",\"type\":\"use\",\"text\":\"Frame the meeting as system design.\",\"bearing\":\"re-engagement\"}],\"uptake\":[\"h005.task.v1#aceac4253907a8e6\"]}\n\n## Selected input objection (p.carry.2)\n[281a8dae471e2e00] (h005.fork5.p.carry.2)\nSource objection: daily/mini_fcl/cycle-1/objection; selected view: commitments\nArtifact: 810a5fbdf06797ffda8b882bb603886630f4a760da6e0c218fccbadac344b041\nOriginal body SHA256: 39a74ef6c6381e4783cbc1ac5b0cc79ce05c641d961f7b3859c8df997a43ba2f\nOriginal commitments SHA256: d47a12f711a88b0dd84923fde0496c717a2cd055fa91f006b48cb8b34f4da8f9\nDelivery: COMPLETE; envelope: AUTHORED\nCOMMITMENTS\n{\"language\":\"FCL-1\",\"records\":[{\"id\":\"crit-001\",\"type\":\"objection\",\"text\":\"Static tracking systems conflict with dynamic schedule requirements.\",\"target\":[\"h005.fork5.p.objection.0#loc-003\"],\"grounds\":\"Maintenance requires negotiation.\"},{\"id\":\"crit-002\",\"type\":\"objection\",\"text\":\"Design invitations may increase perceived labor for avoiding individuals.\",\"target\":[\"h005.fork5.p.objection.0#loc-004\"],\"grounds\":\"Avoidance may signal overwhelm.\"},{\"id\":\"crit-003\",\"type\":\"problem\",\"text\":\"Ownership of system maintenance remains undefined.\",\"bearing\":\"implementation-risk\"}],\"uptake\":[\"h005.task.v1#aceac4253907a8e6\"]}\n\n## Selected input origin (p.carry.3)\n[7c368d2c806fb1a0] (h005.fork5.p.carry.3)\nSource origin: absent in the first template invocation; selected view both.\n\n## What to return\nA JSON object carrying \"body\" and \"commitments\". Both are strings and nothing else is required.",
+        "role": "user"
+      }
+    ],
+    "model": "qwen3.5:397b",
+    "response_format": {
+      "type": "json_object"
+    },
+    "seed": 7,
+    "stream": false
+  },
+  "schema": "minireason.h005.request.v1",
+  "settings": {
+    "base_url": "https://ollama.com/v1",
+    "chat_path": "/chat/completions",
+    "endpoint_name": "ollama/qwen3.5-397b",
+    "extra": {},
+    "family": "ollama-cloud/qwen",
+    "key_env": "OLLAMA_API_KEY",
+    "kind": "openai-compat-chat",
+    "max_concurrency": 5,
+    "max_tokens": 8192,
+    "model": "qwen3.5:397b",
+    "native": false,
+    "native_reasoning_text_persisted": false,
+    "reasoning_effort": null,
+    "response_format": {
+      "type": "json_object"
+    },
+    "retries": 0,
+    "seed": 7,
+    "temperature": null,
+    "thinking": null,
+    "timeout_seconds": 180
+  },
+  "template_id": "fork5",
+  "trace_sha256": "f14f9cf808209fdf90008149a7a879657919d6c06326bc3e91126204a9127b80"
+}
