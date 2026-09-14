@@ -86,3 +86,5 @@ It **authorises no provider call**. It **registers nothing**, **pins nothing**, 
 anything here, and no number in these files is evidence about the bare, native, matched,
 `mini_prose` or `mini_fcl` arms. The next authorised work on this bundle is the revision
 against `REVIEW-PREREG.md`, which is a decision with its own receipt.
+
+**Superseded as a draft by `v2/`, 2026-09-14.** `REC-20260914-AE` publishes the revision of this bundle at [`v2/`](v2/README.md) — thirteen blockers closed, four new files, and the same standing: a DRAFT, not a pre-registration. **Nothing in this directory is edited by that publication**, and its stale pins above are left standing as the record of what was superseded.

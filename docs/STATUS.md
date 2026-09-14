@@ -1,5 +1,61 @@
 # Current research status
 
+## The automated loop's waves 3-4 are published as a recoverable checkpoint — 2026-09-14
+
+REC-20260914-AE publishes the **trial runner, the audits, the report renderer, the cross-family
+reader and the pairwise marker**, the two integrator interface documents that record them, the
+**revised pre-registration bundle** as a labelled DRAFT, and the **W6-DOC operator-page draft**.
+All of it existed only in an ephemeral session scratchpad until now.
+
+**What completed.** `src/minireason/loop/` carries **twenty-one modules** plus `__init__.py` and
+`data/`, and `tests/loop/` twenty-two files. The five new modules —
+[`trial.py`](../src/minireason/loop/trial.py), [`audits.py`](../src/minireason/loop/audits.py),
+[`report.py`](../src/minireason/loop/report.py) (wave 3),
+[`reader.py`](../src/minireason/loop/reader.py), [`marker.py`](../src/minireason/loop/marker.py)
+(wave 4) — were **drafted by Kimi K3 under ruling 16 and integrated by Opus 5**, and the
+kept-versus-rewritten record, with the reason for each and a "Declined" section, is
+[`WAVE3-INTERFACE.md`](design/loop-impl/WAVE3-INTERFACE.md) §6 and
+[`WAVE4-INTERFACE.md`](design/loop-impl/WAVE4-INTERFACE.md) §5. Not one Kimi draft was known to be
+green when it was handed over — two runs hit the 90-iteration cap and two were cut by the ruling-13
+gateway close — and both documents print the delivered `FAILED` lines beside the integrated `OK`
+lines. `types.FAILURE_CODES` now carries **210** members (five folded in at each wave);
+`types.BLOCK_CODES` is unmoved at ten. Gate: `PYTHONPATH=src python3 -X utf8 -m unittest discover -s
+tests` reports **`Ran 2989 tests in 236.810s`, `OK (skipped=2)`** — the 2,673 already on record plus
+the loop's 316 new tests, and the arithmetic is exact. The revised bundle is
+[`docs/design/loop-prereg-draft-2026-09-14/v2/`](design/loop-prereg-draft-2026-09-14/v2/README.md):
+thirteen blockers closed, four new files (`CHANGES-PREREG.md`, `CLONE-PATCH.md` and the
+`bundle-worksheet` pair), and `PYTHONPATH=src python3 …/v2/validate.py` from the repository root
+reports **48 `PASS` lines and `ALL CHECKS PASSED`** against the modules as published. The v1
+directory's bytes are **unedited**; one appended line points at v2. Credential scan over the 36 staged
+paths and over all 81 files under the published directories: **zero key-shaped matches**,
+line numbers only. **Zero provider calls under this receipt and no
+credential read.**
+
+**What this does not establish.** The loop has **still never been run**: `W5-DRIVER` and
+`W6-DRYRUN` are unbuilt, no cycle has executed and **no plan has been minted at any commit on any
+ref**, so every number above is a test result and not a run result. The bundle is a **DRAFT** —
+`CLONE-PATCH.md`'s **six items are all owed by the driver integration**, two of them required
+(something must read `calibration.json` and pin its digest; `plan.json` must pin
+`audits.CALIBRATION_EXCHANGES_SHA256`), and every pin in it is **to be re-read at S0 PREFLIGHT**
+after the loop package freezes. The operator page is published at
+[`docs/design/loop-impl/W6-DOC-draft/`](design/loop-impl/W6-DOC-draft/automated-loop.md) and **not**
+at `docs/workflows/`, because it is not integrated: its failure-code table was generated at 201 rows
+against the module's 210, its driver argv is a placeholder, and its `test_docs_pins.py` travels with
+it under `docs/` where the suite does not discover it. The cold-cache `-W error` defect in
+`src/minireason/use_relation_h005.py:301` is **re-checked and not repaired** — on a truly cold
+bytecode cache 7 of the 22 import targets pass and 15 fail, up from 10 because the five new modules
+reach the same import chain; the repair stays with `SRC-003`.
+
+**Next authorized task, in order.** **(1) `W5-DRIVER` integration applying `CLONE-PATCH.md`** — the
+state machine S0…S15, the two required clone-side items, and the four declared gaps taken or
+declined explicitly, including the per-role guard-block streak counter PREFLIGHT must assert.
+**(2) `W6-DRYRUN`**, with `W6-DOC` integrated to `docs/workflows/` and its code tables regenerated
+against the modules then. **(3) Kimi pin recomputation** — every digest in the bundle re-derived
+from the frozen tree, as a mechanical task under ruling 16 with Opus verifying. **(4) A dry run with
+zero provider calls**, whose acceptance gate is the design's, **before any live run is proposed**.
+Each is a new decision with its own receipt, and no provider call is authorised by any of them until
+the dry run has passed.
+
 ## The Kimi K3 subagent workstream is published as a recoverable checkpoint — 2026-09-14
 
 REC-20260914-AC publishes the **Kimi K3 worker harness, its battery, its run records, its fifteen

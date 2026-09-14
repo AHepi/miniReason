@@ -187,6 +187,8 @@ __all__ = [
     "open_cells",
     "open_graph",
     "produced",
+    "reading_bodies",
+    "reading_transcript",
     "register_audit_warrant",
     "register_kappa_read",
     "register_mark",
@@ -195,6 +197,7 @@ __all__ = [
     "register_standard",
     "register_transcript",
     "resolve_graph_root",
+    "seats_on_record",
     "split_validity_nodes",
     "validity_nodes_for_seat",
 ]
@@ -1247,6 +1250,72 @@ def validity_nodes_for_seat(harness: Harness, seat: str) -> tuple[str, ...]:
     return tuple(
         artifact_id for artifact_id, body in _bodies(harness, VALIDITY_SCHEMA)
         if body.get("aspect") == "soundness" and body.get("seat") == seat)
+
+
+def seats_on_record(harness: Harness) -> tuple[str, ...]:
+    """Every judge seat carrying a ``ν_soundness`` here, in registration order.
+
+    The dual of :func:`validity_nodes_for_seat`, and the only place the panel an
+    audit is auditing can honestly be read from.  W3-AUDITS needs the seats that
+    actually carry readings: a seat spelling the auditor invents (``judge-1`` for
+    a seat recorded as ``judge#1``) attaches every warrant it mints to an empty
+    window, which is a hit that collapses nothing while reading as a hit.
+    """
+    seen: list[str] = []
+    for _artifact_id, body in _bodies(harness, VALIDITY_SCHEMA):
+        if body.get("aspect") != "soundness":
+            continue
+        seat = body.get("seat")
+        if isinstance(seat, str) and seat and seat not in seen:
+            seen.append(seat)
+    return tuple(seen)
+
+
+def reading_bodies(
+    harness: Harness,
+    ids: Sequence[str] | None = None,
+) -> tuple[tuple[str, Mapping[str, Any]], ...]:
+    """Registered reading artifacts as ``(artifact id, body)``.
+
+    With ``ids`` the named artifacts are returned in the order named, and a name
+    that is not a registered reading contributes nothing — an absent window audits
+    as nothing rather than as a refusal.  Without ``ids`` every reading is returned
+    in registration order.  This exists so a sibling module reads a reading body
+    through this module rather than through ``harness.state.artifacts`` and a
+    private decoder: one owner for the shape, so a change to it is one edit.
+    """
+    if ids is None:
+        return tuple((artifact_id, body)
+                     for artifact_id, body in _bodies(harness, READING_SCHEMA))
+    found: list[tuple[str, Mapping[str, Any]]] = []
+    for artifact_id in ids:
+        artifact = harness.state.artifacts.get(artifact_id)
+        if artifact is None:
+            continue
+        body = _decode(harness, artifact)
+        if isinstance(body, dict) and body.get("schema") == READING_SCHEMA:
+            found.append((artifact_id, body))
+    return tuple(found)
+
+
+def reading_transcript(
+    harness: Harness,
+    body: Mapping[str, Any],
+) -> Mapping[str, Any] | None:
+    """The transcript blob one reading body cites, or ``None`` where it is absent.
+
+    The blob shape is the vendored one ``register_transcript`` wrote; reading it
+    back here keeps that spelling — ``ruling.verdict``, ``ruling.decisive_point``,
+    ``case``, ``answer`` — in the module that writes it.
+    """
+    ref = body.get("transcript_ref")
+    if not isinstance(ref, str) or not ref:
+        return None
+    try:
+        parsed = json.loads(harness.blobs.get(ref))
+    except (KeyError, ValueError, OSError):
+        return None
+    return parsed if isinstance(parsed, dict) else None
 
 
 def register_audit_warrant(harness: Harness, finding: AuditFinding) -> str:

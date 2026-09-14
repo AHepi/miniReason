@@ -477,6 +477,26 @@ class TheCodeTablesAreComplete(unittest.TestCase):
         ("markprep", "BaselineNotFirst"): 0,
         ("markprep", "BaselineSealBroken"): 0,
         ("decide", "DecisionRefused"): 0,
+        # W3 modules, folded in by the wave-3 integrator. ``audits`` declares an
+        # empty NEW_CODES: every refusal it can raise is one ``types`` already
+        # owns, and both of them are config refusals.
+        ("audits", "_fail"): 0,
+        ("audits", "AuditError"): 0,
+        # ``report`` raises two shapes and neither code is its own: a ceiling or
+        # pin refusal is ``custody``'s, and a malformed input is ``standard``'s.
+        ("report", "ReportRefused"): 0,
+        ("report", "StandardInvalid"): 0,
+        # ``trial`` raises through module constants rather than literals, so the
+        # scan finds them through ``_module_constants``.
+        ("trial", "_refuse"): 0,
+        ("trial", "TrialRefused"): 0,
+        ("trial", "ReopenRefused"): None,   # code is a literal in its body
+        # W4 modules, folded in by the wave-4 integrator. ``reader`` raises one
+        # shape through module constants; ``marker`` raises through a ``_refuse``
+        # helper whose first argument is the code.
+        ("reader", "ReaderError"): 0,
+        ("marker", "_refuse"): 0,
+        ("marker", "MarkerRefused"): 0,
     }
 
     #: The keyword spelling of each argument index, so ``LoopError(code="X")``
@@ -490,12 +510,15 @@ class TheCodeTablesAreComplete(unittest.TestCase):
     #: (O9). Listing the frontier is the honest alternative to a scan that goes
     #: red whenever a sibling agent saves a file.
     #:
-    #: After wave 2 this is **all sixteen modules**, and the frontier is empty:
-    #: a seventeenth module added without its codes fails
+    #: After wave 2 this was all sixteen modules with an empty frontier; wave 3
+    #: adds ``audits`` and ``report`` (both with an empty NEW_CODES: every refusal
+    #: either raises is one ``types`` already owns) and ``trial`` (five codes,
+    #: folded into ``FAILURE_CODES`` in the same pass). A module added without its codes fails
     #: ``test_every_module_of_the_package_is_folded_in``.
     FOLDED_IN = ("types", "standard", "contracts", "custody", "receipts", "publish",
                  "seats", "surface", "obligations", "graph", "steps", "synthetic",
-                 "packs", "roles", "markprep", "decide")
+                 "packs", "roles", "markprep", "decide", "audits", "report",
+                 "trial", "reader", "marker")
 
     #: The wave being written now. Its modules' tokens are still checked for
     #: spelling by the scan above; that wave's integrator folds each module's

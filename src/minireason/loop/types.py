@@ -542,6 +542,28 @@ FAILURE_CODES: frozenset[str] = frozenset({
     "DECISION_INSTRUMENT_INVALID",
     "DECISION_WOULD_REOPEN_MISSING",
     "DECISION_REASON_UNKNOWN",
+    # the guard procedure G0-G12 (loop/trial.py, W3-TRIAL), folded in by the
+    # wave-3 integrator. Every one names a trial that could not be FORMED, so
+    # none of them is a block code and none gets a Measure event: a block is a
+    # member of BLOCK_CODES and is an outcome of a trial that ran.
+    # REOPEN_REFUSED is already declared above; ReopenRefused raises that
+    # spelling and never a retyped one.
+    "TRIAL_ARGUMENT_INVALID",
+    "TRIAL_MODE_UNEXPECTED",
+    "TRIAL_SEAT_PLAN_INVALID",
+    "TRIAL_PRIOR_STATE_UNREADABLE",
+    # driving the reading table (loop/reader.py, W4-READER), folded in by the
+    # wave-4 integrator. None of them is a block code and none is an outcome: a
+    # malformed row and a duplicate row key name a table that could not be
+    # read, and an unknown outcome names a trial answer outside trial.OUTCOMES.
+    "READER_ROW_INVALID",
+    "READER_ROW_DUPLICATE",
+    "READER_OUTCOME_UNKNOWN",
+    # C001 register marking (loop/marker.py, W4-MARKER), folded in by the
+    # wave-4 integrator. Neither is a block code: every block a MARK can carry
+    # is a member of BLOCK_CODES and is returned on the row, never raised.
+    "MARKER_INPUT_MALFORMED",
+    "MARKER_RESIDUE_CONTRADICTED",
     # configuration and layout (raised by this module)
     "CONFIG_NOT_A_MAPPING",
     "CONFIG_NOT_FOUND",

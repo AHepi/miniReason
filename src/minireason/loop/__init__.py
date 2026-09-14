@@ -137,6 +137,56 @@ would be a second.  No wave-2 module imports another wave-2 module, the graph is
 acyclic, and ``tests/loop/test_contracts.py`` asserts both the exact edge set and
 the acyclicity.
 
+Wave 3 — who owns what
+======================
+
+``trial``      the §2.4 guard, G0-G12, in the design's order and end to end:
+               critic, defender, the cross-family judge pair in both
+               presentation orders, then constitution, schema, uniqueness on
+               both surfaces, operative target, vocabulary, unanimity,
+               order-swap, the paraphrase spot-check, no-re-read and
+               no-scoring-key.  A **blocked** trial registers nothing: no
+               warrant, no reading, one ``Measure`` event naming the block by a
+               ``types.BLOCK_CODES`` reason with the spent prompt and raw refs
+               beside it.  G5 compares the two SEATS at one presentation and G6
+               compares one seat's two presentations; each names its own fact.
+               It registers nothing itself — W4-READER owns the graph's door.
+``audits``     the four §2.5 audits over readings already on record: paraphrase
+               invariance, premise deletion, planted-flaw calibration and the
+               ensemble-disagreement series.  Every hit is an ``eval:program``
+               demonstrative warrant against the ν of the seat's whole window,
+               minted through ``graph.register_audit_warrant`` and targeted
+               through ``graph.validity_nodes_for_seat`` — the seats are the
+               seats **on record**, never a spelling this module invented.  The
+               calibration's ``judge_err_max`` and its account come from the
+               frozen config and this module has no fallback for either.
+``report``     the four rendered documents — ``READING_TABLE.md``,
+               ``COMPARISON.md``, ``CYCLE.md``, ``CLOSING.md`` — each a pure
+               function onto Markdown that refuses without the frozen ceiling at
+               its pinned sha, prints every required ceiling sentence verbatim,
+               prints the block register by reason code with counts, and prints
+               unread / unresolved / machine-unresolved as three states a cell
+               is in exactly one of.  It owns the ``rendered_files`` record p4
+               and p12 read.
+
+The wave-3 import graph, with the edges the wave plan's ``depends_on`` does not
+name:
+
+    ``trial  -> contracts, graph, packs, roles, seats, standard, surface, types``
+    ``audits -> contracts, graph, standard, types``
+    ``report -> contracts, custody, decide, graph, obligations, standard, types``
+
+``trial``'s ``depends_on`` is complete; it reaches ``seats`` for the ``SeatPlan``
+G0 reads and ``types`` for ``block_code``.  ``audits`` reaches **W0-STANDARD**
+for the banner and the rubric body (one owner, as every wave-2 module does) and
+reaches **neither** ``packs`` nor ``roles``, though its ``depends_on`` names
+both: W2-PACKS renders the packs of the *trial* and has no shape for an audit
+re-ruling, and W2-ROLES sits behind the module's own ``judge_caller`` boundary.
+``report`` reaches ``standard`` for the ceiling and its pin key, ``custody`` for
+``CustodyMismatch`` and the two pin refusals, and ``obligations`` for ``Loss``
+and the ``rendered_files`` record name.  No wave-3 module imports another
+wave-3 module.
+
 Conventions a later wave must not re-invent
 ===========================================
 

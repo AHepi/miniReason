@@ -515,6 +515,54 @@ class WOneOwnerPerSharedConstant(unittest.TestCase):
         "roles": {"contracts", "custody", "seats", "types"},
         "markprep": {"contracts", "custody", "standard", "surface", "types"},
         "decide": {"graph", "obligations", "standard", "types"},
+        # Wave 3. ``audits`` reaches W0-STANDARD for the same reason every
+        # wave-2 module does (one owner for the banner and the rubric body), and
+        # reaches neither ``packs`` nor ``roles`` though its ``depends_on`` names
+        # both: W2-PACKS renders the packs of the *trial*, and has no shape for an
+        # audit re-ruling, and W2-ROLES sits behind the module's own
+        # ``judge_caller`` boundary. Both deviations are recorded in
+        # WAVE3-INTERFACE.md.
+        "audits": {"contracts", "graph", "standard", "types"},
+        # ``report`` reaches three modules beyond its ``depends_on``
+        # (W0-CONTRACTS, W1-GRAPH, W2-DECIDE), each because a spelling has one
+        # owner: ``standard`` for the frozen ceiling, its required sentences,
+        # its pin key and the two no-scoring/no-exhaustion scans; ``custody``
+        # for ``CustodyMismatch`` and the two pin refusals, so a ceiling refusal
+        # is the custody fact it already is and not a private code; and
+        # ``obligations`` for ``Loss`` and the ``rendered_files`` record name
+        # p4 reads. All three are recorded in WAVE3-INTERFACE.md.
+        "report": {"contracts", "custody", "decide", "graph", "obligations",
+                   "standard", "types"},
+        # ``trial`` is the one wave-3 module whose ``depends_on`` is complete
+        # (W0-CONTRACTS, W0-STANDARD, W1-SURFACE, W1-GRAPH, W2-PACKS, W2-ROLES);
+        # it reaches ``seats`` for the ``SeatPlan`` type G0 reads and ``types``
+        # for ``block_code``, and it retypes no block spelling of its own.
+        "trial": {"contracts", "graph", "packs", "roles", "seats", "standard",
+                  "surface", "types"},
+        # Wave 4. ``reader`` reaches four modules beyond its ``depends_on``
+        # (W1-GRAPH, W3-TRIAL), each because a spelling has one owner:
+        # ``types`` for ``LoopError``, ``custody`` for the fence and the
+        # write-once write, ``standard`` for the rubric's absolute mode, and
+        # ``roles`` for the call record's ``record``/``call_record`` spelling,
+        # which is how a claimed coordinate that answered is told from one that
+        # did not without inventing a second record layout. It reaches
+        # ``obligations`` NOT at all: the disposition tokens are mirrored and
+        # the mirror is asserted by test. Recorded in WAVE4-INTERFACE.md.
+        "reader": {"contracts", "custody", "graph", "roles", "standard",
+                   "trial", "types"},
+        # ``marker`` owns the PAIRWISE guard, because W3-TRIAL refuses a
+        # pairwise call by construction (its deviation 2, and the register-cell
+        # refusal in ``run_trial``), so its edges are the same owners the
+        # relation trial is built out of: ``packs`` for the register pack and
+        # its two orders, ``roles`` for the call and its write-once record,
+        # ``markprep`` for the cell shape, the seal, the pairwise surface and
+        # the baseline, ``graph`` for the mark's door, ``contracts`` for G12
+        # and the closed kind sets, ``standard`` for the registers, the marks
+        # and the falsifier map, ``custody`` for the write-once marks record,
+        # and ``trial`` for the block vocabulary and the guard-check names,
+        # imported and never retyped. Recorded in WAVE4-INTERFACE.md.
+        "marker": {"contracts", "custody", "graph", "markprep", "packs",
+                   "roles", "standard", "trial", "types"},
     }
 
     @staticmethod

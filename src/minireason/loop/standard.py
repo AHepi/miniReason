@@ -138,6 +138,7 @@ __all__ = [
     "CEILING_CLAIM_TEMPLATE",
     "CEILING_EXHAUSTION_DENIAL",
     "CEILING_PATH",
+    "CEILING_PIN_KEY",
     "CEILING_REQUIRED_SENTENCES",
     "CEILING_SHA256",
     "CEILING_TEXT",
@@ -387,6 +388,16 @@ PLAN_8A_MIRROR_PATH: Final[Path] = _DATA / "plan_8a_mirror.json"
 
 #: The frozen claim ceiling (design §6).
 CEILING_PATH: Final[Path] = _DATA / "ceiling_v1.md"
+
+#: The repo-relative POSIX spelling a plan pins the ceiling under, so the plan's
+#: pin map, ``custody.pins`` and W3-REPORT's refusal all name one key. Derived
+#: from the package rather than from the checkout, so it is the same string in a
+#: source tree and in a wheel; ``tests/loop/test_standard.py`` pins it against
+#: the file's own location. Owned here because the ceiling is owned here: a
+#: renderer that rebuilt the key by string surgery would be a second owner of
+#: it, and the two would drift the day the file is renamed.
+CEILING_PIN_KEY: Final[str] = (
+    f"src/{__package__.replace('.', '/')}/data/{CEILING_PATH.name}")
 
 #: The four PLAN §8a register ids, named before the mirror is read so the mirror
 #: can be checked against them rather than believed.
