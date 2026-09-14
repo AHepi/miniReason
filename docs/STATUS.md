@@ -1,5 +1,51 @@
 # Current research status
 
+## The automated loop's waves 0-2 checkpoint was verified and refused — 2026-09-14
+
+REC-20260914-AA set out to make the automated end-to-end harness loop **recoverable work on this
+branch** rather than an ephemeral scratchpad directory, per AGENTS.md's "publish small reviewed
+checkpoints". **It did not publish it.** The transplant was made, every file confirmed
+byte-identical to the frozen snapshot, `pyproject.diff` applied cleanly, and all seventeen import
+targets returned OK under `python3 -W error`. Then the suite this ledger records reported **`Ran
+2610 tests in 233.947s`, `FAILED (failures=3, skipped=2)`**, so under the receipt's own declared
+gate nothing was staged, the transplant was removed, and the restored tree reports **`Ran 1450
+tests in 193.542s`, `OK (skipped=1)`** — the figure already on record. None of the three failures
+is pre-existing.
+
+**What actually completed.** The opening receipt, published and verified at
+`02c639e12b6499d045e0b0b06f2fee18b644c9d2` / tree `faf174cfa205cbada4459ad24af71c42d0c1099c`,
+which declares the checkpoint's limits before action: never run, no provider call authorised,
+wave 2 implemented but **not** integrated, waves 3-6 unbuilt, the pre-registration bundle a draft,
+and the two declared narrowings of `use_relation_h005` applied nowhere. Then the verification
+itself, and its two findings, recorded as errata with their commands and their evidence:
+**`OPS-20260914-LOOPSUITE`** (a `no_sockets()` guard in `tests/loop/test_roles.py` entered from six
+concurrent threads reinstalls its own patch of `socket.socket`, `socket.create_connection` and
+`minireason.provider_openai_compat._open` process-wide, failing two pre-existing provider tests;
+and `data/plan_8a_mirror.json` pins the C001 `PLAN.md` at the digest it had before `2d7239a`
+appended §15 to it, 88 added lines and nothing edited) and **`SRC-003`** (the `use_relation_h005`
+reading banner cites `fw5-vs-harness-spec-review.md` and `NOTES.md`, two staging basenames that
+name no tracked file; the instrument is **not** edited and the twenty-four published analysis
+artifacts keep the banner they carry). Credential scan: 53 candidate files and 13 repository
+files, **0 matches**. **No provider call was made and no credential was read.** Nothing published
+was modified.
+
+**Next authorized task**, in order. (1) The two named repairs: make `no_sockets()` safe under
+concurrent entry with a regression test asserting the three globals are restored, and re-pin
+`plan_8a_mirror.json` against this branch — which moves `loop_plan_id` and therefore belongs to
+the receipt that mints the pre-registration. (2) Re-run the full suite to a clean `Ran N tests …
+OK` line and publish the checkpoint. (3) Wave-2 integration: items **24-28, 42 and 48-54** of the
+staging integration list, and `WAVE2-INTERFACE.md`, which does not exist. (4) Waves 3-6: trial
+runner, marker, driver, report, operator page. (5) Revise the pre-registration bundle against its
+own review's thirteen blockers **PR-01 through PR-13** and re-mint it; its pins are known stale.
+(6) A dry run. **Only then** is any live run a question, and it would be a new decision with its
+own receipt — no provider call is authorised by anything above.
+
+**Cadence, recorded truthfully and not backdated.** During today's scratchpad work on the loop the
+five-minute verified-push rule **was not met for several hours**: the implementation, its reviews,
+the design of record and the pre-registration draft were all built in an ephemeral directory with
+no verified push behind them, and a container restart today would have taken them. This receipt is
+the recovery, and it is a partial one — the record is now on the branch and the code is not.
+
 ## F002 occurrence-03 dispatched — the 300-second close recurs — 2026-09-14
 
 REC-20260914-Z added a **third occurrence** to the published F002 study and dispatched it, to ask one
