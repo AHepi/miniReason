@@ -1,0 +1,92 @@
+{
+  "call_number": 1,
+  "content": "{\n  \"body\": \"I live with two friends in a shared flat, and we constantly argue about ordinary household chores. Occasionally we manage to reach a verbal agreement about who will do what, but later those agreements are contested because the meaning is unclear – we never put the decisions in writing or on a shared schedule. Our work patterns are not fixed; shifts change, days off vary, and the person who once could reliably do a task now cannot. This has increased tension, as the remaining roommates feel the load is unfairly redistributed. Moreover, one of the friends has started to avoid the usual chore‑talk altogether; they mutter a quick “I’ll figure it out later” and then withdraw from the conversation, which makes me suspect they feel overwhelmed or disengaged from the conflict. I’m looking for a way to clarify responsibilities, make the system flexible enough for shifting schedules, and re‑engage the friend who is pulling back, without escalating the arguments further.\",\n  \"commitments\": \"{\\\"language\\\":\\\"FCL-1\\\",\\\"records\\\":[{\\\"id\\\":\\\"r1\\\",\\\"type\\\":\\\"claim\\\",\\\"text\\\":\\\"The root cause of repeated disputes is lack of clear, documented agreements about chores.\\\"},{\\\"id\\\":\\\"r2\\\",\\\"type\\\":\\\"claim\\\",\\\"text\\\":\\\"Variable work schedules make previously agreed duties harder to keep up, leading to frustration.\\\"},{\\\"id\\\":\\\"r3\\\",\\\"type\\\":\\\"claim\\\",\\\"text\\\":\\\"One friend's avoidance of conversation indicates possible discomfort or burnout with the conflict.\\\"},{\\\"id\\\":\\\"r4\\\",\\\"type\\\":\\\"problem\\\",\\\"text\\\":\\\"How can the household establish a sustainable chore coordination system that accommodates shifting schedules and encourages open communication?\\\"},{\\\"id\\\":\\\"r5\\\",\\\"type\\\":\\\"commitment\\\",\\\"text\\\":\\\"Create a shared, visible chore calendar (e.g., whiteboard or digital app) where assignments are recorded and can be updated as schedules change.\\\",\\\"scope\\\":\\\"household\\\",\\\"action\\\":\\\"set up calendar\\\",\\\"depends\\\":[\\\"r1\\\",\\\"r2\\\"]},{\\\"id\\\":\\\"r6\\\",\\\"type\\\":\\\"commitment\\\",\\\"text\\\":\\\"Hold a brief house meeting within the next week to discuss the new system and express any concerns, ensuring each person has a chance to speak.\\\",\\\"scope\\\":\\\"household\\\",\\\"action\\\":\\\"schedule meeting\\\",\\\"depends\\\":[\\\"r3\\\"]},{\\\"id\\\":\\\"r7\\\",\\\"type\\\":\\\"use\\\",\\\"text\\\":\\\"Use the chore calendar to track completion and adjust responsibilities in real time.\\\",\\\"scope\\\":\\\"ongoing\\\",\\\"action\\\":\\\"track chores\\\",\\\"depends\\\":[\\\"r5\\\"]}],\\\"uptake\\\":[]}\"\n}",
+  "coordinate": {
+    "arm": "mini_fcl",
+    "cycle": 1,
+    "harness": "H005",
+    "node": "account",
+    "problem": "daily"
+  },
+  "credential_redaction": false,
+  "elapsed_ms": 4251,
+  "endpoint": {
+    "base_url": "https://ollama.com/v1",
+    "family": "ollama-cloud/gpt-oss",
+    "model": "gpt-oss:120b",
+    "name": "ollama/gpt-oss-120b"
+  },
+  "finish_reason": "stop",
+  "method": "POST",
+  "provider_created": 1789366706,
+  "provider_response_bytes": 7187,
+  "provider_response_sha256": "b2f66b7af4df38e1e3917a00e081dee3648f58c0861930b4ec2bb726c16bdce7",
+  "reasoning_content_persisted": false,
+  "reasoning_content_present": true,
+  "request": {
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "content": "Work on the problem using the material actually exposed in this request and your background knowledge. The problem has no supplied answer key or scoring rule. Claims, criticisms and methods are fallible. Do not invent a source, an observation, an earlier event, or a dependency to fill a field. A missing view says what you can currently see; it does not establish what happened earlier. Return a JSON object with exactly two independently authored string fields: body and commitments. Body is your public prose contribution. Commitments says what taking your contribution up would involve. An empty commitment surface is allowed when none can be identified. Do not repeat the body wholesale into commitments.\n\nUse FCL-1 for the commitment surface, encoded as a JSON document inside the commitments string: {\"language\":\"FCL-1\",\"records\":[...],\"uptake\":[...]}. Each record has unique local id, type (claim|commitment|objection|use|problem), and text (unrestricted prose). Optional prose fields: scope, action, consequence, grounds, bearing. Optional arrays of references: target, depends, mentions, revises, withdraws. References are local IDs or exposed-artifact-label#local-ID; do not invent hidden IDs. A commitment proposes a scoped use, action, application or consequence; an objection alleges a defect whose bearing can itself be criticized; a use proposes an uptake or response; a problem states an unresolved question. depends asserts reliance; mentions only locates material. uptake lists the records you currently propose to use, not certified truths. No record type or optional field must be present. Empty records and uptake are allowed. Express uncertainty or an unrepresentable relation in prose rather than inventing a relation. The body remains unrestricted prose.\n\nReturn one JSON object with exactly two string fields: \"body\" and \"commitments\". Write the actual commitments separately; do not copy the body into that field as a storage shortcut.",
+        "role": "system"
+      },
+      {
+        "content": "# account\n\nBegin or continue an account of the problem. Decide what seems worth conjecturing from the material you have.\n\n## Original problem (task)\n[aceac4253907a8e6] (h005.task.v1)\nI share a flat with two friends. We keep arguing about ordinary household chores. Sometimes we agree on who will do something, but later we disagree about what the agreement meant. Our work schedules change, and one friend has started avoiding the conversations. What should I do?\n\n## Selected input previous (p.account.0)\n[a3de2728f784f44d] (h005.fork5.p.account.0)\nSource previous: absent in the first template invocation; selected view both.\n\n## What to return\nA JSON object carrying \"body\" and \"commitments\". Both are strings and nothing else is required.",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-oss:120b",
+    "response_format": {
+      "type": "json_object"
+    },
+    "seed": 7,
+    "stream": false
+  },
+  "request_bytes": 2936,
+  "request_bytes_sha256": "740562626fc1a0625b3600e171609f92598f1babf1d6ea6bf72341baaddbe35b",
+  "request_header_names": [
+    "Accept",
+    "Authorization",
+    "Content-Type"
+  ],
+  "request_sha256": "187e48de2ccd8a4fc3353b5400abebbb6b2d694d5102c48ebbf48eed2733819d",
+  "response_id": "chatcmpl-247",
+  "returned_model": "gpt-oss:120b",
+  "schema_version": "minireason.call.v2",
+  "settings": {
+    "base_url": "https://ollama.com/v1",
+    "chat_path": "/chat/completions",
+    "endpoint_name": "ollama/gpt-oss-120b",
+    "extra": {},
+    "family": "ollama-cloud/gpt-oss",
+    "key_env": "OLLAMA_API_KEY",
+    "kind": "openai-compat-chat",
+    "max_concurrency": 5,
+    "max_tokens": 8192,
+    "model": "gpt-oss:120b",
+    "native": false,
+    "native_reasoning_text_persisted": false,
+    "reasoning_effort": null,
+    "response_format": {
+      "type": "json_object"
+    },
+    "retries": 0,
+    "seed": 7,
+    "temperature": null,
+    "thinking": null,
+    "timeout_seconds": 180
+  },
+  "started_at": "2026-09-14T06:18:21.806432+00:00",
+  "status": "COMPLETE",
+  "system_fingerprint": "fp_ollama",
+  "url": "https://ollama.com/v1/chat/completions",
+  "usage": {
+    "completion_tokens": 1353,
+    "prompt_tokens": 636,
+    "prompt_tokens_details": {
+      "cached_tokens": 176
+    },
+    "total_tokens": 1989
+  },
+  "usage_source": "provider-reported"
+}
