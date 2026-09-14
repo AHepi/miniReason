@@ -1,5 +1,17 @@
 # Current research status
 
+## H005 active preparation — 2026-09-14
+
+The user redefined a cycle as one complete template invocation and authorized up to five cycles per selected chain. Root has published the [current research contract](reviews/multi-cycle-research-contract-2026-09-14.md), [earliest recovered commitment-interface interpretation](reviews/commitment-interface-source-2026-09-14.md), [FCL-1 language proposition](reviews/fcl1-language-proposition-2026-09-14.md), and [H005 protocol](../experiments/diagnostics/H005-open-prose-commitments/PROTOCOL.md).
+
+H005 begins with three complete invocations per problem across daily life, complex physics, philosophy and sociology. Three templates contain five, six and seven calls and are ordered by domain-specific mechanism hypotheses. Five arms compare bare and native one-call continuation, matched multi-call prose outside Mini, Mini free prose and Mini FCL-1. The initial schedule permits 240 unique calls if all chains remain operational. No new H005 provider call has yet run.
+
+Problem prose contains no answer key, scoring rule or seeded error. Commitment interfaces distinguish what taking content up entails from the prose body. FCL-1 adds typed, fallible references and scoped commitments; its advantage is unestablished. Root performs all scientific and acceptance reviews. Agents implement and run bounded offline checks only.
+
+Next: finish and review the new outer fixture and its focused offline tests, freeze exact runtime/material identities, then run the three-cycle comparison with at most five concurrent DeepSeek requests. Preserve every attempt, partial and failed criticism. A fourth or fifth invocation requires a prospective reason grounded in the content of the first three, not a favorable-result target. Full durable Mini scheduling remains unqualified on Windows; H005 uses the canonical compiler/reducer/renderer within an explicitly declared memory-backed fixture.
+
+The completed H004 findings and all older checkpoints below remain historical evidence. Their “no successor selected” and prospective next-question wording is superseded by this H005 section. Never replay H003/H004 coordinates.
+
 ## H004 completed and reviewed — 2026-09-13
 
 The [terminal report](../experiments/diagnostics/H004-partial-language-continuation/REPORT.md), [final custody audit](../experiments/diagnostics/H004-partial-language-continuation/final-custody-audit.json), and [candidate card](reviews/prose-audit-return-candidate-2026-09-13.md) are published. All five arms cover 20 model steps across H003/H004: 100 unique calls, 50 complete answers and 50 preserved partial contributions. Twenty steps here are four five-stage blocks, not twenty complete blocks.

@@ -52,3 +52,7 @@ H004 is now closed:65new calls,100combined with H003, allfivearms through20steps
 | Progress cadence overrun during state handoff | The ledger acknowledges the wave13 interval exceeding the five-minute receipt/publication cadence. | Track publication separately from local activity, preserve running-cell/session ownership across handoff, and record actual misses without backdating. |
 
 These are root-reviewed operational classifications of recorded evidence. They do not turn mechanical annotations into semantic verdicts. The [operations skill](../../skills/minireason-experiment-operations/SKILL.md) already directs every agent to this guide, so the supplement is available through the established entry point.
+
+## H005 preparation: apply the command-length limit before writing
+
+The new [H005 preparation incident](REC-20260914-h005-preflight.md) records Windows error206 before a roughly700-line helper could be written. No provider call occurred. The workaround is already known but must be applied explicitly: keep each native PowerShell content-write command below10,000characters, write the first chunk once, append subsequent chunks in order, and wait for the complete file before importing or accepting it. Never put credentials in these commands. A completed draft in an agent context is not a recoverable file or a passed preflight. Root reviews the completed implementation and focused offline evidence before a live freeze.
