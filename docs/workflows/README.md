@@ -12,6 +12,7 @@ Use [continue](continue.md) at session start, [experiment](experiment.md) before
 | Compare arms | Exact inputs, mode, calls, tokens, chronology, repeated controls | New comparison with narrow claims |
 | Test finishes | Full record and diagnosis | Immediate main commit and verified push |
 | Stop or hand over | Untried mechanisms and outstanding confounds | Honest stopping rationale and reopening conditions |
+| Re-express a finished occurrence in the harness-spec vocabulary | [graph-import-h005](graph-import-h005.md), the occurrence's own artifacts, attempts, receipts and traces | Offline import report, residue table and custody ledger; no label it computes is a semantic attribution |
 
 The active original runner has a dedicated [frozen language workflow](language-study.md), including setup ordering, controls, withheld-source limits and publication points.
 

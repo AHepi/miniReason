@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.invalid/schemas/fcl1_schema.json",
+  "title": "FCL-1 commitment document (H005 carrier)",
+  "description": "Syntactic schema for the JSON document carried inside the `commitments` string of a minireason.h005.artifact.v1 record. Union of (a) the grammar specified in docs/reviews/fcl1-language-proposition-2026-09-14.md and (b) what was actually observed in experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/*.json. Required keys follow the proposition's production; extras are ALLOWED (the harness retains, never repairs, §'Carrier and grammar'). This schema is SYNTACTIC ONLY: local-name uniqueness, reference resolution, and the `#BODY` pseudo-local-name are out-of-schema checks performed by the importer (see mapping.md).",
+  "type": "object",
+  "required": ["language", "records", "uptake"],
+  "additionalProperties": true,
+  "$comment": "additionalProperties:true is deliberate. Proposition: `Document := {\"language\":\"FCL-1\", \"records\":[Record*], \"uptake\":[Ref*]}` — all three keys appear in the production, so all three are required. No document-level extra key was observed in occurrence-01 (5/5 documents have exactly these three keys), but an extra key must not make a document OPAQUE: the harness retains unknown material rather than repairing it.",
+  "properties": {
+    "language": {
+      "const": "FCL-1",
+      "description": "Observed: \"FCL-1\" in 5/5 documents."
+    },
+    "records": {
+      "type": "array",
+      "description": "Record*. `Empty records or uptake are permitted.` (proposition) — minItems is therefore 0.",
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/Record" }
+    },
+    "uptake": {
+      "type": "array",
+      "description": "Ref*. `uptake identifies the records the author currently proposes to use. It is a local claim about standing, not a harness verdict or a truth label.` Observed: always present, always non-empty, always all-local.",
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/Ref" }
+    }
+  },
+  "$defs": {
+    "LocalName": {
+      "type": "string",
+      "description": "`Local names are unique within an authored document.` The proposition places no lexical constraint on a LocalName, so this pattern is deliberately permissive: it only excludes the empty string and the '#' separator. Observed id scheme in occurrence-01 is `^[a-z]+[0-9]+$` (c1..c3/o1/u1/p1, o1..o4, r1..r11, k1..k9, n1..n8); the reserved-looking `BODY` (see PseudoLocalName) is uppercase and is accepted here too. UNIQUENESS IS NOT EXPRESSIBLE IN JSON SCHEMA and is checked separately.",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.:-]*$"
+    },
+    "ExposedArtifactLabel": {
+      "type": "string",
+      "description": "`<exposed artifact label>` — the label under which a projection was exposed in the rendered brief. Two interchangeable spellings were observed, both minted by the harness, never by the model: (1) the 16-hex-character prefix of trace.projection_artifacts[i].artifact_id, e.g. \"b5dbbb04b5acd035\"; (2) the positional alias `p.<node>.<index>`, e.g. \"p.objection.0\". The pattern admits both.",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.:-]*$"
+    },
+    "Ref": {
+      "type": "string",
+      "description": "`Ref := LocalName | QualifiedName`; `QualifiedName := <exposed artifact label> \"#\" LocalName`. Exactly zero or one '#'. NOTE: a bare 16-hex exposed-artifact label (observed once: carry.n6.mentions[0] == \"b998d514348ed94e\") is lexically a LocalName and therefore VALIDATES here while failing local resolution — a semantic deviation, not a syntactic one.",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.:-]*(#[A-Za-z0-9_][A-Za-z0-9_.:-]*)?$"
+    },
+    "Prose": {
+      "type": "string",
+      "description": "`Prose is any JSON string.` No minLength: the proposition permits an empty string, and inventing a non-empty constraint would make the harness repair content."
+    },
+    "RefArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Ref" },
+      "minItems": 0
+    },
+    "Record": {
+      "type": "object",
+      "description": "`Record := {\"id\":LocalName, \"type\":Type, \"text\":Prose, optional fields}`. id/type/text are required by the production; every optional field is genuinely optional (`No record type or optional field must be present.`, material.json formal_instruction).",
+      "required": ["id", "type", "text"],
+      "additionalProperties": true,
+      "$comment": "additionalProperties:true is deliberate; no record-level extra key was observed across the 42 records of occurrence-01 (observed key set is exactly {id,type,text,scope,action,consequence,grounds,bearing,target,depends,mentions}), but an unknown key must not invalidate a document.",
+      "properties": {
+        "id":   { "$ref": "#/$defs/LocalName" },
+        "type": {
+          "type": "string",
+          "enum": ["claim", "commitment", "objection", "use", "problem"],
+          "description": "`Type := \"claim\" | \"commitment\" | \"objection\" | \"use\" | \"problem\"`. Observed counts over 42 records: claim 15, use 9, objection 9, problem 5, commitment 4."
+        },
+        "text":        { "$ref": "#/$defs/Prose" },
+        "scope":       { "$ref": "#/$defs/Prose", "description": "Observed on 19 records." },
+        "action":      { "$ref": "#/$defs/Prose", "description": "Observed on 13 records." },
+        "consequence": { "$ref": "#/$defs/Prose", "description": "Observed on 13 records — 9 of them on NON-commitment records (claim/use)." },
+        "grounds":     { "$ref": "#/$defs/Prose", "description": "Observed on 9 records, NONE of them of type objection." },
+        "bearing":     { "$ref": "#/$defs/Prose", "description": "Observed on 9 records — exactly the 9 objection records." },
+        "target":      { "$ref": "#/$defs/RefArray", "description": "Observed on 14 records: 7 objection and 7 non-objection (claim/use)." },
+        "depends":     { "$ref": "#/$defs/RefArray", "description": "Observed on 11 records / 17 refs — ALL of them local (zero cross-document dependence in occurrence-01)." },
+        "mentions":    { "$ref": "#/$defs/RefArray", "description": "Observed on 5 records." },
+        "revises":     { "$ref": "#/$defs/RefArray", "description": "Specified by the proposition; NEVER observed in occurrence-01." },
+        "withdraws":   { "$ref": "#/$defs/RefArray", "description": "Specified by the proposition; NEVER observed in occurrence-01." }
+      }
+    }
+  }
+}
