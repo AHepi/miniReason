@@ -961,3 +961,91 @@ evidence.
   no-objection control, since P3's content change is length-matched by construction.
 * The instrument holding but every cell unresolved through PARTIAL truncation → raise
   the ceiling, or split body and commitments into two calls, and re-register.
+
+## 15. Successor occurrence-02 under driver v2 — appended 2026-09-14
+
+*This is an **append only**, made under REC-20260914-V. Not one word of §§1–14 above is
+edited, and §13 is the rule it acts under: a change to "the per-endpoint completion
+ceiling or wall-clock timeout of §5 … changes the material or the driver, hence the
+`plan_id`, hence the claim. Such a change is a **successor pre-registration with its own
+identity**, never an amendment of this one."*
+
+**What occurrence-02 is.** The same frozen study, on **one cell**, at a raised ceiling:
+endpoint `deepseek-flash`, arm `fcl`, all four cases (ORIGINAL, RECODING, CARRIER,
+CONTROL), five replicates — **20 calls and no more**, in **4 deterministic waves of
+five**, every one of them single-key on `DEEPSEEK_API_KEY`, zero automatic retries,
+write-once records. Its identity is its own:
+
+| | occurrence-01 | occurrence-02 |
+|---|---|---|
+| driver | `tools/contrast_triple_study.py` (`f5f9dfca…`) | `tools/contrast_triple_study_v2.py` (`18571103…`) |
+| material | `material.json` (`94edfe61…`) | `material-occurrence-02.json` (`1ba7be08…`) |
+| `plan_id` | `328b9452c66fed52203015c540652d3b8ad3107d44dece56b55ebe721da341c8` | `1d9f47acdc692146792e354afdd9c6944036cb7d55bd83cc32c905e7c4ffeb83` |
+| planned calls | 240, in 47 waves | 20, in 4 waves |
+| `deepseek-flash` `max_tokens` | 8192 | **32768** |
+| `deepseek-flash` `timeout_seconds` | 180 s | **600 s** |
+| dispatched | 6 endpoints × 2 arms | **1 endpoint × 1 arm** |
+
+**Why.** Occurrence-01's own terminal records show that the one endpoint whose ceiling
+§5 deliberately left at 8192 could not carry the FCL-1 envelope beside its reasoning.
+Its forty `deepseek-flash` coordinates finished COMPLETE 21 / PARTIAL 8 / FAILED 11, and
+the entire residue is one arm: `fcl` is **1 COMPLETE, 8 PARTIAL, 11 FAILED** against
+`prose`'s **20 of 20 COMPLETE at the same ceiling**, which is the control that makes the
+ceiling and not the family the cause. Every PARTIAL carries `finish_reason: "length"` at
+`completion_tokens` exactly 8192; every FAILED carries `INCOMPLETE_GENERATION` with
+`validation_failure_type: NO_PUBLIC_CONTENT`, no `finish_reason` and no usage at all; the
+nine `fcl` calls that reported usage spent **5488 to 7890 tokens on reasoning**; and the
+single `fcl` COMPLETE finished at 8083, one hundred and nine tokens under the ceiling.
+
+**Correction, recorded here rather than by editing §5.** The ground on which
+`deepseek-flash` kept 8192 — stated in occurrence-01's material as
+`ceilings.max_tokens_policy` and in that endpoint's own `note`, carried verbatim into the
+frozen `occurrence-01/plan.json`, and summarised by §5's per-endpoint table — was that the
+endpoint "sends no reasoning on the wire, and 8192 was ample for it"; **both halves are
+false of C001 as dispatched**, since 29 of those 40 receipts record
+`reasoning_content_present: true` and C001's briefs are far longer than the H005 briefs
+that reason was formed on. The published text stays exactly as it is, because it is the
+pre-registration a completed occurrence was dispatched under; the correction lives here
+and in REC-20260914-V, and nothing in occurrence-01 is relabelled, repaired, re-sent or
+superseded by it.
+
+**The prose arm of occurrence-02 is frozen and published but never dispatched.** All
+eight brief documents are written and hashed into `plan_id`, both arms are still checked
+by `check_recoding`, `check_carrier` and `check_control`, and `RECODING_TABLE.md` still
+renders all 85 units byte-identically to the published table, because the
+pre-registration is a claim about the whole correspondence table; the `dispatch_scope`
+narrows only what is **sent**, so the four `briefs/prose/*.json` files exist in
+`occurrence-02/` and no call is ever made against them.
+
+**What the raise rests on, and what it does not claim.** The endpoint's acceptance of
+`max_tokens` 32768 is evidenced by **one probe call** — COMPLETE, `finish_reason "stop"`,
+1837 ms, 81 reasoning tokens of 100 — published at
+[`docs/sources/contrast-triple-deepseek-ceiling-probe-2026-09-14.md`](../../../docs/sources/contrast-triple-deepseek-ceiling-probe-2026-09-14.md)
+with its two records under `probe-2026-09-14/`. That probe establishes acceptance of the
+argument and nothing more: its answer was 100 tokens long, so nothing above 8192 was
+exercised. **32768 is not predicted to be sufficient.** A cell that hits even the raised
+ceiling is a PARTIAL, `comparable: false`, its mechanical columns withheld, compared
+against nothing (FW5:634), and a cell that returns no content is a refusal recorded with
+its failure code. The 600 s wall clock is the transport's own validation maximum
+(`Endpoint.__post_init__` admits 1…600 and refuses 601), reached rather than invented,
+applied to the resolved `Endpoint` value by `dataclasses.replace` so that
+`src/minireason/data/endpoints.json` is still never edited; it is needed because at the
+rates occurrence-01 actually observed (179.2–227.5 tokens/s on `fcl`) a call that spends
+the whole 32768 ceiling takes 144–215 s, which the old 180 s would have converted into a
+read-timeout refusal.
+
+**Two uncontrolled differences between the occurrences, named.** They differ in
+completion ceiling *and* in wall clock, so a difference read **between** occurrence-01
+and occurrence-02 is a resource observation, never a semantic one. Within occurrence-02
+the four cases share one ceiling and one clock, so the case-to-case comparison this study
+actually asks is unaffected. Seed support for `deepseek-flash` is still unverified
+(`honors_seed: null`), so its five replicates remain five independent samples whose seed
+effect is unestablished. Because `deepseek-flash` now carries what the Ollama endpoints
+carry, occurrence-01's recorded cost — that a deepseek-versus-Ollama difference had one
+more uncontrolled difference behind it — does not apply to this material.
+
+**Where it lives.** `experiments/diagnostics/C001-contrast-triple/material-occurrence-02.json`
+with its provenance script `build/build_occurrence02_material.py`, the occurrence at
+`occurrence-02/`, the driver at `tools/contrast_triple_study_v2.py` with
+`tests/test_contrast_triple_study_v2.py`. Occurrence-02 writes nothing whatsoever inside
+`occurrence-01/`.

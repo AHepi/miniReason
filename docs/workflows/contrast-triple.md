@@ -136,3 +136,77 @@ or reduced to one mark.
 * Transport: [provider-openai-compat](provider-openai-compat.md)
 * The evidence the two raises rest on: [fork5-multifamily](fork5-multifamily.md)
 * Suite: `PYTHONPATH=src python -X utf8 -m unittest tests.test_contrast_triple_study`
+
+## Occurrence-02: the successor driver v2, one cell at a raised ceiling
+
+*Appended 2026-09-14 under REC-20260914-V. Same workflow, same page, no new row in
+[`README.md`](README.md): occurrence-02 is C001 run again on one cell, not a second
+study.*
+
+`tools/contrast_triple_study_v2.py` is a **byte copy** of `tools/contrast_triple_study.py`
+at `f5f9dfca…` with **eight differences, each marked `# V2:` in the source** and listed in
+the file's own header: the docstring; `PARTIAL_UNRESOLVED` becoming
+`partial_unresolved(ceiling)` over a template, because a constant naming 8192 is false on a
+32768 PARTIAL; its one call site in `decode_contribution`; an **optional**
+`dispatch_scope` block validated by `validate_material`; the three readers
+`scoped_endpoints`, `scoped_arms` and `planned_call_count`; `all_coordinates` building over
+the scope in the same iteration order; `plan_body` taking the scoped count and freezing the
+scope into the plan; and `_offline_preflight` checking against the plan's own
+`planned_calls`. The suite proves rather than asserts it: `V2DiffProof` normalises the
+docstring away, diffs v2 against v1 and refuses any hunk not marked `# V2:`, and `V1Parity`
+shows that on occurrence-01's own published material **v2's plan body differs from v1's in
+exactly one field, `helper_sha256`** — which is precisely why the identity has to be a
+successor, since `plan_body` folds the driver's own sha256 into every `plan_id` it mints.
+
+**Why a fork and not a flag.** v1 cannot express this occurrence: `ENDPOINT_COUNT = 6`,
+`sorted(material['arms']) != sorted(ARMS)` and the module constant `PLANNED_CALLS = 240`
+each refuse a one-endpoint, one-arm, twenty-call plan; and editing v1 would change
+`helper_sha256`, hence occurrence-01's published `plan_id` `328b9452…`, hence every later
+`verify`, `audit` and `table` that re-derives it from those bytes. **The hazard the fork
+exists for**: v1 does *not* refuse the occurrence-02 material, it silently widens it — with
+no notion of `dispatch_scope` and no reading of the material's own `planned_calls`, v1
+plans the full 240 coordinates at 32768, twelve times the authorisation. A test pins that,
+and it is why the mandatory pre-dispatch check is `planned_calls == 20` read off a plan
+built by **v2**.
+
+The command sequence is the same as above with the v2 file and the occurrence-02 material,
+`S=experiments/diagnostics/C001-contrast-triple`:
+
+```
+PYTHONPATH=src python3 -X utf8 tools/contrast_triple_study_v2.py prepare \
+    --material $S/material-occurrence-02.json --output $S/occurrence-02
+#   {"plan_id": "1d9f47ac…", "planned_calls": 20, "provider_calls": 0}
+PYTHONPATH=src python3 -X utf8 tools/contrast_triple_study_v2.py verify  --output $S/occurrence-02
+#   -> commit and push plan.json + preflight.json + the eight briefs, and verify the
+#      remote, BEFORE dispatch
+PYTHONPATH=src python3 -X utf8 tools/contrast_triple_study_v2.py run \
+    --output $S/occurrence-02 --plan-id 1d9f47acdc692146792e354afdd9c6944036cb7d55bd83cc32c905e7c4ffeb83
+PYTHONPATH=src python3 -X utf8 tools/contrast_triple_study_v2.py audit --output $S/occurrence-02
+PYTHONPATH=src python3 -X utf8 tools/contrast_triple_study_v2.py table --output $S/occurrence-02
+```
+
+**Scope narrows dispatch, never the freeze.** All eight briefs are still written and
+hashed into `plan_id`, both arms are still checked, and `occurrence-02/RECODING_TABLE.md`
+still renders all 85 units byte-identically to the published
+`dcaebaf8336c1943700a762b4836679307349d6ff8dfad082e4cd77e23fd7ae7`. **The prose arm of
+occurrence-02 is therefore frozen and published but never dispatched** — four
+`briefs/prose/*.json` files exist and no call is ever made against them — which is
+deliberate, because the pre-registration is a claim about the whole correspondence table.
+`table` renders **one** juxtaposition, `juxtaposition/deepseek-flash__fcl.md`, not twelve,
+with root's six columns and the four-register mark grid rendered empty and left empty.
+
+**The correction occurrence-02 carries, stated as a correction and not as an edit.**
+Occurrence-01 gave `deepseek-flash` a ceiling of 8192 on the recorded ground that it
+"sends no reasoning on the wire, and 8192 was ample for it"; **both halves are false of
+C001 as dispatched** — 29 of that endpoint's 40 receipts record
+`reasoning_content_present: true`, and 19 of its 20 `fcl` coordinates were consumed by the
+ceiling while the prose arm at the same ceiling was 20 of 20. The published text is left
+standing because it is the pre-registration a completed occurrence ran under; **no
+occurrence-01 record is modified, relabelled, repaired, re-sent or superseded**, and
+occurrence-02 is a second ceiling published beside the first, which is the rule
+[`docs/lessons/operations.md`](../lessons/operations.md) already records from E001/E002:
+"new budget conditions require separate freezing rather than retrospective repair".
+
+* Occurrence-02 register: [`PLAN.md` §15](../../experiments/diagnostics/C001-contrast-triple/PLAN.md)
+* The one ceiling-acceptance probe: [`docs/sources/contrast-triple-deepseek-ceiling-probe-2026-09-14.md`](../sources/contrast-triple-deepseek-ceiling-probe-2026-09-14.md)
+* Suite: `PYTHONPATH=src python -X utf8 -m unittest tests.test_contrast_triple_study_v2`
