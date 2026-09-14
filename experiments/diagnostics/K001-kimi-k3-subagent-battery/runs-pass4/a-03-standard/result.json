@@ -1,0 +1,114 @@
+{
+  "task_id": "a-03-standard",
+  "title": "Adversarial review of W0-STANDARD (standard)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "All probes ran with exit 0 (the four probe scripts were also run individually above, each with the output quoted in the review — `probe/guard_params.py` intentionally exits 1 because it reproduces the undeclared `TypeError` of finding SF1).\n\n## Summary\n\n**Review written:** `review/standard.md`.\n\n**Probes written:** `probe/roundtrip.py`, `probe/int_oracle.py`, `probe/exhaustion_and_headers.py`, `probe/guard_params.py`, `probe/guard_params2.py`, `probe/parse_and_reconcile.py`, `probe/secondary.py`, `probe/more_attacks.py`. Nothing under `src/` or any other existing file was modified.\n\n**Findings:**\n\n- **BLOCKER:** none reproduced.\n- **SHOULD-FIX SF1:** `_validate_params` (standard.py:1260–1264) checks `unanimity_rule`/`reopen_reasons` by truthiness/iterability only — `unanimity_rule=None`/list/int are accepted into the pinned body, and `reopen_reasons=0|None` escape `build_standard` as an undeclared `TypeError` with no code, breaking the \"every wave-0 exception is a `LoopError`\" convention.\n- **SF2:** `assert_config_matches_standard` reconciles only 3 of the 12 frozen guard parameters (plus `len(judges)`), while deviation 8 and the docstring present it as the full `seats`-block reconciliation.\n- **SF3:** `standard_body` validates shell only; bodies `build_standard` would refuse (weakened `judge_seats`, rewritten register text) parse without refusal, contradicting \"refuse anything that is not one\".\n- **SF4:** interface note says `FORBIDDEN_KEYS` has 24 keys; the shipped object has 25 — which side is off is unresolved (upstream set not in sandbox).\n- **NOTE N1/N2:** the header scanner sees only ATX/pipe spellings (setext/HTML headers pass — within its named scope but under renderer convention), and the exhaustion scan's detail quotes the flattened copy, not the record.\n\n**Tried and could not break:** byte-stability/digest identity, cross-module object identity, the 12-integer oracle, the exhaustion-scan smuggle direction, the ceiling↔`BLOCK_CODES` correspondence, every integer/bool guard-parameter boundary, all four vocabulary-closing attacks, and the register-set refusals.\n\n**Caveat recorded in the review:** the frozen snapshot carries no `tests/loop/test_*.py` modules, so integration counts in the interface note could not be re-run; all evidence is the probes.\n\nLast test run: `python3 probe/roundtrip.py && python3 probe/secondary.py && python3 probe/exhaustion_and_headers.py && python3 probe/guard_params2.py` — exit code 0.",
+  "files_written": [
+    {
+      "path": "probe/exhaustion_and_headers.py",
+      "change": "added",
+      "sha256": "636c4eab88a3aa5b0ca5f09958bad8dd9922d409662ffb8269dd39df36367a31",
+      "bytes": 3799
+    },
+    {
+      "path": "probe/guard_params.py",
+      "change": "added",
+      "sha256": "d1212e25d0492a21015f3834cf9706925d79ed6d82ee16f6235484eb96412149",
+      "bytes": 2756
+    },
+    {
+      "path": "probe/guard_params2.py",
+      "change": "added",
+      "sha256": "0dc6f674fdf32b730a1fd6301d81ee9241dd0717f61dac4fb1093d438f02be59",
+      "bytes": 1999
+    },
+    {
+      "path": "probe/int_oracle.py",
+      "change": "added",
+      "sha256": "41f9123d92b1547ba19128f9af46badd1e779371f671006df97bab692489ae9b",
+      "bytes": 938
+    },
+    {
+      "path": "probe/more_attacks.py",
+      "change": "added",
+      "sha256": "6e2cbdc7d2c502bd98fb430e329cf992beffe938d87858797f7797ac143bc84a",
+      "bytes": 1635
+    },
+    {
+      "path": "probe/parse_and_reconcile.py",
+      "change": "added",
+      "sha256": "e454664ae7526da262c1103e8c7650ddd9df6a5758f6b46e4aab5dfef3a6eb62",
+      "bytes": 3522
+    },
+    {
+      "path": "probe/roundtrip.py",
+      "change": "added",
+      "sha256": "7f9c5f4c8da2f29219a6fc58a712fc2f05d88cb3986e3e8219c120d7e15d52ce",
+      "bytes": 2371
+    },
+    {
+      "path": "probe/secondary.py",
+      "change": "added",
+      "sha256": "fd07fd71a44faa5edc0fce8355e9da484ce95fa765afe4144c4bb9cb93652dda",
+      "bytes": 1714
+    },
+    {
+      "path": "review/standard.md",
+      "change": "added",
+      "sha256": "af29da353523a71fd630538fe7802f445a79b78c3ec1f22ea7dcfc47a59b3db2",
+      "bytes": 13643
+    }
+  ],
+  "expected_outputs_present": [
+    "review/standard.md",
+    "probe/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 8,
+    "grep": 6,
+    "write_file": 10,
+    "run_command": 11
+  },
+  "tool_call_total": 35,
+  "iterations": 21,
+  "prompt_tokens": 1034248,
+  "completion_tokens": 26574,
+  "total_tokens": 1060822,
+  "wall_seconds": 676.462,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 12,
+  "reasoning_chars": [
+    26,
+    7711,
+    127,
+    0,
+    8904,
+    0,
+    18677,
+    0,
+    0,
+    0,
+    5392,
+    0,
+    1206,
+    0,
+    0,
+    4150,
+    508,
+    303,
+    138,
+    0,
+    275
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/a-03-standard/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/a-03-standard/sandbox"
+}

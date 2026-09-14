@@ -1,0 +1,227 @@
+{
+  "task_id": "p2-prereg-mechanical",
+  "title": "Mechanical consistency checks of the L001 pre-registration bundle",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Done. All required outputs exist, and the final verification run passed (`python3 check/verify_outputs.py` → `ALL VERIFICATIONS PASSED`, exit code 0: deliverables present, JSON parses, all nine checks carry a valid PASS/FAIL/NOT-CHECKABLE verdict, the markdown renders nine verdict blocks plus the limits section, and the recorded statuses are consistent with the underlying evidence).\n\n**What I changed / wrote**\n\n- `check/` — 14 scripts, one per check plus renders and verification:\n  - `check01_validate.py`, `check01b_validate_inside.py` (validator run from sandbox root and from inside `loop-prereg/`, verbatim capture to `out/check1/`)\n  - `02a_sha_token_map.py`, `check02_digests.py`, `check02c_config_diff.py` (sha256 sweep + config-mismatch forensics)\n  - `check03_seats.py`, `check04_maxcalls.py`, `check05_obligations.py`, `check06_paths.py`, `check07_vocabulary.py`, `check08_credentials.py`, `check09_dates.py`\n  - `render_json.py`, `render_md.py`, `verify_outputs.py`\n- `out/prereg-checks.md` and `out/prereg-checks.json` — the deliverables, one section per check, each ending PASS/FAIL/NOT-CHECKABLE, no overall score, closing with what the checks cannot establish.\n- Raw evidence: `out/check1/` (verbatim validator stdout/stderr for both CWDs), `out/check2…check9-*.json`, `out/sha-token-map.json`, `out/check2c-config-diff.json`.\n\n**Results of the nine checks**\n\n1. **FAIL** — `python3 loop-prereg/validate.py` exits 1 from both CWDs with `ModuleNotFoundError: No module named 'minireason.loop'` at line 8; the sandbox contains only `src/minireason/data/endpoints.json`, and validate.py also hardcodes an external repo path and three absent published files. Verbatim output preserved.\n2. **FAIL** — 5 of 6 digests pinned in VALIDATION.md §4 match exactly (`PREREG.md`, `obligations.json`, `reading_set.json`, `calibration.json`, `validate.py`); **`config.json` does not** (actual `081dd939…` vs pinned `46495a6f…`; no line-ending/serialization variant reproduces the pin). All 9 distinct 64-hex tokens across PREREG.md/VALIDATION.md/config.json are accounted for: 5 table matches, 2 external pins (C001 plan_id, H005 material_sha256), 1 config-mismatch pin, and the PREREG.md obligations pin, which **does** reproduce over canonical bytes. config.json contains no sha256 token itself.\n3. **PASS** — all five seats exist in `endpoints.json` with the registry family/key_env/timeout matching PREREG.md's table cell-for-cell; no mismatches; the two judge seats have distinct families.\n4. **PASS** — 38 entries (16 marks + 22 rows); 4×0 + 12×9 + 22×11 + 1×46 + 0 = 396 = `max_calls`; `cycle_budget` 3 and the cycle-2 audit phase are consistent (the derivation itself lives in `reading_set.json`; PREREG.md quotes the result in clause 5).\n5. **PASS** — |O|=7, |P|=12 exactly as PREREG.md states; all 19 ids unique; every id token referenced from config.json or PREREG.md exists.\n6. **PASS** — all referenced paths (2 distinct in calibration.json, 4 in reading_set.json) appear in `repo-files.txt` (7885 lines); zero missing.\n7. **NOT-CHECKABLE** — the six-value vocabulary is asserted three times in prose but enumerated in no sandbox file; `use_relation_h005.py` is tracked but absent; `src/minireason/loop/standard.py` isn't in the tracked list at all.\n8. **PASS** — zero credential-shaped hits across all 34 sandbox files (path/line-only reporting policy; nothing matched).\n9. **PASS** — one run id (`L001-loop-first-live-2026-09-14`) and one calendar date (`2026-09-14`) throughout; the only deviants are the self-declared placeholders `REC-20260914-Z` / `2026-09-14T00:00:00Z`.\n\n**What these checks cannot establish** (stated in both deliverables): anything needing the absent repository tree (the validate.py PASS transcript, the six vocabulary values, published-file pinned digests); whether the run directory was ever created in the real repo (`repo-files.txt` has no L001 path, yet VALIDATION.md's own transcript references it); which config.json byte string is authentic or where the divergence entered; byte-equivalence of the canonicalization recipe with the absent modules; the sandbox copy's identity with any externally received copy; intent or provenance of the mismatch; the design's semantic adequacy; and credential/endpoint hygiene outside the sandbox.",
+  "files_written": [
+    {
+      "path": "check/02a_sha_token_map.py",
+      "change": "added",
+      "sha256": "55d33d8829a2317f011e155ef9800f8191f2b69df27b49965e803157f5949be6",
+      "bytes": 1433
+    },
+    {
+      "path": "check/check01_validate.py",
+      "change": "added",
+      "sha256": "92dc0391629ff3aa6568efb9bcf1e701f972aba38f8ac15818dcfa8ed940b47a",
+      "bytes": 990
+    },
+    {
+      "path": "check/check01b_validate_inside.py",
+      "change": "added",
+      "sha256": "4b6ae9ccd8890095a64448c138bc38894ababcc7a546eaf59e830a1e646eba22",
+      "bytes": 1378
+    },
+    {
+      "path": "check/check02_digests.py",
+      "change": "added",
+      "sha256": "ec4a32e781cf65421d0dc8dc25db5a8659f3b97e38d1c4cdef7d539958f506d4",
+      "bytes": 3160
+    },
+    {
+      "path": "check/check02c_config_diff.py",
+      "change": "added",
+      "sha256": "29a1cd149aee44cb895425c45c70f23932b531cf39910213fb5ae02bab64a7a2",
+      "bytes": 1653
+    },
+    {
+      "path": "check/check03_seats.py",
+      "change": "added",
+      "sha256": "82d3760c41c9b669bd27851edda27668f7cb0be893f0ef59f5e5bc78d245b30c",
+      "bytes": 2341
+    },
+    {
+      "path": "check/check04_maxcalls.py",
+      "change": "added",
+      "sha256": "a0a10bf7b89ee61f8b4e7e62927731190414312478ce445b28b033ad558c2c3b",
+      "bytes": 3768
+    },
+    {
+      "path": "check/check05_obligations.py",
+      "change": "added",
+      "sha256": "d60770c621be0d481549372cb379b48ff813d3f8a69273f82f68f7141599d9d6",
+      "bytes": 2373
+    },
+    {
+      "path": "check/check06_paths.py",
+      "change": "added",
+      "sha256": "e8004343b15b701090cca66042ea37a815f3b3ff43e2d95cfbf636799af7e9be",
+      "bytes": 1294
+    },
+    {
+      "path": "check/check07_vocabulary.py",
+      "change": "added",
+      "sha256": "70dede156a610d9dcada705bdb73dbd727b08dfeceadac8310654de287b76fbf",
+      "bytes": 2168
+    },
+    {
+      "path": "check/check08_credentials.py",
+      "change": "added",
+      "sha256": "b0f5f9f9131355333af43c4c525f88e5c278819eb4754fa0d3e566fa65dd17bd",
+      "bytes": 1598
+    },
+    {
+      "path": "check/check09_dates.py",
+      "change": "added",
+      "sha256": "a7727a2dd5c77a16c4648587996439c5f766aedaf286bf06891cdc44045e2b58",
+      "bytes": 1757
+    },
+    {
+      "path": "check/render_json.py",
+      "change": "added",
+      "sha256": "8348e266a366362ac3e6cd3fa2037b48fced66b77acf890bf2aa96e502c6c9a8",
+      "bytes": 13056
+    },
+    {
+      "path": "check/render_md.py",
+      "change": "added",
+      "sha256": "6ccc75ef64e97523077b52894fc5ce875d0e417d7878be0572acd14a90d99e33",
+      "bytes": 17681
+    },
+    {
+      "path": "check/verify_outputs.py",
+      "change": "added",
+      "sha256": "3b147c68857adf608463f8a8bdda76a9feb26602f4c67345501ce7ad19bf2e91",
+      "bytes": 3285
+    },
+    {
+      "path": "out/check1/env-report.json",
+      "change": "added",
+      "sha256": "1b182616131f25c8d2fc2c9b0543d56ed7605f14050a28e3ad14d14436a530ee",
+      "bytes": 853
+    },
+    {
+      "path": "out/check1/validate.cwd-loop-prereg.stderr.txt",
+      "change": "added",
+      "sha256": "6c2952e5983719ad6d8cbd1c3f0d03fb4ff53794aaa6f8a4ea343caf988c13c4",
+      "bytes": 361
+    },
+    {
+      "path": "out/check1/validate.cwd-loop-prereg.stdout.txt",
+      "change": "added",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "out/check1/validate.stderr.txt",
+      "change": "added",
+      "sha256": "6c2952e5983719ad6d8cbd1c3f0d03fb4ff53794aaa6f8a4ea343caf988c13c4",
+      "bytes": 361
+    },
+    {
+      "path": "out/check1/validate.stdout.txt",
+      "change": "added",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "out/check2-digests.json",
+      "change": "added",
+      "sha256": "54598927f61b49b648c449ee181f1234020abd57a40b0616f136d1b95f557047",
+      "bytes": 5162
+    },
+    {
+      "path": "out/check2c-config-diff.json",
+      "change": "added",
+      "sha256": "32a9b3b929546430d2977040807a76704f83b836364837fdcad12712d8e7fc94",
+      "bytes": 1648
+    },
+    {
+      "path": "out/check3-seats.json",
+      "change": "added",
+      "sha256": "b5e7449aa47f993814674cf6597da52c30a8ce252c1c99d22dc04c36f80058c3",
+      "bytes": 2424
+    },
+    {
+      "path": "out/check4-maxcalls.json",
+      "change": "added",
+      "sha256": "d1bc83230c8c3393bf54b0c8987e49fa5c02ed09a1fd3a1293fb20a550ae06c0",
+      "bytes": 3585
+    },
+    {
+      "path": "out/check5-obligations.json",
+      "change": "added",
+      "sha256": "19c02aeeabce836b5506e675278ba79cd98ca5d34d7bbfb9eeebcebbb8cf565d",
+      "bytes": 2352
+    },
+    {
+      "path": "out/check6-paths.json",
+      "change": "added",
+      "sha256": "ecf01bd8d387e2baa072b1212e3b12a62cc814679b18c52deddc3369b7f2cc4d",
+      "bytes": 979
+    },
+    {
+      "path": "out/check7-vocab.json",
+      "change": "added",
+      "sha256": "0c3cba867b7653f8904593d7a82b58189f8ae754e06ca55b8cea05ea51c24771",
+      "bytes": 6226
+    },
+    {
+      "path": "out/check8-credentials.json",
+      "change": "added",
+      "sha256": "337bb80aa1ba38ede5c57f5be811abf1bc06f0654d0a3077e2c5c5c1f7c3bf86",
+      "bytes": 235
+    },
+    {
+      "path": "out/check9-dates.json",
+      "change": "added",
+      "sha256": "6207abaecb681c54fa509aa7090dfe504ff4ea8f23ea299d7d8a1799ac7eb8f5",
+      "bytes": 5314
+    },
+    {
+      "path": "out/prereg-checks.json",
+      "change": "added",
+      "sha256": "2e600c8c3c55c566d4bfbea03a75babdc8c3cbba591362e669bab70a7e2d6a6c",
+      "bytes": 35810
+    },
+    {
+      "path": "out/prereg-checks.md",
+      "change": "added",
+      "sha256": "bc74f4eaeedadbd64364a9ccfb67ed920db81131021268ca19d4d5b8447f6ded",
+      "bytes": 21546
+    },
+    {
+      "path": "out/sha-token-map.json",
+      "change": "added",
+      "sha256": "f4f4fd2d0933400e8add3d8373704cfcbd7c9366139fd2033dad0cc86a1cf866",
+      "bytes": 1432
+    }
+  ],
+  "expected_outputs_present": [
+    "out/prereg-checks.md",
+    "out/prereg-checks.json",
+    "check/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 10,
+    "list_dir": 4,
+    "grep": 3,
+    "write_file": 16,
+    "run_command": 19
+  },
+  "tool_call_total": 52,
+  "iterations": 36,
+  "prompt_tokens": 1883021,
+  "completion_tokens": 26361,
+  "total_tokens": 1909382,
+  "wall_seconds": 413.259,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 12,
+  "transcript_path": "prod-runs/p2-prereg-mechanical/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p2-prereg-mechanical/sandbox"
+}

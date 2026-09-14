@@ -1,0 +1,35 @@
+{
+  "task_id": "d-03-decision-record",
+  "title": "Condense design section 5 into a decision-record paragraph",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "**Done.** I wrote `out/decision-record.md`: one dense, declarative paragraph (528 words, verified programmatically to be a single paragraph with no bullets, headings, or tables) in the register of `docs/ledger/house-style-samples.md` — backticked identifiers, em-dash apparatus, FW5 and spec citations inline.\n\n**What the paragraph carries** (all verified present by the check above): `obligations.json` published and sha256-pinned before cycle 1 with O and P barred from shifting inside an assessment (FW5:787), and `decide.py`'s digest inside `loop_plan_id`; O as the failed obligations the chain exists to discharge, each a prose predicate plus a program check over readable artifacts; P as the protected obligations, preserved or the chain stops; exactly one outcome returned per cycle from the ξ/ξ′ evaluation; the guard rails evaluated first (`custody_halt`, `all_arms_ended`, `instrument_fault` with its `STREAK_MAX`/`JUDGE_ERR_MAX` triggers and the `audit-the-reader` spawn); the five clauses in their fixed order with what each stops or continues on, including `ProducedBy` (provenance, not temporal succession) for CONTINUE; `losses_outside_P` written every cycle and present even when empty (FW5:802); the mandatory `would_reopen` field on every stop; and the rule that changing any threshold after first look mints a new `loop_plan_id` as a new pre-registration. No clause is count-shaped: clause 4 is stated as set-identity over `(cell, register, mark)` triples, clause 5 as a declared budget — an attention-and-spend question, never an adjudication — and the why-not-a-meter argument is given in the design's own terms (no quantity of readings, marks, agreeing endpoints or `differs`; no order in the vocabulary; registers never summed; `assert_no_scoring_keys` makes aggregates unexpressible; the all-satisfied clause terminates rather than rewards). The resource boundary is never called exhaustion.\n\n**Source sentences dropped, and why the rule is unchanged by dropping them:**\n\n1. *The o1–o5 enumerations* (\"every row in the pre-registered reading set carries either a passage-witnessed relation…\", \"every C001 cell carries four register marks…\", \"every mark and every relation carries a citation resolving under G2 and G3…\", \"every cell's block… carries a reason code from the closed set…\", \"the audit record in force is not older than `AUDIT_PERIOD` cycles\") — these instantiate O's definition; the decision rule operates on *whatever* the pinned `obligations.json` declares, so the rule is identical for any O.\n2. *The p1–p9 enumerations* (ORIGINAL bytes, correspondence table, objection-block confinement, no scoring key, write-once records, no averaging/majority vote, no `att`/`dep` minting, optional appellate, baseline sha) — same reason: they instantiate P's definition; clause 1 reads \"any p\", not the list.\n3. *\"A cycle may be net withdrawal — more cells moving to `unresolved` than away from it — and still be recorded as progress if an o was discharged, or as no progress if none was\"* — commentary glossing why clause 2 keys on discharged obligations; the clause itself is fully stated without it, and its \"progress\" vocabulary is a count-adjacent gloss the constraint pushes against.\n4. *\"`decision.json` is registered with `provenance.role = IMPORT` and a `dependence` ref on every reading artifact it read, so refuting a reading leaves the decision record `suspended_unsupported`\"* — downstream provenance bookkeeping for the emitted record; it fires after the decision is returned and cannot alter any stop/continue clause.\n5. *\"`decide.py`'s own digest is inside `loop_plan_id`\"* — retained in substance via \"folded into `loop_plan_id`\"; only the sentence boundary was dropped, not the content. Everything else in §5 is carried.\n\n**Verification:** the sandbox contains no test suite (no `run_tests.py`, no `tests/`), so I ran a `python3 -c` structural check instead: exit 0 — single paragraph; all 36 required elements present; zero count-shaped phrasings (\"number of\", \"majority\", \"when enough\", etc.); outcome-clause order (protected_loss → continue → obligations_discharged → no_new_reading_changes → resource_boundary) holds in the text.",
+  "files_written": [
+    {
+      "path": "out/decision-record.md",
+      "change": "added",
+      "sha256": "53212347e96d028a7abbde1e62beeba2176b7264e047c3def779793d39ba91a7",
+      "bytes": 3332
+    }
+  ],
+  "tool_calls": {
+    "read_file": 5,
+    "list_dir": 2,
+    "grep": 1,
+    "write_file": 1,
+    "run_command": 1
+  },
+  "tool_call_total": 10,
+  "iterations": 7,
+  "prompt_tokens": 91063,
+  "completion_tokens": 10651,
+  "total_tokens": 101714,
+  "wall_seconds": 212.958,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 6,
+  "transcript_path": "runs/d-03-decision-record/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/d-03-decision-record/sandbox"
+}

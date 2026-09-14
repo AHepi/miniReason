@@ -1,0 +1,83 @@
+{
+  "task_id": "c-01-packs",
+  "title": "Implement W2-PACKS (packs) with its tests",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Done. `python3 run_tests.py tests.loop.test_packs` reports **OK — 26 tests** (the module test run; the full discover run in this sandbox also runs only these 26, since no other test files were copied in).\n\n## What I wrote\n\n- **`src/minireason/loop/packs.py`** — W2-PACKS. Public interface of the wave-plan entry, in full: `render_row`, `render_exchange`, `render_register`, `render_paraphrase_request`, `precedent_slice`, `pack_sha`, `BaselineNotFirst`, plus `Pack`, `PackInvalid`, `PrecedentEntry`, `PRECEDENT_QUERY`, `PACK_SCHEMA`, `INSTRUCTIONS` and `NEW_CODES`. Imports every shared vocabulary from its wave-0 owner (`READING_BANNER`, `REGISTER_IDS`, `FORBIDDEN_KEYS`, `RUBRIC_EVAL`, `FORBIDDEN_KEYS`-driven scans from `standard`; `assert_no_scoring_keys` from `contracts`; `Surface` from `surface`; `LoopError` from `types`) and retypes none.\n- **`tests/loop/test_packs.py`** — house-style tests, one class per acceptance clause, all offline, no repository file read except the shipped standard body/ceiling via the modules themselves.\n\n## Acceptance clauses, and how each is tested\n\n1. **Identical inputs give identical bytes** — every renderer is a pure function of its inputs; `IdenticalInputsGiveIdenticalBytes` re-renders the row, exchange and register packs from independently built equal inputs and asserts identical `text`, `sha` and `as_dict()`, and asserts `pack_sha == sha256(utf-8(text))` computed by hand.\n2. **No label/att/dep/status/other cell/other seat** — closed by construction (each render is closed over exactly its inputs), and closed textually by `test_no_fixed_pack_wording_carries_a_forbidden_token` scanning every module-authored section; `framing.banner` (which *refuses* att/dep/status in so many words), `rubric` (frozen standard body), `precedent.query` (the logged selection predicate naming `status == accepted`) and the baseline seal are the four sections whose required verbatim content names the forbidden tokens. G12's `assert_no_scoring_keys` runs over every `Pack.as_dict()` before it is returned, and a section label carrying a scoring word is refused at the render.\n3. **Lexical-overlap banner verbatim** — the banner section *is* `standard.READING_BANNER` (asserted with `assertIs`), carrying through from the critic pack into the judge pack unchanged.\n4. **Register pack without `baseline_sha` raises BaselineNotFirst** — tested on `None`, `\"\"` and `0`; `.code == \"BASELINE_NOT_FIRST\"`, and the token is the pre-existing `FAILURE_CODES` member, not a new code.\n5. **Precedent query recorded, appellate first** — `PRECEDENT_QUERY` is a data value logged verbatim in the pack's `precedent.query` section; `precedent_slice` executes it over the harness materialization: accepted citation-bearing readings, with `verdict == \"appellate-ruling\"` warrants spliced ahead, registration order within each class, `k` capping appellate first then total. Tested for order, for the cap semantics, and for rejection of non-accepted or non-citing candidates.\n\n## New codes and where they belong\n\n`NEW_CODES = (\"PACK_INPUT_MALFORMED\", \"PACK_SCHEMA_MISMATCH\")` — both belong in **`types.FAILURE_CODES`** (with `TOKEN_ARGUMENT` entries), per wave-1 decision 6; I may not edit `types.py` here. `BASELINE_NOT_FIRST` is already in `FAILURE_CODES` and is deliberately not in `NEW_CODES`.\n\n## Stubs\n\n`PRECEDENT_QUERY[\"top_k\"]` is the only stub-shaped member: the query carries a `top_k: None` placeholder because the cap is the function argument `k`, not part of the query text. Every public callable is fully implemented; none is a placeholder.\n\n## Points the design/wave-0/wave-1 texts did not settle, and my decisions\n\n- **What an appellate ruling is.** Nothing upstream defines one. I used `Warrant.verdict == \"appellate-ruling\"` (the pre-registered reopen reason), with the `trace_ref` blob as its text. If the integrator decides appellancy lives elsewhere (e.g. a `Rule` or an appeals directory), only the second loop of `precedent_slice` changes; the ordering contract and tests stay.\n- **\"Citing this standard.\"** Settled as: the artifact's interface commits to a commitment whose `eval == RUBRIC_EVAL`. A looser citation rule would admit readings tried under a different rubric; the strict reading is conservative. `standard_id` is carried to honour the wave-plan signature but is not matched — recorded in the module docstring and in the query's `cites_standard_eval`.\n- **`framing`'s shape.** Unspecified upstream; taken as a mapping with `uptake: Sequence[bool]` and `notes: str`. If the integrator fixes a richer framing record, only `render_row`'s two optional reads change.\n- **`cell`'s shape for `render_register`.** Taken as `{left_text, right_text}`. If it becomes a real cell record, the two `_require_text` reads on it change, nothing else.\n- **Pack identity = sha of text only.** The query text and presentation constants are outside the content address by choice, so they cannot be altered to move a pinned identity — documented in the module docstring.\n- **`Pack.text` is str, not bytes.** Packs are prompts; `Surface` owns the byte/offset discipline and all G2/G3 resolution happens against the surface, never against pack bytes (the material section is `surface.decoded` verbatim, tested). If the integrator wants pack byte-offsets, the module would need its own offset table — it currently has none, by design.",
+  "files_written": [
+    {
+      "path": "src/minireason/loop/packs.py",
+      "change": "added",
+      "sha256": "72574fa0889bdf4a3eebc71fe42676523d4415ffd4f00add28b60abbae625888",
+      "bytes": 28941
+    },
+    {
+      "path": "tests/loop/test_packs.py",
+      "change": "added",
+      "sha256": "962a5cd445a204912ddb18ca2b8f725b7948f40471138841d2e3b8e395ba0888",
+      "bytes": 19918
+    }
+  ],
+  "expected_outputs_present": [
+    "src/minireason/loop/packs.py",
+    "tests/loop/test_packs.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 16,
+    "grep": 10,
+    "write_file": 3,
+    "run_command": 13
+  },
+  "tool_call_total": 42,
+  "iterations": 32,
+  "prompt_tokens": 2935644,
+  "completion_tokens": 24915,
+  "total_tokens": 2960559,
+  "wall_seconds": 607.087,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 13,
+  "reasoning_chars": [
+    26,
+    0,
+    145,
+    0,
+    286,
+    239,
+    0,
+    0,
+    6499,
+    0,
+    706,
+    660,
+    0,
+    0,
+    0,
+    0,
+    0,
+    78,
+    0,
+    120,
+    0,
+    0,
+    748,
+    0,
+    111,
+    0,
+    0,
+    384,
+    0,
+    0,
+    0,
+    212
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/c-01-packs/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/c-01-packs/sandbox"
+}

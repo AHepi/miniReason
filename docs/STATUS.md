@@ -1,5 +1,48 @@
 # Current research status
 
+## The Kimi K3 subagent workstream is published as a recoverable checkpoint — 2026-09-14
+
+REC-20260914-AC publishes the **Kimi K3 worker harness, its battery, its run records, its fifteen
+Opus controls, the seven Opus judgements, the owner's report and this session's rulings**. All of it
+existed only in an ephemeral session scratchpad until now.
+
+**What completed.** [The owner's report](reviews/kimi-k3-subagent-2026-09-14/REPORT.md) — the
+deliverable ruling 11 authorised and ruling 16 asked for, published **verbatim** — with
+[`PASS1-INTERIM.md`](reviews/kimi-k3-subagent-2026-09-14/PASS1-INTERIM.md),
+[`RUNS-RECLASSIFIED.md`](reviews/kimi-k3-subagent-2026-09-14/RUNS-RECLASSIFIED.md) and the
+[seven judgements](reviews/kimi-k3-subagent-2026-09-14/judgements/) (`family-A.md` … `family-F.md`,
+`pass4.md`), each by a separate Opus 5 subagent instructed to re-execute what it certifies and to
+name what it did not run. The harness is [`tools/kimi_harness/`](../tools/kimi_harness/) —
+`kimi_agent.py`, `run_battery.py`, `reclassify.py`, its 49 offline tests, its README, `PRODUCTION.md`,
+`PROBE-REASONING.md`, the three probe scripts and the fourteen live probe records they wrote. The evidence is
+[`experiments/diagnostics/K001-kimi-k3-subagent-battery/`](../experiments/diagnostics/K001-kimi-k3-subagent-battery/):
+the battery (26 tasks, four pass files, `evaluation.json`, `rubric.md`, `MANIFEST.sha256` over 432
+frozen files, the judge-only `reference/`), **80 run records** across pass 1-4, the production runs
+and the smoke runs — each one's `result.json` plus the directories the worker itself wrote — every
+`SUMMARY.md`, the fifteen controls with their `FINAL.md` and `PROMPT.md`, and `TRANSCRIPTS.md`. This
+session's rulings, including the owner instructions quoted in them, are
+[`docs/reviews/session-rulings-2026-09-14.md`](reviews/session-rulings-2026-09-14.md). Gate:
+`PYTHONPATH=src python3 -X utf8 -m unittest discover -s tests` reports **`Ran 2673 tests in
+222.409s`, `OK (skipped=2)`** — unchanged, because nothing was added under `src/` or `tests/`; the
+harness's own suite reports **`Ran 49 tests`, `OK`**. Credential scan over all 558 staged files:
+**zero key-shaped matches**. **Zero provider calls under this receipt and no credential read.**
+
+**What this does not establish.** It is an **operations** record, not a finding about Mini or FW5.
+It defines no metric, publishes no score and ranks nothing; the report's routing table is a decision
+aid for the orchestrator. Every statement about the worker is about these occasions on this corpus —
+no phrasing control, no repetition under identical conditions. Kimi output reaches the record only
+after Opus verification (ruling 11). **The transcripts are not published**: 81 files, 444 MB, more
+than this whole working tree, so `TRANSCRIPTS.md` records each one's path, byte size, line count and
+sha256 and states that they stay in the ephemeral scratchpad. The frozen corpus `battery/material/`
+is likewise omitted as a reproducible copy of repository files, every one of its 432 files pinned in
+`MANIFEST.sha256`.
+
+**Next authorized task.** **Kimi K3 drafts wave 3** under ruling 16 (`prod-tasks/tasks-w3.json`; the
+battery was still running when this checkpoint was cut, and `w3-audits` has no record here),
+**and Opus 5 integrates and reviews every draft before any of it reaches the record.** Ruling 11
+holds: Opus remains the verifier of every Kimi output that touches the record, and Opus alone judges
+Kimi's own battery, makes design decisions, argues over FW5, and publishes.
+
 ## The automated loop's waves 0-2 are published as a recoverable checkpoint — 2026-09-14
 
 REC-20260914-AA, re-attempted under its own identifier after its first attempt failed its own

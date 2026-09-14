@@ -1,0 +1,27 @@
+[
+ {
+  "id": "p5-a001v4-citations-refine",
+  "title": "Refine the 80 WRONG verdicts of the A001 v4 citation audit to genuine off-by-N candidates",
+  "prompt": "A first-pass citation audit of `staging/STAGING-v4.md` against the FW5 edition `docs/sources/FW5-explanatory-construction.md` (sha256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a`; confirm it) produced `staging/citations-v4-first-pass.json` with 363 citations and 80 verdicts of WRONG. Its own method note says most WRONG rows are attribution ambiguities: a quoted fragment on a staging line that carries several citations was tested against every citation on that line. Your job is to refine those 80 by computation and write `out/citations-v4-refined.md` and `out/citations-v4-refined.json`.\n\nMETHOD, by scripts under `check/`:\n 1. Load the first-pass JSON. For each WRONG row, recover the staging line text and the fragment(s) that failed.\n 2. Re-attribute: for each failed fragment, find every source line where it occurs (after normalising typographic quotes and whitespace). If the fragment occurs at the line of ANY citation on the same staging line, the row is RESOLVED-BY-SIBLING (name the sibling citation). If it occurs nowhere in the source, and the fragment is A001's own notation (a normalised LaTeX rewrite, a file path, a receipt field, a label like `account#c2`, a heading the staging wrote), classify it NOT-A-QUOTE with the reason. Otherwise it is a CANDIDATE.\n 3. For each CANDIDATE, report: the staging line number and its full sentence containing the citation; the citation as written; the cited source line's first 160 characters; every source line where the fragment actually occurs, with its first 160 characters; the distance in lines between the citation and the nearest occurrence; and whether the cited line is a LaTeX display tag line (`\\tag{...}`) whose display body sits on the preceding lines (a common convention where a citation names the tag line while quoting the display). Then a verdict: OFF-BY-N (the quote sits N lines from the cited line and nowhere else), TAG-CONVENTION (cited line is the tag of the display that carries the fragment), or UNRESOLVED.\n 4. Summary: counts per class (RESOLVED-BY-SIBLING, NOT-A-QUOTE, OFF-BY-N, TAG-CONVENTION, UNRESOLVED), each carrying its definition; the full list of OFF-BY-N and UNRESOLVED rows; and a sentence on what this refinement cannot decide (whether a cited line was meant to point at the tag or the body is an authorial question).\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "staging/STAGING-v4.md",
+   "staging/citations-v4-first-pass.json",
+   "docs/sources/FW5-explanatory-construction.md"
+  ],
+  "expected_outputs": [
+   "out/citations-v4-refined.md",
+   "out/citations-v4-refined.json",
+   "check/"
+  ],
+  "evaluation": "mechanical refinement; OFF-BY-N rows go to an Opus check before any correction supplement is written",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 180,
+  "verify_command": null,
+  "transport": "native",
+  "reasoning": "low",
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/a001v4"
+ }
+]

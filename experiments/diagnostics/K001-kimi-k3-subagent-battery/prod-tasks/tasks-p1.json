@@ -1,0 +1,45 @@
+[
+ {
+  "id": "p1-ledger-audit",
+  "title": "Mechanical audit of docs/DECISION_LEDGER.md at today's bytes",
+  "prompt": "Audit `docs/DECISION_LEDGER.md` mechanically and write the result to `out/ledger-audit.md` and `out/ledger-audit.json`.\n\nWHAT TO COMPUTE, each by a script under `check/`:\n 1. Line census: total lines; how many end in CRLF (\\r\\n) and how many in bare LF; the line numbers of every CRLF line (list them all).\n 2. Receipt ids: every distinct token matching the pattern `REC-\\d{8}-[A-Z]+` anywhere in the file, in first-appearance order, with the line number of first appearance and the count of lines carrying each id.\n 3. Today's receipts: the ids dated 20260914, in order of first appearance, and the letter sequence they use; say plainly whether the sequence A..Z is fully used and whether any id after Z (two letters) exists.\n 4. Entry count under three definitions, each reported separately and labelled: (a) lines that begin with `REC-`; (b) lines that begin with `REC-` OR with a markdown bold receipt opener `**REC-`; (c) paragraphs (blank-line separated blocks) whose first non-space token starts with `REC-` or `**REC-`. Do not pick one as \"the\" count; report all three with the definition beside each.\n 5. The count of lines containing the exact substring `Prior verified commit/tree:` and the line number of each.\n 6. Every line matching `VERIFIED <40 hex> TREE <40 hex>`: line number, commit, tree, and the receipt id nearest above it. Also the last such line in the file.\n 7. Credential scan: lines matching `sk-[0-9a-f]{32}` or `[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}` \u2014 report ONLY the line numbers (expect zero hits); never print the matched text.\n 8. The last five lines of the file, verbatim, with line numbers.\n\nWHAT TO PRODUCE: `out/ledger-audit.json` with every number above under named keys, and `out/ledger-audit.md` that renders the same values as short tables. Finish the markdown with a one-paragraph statement of what your patterns would NOT catch (for example a receipt id split across lines).\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "docs/DECISION_LEDGER.md"
+  ],
+  "expected_outputs": [
+   "out/ledger-audit.md",
+   "out/ledger-audit.json",
+   "check/"
+  ],
+  "evaluation": "mechanical: every number reproducible by an independent script over the same bytes",
+  "mode": "tools",
+  "max_iterations": 30,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/home/user/miniReason"
+ },
+ {
+  "id": "p1-a001v3-citations",
+  "title": "Verify every FW5 line citation in A001 STAGING-v3.md by computation",
+  "prompt": "Verify every FW5 line citation in `staging/STAGING-v3.md` against the source it cites and write the result to `out/citations-v3.md` and `out/citations-v3.json`.\n\nTHE SOURCE. `docs/sources/FW5-explanatory-construction.md` is the designated FW5 reading edition, sha256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a`. A citation `:N` or `FW5:N` names line N of that file, 1-based, splitting on newline; `:N-M` (hyphen or en-dash) names the inclusive range. Confirm the sha256 by computation before anything else and report it.\n\nMETHOD, all by scripts under `check/`:\n 1. Extract every citation from the staging file by pattern: forms `FW5:N`, `FW5:N-M`, bare `:N` and `:N-M` where N and M are 2-4 digit numbers. Report the regex you used and the total count, and the count of distinct targets.\n 2. For each citation, take the staging line it sits on and find any quoted text on that line: text inside straight or typographic double quotes, or inside backticks, or a LaTeX fragment inside `\\( ... \\)`. Normalise typographic quotes to straight, collapse whitespace, and test whether each quoted fragment (at least 12 characters long) is a substring of the cited line or range after the same normalisation.\n 3. Verdict per citation: CORRECT (every fragment found verbatim), CORRECT IN SUBSTANCE (found only after normalisation; name the difference), WRONG (a fragment of 12+ characters is not in the cited line or range; print the cited line's first 120 characters and, if a grep of the whole source finds the fragment elsewhere, the line where it actually is), or NO-QUOTE-TO-CHECK (no fragment on that staging line). Never mark WRONG from memory: a WRONG verdict must show the cited line's actual text.\n 4. Also list every cited line number that is blank in the source, and every range whose end precedes its start.\n\nWHAT TO PRODUCE: `out/citations-v3.json` (one object per citation: staging line, citation text, target lines, fragments tested, verdict, note) and `out/citations-v3.md` with a table of the same plus a summary line: how many citations, how many under each verdict, and the list of WRONG ones. Finish by naming what your extraction pattern would not catch.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "staging/STAGING-v3.md",
+   "docs/sources/FW5-explanatory-construction.md"
+  ],
+  "expected_outputs": [
+   "out/citations-v3.md",
+   "out/citations-v3.json",
+   "check/"
+  ],
+  "evaluation": "mechanical: an independent Opus review (REVIEW-3.md) re-read every citation at the line and found no off-by-one; any WRONG verdict is either a true find or a worker error and is checked by the orchestrator",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/a001v3"
+ }
+]

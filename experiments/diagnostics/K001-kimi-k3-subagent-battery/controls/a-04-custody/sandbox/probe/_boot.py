@@ -1,0 +1,8 @@
+"""Put the sandbox root and <root>/src on sys.path, exactly as run_tests.py does."""
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+for _entry in (ROOT, os.path.join(ROOT, "src")):
+    if _entry not in sys.path:
+        sys.path.insert(0, _entry)

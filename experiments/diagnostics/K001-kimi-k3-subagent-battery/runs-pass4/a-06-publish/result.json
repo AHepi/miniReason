@@ -1,0 +1,198 @@
+{
+  "task_id": "a-06-publish",
+  "title": "Adversarial review of W0-PUBLISH (publish)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The review is complete. Summary of the work:\n\n**Read first:** `notes/WAVE0-INTERFACE.md`, the module `src/minireason/loop/publish.py`, both design docs, and cross-module seams in `provider_openai_compat.py` (the redaction scanner) to verify claims rather than assume them. The sandbox contains no `tests/loop/test_publish.py`, so all verification ran through probes executing real `git` against real temporary bare repositories via the module's own `LocalGit` seam.\n\n**Files written:**\n- `review/publish.md` — the review.\n- `probe/` — sixteen probes plus a shared fixture (`fixture.py`, `util_codes.py`, `p1`–`p16`), all run with `python3 probe/<name>.py`.\n\n**Findings (all executed, with verbatim output in the review):**\n\n- **B1 (BLOCKER)** — The history-rewrite guard passes `git add -A/--all/-u/.` and the deletion refspec `git push origin :refs/heads/work` through `LocalGit`; the probe shows the remote branch actually deleted and `add -A` staging a file outside the published path — contradicting the docstring's \"Never: `-A` … any ref deletion … the refusal holds for every caller of LocalGit\".\n- **B2 (BLOCKER)** — A transport failure during the post-push read-back raises `GIT_OPERATION_FAILED` from `publish()` instead of returning `PublishPending(REMOTE_NOT_CONFIRMED)` (a reason that exists in `PENDING_REASONS` but is unreachable on network failure), even though the push already landed; `verify_published`/`check_published` handle the same failure with `except GitCommandFailed: return False`, but `publish()` does not.\n- **S1** — The commit message is never credential-scanned; a credential in `message` was published verbatim to the remote.\n- **S2** — `check_published`'s path branch compares remote bytes to the working tree only; it answered True while HEAD's committed content under the path was unpushed and different.\n- **S3** — The scan decodes with `utf-8, errors=\"replace\"`; a credential split by one invalid byte or encoded UTF-16 published unrefused.\n- **N1–N2** — bounded seams (env scrubbing limited to registered names; `REMOTE_NOT_CONFIRMED` conflates absent-vs-changed ref).\n- **N3** — I suspected `verify_published` reads the index as its expected side; probe `p9` executed the attack and it survived (committed-tree comparison is correct). Recorded as \"could not reproduce\", per the rules.\n\n**\"Tried, and could not break\"** records eight failed attacks: rejected push never forced and never retried in-call; hook refusals classify `PUSH_REJECTED` while transport failures take exactly the four backoff sleeps and `PublishNotConverging` at attempt 3; ref/path parsing refused every malformed spelling; the unstaged-credential refusal left the index byte-clean and the child env scrubbed; deviation 7's tree-vs-bytes split works as documented; the connector equal-tree case records both ids; no `exhaustion` token in receipts; and publish()'s own argv passes its own guard.\n\n**Last test run:** all sixteen probe scripts, exit 0, re-run via a `python3 -c` subprocess driver (the only runner form available, since no shell exists in the sandbox). No files under `src/` were modified.",
+  "files_written": [
+    {
+      "path": "probe/fixture.py",
+      "change": "added",
+      "sha256": "06eb96f4c5be024e94323ade3ad19defdbb344b9120893ae9d6111986c6399b3",
+      "bytes": 1875
+    },
+    {
+      "path": "probe/p10_scan_encodings.py",
+      "change": "added",
+      "sha256": "a5138b552395a6ff3e6c611dfa3291139efb05941dc0f4fecb01de1575bfcf79",
+      "bytes": 2195
+    },
+    {
+      "path": "probe/p11_leftovers.py",
+      "change": "added",
+      "sha256": "5dd5481b354f449640ec32663e8a1ce79752ac399b781806567656d19b66e0e6",
+      "bytes": 1747
+    },
+    {
+      "path": "probe/p12_connector_equal_tree.py",
+      "change": "added",
+      "sha256": "7abc08da24c7862fc8482eff6f0a68f0f6606fc885ed0f380c360707fb6a8a5d",
+      "bytes": 2156
+    },
+    {
+      "path": "probe/p13_scan_coverage.py",
+      "change": "added",
+      "sha256": "4e0d685dbda4bae94101366d16d5685181cb03a2c93b53a0b65033a290aadd37",
+      "bytes": 2990
+    },
+    {
+      "path": "probe/p14_refs_and_paths.py",
+      "change": "added",
+      "sha256": "c85ee073286d337bc7cdfeeccae236ac96533d3809fd0cf752cabf11ab95616e",
+      "bytes": 2133
+    },
+    {
+      "path": "probe/p15_check_uncommitted.py",
+      "change": "added",
+      "sha256": "7461be09fe30947f4fa26bd2b3cf8eca12e7759c7963e26d09a7dbbd0efa37fb",
+      "bytes": 2095
+    },
+    {
+      "path": "probe/p16_rejection_markers.py",
+      "change": "added",
+      "sha256": "70ef729787f0e45b9c7da698ad552a3a6e1ad020cab5a842f75f6b4ecd7d6abd",
+      "bytes": 1698
+    },
+    {
+      "path": "probe/p1_credential_refusal.py",
+      "change": "added",
+      "sha256": "0649264d7d035c60799a4864a6da3570a286d4275c41b37199bd3d1bbe56cd8c",
+      "bytes": 2000
+    },
+    {
+      "path": "probe/p2_untracked_no_upstream.py",
+      "change": "added",
+      "sha256": "8d00cba0b39f5ff3d24e9872d13f20f23ac4339f72bdc1cb13a6e5295997cb3b",
+      "bytes": 1468
+    },
+    {
+      "path": "probe/p3_happy_and_diverged.py",
+      "change": "added",
+      "sha256": "1cdeef1b216766310f0319f2028bf5c8ca85552228068abe3c978475b756d3c1",
+      "bytes": 3234
+    },
+    {
+      "path": "probe/p4_argv_guard.py",
+      "change": "added",
+      "sha256": "4fd64246838fb55b9aa774eee42313ef4885927e69fa5e1acb8601aa4424356d",
+      "bytes": 4309
+    },
+    {
+      "path": "probe/p5_push_failures.py",
+      "change": "added",
+      "sha256": "0501b477aa44b2aa7da03fa2649a0e68a8e07ccaaf05f65bc25ae2e4be76669f",
+      "bytes": 2335
+    },
+    {
+      "path": "probe/p6_check_published.py",
+      "change": "added",
+      "sha256": "a115ffcfca95e8246e6ab78213e6ed01a76c5480b7e6a76a1507d07f53313922",
+      "bytes": 2523
+    },
+    {
+      "path": "probe/p7_verify_semantics.py",
+      "change": "added",
+      "sha256": "b52ac2b548e467b34d7935eb96fca86f250d9d3b5f81f95c889216438cb99f5d",
+      "bytes": 4480
+    },
+    {
+      "path": "probe/p8_readback_raise.py",
+      "change": "added",
+      "sha256": "c11a602b34d81c09f1618107ff2a8feea29a0902c6499916ae91c317941221ef",
+      "bytes": 1966
+    },
+    {
+      "path": "probe/p9_index_vs_commit.py",
+      "change": "added",
+      "sha256": "6e04e3da4bfd9d5d39721b6ce92cc0efe0cc777a45e7fe4266cce83a2711f784",
+      "bytes": 2419
+    },
+    {
+      "path": "probe/util_codes.py",
+      "change": "added",
+      "sha256": "5a306fc0f3b38106805f0d1640011fc51b085d319af055d518c592753fde39d5",
+      "bytes": 767
+    },
+    {
+      "path": "review/publish.md",
+      "change": "added",
+      "sha256": "6fb7fca1a4e49ccf79cd5225cf98bd8d25953069148face436193268e585daa4",
+      "bytes": 19861
+    }
+  ],
+  "expected_outputs_present": [
+    "review/publish.md",
+    "probe/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 4,
+    "list_dir": 1,
+    "grep": 2,
+    "write_file": 23,
+    "run_command": 29
+  },
+  "tool_call_total": 59,
+  "iterations": 44,
+  "prompt_tokens": 1793168,
+  "completion_tokens": 39479,
+  "total_tokens": 1832647,
+  "wall_seconds": 1112.111,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 12,
+  "reasoning_chars": [
+    25,
+    247,
+    27070,
+    17838,
+    6776,
+    461,
+    643,
+    0,
+    212,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    255,
+    0,
+    0,
+    3980,
+    0,
+    0,
+    0,
+    9966,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    116
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/a-06-publish/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/a-06-publish/sandbox"
+}

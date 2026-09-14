@@ -1,0 +1,83 @@
+[
+ {
+  "id": "w3-trial",
+  "title": "Draft W3-TRIAL (src/minireason/loop/trial.py) and its tests",
+  "prompt": "Implement the wave-3 module W3-TRIAL of the automated loop and its tests, so that the test file runs green, and write both files.\n\nWHAT TO PRODUCE: `src/minireason/loop/trial.py` and `tests/loop/test_trial.py`. A run without both files written is not complete. Run `python3 run_tests.py tests.loop.test_trial` after every substantial edit and iterate until it prints OK; then run `python3 run_tests.py` (the whole loop suite) once and report its final line. If a test fails because the module is wrong, fix the module; if it fails because a sibling module behaves differently from what the design says, do not edit the sibling: write the test against the sibling's actual behaviour and record the difference in a comment.\n\nTHE DESIGN ENTRY, verbatim from design/design-s7-wave-plan.md:\n  purpose: The guard procedure G0-G12 end to end: critic, defender, cross-family judge ensemble, then constitution, schema, uniqueness on both surfaces, operative target, vocabulary, unanimity, order-swap, paraphrase spot-check, no-re-read and no-scoring-key. Blocked outcomes register nothing and are logged by reason code.\n  public_interface: run_trial(harness, surface, standard, seats, config, *, mode, reopen_reason=None) -> TrialResult; TrialResult.outcome; TrialResult.blocks; TrialResult.transcript; build_transcript(result) -> str; ReopenRefused\n  depends_on: W0-CONTRACTS, W0-STANDARD, W1-SURFACE, W1-GRAPH, W2-PACKS, W2-ROLES\n  acceptance: Every block path yields no warrant, one Measure event and a reason code from BLOCK_CODES; an ensemble split blocks and records both rulings verbatim, never a majority; a quote occurring twice in the material blocks; a quote resolving only into the pack framing blocks; a decisive_point absent from case+newline+answer blocks and the emitted transcript satisfies deepreason_core.harness.conforming_transcript; an order-swap flip blocks; a paraphrase flip blocks and is logged against the seat; a paraphrase that does not preserve a quoted span marks the spot-check not_performed rather than passing it; re-reading an unresolved cell without a listed reopen_reason raises ReopenRefused at the write; the whole module runs on OfflineProvider fixtures with zero sockets.\n  estimated size: about 680 lines.\n\nREAD FIRST, in this order: notes/WAVE2-INTERFACE.md (what waves 0-2 actually expose, which module owns each constant, every code; it supersedes the earlier interface notes where they differ), notes/WAVE1-INTERFACE.md and notes/WAVE0-INTERFACE.md, design/design-s2-roles-and-guard.md, design/design-s3-readings-and-marks.md, design/design-s5-decision-rule.md, design/design-s6-claim-ceiling.md, design/design-s7-wave-plan.md (your entry and its neighbours), then the modules you depend on under src/minireason/loop/ and two existing test files (tests/loop/test_packs.py and tests/loop/test_decide.py) as the house style for tests.\n\nHOUSE RULES. Import every shared constant from its owner module (types, contracts, standard, custody, graph, obligations); never retype a code or a sentence that another module owns. Any new failure code goes in a module-level `NEW_CODES: tuple[str, ...]` with a one-line reason each, and is not added to types.FAILURE_CODES (the integrator folds it). No score, rank, average, majority vote, percentage or progress meter anywhere; a disagreement is `unresolved`; a budget stop is a resource boundary and never \"exhaustion\". Every acceptance clause in the entry gets at least one test named after it. The module must import under `python3 -W error -c \"import sys; sys.path.insert(0,'src'); import minireason.loop.trial\"` except for the known repository defect in use_relation_h005.py's docstring (an unescaped backslash-s); if that is what fails, say so and check the import without -W error instead. Zero network: every provider interaction goes through the OfflineProvider fixtures the existing tests use. Do not edit any file under src/ other than the one you are writing, and no file under tests/ other than your test file.\n\nFINAL MESSAGE: the last test lines verbatim, the list of acceptance clauses with the test that holds each, every NEW_CODES member with its reason, and every place you had to deviate from the design entry with the reason.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "operations.md",
+   "run_tests.py",
+   "src",
+   "tests",
+   "design",
+   "notes"
+  ],
+  "expected_outputs": [
+   "src/minireason/loop/trial.py",
+   "tests/loop/test_trial.py"
+  ],
+  "evaluation": "Opus integrator runs the tests, reviews against the acceptance clauses, and integrates or rewrites",
+  "mode": "tools",
+  "max_iterations": 90,
+  "max_tokens": 24576,
+  "command_timeout": 300,
+  "verify_command": "python3 run_tests.py tests.loop.test_trial",
+  "transport": "native",
+  "reasoning": "low",
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/wave3"
+ },
+ {
+  "id": "w3-audits",
+  "title": "Draft W3-AUDITS (src/minireason/loop/audits.py) and its tests",
+  "prompt": "Implement the wave-3 module W3-AUDITS of the automated loop and its tests, so that the test file runs green, and write both files.\n\nWHAT TO PRODUCE: `src/minireason/loop/audits.py` and `tests/loop/test_audits.py`. A run without both files written is not complete. Run `python3 run_tests.py tests.loop.test_audits` after every substantial edit and iterate until it prints OK; then run `python3 run_tests.py` (the whole loop suite) once and report its final line. If a test fails because the module is wrong, fix the module; if it fails because a sibling module behaves differently from what the design says, do not edit the sibling: write the test against the sibling's actual behaviour and record the difference in a comment.\n\nTHE DESIGN ENTRY, verbatim from design/design-s7-wave-plan.md:\n  purpose: Judge audits over readings already on record: paraphrase invariance, premise deletion, planted-flaw calibration on a constructed set, ensemble-disagreement series. Hits become eval:program demonstrative warrants against the validity nodes of that seat's readings.\n  public_interface: build_calibration_set(standard) -> list; paraphrase_invariance(harness, judge_caller, readings) -> list; premise_deletion(harness, judge_caller, readings) -> list; planted_flaw_calibration(harness, judge_caller, set) -> float|None; run_audits(harness, judge_caller, readings, config) -> AuditReport\n  depends_on: W0-CONTRACTS, W1-GRAPH, W2-PACKS, W2-ROLES\n  acceptance: Calibration rows are true by construction and a clean control that sustains is scored as an error; a seeded flipping judge produces a paraphrase hit whose warrant collapses that seat's readings on recompute; a ruling surviving deletion of its own decisive_point produces a premise hit; an error rate above JUDGE_ERR_MAX returns a Spawn signal; every audit call reaches the log exactly once; audit findings carry their own validity nodes and are themselves attackable.\n  estimated size: about 540 lines.\n\nREAD FIRST, in this order: notes/WAVE2-INTERFACE.md (what waves 0-2 actually expose, which module owns each constant, every code; it supersedes the earlier interface notes where they differ), notes/WAVE1-INTERFACE.md and notes/WAVE0-INTERFACE.md, design/design-s2-roles-and-guard.md, design/design-s3-readings-and-marks.md, design/design-s5-decision-rule.md, design/design-s6-claim-ceiling.md, design/design-s7-wave-plan.md (your entry and its neighbours), then the modules you depend on under src/minireason/loop/ and two existing test files (tests/loop/test_packs.py and tests/loop/test_decide.py) as the house style for tests.\n\nHOUSE RULES. Import every shared constant from its owner module (types, contracts, standard, custody, graph, obligations); never retype a code or a sentence that another module owns. Any new failure code goes in a module-level `NEW_CODES: tuple[str, ...]` with a one-line reason each, and is not added to types.FAILURE_CODES (the integrator folds it). No score, rank, average, majority vote, percentage or progress meter anywhere; a disagreement is `unresolved`; a budget stop is a resource boundary and never \"exhaustion\". Every acceptance clause in the entry gets at least one test named after it. The module must import under `python3 -W error -c \"import sys; sys.path.insert(0,'src'); import minireason.loop.audits\"` except for the known repository defect in use_relation_h005.py's docstring (an unescaped backslash-s); if that is what fails, say so and check the import without -W error instead. Zero network: every provider interaction goes through the OfflineProvider fixtures the existing tests use. Do not edit any file under src/ other than the one you are writing, and no file under tests/ other than your test file.\n\nFINAL MESSAGE: the last test lines verbatim, the list of acceptance clauses with the test that holds each, every NEW_CODES member with its reason, and every place you had to deviate from the design entry with the reason.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "operations.md",
+   "run_tests.py",
+   "src",
+   "tests",
+   "design",
+   "notes"
+  ],
+  "expected_outputs": [
+   "src/minireason/loop/audits.py",
+   "tests/loop/test_audits.py"
+  ],
+  "evaluation": "Opus integrator runs the tests, reviews against the acceptance clauses, and integrates or rewrites",
+  "mode": "tools",
+  "max_iterations": 90,
+  "max_tokens": 24576,
+  "command_timeout": 300,
+  "verify_command": "python3 run_tests.py tests.loop.test_audits",
+  "transport": "native",
+  "reasoning": "low",
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/wave3"
+ },
+ {
+  "id": "w3-report",
+  "title": "Draft W3-REPORT (src/minireason/loop/report.py) and its tests",
+  "prompt": "Implement the wave-3 module W3-REPORT of the automated loop and its tests, so that the test file runs green, and write both files.\n\nWHAT TO PRODUCE: `src/minireason/loop/report.py` and `tests/loop/test_report.py`. A run without both files written is not complete. Run `python3 run_tests.py tests.loop.test_report` after every substantial edit and iterate until it prints OK; then run `python3 run_tests.py` (the whole loop suite) once and report its final line. If a test fails because the module is wrong, fix the module; if it fails because a sibling module behaves differently from what the design says, do not edit the sibling: write the test against the sibling's actual behaviour and record the difference in a comment.\n\nTHE DESIGN ENTRY, verbatim from design/design-s7-wave-plan.md:\n  purpose: Renderers for READING_TABLE.md, COMPARISON.md, CYCLE.md and CLOSING.md: the frozen ceiling block, the block register by reason code with counts, the audit record in force, the stopping sentence, losses_outside_P, the INDETERMINATE list, and the unread / unresolved / machine-unresolved trichotomy.\n  public_interface: render_reading_table(harness, plan) -> str; render_comparison(harness, plan) -> str; render_cycle(decision, state) -> str; render_closing(run) -> str; CEILING_REQUIRED_SENTENCES; BLOCK_REGISTER_HEADINGS\n  depends_on: W0-CONTRACTS, W1-GRAPH, W2-DECIDE\n  acceptance: Rendering refuses without CEILING.md at its pinned sha; every required ceiling sentence appears verbatim in every table and in the closing record; blocks print with counts by reason code; an all-blocked run renders as declined-to-read and never as no relations found; unread, unresolved and machine-unresolved print as three distinct states; no rendered artifact contains a score, a rank, a combined register or the token 'exhaustion'; losses_outside_P is present when empty; appellate_rulings 0 renders the not-validated sentence.\n  estimated size: about 520 lines.\n\nREAD FIRST, in this order: notes/WAVE2-INTERFACE.md (what waves 0-2 actually expose, which module owns each constant, every code; it supersedes the earlier interface notes where they differ), notes/WAVE1-INTERFACE.md and notes/WAVE0-INTERFACE.md, design/design-s2-roles-and-guard.md, design/design-s3-readings-and-marks.md, design/design-s5-decision-rule.md, design/design-s6-claim-ceiling.md, design/design-s7-wave-plan.md (your entry and its neighbours), then the modules you depend on under src/minireason/loop/ and two existing test files (tests/loop/test_packs.py and tests/loop/test_decide.py) as the house style for tests.\n\nHOUSE RULES. Import every shared constant from its owner module (types, contracts, standard, custody, graph, obligations); never retype a code or a sentence that another module owns. Any new failure code goes in a module-level `NEW_CODES: tuple[str, ...]` with a one-line reason each, and is not added to types.FAILURE_CODES (the integrator folds it). No score, rank, average, majority vote, percentage or progress meter anywhere; a disagreement is `unresolved`; a budget stop is a resource boundary and never \"exhaustion\". Every acceptance clause in the entry gets at least one test named after it. The module must import under `python3 -W error -c \"import sys; sys.path.insert(0,'src'); import minireason.loop.report\"` except for the known repository defect in use_relation_h005.py's docstring (an unescaped backslash-s); if that is what fails, say so and check the import without -W error instead. Zero network: every provider interaction goes through the OfflineProvider fixtures the existing tests use. Do not edit any file under src/ other than the one you are writing, and no file under tests/ other than your test file.\n\nFINAL MESSAGE: the last test lines verbatim, the list of acceptance clauses with the test that holds each, every NEW_CODES member with its reason, and every place you had to deviate from the design entry with the reason.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "operations.md",
+   "run_tests.py",
+   "src",
+   "tests",
+   "design",
+   "notes"
+  ],
+  "expected_outputs": [
+   "src/minireason/loop/report.py",
+   "tests/loop/test_report.py"
+  ],
+  "evaluation": "Opus integrator runs the tests, reviews against the acceptance clauses, and integrates or rewrites",
+  "mode": "tools",
+  "max_iterations": 90,
+  "max_tokens": 24576,
+  "command_timeout": 300,
+  "verify_command": "python3 run_tests.py tests.loop.test_report",
+  "transport": "native",
+  "reasoning": "low",
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/wave3"
+ }
+]

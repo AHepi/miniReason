@@ -1,0 +1,98 @@
+{
+  "probe": "02-json-schema",
+  "at": "2026-09-14T10:39:20.894701+00:00",
+  "endpoint": {
+    "name": "ollama/kimi-k3",
+    "base_url": "https://ollama.com/v1",
+    "model": "kimi-k3",
+    "family": "ollama-cloud/kimi"
+  },
+  "url": "https://ollama.com/v1/chat/completions",
+  "method": "POST",
+  "request_header_names": [
+    "Accept",
+    "Authorization",
+    "Content-Type"
+  ],
+  "request_bytes": 511,
+  "request_bytes_sha256": "d03d34f28464da34339a91613a0a7152a5c12cdeae109625ea88ebf465b080f4",
+  "request": {
+    "model": "kimi-k3",
+    "stream": false,
+    "max_tokens": 32768,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Reply with one JSON object and nothing else."
+      },
+      {
+        "role": "user",
+        "content": "Return JSON with keys ok (boolean) and model (string, your model name)."
+      }
+    ],
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "probe",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "model": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ok",
+            "model"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "timeout_seconds": 600,
+  "http_status": 200,
+  "elapsed_ms": 2883,
+  "response_bytes": 1007,
+  "response_sha256": "a14f35663c8fd32ab0e24b1ece883cb9688a28b4f09b1d4e735b4c2beedec04e",
+  "credential_echo": false,
+  "reasoning_fields_seen": [
+    "reasoning"
+  ],
+  "response": {
+    "id": "chatcmpl-251",
+    "object": "chat.completion",
+    "created": 1789382363,
+    "model": "kimi-k3",
+    "system_fingerprint": "fp_ollama",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"ok\": true, \"model\": \"Claude\"}",
+          "reasoning": {
+            "__not_persisted__": true,
+            "sha256": "95bf68f18fd2258d1093383c7f64d20403d7fd7037b7d74d6d8af5486ecb6f49",
+            "chars": 600,
+            "estimated_tokens": 150
+          }
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 179,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens": 170,
+      "total_tokens": 349
+    }
+  },
+  "status": "COMPLETE"
+}

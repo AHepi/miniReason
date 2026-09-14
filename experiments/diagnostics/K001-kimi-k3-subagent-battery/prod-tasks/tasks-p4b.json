@@ -1,0 +1,33 @@
+[
+ {
+  "id": "p4-checkpoint-scan",
+  "title": "Credential scan, digest manifest and import/test run of the loop checkpoint snapshot",
+  "prompt": "Produce an independent pre-publication record of the loop implementation snapshot in this sandbox and write `out/checkpoint-scan.md`, `out/checkpoint-manifest.json` and `out/test-run.txt`.\n\nWHAT IS HERE. `src/minireason/loop/` (the package under checkpoint), `tests/loop/` (its tests), `.gitattributes`, `pyproject.toml`, and five markdown documents at the sandbox root. `src/minireason/` also holds the package's runtime siblings so the package can import. Nothing here is to be modified.\n\nWHAT TO PRODUCE, by scripts under `check/`:\n 1. `out/checkpoint-manifest.json`: every file under `src/minireason/loop`, `tests/loop`, `.gitattributes`, `pyproject.toml` and the five `.md` files at the root, with byte size, sha256, line count, and whether any line ends in CRLF; plus a total file count and total bytes.\n 2. Credential scan over every file listed: lines matching `sk-[0-9a-f]{32}` or `[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}`, and lines containing `DEEPSEEK_API_KEY=` or `OLLAMA_API_KEY=` followed by anything other than whitespace or a quote-then-empty; report ONLY path and line number; expect zero for the first two patterns; for the env-name pattern, report the count of lines that merely name the variable (allowed) separately from lines that assign a value (not allowed).\n 3. Import check: for every module in `src/minireason/loop/*.py`, run `python3 -W error -c \"import sys; sys.path.insert(0,'src'); import minireason.loop.<name>\"` and record OK or the error's first line.\n 4. Test run: `python3 -X utf8 -m unittest discover -s tests/loop -t .` with `PYTHONPATH` handled by writing a tiny runner `check/run_loop_tests.py` that inserts `src` into sys.path and calls unittest's discover programmatically (there is no shell so you cannot set environment variables). Capture the final \"Ran N tests in Xs\" line and the verdict verbatim into `out/test-run.txt`, plus the list of any failures/errors by test id.\n 5. `out/checkpoint-scan.md`: the totals, the scan result, the import table, the test line, and a closing paragraph on what this does not establish (it is a snapshot; the publisher's own run in the repository is the record).\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "src",
+   "tests",
+   ".gitattributes",
+   "pyproject.toml",
+   "REVIEW-WAVE0.md",
+   "REVIEW-WAVE1.md",
+   "WAVE0-INTERFACE.md",
+   "WAVE1-INTERFACE.md",
+   "WAVE1-INTEGRATION-DECISIONS.md"
+  ],
+  "expected_outputs": [
+   "out/checkpoint-scan.md",
+   "out/checkpoint-manifest.json",
+   "out/test-run.txt",
+   "check/"
+  ],
+  "evaluation": "mechanical; cross-check of the publisher's own verification",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 300,
+  "verify_command": null,
+  "transport": "native",
+  "reasoning": "low",
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/checkpoint1"
+ }
+]

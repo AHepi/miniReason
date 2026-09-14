@@ -1,0 +1,1 @@
+__path__ = [['/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/b-02-seats/sandbox/_scratch/src/minireason', '/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/b-02-seats/sandbox/src/minireason']]

@@ -1,0 +1,124 @@
+{
+  "task_id": "a-01-types",
+  "title": "Adversarial review of W0-TYPES (types)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The sandbox ships zero tests (expected — `tests/loop/` is empty in the snapshot), so the probes are the executed evidence. All nine probe files run with exit 0 except where I noted my own probe bug mid-development (p08 initially; fixed and re-run).\n\n## Summary\n\n**Review written to `review/types.md`; probes written to `probe/p01`–`p09`.**\n\n**Findings:**\n\n- **BLOCKER B1** (`types.py:1018, 1046`): `CustodyReport.from_mapping`/`from_findings` bypass `_sequence()`, so a bare-string `checks` is silently exploded into N single-character \"codes\" (`('S','O','U','R','C','E',...)`), contradicting the module's strict-loader doctrine and the interface record's \"bare string = one finding\" contract; the constructor refuses the identical input, so load-vs-construct disagree. Executed in `probe/p01`.\n- **SHOULD-FIX S1** (`types.py:457`): `_utc` is a shape regex that accepts impossible dates (`2026-13-40T25:61:61Z`, Feb 30) while its error text claims \"must be an ISO-8601 UTC timestamp\". Executed in `probe/p02`.\n- **SHOULD-FIX S2** (`types.py:1191`): `reading_dir`'s folded prefix stores the row key in cleartext in directory names and is lossy by construction; the docstring's unqualified \"collision-free\" hides that uniqueness lives only in the appended digest. Executed in `probe/p03`.\n- **NOTEs**: path canonicalisation (`a/./b` → `a/b`) makes \"every declared value is part of the identity\" slightly overstated (N1); `max_calls` low bound 0 undocumented (N2); four step kinds are in neither `REPLAYABLE_STEPS` nor `SPENDING_STEPS` with no stated resume rule (N3); `min_judge_families` applied as a seat-count proxy for a family constraint this module cannot check (N4).\n\n**\"Tried, and could not break\"** records five failed attacks: plan-id malleability (pin order/null/non-str keys all correct), the receipt self-validation seam (key recompute, spending classification, status↔failure_code agreement all refuse lies), path/identifier escapes (`..`, separators, bool index, out-of-range cycle/step all refused), the full wave-plan acceptance clause executed and passing, and the cross-module canonical-digest byte-agreement with `provider_openai_compat.digest` confirmed.\n\n**Last test run:** `python3 run_tests.py` → `Ran 0 tests ... OK` (exit 0; the snapshot ships no loop tests, so all claims rest on the executed probe output quoted verbatim in the review). No file under `src/` was modified.",
+  "files_written": [
+    {
+      "path": "probe/p01_custody_checks_string.py",
+      "change": "added",
+      "sha256": "e55fc74f2fae4a282aaad289072d13c0cbfe4c42e00cdfaaa98def7c9a3aefca",
+      "bytes": 991
+    },
+    {
+      "path": "probe/p02_utc_impossible.py",
+      "change": "added",
+      "sha256": "55bd8685a5c43c90a1b58ddd235ed4a8462b32f8b4746b5ac23f5deee365706c",
+      "bytes": 887
+    },
+    {
+      "path": "probe/p03_reading_dir.py",
+      "change": "added",
+      "sha256": "2930b5ed1939a62038d4978a4e4ac6933d750e5bf953f243dacbbf0607caa019",
+      "bytes": 1327
+    },
+    {
+      "path": "probe/p04_pins.py",
+      "change": "added",
+      "sha256": "acadcfe12cacc5fb0791dd5f869686e43aab5448b13421016ab2057dc44f77ed",
+      "bytes": 1655
+    },
+    {
+      "path": "probe/p05_tables.py",
+      "change": "added",
+      "sha256": "720df51fe4df82183e3f62a6181f3018db12a05ed43a9a82806e9166eaef6d76",
+      "bytes": 3189
+    },
+    {
+      "path": "probe/p06_receipt.py",
+      "change": "added",
+      "sha256": "8f1f9dd4afd51b1f84e3214aebee7e2b63a8e6b35efbde8007eb3f4342315097",
+      "bytes": 2296
+    },
+    {
+      "path": "probe/p07_acceptance.py",
+      "change": "added",
+      "sha256": "bb8f580ade6d3ad0e62e875e305b5d7f3641d763b57268dae87e1606a36ad245",
+      "bytes": 2209
+    },
+    {
+      "path": "probe/p08_more.py",
+      "change": "added",
+      "sha256": "96c461bff4e380adf0a2a50cd5ec1b07aa62c9af4aa4b824fa76b6cabc34152e",
+      "bytes": 1493
+    },
+    {
+      "path": "probe/p09_ids.py",
+      "change": "added",
+      "sha256": "ee2b8aad5c6bcbccbde2e9f465188724b6473df26a6e3ff6b0f2aaeaef387389",
+      "bytes": 591
+    },
+    {
+      "path": "review/types.md",
+      "change": "added",
+      "sha256": "5ee019bbb3bb09b3fad06b3de28f1f1163b3c5ca3e958a364b5fafa522fd2fc9",
+      "bytes": 16424
+    }
+  ],
+  "expected_outputs_present": [
+    "review/types.md",
+    "probe/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 9,
+    "list_dir": 1,
+    "grep": 4,
+    "write_file": 11,
+    "run_command": 11
+  },
+  "tool_call_total": 36,
+  "iterations": 24,
+  "prompt_tokens": 995791,
+  "completion_tokens": 30298,
+  "total_tokens": 1026089,
+  "wall_seconds": 760.003,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 11,
+  "reasoning_chars": [
+    31,
+    7149,
+    155,
+    6048,
+    0,
+    11980,
+    17870,
+    23066,
+    0,
+    886,
+    0,
+    0,
+    0,
+    551,
+    0,
+    3414,
+    0,
+    56,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/a-01-types/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/a-01-types/sandbox"
+}

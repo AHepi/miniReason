@@ -1,0 +1,24 @@
+[
+ {
+  "id": "p3-a001v4-citations",
+  "title": "Verify every FW5 line citation in A001 STAGING-v4.md by computation",
+  "prompt": "Verify every FW5 line citation in `staging/STAGING-v4.md` against the source it cites and write the result to `out/citations-v4.md` and `out/citations-v4.json`.\n\nTHE SOURCE. `docs/sources/FW5-explanatory-construction.md` is the designated FW5 reading edition, sha256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a`. A citation `:N` or `FW5:N` names line N of that file, 1-based, splitting on newline; `:N-M` (hyphen or en-dash) names the inclusive range. Confirm the sha256 by computation before anything else and report it.\n\nMETHOD, all by scripts under `check/`:\n 1. Extract every citation from the staging file by pattern: forms `FW5:N`, `FW5:N-M`, bare `:N` and `:N-M` where N and M are 2-4 digit numbers. Report the regex you used and the total count, and the count of distinct targets.\n 2. For each citation, take the staging line it sits on and find any quoted text on that line: text inside straight or typographic double quotes, or inside backticks, or a LaTeX fragment inside `\\( ... \\)`. Normalise typographic quotes to straight, collapse whitespace, and test whether each quoted fragment (at least 12 characters long) is a substring of the cited line or range after the same normalisation.\n 3. Verdict per citation: CORRECT (every fragment found verbatim), CORRECT IN SUBSTANCE (found only after normalisation; name the difference), WRONG (a fragment of 12+ characters is not in the cited line or range; print the cited line's first 120 characters and, if a grep of the whole source finds the fragment elsewhere, the line where it actually is), or NO-QUOTE-TO-CHECK (no fragment on that staging line). Never mark WRONG from memory: a WRONG verdict must show the cited line's actual text.\n 4. Also list every cited line number that is blank in the source, and every range whose end precedes its start.\n\nWHAT TO PRODUCE: `out/citations-v4.json` (one object per citation: staging line, citation text, target lines, fragments tested, verdict, note) and `out/citations-v4.md` with a table of the same plus a summary line: how many citations, how many under each verdict, and the list of WRONG ones. Finish by naming what your extraction pattern would not catch.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "staging/STAGING-v4.md",
+   "docs/sources/FW5-explanatory-construction.md"
+  ],
+  "expected_outputs": [
+   "out/citations-v4.md",
+   "out/citations-v4.json",
+   "check/"
+  ],
+  "evaluation": "mechanical: an independent Opus review (REVIEW-3.md) re-read every citation at the line and found no off-by-one; any WRONG verdict is either a true find or a worker error and is checked by the orchestrator",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/a001v4"
+ }
+]

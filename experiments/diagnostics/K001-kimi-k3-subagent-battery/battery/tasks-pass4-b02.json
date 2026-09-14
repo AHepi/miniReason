@@ -1,0 +1,44 @@
+[
+ {
+  "id": "b-02-seats-fixed",
+  "title": "Unit tests for W1-SEATS (seats) (pass 4, sibling imports present, runner tool absent by design)",
+  "prompt": "Write the unittest file for `src/minireason/loop/seats.py` \u2014 the wave-1 module\nW1-SEATS \u2014 and make it run green.\n\nThere is no test file for this module in the sandbox. Write\n`tests/loop/test_seats.py` from the module's own source, its docstrings, and the\nacceptance clauses the design of record declares for it. The design entry is in\n`design/design-s7-wave-plan.md`; the clauses you must cover are, verbatim:\n\nTwo judge seats always carry distinct family labels; selection is a pure byte-stable function of (registry, config); a registry with one family raises FAMILY_COUNT_INSUFFICIENT rather than degrading silently; the gate is multicycle_commitment_study_multi_v2.key_gate imported, not reimplemented, and never admits a sixth concurrent call per key_env; the pins record key_env per seat.\n\n`notes/WAVE0-INTERFACE.md` records the wave-0 interface this module sits on, and\n`notes/WAVE1-INTEGRATION-DECISIONS.md` records eight integration decisions the\nwave-1 modules are bound by \u2014 read both before writing an oracle, because an oracle\nthat contradicts a decision there is wrong even if it passes.\n\n`docs/examples/test_custody_example.py` and `docs/examples/test_standard_example.py`\nare the house style: one behaviour per test, the test name is the sentence the test\nasserts, fixtures built in a temp directory, no mocking of the module under test, and\nan explicit test per acceptance clause named after that clause. Read them; do not run\nthem (they assert repository-layout facts this sandbox does not reproduce).\n\nRUN IT:\n\n    python3 run_tests.py tests.loop.test_seats\n\nIterate until it reports OK. Do not edit `src/minireason/loop/seats.py` or any\nother file under `src/` \u2014 if a test fails because the module is wrong, leave the test\nred and say so in your final message, naming the file, the line and the behaviour;\na failing test that names a real defect is better evidence than a passing suite\nbought by weakening the oracle.\n\nA test that asserts only that a name exists, or that re-implements the module's own\ncomputation and compares it to itself, pins nothing. Prefer a constructed input with\na known answer.\n\nFinish by stating, clause by clause, which acceptance clause each test covers, and\nwhich clauses you could not cover and why.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a\nsandbox. `run_command` accepts only `python3 ...` forms: `python3 -m unittest ...`,\n`python3 -m pytest ...`, `python3 -c ...` and `python3 <file.py> ...`. There is no\nshell, no `git`, no `ls`, no `cat`, and you cannot set environment variables on a\ncommand line. The sandbox has no network. To run a test module, use the helper that\nis already in the sandbox:\n\n    python3 run_tests.py tests.loop.test_<name>\n\nIt puts the sandbox root and `src` on `sys.path` and nothing else. You cannot ask\nquestions; everything you need is in the sandbox.\n\nHOUSE RULES, which hold for every sentence you write.\n* No score, no rank, no scalar progress meter, no \"better\"/\"worse\" between model\n  families, arms, endpoints or modules. Endpoints and arms are independent\n  occasions, never competitors.\n* A token ceiling, a call budget, a wall clock or a connection close is a RESOURCE\n  BOUNDARY. It is never described as exhaustion of the inquiry.\n* `unresolved` is a first-class outcome. Say \"unresolved\", or \"I could not\n  determine this and here is why\", rather than inventing a finding. A finding you\n  cannot point at a file and a line for is not a finding.\n* Never modify a published observation, and never edit a file to make your own\n  claim true.\n* Counts are information, never a warrant. Report a count with the command or file\n  that produced it beside it.\n\n\nNOTE FOR THIS RUN: `tools/multicycle_commitment_study_multi_v2.py` is deliberately absent from this sandbox; tests that need the live runner gate must skip with that stated reason, and every other test must run.",
+  "context_paths": [
+   "run_tests.py",
+   "src/deepreason_core",
+   "src/minireason/__init__.py",
+   "src/minireason/graph_import_h005.py",
+   "src/minireason/use_relation_h005.py",
+   "src/minireason/provider_openai_compat.py",
+   "src/minireason/data/endpoints.json",
+   "src/minireason/loop/__init__.py",
+   "src/minireason/loop/data",
+   "tests/__init__.py",
+   "tests/loop/__init__.py",
+   "AGENTS.md",
+   "docs/lessons/operations.md",
+   "src/minireason/loop/seats.py",
+   "notes/WAVE0-INTERFACE.md",
+   "notes/WAVE1-INTEGRATION-DECISIONS.md",
+   "design/design-s7-wave-plan.md",
+   "design/design-s3-readings-and-marks.md",
+   "docs/examples/test_custody_example.py",
+   "docs/examples/test_standard_example.py",
+   "src/minireason/loop/types.py",
+   "src/minireason/loop/contracts.py",
+   "src/minireason/loop/standard.py"
+  ],
+  "expected_outputs": [
+   "tests/loop/test_seats.py"
+  ],
+  "evaluation": "tests: the file runs green under `python3 run_tests.py tests.loop.test_seats`, a judge counts the acceptance clauses actually covered, and two judge-chosen mutations of the module must each turn at least one test red",
+  "mode": "tools",
+  "max_iterations": 60,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/battery/material",
+  "transport": "native",
+  "reasoning": "low"
+ }
+]

@@ -1,0 +1,117 @@
+{
+  "probe": "04-tool-roundtrip",
+  "at": "2026-09-14T10:39:23.866694+00:00",
+  "endpoint": {
+    "name": "ollama/kimi-k3",
+    "base_url": "https://ollama.com/v1",
+    "model": "kimi-k3",
+    "family": "ollama-cloud/kimi"
+  },
+  "url": "https://ollama.com/v1/chat/completions",
+  "method": "POST",
+  "request_header_names": [
+    "Accept",
+    "Authorization",
+    "Content-Type"
+  ],
+  "request_bytes": 877,
+  "request_bytes_sha256": "13959cd6201d11d1d189531ae7430a80698374050acab2f8f49d2416dfe844c7",
+  "request": {
+    "model": "kimi-k3",
+    "stream": false,
+    "max_tokens": 32768,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a tool-using assistant. Use the tools you are given."
+      },
+      {
+        "role": "user",
+        "content": "What is the current temperature in Wellington? Call the tool."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "call_df2588x7",
+            "type": "function",
+            "function": {
+              "name": "get_weather",
+              "arguments": "{\"city\":\"Wellington\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_df2588x7",
+        "name": "get_weather",
+        "content": "{\"city\": \"Wellington\", \"temperature_c\": 13.5}"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get the current temperature for one city.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string",
+                "description": "City name, e.g. Wellington"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto"
+  },
+  "timeout_seconds": 600,
+  "http_status": 200,
+  "elapsed_ms": 2427,
+  "response_bytes": 525,
+  "response_sha256": "832f379682d4a8b70c61e170da959fe18f7e82a3579d35549e6f71621af677f2",
+  "credential_echo": false,
+  "reasoning_fields_seen": [
+    "reasoning"
+  ],
+  "response": {
+    "id": "chatcmpl-493",
+    "object": "chat.completion",
+    "created": 1789382366,
+    "model": "kimi-k3",
+    "system_fingerprint": "fp_ollama",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The current temperature in **Wellington** is **13.5 °C**.",
+          "reasoning": {
+            "__not_persisted__": true,
+            "sha256": "0ea81077e9e7f4be5e5013d25c77f5bf0bda4c90536dbeb3ae0822c9c6b552cc",
+            "chars": 123,
+            "estimated_tokens": 30
+          }
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 367,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens": 61,
+      "total_tokens": 428
+    }
+  },
+  "status": "COMPLETE"
+}

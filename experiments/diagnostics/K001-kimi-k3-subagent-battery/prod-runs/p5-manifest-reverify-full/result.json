@@ -1,0 +1,88 @@
+{
+  "task_id": "p5-manifest-reverify-full",
+  "title": "Re-verify every manifest and sha256 list in today's published experiment records",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Done. Final report:\n\n**What I did.** Wrote `check/reverify.py`, which walks the sandbox, finds every name-based manifest candidate (`manifest` in the filename / `.sha256` suffix), every JSON top-level path→64-hex map (`files_read`, `source_pins`, `provider_pins`, `runtime_pins`, `source_pins_verified`, plan.json pinned fields), and every ``| `path` | `sha256` |`` Markdown table, then re-hashes each referenced path with sha256 (manifest-directory base first, then sandbox root, recording which succeeded) and emits both deliverables.\n\n**Files written.**\n- `check/reverify.py` — the checker (run, passes; a second validation pass re-checking all MATCH/MISSING verdicts found 0 errors)\n- `out/manifest-reverify.json` — 23 manifests, per-entry verdicts, per-verdict totals, plan.json key/derivation info, completeness claims, credential scan, unreferenced-file lists\n- `out/manifest-reverify.md` — one section per manifest, summary counts per verdict, and the full non-MATCH listing\n\n**Results.**\n- 244 MATCH, 0 MISMATCH, 351 MISSING, 1 UNPARSED, out of 596 entries.\n- Every digest whose bytes exist in the sandbox matches: all three F002 plans (material, arms, runner/helper `runner_sha256` = `tools/multicycle_commitment_study_multi_v3.py`, source/provider/runtime pins, and all 9 `manifests/*.json` pins, 57/57 each), all C001 source_pins across material/preflight/plan copies (8/8 each), and the C001 PLAN.md material pins.\n- All 351 MISSING entries are pins of bytes not copied into this sandbox (F001 occurrence trees for the B001 inventory, the F002 diagnostic occurrence trees for the use-table \"Files read\" tables, and the absent `tools/contrast_triple_study.py` driver) — absence-of-bytes, not disagreement; not a single computed digest differed from a recorded one.\n- The analyses README claim that occurrence-02/03 `material.json` and the three manifests are byte-identical to occurrence-01 was **CONFIRMED** by sha256 comparison.\n- plan.json: 5 found, top-level keys listed; both PLAN.md files state plan_id is a \"digest of the frozen plan body\" (quoted) — not re-derived since no canonical-JSON rule is stated.\n- Credential scan: 0 hits for both patterns.\n\n**Blind spots.** The walk cannot judge MISSING pins against bytes never copied in; digests keyed by non-path identifiers (node coordinates, spec ids, embedded `record_sha256`/`provider_*_sha256` fields, `helper_sha256` of the absent driver) can't be resolved to a file; nested path→digest maps under unscanned key names and prose-style digest lists in other shapes are not found; and plan_id itself was not re-derived.",
+  "files_written": [
+    {
+      "path": "check/reverify.py",
+      "change": "added",
+      "sha256": "c7b890aa1631289e27781866eee5292b178526789e6433d8af6957863909a843",
+      "bytes": 18868
+    },
+    {
+      "path": "out/manifest-reverify.json",
+      "change": "added",
+      "sha256": "76ba2658949ea5f4124f1d4a760358bc2c217a40284f6d4e33fcb2f296436067",
+      "bytes": 744967
+    },
+    {
+      "path": "out/manifest-reverify.md",
+      "change": "added",
+      "sha256": "a0344ba36b3dcf942882e29682d7ba2a89d640a4b0725c67ed07082fee9a5aee",
+      "bytes": 527109
+    }
+  ],
+  "expected_outputs_present": [
+    "out/manifest-reverify.md",
+    "out/manifest-reverify.json",
+    "check/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 1,
+    "list_dir": 4,
+    "grep": 1,
+    "write_file": 2,
+    "run_command": 22
+  },
+  "tool_call_total": 30,
+  "iterations": 29,
+  "prompt_tokens": 1437906,
+  "completion_tokens": 16251,
+  "total_tokens": 1454157,
+  "wall_seconds": 309.6,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 16,
+  "reasoning_chars": [
+    151,
+    211,
+    119,
+    422,
+    760,
+    1049,
+    0,
+    0,
+    955,
+    234,
+    3959,
+    0,
+    445,
+    0,
+    0,
+    1638,
+    0,
+    922,
+    1526,
+    0,
+    0,
+    0,
+    420,
+    0,
+    1774,
+    0,
+    0,
+    436,
+    0
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "prod-runs/p5-manifest-reverify-full/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p5-manifest-reverify-full/sandbox"
+}

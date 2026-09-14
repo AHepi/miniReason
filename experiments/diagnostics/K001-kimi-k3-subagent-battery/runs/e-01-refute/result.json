@@ -1,0 +1,47 @@
+{
+  "task_id": "e-01-refute",
+  "title": "Refute three named claims in the session orchestration report",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Both scripts rerun cleanly (exit code 0) and every figure quoted in the findings file matches the computed output. The work is done.\n\n## What I did\n\nI read the three §4 \"Live spend\" claims out of `docs/reviews/session-orchestration-report-2026-09-14.md`, located both receipt sets (`C001-contrast-triple/occurrence-01`: 240 receipts in 12 cells of 20; `F001-fork5-multifamily`: 63 receipts in occurrences 01–06 plus 20 in 07–08), and verified every clause of every claim by aggregation — nothing eyeballed, no published file modified.\n\n## Files written\n\n- `check/refute_claims.py` — walks all C001 occurrence-01 and F001 receipts; counts failure codes/types, per-cell statuses, provider-side fields, envelope repairs and strict-parse flags.\n- `check/refute_claims_tail.py` — per-coordinate cross-checks (usage/reasoning tokens, repair×strict cross-tab, OPAQUE/AUTHORED envelopes, deepseek-flash control-arm figures).\n- `out/refutations.md` — the findings, with the exact aggregation, the printed output, and a verdict per claim.\n\n## Verdicts (last run: both scripts exit 0)\n\n- **CLAIM 1 — REFUTED IN PART.** The count survives: exactly 20 `INCOMPLETE_GENERATION` receipts = 11 FAILED + 9 PARTIAL. The attribution clause does not: the `deepseek-flash`×`fcl` cell carries only **8** PARTIAL; the ninth is `ollama-glm-5.3/fcl/control/rep2.json` (PARTIAL, `completion_tokens: 32768`). And \"the provider raising it on both\" holds for the nine PARTIAL (which record `provider_status: INCOMPLETE_GENERATION`) but is unsupported for the eleven FAILED, whose provider-side fields are all null (`provider_status`, `finish_reason`, `usage`) — the code sits in the receipt's own `failure_type` beside `validation_failure_type: NO_PUBLIC_CONTENT`.\n- **CLAIM 2 — SURVIVES.** All seven v1 failures (five FAILED, two PARTIAL, all on occurrences 04/05) are at `finish_reason: length`, exactly 8,192 completion tokens; exactly the five FAILED carry no `artifact_sha256`, matching \"five returning zero bytes\", while the two PARTIAL carry one. One stated limit: this sandbox slice of F001 contains no delivered-bytes files, so the byte figure rests on those null-artifact markers rather than measurable bytes.\n- **CLAIM 3 — SURVIVES.** `envelope_repairs` non-empty on 93 of 240 (`strip_outer_code_fence` 92 at one receipt each — zero multi-repair receipts — plus `json_strict_false` 1 at `ollama-glm-5.3/prose/carrier/rep4`); `strict_parse_would_succeed` true on 122 (false 107, null 11; 122+107+11 = 240).\n\n**Clause the record does not support:** Claim 1's \"the nine PARTIAL of the `deepseek-flash` × `fcl` cell\" (refuted by the named `ollama-glm-5.3/fcl/control/rep2.json`), and, within that claim, \"the provider raising it on both\" for the eleven FAILED receipts — the receipts are silent provider-side on those eleven, so this is recorded as unsupported, not contradicted. An incidental finding surfaced by the same scripts: the report's own §2 sentence \"19 of its 20 coordinates carry `completion_tokens` exactly 8,192 … eleven spent the entire ceiling on reasoning\" is also not supported by the receipts (only 8 coordinates at 8,192; the eleven FAILED have `usage: null`) — flagged in the findings file separately from the three claims.",
+  "files_written": [
+    {
+      "path": "check/refute_claims.py",
+      "change": "added",
+      "sha256": "02ca543b5fed858e5f1928ec89a8db746c11510f8d8bc36618a9caf762643d7b",
+      "bytes": 11197
+    },
+    {
+      "path": "check/refute_claims_tail.py",
+      "change": "added",
+      "sha256": "6dba6241864f1b131461ed57b73cf8b4900ca2867f27212ed3e2dc750297166a",
+      "bytes": 3883
+    },
+    {
+      "path": "out/refutations.md",
+      "change": "added",
+      "sha256": "19aedd3fbf2b6f2fb80b470d2a3db8d3a01295f73fd7332e3d811a60e8675692",
+      "bytes": 11116
+    }
+  ],
+  "tool_calls": {
+    "read_file": 15,
+    "list_dir": 22,
+    "grep": 5,
+    "write_file": 3,
+    "run_command": 3
+  },
+  "tool_call_total": 48,
+  "iterations": 24,
+  "prompt_tokens": 764401,
+  "completion_tokens": 21124,
+  "total_tokens": 785525,
+  "wall_seconds": 481.024,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 15,
+  "transcript_path": "runs/e-01-refute/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/e-01-refute/sandbox"
+}

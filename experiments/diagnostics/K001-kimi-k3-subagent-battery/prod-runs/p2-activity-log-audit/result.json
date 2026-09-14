@@ -1,0 +1,59 @@
+{
+  "task_id": "p2-activity-log-audit",
+  "title": "Mechanical audit of docs/AGENT_ACTIVITY.jsonl",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "All deliverables are complete and verified. \n\n**What I did**\n\n1. **Read** `AGENTS.md` and sampled `docs/AGENT_ACTIVITY.jsonl` to learn the schema before writing any code.\n2. **Wrote `check/audit_activity.py`** — the mechanical audit script that reads the raw bytes of the JSONL file and computes everything, never printing credential-shaped strings:\n   - **Lines/parsing:** 2,097 lines; all 2,097 parse as JSON objects; zero non-parse lines; zero blank lines.\n   - **Key census:** 13 distinct top-level keys; 8 core keys (`action`, `agent`, `decision`, `goal`, `paths`, `phase`, `timestamp_utc`, `why`) appear on every record; `event_id` 2,069, `command_sha256` 1,319, `returncode` 657, `outcome` 12, `error_type` 1.\n   - **Timestamp field** (found from the data): `timestamp_utc`, ISO-8601 on every record. First `2026-09-12T02:23:55.298618+00:00`, last `2026-09-14T11:36:20.706865+00:00`. The sequence is **not** non-decreasing: two microsecond-level decreases at **line 802** (`…40.933925` after line 801's `…40.933959`) and **line 1000** (`…14.867152` after line 999's `…14.867153`).\n   - **Agent field** `agent`: 31 distinct values, all counted (top: `root` 713, `/root` 582, `astra_failure_guide` 95, …).\n   - **Action field** `action`: 969 distinct free-text values, all counted in the JSON, plus a derived coarse kind tally (write-or-record 906, read 535, local-git 308, modify-remote 154, test 130, read-remote 64).\n   - **Sensitive paths:** zero `paths` entries mention `.env`, `key.txt`, or `uploads/` (cross-checked with a raw grep). Masking after `=` is implemented and unit-checked.\n   - **Credential scan** of raw bytes for `sk-[0-9a-f]{32}` and `[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}`: zero hits; only line numbers would ever be reported.\n   - **Last ten records** rendered as line, timestamp, agent, action, first path (lines 2088–2097).\n3. **Wrote `check/verify_outputs.py`** — an independent verifier that recomputes every value from the source, checks MD/JSON agreement, confirms the masking helper, and asserts both output files themselves contain no credential-shaped string.\n4. **Wrote the deliverables** — `out/activity-audit.json` (all values under named keys, ~86 KB) and `out/activity-audit.md` (short tables, action table capped at top 25 with a pointer to the JSON, ending with one paragraph on what the patterns would not catch: differently shaped or split secrets, binary/encoded secrets, variable-name indirection like the logged `DEEPSEEK_API_KEY` name, unlogged actions, self-reported action text, equal-timestamp interleaving, and path-names without contents).\n\n**Last test run:** `python3 check/verify_outputs.py` — exit code 0, **all 39 checks passed** (after reproducing the outputs with `python3 check/audit_activity.py`, exit code 0).\n\nFiles written: `check/audit_activity.py`, `check/verify_outputs.py`, `out/activity-audit.json`, `out/activity-audit.md`.",
+  "files_written": [
+    {
+      "path": "check/audit_activity.py",
+      "change": "added",
+      "sha256": "a6b257457468e2e1931bf23493fded55797d659fa76fd96606e22d275052975d",
+      "bytes": 15605
+    },
+    {
+      "path": "check/verify_outputs.py",
+      "change": "added",
+      "sha256": "10ee0fb84a64afcb1395562deb315bdf0289066ad66292605796021748091a58",
+      "bytes": 7784
+    },
+    {
+      "path": "out/activity-audit.json",
+      "change": "added",
+      "sha256": "86d0ffbde2cf84862b1defc943f90b07d7750dedbb1fd0eb24dfae3dd496892e",
+      "bytes": 86087
+    },
+    {
+      "path": "out/activity-audit.md",
+      "change": "added",
+      "sha256": "6341ffa6f8c5f82f6d0fbd46816abb25a3ef3a9ed8718e8cff0a16a9323347e4",
+      "bytes": 7876
+    }
+  ],
+  "expected_outputs_present": [
+    "out/activity-audit.md",
+    "out/activity-audit.json",
+    "check/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 4,
+    "list_dir": 5,
+    "grep": 1,
+    "write_file": 4,
+    "run_command": 4
+  },
+  "tool_call_total": 18,
+  "iterations": 14,
+  "prompt_tokens": 1141855,
+  "completion_tokens": 23411,
+  "total_tokens": 1165266,
+  "wall_seconds": 340.705,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 8,
+  "transcript_path": "prod-runs/p2-activity-log-audit/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p2-activity-log-audit/sandbox"
+}

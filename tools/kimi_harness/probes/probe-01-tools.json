@@ -1,0 +1,108 @@
+{
+  "probe": "01-tools",
+  "at": "2026-09-14T10:39:12.076902+00:00",
+  "endpoint": {
+    "name": "ollama/kimi-k3",
+    "base_url": "https://ollama.com/v1",
+    "model": "kimi-k3",
+    "family": "ollama-cloud/kimi"
+  },
+  "url": "https://ollama.com/v1/chat/completions",
+  "method": "POST",
+  "request_header_names": [
+    "Accept",
+    "Authorization",
+    "Content-Type"
+  ],
+  "request_bytes": 559,
+  "request_bytes_sha256": "162bb1ccf53caa5cf412965bd6207a5db98d833b7f176af9d243f2ca7cf1c1a9",
+  "request": {
+    "model": "kimi-k3",
+    "stream": false,
+    "max_tokens": 32768,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a tool-using assistant. Use the tools you are given."
+      },
+      {
+        "role": "user",
+        "content": "What is the current temperature in Wellington? Call the tool."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get the current temperature for one city.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string",
+                "description": "City name, e.g. Wellington"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto"
+  },
+  "timeout_seconds": 600,
+  "http_status": 200,
+  "elapsed_ms": 2240,
+  "response_bytes": 675,
+  "response_sha256": "f78b079b26c2856220aff2c98831dfc5b66364199ee3d6af254ce190ccf7cc3a",
+  "credential_echo": false,
+  "reasoning_fields_seen": [
+    "reasoning"
+  ],
+  "response": {
+    "id": "chatcmpl-103",
+    "object": "chat.completion",
+    "created": 1789382354,
+    "model": "kimi-k3",
+    "system_fingerprint": "fp_ollama",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "reasoning": {
+            "__not_persisted__": true,
+            "sha256": "c995373c3a9bdba8773ab4c740cde95737535544b9feecbe48da729966722437",
+            "chars": 186,
+            "estimated_tokens": 46
+          },
+          "tool_calls": [
+            {
+              "id": "call_df2588x7",
+              "index": 0,
+              "type": "function",
+              "function": {
+                "name": "get_weather",
+                "arguments": "{\"city\":\"Wellington\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 269,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens": 90,
+      "total_tokens": 359
+    }
+  },
+  "status": "COMPLETE"
+}

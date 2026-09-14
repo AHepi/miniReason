@@ -1,0 +1,89 @@
+{
+  "task_id": "a-04-custody",
+  "title": "Adversarial review of W0-CUSTODY (custody)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "All probes run clean (exit 0) and match the transcripts quoted in the review. The work is complete.\n\n## What I did\n\nI adversarially reviewed W0-CUSTODY (`src/minireason/loop/custody.py`) against its own claims: the module docstrings, `notes/WAVE0-INTERFACE.md` §4 (plus O6/O8), and the `W0-CUSTODY` acceptance clause in `design/design-s7-wave-plan.md`. Every finding was executed, not asserted — each is backed by a runnable probe whose verbatim output is quoted in the review.\n\n## Files I wrote (nothing under `src/` was touched)\n\n**`review/custody.md`** — the review. Findings ordered BLOCKER / SHOULD-FIX / NOTE, plus a \"Tried, and could not break\" section and a \"Sandbox state / limits\" section.\n\n**Nine probes under `probe/`** (self-contained; add `src` to `sys.path`; work only in `tempfile`; scrub any env var they set):\n`p01_write_once_existing.py`, `p02_fence_escapes.py`, `p03_pins_verify.py`, `p04_credential_scan.py`, `p05_digest_identity.py`, `p06_race_and_torture.py`, `p07_toctou_proof.py`, `p08_nonstring_key.py`, `p09_root_writable.py`.\n\n## Findings (each with location, contradicted quote, verbatim probe output, repair, holding test)\n\n- **BLOCKER — none reproduced.** No published seam was unsound and no pre-registered guard failed to fire under direct attack.\n- **SHOULD-FIX 1** — `write_new`'s existence pre-check runs after the credential scan (custody.py:384-391): a TOCTOU window; on that path the raised `WriteOnceViolation` leaves the intruder's file on disk, contradicting \"nothing was written or accepted\" (:177).\n- **SHOULD-FIX 2** — `verify_pins`/`pins` accept a non-string pin key via `_pin_key`'s `str(entry)` (:427), reporting it as `SOURCE_PIN_MISSING` instead of refusing the malformation the module says it exists to refuse (:497-499).\n- **NOTE 3** — `verify_pins` accepts a `./`-prefixed key, and two spellings of one file silently collapse to one pin at freeze time (:434, :463-470); an asymmetry the module doesn't state.\n- **NOTE 4** — the credential scan matches only raw + JSON-escaped renderings (:322); a base64/halved credential is written verbatim. Fully documented (matches the transport and O8); noted so a clean scan is not later misread as a no-credential proof.\n- **Tried, and could not break (7 attacks):** write-once on existing file/directory/dangling-symlink; the `open(\"xb\")` race; fence escapes (literal/mid-path `..`, absolute-outside, symlink, sibling-prefix `/tmp/run` vs `/tmp/run-evil`); pin verification (one-byte flip, missing, directory, malformed/uppercase/null digest, crawling key, order permutation, purity, bare-map refusal, backslash key, sorted keys); three-way digest identity on six fixtures incl. the non-ASCII one; scan robustness (non-UTF-8, NUL, quote-escaped, 8-char floor); root-as-target.\n\n## Last test run\n\n`python3 run_tests.py` → \"Ran 0 tests in 0.000s, OK\" (the frozen sandbox ships no `test_custody.py`, recorded as a limit, not a defect). All nine probes re-ran individually with exit code 0 and output matching the review transcripts.",
+  "files_written": [
+    {
+      "path": "probe/p01_write_once_existing.py",
+      "change": "added",
+      "sha256": "93070c4f89004d54073e12b956a39ac7ee81224d543014db0619fe88ee659cdf",
+      "bytes": 3132
+    },
+    {
+      "path": "probe/p02_fence_escapes.py",
+      "change": "added",
+      "sha256": "6ef5c0f9ec2901a93577f366854b0153b0247e96d167e8f283ec2900d09e9d65",
+      "bytes": 3132
+    },
+    {
+      "path": "probe/p03_pins_verify.py",
+      "change": "added",
+      "sha256": "f13479d247b815fc61818f4119a006583f30fc16916d2bb782675d747cb00108",
+      "bytes": 6925
+    },
+    {
+      "path": "probe/p04_credential_scan.py",
+      "change": "added",
+      "sha256": "24a43146d779d5e7bd20c8b17322b70da8de448279d70a25605b5c741bc2980b",
+      "bytes": 5122
+    },
+    {
+      "path": "probe/p05_digest_identity.py",
+      "change": "added",
+      "sha256": "3c130f484212357ad32dbf1cdcabc0b57121a6a4732a45249c555c29067b958b",
+      "bytes": 3433
+    },
+    {
+      "path": "probe/p06_race_and_torture.py",
+      "change": "added",
+      "sha256": "456d4039d29a406c625bffef2f9ca4db193d7c887899fd62bf2e6c808284869f",
+      "bytes": 6290
+    },
+    {
+      "path": "probe/p07_toctou_proof.py",
+      "change": "added",
+      "sha256": "73c739e8aa888ec9e08bec96bb582f47fd6724559825de41c3c2dd34e2ad23b7",
+      "bytes": 3038
+    },
+    {
+      "path": "probe/p08_nonstring_key.py",
+      "change": "added",
+      "sha256": "a83a5e6d00177f475c824788c15232ab9c0e8d78bcf8239e31304262656dcff0",
+      "bytes": 2800
+    },
+    {
+      "path": "probe/p09_root_writable.py",
+      "change": "added",
+      "sha256": "59256cc0297eedc851b642a1dbc95181314886ce9e4abcbcbed57c25a483703d",
+      "bytes": 2081
+    },
+    {
+      "path": "review/custody.md",
+      "change": "added",
+      "sha256": "f3b77888e539d2cff8ff10a1d16d3dcd8d165c980aa75d3c5d3da29a789719a1",
+      "bytes": 20939
+    }
+  ],
+  "tool_calls": {
+    "read_file": 15,
+    "list_dir": 4,
+    "grep": 5,
+    "write_file": 12,
+    "run_command": 33
+  },
+  "tool_call_total": 69,
+  "iterations": 37,
+  "prompt_tokens": 2464027,
+  "completion_tokens": 25768,
+  "total_tokens": 2489795,
+  "wall_seconds": 539.549,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 9,
+  "transcript_path": "runs/a-04-custody/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/a-04-custody/sandbox"
+}

@@ -1,0 +1,159 @@
+{
+  "probe": "native-tools-roundtrip",
+  "surface": "ollama native /api/chat",
+  "url": "https://ollama.com/api/chat",
+  "think": "low",
+  "turn_1": {
+    "request_body": {
+      "model": "kimi-k3",
+      "stream": false,
+      "think": "low",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the current build number of project alpha? Use the lookup_build_number tool, then state the number and nothing else."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_build_number",
+            "description": "Return the current build number for a project.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "string",
+                  "description": "project name"
+                }
+              },
+              "required": [
+                "project"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "http_status": 200,
+    "wall_seconds": 2.12,
+    "response": {
+      "model": "kimi-k3",
+      "created_at": "2026-09-14T15:04:38.666781347Z",
+      "message": {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "call_dlqgdpmd",
+            "function": {
+              "index": 0,
+              "name": "lookup_build_number",
+              "arguments": {
+                "project": "alpha"
+              }
+            }
+          }
+        ],
+        "thinking_sha256": "21b22d04a78305e63fea29ac9a82855ca46c4d1b0748af3e7d1edb9054044be8",
+        "thinking_chars": 163
+      },
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 1584084302,
+      "prompt_eval_count": 254,
+      "prompt_eval_cached_count": 0,
+      "eval_count": 82
+    },
+    "tool_calls_returned": 1
+  },
+  "call_shape": {
+    "keys_on_call": [
+      "function",
+      "id"
+    ],
+    "keys_on_function": [
+      "arguments",
+      "index",
+      "name"
+    ],
+    "arguments_type": "dict",
+    "has_id": true
+  },
+  "turn_2": {
+    "request_body": {
+      "model": "kimi-k3",
+      "stream": false,
+      "think": "low",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the current build number of project alpha? Use the lookup_build_number tool, then state the number and nothing else."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "call_dlqgdpmd",
+              "function": {
+                "index": 0,
+                "name": "lookup_build_number",
+                "arguments": {
+                  "project": "alpha"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_name": "lookup_build_number",
+          "content": "4821"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "lookup_build_number",
+            "description": "Return the current build number for a project.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "string",
+                  "description": "project name"
+                }
+              },
+              "required": [
+                "project"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "http_status": 200,
+    "wall_seconds": 1.48,
+    "response": {
+      "model": "kimi-k3",
+      "created_at": "2026-09-14T15:04:40.082009624Z",
+      "message": {
+        "role": "assistant",
+        "content": "4821",
+        "thinking_sha256": "a388f562e286fdf28986f9253579f4d096446e01dd0c771996a51ff11b390fa2",
+        "thinking_chars": 4
+      },
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 1137755274,
+      "prompt_eval_count": 337,
+      "prompt_eval_cached_count": 0,
+      "eval_count": 17
+    },
+    "answer_used_the_tool_result": true
+  },
+  "verdict": "native /api/chat serves the same round trip"
+}

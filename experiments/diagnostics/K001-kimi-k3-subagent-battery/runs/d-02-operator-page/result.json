@@ -1,0 +1,35 @@
+{
+  "task_id": "d-02-operator-page",
+  "title": "Operator-page section for W1-STEPS",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The verification confirmed: every failure code the page names exists in the module's vocabulary (the flagged strings are constant *names* like `CUSTODY_HALT_CODES`, filename fragments like `WAVE0`/`INTERFACE`, or the prefix token `SOURCE_PIN_`, not failure codes); every code the module can raise or record is present in the page; and the longest quoted block is 8 lines — within the ten-line limit.\n\nThe work is complete.\n\n**What I wrote:** `out/steps-operator-section.md` — the W1-STEPS operator-page section for `src/minireason/loop/steps.py`, modelled on `docs/workflows/provider-openai-compat.md`. It carries, all read off the module:\n\n- **What the ledger is** in three sentences (step_key / write-once receipts / resume), plus the invocation against `types.run_paths` + `StepLedger` + `RunLock` (7-line block), and the rule that every refusal is a `LoopError` with a stable code.\n- **The on-disk layout**: `steps/NNNN-KIND.json`, the open-marker spelling `NNNN-KIND.json.open` from `RunPaths.step_path` and WAVE0-INTERFACE §7, the `.verified` sidecar, `errata/NNNN-KIND-HALT.md`, `errata/ACK-NNNN-<step_key>.json`, and the receipt field shape — with the note that design 4.3's prose spells the marker `.open.json` and the page follows the module.\n- **Replayable vs spending** (types.py:418/424): replayable steps are re-run and must reproduce recorded digests or `STEP_NONDETERMINISTIC`; a killed spending step leaves its marker, is never re-entered, and halts resume with `UNRESOLVED_STEP`; coordinate-grain resumption reports a request-without-response as `INDETERMINATE`, never an absence.\n- **Every failure code with an operator action**: the thirteen codes the module names directly (including the five `NEW_CODES`, flagged as not yet in `types.FAILURE_CODES` under wave-1 decision 6), the seventeen sticky `CUSTODY_HALT_CODES` in four action clusters, the pass-through families (`_classify`): provider/delivery (retry on resume, marker resolved), publish.py's eighteen, receipts.py's seven ledger-wiring codes (with the two non-obvious recorded states when a ledger refuses mid-step), and the `types`-side read-time codes. For each: what the operator does next and what stays refused until then.\n- **Halt-and-acknowledge**: sticky until `acknowledge(step_key, reason)`, the write-once ACK record carrying the reason verbatim, second-ack-refused, and the ACK-before-ledger-append ordering hazard.\n- **`PUBLISH_PENDING`**: returned not raised, blocks every successor step except the next attempt on the same key, attempt count rebuilt from receipts.\n- **`RunLock`**: kernel `flock`, released on holder death (no stale-lock action), a second driver sees `RUN_LOCKED` with the holder's pid and start time, `PLAN_ID_MISMATCH` on a foreign plan.\n- **What the module does not promise**, nine clauses traced to the code, and the module-vs-design deviations table.\n\n**Test/verification runs:** `python3 run_tests.py` (test discovery) ran 0 tests, OK — the sandbox ships no `tests/loop/test_*.py` modules, so verification was by inspection against the live module: two `python3 -c` runs read `NEW_CODES`, `CUSTODY_HALT_CODES`, `MARKER_KEPT_CODES`, `RESUME_ACTIONS`, and cross-checked every code the page names against `types.FAILURE_CODES`, `steps.NEW_CODES` and `publish.PENDING_REASONS`, plus regexed the page for any code block over ten lines (none; max 8).\n\n**Failure codes found in the module that I could not give an operator action for:** none — every code reachable through `steps.py` (raised or recorded) has a stated operator action in the page. One boundary note for honesty: `PUBLISH_REF_CHANGED` appears in `publish.py` only as a `_ReadBack` detail, never on an exception that `steps.py`'s machinery can raise or record, so the page deliberately does not list it among publication codes; a run of the module cannot produce it as a code.",
+  "files_written": [
+    {
+      "path": "out/steps-operator-section.md",
+      "change": "added",
+      "sha256": "344dcd6fb5a633f6e13235a57fcd37909c89019c71ae2f6b57ec822def87562c",
+      "bytes": 27896
+    }
+  ],
+  "tool_calls": {
+    "read_file": 10,
+    "list_dir": 1,
+    "grep": 5,
+    "write_file": 1,
+    "run_command": 5
+  },
+  "tool_call_total": 22,
+  "iterations": 14,
+  "prompt_tokens": 772986,
+  "completion_tokens": 39684,
+  "total_tokens": 812670,
+  "wall_seconds": 750.184,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 13,
+  "transcript_path": "runs/d-02-operator-page/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/d-02-operator-page/sandbox"
+}

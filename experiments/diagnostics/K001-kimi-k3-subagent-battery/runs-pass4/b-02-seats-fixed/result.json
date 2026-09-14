@@ -1,0 +1,57 @@
+{
+  "task_id": "b-02-seats-fixed",
+  "title": "Unit tests for W1-SEATS (seats) (pass 4, sibling imports present, runner tool absent by design)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The suite is deliberately left with one red test that names a real defect, per the task instructions. \n\n## What I wrote\n\nOne file: `tests/loop/test_seats.py` — 28 tests, house style (one behaviour per test, the test name is the asserted sentence, temp-directory and in-memory fixtures, no mocking of the module under test). Nothing under `src/` was touched.\n\n## Last test run\n\n`python3 run_tests.py tests.loop.test_seats` → `Ran 28 tests … FAILED (failures=1, skipped=2)`. 25 pass, 2 skip with the stated runner-absent reason, 1 fails on a genuine module defect I am not permitted to fix.\n\n## Clause-by-clause coverage\n\n1. **\"Two judge seats always carry distinct family labels\"** — `AcceptanceTwoJudgeSeatsAlwaysCarryDistinctFamilyLabels`: distinctness on a constructed plan, refusal by `FAMILY_COUNT_INSUFFICIENT` of a config pinning two judges of one family, and refusal of a tampered frozen plan at `require_cross_family_judges`. Plus `test_the_default_table_never_pairs_one_lineage_twice_on_the_judge_seats`, the test wave-1 integration **decision 3** prescribes. **That test is RED** — and the red names a real defect: `src/minireason/loop/seats.py` has no `lineage` derivation and compares judge families verbatim (`_judges` at line ~460 and `require_cross_family_judges` at line ~570 use raw `family`), so on the shipped `endpoints.json` the default judge pair is `('deepseek', 'ollama-cloud/deepseek')` — one lineage twice, contrary to notes/WAVE1-INTEGRATION-DECISIONS.md decision 3. Left red as instructed rather than weakening the oracle.\n2. **\"Selection is a pure byte-stable function of (registry, config)\"** — `AcceptanceSelectionIsPureAndByteStable`: byte-identical plans across repeat selection, independence from registry input order, a hand-worked known answer on a constructed 3-family/6-endpoint fixture (judges `a-one`/`b-one`, critic `g-one`, defender `a-two` with its declared relaxation, variator `b-two`), digest-change on changed registry or config, and no input mutation. All pass.\n3. **\"A registry with one family raises FAMILY_COUNT_INSUFFICIENT\"** — `AcceptanceOneFamilyRegistryIsRefused`: a one-family registry refuses by that exact code, it is a `LoopError`, the code is in `types.FAILURE_CODES`, and the detail says \"distinct\". Pass.\n4. **\"The gate is imported, not reimplemented; never admits a sixth concurrent call\"** — partially covered: two live-gate tests (`runner_module()` identity with the runner, `assertIs` on `key_gate_for` vs `runner.key_gate`, sixth acquire fails) **skip** with the stated reason because `tools/multicycle_commitment_study_multi_v2.py` is absent by design. What runs green instead: `key_gate_for` raises `RUNNER_NOT_IMPORTABLE` (named refusal, never a third gate) and `key_cap_for` is the lowest of the three declared ceilings with hand-computed answers.\n5. **\"The pins record key_env per seat\"** — `AcceptanceThePinsRecordKeyEnvPerSeat`: every seat identity record carries `key_env` matching its endpoint, `key_envs` grouping as a known answer, and the pin digest recomputing from the body as the docstring documents. Pass.\n\nSupporting classes (`LoadingARegistry`, `TheTableIsTheFrozenRecord`) cover `load_registry` failure codes, seat identity fields (and the `max_tokens` deviation), marker reuse of the judge pair, `NEW_CODES`, double-seating refusal, and `SEAT_COUNT_INSUFFICIENT`.\n\n## Uncovered / unresolved\n\n- The two live-gate assertions of clause 4 cannot run in this sandbox (runner absent by design) and are skipped, not weakened.\n- Clause 1's verbatim surface is covered; its decision-3 lineage refinement is covered by one deliberately red test naming the defect at `src/minireason/loop/seats.py` (no `lineage` derivation; `_judges` and `require_cross_family_judges` compare raw family labels).",
+  "files_written": [
+    {
+      "path": "tests/loop/test_seats.py",
+      "change": "added",
+      "sha256": "9ba239b5d7d76f75538be84774a6ced0c3e063ab2964d29e6f3b9e555f41ea0e",
+      "bytes": 20810
+    }
+  ],
+  "expected_outputs_present": [
+    "tests/loop/test_seats.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 10,
+    "grep": 4,
+    "write_file": 2,
+    "run_command": 2
+  },
+  "tool_call_total": 18,
+  "iterations": 13,
+  "prompt_tokens": 577304,
+  "completion_tokens": 14811,
+  "total_tokens": 592115,
+  "wall_seconds": 366.178,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 8,
+  "reasoning_chars": [
+    31,
+    0,
+    413,
+    999,
+    167,
+    397,
+    12048,
+    0,
+    625,
+    0,
+    0,
+    0,
+    51
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/b-02-seats-fixed/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/b-02-seats-fixed/sandbox"
+}

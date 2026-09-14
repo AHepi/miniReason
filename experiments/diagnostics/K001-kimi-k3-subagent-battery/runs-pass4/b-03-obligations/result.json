@@ -1,0 +1,57 @@
+{
+  "task_id": "b-03-obligations",
+  "title": "Unit tests for W1-OBLIGATIONS (obligations)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Green. 28 tests, OK.\n\n## What I wrote\n\nOne file: `tests/loop/test_obligations.py` (no `src/` file was touched; an initial draft had a stray broken symbol and an undefined constant `obl.CELING_KIND` that I removed before the first run). It follows the house style of `docs/examples/test_custody_example.py`: fixtures are obligations documents and `Situation` graphs built in a `TemporaryDirectory`, one behaviour per test, no mocking of the module under test, and one test class per acceptance clause.\n\n## Clause-by-clause coverage (clauses verbatim from `design/design-s7-wave-plan.md`)\n\n1. **\"An o satisfied by artifacts not registered this cycle does not count as discharged\"** — `OSatisfiedByArtifactsNotRegisteredThisCycleDoesNotCountAsDischarged`:\n   - `test_an_o_satisfied_by_artifacts_not_registered_this_cycle_does_not_count_as_discharged` — the acceptance test: o_rows is `satisfied` on a graph whose artifacts were never registered, yet `discharged`, `produced_by`, and `Evaluation.produced_by` are all empty.\n   - Support tests pin the positive direction (registering the witnessing artifact this cycle *does* discharge it; a bystander registration does not) and the dependence conjunct (an obligation that still holds with this cycle's registrations withheld is never attributed, per FW5:800 and the module docstring).\n\n2. **\"losses_outside_p returns a list that is present and empty rather than absent when there are none\"** — `LossesOutsidePReturnsAListPresentAndEmptyWhenThereAreNone`:\n   - The acceptance test asserts the return is a `list`, not `None`, and empty, when nothing fell — including the `prev=None` pre-cycle-1 case (deviation 2 in the module docstring).\n   - Positive controls assert the register really fills (`obligation_regressed` + `artifact_absent` named with subjects) and that a protected loss goes to `protected_losses`, never into `losses_outside_p`.\n\n3. **\"evaluation is pure and reads only artifacts, never counts\"** — `EvaluationIsPureAndReadsOnlyArtifactsNeverCounts` and `_Purity`:\n   - The acceptance test walks the module's own AST: no `len`/`sum`/`min`/`max`/`abs`/`round` calls, no arithmetic `BinOp` (except `|` in type unions), no numeric literal outside a subscript (booleans excluded as non-tallies) — exactly the rule the module docstring declares testable, with offending line numbers reported on failure.\n   - Purity is pinned behaviourally: two evaluations of one situation give identical `as_dict()`s, the situation and nodes are untouched, the mappings are immutable, and nothing is written to the temp tree.\n   - Contract scans: every registered predicate has signature `(situation) -> Check` and returns a `Check` on an empty graph (integration decision 2's spirit), and a verdict is one of the three string tokens, never a number.\n\n4. **\"the pin changes on any byte change\"** — `ThePinChangesOnAnyByteChange`:\n   - The acceptance test hashes the file with `hashlib.sha256` as oracle, then mutates bytes three ways (prose reword, appended newline, one byte flipped inside valid JSON) and requires a different pin after each reload.\n   - Supports: byte-identical files pin identically, and the byte pin diverges from the order-insensitive structure digest (deviation 1).\n\nA `LoaderRefusals` class additionally pins the named refusals (`OBLIGATIONS_FILE_MISSING`, `MALFORMED`, `NOT_A_MAPPING`, `SCHEMA_UNKNOWN`, `UNKNOWN_KEY`, `MISSING_KEY`, `FIELD_MISSING`, `FIELD_INVALID`, `ID_MALFORMED`, `ID_DUPLICATE`, `IN_BOTH_SETS`, `MEMBERSHIP_UNKNOWN`, `CHECK_UNKNOWN`, `DIGEST_MISMATCH`, `PIN_SHIFTED`, `OBLIGATION_UNKNOWN`) and the self-declared digest verification, so the acceptance oracles exercise real loading, not a stub.\n\n## Decision compliance\n\n- Decision 5 (o5 is membership, never a threshold): reflected in the AST scan — `obligation_in_force` and every predicate carry no arithmetic, confirmed by source, line range 1117–1140.\n- Decision 6 (`FAILURE_CODES`): I did not assert `NEW_CODES ⊆ types.FAILURE_CODES`; that fold belongs to the integrator, and decision 6 says the wave-0 fixer adds surface + seats while wave-1 modules' codes go in with their own commits — asserting it here could contradict that sequencing. Left out, stated as unresolved whether it belongs in this module's test.\n- Decision 1's p7 rewording targets `graph.py`/the bundle, not this module's tests; untouched.\n\n## Last test run\n\n`python3 run_tests.py tests.loop.test_obligations` — **Ran 28 tests, OK** (exit code 0). No red tests remain; no defect in `src/minireason/loop/obligations.py` was found that needed to be left red.",
+  "files_written": [
+    {
+      "path": "tests/loop/test_obligations.py",
+      "change": "added",
+      "sha256": "a2261e97d2dd82e56f719461b9c52a574554677a99c28d896bbc0529db14526e",
+      "bytes": 23704
+    }
+  ],
+  "expected_outputs_present": [
+    "tests/loop/test_obligations.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 6,
+    "grep": 2,
+    "write_file": 2,
+    "run_command": 6
+  },
+  "tool_call_total": 16,
+  "iterations": 13,
+  "prompt_tokens": 547471,
+  "completion_tokens": 16741,
+  "total_tokens": 564212,
+  "wall_seconds": 406.245,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 9,
+  "reasoning_chars": [
+    26,
+    0,
+    96,
+    4136,
+    1495,
+    6702,
+    215,
+    0,
+    0,
+    1630,
+    0,
+    266,
+    65
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/b-03-obligations/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/b-03-obligations/sandbox"
+}

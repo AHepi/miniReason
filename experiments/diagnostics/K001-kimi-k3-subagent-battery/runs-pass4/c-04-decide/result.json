@@ -1,0 +1,74 @@
+{
+  "task_id": "c-04-decide",
+  "title": "Implement W2-DECIDE (decide) with its tests",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "All green (28 tests, `python3 run_tests.py tests.loop.test_decide` and full discovery both report OK). No file under `src/` was edited except the one I authored.\n\n## What I wrote\n\n* **`src/minireason/loop/decide.py`** — W2-DECIDE. Public interface: `situation(harness, cycle, obligations, *, registered=()) -> Situation`, `mark_triples(harness) -> frozenset` (which *is* `graph.mark_triples`, imported), `decide(prev, curr, cycle_index, config, obligations) -> Decision`, `render_decision(d) -> str`, `Decision.stop` / `.reason` / `.record_sentences` (plus `.outcome`, `.losses`, `.would_reopen`, `.spawn`, `.as_dict()`, `.validate()`), `MODULE_DIGEST`, and the sentence/vocabulary constants. Everything is a `DecideError` (`types.LoopError` subclass, `(code, detail=\"\")`); `NEW_CODES = {\"DECIDE_INPUT_INVALID\", \"DECIDE_REASON_UNDECLARED\"}` — **both belong in `types.FAILURE_CODES`** per O9 and wave-1 decision 6, with `DecideError` added to the completeness scan's `TOKEN_ARGUMENT`.\n* **`tests/loop/test_decide.py`** — 28 tests, house style (one test class per acceptance clause), all offline against a real temp-rooted `deepreason_core` harness populated through `graph.py`'s own writers.\n\n## Acceptance clauses, and how each is tested\n\n1. *Total, exactly one outcome* — `DecideIsTotalAndReturnsExactlyOneOutcome` walks the standing continue, clause 5, clause 4 and the custody rail, asserting one `Decision`, reason ∈ `STOP_REASONS` iff stop, and a JSON-ready record with `losses_outside_P` and `would_reopen` present.\n2. *Protected loss stops and names it* — `AProtectedLossStopsAndNamesTheLoss`: a planted p4 violation across two pinned situations stops `protected_loss` with `p4` in detail and render; a protected obligation becoming unreadable is exposed as `protected_not_evaluable` and is not a loss (FW5 R5).\n3. *o satisfied without this cycle's own artifacts does not continue* — `AnOWithoutThisCyclesArtifacts…`: cycle-1-registered evidence leaves `discharged == ()` and falls through to clause 3 rather than continuing; same artifacts attributed to this cycle continue on clause 2.\n4. *Identical mark-triple sets stop as set identity* — `MarkTripleSetsStopAsSetIdentity`: identical sets stop even with counts unchanged vs changed; a cell unresolved→read continues; and `mark_set` is asserted byte-for-byte equal to `graph.mark_triples` on the real graph both before and after a registered mark.\n5. *Budget stop carries the boundary sentence and would_reopen* — `ABudgetStopCarries…`: both `cycle_budget` and `max_calls` arms carry `BOUNDARY_SENTENCE` and `config.reopen_reasons`; the render passes `assert_no_exhaustion_claim`, and a tampered sentence is refused with `RESOURCE_BOUNDARY_MISDESCRIBED`.\n6. *Block streak stops as instrument_fault* — `ABlockStreakStopsAsInstrumentFault`: a 5-long trailing block run reaches the margin and stops with `SPAWN_AUDIT_THE_READER` and `FAULT_SENTENCE` (\"fault in the instrument… no finding about the material\"), quoting the frozen `streak_max_account`; 4 blocks do not fire; the calibration arm fires strictly above `judge_err_max` and not at it.\n7. *No count in any clause* — clause 4 is set `==` only; counts appear only in detail strings as information; tested by 3, 4 and 6 above.\n8. *Module digest matches the pinned one* — `ThePinnedDigest`: `MODULE_DIGEST` is the sha256 of the module's own bytes, recomputed in-test (what a plan pins is this file's digest; I could not verify a `plan.json` value because no plan exists in this sandbox — that is for the integrator).\n\n## Stubs and unsettled points\n\nNo public-interface member is a stub; all are implemented. What I could not settle from the documents, and what I decided (recorded as deviations 1–7 in the module docstring):\n\n* **`situation(harness, cycle)` vs the pinned `Situation` shape** — the entry's two-argument signature cannot return a `Situation` (W1-OBLIGATIONS pins one to its document). I made `obligations` a required third argument. The other way: no change here, but an integrator wanting the entry's spelling would need a module-level obligations context.\n* **Where the rail facts live** — not specified anywhere. I read them from record artifacts (`step_receipt`, `arm_outcome`, `calibration_outcome` — this module's own small read vocabulary; `disposition`/`call_record` imported from obligations), matching obligations' deviation 7. If the driver instead signals rails directly (e.g. a halted-steps argument), `decide`'s signature gains a parameter and the four `_records` readers move to the driver.\n* **Clause 4's two sets** — the entry hands `decide` two situations, no harness. I derive both sets situation-side via `mark_set` (documented as decision 4's rule; asserted equal to the graph-layer spelling). If `Situation` later grows a carried `mark_set`, my `mark_set` is that field's specification.\n* **Streak \"above\" vs \"reaching\" the margin** — design says \"above\"; the calibration arm is frozen as \"strictly above `judge_err_max`\", so I fired the streak at `>= streak_max` to make the margin the boundary itself. The other way: one extra block before the stop.\n* **CONTINUE's reason** — the empty string, with `DECIDE_REASON_UNDECLARED` refusing any borrowed stop token; only the stop vocabulary's owner could rule the empty string out.",
+  "files_written": [
+    {
+      "path": "src/minireason/loop/decide.py",
+      "change": "added",
+      "sha256": "2cf2504d898fdb5f74551a463a791fcd61d7da4a0fdff669a6254123227aaffa",
+      "bytes": 35359
+    },
+    {
+      "path": "tests/loop/test_decide.py",
+      "change": "added",
+      "sha256": "92a4fcd49dc01472d8e041f267ab991facba7bc2121afeda25448b021cc515e8",
+      "bytes": 23551
+    }
+  ],
+  "expected_outputs_present": [
+    "src/minireason/loop/decide.py",
+    "tests/loop/test_decide.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 13,
+    "grep": 4,
+    "write_file": 6,
+    "run_command": 7
+  },
+  "tool_call_total": 30,
+  "iterations": 23,
+  "prompt_tokens": 2504209,
+  "completion_tokens": 49142,
+  "total_tokens": 2553351,
+  "wall_seconds": 986.898,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 17,
+  "reasoning_chars": [
+    19,
+    83,
+    286,
+    757,
+    10468,
+    388,
+    13422,
+    5124,
+    2180,
+    285,
+    11764,
+    0,
+    1915,
+    0,
+    360,
+    0,
+    834,
+    276,
+    0,
+    172,
+    0,
+    366,
+    0
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/c-04-decide/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/c-04-decide/sandbox"
+}

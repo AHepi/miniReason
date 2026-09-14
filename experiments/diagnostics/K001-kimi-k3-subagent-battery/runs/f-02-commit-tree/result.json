@@ -1,0 +1,47 @@
+{
+  "task_id": "f-02-commit-tree",
+  "title": "Check every published commit/tree identity in REC-20260914-U and -X",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Done. Every published pair verifies — a clean result, and the extraction set underneath it is itemised so it can be told apart from an incomplete one.\n\n**What I built**\n\n- `check/commit_tree.py` — pattern-extracts every commit/tree identity from the two receipts (8 regex layouts, all listed in the report with hit counts, including the one layout that hit zero), joins them against the 122 rows of `evidence/git-log-branch.txt`, and rewrites `out/commit-tree.md`. Hex tokens are boundary-anchored, so a 40-char prefix of a 64-char SHA-256 `plan_id`/material pin can never masquerade as a git id.\n- `check/test_commit_tree.py` — 13 tests: log well-formedness, paragraph counts, pattern hit counts, complete coverage of every tree-claiming paragraph, the digest-boundary property, the eight pair joins, short-id uniqueness, the reverse-mapping check (no claimed tree attached to a different commit), and determinism of the generated report.\n- `out/commit-tree.md` — one row per claimed identity: receipt, paragraph, pattern, claimed commit, claimed tree where present, verdict, detail.\n\n**The check itself**\n\n- 32 identities extracted. The 8 claims that pair a tree with a commit are all `VERIFIED`: in each case exactly one log row carries both the claimed commit and the claimed tree — the definition of the join rather than a membership test. No `MISMATCH_TREE` (a commit in the log whose log tree differs from the claimed one), no `COMMIT_NOT_IN_LOG`, no `AMBIGUOUS_SHORT_ID`. The 16 short ids each resolve to exactly one log row; the 6 lone full-width commit records (X's `VERIFIED <commit>` lines and \"against the published commit\" dispatch pins) and the 2 range-start ids all resolve.\n- Named as not fully caught by pattern: U-08's \"in seven commits from `ad3e347` through the closing one\" — its endpoints extract and verify, but the six middle commits are named only by subject, so there is no id to join; the report cross-references those six rows off the log (`04654a3`, `1629af7`, `ee22ee4`, `865a800`, `c18d723`, `f353ac4`), making the \"seven\" consistent with the log as a count. Also declared out of scope by construction: plain number-words and the 64-hex plan/material digests (not git identities). No backticked 7-hex token was excluded by the paragraph-shape rule.\n\n**Last test run:** `python3 -m unittest check.test_commit_tree` → Ran 13 tests, OK; `python3 check/commit_tree.py` → rows=32 pairs=8 verified_pairs=8 anomalies=0, exit 0.",
+  "files_written": [
+    {
+      "path": "check/commit_tree.py",
+      "change": "added",
+      "sha256": "b3792b3439948b8fac0993bc4f59f5ebf57d36dfbb5e2e2501a12f8a99971e47",
+      "bytes": 20429
+    },
+    {
+      "path": "check/test_commit_tree.py",
+      "change": "added",
+      "sha256": "f0fc5ca2f6883d5e2ab2a04682a6e215c2323eef553b7b7d4dfe512fa6db9dca",
+      "bytes": 9499
+    },
+    {
+      "path": "out/commit-tree.md",
+      "change": "added",
+      "sha256": "c69224b716aebaf196a7197449445565c01c8200f3b8ad5906c0fb1504335aa8",
+      "bytes": 14704
+    }
+  ],
+  "tool_calls": {
+    "read_file": 9,
+    "list_dir": 4,
+    "grep": 2,
+    "write_file": 7,
+    "run_command": 13
+  },
+  "tool_call_total": 35,
+  "iterations": 29,
+  "prompt_tokens": 1733457,
+  "completion_tokens": 56772,
+  "total_tokens": 1790229,
+  "wall_seconds": 886.916,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 16,
+  "transcript_path": "runs/f-02-commit-tree/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/f-02-commit-tree/sandbox"
+}

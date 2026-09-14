@@ -1,0 +1,125 @@
+{
+  "task_id": "a-02-contracts",
+  "title": "Adversarial review of W0-CONTRACTS (contracts)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The work is complete. Here is the summary.\n\n## What I did\n\nI reviewed `src/minireason/loop/contracts.py` (W0-CONTRACTS) adversarially against `notes/WAVE0-INTERFACE.md`, `design/design-s2-roles-and-guard.md` (§2.3, §2.4 G1/G4/G9/D4/G12) and `design/design-s7-wave-plan.md`'s W0-CONTRACTS acceptance clause, cross-checking against `standard.py`, `types.py`, `use_relation_h005.py` and `deepreason_core.harness`. Every finding was executed as a probe, not asserted.\n\n## Files written (all under the sandbox root; nothing under `src/` was touched)\n\n- `review/contracts.md` — the review.\n- `probe/` — thirteen probe scripts: `p01_totality`, `p02_exceptions`, `p03_outside_vocabulary`, `p04_g12`, `p04b_warrant`, `p05_identity`, `p06_schemas`, `p06b_restore`, `p07_transcript`, `p08_shapes`, `p09_headers`, `p10_misc`, `p11_roundtrip`, `p12_aggregate`, plus an empty `probe/__init__.py`.\n\n## Findings (ordered BLOCKER → SHOULD-FIX → NOTE, unranked within a class)\n\n- **BLOCKER: none reproduced.** Three candidate seams attacked and held (see below).\n\n- **F1 (SHOULD-FIX)** — The published \"same objects\" (`contracts.SCHEMAS`/the five role schemas/`WORD_LIMITS` are `standard`'s own) are mutable *in place* through a `MappingProxyType` that guards only the top level. A one-line `contracts.DEFENDER_SCHEMA[\"required\"].clear()` turns `check(\"defender\", {})` into a `KeyError` escaping the function whose docstring says **\"Never raises\"**, and does not move the pinned `STANDARD_BODY_SHA256`/`ROLE_SCHEMAS_SHA256`. Probe `p06b_restore.py` shows the mutation breaking the seam and the digest staying pinned to the pre-mutation schemas. Repair: structurally freeze the schemas before the validators are built.\n\n- **F2 (NOTE)** — `VARIATOR_SCHEMA` is `minItems:1, uniqueItems` with no `maxItems`; a 3-paraphrase output validates even though `TRIAL_PARAPHRASE_N = 2` is a pinned guard parameter. **F3 (NOTE)** — `AGGREGATE_KEYS` is schema-side only and probed so; numeric artifact *content* passes both guards by design, but the module docstring's \"no aggregate\" sentence could mislead. **F4 (NOTE)** — `SCHEMA_REASONS` is complete: every reason `check()` emits is in the table, all 18 reachable and spelled in the right grain. **F5 (NOTE)** — the O2 `verdict`/`FORBIDDEN_KEYS` collision is real in this sandbox (`p04b_warrant.py`: the guard refuses the vendored `Warrant` record at path `('verdict',)`), and the pinning test named in the notes is not shipped in this snapshot.\n\n- **Tried, and could not break** (three, executed): (1) `check()`'s never-raises totality across boundary inputs including non-JSON text, bad UTF-8, and `MappingProxyType` bodies; (2) G4/D6 normalisation passes the vendored `conforming_transcript` gate exactly at the designed boundaries and round-trips; (3) the G12 guard across all three subjects (case-folded nested keys, bare `str` refusal, and `assert_no_scoring_headers` on contiguous/implicit tables and headings).\n\nThe review also records what was verified to hold: one-owner identity by `is`, the digest pin, the exception conventions, purity/determinism, and `SCHEMA_REASONS` completeness.\n\n## Result of the last test run\n\nAll thirteen probes ran clean, each printing the executed evidence quoted verbatim in the review. `python3 run_tests.py` → `Ran 0 tests in 0.000s / OK` — no test modules are shipped in this frozen snapshot (a direct `python3 run_tests.py tests.loop.test_contracts` fails with `ModuleNotFoundError: No module named 'tests.loop.test_contracts'`, which the review notes against the test-file claims in the interface).",
+  "files_written": [
+    {
+      "path": "probe/__init__.py",
+      "change": "added",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "probe/p01_totality.py",
+      "change": "added",
+      "sha256": "d4056f4b743825bfd0a0f26b697bb76d909efcf4c16ee2c163c3585f00e28b3b",
+      "bytes": 2953
+    },
+    {
+      "path": "probe/p02_exceptions.py",
+      "change": "added",
+      "sha256": "dbc74a276741891e595b292f22b9ec5e2cadd485660eeee0b1fcb7967b5fbf3c",
+      "bytes": 4248
+    },
+    {
+      "path": "probe/p03_outside_vocabulary.py",
+      "change": "added",
+      "sha256": "6179e97deac09a14af24ee3cffcbe970e0c52dd6fd123574ec13d2caddc894fe",
+      "bytes": 3285
+    },
+    {
+      "path": "probe/p04_g12.py",
+      "change": "added",
+      "sha256": "470898acf86c323e4b49b1e07bf8926e582bd4b7f8d3796342519f6678e6be4a",
+      "bytes": 3811
+    },
+    {
+      "path": "probe/p04b_warrant.py",
+      "change": "added",
+      "sha256": "f4b390ae19c2b5a524ad2752b82b81ad06153e816c8d2f2f65f9e0580ef0d11b",
+      "bytes": 1691
+    },
+    {
+      "path": "probe/p05_identity.py",
+      "change": "added",
+      "sha256": "f6ad8e2ec7a5d749df0b430f544396985d0e5f4b18ece15b54fd154f0ce64563",
+      "bytes": 4042
+    },
+    {
+      "path": "probe/p06_schemas.py",
+      "change": "added",
+      "sha256": "fc66d8593d5b3c314a0d6a0ad153bc184ab12ade25f3e06d268df3ab088f03eb",
+      "bytes": 4306
+    },
+    {
+      "path": "probe/p06b_restore.py",
+      "change": "added",
+      "sha256": "2f1b363dab92477d2bd4f494a0b53a591e36ca7f3fb0edac7509a45715439607",
+      "bytes": 2971
+    },
+    {
+      "path": "probe/p07_transcript.py",
+      "change": "added",
+      "sha256": "92afa871f37816c376ee4b805648cb3d5d4b7fbb653db863586c2542aa3f2695",
+      "bytes": 4152
+    },
+    {
+      "path": "probe/p08_shapes.py",
+      "change": "added",
+      "sha256": "2183bd7a394565d2538883838d91fd47e518ac6717989f9a0b7b774fc2e85f6d",
+      "bytes": 3110
+    },
+    {
+      "path": "probe/p09_headers.py",
+      "change": "added",
+      "sha256": "de337ab5c7b65c6f6c7892d70eddd750396ac90138fd205f2cb054f90c4757fa",
+      "bytes": 2686
+    },
+    {
+      "path": "probe/p10_misc.py",
+      "change": "added",
+      "sha256": "5ca721e137e63f64532f9866aaf2774bb31cc1cb6493879cfbf88d6d48a141c1",
+      "bytes": 4120
+    },
+    {
+      "path": "probe/p11_roundtrip.py",
+      "change": "added",
+      "sha256": "f5d0a2557dbd27872c80eb287ba064e3e028a6887ebcd17414a3d8a527615dab",
+      "bytes": 3657
+    },
+    {
+      "path": "probe/p12_aggregate.py",
+      "change": "added",
+      "sha256": "c10ee4b00f86cbc91083fa9eeaa333729280938de442e28e41b624bc6093215e",
+      "bytes": 1839
+    },
+    {
+      "path": "review/contracts.md",
+      "change": "added",
+      "sha256": "f32bec4da892b7314ae6da30d9aaf9851a12e296080710c02ab2cffef5835071",
+      "bytes": 16161
+    }
+  ],
+  "tool_calls": {
+    "read_file": 14,
+    "list_dir": 4,
+    "grep": 2,
+    "write_file": 20,
+    "run_command": 28
+  },
+  "tool_call_total": 68,
+  "iterations": 56,
+  "prompt_tokens": 5199979,
+  "completion_tokens": 29243,
+  "total_tokens": 5229222,
+  "wall_seconds": 599.066,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 9,
+  "transcript_path": "runs-pass2/a-02-contracts/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass2/a-02-contracts/sandbox"
+}

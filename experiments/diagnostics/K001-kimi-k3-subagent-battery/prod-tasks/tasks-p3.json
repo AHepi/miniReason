@@ -1,0 +1,27 @@
+[
+ {
+  "id": "p3-manifest-reverify",
+  "title": "Re-verify every manifest and sha256 list in today's published experiment records",
+  "prompt": "Re-verify, by computation only, every manifest and digest list inside the published experiment directories copied into this sandbox, and write `out/manifest-reverify.md` and `out/manifest-reverify.json`.\n\nDIRECTORIES. `experiments/diagnostics/C001-contrast-triple`, `experiments/diagnostics/F002-fork5-raised-clock`, `experiments/diagnostics/B001-bare-and-native`, `experiments/analyses/F002-fork5-raised-clock-2026-09-14`, `experiments/analyses/B001-arm-inventory-2026-09-14`. These are frozen published observations: read them, never modify them.\n\nMETHOD, scripts under `check/`:\n 1. Walk the directories and list every file whose name contains `manifest` (any case) or ends with `.sha256`, plus every JSON file that has a top-level key named `files`, `entries`, `sha256`, `digests` or `pins` whose value maps paths to 64-hex digests. Report the list with the format you detected for each (JSON mapping, JSON list of objects, or `<sha256>  <path>` text lines).\n 2. For each such file, re-hash every referenced path (resolved relative to the manifest's own directory first, then to the sandbox root; say which resolution succeeded) and compare with the recorded digest. Verdict per entry: MATCH, MISMATCH (print both digests), MISSING (file not found under either resolution), or UNPARSED (entry shape not understood; print it).\n 3. Also list, per directory, files present on disk that no manifest in that directory references (informational; not a defect unless the manifest claims completeness, in which case quote the claim).\n 4. For every `plan.json` found, print its top-level keys and, if it carries a `plan_id`, whether any sibling file states how that id is derived (quote the sentence if so); do not attempt the derivation unless the rule is stated in the files and needs only sha256 over canonical JSON.\n 5. Credential scan over all files: lines matching `sk-[0-9a-f]{32}` or `[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}`; line numbers only; expect zero.\n\nWHAT TO PRODUCE: `out/manifest-reverify.json` with per-manifest results and totals per verdict, and `out/manifest-reverify.md` rendering them, one section per manifest, ending with a summary of counts per verdict (each carrying the manifest it came from) and the list of every non-MATCH entry. A clean result is a result: do not manufacture a discrepancy. Finish by naming what your walk would not catch.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "experiments/diagnostics/C001-contrast-triple",
+   "experiments/diagnostics/F002-fork5-raised-clock",
+   "experiments/diagnostics/B001-bare-and-native",
+   "experiments/analyses/F002-fork5-raised-clock-2026-09-14",
+   "experiments/analyses/B001-arm-inventory-2026-09-14"
+  ],
+  "expected_outputs": [
+   "out/manifest-reverify.md",
+   "out/manifest-reverify.json",
+   "check/"
+  ],
+  "evaluation": "mechanical; publishers verified these at publication time, so any non-MATCH is checked by the orchestrator with sha256sum directly",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 300,
+  "verify_command": null,
+  "repo_root": "/home/user/miniReason"
+ }
+]

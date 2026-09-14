@@ -1,0 +1,103 @@
+{
+  "task_id": "a-05-receipts",
+  "title": "Adversarial review of W0-RECEIPTS (receipts)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Review complete. All findings were executed; nothing under `src/` was touched.\n\n**Files written:**\n- `review/receipts.md` — the adversarial review\n- `probe/render_collision.py`, `probe/render_render_reenter.py` — re-entrancy/deadlock probes\n- `probe/activity_runner_errors.py` — runner-error conversion probe\n- `probe/bracket_masking.py` — exception-masking probe\n- `probe/attacks_failed.py` — four attacks expected to fail (all failed as expected)\n- `probe/secret_refusal_fixed.py` — the corrected secret-refusal probe\n- `probe/byte_mode_add_only.py` — CRLF/add-only append control\n\n**Findings:**\n- **BLOCKER B1** — `bracket()` masks the caller's original exception when the outcome-log call also fails; the probe printed `original exception MASKED by ACTIVITY_LOGGER_FAILED` with no chaining and no record of the real failure.\n- **SHOULD-FIX S1** — `activity()` converts only `TimeoutExpired`; a runner raising `OSError` escapes as a bare `OSError`, contradicting \"Every way the logger can fail carries a code from the table\" (`NON-LoopError OSError` in the probe).\n- **SHOULD-FIX S2** — `open_receipt(render=...)` runs user code under the RLock and `flock`; a same-thread re-entry through `ledger_append` deadlocks the process with no exception and no code (SIGALRM-bounded probe exits 3 printing DEADLOCK). The `mint_receipt_id` docstring's \"not re-entrant across threads\" warning describes the hazard incorrectly (the lock is re-entrant in the *same* thread, which is where render runs).\n- **NOTE N1/N2** — process-global `current_receipt()` fallback is racy across threads (no corrupt record constructible, so a note); and the refusal is exactly as strong as the transport's declared credential set.\n\n**Tried and could not break** (all re-run after the last edit): 80 concurrent mints, zero collisions; `SECRET_IN_RECEIPT` refuses with names only, ledger byte-unchanged, for both a registered env and `DEEPSEEK_API_KEY`; cadence miss recorded at notice time with `CADENCE_BACKDATED` refusing a backdate; suffix minting bijective past Z (`...Z AA AB AC AD AE`); CRLF prefix bytes preserved exactly with correct offset accounting.\n\nOne honest near-miss is recorded in the review: my first secret probe \"succeeded\" only because the credential's env name was undeclared — that is the transport's documented declared-set design, and `receipts.py` delegates to it correctly, so it is not a finding.",
+  "files_written": [
+    {
+      "path": "probe/activity_runner_errors.py",
+      "change": "added",
+      "sha256": "65a098f80e282aa06556d13938902265e72389a0d42fb937aaadc46b67dd6fa1",
+      "bytes": 1681
+    },
+    {
+      "path": "probe/attacks_failed.py",
+      "change": "added",
+      "sha256": "d98f1f373ac798d3e18acda0019b0ec563fb4630ca3191e025bfc26da402d3c8",
+      "bytes": 2645
+    },
+    {
+      "path": "probe/bracket_masking.py",
+      "change": "added",
+      "sha256": "3eb0ba2737cb2b7360bacb3562c822270c4e613e5a41bbd55cf2b7fe9392b99c",
+      "bytes": 856
+    },
+    {
+      "path": "probe/byte_mode_add_only.py",
+      "change": "added",
+      "sha256": "abee25e532082b535d934e7f35e4dff9f6377716e0c94c672fb953a347ac9f97",
+      "bytes": 1065
+    },
+    {
+      "path": "probe/render_collision.py",
+      "change": "added",
+      "sha256": "e58f28fa6ecc1a7498a1da6bd4444ddaf6f65a20227ee98df77051e40076d4cb",
+      "bytes": 1405
+    },
+    {
+      "path": "probe/render_render_reenter.py",
+      "change": "added",
+      "sha256": "f5a014ebafaf55ce33078a7aadbb435bc9844170cf5737c1358b860d49afd8df",
+      "bytes": 1381
+    },
+    {
+      "path": "probe/secret_refusal_fixed.py",
+      "change": "added",
+      "sha256": "9ea7f897b9e4ac7e2f74d58a0ee81e831059409446ddb417512896782682cb75",
+      "bytes": 1876
+    },
+    {
+      "path": "review/receipts.md",
+      "change": "added",
+      "sha256": "5eb2e5f9db04de651e35025c1e87966ff8dc111da23744ef4aca833e2122fce4",
+      "bytes": 13045
+    }
+  ],
+  "expected_outputs_present": [
+    "review/receipts.md",
+    "probe/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 6,
+    "grep": 5,
+    "write_file": 9,
+    "run_command": 10
+  },
+  "tool_call_total": 30,
+  "iterations": 16,
+  "prompt_tokens": 724654,
+  "completion_tokens": 29623,
+  "total_tokens": 754277,
+  "wall_seconds": 872.143,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 10,
+  "reasoning_chars": [
+    26,
+    12218,
+    14788,
+    9495,
+    30633,
+    10704,
+    0,
+    7054,
+    0,
+    519,
+    0,
+    0,
+    0,
+    130,
+    0,
+    20
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/a-05-receipts/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/a-05-receipts/sandbox"
+}

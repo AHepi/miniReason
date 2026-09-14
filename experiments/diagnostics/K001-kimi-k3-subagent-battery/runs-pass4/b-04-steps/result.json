@@ -1,0 +1,60 @@
+{
+  "task_id": "b-04-steps",
+  "title": "Unit tests for W1-STEPS (steps)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "All 18 tests pass. Final report.\n\n## What I changed\n\nOne file written: **`tests/loop/test_steps.py`** (new). No file under `src/` was edited.\n\n## Last test run\n\n`python3 run_tests.py tests.loop.test_steps` — **18 tests, OK, 0.104s**.\n\n## Clause-by-clause coverage\n\nEach acceptance clause has its own class and a test named after it (house style):\n\n1. **A COMPLETE step is skipped on resume** — `ACompleteStepIsSkippedOnResume.test_a_complete_step_is_skipped_on_resume`. Runs CYCLE_OPEN, resumes with a fresh `StepLedger` and an `AssertionError`-throwing tripwire body; asserts `SKIPPED`, `ran` false, same step_key/index/outputs, and exactly one receipt on disk.\n2. **An open spending marker halts with UNRESOLVED_STEP** — `AnOpenSpendingMarkerHaltsWithUnresolvedStep...`. Leaves a `SEND` handle unended (the kill), asserts `.open` marker present, then asserts every `begin` on a fresh ledger raises `UnresolvedStep` carrying the original index/kind/step_key, and that a run_step body would never be re-entered (nothing new on disk).\n3. **A replayable step re-run with different bytes raises STEP_NONDETERMINISTIC** — two tests on PREFLIGHT/IMPORT: faithful re-run → `REPLAYED` writing nothing; different bytes → `StepNondeterministic` with `.differing` naming the output key, plus a FAILED receipt recorded beside the one it contradicted; also that an *extra* recorded name differs.\n4. **A halt is sticky until acknowledged with a recorded reason** — `AHaltIsSticky...`: CustodyMismatch → HALTED receipt; fresh ledgers raise `StickyHalt` with the receipt's own code repeatedly; empty reason and non-halted key both refused `STEP_NOT_HALTED`; the acknowledgement record file contains reason, step_key, ACK_SCHEMA, code; duplicate ack → `WRITE_ONCE_VIOLATION`; guard clears and the step retries to a fresh index.\n5. **A PublishPending state blocks every successor step** — `APublishPendingState...` via the module's own `publisher` injection seam (building real `publish.PublishResult` values, not mocking the module). Asserts PENDING is returned not raised, recorded as FAILED/PUBLISH_PENDING with the marker resolved; every successor kind raises `PublishBlocked`; the same-key next attempt passes the guard (design O7), lands at a later index, files the VERIFIED digest in the receipt plus a `.verified` sidecar; successors unblock; and the completed publication is SKIPPED on resume.\n6. **A second driver on the same run is refused by RunLock** — `ASecondDriver...`: held lock → `RunLocked`/`RUN_LOCKED` for a second acquirer; lock-content is readable via `holder()`; release permits re-acquire; a lock written under another `loop_plan_id` → `PLAN_ID_MISMATCH`.\n7. **Kill-and-resume at every state leaves no coordinate re-sent** — `KillAndResumeAtEveryStateLeavesNoCoordinateReSent...` parametrised over every record prefix (request only, request+attempt, attempt only, answered both ways) plus never-started and a mixed tree: no started coordinate is ever re-sent; answered → `complete`, dangling → `indeterminate` (never an absence, per the module docstring and §4.3), never-started → the only sendable coordinate.\n\nPlus supporting classes: `TheClassificationIsAClosedTable` (module deviation 1), `WriteOnceReceipts` (tampered receipt refused via `STEP_KEY_MISMATCH`; foreign-plan receipt refused), `DeclaredCodes`.\n\n## Findings — unresolved defect, named\n\n`test_the_new_codes_this_module_introduces_are_named_with_reasons` encodes a real violation of **wave-1 integration decision 6**: all five members of `steps.NEW_CODES` — `RUN_LOCKED`, `STEP_BODY_FAILED`, `STEP_CLASS_DISAGREEMENT`, `STEP_NOT_HALTED`, `STEP_OUTPUTS_INVALID` (`src/minireason/loop/steps.py`, the `NEW_CODES` mapping near the exception classes) — are absent from `types.FAILURE_CODES` (`src/minireason/loop/types.py`, the `FAILURE_CODES` frozenset). I could not fix this: the fix belongs in `src/minireason/loop/types.py`, which I am forbidden to edit. The test records the gap in the explicitly-named constant `NEW_CODES_NOT_YET_IN_FAILURE_CODES` so the assertion pins exactly which codes are missing and fails again if the gap changes (e.g. when types.py lands them, the constant must be emptied to `frozenset()` — the code and comment say so). All seven acceptance clauses pass against the module as shipped; I could not cover anything beyond this — every clause has a passing constructed-input test.",
+  "files_written": [
+    {
+      "path": "tests/loop/test_steps.py",
+      "change": "added",
+      "sha256": "c1711fd9dd0d6e5d4616bba0bfe43f669da7b1364472d4ab29f9564cda4f9598",
+      "bytes": 29846
+    }
+  ],
+  "expected_outputs_present": [
+    "tests/loop/test_steps.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 9,
+    "grep": 5,
+    "write_file": 3,
+    "run_command": 3
+  },
+  "tool_call_total": 20,
+  "iterations": 16,
+  "prompt_tokens": 989752,
+  "completion_tokens": 25416,
+  "total_tokens": 1015168,
+  "wall_seconds": 598.365,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 11,
+  "reasoning_chars": [
+    41,
+    71,
+    137,
+    0,
+    314,
+    2979,
+    0,
+    3942,
+    149,
+    4201,
+    0,
+    608,
+    470,
+    0,
+    0,
+    1277
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/b-04-steps/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/b-04-steps/sandbox"
+}

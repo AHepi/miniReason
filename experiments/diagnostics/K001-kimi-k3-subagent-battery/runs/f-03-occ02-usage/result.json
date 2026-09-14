@@ -1,0 +1,41 @@
+{
+  "task_id": "f-03-occ02-usage",
+  "title": "C001 occurrence-02 usage and envelope profile",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The markdown is final and verified. All figures were cross-checked by an independent one-off computation before the final output was regenerated.\n\n## Summary\n\n**Files written:**\n- `check/occ02_usage.py` — the profile script; run as `python3 check/occ02_usage.py`, it reads the twenty receipts under `experiments/diagnostics/C001-contrast-triple/occurrence-02/responses/` and writes the report.\n- `out/occ02-usage.md` — the usage and envelope profile.\n\n**Figures computed (all from the twenty records via the script):**\n- 20 receipts (1 endpoint × 1 arm × 4 cases × 5 replicates); `status` COMPLETE × 20; `finish_reason` stop × 20; `timeout_seconds` 600 × 20.\n- Completion tokens: total 207,238; range 5,783 (`original/rep5`) to 15,470 (`recoding/rep5`).\n- Reasoning tokens: total 159,324; range 3,733 (`original/rep5`) to 12,470 (`recoding/rep5`).\n- Per-call reasoning share of the completion, as a range over the twenty calls (no average): 0.6455 (`original/rep5`) to 0.8469 (`recoding/rep1`).\n- 15 of 20 calls exceeded 8,192 completion tokens — compared to 8,192 only as the ceiling the same endpoint ran under in occurrence-01; each of the 15 calls is listed with its value.\n- Prompt tokens: total 102,445.\n- Non-empty `envelope_repairs`: 1 of 20 — `deepseek-flash/fcl/control/rep2` carries `[\"json_strict_false\"]`; its `envelope_status` stays AUTHORED and it is the same record whose `strict_parse_would_succeed` is false (true × 19).\n- Failure codes: none present — `failure_class`, `failure_type`, `validation_failure_class`, `validation_failure_type`, `unresolved_reason` are null in all twenty records.\n\n**Single-missing-record sensitivity** (named in the report): would change for any removal — receipt count, status/finish_reason counts, and all three token totals; conditionally — the over-8,192 count (only if one of the 15 listed calls is removed), the strict-true count (only if one of the 19 true records), the repair count (only if `control/rep2`), and each range (only if its sole extremum holder: `original/rep5` for the three minima; `recoding/rep5` for the completion/reasoning maxima, `recoding/rep1` for the share maximum). Would not change — the 8,192 ceiling itself (occurrence-01's value), the sets of distinct `status` and `finish_reason` values, and every unremoved record's exceedance status.\n\n**Last test run:** `python3 check/occ02_usage.py` → exit 0, printed summary matches the written markdown; an independent `python3 -c` recomputation produced identical totals, ranges, counts, and extremum holders. The report states explicitly that these are resource observations: the reasoning share is a budget-spending fact, not a merit figure, and the 8,192 comparison is to the occurrence-01 ceiling and nothing else.",
+  "files_written": [
+    {
+      "path": "check/occ02_usage.py",
+      "change": "added",
+      "sha256": "a27e403b545484e2e25e3164cda60e5ca9904184b1456cff4f4898390bb50560",
+      "bytes": 14195
+    },
+    {
+      "path": "out/occ02-usage.md",
+      "change": "added",
+      "sha256": "622b599609c8c1189b138e583f02c0f9f1fed31b89626579a8347c8d29b67f2e",
+      "bytes": 4779
+    }
+  ],
+  "tool_calls": {
+    "read_file": 10,
+    "list_dir": 1,
+    "grep": 4,
+    "write_file": 2,
+    "run_command": 5
+  },
+  "tool_call_total": 22,
+  "iterations": 16,
+  "prompt_tokens": 247540,
+  "completion_tokens": 12896,
+  "total_tokens": 260436,
+  "wall_seconds": 248.108,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 10,
+  "transcript_path": "runs/f-03-occ02-usage/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/f-03-occ02-usage/sandbox"
+}

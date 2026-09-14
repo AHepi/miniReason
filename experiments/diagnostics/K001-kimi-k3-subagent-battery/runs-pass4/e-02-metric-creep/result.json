@@ -1,0 +1,75 @@
+{
+  "task_id": "e-02-metric-creep",
+  "title": "Metric creep in standard.py and types.py",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Work complete.\n\n**What I found.** Auditing the bytes actually in this sandbox against the no-metric rule:\n\n- **Nothing forbidden (no F rows).** No count, rate, rank, average, majority or \"best\" in `standard.py` or `types.py` reaches adjudication or a reading's standing. The guard parameters, word limits, replicate floor, panel shape, budgets and wall clocks are all allowed instrument/spend bounds (A rows). The ceiling's \"printed with counts\" block register carries its own denial of warrant in the same clause.\n- **Three live C rows:**\n  1. `types.py AuditConfig.judge_err_max` / `streak_max` — a rate and a streak count whose only consumer would be the absent AUDIT/DECIDE wave; probe showed they occur only in `types.py` and decide nothing as shipped, but the per-seat prohibition is prose-only.\n  2. `standard.py assert_config_matches_standard` / `types.py SeatsConfig` — dual owners of the panel-shape numbers; the docstring-mandated PREFLIGHT (W5) reconciliation call has no caller in this sandbox, and a probe showed a contradicting `SeatsConfig` loads without refusal.\n  3. The wave-0 oracle itself: `HouseRules.test_every_integer_in_the_body_is_a_declared_guard_parameter` FAILS on the shipped body (four integers under `role_contracts.word_limits.*` that the module docstring documents but the oracle was never updated to admit) — a permanently red oracle is the creep vector the task names. Not F in the code (the integers are allowed bounds), C on the oracle.\n\n**Files written:** `out/metric-creep.md` (the table and verdicts), and probes `probe/probe_audit_thresholds.py`, `probe/probe_integer_oracle.py`, `probe/probe_preflight_reconciliation.py` — each run with `python3 probe/<name>.py`, all exit 0.\n\n**Last test run:** `python3 run_tests.py docs.examples.test_standard_example` — exit code 1: 4 subtests FAIL (the oracle drift on `role_contracts.word_limits.*`, confirming row 10 against the shipped bytes), 3 ERRORs caused by sandbox-absent C001 PLAN.md/material.json data files (not drift), all other tests pass. No source modules were modified.",
+  "files_written": [
+    {
+      "path": "out/metric-creep.md",
+      "change": "added",
+      "sha256": "6c1c6213c299f255005aaf1ad3835361e2109d7f3bbb01dd1c8dd2576fdae3cd",
+      "bytes": 10273
+    },
+    {
+      "path": "probe/probe_audit_thresholds.py",
+      "change": "added",
+      "sha256": "b782d993c5435dfcb6e340f0a926636c36482477aee3bdda8cbef1be92dd67ff",
+      "bytes": 1396
+    },
+    {
+      "path": "probe/probe_integer_oracle.py",
+      "change": "added",
+      "sha256": "156bd399e0816c25aa24f77132f80af8079a935f4ddf341ad4763739117f810d",
+      "bytes": 1719
+    },
+    {
+      "path": "probe/probe_preflight_reconciliation.py",
+      "change": "added",
+      "sha256": "c220110a1776292aa8d9593a83824a311bb98f667d26da05a1c7fdc153dc5bd3",
+      "bytes": 2183
+    }
+  ],
+  "expected_outputs_present": [
+    "out/metric-creep.md",
+    "probe/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 6,
+    "list_dir": 2,
+    "grep": 1,
+    "write_file": 4,
+    "run_command": 5
+  },
+  "tool_call_total": 18,
+  "iterations": 11,
+  "prompt_tokens": 446034,
+  "completion_tokens": 10043,
+  "total_tokens": 456077,
+  "wall_seconds": 244.695,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 7,
+  "reasoning_chars": [
+    15,
+    61,
+    6298,
+    118,
+    11007,
+    0,
+    0,
+    0,
+    2668,
+    0,
+    37
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/e-02-metric-creep/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/e-02-metric-creep/sandbox"
+}

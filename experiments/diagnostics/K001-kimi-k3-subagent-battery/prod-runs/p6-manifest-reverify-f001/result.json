@@ -1,0 +1,204 @@
+{
+  "task_id": "p6-manifest-reverify-f001",
+  "title": "Re-verify every manifest and sha256 list in today's published experiment records",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Verification complete. Everything was done by computation; deliverables are written.\n\n## What I did\n\n**Scripts under `check/`** (the engine is `check/run_all.py`; plus survey/diagnostic helpers `survey.py`, `survey2.py`, `survey3.py`, `locate.py`, `keys.py`, `peek.py`, `custody.py`, `planid.py`, `diag*.py`, `patch*.py`, and a final checker `verify_out.py`).\n\n1. **Walk and detection** — walked every experiment directory present in the sandbox (the five task-named ones plus `F001-fork5-multifamily`, `H005-open-prose-commitments` and `F001-fork5-multifamily-2026-09-14`, which the named directories' manifests pin into). Found **56 digest-carrier files** in four formats: JSON `files_read` path→sha256 mapping (`inventory.json`), JSON `files_read` list of `{path, sha256}` (`use_table.json` ×11), whole-map plan pin keys `source_pins`/`transport_pins`/`runtime_pins`/`manifests` (keys of `manifests` resolved to `manifests/<tid>.json` per the reports' own stated check), and markdown `` `path` | `64-hex` `` tables (`INVENTORY.md`, `USE_TABLE.md` ×11, `PLAN.md`). No `<sha256>  <path>` text files exist.\n2. **Re-hashing** — 2,457 entries total: **MATCH 2353, MISMATCH 0, MISSING 104, UNPARSED 0**. Resolution order per entry (recorded in the JSON): manifest's own directory → occurrence directory named in the manifest's path → sandbox root → study-root-relative for `inventory.json`'s `<STUDY>/occurrence…` keys → hash-matched lookup into the diagnostics occurrences for run-shape paths (`artifacts/`, `requests/`, …). The 104 MISSING are all run records never shipped in this partial copy (wave records, 11 H005 occurrence artifacts + its plan pinned by B001) — every file actually present that any manifest pins verifies, including every abbreviated-path pin via its unique hash-matching file. No manufactured discrepancy: zero MISMATCH.\n3. **Unreferenced files** listed per directory (informational; no manifest claims completeness — the INVENTORY banner explicitly says it covers only \"files read\").\n4. **plan.json ×13**: top-level keys printed; derivation rule found quoted from sibling PLAN.md (\"digest of the frozen plan body; minted by `prepare`, written to `plan.json\"). Recomputed sha256 of canonical JSON (sorted keys, compact separators) with `plan_id` removed: **MATCH for all 11 F001/F002 plans**; the two C001 plans bind extra driver/material bytes, so they are reported *not recomputed* with the canonical-JSON candidate value shown (per the stated-rule-only constraint).\n5. **Credential scan** over every sandbox file for both patterns: **0 hits**.\n\n**Deliverables written**: `out/manifest-reverify.json` (per-manifest entry results with recorded + recomputed digests and the resolution used, totals, non-MATCH list, per-directory unreferenced lists, plan section, credential section) and `out/manifest-reverify.md` (one section per manifest + summary, per-verdict counts with source manifests, the full non-MATCH list, and the \"what this walk would not catch\" closing section: digest maps under key names I didn't enumerate, abbreviated prose pins like `8105925b…e33ee63a`, non-64-hex digests, content-addressed `import/objects/**`/`blobs/**` self-consistency, consistent tampering, and unshipped files being indistinguishable from wrong pins).\n\n**Last test run**: `python3 check/verify_out.py` → `OK {\"MATCH\": 2353, \"MISMATCH\": 0, \"MISSING\": 104, \"UNPARSED\": 0}` (also asserts both output files contain all required sections and that credential hits = 0).",
+  "files_written": [
+    {
+      "path": "check/custody.py",
+      "change": "added",
+      "sha256": "792b33390e7c39b519d77816003c8db235dc4b9c8136737e7fc931f847dac30c",
+      "bytes": 333
+    },
+    {
+      "path": "check/diag.py",
+      "change": "added",
+      "sha256": "99d3487b746e61d4df900bbb68630dbb7829789dfd8b3d91dbef09f1f3abdea9",
+      "bytes": 548
+    },
+    {
+      "path": "check/diag2.py",
+      "change": "added",
+      "sha256": "bf12418ba7ce45befa1ff302437f4c143780f96e40725d0a2fd31040ec6d300a",
+      "bytes": 1270
+    },
+    {
+      "path": "check/diag3.py",
+      "change": "added",
+      "sha256": "1f7232f729eb35349cbdb73634ba9e796aea87b2ba1232e00e5ef34bac35a669",
+      "bytes": 660
+    },
+    {
+      "path": "check/keys.py",
+      "change": "added",
+      "sha256": "7bca3fcd38b514d89c49b4c4f726823e9bc3e9a45dafb761785f4922cdfd86fe",
+      "bytes": 639
+    },
+    {
+      "path": "check/locate.py",
+      "change": "added",
+      "sha256": "386becfe3ca7888cfd284f7a848d1b15814bd7469bc1a67d3e2b6552aa4bc188",
+      "bytes": 363
+    },
+    {
+      "path": "check/patch2.py",
+      "change": "added",
+      "sha256": "6e7d411c0ba81528dd7a343b45872c080b8494791dfb3d9986024254b242091a",
+      "bytes": 3264
+    },
+    {
+      "path": "check/patch3.py",
+      "change": "added",
+      "sha256": "d17535539b53060a4c87d1644b959e91be0d607b8361d4a24870d48f454accf0",
+      "bytes": 1959
+    },
+    {
+      "path": "check/patch4.py",
+      "change": "added",
+      "sha256": "ab12f7bdefe189eb708d919365f27cdbeeb7555a2006c0586449803665d6d510",
+      "bytes": 2863
+    },
+    {
+      "path": "check/patch_c001.py",
+      "change": "added",
+      "sha256": "e348686f259031cc3e66f33b73c158c992dc810e40b0a85a4646bedf991cad5d",
+      "bytes": 2937
+    },
+    {
+      "path": "check/peek.py",
+      "change": "added",
+      "sha256": "9724d3476b060e1eb452dfe813845909283081c134f5ea2a2821b27750331a35",
+      "bytes": 1403
+    },
+    {
+      "path": "check/planid.py",
+      "change": "added",
+      "sha256": "811453c65450561af3c3228f5d73dc28b41043dfb2c5bda9f473eb168ea690a9",
+      "bytes": 614
+    },
+    {
+      "path": "check/reverify-results.json",
+      "change": "added",
+      "sha256": "567961fee5162b1364ce70c232f8ad9e2dfd1cb3dbf45ac64b22404f731df3c6",
+      "bytes": 3269495
+    },
+    {
+      "path": "check/reverify.py",
+      "change": "added",
+      "sha256": "73006c95378521137bea7e446a89e9593d9f09ec1db2135b215792ca61211ad6",
+      "bytes": 8723
+    },
+    {
+      "path": "check/run_all.py",
+      "change": "added",
+      "sha256": "c20e915e501fcd31b4f493080f95b31ece5398e8fca6a1a693c8786472096b11",
+      "bytes": 21841
+    },
+    {
+      "path": "check/survey.py",
+      "change": "added",
+      "sha256": "a39032687ce41f9fff48750220e78af692777986b006cfaba718b7f204394d2b",
+      "bytes": 1460
+    },
+    {
+      "path": "check/survey2.py",
+      "change": "added",
+      "sha256": "574efa399e9f85ff97c76bde410cef5920bc18a42f21c0500b8b348e50e9ef81",
+      "bytes": 1233
+    },
+    {
+      "path": "check/survey3.py",
+      "change": "added",
+      "sha256": "0b8fe0ed15494b6d1fc103620bcb9e92c1210fbadbe328e883a839f49befc82b",
+      "bytes": 366
+    },
+    {
+      "path": "check/verify_out.py",
+      "change": "added",
+      "sha256": "22b10deb0c8ae356385bb5b1e9e3d7ed77a4189c245a5041f97c0f1e96e39ea3",
+      "bytes": 1050
+    },
+    {
+      "path": "out/manifest-reverify.json",
+      "change": "added",
+      "sha256": "b0f8fb4bf3965020232bb42e32a895d01e67e7553c169844918f368125312a51",
+      "bytes": 1864756
+    },
+    {
+      "path": "out/manifest-reverify.md",
+      "change": "added",
+      "sha256": "11f8762d543e735cfdbdc287f5cdc7a53d520ddcbf07fbaa0cae84bfaf6f8ebc",
+      "bytes": 796676
+    }
+  ],
+  "expected_outputs_present": [
+    "out/manifest-reverify.md",
+    "out/manifest-reverify.json",
+    "check/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 6,
+    "list_dir": 3,
+    "grep": 3,
+    "write_file": 20,
+    "run_command": 25
+  },
+  "tool_call_total": 57,
+  "iterations": 37,
+  "prompt_tokens": 4449668,
+  "completion_tokens": 23684,
+  "total_tokens": 4473352,
+  "wall_seconds": 442.944,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 11,
+  "reasoning_chars": [
+    35,
+    127,
+    0,
+    199,
+    651,
+    502,
+    0,
+    1187,
+    527,
+    0,
+    3499,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8057,
+    199,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    31
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "prod-runs/p6-manifest-reverify-f001/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p6-manifest-reverify-f001/sandbox"
+}

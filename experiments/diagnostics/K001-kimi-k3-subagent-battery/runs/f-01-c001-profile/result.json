@@ -1,0 +1,47 @@
+{
+  "task_id": "f-01-c001-profile",
+  "title": "C001 occurrence-01 failure profile by code and per family",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Everything is complete and verified. Final state:\n\n**What I built**\n\n- `check/c001_profile.py` — the aggregation script. It walks all 240 receipts with `Path.rglob`, derives the slug→family mapping at runtime from `src/minireason/data/endpoints.json` (slug = registry `name` with `/`→`-`), asserts count/coordinate/slug sanity, aggregates both code-bearing fields together with their field provenance, and writes the report.\n- `check/check_c001_profile.py` — an independent verification script (own aggregation pass, no shared code) that recomputes every aggregate and asserts the corresponding rows appear in the markdown.\n- `out/c001-profile.md` — the failure profile, containing: the derived endpoint→family mapping; (1) the code census over all 240 receipts with co-carriage (both/one/neither); (2) per-family counts with receipts per family; (3) per-family-and-arm counts; (4) the status distribution per endpoint; (5) a 20-row list of every coded receipt with coordinate, codes, `finish_reason` and `usage.completion_tokens`; (6) a concentration section naming endpoint and recorded ceiling, with no rates, shares or rankings; (7) a \"what the records do not settle\" section.\n\n**Key findings (counts, produced by `python3 check/c001_profile.py`)**\n- 240 receipts; codes: `INCOMPLETE_GENERATION` (`failure_type`, provider-side) = 20 receipts; `NO_PUBLIC_CONTENT` (`validation_failure_type`, validation-side) = 11 receipts; co-carriage: both = 11, provider-only = 9, validation-only = 0, neither = 220.\n- Per family: `deepseek` 19 coded of 40 (both-fields 11), `ollama-cloud/glm` 1 of 40; all other families 0. All 20 coded receipts are arm `fcl`; 0 of 120 in `prose`.\n- Status per endpoint: `deepseek-flash` 21 COMPLETE / 8 PARTIAL / 11 FAILED; `ollama-glm-5.3` 39/1/0; the other four endpoints 40/0/0.\n- Concentration: `INCOMPLETE_GENERATION` sits on `deepseek-flash` (19 of 20), all `fcl`, with every reporting receipt stopped at `finish_reason=length`, `completion_tokens=8192` under the receipt-quoted 8,192-token ceiling (a resource boundary, stated as such); the remaining coded receipt is `ollama-glm-5.3/fcl/control/rep2` at 32,768 tokens.\n- Unsettled items explicitly named in section 7: null finish/usage on the 11 FAILED receipts, the 32,768-vs-8,192 ceiling mismatch on the glm receipt, null provider fields on FAILED receipts, and the cause of exact co-occurrence of the two codes.\n\n**Verification**: `python3 check/c001_profile.py` exits 0 and `python3 check/check_c001_profile.py` exits 0 with all assertions passed (recomputed 240 / both=11 / only-ft=9 / neither=220, 20 coded rows confirmed independently, spot-checked markdown rows). No rates, shares, rankings or reliability claims between families, arms or endpoints appear anywhere in the output.",
+  "files_written": [
+    {
+      "path": "check/c001_profile.py",
+      "change": "added",
+      "sha256": "3c8854f492fe8238c63360a12ab9d27f1365aec7f47be2dbdb211e6c20687bea",
+      "bytes": 16690
+    },
+    {
+      "path": "check/check_c001_profile.py",
+      "change": "added",
+      "sha256": "5cd21f2be0d90d6429df1fb3ded6efe7dbe0ee03cee524cb43369b13a8bf1a3e",
+      "bytes": 4341
+    },
+    {
+      "path": "out/c001-profile.md",
+      "change": "added",
+      "sha256": "75f1484e7f6842ef0483c0670c97ff0a83348c7146b81aed9c324bb2f23055ac",
+      "bytes": 9811
+    }
+  ],
+  "tool_calls": {
+    "read_file": 9,
+    "list_dir": 10,
+    "grep": 5,
+    "write_file": 5,
+    "run_command": 7
+  },
+  "tool_call_total": 36,
+  "iterations": 25,
+  "prompt_tokens": 832739,
+  "completion_tokens": 27118,
+  "total_tokens": 859857,
+  "wall_seconds": 529.795,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 13,
+  "transcript_path": "runs/f-01-c001-profile/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs/f-01-c001-profile/sandbox"
+}

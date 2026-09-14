@@ -1,0 +1,62 @@
+{
+  "task_id": "b-01-surface",
+  "title": "Unit tests for W1-SURFACE (surface)",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Suite is green. Final state: `python3 run_tests.py tests.loop.test_surface` runs 23 tests, OK.\n\n## What I wrote\n\nOne new file: `tests/loop/test_surface.py`. Nothing under `src/` was touched. Fixtures are constructed use-relation rows plus two occurrence artifacts written as real JSON into a `tempfile.TemporaryDirectory`; the occurrence-file oracle is the module docstring's own check, `json.load(occurrence)[offset.source_field][file_start:file_end] == quote`, run against bytes on disk — no result is re-derived from the module's own computation. The fixture material carries an em dash so byte offsets and code-point offsets demonstrably differ, as `notes/WAVE0-INTERFACE.md` and the module docstring both require of the coordinate system.\n\n## Clause-by-clause coverage\n\n* **\"A quote occurring exactly once resolves to the correct occurrence-file span\"** — `QuoteOccurringExactlyOnceResolvesToTheOccurrenceFileSpan::test_a_quote_occurring_exactly_once_resolves_to_the_correct_occurrence_file_span` and `test_a_target_record_quote_resolves_to_the_target_occurrence_file` (referring and target sides, whole-record `file_start` pinned to the published source span).\n* **\"zero or multiple occurrences return None\"** — `ZeroOrMultipleOccurrencesReturnNone::test_zero_or_multiple_occurrences_return_none` (absent phrase → `None`/count 0; duplicated body passage → `None`/count 2), `test_occurrences_are_counted_overlapping_so_aa_is_not_unique_in_aaa` (pins the module's documented `bytes.count` deviation: `text.count(b\"aa\")==1` vs `count(\"aa\")==2` → `None`), and `test_an_empty_quote_is_zero_occurrences`.\n* **\"body passages are inside the resolvable surface and framing is not\"** — `BodyPassagesAreInsideTheSurfaceAndFramingIsNot::test_body_passages_are_inside_the_resolvable_surface_and_framing_is_not` (two passage spans with ordinals 1,2 resolve into the `body` field of the referring occurrence and satisfy `within_declared_span`; a label quote resolves uniquely with `side=framing` and all file fields `None`; a quote crossing the record/label boundary resolves as `framing` and fails `within_declared_span`), plus `test_within_declared_span_rejects_none_and_a_side_that_disagrees` (`None` and a forged `Offset` whose side disagrees with its bytes).\n* **\"offsets are byte offsets and are documented as such for non-ASCII\"** — `OffsetsAreByteOffsetsDocumentedAsSuchForNonAscii::test_offsets_are_byte_offsets_and_are_documented_as_such_for_non_ascii` (`offset.start == byte_start == char_start + 2` on the em-dash row, `Surface.text` is `bytes`, and the docstring is asserted to contain \"utf-8 byte offsets\", \"em dash\", and \"a byte offset and a character offset differ\") and `test_file_offsets_are_code_point_offsets_into_the_named_string_field`.\n* **\"surface bytes are deterministic\"** — `SurfaceBytesAreDeterministic::test_surface_bytes_are_deterministic` (two builds, dict-copied and key-reordered, give byte-identical `text`, equal `sha256(text)` digests, spans and records) and `test_a_one_character_change_in_the_material_changes_the_surface_bytes`.\n* **\"nothing is written under the occurrence\"** — `NothingIsWrittenUnderTheOccurrence::test_nothing_is_written_under_the_occurrence` (whole-tree snapshot of file names and bytes before/after build, resolve, count and `as_dict()`) and `test_the_module_source_opens_no_file_and_mints_no_write_call` (a source-scan sentinel so a future edit that reaches for disk fails by name).\n\nSupporting coverage (no acceptance clause, behaviour-pinned anyway): the two block codes spelled `blocked:referential-integrity` / `blocked:operative-target` (consistent with integration decision 6's NEW_CODES handling); `str`/`bytes`/`bytearray` quote equivalence; the `SURFACE_SPAN_DISAGREES` / coordinate-key mismatch / `SURFACE_NO_MATERIAL` refusals; artifact-grain rows building with no target region; `NEW_CODES` shape and wave-plan `__all__`; `as_dict()` JSON-ready and passing `contracts.assert_no_scoring_keys` (decision over keys, not values — consistent with wave-0 O2's rule).\n\n## Clauses not covered\n\nNone. All six acceptance clauses have a named test. One note: the \"against published bytes\" variant the docstring mentions (real F001 occurrences) is not reproducible here — the sandbox carries no published occurrence tree — so the file-span oracle is exercised against constructed artifacts with the same JSON shape, which I state rather than claim what I cannot point at.",
+  "files_written": [
+    {
+      "path": "tests/loop/test_surface.py",
+      "change": "added",
+      "sha256": "01915ca3c00a5cae24dca0eb3f7c3e595400b98780606df408778b1e1774ec53",
+      "bytes": 19190
+    }
+  ],
+  "expected_outputs_present": [
+    "tests/loop/test_surface.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 6,
+    "grep": 3,
+    "write_file": 2,
+    "run_command": 10
+  },
+  "tool_call_total": 21,
+  "iterations": 18,
+  "prompt_tokens": 638137,
+  "completion_tokens": 14119,
+  "total_tokens": 652256,
+  "wall_seconds": 354.552,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 11,
+  "reasoning_chars": [
+    26,
+    129,
+    0,
+    0,
+    4871,
+    0,
+    5464,
+    0,
+    854,
+    0,
+    156,
+    0,
+    330,
+    181,
+    145,
+    175,
+    0,
+    153
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/b-01-surface/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/b-01-surface/sandbox"
+}

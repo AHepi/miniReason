@@ -1,0 +1,77 @@
+{
+  "task_id": "c-02-roles",
+  "title": "Implement W2-ROLES (roles) with its tests",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "All 25 tests pass. Final report.\n\n## What I changed\n\n**Wrote `src/minireason/loop/roles.py`** (W2-ROLES). No other file under `src/` was touched; `types.py` is unedited.\n\n**Wrote `tests/loop/test_roles.py`** in the house style — one test class per acceptance clause, plus supporting coverage.\n\n## Public interface, as the design entry publishes it\n\n`ROLES` (the owned `contracts.ROLE_NAMES` object, identity-asserted), `call_role(role, seat, pack, schema, records_dir, *, repair=0, provider=None)`, `RoleResult` (frozen, with `.raw_ref`, `.prompt_ref`, `.record_ref`, `.pack_sha256`, `.status`/`.reason`), `ProviderArmEnded` (`LoopError` subclass, code `PROVIDER_ARM_ENDED`, with `.provider_code` carrying the transport's own code), and `NO_REPLAY` (re-exported; already a `types.FAILURE_CODES` member). Internals (`_claim`, `_acquire_slot`, etc.) are module-private, not stubs — but pack *rendering* is deliberately out of scope: the module refuses to render packs (that is W2-PACKS, which does not exist in this sandbox) and only reads the three pack keys dispatch needs; and the repair *budget owner* (`seats.schema_repair_budget`, frozen at 0 by the standard) is read by the caller, not by this module — `repair=` is the caller's declaration that a budgeted new coordinate is being opened.\n\n## Acceptance clauses, and how each is tested\n\n1. **End to end on `OfflineProvider`, zero sockets** — the end-to-end test asserts the provider records say `url: null` and no headers were formed; a source scan refuses `urllib`/`urlopen`/`import socket`.\n2. **Second call on a coordinate raises `NO_REPLAY`** — tested after a successful, a provider-failed, and an unresolved first call; a different pack on a spent coordinate raises `COORDINATE_CLAIMED` instead.\n3. **`slots_for` acquired, not reimplemented** — the test holds every slot *through the transport's own registry object* and asserts dispatch refuses `SLOT_UNAVAILABLE` (a private semaphore would pass); source scan asserts no `Semaphore(` in the module.\n4. **Budget 0: invalid output → unresolved, no re-ask** — asserted `status=\"unresolved\"`, `reason` preserved, and exactly one provider call / one request record.\n5. **Repair = new coordinate with its own write-once record** — asserted `#repair1` spelling via `coordinate_for`, two attempt records on disk, the repair coordinate inside the provider's response record, and replay of the repair coordinate refused.\n6. **Every record carries seat, family, key_env, pack sha, prompt ref, raw ref** — asserted on result, failure, and attempt records.\n\n## Where the interfaces didn't settle a question, and what I decided\n\n- **No provider parameter in the published signature.** I added `provider=` as a keyword-only test seam (default: an empty-script `OfflineProvider`, whose first call raises `TRANSPORT_OR_RESPONSE_ERROR` → `ProviderArmEnded`). The other way — constructing a live provider inside the module — would need a config key and would forbid offline testing; then the default would be built per `provider_mode`.\n- **`prompt_ref`/`raw_ref` grain.** I made them the provider's own write-once record paths rather than duplicating bytes into a second record that could disagree. The other way: the role record would own prompt/raw copies.\n- **Queue vs refuse on a full slot.** Slots are taken non-blocking; full is `SLOT_UNAVAILABLE`, so no unlogged wait on a resource boundary. The other way (blocking acquire) would be simpler but silent.\n- **Slot released before validation/record-writing** (only the call holds it). The other way — slot held until the result record lands — would count validation against the per-key ceiling.\n- **New codes** go in `types.FAILURE_CODES` with `TOKEN_ARGUMENT` entries (O9, wave-1 decision 6): `PROVIDER_ARM_ENDED`, `COORDINATE_CLAIMED`, `PACK_MALFORMED`, `SCHEMA_MISMATCH`, `SLOT_UNAVAILABLE` — declared in the module's `NEW_CODES` and scanned by the test against `FAILURE_CODES`.\n\nLast test run: `python3 run_tests.py tests.loop.test_roles` — **25 tests, OK.**",
+  "files_written": [
+    {
+      "path": "src/minireason/loop/roles.py",
+      "change": "added",
+      "sha256": "fc47b577272058503f0c4b05a3c42ceaba2cfd4ab26cd2ed9040dbe1a6d6eabb",
+      "bytes": 22196
+    },
+    {
+      "path": "tests/loop/test_roles.py",
+      "change": "added",
+      "sha256": "114774214a0089c6713f5a5f3dded54f417385ae131f897e01ba7edbf17effa6",
+      "bytes": 21992
+    }
+  ],
+  "expected_outputs_present": [
+    "src/minireason/loop/roles.py",
+    "tests/loop/test_roles.py"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 10,
+    "grep": 3,
+    "write_file": 4,
+    "run_command": 12
+  },
+  "tool_call_total": 29,
+  "iterations": 26,
+  "prompt_tokens": 1847924,
+  "completion_tokens": 30262,
+  "total_tokens": 1878186,
+  "wall_seconds": 719.193,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 10,
+  "reasoning_chars": [
+    26,
+    0,
+    0,
+    0,
+    204,
+    0,
+    19503,
+    135,
+    0,
+    278,
+    200,
+    0,
+    0,
+    0,
+    1338,
+    0,
+    0,
+    177,
+    0,
+    290,
+    69,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "runs-pass4/c-02-roles/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/runs-pass4/c-02-roles/sandbox"
+}

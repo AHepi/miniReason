@@ -1,0 +1,1013 @@
+{
+  "task": "Mechanical consistency checks of the L001 pre-registration bundle (computation only)",
+  "sandbox_contents": [
+    "loop-prereg/{PREREG.md, VALIDATION.md, config.json, obligations.json, reading_set.json, calibration.json, validate.py}",
+    "src/minireason/data/endpoints.json",
+    "evidence/repo-files.txt (7885 tracked paths)",
+    "AGENTS.md"
+  ],
+  "checks": {
+    "1_validate_py_run": {
+      "status": "FAIL",
+      "what": "Run python3 loop-prereg/validate.py; record exit code and verbatim output.",
+      "command_from_sandbox_root": "python3 loop-prereg/validate.py",
+      "exit_code_root": 1,
+      "stdout_root_verbatim": "",
+      "stderr_root_verbatim": "Traceback (most recent call last):\n  File \"/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p2-prereg-mechanical/sandbox/loop-prereg/validate.py\", line 8, in <module>\n    from minireason.loop.types import LoopConfig, loop_plan_id, LoopError, CONFIG_SCHEMA\nModuleNotFoundError: No module named 'minireason.loop'\n",
+      "command_from_inside_bundle": "python3 validate.py (cwd=loop-prereg/)",
+      "exit_code_inside": 1,
+      "stdout_inside_verbatim": "",
+      "stderr_inside_verbatim": "Traceback (most recent call last):\n  File \"/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p2-prereg-mechanical/sandbox/loop-prereg/validate.py\", line 8, in <module>\n    from minireason.loop.types import LoopConfig, loop_plan_id, LoopError, CONFIG_SCHEMA\nModuleNotFoundError: No module named 'minireason.loop'\n",
+      "failure_analysis": {
+        "first_failing_line": "validate.py line 8: from minireason.loop.types import LoopConfig, loop_plan_id, LoopError, CONFIG_SCHEMA",
+        "sandbox_src_files": [
+          "src/minireason/data/endpoints.json"
+        ],
+        "hardcoded_repo_path_in_validate_py": "/home/user/miniReason",
+        "modules_validate_py_imports": [
+          "minireason.loop.types",
+          "minireason.loop.standard",
+          "minireason.loop.receipts",
+          "deepreason_core.canonical"
+        ],
+        "those_modules_in_sandbox": false,
+        "published_files_validate_py_would_read": [
+          "src/minireason/data/endpoints.json (present in sandbox)",
+          "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json (NOT in sandbox)",
+          "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-full/use_table.json (NOT in sandbox)",
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json (NOT in sandbox)"
+        ]
+      }
+    },
+    "2_sha256_vs_pins": {
+      "status": "FAIL",
+      "files_hashed": {
+        "config.json": "081dd939663156aa3969f3b000fcb0ca4b07086ab4340b0156057903b45b5110",
+        "obligations.json": "2913693abce664af387f1683c7cbfd622043a697343a6d415d89a8179d3652d6",
+        "reading_set.json": "ef8c62a5ad6148c4bf676fadabba1ae0504babef26b4f793cce7d80ff37c728e",
+        "calibration.json": "9ca9ad04672e99becc19096e3de4d4010d9f21c700a979695ef034f9c19aae95",
+        "PREREG.md": "c04c2092f672b52572ea98a60575e3405c5072f6b381b9b55a30cb3f7dcd16d6",
+        "validate.py": "fd8015261e86cf34cf87f1fd576fd28fb98cc635a7889ee7cb63cb5dde41f25e",
+        "VALIDATION.md": "62f2b71a90488852ed1b4e4af17138e22b77f60c31c0fb222326b085d257c413"
+      },
+      "comparison_vs_VALIDATION_md_table": [
+        {
+          "file": "config.json",
+          "actual_sha256": "081dd939663156aa3969f3b000fcb0ca4b07086ab4340b0156057903b45b5110",
+          "pinned_in_VALIDATION.md": "46495a6fa0ee5667b6ba5128adbaee9062ed5b6637310bb44b12efdf14c0da90",
+          "match": false
+        },
+        {
+          "file": "obligations.json",
+          "actual_sha256": "2913693abce664af387f1683c7cbfd622043a697343a6d415d89a8179d3652d6",
+          "pinned_in_VALIDATION.md": "2913693abce664af387f1683c7cbfd622043a697343a6d415d89a8179d3652d6",
+          "match": true
+        },
+        {
+          "file": "reading_set.json",
+          "actual_sha256": "ef8c62a5ad6148c4bf676fadabba1ae0504babef26b4f793cce7d80ff37c728e",
+          "pinned_in_VALIDATION.md": "ef8c62a5ad6148c4bf676fadabba1ae0504babef26b4f793cce7d80ff37c728e",
+          "match": true
+        },
+        {
+          "file": "calibration.json",
+          "actual_sha256": "9ca9ad04672e99becc19096e3de4d4010d9f21c700a979695ef034f9c19aae95",
+          "pinned_in_VALIDATION.md": "9ca9ad04672e99becc19096e3de4d4010d9f21c700a979695ef034f9c19aae95",
+          "match": true
+        },
+        {
+          "file": "PREREG.md",
+          "actual_sha256": "c04c2092f672b52572ea98a60575e3405c5072f6b381b9b55a30cb3f7dcd16d6",
+          "pinned_in_VALIDATION.md": "c04c2092f672b52572ea98a60575e3405c5072f6b381b9b55a30cb3f7dcd16d6",
+          "match": true
+        },
+        {
+          "file": "validate.py",
+          "actual_sha256": "fd8015261e86cf34cf87f1fd576fd28fb98cc635a7889ee7cb63cb5dde41f25e",
+          "pinned_in_VALIDATION.md": "fd8015261e86cf34cf87f1fd576fd28fb98cc635a7889ee7cb63cb5dde41f25e",
+          "match": true
+        },
+        {
+          "file": "VALIDATION.md",
+          "actual_sha256": "62f2b71a90488852ed1b4e4af17138e22b77f60c31c0fb222326b085d257c413",
+          "pinned_in_VALIDATION.md": null,
+          "match": null
+        }
+      ],
+      "n_mismatched": 1,
+      "sha256_tokens_in_documents": {
+        "files_scanned": [
+          "loop-prereg/PREREG.md",
+          "loop-prereg/VALIDATION.md",
+          "loop-prereg/config.json"
+        ],
+        "n_distinct_64hex_tokens": 9,
+        "prefix_only_mentions": {
+          "cc7c137fbcb37b4f...": {
+            "VALIDATION.md": [
+              49
+            ]
+          },
+          "f3b53f9522b7a48b...": {
+            "VALIDATION.md": [
+              49
+            ]
+          }
+        },
+        "tokens_matching_a_bundle_file": [
+          {
+            "token": "2913693abce664af387f1683c7cbfd622043a697343a6d415d89a8179d3652d6",
+            "appears_in": {
+              "VALIDATION.md": [
+                109
+              ]
+            },
+            "matches_file": [
+              "obligations.json"
+            ]
+          },
+          {
+            "token": "9ca9ad04672e99becc19096e3de4d4010d9f21c700a979695ef034f9c19aae95",
+            "appears_in": {
+              "VALIDATION.md": [
+                107
+              ]
+            },
+            "matches_file": [
+              "calibration.json"
+            ]
+          },
+          {
+            "token": "c04c2092f672b52572ea98a60575e3405c5072f6b381b9b55a30cb3f7dcd16d6",
+            "appears_in": {
+              "VALIDATION.md": [
+                106
+              ]
+            },
+            "matches_file": [
+              "PREREG.md"
+            ]
+          },
+          {
+            "token": "ef8c62a5ad6148c4bf676fadabba1ae0504babef26b4f793cce7d80ff37c728e",
+            "appears_in": {
+              "VALIDATION.md": [
+                110
+              ]
+            },
+            "matches_file": [
+              "reading_set.json"
+            ]
+          },
+          {
+            "token": "fd8015261e86cf34cf87f1fd576fd28fb98cc635a7889ee7cb63cb5dde41f25e",
+            "appears_in": {
+              "VALIDATION.md": [
+                111
+              ]
+            },
+            "matches_file": [
+              "validate.py"
+            ]
+          }
+        ],
+        "tokens_matching_no_bundle_file": [
+          {
+            "token": "24ca4552016836b488c2644db0f17ba0b20c446e9dc2602a29e5e4b1b756c927",
+            "appears_in": {
+              "PREREG.md": [
+                150
+              ]
+            },
+            "matches_file": []
+          },
+          {
+            "token": "328b9452c66fed52203015c540652d3b8ad3107d44dece56b55ebe721da341c8",
+            "appears_in": {
+              "PREREG.md": [
+                40
+              ]
+            },
+            "matches_file": []
+          },
+          {
+            "token": "46495a6fa0ee5667b6ba5128adbaee9062ed5b6637310bb44b12efdf14c0da90",
+            "appears_in": {
+              "VALIDATION.md": [
+                108
+              ]
+            },
+            "matches_file": []
+          },
+          {
+            "token": "713119a7cd255296058b18084a40cbac7a3353903bbf8cd260b6e78c173e4302",
+            "appears_in": {
+              "PREREG.md": [
+                105
+              ],
+              "VALIDATION.md": [
+                65
+              ]
+            },
+            "matches_file": []
+          }
+        ],
+        "config_json_contains_no_sha256_token": true,
+        "what_each_unmatched_token_is_said_to_pin": {
+          "24ca4552016836b488c2644db0f17ba0b20c446e9dc2602a29e5e4b1b756c927": "PREREG.md:150 (obligation p1): 'the H005 occurrence-01 `material_sha256` equals 24ca4552<...>' \u2014 pins published repo file experiments/diagnostics/H005-open-prose-commitments/occurrence-01/material.json; not in the sandbox, not verifiable here.",
+          "328b9452c66fed52203015c540652d3b8ad3107d44dece56b55ebe721da341c8": "PREREG.md:40: 'C001 (`plan_id 328b9452<...>`)' \u2014 pins the frozen C001 study plan_id; not a file of this bundle; not verifiable here (only 3/7885 tracked files are in the sandbox).",
+          "46495a6fa0ee5667b6ba5128adbaee9062ed5b6637310bb44b12efdf14c0da90": "VALIDATION.md:108, \u00a74 table row '| `config.json` | `46495a6f<...>` |' \u2014 said to pin config.json; the sandbox copy hashes to 081dd939<...>, so the recorded digest does NOT match the file delivered with the bundle.",
+          "713119a7cd255296058b18084a40cbac7a3353903bbf8cd260b6e78c173e4302": "PREREG.md:105: 'obligations.json is pinned at sha256 713119a7<...> before cycle 1'; VALIDATION.md:65: same value as the digest that 'reproduces over canonical bytes'. It pins the CANONICAL STRUCTURE of obligations.json, not its raw bytes (raw bytes hash to 2913693a<...>). Recomputed over canonical bytes by computation: it does reproduce."
+        }
+      },
+      "obligations_canonical_digest": {
+        "pin_in_obligations.json": "713119a7cd255296058b18084a40cbac7a3353903bbf8cd260b6e78c173e4302",
+        "recomputed_over_canonical_bytes": "713119a7cd255296058b18084a40cbac7a3353903bbf8cd260b6e78c173e4302",
+        "reproduces": true,
+        "recipe_stated": "sha256_hex(deepreason_core.canonical.canonical_json(document_without_the_two_digest_keys)) - json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(\",\",\":\")).encode(), the repository's canonical structure digest, byte-identical to minireason.provider.digest's.",
+        "pin_appears_in_PREREG.md": true,
+        "pin_appears_in_VALIDATION.md": true
+      },
+      "config_mismatch_forensics": {
+        "sandbox_copy": "valid UTF-8, LF-only (109 LF, 0 CR), ends with newline, 6362 bytes; json.loads round-trip is byte-identical to the sandbox copy",
+        "pinned_digest_reproduced_by_no_tested_variant": true,
+        "variants_tested": {
+          "as-is": "081dd939663156aa3969f3b000fcb0ca4b07086ab4340b0156057903b45b5110",
+          "no trailing newline": "944e757a7ef32648264a1c42d6aadf05419288c12a79d604e1ed44e72a3b8f31",
+          "crlf": "4492fea90059935e101419ac952cac8538de277acee684caa378ffea91166723",
+          "cr": "fb2d384de48ebb5dddc9a997a28588c208eda712610b168adb0818426034d270",
+          "no trailing newline + crlf": "d7451e487903bc4f3381374552e4f744f7bff417259af9b2e6b0239020419c8d",
+          "reserialized 2-space utf-8": "081dd939663156aa3969f3b000fcb0ca4b07086ab4340b0156057903b45b5110",
+          "reserialized 2-space ascii": "081dd939663156aa3969f3b000fcb0ca4b07086ab4340b0156057903b45b5110",
+          "canonical": "8d46793e99db0c9d07a825585c0ca5b5278805a2b0955182bbf8de6162f4c9f1"
+        },
+        "conclusion": "the pinned value cannot be located from the sandbox copy alone; the two differ by unknown content",
+        "corroboration": "VALIDATION.md \u00a72's transcript shows validate.py PASS lines referencing a run directory experiments/loops/L001-loop-first-live-2026-09-14/ and loop_plan_id values \u2014 and evidence/repo-files.txt contains no L001/loop-prereg path at all, and contains no src/minireason/loop/ module"
+      }
+    },
+    "3_seats_vs_registry": {
+      "status": "PASS",
+      "seat_lookup": [
+        {
+          "role": "critic",
+          "endpoint_name": "ollama/kimi-k3",
+          "exists_in_registry": true,
+          "registry_family": "ollama-cloud/kimi",
+          "registry_key_env": "OLLAMA_API_KEY",
+          "registry_timeout_seconds": 180
+        },
+        {
+          "role": "defender",
+          "endpoint_name": "ollama/gemma4-31b",
+          "exists_in_registry": true,
+          "registry_family": "ollama-cloud/gemma",
+          "registry_key_env": "OLLAMA_API_KEY",
+          "registry_timeout_seconds": 180
+        },
+        {
+          "role": "variator",
+          "endpoint_name": "deepseek-flash",
+          "exists_in_registry": true,
+          "registry_family": "deepseek",
+          "registry_key_env": "DEEPSEEK_API_KEY",
+          "registry_timeout_seconds": 180
+        },
+        {
+          "role": "judge-1",
+          "endpoint_name": "ollama/gpt-oss-120b",
+          "exists_in_registry": true,
+          "registry_family": "ollama-cloud/gpt-oss",
+          "registry_key_env": "OLLAMA_API_KEY",
+          "registry_timeout_seconds": 180
+        },
+        {
+          "role": "judge-2",
+          "endpoint_name": "ollama/qwen3.5-397b",
+          "exists_in_registry": true,
+          "registry_family": "ollama-cloud/qwen",
+          "registry_key_env": "OLLAMA_API_KEY",
+          "registry_timeout_seconds": 180
+        }
+      ],
+      "all_five_seats_exist_in_endpoints_json": true,
+      "mismatches": [],
+      "prereg_table_rows_extracted": [
+        {
+          "line": 64,
+          "cells": [
+            "`ollama/kimi-k3`",
+            "`ollama-cloud/kimi`",
+            "`OLLAMA_API_KEY`",
+            "180"
+          ]
+        },
+        {
+          "line": 65,
+          "cells": [
+            "`ollama/gemma4-31b`",
+            "`ollama-cloud/gemma`",
+            "`OLLAMA_API_KEY`",
+            "180"
+          ]
+        },
+        {
+          "line": 66,
+          "cells": [
+            "`ollama/gpt-oss-120b`",
+            "`ollama-cloud/gpt-oss`",
+            "`OLLAMA_API_KEY`",
+            "180"
+          ]
+        },
+        {
+          "line": 67,
+          "cells": [
+            "`ollama/qwen3.5-397b`",
+            "`ollama-cloud/qwen`",
+            "`OLLAMA_API_KEY`",
+            "180"
+          ]
+        },
+        {
+          "line": 68,
+          "cells": [
+            "`deepseek-flash`",
+            "`deepseek`",
+            "`DEEPSEEK_API_KEY`",
+            "180"
+          ]
+        }
+      ],
+      "prereg_table_matches_registry": true,
+      "judge_seats_share_a_family": false,
+      "judge_families": {
+        "judge-1": {
+          "name": "ollama/gpt-oss-120b",
+          "family": "ollama-cloud/gpt-oss"
+        },
+        "judge-2": {
+          "name": "ollama/qwen3.5-397b",
+          "family": "ollama-cloud/qwen"
+        }
+      },
+      "n_distinct_families_over_5_seats": 5,
+      "note": "config.json expresses seats by endpoint name only; family and key_env were read from the registry and match PREREG.md's table (lines 64-68) cell for cell, including registry timeout_seconds=180 for all five."
+    },
+    "4_max_calls_arithmetic": {
+      "reading_set_entries": 38,
+      "reading_set_size_block": {
+        "total": 38,
+        "c001_mark_cells": 16,
+        "h005_rows": 22
+      },
+      "config_reading_set_len": 38,
+      "config_max_calls": 396,
+      "config_cycle_budget": 3,
+      "c001_mark_entries": 16,
+      "h005_row_entries": 22,
+      "marks_budgeted_calls_sum": 108,
+      "rows_budgeted_calls_sum": 242,
+      "entries_budgeted_calls_sum": 350,
+      "per_leg_check": [
+        {
+          "leg": "c001-mark (baseline)",
+          "cells": 4,
+          "cost_each": 0,
+          "declared_subtotal": 0,
+          "cells_x_cost": 0,
+          "subtotal_consistent": true
+        },
+        {
+          "leg": "c001-mark (cross-case)",
+          "cells": 12,
+          "cost_each": 9,
+          "declared_subtotal": 108,
+          "cells_x_cost": 108,
+          "subtotal_consistent": true
+        },
+        {
+          "leg": "h005-row",
+          "cells": 22,
+          "cost_each": 11,
+          "declared_subtotal": 242,
+          "cells_x_cost": 242,
+          "subtotal_consistent": true
+        },
+        {
+          "leg": "audit window",
+          "cells": 1,
+          "cost_each": 46,
+          "declared_subtotal": 46,
+          "cells_x_cost": 46,
+          "subtotal_consistent": true
+        },
+        {
+          "leg": "dispatch (S4-S7 runner v2)",
+          "cells": 0,
+          "cost_each": 0,
+          "declared_subtotal": 0,
+          "cells_x_cost": 0,
+          "subtotal_consistent": true
+        }
+      ],
+      "leg_subtotal_sum": 396,
+      "derivation_max_calls_field": 396,
+      "derivation_arithmetic_string": "0 + 108 + 242 + 46 + 0 = 396",
+      "leg_sum_equals_max_calls": true,
+      "h005_row_cost_components_sum_to_total": [
+        11,
+        11,
+        true
+      ],
+      "c001_mark_cost_components_sum_to_total": [
+        9,
+        9,
+        true
+      ],
+      "audit_components_recomputed": {
+        "calibration_9x2": 18,
+        "paraphrase_4_plus_2x2x4": 20,
+        "premise_deletion_2x4": 8,
+        "ensemble_disagreement": 0
+      },
+      "audit_components_sum": 46,
+      "audit_leg_declared": 46,
+      "deviation_note_in_reading_set": "\u00a79.1 estimates 'roughly nine calls' for a fully guarded row. That prose estimate does not say whether each paraphrase is re-ruled by both judge seats. This pre-registration declares the strict reading - both seats re-rule both paraphrases, because G7 blocks on 'any flip, or any split on a paraphrase', and a split is only observable if both seats rule - so the budgeted worst case is 11, not 9. Paraphrase re-rulings run in the canonical presentation order only; G6's doubling applies to the adjudication, not to the spot-check.",
+      "prereg_lines_mentioning_max_calls": [
+        "| `reading_set.json` | the 38 cells the run may read, in order, with the `max_calls` derivation |",
+        "**Pre-registered before first look, and unchangeable inside this chain.** The cycle budget and `max_calls`; the stopping rule with its guard rails and its five O/P clauses; `obligations.json` with the failed set O and the protected set P, pinned by sha256; the reading set; the seat assignment with families and `key_env`; the audit schedule, `JUDGE_ERR_MAX` and `STREAK_MAX`; the planted-flaw calibration set; the guard parameters including `TRIAL_PARAPHRASE_N` and `schema_repair_budget`; the reopen-reason list; and `CEILING.md`. Changing any of them after first look mints a new `loop_plan_id` and is a new pre-registration, not an amendment to this one.",
+        "5. Else, cycle index equals `cycle_budget` = 3, or `max_calls` = 396 is reached \u21d2 **STOP",
+        "- a raised `cycle_budget` or `max_calls`, which is a new `loop_plan_id` and a new pre-registration, never an amendment;"
+      ],
+      "prereg_clause5_lines": [
+        "5. Else, cycle index equals `cycle_budget` = 3, or `max_calls` = 396 is reached \u21d2 **STOP"
+      ],
+      "status": "PASS",
+      "derivation_sentence_in_PREREG_md": "PREREG.md clause 5 (lines 126-128): '5. Else, cycle index equals `cycle_budget` = 3, or `max_calls` = 396 is reached \u21d2 STOP `resource_boundary` \u2014 a declared attention-and-spend boundary, never an adjudication and never the inquiry running out of things to say.'",
+      "derivation_lives_in": "reading_set.json max_calls_derivation block (per-entry budgeted_calls and per-leg subtotals); PREREG.md states the result values but no derivation sentence of its own",
+      "arithmetic_recomputed": "4x0 + 12x9 + 22x11 + 1x46 + 0 = 0 + 108 + 242 + 46 + 0 = 396 == config.max_calls == 396; cycle_budget 3 == PREREG clause 5's 3 and reading_set audit-window cycle (2) satisfies 2 mod audit.period(2) == 0 within cycles 1..3"
+    },
+    "5_obligations": {
+      "obligations_ids_in_file_order": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5",
+        "o6",
+        "o7",
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8",
+        "p9",
+        "p10",
+        "p11",
+        "p12"
+      ],
+      "O_count_actual": 7,
+      "O_ids": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5",
+        "o6",
+        "o7"
+      ],
+      "P_count_actual": 12,
+      "P_ids": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8",
+        "p9",
+        "p10",
+        "p11",
+        "p12"
+      ],
+      "total": 19,
+      "duplicate_ids": {},
+      "ids_unique": true,
+      "prereg_count_claims": [
+        {
+          "line": 10,
+          "text": "| `obligations.json` | the failed set **O** (7) and the protected set **P** (12), pinned by sha256 |"
+        },
+        {
+          "line": 44,
+          "text": "**Pre-registered before first look, and unchangeable inside this chain.** The cycle budget and `max_calls`; the stopping rule with its guard rails and its five O/P clauses; `obligations.json` with the failed set O and the protected set P, pinned by sha256; the reading set; the seat assignment with families and `key_env`; the audit schedule, `JUDGE_ERR_MAX` and `STREAK_MAX`; the planted-flaw calibration set; the guard parameters including `TRIAL_PARAPHRASE_N` and `schema_repair_budget`; the reopen-reason list; and `CEILING.md`. Changing any of them after first look mints a new `loop_plan_id` and is a new pre-registration, not an amendment to this one."
+        }
+      ],
+      "id_references": {
+        "config.json": [
+          "o1",
+          "o2",
+          "o3"
+        ],
+        "PREREG.md": [
+          "o1",
+          "o2",
+          "o3",
+          "o4",
+          "o5",
+          "o6",
+          "o7",
+          "p1",
+          "p10",
+          "p11",
+          "p12",
+          "p2",
+          "p3",
+          "p4",
+          "p5",
+          "p6",
+          "p7",
+          "p8",
+          "p9"
+        ]
+      },
+      "references_that_exist": {
+        "config.json": [
+          "o1",
+          "o2",
+          "o3"
+        ],
+        "PREREG.md": [
+          "o1",
+          "o2",
+          "o3",
+          "o4",
+          "o5",
+          "o6",
+          "o7",
+          "p1",
+          "p10",
+          "p11",
+          "p12",
+          "p2",
+          "p3",
+          "p4",
+          "p5",
+          "p6",
+          "p7",
+          "p8",
+          "p9"
+        ]
+      },
+      "references_missing_from_obligations_json": {
+        "config.json": [],
+        "PREREG.md": []
+      },
+      "obligation_ids_not_referenced_in_PREREG_md_by_token": [],
+      "obligations_sha256_field_present": true,
+      "status": "PASS",
+      "counts_match_prereg": true,
+      "prereg_claim_line": "PREREG.md line 10: '| `obligations.json` | the failed set **O** (7) and the protected set **P** (12), pinned by sha256 |'"
+    },
+    "6_referenced_paths_tracked": {
+      "repo_files_line_count": 7885,
+      "calibration_paths": [
+        {
+          "path": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "in_repo_files": true
+        },
+        {
+          "path": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "in_repo_files": true
+        }
+      ],
+      "reading_set_paths": [
+        {
+          "path": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+          "in_repo_files": true
+        },
+        {
+          "path": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "in_repo_files": true
+        },
+        {
+          "path": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+          "in_repo_files": true
+        },
+        {
+          "path": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "in_repo_files": true
+        }
+      ],
+      "missing": [],
+      "status": "PASS"
+    },
+    "7_vocabulary": {
+      "status": "NOT-CHECKABLE",
+      "prereg_claim": "PREREG.md lines 46 and 201: the run closes `use_relation_h005.ROOT_READING_VOCABULARY` 'to six values'; obligations o1 names the member set only as `standard.NOMINABLE_RELATIONS`.",
+      "vocabulary_list_found_in_bundle_json": [],
+      "vocabulary_key_in_config_json": false,
+      "config_json_top_level_keys": [
+        "audit",
+        "contrast",
+        "cycle_budget",
+        "graph_root",
+        "max_calls",
+        "max_per_key",
+        "obligations_path",
+        "occurrences",
+        "provider_mode",
+        "publish_ref",
+        "reading_set",
+        "reopen_reasons",
+        "run_id",
+        "runner",
+        "schema",
+        "seats",
+        "study",
+        "timeouts"
+      ],
+      "relation_strings_present_anywhere_in_bundle": {
+        "calibration_ground_truth": [
+          "rejects-with-reason",
+          "retains"
+        ],
+        "note": "only 2 of the promised 6 values appear anywhere in the bundle, as calibration ground-truth strings"
+      },
+      "where_the_list_actually_lives": "src/minireason/use_relation_h005.py is a tracked repo file (evidence/repo-files.txt line 7684) but is not in the sandbox; standard.NOMINABLE_RELATIONS lives in src/minireason/loop/standard.py which is absent from the tracked file list entirely (grep of evidence/repo-files.txt).",
+      "why": "No file in the sandbox carries the six-value list, so bytes cannot be compared against bytes. The claim that the closed vocabulary has exactly six values is asserted in prose in three places and enumerable in none."
+    },
+    "8_credential_scan": {
+      "status": "PASS",
+      "patterns": {
+        "sk-hex32": "sk-[0-9a-f]{32}",
+        "hex32.dot.token20+": "[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}"
+      },
+      "files_scanned": 34,
+      "hit_count": 0,
+      "hits": [],
+      "policy": "only path + line number would be reported; zero hits, so nothing withheld"
+    },
+    "9_dates_and_run_ids": {
+      "status": "PASS",
+      "distinct_calendar_dates": [
+        "2026-09-14"
+      ],
+      "n_distinct_strings": 5,
+      "values_with_locations": {
+        "2026-09-14": {
+          "PREREG.md": {
+            "lines": [
+              4,
+              38,
+              154,
+              157,
+              160,
+              209
+            ],
+            "n_mentions": 6
+          },
+          "VALIDATION.md": {
+            "lines": [
+              21,
+              45
+            ],
+            "n_mentions": 2
+          },
+          "calibration.json": {
+            "lines": [
+              3,
+              6,
+              46,
+              67,
+              73,
+              94,
+              100,
+              131,
+              137,
+              158,
+              164,
+              170,
+              191,
+              197,
+              218,
+              224,
+              291,
+              297
+            ],
+            "n_mentions": 18
+          },
+          "config.json": {
+            "lines": [
+              3,
+              52,
+              53
+            ],
+            "n_mentions": 3
+          },
+          "obligations.json": {
+            "lines": [
+              3,
+              9,
+              10,
+              32,
+              33,
+              46,
+              47,
+              60,
+              61,
+              74,
+              75,
+              76,
+              89,
+              90,
+              103,
+              104,
+              117,
+              118,
+              133,
+              174,
+              183,
+              187,
+              188,
+              201,
+              202,
+              215,
+              224,
+              228,
+              229,
+              242,
+              243,
+              258,
+              267,
+              273,
+              286,
+              287,
+              288,
+              289
+            ],
+            "n_mentions": 38
+          },
+          "reading_set.json": {
+            "lines": [
+              3,
+              379,
+              381,
+              408,
+              410,
+              437,
+              439,
+              466,
+              468,
+              495,
+              497,
+              524,
+              526,
+              550,
+              552,
+              579,
+              581,
+              608,
+              610,
+              637,
+              639,
+              666,
+              668,
+              695,
+              697,
+              724,
+              726,
+              753,
+              755,
+              782,
+              784,
+              811,
+              813,
+              840,
+              842,
+              869,
+              871,
+              898,
+              900,
+              927,
+              929,
+              956,
+              958,
+              982,
+              984
+            ],
+            "n_mentions": 45
+          },
+          "validate.py": {
+            "lines": [
+              105,
+              152
+            ],
+            "n_mentions": 2
+          }
+        },
+        "2026-09-14T00:00:00Z": {
+          "PREREG.md": {
+            "lines": [
+              34
+            ],
+            "n_mentions": 1
+          }
+        },
+        "L001-loop-first-live-2026-09-14": {
+          "PREREG.md": {
+            "lines": [
+              4,
+              38,
+              154,
+              157,
+              160,
+              209
+            ],
+            "n_mentions": 6
+          },
+          "VALIDATION.md": {
+            "lines": [
+              21,
+              45
+            ],
+            "n_mentions": 2
+          },
+          "calibration.json": {
+            "lines": [
+              3
+            ],
+            "n_mentions": 1
+          },
+          "config.json": {
+            "lines": [
+              3,
+              52,
+              53
+            ],
+            "n_mentions": 3
+          },
+          "obligations.json": {
+            "lines": [
+              3,
+              32,
+              33,
+              46,
+              47,
+              60,
+              61,
+              74,
+              75,
+              76,
+              89,
+              90,
+              103,
+              104,
+              117,
+              118,
+              133,
+              174,
+              183,
+              187,
+              188,
+              201,
+              202,
+              215,
+              224,
+              228,
+              229,
+              242,
+              243,
+              258,
+              267,
+              273,
+              286,
+              287,
+              288,
+              289
+            ],
+            "n_mentions": 36
+          },
+          "reading_set.json": {
+            "lines": [
+              3
+            ],
+            "n_mentions": 1
+          }
+        },
+        "REC-20260914-Z": {
+          "PREREG.md": {
+            "lines": [
+              34
+            ],
+            "n_mentions": 1
+          }
+        },
+        "snapshot-2026-09-14": {
+          "calibration.json": {
+            "lines": [
+              6,
+              46,
+              67,
+              73,
+              94,
+              100,
+              131,
+              137,
+              158,
+              164,
+              170,
+              191,
+              197,
+              218,
+              224,
+              291,
+              297
+            ],
+            "n_mentions": 17
+          },
+          "obligations.json": {
+            "lines": [
+              9,
+              10
+            ],
+            "n_mentions": 2
+          },
+          "reading_set.json": {
+            "lines": [
+              379,
+              381,
+              408,
+              410,
+              437,
+              439,
+              466,
+              468,
+              495,
+              497,
+              524,
+              526,
+              550,
+              552,
+              579,
+              581,
+              608,
+              610,
+              637,
+              639,
+              666,
+              668,
+              695,
+              697,
+              724,
+              726,
+              753,
+              755,
+              782,
+              784,
+              811,
+              813,
+              840,
+              842,
+              869,
+              871,
+              898,
+              900,
+              927,
+              929,
+              956,
+              958,
+              982,
+              984
+            ],
+            "n_mentions": 44
+          },
+          "validate.py": {
+            "lines": [
+              105,
+              152
+            ],
+            "n_mentions": 2
+          }
+        }
+      },
+      "run_id_consistency": "single run id L001-loop-first-live-2026-09-14 in all 6 files that carry one; every date-like string in the bundle is the single calendar date 2026-09-14; declared placeholder REC-20260914-Z at 2026-09-14T00:00:00Z (PREREG.md \u00a71 declares both as placeholders); no stale or second run id / date found",
+      "out_of_bundle_note": "AGENTS.md outside the bundle references REC-20260913 (2026-09-13) in an erratum filename \u2014 unrelated to the L001 run, listed for completeness only"
+    }
+  },
+  "no_overall_score": true,
+  "what_these_checks_cannot_establish": [
+    "Anything requiring the absent repository tree: the full validate.py run, its PASS transcript in VALIDATION.md (reproducibility claim), the content of the six-value vocabulary, BLOCK_CODES, MARKS, the frozen CEILING_TEXT/PREREGISTRATION_REQUIRED_SENTENCES, and every pinned digest of a published file (C001 plan_id, material_sha256, calibration source bytes). The tracked file list shows the pins' targets exist in the repo; nothing here can verify their bytes.",
+    "Whether experiments/loops/L001-loop-first-live-2026-09-14/ was ever created in the real repository \u2014 evidence/repo-files.txt contains no L001 path, but this bundle describes itself as pre-dispatch ('the run directory ... does not yet exist'), and a git ls-files snapshot cannot distinguish 'run never executed' from 'run executed but outputs not committed'. VALIDATION.md's own transcript, however, references the run directory and minted plan artifacts.",
+    "Which of the two config.json byte strings is authentic, or where the divergence entered (staging clone vs copy step); the sandbox holds one side only.",
+    "Whether the stated canonicalization recipe equals deepreason_core.canonical.canonical_json / minireason.provider.digest byte-for-byte (the modules are absent); only the equivalence of the recipe as written with the recorded obligations digest was recomputed.",
+    "Whether the sandbox copy itself is byte-identical to what an external reviewer received via any other channel (no second copy is available to compare); all claims here are internal to the sandbox.",
+    "Intent, motivation, or provenance of the mismatch \u2014 only that the bytes differ from the recorded digest.",
+    "The semantic adequacy of the design (guard soundness, clause meanings, whether obligations say what the prose claims they mean). Only stated mechanical relations were checked, per the task's instruction to check bytes against bytes, not judge the design.",
+    "Credential hygiene outside the sandbox, key validity, or whether names DEEPSEEK_API_KEY/OLLAMA_API_KEY resolve to anything."
+  ]
+}

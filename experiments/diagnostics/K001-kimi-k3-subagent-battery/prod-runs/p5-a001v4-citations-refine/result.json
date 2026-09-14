@@ -1,0 +1,83 @@
+{
+  "task_id": "p5-a001v4-citations-refine",
+  "title": "Refine the 80 WRONG verdicts of the A001 v4 citation audit to genuine off-by-N candidates",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "Done. Summary of the work:\n\n**Verified hash**: `docs/sources/FW5-explanatory-construction.md` sha256 matches `8105925b…ee63a` (computed, recorded in both outputs).\n\n**Method** (all computed by `check/refine.py`, nothing transcribed): loaded the 80 WRONG rows from `staging/citations-v4-first-pass.json`, recovered each staging line and its failed fragments, re-attributed each fragment by locating every source line containing it (typographic quotes/whitespace/Cf characters normalised), and classified:\n\n- **42 RESOLVED-BY-SIBLING** — the fragment is verbatim at the target of another citation on the same staging line (the first pass's known attribution ambiguity).\n- **30 NOT-A-QUOTE** — the fragment occurs nowhere in the source and is staging/A001 notation: a relaxed subscript-brace/`\\mathrm`-flattening match located the substantive LaTeX source lines (e.g. `\\operatorname{Ans}p(a,b)=…`) or identified audit bookkeeping (labels, paths, headings).\n- **8 CANDIDATE rows → 4 distinct fragments**, refined to:\n  - **OFF-BY-N (2)**: staging 797 `:1372` quotes the section title at source 1370 (off by −2); staging 1138 `:1202` quotes \"the stipulated bijections\" at source 1206 (off by +4).\n  - **TAG-CONVENTION (1)**: staging 160 `:947` cites the `\\tag{CT2}` line while quoting the section/heading material just above it (source 941).\n  - **UNRESOLVED (1)**: staging 847 `:893` quotes `\\operatorname{Bearing}(c,z,p)`, which occurs only at source line 614 — 279 lines away, too far and off-tag for a clean off-by-N re-attribution; an authorial question.\n\n**Files written**: `check/refine.py`, `out/citations-v4-refined.json`, `out/citations-v4-refined.md` (591 lines, with per-row classification, full candidate reports including 160-char line excerpts, full OFF-BY-N/UNRESOLVED lists, and the stated limit: computation cannot decide whether a citation was meant to name the tag line or the display body).\n\n**Last test run**: `python3 -c` verification of the outputs — OK, exit 0 (80 rows, 4 candidates, counts as above, all required sections present).",
+  "files_written": [
+    {
+      "path": "check/refine.py",
+      "change": "added",
+      "sha256": "624d1358a37d925a5097ed8291f751b74ee895f043dea78c208dfa6175925c11",
+      "bytes": 15015
+    },
+    {
+      "path": "out/citations-v4-refined.json",
+      "change": "added",
+      "sha256": "60f7dbec1ae6503b181443782ca5214b2175fb15e5b5f61990ddf6110bf6d59b",
+      "bytes": 125961
+    },
+    {
+      "path": "out/citations-v4-refined.md",
+      "change": "added",
+      "sha256": "7182572658d10ffbdd48c17aa3f078ab005a75eea90b84ac313ff66a9f3f3382",
+      "bytes": 50780
+    }
+  ],
+  "expected_outputs_present": [
+    "out/citations-v4-refined.md",
+    "out/citations-v4-refined.json",
+    "check/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 2,
+    "list_dir": 2,
+    "grep": 1,
+    "write_file": 2,
+    "run_command": 18
+  },
+  "tool_call_total": 25,
+  "iterations": 24,
+  "prompt_tokens": 277676,
+  "completion_tokens": 14417,
+  "total_tokens": 292093,
+  "wall_seconds": 279.595,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 11,
+  "reasoning_chars": [
+    27,
+    64,
+    0,
+    0,
+    0,
+    1589,
+    198,
+    5127,
+    0,
+    0,
+    0,
+    0,
+    857,
+    762,
+    3723,
+    0,
+    191,
+    0,
+    810,
+    0,
+    0,
+    1153,
+    0,
+    0
+  ],
+  "reasoning_retries": 0,
+  "transport_requested": "native",
+  "transport_used": "native",
+  "transport_fallbacks": 0,
+  "transcript_path": "prod-runs/p5-a001v4-citations-refine/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p5-a001v4-citations-refine/sandbox"
+}

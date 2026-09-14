@@ -1,0 +1,112 @@
+{
+  "task_id": "p1-ledger-audit",
+  "title": "Mechanical audit of docs/DECISION_LEDGER.md at today's bytes",
+  "status": "COMPLETE",
+  "mode": "tools",
+  "final_text": "The mechanical audit is complete. **I did not modify `docs/DECISION_LEDGER.md`** (or `AGENTS.md`); I only added scripts and outputs.\n\n## What I wrote\n\n**Scripts under `check/`** (each computes by code over raw bytes; nothing transcribed):\n- `check/common.py` — shared parsing and all eight computations\n- `check/item1_line_census.py` … `check/item8_last_five.py` — one runnable script per audit item\n- `check/build_report.py` — emits both deliverables\n- `check/verify_outputs.py` — fully independent recomputation (does not import `common.py`) that asserts equality with the JSON and confirms no credential-shaped string appears in either output\n\n**Deliverables**: `out/ledger-audit.json` (every quantity under named keys), `out/ledger-audit.md` (short tables rendering the same values, ending with a limitations paragraph).\n\n## Results (at today's bytes)\n\n1. **Line census**: 1495 total lines; **37 CRLF** lines (924–938, 942–1012 even runs, plus 1204 — full list in both outputs), **1458 bare LF**, 0 unterminated final lines.\n2. **Receipt ids**: **37 distinct** ids matching `REC-\\d{8}-[A-Z]+`, in first-appearance order with first-appearance line and lines-carrying count (REC-20260912-B at line 524 through REC-20260914-Z at line 1481).\n3. **Today's receipts (20260914)**: 26 distinct ids, letters A through Z in order; **A..Z is fully used**, and **no id after Z exists** (no two-or-more-letter suffix).\n4. **Entry counts, all three reported separately**: (a) lines beginning with `REC-` → **381**; (b) lines beginning with `REC-` or `**REC-` → **381** (no `**REC-` openers exist); (c) blank-line-separated paragraphs whose first non-space token starts with either opener → **364**.\n5. **`Prior verified commit/tree:`**: 25 lines (1224–1280, 1392, 1427, 1447, 1455, 1469, 1473, 1477, 1481, 1493).\n6. **`VERIFIED <40 hex> TREE <40 hex>`**: **77 matches**, each with line, commit, tree and nearest receipt id above; last such line is **1495** (commit `c56b129dc36eaf87dcb39e0a36e9a227164c3525`, tree `05eebc4bbb715a83121a507dc31dc27b0818d776`, nearest receipt above REC-20260914-Z at line 1493).\n7. **Credential scan**: **0 hits** for both patterns; only line numbers were ever handled, no matched text stored or printed.\n8. **Last five lines** (1491–1495) rendered verbatim with line numbers and terminators in both outputs.\n\n## Test results\n\nAll 8 item scripts exit 0; `build_report.py` writes both files; the final `verify_outputs.py` run printed **\"PASS: out/ledger-audit.json matches an independent recomputation; credential scans clean (counts only)\"** (exit code 0).",
+  "files_written": [
+    {
+      "path": "check/build_report.py",
+      "change": "added",
+      "sha256": "5b429282b3c91e41f8509ba827cefe1cb2c49752dea2041b4631757bd963f406",
+      "bytes": 8447
+    },
+    {
+      "path": "check/common.py",
+      "change": "added",
+      "sha256": "1cbc8455a63f58e0801f2f6fd39c4d7cd39be4c9a39f00ec05fee22d528a939a",
+      "bytes": 8410
+    },
+    {
+      "path": "check/item1_line_census.py",
+      "change": "added",
+      "sha256": "fdf122c6ddb691911e44e7f844937baecc809b5bac2d2767cf531a53e90f9dbe",
+      "bytes": 226
+    },
+    {
+      "path": "check/item2_receipt_ids.py",
+      "change": "added",
+      "sha256": "ef8c0c54002d7b46f8bda27b51a61066b7d9a43e1677e233f9c540cee71fd529",
+      "bytes": 394
+    },
+    {
+      "path": "check/item3_today_receipts.py",
+      "change": "added",
+      "sha256": "0fc579963d774c3b74d0fb69c720391fbd0477b31027052e9ceaeee104f5ba49",
+      "bytes": 282
+    },
+    {
+      "path": "check/item4_entry_counts.py",
+      "change": "added",
+      "sha256": "d35b5600ce1d9af80cc784570e4269a9ec383821a3d40c8cbe190e206b31f8ad",
+      "bytes": 239
+    },
+    {
+      "path": "check/item5_prior_marker.py",
+      "change": "added",
+      "sha256": "3413c094dd4574cb58525ab0275c1e08b38682f499fdaab350f781efd54e23e2",
+      "bytes": 255
+    },
+    {
+      "path": "check/item6_verified_tree.py",
+      "change": "added",
+      "sha256": "7ee562b79363c50461a20cbdcad3a8bfe646d5661bcc530708572301f64bfca0",
+      "bytes": 254
+    },
+    {
+      "path": "check/item7_credential_scan.py",
+      "change": "added",
+      "sha256": "e357ab7dc573d1c472b83e0b63e6f57514a3b9c28dba41d7b01682cad0801046",
+      "bytes": 284
+    },
+    {
+      "path": "check/item8_last_five.py",
+      "change": "added",
+      "sha256": "067d408669ebc456d7ba32afad4cf008950e84d3bd24684ba3baac9f5fc3c517",
+      "bytes": 262
+    },
+    {
+      "path": "check/verify_outputs.py",
+      "change": "added",
+      "sha256": "13b41829720c35f2878fe413d6a51a971878be1d9be554262ddac9ed2336a957",
+      "bytes": 7111
+    },
+    {
+      "path": "out/ledger-audit.json",
+      "change": "added",
+      "sha256": "99da6f53b92e266b10349a77a48ca384e6023e74c5aa412494bbff23ca6b191c",
+      "bytes": 61890
+    },
+    {
+      "path": "out/ledger-audit.md",
+      "change": "added",
+      "sha256": "20ac5a63b687a3fa6e525033dea4bb686f375f6509ce407d828b50c6e6f650e9",
+      "bytes": 31437
+    }
+  ],
+  "expected_outputs_present": [
+    "out/ledger-audit.md",
+    "out/ledger-audit.json",
+    "check/"
+  ],
+  "expected_outputs_missing": [],
+  "tool_calls": {
+    "read_file": 3,
+    "list_dir": 2,
+    "write_file": 12,
+    "run_command": 13
+  },
+  "tool_call_total": 30,
+  "iterations": 13,
+  "prompt_tokens": 726180,
+  "completion_tokens": 20838,
+  "total_tokens": 747018,
+  "wall_seconds": 274.736,
+  "finish_reason": "stop",
+  "harness_failure": null,
+  "harness_detail": null,
+  "malformed_tool_call_retries": 0,
+  "reasoning_calls": 6,
+  "transcript_path": "prod-runs/p1-ledger-audit/transcript.jsonl",
+  "sandbox_dir": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-runs/p1-ledger-audit/sandbox"
+}

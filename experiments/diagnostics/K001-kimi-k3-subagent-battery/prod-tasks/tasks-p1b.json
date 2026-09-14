@@ -1,0 +1,46 @@
+[
+ {
+  "id": "p1-a001v3-citations",
+  "title": "Verify every FW5 line citation in A001 STAGING-v3.md by computation",
+  "prompt": "Verify every FW5 line citation in `staging/STAGING-v3.md` against the source it cites and write the result to `out/citations-v3.md` and `out/citations-v3.json`.\n\nTHE SOURCE. `docs/sources/FW5-explanatory-construction.md` is the designated FW5 reading edition, sha256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a`. A citation `:N` or `FW5:N` names line N of that file, 1-based, splitting on newline; `:N-M` (hyphen or en-dash) names the inclusive range. Confirm the sha256 by computation before anything else and report it.\n\nMETHOD, all by scripts under `check/`:\n 1. Extract every citation from the staging file by pattern: forms `FW5:N`, `FW5:N-M`, bare `:N` and `:N-M` where N and M are 2-4 digit numbers. Report the regex you used and the total count, and the count of distinct targets.\n 2. For each citation, take the staging line it sits on and find any quoted text on that line: text inside straight or typographic double quotes, or inside backticks, or a LaTeX fragment inside `\\( ... \\)`. Normalise typographic quotes to straight, collapse whitespace, and test whether each quoted fragment (at least 12 characters long) is a substring of the cited line or range after the same normalisation.\n 3. Verdict per citation: CORRECT (every fragment found verbatim), CORRECT IN SUBSTANCE (found only after normalisation; name the difference), WRONG (a fragment of 12+ characters is not in the cited line or range; print the cited line's first 120 characters and, if a grep of the whole source finds the fragment elsewhere, the line where it actually is), or NO-QUOTE-TO-CHECK (no fragment on that staging line). Never mark WRONG from memory: a WRONG verdict must show the cited line's actual text.\n 4. Also list every cited line number that is blank in the source, and every range whose end precedes its start.\n\nWHAT TO PRODUCE: `out/citations-v3.json` (one object per citation: staging line, citation text, target lines, fragments tested, verdict, note) and `out/citations-v3.md` with a table of the same plus a summary line: how many citations, how many under each verdict, and the list of WRONG ones. Finish by naming what your extraction pattern would not catch.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "staging/STAGING-v3.md",
+   "docs/sources/FW5-explanatory-construction.md"
+  ],
+  "expected_outputs": [
+   "out/citations-v3.md",
+   "out/citations-v3.json",
+   "check/"
+  ],
+  "evaluation": "mechanical: an independent Opus review (REVIEW-3.md) re-read every citation at the line and found no off-by-one; any WRONG verdict is either a true find or a worker error and is checked by the orchestrator",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/a001v3"
+ },
+ {
+  "id": "p1-ledger-verified-join",
+  "title": "Join every published commit/tree identity in the decision ledger against the branch log",
+  "prompt": "Check every commit and tree identity published in `docs/DECISION_LEDGER.md` against the branch's own commit log, and write the result to `out/verified-join.md` and `out/verified-join.json`.\n\nTHE LOG. `evidence/git-log-branch.txt` is a frozen extract taken read-only from the repository with `git log --format='%H %T %h %ad %an %s' --date=iso-strict` over the whole branch. Columns: full commit sha, full tree sha, short commit, author date, author, subject. There is no git in this sandbox; this extract is the record you check against.\n\nWHAT TO PRODUCE. By a script under `check/`:\n 1. Extract from the ledger, by pattern, every line of the form `VERIFIED <40 hex> TREE <40 hex>` and every sentence carrying `Prior verified commit/tree:` followed by two identifiers (full or short, in either order as written; report the pattern you used). Also extract every other bare 40-hex or 7-hex token that sits within 40 characters of the words `commit`, `tree`, `remote` or `published`.\n 2. For each VERIFIED pair: JOIN against the log by commit; verdict MATCH (commit present and its logged tree equals the claimed tree), TREE-MISMATCH (commit present, tree differs: print both trees), COMMIT-ABSENT, or SHORT-AMBIGUOUS (a short id resolving to more than one commit). The join is the point of this check, not membership.\n 3. For each `Prior verified commit/tree:` sentence, the same join.\n 4. For every other bare token: whether it resolves to a commit, a tree, or neither in the log (a tree sha can appear as a tree of some commit; say which commit).\n 5. A summary: counts per verdict; the list of anything not MATCH; whether every VERIFIED pair verifies. A clean result is a result: do not manufacture a discrepancy. Say which strings you extracted and by what pattern, so a reader can tell a clean check from an incomplete one, and name any identity your pattern would not have caught.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "docs/DECISION_LEDGER.md",
+   "evidence/git-log-branch.txt"
+  ],
+  "expected_outputs": [
+   "out/verified-join.md",
+   "out/verified-join.json",
+   "check/"
+  ],
+  "evaluation": "mechanical: every pair should verify (the publisher verified each at publication time); any non-MATCH is checked by the orchestrator with git directly",
+  "mode": "tools",
+  "max_iterations": 30,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/ledger"
+ }
+]

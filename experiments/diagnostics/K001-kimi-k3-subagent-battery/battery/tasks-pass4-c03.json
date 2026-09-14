@@ -1,0 +1,45 @@
+[
+ {
+  "id": "c-03-markprep",
+  "title": "Implement W2-MARKPREP (markprep) with its tests",
+  "prompt": "Implement the wave-2 module W2-MARKPREP as\n`src/minireason/loop/markprep.py`, with its test file\n`tests/loop/test_markprep.py`, from the design entry and the wave-0 and wave-1\ninterfaces already in the sandbox. The module does not exist yet; you are its\nauthor.\n\nTHE DESIGN ENTRY, verbatim from `design/design-s7-wave-plan.md`.\n\n  purpose: The C001 program pre-pass and baseline seal: byte-identity defeater, under-replication rule, register E prefix resolution and bare-token forcing, registers T and D parsed on the FCL arm, the within-ORIGINAL baseline grid with its kind set, sealed by sha.\n\n  public_interface: program_marks(cell) -> dict; write_baseline(cell, replicates, out_dir) -> str; baseline_kinds(cell) -> dict; byte_identity_defeater(cell) -> dict; under_replicated(cell) -> set; residue(cell) -> list\n\n  depends_on: W0-CONTRACTS, W0-STANDARD, W0-CUSTODY\n\n  acceptance: Baseline is written and sealed before any residue is offered for marking; a bare id token shared with the account document is forced unresolved and never appears in the residue; T and D are program-computed wherever the FCL parse succeeds and the residue names exactly the rows it could not; byte-identical ORIGINAL/CONTROL commitments record D1-not-exhibited before any call; fewer than three resolved replicates of a case yields no residue for that case; editing the baseline after sealing raises.\n\nWHAT BINDS YOU.\n* `notes/WAVE0-INTERFACE.md` is the integrator's record of the wave-0 public\n  interface: which module owns each shared constant, what every exception carries,\n  and the eleven open questions O1-O11. Import the shared vocabularies from the\n  module that owns them; never retype one.\n* `notes/WAVE1-INTEGRATION-DECISIONS.md` carries eight decisions the wave-2 modules\n  are bound by. Read all eight before you design a signature.\n* Every exception you raise is a `types.LoopError` subclass taking\n  `(code, detail=\"\")`, and every new failure code you raise is added to\n  `types.FAILURE_CODES` \u2014 but you may not edit `src/minireason/loop/types.py` in\n  this sandbox, so instead list the new codes at the top of your module in a\n  module-level `NEW_CODES: tuple[str, ...]` and say in your final message which\n  table each belongs in.\n* Do not edit any file under `src/` other than the one you are creating. Nothing\n  you write touches a frozen plan, a published occurrence or `src/creib/**`.\n* No network. No provider call. The module must be importable and testable offline.\n\nRUN IT:\n\n    python3 run_tests.py tests.loop.test_markprep\n\nIterate until it reports OK.\n\nWrite the module with the docstring discipline the wave-0 modules use: a module\ndocstring that states what the module promises and what it refuses, and a docstring\non every public callable naming the failure code it raises. `docs/examples/test_custody_example.py`\nis the house test style.\n\nFinish by stating: which acceptance clauses your implementation satisfies and how\neach is tested; which parts of the public interface you implemented as stubs and\nwhy; every place where the design entry, the wave-0 interface and the wave-1\ndecisions did not settle a question, what you decided, and what would change if the\ndecision went the other way.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a\nsandbox. `run_command` accepts only `python3 ...` forms: `python3 -m unittest ...`,\n`python3 -m pytest ...`, `python3 -c ...` and `python3 <file.py> ...`. There is no\nshell, no `git`, no `ls`, no `cat`, and you cannot set environment variables on a\ncommand line. The sandbox has no network. To run a test module, use the helper that\nis already in the sandbox:\n\n    python3 run_tests.py tests.loop.test_<name>\n\nIt puts the sandbox root and `src` on `sys.path` and nothing else. You cannot ask\nquestions; everything you need is in the sandbox.\n\nHOUSE RULES, which hold for every sentence you write.\n* No score, no rank, no scalar progress meter, no \"better\"/\"worse\" between model\n  families, arms, endpoints or modules. Endpoints and arms are independent\n  occasions, never competitors.\n* A token ceiling, a call budget, a wall clock or a connection close is a RESOURCE\n  BOUNDARY. It is never described as exhaustion of the inquiry.\n* `unresolved` is a first-class outcome. Say \"unresolved\", or \"I could not\n  determine this and here is why\", rather than inventing a finding. A finding you\n  cannot point at a file and a line for is not a finding.\n* Never modify a published observation, and never edit a file to make your own\n  claim true.\n* Counts are information, never a warrant. Report a count with the command or file\n  that produced it beside it.\n",
+  "context_paths": [
+   "run_tests.py",
+   "src/deepreason_core",
+   "src/minireason/__init__.py",
+   "src/minireason/graph_import_h005.py",
+   "src/minireason/use_relation_h005.py",
+   "src/minireason/provider_openai_compat.py",
+   "src/minireason/data/endpoints.json",
+   "src/minireason/loop/__init__.py",
+   "src/minireason/loop/data",
+   "tests/__init__.py",
+   "tests/loop/__init__.py",
+   "AGENTS.md",
+   "docs/lessons/operations.md",
+   "src/minireason/loop/types.py",
+   "src/minireason/loop/standard.py",
+   "src/minireason/loop/contracts.py",
+   "src/minireason/loop/custody.py",
+   "notes/WAVE0-INTERFACE.md",
+   "notes/WAVE1-INTEGRATION-DECISIONS.md",
+   "design/design-s7-wave-plan.md",
+   "docs/examples/test_custody_example.py",
+   "design/design-s3-readings-and-marks.md",
+   "design/design-s2-roles-and-guard.md"
+  ],
+  "expected_outputs": [
+   "src/minireason/loop/markprep.py",
+   "tests/loop/test_markprep.py"
+  ],
+  "evaluation": "tests: the module imports, its own tests run green, and the Opus control's test file for the same module is run against it wherever the two interfaces agree",
+  "mode": "tools",
+  "max_iterations": 60,
+  "max_tokens": 24576,
+  "command_timeout": 180,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/battery/material",
+  "transport": "native",
+  "reasoning": "low"
+ }
+]

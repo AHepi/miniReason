@@ -1,0 +1,46 @@
+[
+ {
+  "id": "p2-activity-log-audit",
+  "title": "Mechanical audit of docs/AGENT_ACTIVITY.jsonl",
+  "prompt": "Audit `docs/AGENT_ACTIVITY.jsonl` mechanically and write `out/activity-audit.md` and `out/activity-audit.json`.\n\nWHAT TO COMPUTE, by a script under `check/`:\n 1. Line count; how many lines parse as JSON objects; the line numbers of every line that does not parse (expect none) and of every blank line.\n 2. The set of top-level keys seen, with the count of records carrying each key.\n 3. For the timestamp field (find its name from the data; report it): the first and last values, whether the sequence is non-decreasing, and the line numbers of every decrease.\n 4. The distinct values of any field that names the acting agent or role, with counts.\n 5. The distinct values of any field that names the action kind (search/read/modify/test/etc.), with counts.\n 6. Records whose `paths` (or equivalent field) mention `.env`, `key.txt`, or `uploads/`: line numbers only, and the field value with any value after `=` masked.\n 7. Credential scan over the raw bytes: lines matching `sk-[0-9a-f]{32}` or `[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}`; report ONLY line numbers (expect zero); never print matched text.\n 8. The last ten records, rendered as one line each: timestamp, agent, action, first path.\n\nWHAT TO PRODUCE: `out/activity-audit.json` with all values under named keys, `out/activity-audit.md` rendering them as short tables, ending with one paragraph on what the patterns would not catch.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "docs/AGENT_ACTIVITY.jsonl"
+  ],
+  "expected_outputs": [
+   "out/activity-audit.md",
+   "out/activity-audit.json",
+   "check/"
+  ],
+  "evaluation": "mechanical",
+  "mode": "tools",
+  "max_iterations": 30,
+  "max_tokens": 24576,
+  "command_timeout": 120,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/activity"
+ },
+ {
+  "id": "p2-prereg-mechanical",
+  "title": "Mechanical consistency checks of the L001 pre-registration bundle",
+  "prompt": "Check the pre-registration bundle under `loop-prereg/` for internal and cross-file consistency, by computation only, and write `out/prereg-checks.md` and `out/prereg-checks.json`. Do not judge the design; check bytes against bytes.\n\nFILES. `loop-prereg/config.json`, `obligations.json`, `reading_set.json`, `calibration.json`, `PREREG.md`, `VALIDATION.md`, `validate.py`; `src/minireason/data/endpoints.json` (the endpoint registry; key NAMES only, no values anywhere); `evidence/repo-files.txt` (the tracked file list of the repository, one path per line, produced read-only with git ls-files).\n\nCHECKS, each in a script under `check/`:\n 1. Run `python3 loop-prereg/validate.py` from the sandbox root (and from inside `loop-prereg/` if it fails on paths) and record its exit code and full output verbatim.\n 2. sha256 of each JSON file and of PREREG.md; compare each against every sha256-looking value that appears in PREREG.md, VALIDATION.md and config.json, and report every match and every sha256 in those documents that matches no file in the bundle (name which file it is said to pin, from the surrounding text).\n 3. Seats: every seat in config.json \u2014 its endpoint name, family and key_env \u2014 must exist in endpoints.json with the same family and key_env; report every mismatch. Also list any two judge seats sharing a family.\n 4. max_calls: derive the number of entries in reading_set.json and any per-entry call multiplier the bundle states (quote the sentence in PREREG.md that gives the derivation) and compare with config.json's max_calls and cycle budget; report the arithmetic.\n 5. Obligations: count O and P entries in obligations.json; compare with the counts PREREG.md states; check every obligation id is unique and every id referenced from config.json or PREREG.md exists.\n 6. Calibration: for every file path referenced in calibration.json (and in reading_set.json), whether it appears in evidence/repo-files.txt; list missing paths.\n 7. Vocabulary: extract the reading vocabulary list from config.json (or wherever it is) and check it has exactly the six values PREREG.md names; report differences.\n 8. Credential scan over every file in the sandbox: lines matching `sk-[0-9a-f]{32}` or `[0-9a-f]{32}\\.[A-Za-z0-9_-]{20,}` \u2014 line numbers only, expect zero.\n 9. Every date or run-id string in the bundle: list distinct values and where each appears (to catch a stale run id).\n\nWHAT TO PRODUCE: `out/prereg-checks.json` with every result under named keys and `out/prereg-checks.md` rendering them, one section per check, each ending with PASS, FAIL (with the evidence) or NOT-CHECKABLE (with why). No overall score. Finish by naming what these checks cannot establish.\n\nTOOLING. You have read_file, list_dir, grep, write_file and run_command inside a sandbox. `run_command` accepts only `python3 ...` forms (`python3 <file.py> ...`, `python3 -c ...`, `python3 -m ...`). There is no shell: no pipes, no redirection, no `&&`, no `;`, no `ls`, no `cat`, no `git`. Each command runs alone. Write scripts under `check/` and run them with `python3 check/<name>.py`. Do everything by computation, never by transcription from memory. Never print any string that looks like a credential; report only path and line number for such a hit. Write the deliverables named under WHAT TO PRODUCE; a task without those files written is not complete.",
+  "context_paths": [
+   "AGENTS.md",
+   "loop-prereg",
+   "src/minireason/data/endpoints.json",
+   "evidence/repo-files.txt"
+  ],
+  "expected_outputs": [
+   "out/prereg-checks.md",
+   "out/prereg-checks.json",
+   "check/"
+  ],
+  "evaluation": "mechanical cross-check of the concurrent Opus review",
+  "mode": "tools",
+  "max_iterations": 40,
+  "max_tokens": 24576,
+  "command_timeout": 180,
+  "verify_command": null,
+  "repo_root": "/tmp/claude-0/-home-user-miniReason/b114dbee-c9cd-5a0b-b695-8d39dd13d756/scratchpad/kimi/prod-material/prereg"
+ }
+]
