@@ -1,0 +1,315 @@
+{
+  "bare_instruction": "Begin or continue your inquiry into the problem. This single call is one complete invocation. Consider the earlier public account and commitment interface if supplied, and issue the account you would now use. Your response may retain, revise or challenge earlier work or its problem formulation. Use the ordinary prose commitment interface described above.",
+  "formal_instruction": "Use FCL-1 for the commitment surface, encoded as a JSON document inside the commitments string: {\"language\":\"FCL-1\",\"records\":[...],\"uptake\":[...]}. Each record has unique local id, type (claim|commitment|objection|use|problem), and text (unrestricted prose). Optional prose fields: scope, action, consequence, grounds, bearing. Optional arrays of references: target, depends, mentions, revises, withdraws. References are local IDs or exposed-artifact-label#local-ID; do not invent hidden IDs. A commitment proposes a scoped use, action, application or consequence; an objection alleges a defect whose bearing can itself be criticized; a use proposes an uptake or response; a problem states an unresolved question. depends asserts reliance; mentions only locates material. uptake lists the records you currently propose to use, not certified truths. No record type or optional field must be present. Empty records and uptake are allowed. Express uncertainty or an unrepresentable relation in prose rather than inventing a relation. The body remains unrestricted prose.",
+  "problems": [
+    {
+      "id": "daily",
+      "prose": "I share a flat with two friends. We keep arguing about ordinary household chores. Sometimes we agree on who will do something, but later we disagree about what the agreement meant. Our work schedules change, and one friend has started avoiding the conversations. What should I do?",
+      "templates": [
+        "fork5",
+        "weave7",
+        "return6"
+      ]
+    },
+    {
+      "id": "physics",
+      "prose": "What happens to information about the physical state of matter that forms a black hole when the black hole evaporates?",
+      "templates": [
+        "weave7",
+        "return6",
+        "fork5"
+      ]
+    },
+    {
+      "id": "philosophy",
+      "prose": "Can we make sense of a person's responsibility for actions whose motives were shaped by forces that the person did not choose?",
+      "templates": [
+        "fork5",
+        "return6",
+        "weave7"
+      ]
+    },
+    {
+      "id": "sociology",
+      "prose": "How can a city become more socially mixed while some residents become more isolated from one another?",
+      "templates": [
+        "weave7",
+        "fork5",
+        "return6"
+      ]
+    }
+  ],
+  "prose_instruction": "Write the commitment surface in ordinary free prose, using whatever arrangement suits the content. You may distinguish a claim from a proposed application, scope, action or consequence; mention from dependence; a criticism and its grounds from a later use or revision; and an unresolved problem. None of these is required to exist. A proposed test, its relevance and the commitment itself can be criticized. State what you currently propose to take up without treating that as a truth certificate. Reference exposed material in prose where useful.",
+  "schema": "minireason.h005.material.v1",
+  "source_pins": {
+    "docs/sources/FW5-explanatory-construction.md": "8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a"
+  },
+  "study_id": "F001-fork5-multifamily",
+  "system": "Work on the problem using the material actually exposed in this request and your background knowledge. The problem has no supplied answer key or scoring rule. Claims, criticisms and methods are fallible. Do not invent a source, an observation, an earlier event, or a dependency to fill a field. A missing view says what you can currently see; it does not establish what happened earlier. Return a JSON object with exactly two independently authored string fields: body and commitments. Body is your public prose contribution. Commitments says what taking your contribution up would involve. An empty commitment surface is allowed when none can be identified. Do not repeat the body wholesale into commitments.",
+  "templates": {
+    "fork5": {
+      "nodes": [
+        {
+          "id": "account",
+          "inputs": [
+            {
+              "source": "previous",
+              "view": "both"
+            }
+          ],
+          "instruction": "Begin or continue an account of the problem. Decide what seems worth conjecturing from the material you have."
+        },
+        {
+          "id": "objection",
+          "inputs": [
+            {
+              "source": "account",
+              "view": "both"
+            }
+          ],
+          "instruction": "Develop criticism of the account where you have grounds. It is possible that your objection, its relevance, or the problem formulation is mistaken."
+        },
+        {
+          "id": "rival",
+          "inputs": [
+            {
+              "source": "account",
+              "view": "body"
+            }
+          ],
+          "instruction": "Explore another way of posing or addressing the problem. You see the account's body; its commitment field is not supplied."
+        },
+        {
+          "id": "response",
+          "inputs": [
+            {
+              "source": "account",
+              "view": "both"
+            },
+            {
+              "source": "objection",
+              "view": "both"
+            },
+            {
+              "source": "rival",
+              "view": "both"
+            }
+          ],
+          "instruction": "Continue the inquiry in light of the account, criticism and alternative. Decide what to use, leave open, revise or reject, and explain your grounds where they matter."
+        },
+        {
+          "id": "carry",
+          "inputs": [
+            {
+              "source": "response",
+              "view": "both"
+            },
+            {
+              "source": "account",
+              "view": "commitments"
+            },
+            {
+              "source": "objection",
+              "view": "commitments"
+            },
+            {
+              "source": "origin",
+              "view": "both"
+            }
+          ],
+          "instruction": "Produce the present account and commitment interface for the next complete template invocation. The material may support a revision, an unresolved problem, or retaining something. Preserve the grounds needed for whatever uptake you propose."
+        }
+      ]
+    },
+    "return6": {
+      "nodes": [
+        {
+          "id": "reopen",
+          "inputs": [
+            {
+              "source": "previous",
+              "view": "both"
+            }
+          ],
+          "instruction": "Resume the problem from the previous account. Formulate the account or question you currently propose to work with."
+        },
+        {
+          "id": "challenge",
+          "inputs": [
+            {
+              "source": "reopen",
+              "view": "commitments"
+            }
+          ],
+          "instruction": "Work on what follows from taking these commitments up. You see their authored commitment field without the associated body. Say when that view is insufficient; do not infer that unexposed material never existed."
+        },
+        {
+          "id": "reply",
+          "inputs": [
+            {
+              "source": "reopen",
+              "view": "both"
+            },
+            {
+              "source": "challenge",
+              "view": "both"
+            }
+          ],
+          "instruction": "Use, dispute or qualify the challenge as you continue the inquiry. A criticism can reveal a different problem even if the objection itself is mistaken."
+        },
+        {
+          "id": "critique",
+          "inputs": [
+            {
+              "source": "challenge",
+              "view": "both"
+            },
+            {
+              "source": "reply",
+              "view": "both"
+            },
+            {
+              "source": "previous",
+              "view": "commitments"
+            }
+          ],
+          "instruction": "Examine the criticism and its use in the reply. Their grounds, interpretation, methods and relevance can themselves be questioned."
+        },
+        {
+          "id": "amend",
+          "inputs": [
+            {
+              "source": "reply",
+              "view": "both"
+            },
+            {
+              "source": "critique",
+              "view": "both"
+            }
+          ],
+          "instruction": "Continue the account after considering the criticism of the criticism. Determine what the available reasons change, if anything."
+        },
+        {
+          "id": "carry",
+          "inputs": [
+            {
+              "source": "amend",
+              "view": "both"
+            },
+            {
+              "source": "challenge",
+              "view": "commitments"
+            },
+            {
+              "source": "origin",
+              "view": "both"
+            }
+          ],
+          "instruction": "Issue the account and commitment interface you would carry into another complete invocation. Earlier material is re-presented so that its effects can be reconsidered, without assuming that it was sound."
+        }
+      ]
+    },
+    "weave7": {
+      "nodes": [
+        {
+          "id": "body_route",
+          "inputs": [
+            {
+              "source": "previous",
+              "view": "body"
+            }
+          ],
+          "instruction": "Develop an account of the problem using the available prose body. An earlier commitment field, if any, is not supplied to this node."
+        },
+        {
+          "id": "commitment_route",
+          "inputs": [
+            {
+              "source": "previous",
+              "view": "commitments"
+            }
+          ],
+          "instruction": "Develop an account of the problem using the available commitment surface. An earlier body, if any, is not supplied to this node. Express uncertainty caused by the view you actually have."
+        },
+        {
+          "id": "cross",
+          "inputs": [
+            {
+              "source": "body_route",
+              "view": "both"
+            },
+            {
+              "source": "commitment_route",
+              "view": "both"
+            }
+          ],
+          "instruction": "Consider the two accounts together. Explore disagreements, shared assumptions, or a different problem their relationship brings into view, where the content gives you grounds."
+        },
+        {
+          "id": "body_return",
+          "inputs": [
+            {
+              "source": "body_route",
+              "view": "both"
+            },
+            {
+              "source": "cross",
+              "view": "both"
+            }
+          ],
+          "instruction": "Continue this account in light of the cross-examination. Decide which part of it bears on your account and what follows from that use."
+        },
+        {
+          "id": "commitment_return",
+          "inputs": [
+            {
+              "source": "commitment_route",
+              "view": "both"
+            },
+            {
+              "source": "cross",
+              "view": "both"
+            }
+          ],
+          "instruction": "Continue this account in light of the cross-examination. Decide which part of it bears on your account and what follows from that use."
+        },
+        {
+          "id": "join",
+          "inputs": [
+            {
+              "source": "body_return",
+              "view": "both"
+            },
+            {
+              "source": "commitment_return",
+              "view": "both"
+            },
+            {
+              "source": "previous",
+              "view": "commitments"
+            }
+          ],
+          "instruction": "Work out the present account from these responses. Agreement is not compulsory; an unresolved disagreement or a changed question can remain in the account."
+        },
+        {
+          "id": "carry",
+          "inputs": [
+            {
+              "source": "join",
+              "view": "both"
+            },
+            {
+              "source": "cross",
+              "view": "commitments"
+            },
+            {
+              "source": "origin",
+              "view": "both"
+            }
+          ],
+          "instruction": "Issue a prose account and commitment interface for a subsequent complete template invocation. Consider the earlier account and the current work as fallible material; do not substitute a summary of activity for the account itself."
+        }
+      ]
+    }
+  }
+}
