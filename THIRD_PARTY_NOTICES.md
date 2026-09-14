@@ -16,7 +16,7 @@ names it, its licence, and every file that came from it.
 - **Machine-readable provenance:** `docs/sources/deepreason-core-provenance.json`
   — per-file source and destination paths, sha256 digests, and the exact cut
   made to each file.
-- **Human-readable rationale:** `VENDOR_NOTES.md`, published alongside that
+- **Human-readable rationale:** `docs/sources/deepreason-core-vendor-notes.md`, published alongside that
   provenance record — what was cut, why, and what could not be cut cleanly.
 
 The vendored subset is the deterministic P0 core of the DeepReason harness
@@ -25,7 +25,7 @@ spec v1.3 (spec §16 P0 row). It is imported as `deepreason_core`, not
 `deepreason_core.`, and each file carries a one-line header naming its
 upstream path and this licence. Nothing else in the copied files was rewritten
 — every other change is a deletion, with four exceptions listed in
-`VENDOR_NOTES.md`.
+`docs/sources/deepreason-core-vendor-notes.md`.
 
 ### Library files
 
