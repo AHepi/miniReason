@@ -1210,3 +1210,7 @@ VERIFIED 4ef269b6152c91b1f1cca89b3c89693eba77803f TREE de24837540cb4bd80167dfb76
 REC-20260914-B 2026-09-13 18:58:45 UTC: Freeze four metric-free problem statements and three reasoned topologies as prospective H005 participant material. No external evidence packet or seeded mistake is supplied; source pins identify research authority but source text is not a participant oracle. Initial three invocations per problem use 5, 6 and 7-call templates; extension through cycles 4–5 remains a prospective decision. Delegate implementation only; root reviews all content and mechanism. Prior verified publication: To https://github.com/AHepi/miniReason.git
    4ef269b..44550f5  HEAD -> main
 VERIFIED 44550f565b806d1ff343c66a0e8855334263d0c4 TREE c0ea553bc76eef020ecb7432fbb9c040d0f51897
+
+REC-20260914-B 2026-09-14 00:14:09 UTC: Complete root's H005 source-led protocol: 5/6/7-call topologies, domain-specific order, five comparison arms, 240-call initial schedule, and prospective content-motivated extension to at most five cycles. Native low effort addresses recorded empty-public high-effort failure. Implementation and offline checks precede all live calls. Prior verified publication: To https://github.com/AHepi/miniReason.git
+   44550f5..b02ef27  HEAD -> main
+VERIFIED b02ef276fb7d90ee4ff563bbcc8b33efae4bfd00 TREE 4e8e4f2c0a9257c99e210745d0ccc2ffffdb41e3
