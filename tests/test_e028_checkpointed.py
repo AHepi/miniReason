@@ -287,7 +287,10 @@ class GitPublisherTests(unittest.TestCase):
         count = self.git(self.repo, "rev-list", "--count", self.source + "..HEAD")
         self.assertEqual(count, "13")
         remote_summary = self.git(self.remote, "show", "refs/heads/main:" + runner.OUTPUT.as_posix() + "/summary.json")
-        self.assertEqual(json.loads(remote_summary), summary)
+        # Both sides are normalized through JSON: the certified property is that the published
+        # remote bytes equal the returned summary as serialized, and the frozen adapter's
+        # in-memory stages_entered tuple is unrepairable under its pin (OPS-20260914-STAGES).
+        self.assertEqual(json.loads(remote_summary), json.loads(json.dumps(summary)))
 
 
 if __name__ == "__main__":

@@ -148,7 +148,8 @@ def run_arm(plan: dict[str, Any], arm: str, repeat: int, root: Path) -> dict[str
                     "artifact_id": key, "answer": answer, "public": evaluate(answer["commitments"])})
                 if kind == FINAL:
                     final = answer
-            record["mini_outcome"] = {**asdict(outcome), "root": "mini"}
+            record["mini_outcome"] = {**asdict(outcome), "root": "mini",
+                                      "stages_entered": list(outcome.stages_entered)}
             if final is None or outcome.cycles_completed != plan["cycles"]:
                 raise ValueError("MINI_INCOMPLETE_ROUTE: no complete final revision for each declared cycle")
             events = [json.loads(line) for line in (root / "mini" / "log.jsonl").read_text().splitlines()]
