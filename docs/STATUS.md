@@ -1,5 +1,40 @@
 # Current research status
 
+## C001 occurrence-02 completed — 2026-09-14
+
+REC-20260914-V published a **successor** driver and a second occurrence of the frozen C001 contrast-triple
+study on one cell at a raised ceiling: `tools/contrast_triple_study_v2.py` (a byte copy of the published v1
+with eight `# V2:`-marked differences, proved by `V2DiffProof` and `V1Parity`), the material
+[`material-occurrence-02.json`](../experiments/diagnostics/C001-contrast-triple/material-occurrence-02.json)
+and the occurrence at
+[`occurrence-02/`](../experiments/diagnostics/C001-contrast-triple/occurrence-02), under `plan_id`
+`1d9f47acdc692146792e354afdd9c6944036cb7d55bd83cc32c905e7c4ffeb83`. The plan, preflight, material, the
+85-row correspondence table and all eight briefs were published and the remote verified **before the first
+provider call existed**.
+
+What was dispatched: **20 calls and no more** — endpoint `deepseek-flash`, arm `fcl`, four cases, five
+replicates, in four single-key waves of five on `DEEPSEEK_API_KEY`, zero retries, write-once records, at
+`max_tokens` 32768 and `timeout_seconds` 600. Result: **20 of 20 COMPLETE**, every case 5/5, no failure code
+of any kind, no `finish_reason: "length"`, no read timeout, one envelope repair. `completion_tokens`
+5783…15470 (total 207,238), `reasoning_tokens` 3733…12470 (total 159,324), `prompt_tokens` 102,445.
+Fifteen of the twenty exceeded 8192 completion tokens.
+
+That is a **resource** observation and not a semantic one: it shows the FCL-1 envelope fits beside this
+model's reasoning at 32768, and says nothing about the four cases. **Occurrence-01 is unchanged** — its
+nineteen unusable `fcl` cells stay unresolved, its denominator is not repaired, and no reader may substitute
+occurrence-02's cells for its missing ones. Its PLAN §5 ground that `deepseek-flash` "sends no reasoning
+on the wire" stays published and stays false; the correction is in PLAN §15 and REC-20260914-V.
+Occurrence-02's prose arm is frozen and published but was never dispatched.
+
+**Next authorized task: the reading, which is root's and is not done.** Root reads
+[`occurrence-02/COMPARISON.md`](../experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md)
+with `juxtaposition/deepseek-flash__fcl.md` beside it, writes the within-ORIGINAL replicate spread on all
+four registers first, and only then fills the marks; the same is still owed for occurrence-01's twelve
+juxtapositions. No agent has filled a column, proposed a reading or evaluated a falsifier, and no count in
+these receipts warrants one (FW5:851). No further C001 provider call is authorized: a third ceiling would be
+a new pre-registration with its own `plan_id` (PLAN §13). Publication to `main` remains pending owner
+merge.
+
 ## H005 active preparation — 2026-09-14
 
 The user redefined a cycle as one complete template invocation and authorized up to five cycles per selected chain. Root has published the [current research contract](reviews/multi-cycle-research-contract-2026-09-14.md), [earliest recovered commitment-interface interpretation](reviews/commitment-interface-source-2026-09-14.md), [FCL-1 language proposition](reviews/fcl1-language-proposition-2026-09-14.md), and [H005 protocol](../experiments/diagnostics/H005-open-prose-commitments/PROTOCOL.md).
