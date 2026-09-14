@@ -1,5 +1,59 @@
 # Current research status
 
+## B001 published as a register, its dispatch refused — 2026-09-14
+
+REC-20260914-Y published **B001, the commissioned bare-model and native-reasoning matched comparison, as an
+offline register that corrects its own commissioning premise**, and refused its dispatch. **Zero provider
+calls were planned and zero were made.** B001 was commissioned on the premise that no published study yet
+has a bare-model arm. **The committed bytes refute that premise, and the gap this programme has is a reading
+gap, not a dispatch gap.**
+
+Published at `bfc5c8e7e18ca4797566a742f94df3d4b69df1f5` / tree
+`03937a46aa681b69caf7ba4203c195c440c8cc6d`, after the opening receipt alone at
+`228e33ff931b69994e40d333701f6efac905421b`:
+
+* the register [`B001-bare-and-native/PLAN.md`](../experiments/diagnostics/B001-bare-and-native/PLAN.md)
+  with its frozen proposal `proposal-bare-deepseek.json`;
+* the design note [`b001-reasoning-persistence-2026-09-14.md`](design/b001-reasoning-persistence-2026-09-14.md)
+  — which the register refers to by its staging basename `REASONING_PERSISTENCE.md`, the two staged
+  documents having been copied byte-for-byte without editorial repair;
+* the offline instrument `tools/arm_inventory.py` with `tests/test_arm_inventory.py`, 34 tests;
+* its output, regenerated in the publication tree and not copied, at
+  [`B001-arm-inventory-2026-09-14`](../experiments/analyses/B001-arm-inventory-2026-09-14/INVENTORY.md) —
+  11 occurrences, 122 files digested, 101 terminal coordinates, 9 proposal rows.
+
+**The facts were checked against bytes before the register was published, not carried over from its own
+prose.** H005 occurrence-01 declares all five arms — `bare`, `native`, `matched`, `mini_prose`, `mini_fcl` —
+and carries 17 terminal artifacts beside 17 provider call records; F001 occurrence-01 declares `bare`,
+`native`, `mini_fcl` and `mini_prose` with `kind` and `surface` per arm and has 12 call records; and **every
+one of F001's eight occurrences declares a `bare` arm with a terminal `daily/bare/cycle01/answer`
+artifact**. A BARE proposal at F001 occurrence-01's own conditions is identical to the published arm on
+every compared field.
+
+**The dispatch is refused for three independent reasons**: re-sending arm (a) or (b) is a replay the runner
+refuses (`NO_REPLAY`); `graph_import_h005._Node.surface` tests `coord.arm in FCL_SURFACE_ARMS` with
+`FCL_SURFACE_ARMS = ("mini_fcl",)`, an exact arm-**name** test, so of five published arms the permitted
+instrument reads exactly one and a bare-shaped arm can never be read by it; and six confounds move at once
+from a one-call arm to the five-call chain, at N = 1 per arm with no replicate baseline. **No claim is made
+that the comparison is uninformative** — the claim is that it already exists in published bytes and its
+obstacle is an instrument.
+
+**On reasoning persistence the recommendation is that the text stays unpersisted.** A digest-only successor
+transport is specified and deliberately not written. The step that costs nothing and has never been taken is
+already in the tree: `usage.completion_tokens_details.reasoning_tokens` is **2,979** at F001 occurrence-01
+and **886** at H005 occurrence-01, absent from both `bare` records, whose `messages` are byte-identical to
+the `native` ones.
+
+Two problems are promoted under `PROBLEM_PROMOTION.md`'s discipline, which endorses no diagnosis: **B001-P1**
+the reading gap, and **B001-P2** reasoning legibility, whose unresolved component is an owner decision about
+provider terms that no agent may take.
+
+**No further B001 provider call is authorized.** Only two things reopen it: a reading route for prose
+single-document arms (B001-P1), or a completed Mini chain at 32,768/600 — which F002 occurrence-01 can never
+supply, its arm being ended by a FAILED node. **The next authorized task is the reading, which is root's and
+is not done**, and its sharpest available piece needs no code and no call: read H005 occurrence-01's
+`matched` arm against its `mini_prose` arm on the four C001 §8a registers.
+
 ## F002 published and dispatched — 2026-09-14
 
 REC-20260914-X published a **second successor runner** for the H005 multi-provider fork and a new
