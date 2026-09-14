@@ -1,5 +1,64 @@
 # Current research status
 
+## F002 published and dispatched — 2026-09-14
+
+REC-20260914-X published a **second successor runner** for the H005 multi-provider fork and a new
+pre-registration, F002, and dispatched it: `tools/multicycle_commitment_study_multi_v3.py` (a byte copy of
+the published v2 with seven `# V3:`-marked differences in eight hunks, proved line for line by
+`tests/test_multicycle_commitment_study_multi_v3.py`), the register
+[`F002-fork5-raised-clock/PLAN.md`](../experiments/diagnostics/F002-fork5-raised-clock/PLAN.md), its
+material, two provenance scripts each re-checkable with `--check`, and two occurrences under `plan_id`
+`9aa92a837569bd56a86b172eb56dd80dbc69c519a86286d3387b020c2709a0d5` (`ollama/glm-5.3`) and
+`a59debaf6382ce7c01c4c07d14894890736e2a960b66d4323f9eb84ac72b1163` (`ollama/kimi-k3`). The register, the
+material, both `arms.json`, both frozen plans and all six manifests were published and the remote verified
+**before the first provider call existed**, and each wave's inputs were published before that wave was sent.
+
+The one behavioural difference from v2 is a **per-arm wall clock**, declared in `arms.json` beside the
+ceiling and applied to the resolved `Endpoint` **value** by `dataclasses.replace` at dispatch.
+`src/minireason/data/endpoints.json` is a pinned published file that C001's two occurrences and all eight
+F001 plans hash into their own identities and it is **never written**; a dispatch that did not apply the
+declared clock is refused as `TIMEOUT_NOT_APPLIED` before any provider is constructed. 600 seconds is the
+transport's own validation maximum (`Endpoint.__post_init__` admits 1…600 and refuses 601), reached rather
+than invented.
+
+**The dispatch is finished: nine calls spent of ten authorised, 8 COMPLETE, 1 FAILED, 1 never dispatched**,
+in four rounds of 2 / 4 / 2 / 1, one process, `OLLAMA_API_KEY` alone in its environment with
+`DEEPSEEK_API_KEY` removed, at most five requests in flight process-wide, zero retries at every layer. Each
+wave's inputs were committed, pushed and read back before that wave was sent.
+
+**Neither declared bound was reached.** `finish_reason: "length"` occurs **zero** times; the largest
+completion is **23,257 tokens of 32,768** and the longest call that returned is **223,839 ms of 600,000**.
+Three calls ran past the 180-second wall the endpoint record declares and returned — occurrence-01
+`objection` at 223,839 ms, occurrence-02 `response` at 188,623 ms and occurrence-02 `carry` at 196,250 ms —
+and two of those, `glm-5.3 objection` and `kimi-k3 carry`, are precisely the coordinates F001's occurrences
+07 and 08 lost as `TRANSPORT_OR_RESPONSE_ERROR` at 180,368 ms and 180,456 ms.
+
+**One coordinate FAILED, and not on the clock.** occurrence-01 `mini_fcl/response` ended at **300,270 ms**
+with `"Remote end closed connection without response"` against a declared and applied 600-second clock —
+a *third* resource wall, distinct from F001's 8,192-token ceiling and from its 180-second read timeout.
+Why the remote closed is not known and is not guessed at, and no retry was made. The no-retry truncation
+rule then removed occurrence-01's `carry`, which is the tenth authorised call and was never dispatched.
+**F002 therefore closes two of the four coordinates it was built to reach and not four**, and says so.
+
+The [analyses](../experiments/analyses/F002-fork5-raised-clock-2026-09-14/README.md) carry the two published
+instruments at full scope plus each audit. Both imports exit 0 with custody **verified 18 of 18** on each
+occurrence. FCL-1 surface on `mini_fcl`: `read_fcl1` **3 of 3** on `ollama/glm-5.3` and **5 of 5** on
+`ollama/kimi-k3`, no `parse_failure`, no `schema_failure`, no `unavailable_decode_failure`. Both use tables
+have **0 rows** — every authored reference resolved intra-document or not at all — and all four interpretive
+columns are empty, which here is no rows to fill. There are **no `att` edges and no warrants** on either
+occurrence, so every `accepted` label is accept-by-position and no `refuted` label can arise.
+
+**Any difference between F002 and any F001 occurrence is a resource observation, never a semantic one.** No
+F001 record is modified, relabelled, repaired, re-sent or superseded, and nothing was written inside
+`F001-fork5-multifamily/`. Suite: `PYTHONPATH=src python3 -X utf8 -m unittest discover -s tests` reports
+**Ran 1416 tests, OK (skipped=1)**.
+
+**Next authorized task is the reading, which is root's and is not done.** F002's eight COMPLETE artifacts
+and their commitment surfaces are published and unread, beside the thirteen C001 juxtapositions and ninety
+use-table rows that remain unread. **No further F002 provider call is authorized**: a third clock, a retry
+of the connection-closed coordinate, or a re-send of occurrence-01's arm would each be a new decision
+needing its own receipt, and none is taken here. Publication to `main` remains pending owner merge.
+
 ## Session orchestration report published — 2026-09-14
 
 REC-20260914-W refreshed the staged session orchestration report so that every statement in it is true of

@@ -234,3 +234,137 @@ Two things that are easy to get wrong:
 
 Suite: `PYTHONPATH=src python -X utf8 -m unittest tests.test_multicycle_commitment_study_multi_v2`
 (and the v1 suite must keep passing unchanged beside it).
+
+## The v3 successor runner — a per-arm wall clock, and F002
+
+**Appended 2026-09-14 (REC-20260914-X). Nothing above this line is altered.**
+Read the v2 section first: everything it says about successor identities still
+binds, and v3 is a successor to v2 exactly as v2 is a successor to v1.
+
+**What the v2 runner could not express.** F001 occurrences 07 and 08 raised the
+per-arm completion ceiling to 32,768 and were then refused by something else:
+both of that run's two failures are `TRANSPORT_OR_RESPONSE_ERROR` — `"The read
+operation timed out"` at 180,368 ms and 180,456 ms against the endpoint record's
+180 seconds — on `occurrence-07 mini_fcl/objection` and `occurrence-08
+mini_fcl/carry`, neither of them a ceiling truncation, each ending its arm and
+leaving `mini_fcl/response` and `mini_fcl/carry` on 07 never dispatched. Four
+`mini_fcl` coordinates on those two families were therefore unresolved for a
+reason the ceiling cannot reach. v2's own header says why v2 could not answer it:
+"the timeout is NOT [a per-arm declaration] — it is the endpoint record's and no
+arm declaration can change it." `ARM_OPTIONAL` is `{declared_name, max_tokens,
+seed}`, `validate_arms` refuses a `timeout_seconds` key as `ARM_FIELDS`, and the
+only other way to move the clock is to edit `src/minireason/data/endpoints.json`
+— a pinned published file that C001's two occurrences and all eight F001 plans
+hash into their own identities, so editing it would invalidate them.
+
+**v3's seven differences, in eight hunks**, each marked `# V3:` in the source and
+listed in the file's own header: the module docstring; `replace` joining the
+`dataclasses` import; `MAX_TIMEOUT = 600` mirrored from the transport, with
+deliberately no default constant beside it because the default is the endpoint
+record's own value; `ARM_OPTIONAL` gaining `timeout_seconds`; `validate_arms`
+reading, bounding and freezing it, and writing the key into the frozen arm **only
+where the declaration carries one**; `settings_for` taking the arm's clock or the
+endpoint record's; the `plan_body` comment that v3 makes false, rewritten; and
+`send_wave` applying the clock to the resolved `Endpoint` **value** by
+`dataclasses.replace` and refusing `TIMEOUT_NOT_APPLIED` — before the per-key
+gate, before the attempt marker and before any provider is constructed — if the
+value the transport is about to receive is not the declared one.
+`tests/test_multicycle_commitment_study_multi_v3.py` proves the list rather than
+promising it: the diff proof normalises the docstring away and asserts the hunks
+are exactly those eight **line for line, comments included** — strictly stronger
+than v2's own proof, which excluded comments; a parity test shows that where no
+arm declares a clock a v3 plan differs from a v2 plan in exactly `runner_sha256`,
+`helper_sha256` and the `plan_id` they feed; and a dispatch test drives the
+transport's own `OfflineProvider` and asserts the constructed endpoint carries
+600, that it is not the registry object, that the registry row still reads 180,
+and that `src/minireason/data/endpoints.json` has the same sha256 before and
+after. **600 is not a chosen number**: `provider_openai_compat.Endpoint.__post_init__`
+admits 1…600 and refuses 601, so it is the transport's own validation maximum,
+reached rather than invented, exactly as C001 occurrence-02 reached it.
+
+**Declare the clock per arm, in `arms.json`, beside the ceiling:**
+
+```json
+{"arms": {"mini_fcl": {"endpoint": "ollama/glm-5.3", "kind": "mini",
+                       "surface": "fcl", "seed": 7,
+                       "max_tokens": 32768, "timeout_seconds": 600}}}
+```
+
+An arm that declares no `timeout_seconds` is settled exactly as v2 settles it,
+from the endpoint record. `plan["ceilings"]` is where to read back what each arm
+actually got, and the frozen request's `settings` block carries the clock, so a
+dispatch that did not apply it fails terminal custody rather than passing quietly.
+
+**F002** (`experiments/diagnostics/F002-fork5-raised-clock/PLAN.md`) is the study
+v3 exists for: two occurrences, `ollama/glm-5.3` and `ollama/kimi-k3`, **one arm
+each** (`mini_fcl`, surface `fcl`, kind `mini`, seed 7), five fork5 nodes each,
+scope `{"problems": ["daily"], "cycles": [1]}`, `max_tokens` 32,768 and
+`timeout_seconds` 600, **ten calls and no more**, both single-key on
+`OLLAMA_API_KEY` through one process-wide gate of five. The command sequence is
+the v2 one with the v3 file in place of it and
+`--occurrences occurrence-01 occurrence-02`:
+
+```
+S=experiments/diagnostics/F002-fork5-raised-clock
+... initialize   --study $S --output $S/occurrence-0N
+... verify       --study $S --output $S/occurrence-0N
+... prepare-wave --study $S --output $S/occurrence-0N --problem daily --cycle 1
+... send-round   --study $S --publish-ref origin/<branch> \
+      --occurrences occurrence-01 occurrence-02
+... audit        --study $S --output $S/occurrence-0N
+```
+
+Measured cadence, four rounds: `wave0001` `account`; `wave0002` `objection` +
+`rival`; `wave0003` `response`; `wave0004` `carry` — **2 / 4 / 2 / 2** where no
+arm truncates, fewer where one does.
+
+**Three things that are easy to get wrong.**
+
+* **The whole arm, not the unresolved nodes.** fork5 is a dependency graph:
+  `objection` and `rival` read `account`'s artifact, `response` reads
+  `objection`'s, `carry` reads the rest. A node cannot be re-asked without its
+  inputs, and importing an earlier study's artifacts into a differently
+  identified occurrence would put an artifact produced under one frozen plan
+  inside another. The smallest honestly re-dispatchable unit is the arm chain
+  from `account` down.
+* **A longer clock is a budget, not a repair, and it is not predicted to be
+  sufficient.** A call that reaches 600 s is a `TRANSPORT_OR_RESPONSE_ERROR`
+  refusal recorded with its code, ending that arm, reported as any other outcome.
+  A node that truncates at 32,768 is still PARTIAL, or FAILED at zero bytes.
+* **Two occurrences at two clocks are two occurrences, not a before and an
+  after.** F002 differs from F001's 07 and 08 in the wall clock *and* the runner
+  identity, and from 04 and 05 in the ceiling *and* the clock *and* the runner, so
+  any difference read across them is a **resource observation, never a semantic
+  one**. Within F002 both occurrences share one ceiling and one clock, which is
+  the comparison the study actually asks. No F001 record is re-sent, relabelled,
+  repaired or superseded, and F002 writes nothing inside
+  `F001-fork5-multifamily/`.
+
+Suite: `PYTHONPATH=src python -X utf8 -m unittest tests.test_multicycle_commitment_study_multi_v3`
+(and the v1 and v2 suites must keep passing unchanged beside it).
+
+**What F002 actually did**, recorded here because a workflow page that only
+describes the intent is half a page. Nine calls spent of ten authorised, in four
+rounds of 2 / 4 / 2 / 1: **8 COMPLETE, 1 FAILED, 1 never dispatched**. Neither
+declared bound was reached — `finish_reason: "length"` occurs **zero** times, the
+largest completion is 23,257 tokens of 32,768, and the longest call that returned
+is 223,839 ms of 600,000. **Three calls ran past 180 seconds and returned**
+(223,839 ms, 188,623 ms, 196,250 ms), two of them the exact coordinates
+occurrences 07 and 08 lost at 180,368 ms and 180,456 ms. **One call FAILED and
+not on the clock**: occurrence-01 `mini_fcl/response` ended at 300,270 ms with
+`"Remote end closed connection without response"` against an applied 600-second
+clock — a third resource wall, neither the ceiling nor the read timeout — and the
+truncation rule then removed that occurrence's `carry`. So **two of the four
+coordinates F002 was built to reach now have a terminal COMPLETE record and two
+do not**, which is the outcome and not a shortfall to be reported as something
+else. The counts, the custody table and the two instruments' output are in
+`experiments/analyses/F002-fork5-raised-clock-2026-09-14/README.md`; the decision
+and its per-coordinate table are REC-20260914-X.
+
+A fourth lesson for the next raise, from that one failure: **a bound you declare
+is not the only bound you will meet.** F001 met the ceiling, then the read
+timeout, then F002 met an upstream connection close at about five minutes on
+`ollama/glm-5.3`. Raising a declared bound tells you nothing about the undeclared
+ones, so read the `error` string of every `TRANSPORT_OR_RESPONSE_ERROR` before
+calling it a timeout: `"The read operation timed out"` at the clock value is the
+client's deadline, and anything else is not.
