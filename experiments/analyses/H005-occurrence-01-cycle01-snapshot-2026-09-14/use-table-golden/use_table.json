@@ -1,0 +1,2963 @@
+{
+  "schema": "h005-use-relation.use-table.v1",
+  "instrument_version": "use_relation_h005/1",
+  "occurrence": "occurrence-01",
+  "banner": "**The tool records juxtapositions; the reading is root's.** This table places each authored cross-document reference beside passages a root reader may find worth starting from - a finding aid, never a closed search space - and stops there. It scores nothing, ranks nothing, classifies nothing and mints no relation of its own; it has no `att`, no `dep`, no status and no label. **A lexical overlap is not evidence of use.** FCL-1's own rule is that `depends` and `mentions` are \"not automatically inferred from citation or lexical overlap\"; a witness of reason use \"must preserve internal role bindings, not merely the endpoint string\" (FW5:628); actual use is \"not automatically machine-maintainable\" while prompt appearance is only a delivery fact (FW5:640); and no function of an input-output projection agrees with the accounting predicate across models differing in active route (FW5:1218), \"semantic use inferred from delivery logs\" included (FW5:1222) - all as summarised in the FW5-versus-harness-spec review, `fw5-vs-harness-spec-review.md` §1 R2-R4, §3.1 and §5 P1/P6. Root fills the four empty cells by reading; `unresolved` is a legal value and stays unresolved (FW5:634). An empty cell is an **unread row**, not a reading of `unresolved`.",
+  "scope": [
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "account"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "objection"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "rival"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "response"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "carry"
+    }
+  ],
+  "custody": {
+    "plan_id": "21e3cf1dff73423785d2e6faab5d32971cd2295cb5ce7c5ca07bbd45eb2396a6",
+    "material_sha256": "24ca4552016836b488c2644db0f17ba0b20c446e9dc2602a29e5e4b1b756c927",
+    "checks": {
+      "cross_file": [
+        {
+          "key": "material_pin",
+          "kind": "cross_file",
+          "check": "plan.material_sha256 == sha256(material.json)",
+          "unit": "occurrence",
+          "ran": 1,
+          "total": 1,
+          "skipped": [],
+          "result": "verified (1/1 occurrence)"
+        },
+        {
+          "key": "manifest_pins",
+          "kind": "cross_file",
+          "check": "plan.manifests[tid] == sha256(manifests/<tid>.json)",
+          "unit": "manifest",
+          "ran": 3,
+          "total": 3,
+          "skipped": [],
+          "result": "verified (3/3 manifests)"
+        },
+        {
+          "key": "receipt_present",
+          "kind": "cross_file",
+          "check": "per node: receipt present (responses/<node>.json)",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "artifact_bytes_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: sha256(artifacts/<node>.json) == receipt.artifact_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "status_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: receipt.status == delivery_status and receipt.envelope_status == envelope_status (recorded, never read as a verdict)",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "public_text",
+          "kind": "cross_file",
+          "check": "per node: sha256(responses/<node>.txt) == artifact.public_text_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "attempt_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: attempt.request_sha256 == receipt.request_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "request_record",
+          "kind": "cross_file",
+          "check": "per node: study_digest(requests/<node>.json) == attempt.request_sha256 == receipt.request_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "trace_pinned",
+          "kind": "cross_file",
+          "check": "per node: request.trace_sha256 == study_digest(traces/<node>.json), checked before the trace is read by the label index or the projection resolver; counted as run only where the request record is itself pinned by an attempt or a receipt",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "provider_bytes",
+          "kind": "cross_file",
+          "check": "per node: sha256(provider/<coord>/call-0001.{request,response}.json) == receipt.provider_{request,response}_sha256 (skipped only for a FAILED receipt)",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "wave_placement",
+          "kind": "cross_file",
+          "check": "per node: attempt.wave_id is the wave listing the coordinate and wave.request_hashes[<coordinate>] == attempt.request_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "projection_source",
+          "kind": "cross_file",
+          "check": "per projection: selected_source artifact_id/body_sha256/commitments_sha256 equal the authored artifact record it names",
+          "unit": "projection",
+          "ran": 8,
+          "total": 10,
+          "skipped": [
+            {
+              "subject": "daily/mini_fcl/cycle01/account#p.account.0",
+              "missing": "exposed source (the slot is absent)"
+            },
+            {
+              "subject": "daily/mini_fcl/cycle01/carry#p.carry.3",
+              "missing": "exposed source (the slot is absent)"
+            }
+          ],
+          "result": "verified (8/10 projections; 2 projection(s) had no exposed source (the slot is absent): `daily/mini_fcl/cycle01/account#p.account.0`, `daily/mini_fcl/cycle01/carry#p.carry.3`)"
+        }
+      ],
+      "self_consistency": [
+        {
+          "key": "plan_identity",
+          "kind": "self_consistency",
+          "check": "plan_id == study_digest(plan without plan_id)",
+          "unit": "occurrence",
+          "ran": 1,
+          "total": 1,
+          "skipped": [],
+          "result": "verified (1/1 occurrence)"
+        },
+        {
+          "key": "artifact_self_hash",
+          "kind": "self_consistency",
+          "check": "per node: sha256(body) == body_sha256, sha256(commitments) == commitments_sha256, and <field>_ref == <field>_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "artifact_coordinate",
+          "kind": "self_consistency",
+          "check": "per node: the artifact record's own coordinate is the one it is filed under",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "brief_pinned",
+          "kind": "self_consistency",
+          "check": "per node: sha256(trace.original_brief) == trace.original_brief_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "brief_label_index",
+          "kind": "self_consistency",
+          "check": "per node: every [label] line in the brief indexes the projection slot it names, and the brief's label set equals the projection set",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "task_label",
+          "kind": "self_consistency",
+          "check": "per node: the exposed task label agrees with trace.task_artifact.artifact_id",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        }
+      ]
+    }
+  },
+  "method": {
+    "prose": [
+      "**Sentence.** The referring node's `body` is cut at every match of the published boundary regular expression and nowhere else; leading and trailing whitespace is trimmed out of each span *and out of its offsets*, so `body[start:end]` is exactly the quoted sentence. The boundary is one or more of `.` `!` `?` preceded by a lowercase letter or a closing bracket/quote and followed by whitespace or end-of-string, together with any closing quotes that follow it; or a run of newlines. This is not linguistic sentence segmentation: a numbered list marker (\"1. Separate ...\") does not split, and an abbreviation such as \"e.g.\" does.",
+      "**Token.** The string is lowercased and every maximal run of ASCII letters and digits is a token, in order of occurrence.",
+      "**The target record's text.** The concatenation, separated by single spaces, of the target record's prose fields in this order: `text`, `scope`, `action`, `consequence`, `grounds`, `bearing`. `id`, `type` and every ref array are excluded: they are names and pointers, not content. When the ref names the owning contribution as a whole rather than one of its records - a bare exposed-artifact label, or the `#BODY` section header - the subject is instead the same concatenation over **every** record of the owning document, in document order, and the row says so in `overlap_subject`.",
+      "**Distinctive token.** A token `t` of the target record's text is *distinctive* when all three hold: (1) `len(t) >= 5` characters after lowercasing; (2) `t` is not in the closed stopword list below; (3) `document_frequency(t) <= 2`, where `document_frequency(t)` is the number of in-scope FCL-1 documents whose record prose contains `t`, and the threshold is `max(2, number_of_in_scope_FCL-1_documents // 2)` - here `max(2, 5 // 2)`. Clause (3) makes the criterion **scope-dependent**: it is computed over the documents listed under `corpus_documents`, and re-running over a different scope can change which tokens count. That is stated rather than hidden, because a partition-invariance question about this instrument (review §5 P5) has to be answerable from its own output.",
+      "**A passage is listed** when the sentence contains at least one distinctive token of the target record's text. Passages are listed in body order, never ordered or selected by how many tokens they carry; `distinctive_tokens_present` is an audit aid so a reader can see *why* a sentence was listed, and is not a measure. When no sentence qualifies the row says `no lexical overlap found`.",
+      "**What a listed passage is not.** It is not evidence that the referring node used the target's content, and its absence is not evidence that it did not. Shared vocabulary is shared vocabulary. The relation columns of this table report what an author *wrote* in a ref-valued field; the passage columns report what a mechanical string comparison found; neither is a reading, and the four `root_*` cells are where a reading would go.",
+      "**Declared uptake columns.** `declared_uptake_includes_referring_record` is true when the referring record's local name is in its own document's `uptake` list; `declared_uptake_includes_target_record` is true when the target record's local name is in the *target* document's `uptake` list. `n/a` means the row has no such record to look up (a document-level `uptake` ref has no referring record; a ref to a whole contribution has no target record).",
+      "**What a blank root cell means.** An empty `root_reading`, `root_passage_cited`, `root_notes` or `root_initials_date` is an **unread row**: nobody has read it yet. It is *not* a reading of `unresolved`, and it is not a finding of indeterminacy. `unresolved` is a reading root may write, deliberately, and it then stays unresolved (FW5:634); a blank cell asserts nothing at all. Conflating the two would let an unfinished worksheet read as a finding, which is exactly the move FW5:688 forbids.",
+      "**What the listed passages are.** A finding aid, not a search space. The overlap rule is mechanical and shallow; root may cite **any** passage of either contribution, including one this rule did not surface, and a row with `no lexical overlap found` is not a row with nothing to read. `root_passage_cited` is free text for that reason.",
+      "**The `root_reading` vocabulary is a suggestion.** The six values below are published so that two readers of two tables mean the same thing by the same word, not to constrain root to one of them: a row may carry more than one, and root may write a reading the vocabulary does not cover and say so. Nothing about it is enforced in code."
+    ],
+    "token_regex": "[a-z0-9]+",
+    "sentence_boundary_regex": "(?<=[a-z\\)\\]’'\"])[.!?]+[\"'\\)\\]”]*(?=\\s|$)|\n+",
+    "record_prose_fields": [
+      "text",
+      "scope",
+      "action",
+      "consequence",
+      "grounds",
+      "bearing"
+    ],
+    "ref_fields_resolution_order": [
+      "mentions",
+      "revises",
+      "withdraws",
+      "target",
+      "depends",
+      "uptake",
+      "target (objection, pass 2)"
+    ],
+    "ref_fields_walked": [
+      "target",
+      "depends",
+      "mentions",
+      "revises",
+      "withdraws",
+      "uptake"
+    ],
+    "span_offsets": "code point offsets into the decoded `commitments` string (Python string indices), not utf-8 byte offsets and not offsets into the artifact JSON file",
+    "min_token_length": 5,
+    "stopwords": [
+      "about",
+      "above",
+      "across",
+      "after",
+      "again",
+      "against",
+      "almost",
+      "alone",
+      "along",
+      "already",
+      "also",
+      "although",
+      "always",
+      "among",
+      "another",
+      "anyone",
+      "anything",
+      "around",
+      "because",
+      "become",
+      "becomes",
+      "before",
+      "begin",
+      "behind",
+      "being",
+      "below",
+      "beside",
+      "better",
+      "between",
+      "beyond",
+      "cannot",
+      "could",
+      "does",
+      "doing",
+      "done",
+      "during",
+      "each",
+      "either",
+      "enough",
+      "equally",
+      "especially",
+      "even",
+      "every",
+      "everything",
+      "except",
+      "exist",
+      "exists",
+      "first",
+      "from",
+      "further",
+      "given",
+      "goes",
+      "going",
+      "gone",
+      "hardly",
+      "have",
+      "having",
+      "hence",
+      "here",
+      "however",
+      "inside",
+      "instead",
+      "into",
+      "itself",
+      "just",
+      "keep",
+      "kept",
+      "later",
+      "least",
+      "less",
+      "like",
+      "likely",
+      "made",
+      "make",
+      "makes",
+      "making",
+      "many",
+      "maybe",
+      "might",
+      "more",
+      "most",
+      "much",
+      "must",
+      "near",
+      "need",
+      "needs",
+      "neither",
+      "never",
+      "next",
+      "nobody",
+      "none",
+      "nothing",
+      "often",
+      "once",
+      "only",
+      "onto",
+      "other",
+      "others",
+      "ought",
+      "over",
+      "perhaps",
+      "quite",
+      "rather",
+      "really",
+      "same",
+      "seem",
+      "seems",
+      "seen",
+      "several",
+      "shall",
+      "should",
+      "simply",
+      "since",
+      "some",
+      "something",
+      "sometimes",
+      "still",
+      "such",
+      "take",
+      "taken",
+      "than",
+      "that",
+      "their",
+      "them",
+      "themselves",
+      "then",
+      "there",
+      "therefore",
+      "these",
+      "they",
+      "thing",
+      "things",
+      "think",
+      "this",
+      "those",
+      "though",
+      "three",
+      "through",
+      "thus",
+      "together",
+      "toward",
+      "under",
+      "unless",
+      "until",
+      "upon",
+      "very",
+      "well",
+      "were",
+      "what",
+      "when",
+      "where",
+      "whether",
+      "which",
+      "while",
+      "whole",
+      "whom",
+      "whose",
+      "will",
+      "with",
+      "within",
+      "without",
+      "would",
+      "your",
+      "yours"
+    ],
+    "distinctive_document_frequency_threshold": 2,
+    "corpus_documents": [
+      "daily/mini_fcl/cycle01/account",
+      "daily/mini_fcl/cycle01/objection",
+      "daily/mini_fcl/cycle01/rival",
+      "daily/mini_fcl/cycle01/response",
+      "daily/mini_fcl/cycle01/carry"
+    ],
+    "root_cells": [
+      "root_reading",
+      "root_passage_cited",
+      "root_notes",
+      "root_initials_date"
+    ],
+    "root_reading_vocabulary": [
+      "re-deploys",
+      "qualifies",
+      "rejects-with-reason",
+      "repairs",
+      "retains",
+      "unresolved"
+    ],
+    "reused_from_importer": [
+      "verify_custody",
+      "parse_fcl1_document / fcl1_validator (FCL-1 schema validation)",
+      "_Reader (read-only, path-confined, sha256-recording occurrence reader)",
+      "_Importer.discover_scope / load_nodes / parse_documents",
+      "iter_references (the import's own public reference walk: field order, wave-order availability and two-hop resolution)",
+      "UNRESOLVED_RESIDUE_CODES / EXTENSION_RESIDUE_CODES (the import's own classification of what a residue code means for a ref)"
+    ],
+    "not_used_from_importer": [
+      "graph construction (Harness, registration, events)",
+      "adjudication (build_att / build_dep / label computation)",
+      "every status and label the importer computes"
+    ]
+  },
+  "rows": [
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o1",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o1\",\"type\":\"objection\",\"text\":\"The account's reframing of the conflict as principally an ambiguity/specification problem is under-supported. The reported pattern - later disagreement about what an agreement meant - is equally consistent with a renegotiation problem or a legitimacy problem under changed schedules, and the account downweights those alternatives after naming them in its own o1.\",\"target\":[\"p.objection.0#c1\",\"p.objection.0#c2\"],\"bearing\":\"If the driver is renegotiation or legitimacy rather than ambiguity, the specification move in c2 treats a symptom, and the account's sequencing (chores first, relationship later) is misplaced.\"}",
+      "referring_record_source_span": [
+        31,
+        688
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c1",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c1",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c1\",\"type\":\"claim\",\"text\":\"A substantial part of the recurring chore friction is ambiguity in what spoken agreements specified, not disagreement about willingness to do chores.\",\"scope\":\"This household, given the described pattern of later disagreement about what an agreement meant.\",\"grounds\":\"The problem statement reports agreements that were later understood differently, plus changing schedules and one person avoiding the conversations.\"}",
+      "target_record_source_span": [
+        31,
+        483
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c1`",
+      "referring_body_passages": [
+        {
+          "start": 231,
+          "end": 284,
+          "text": "Consider what the problem statement actually reports.",
+          "distinctive_tokens_present": [
+            "reports",
+            "statement"
+          ]
+        },
+        {
+          "start": 330,
+          "end": 425,
+          "text": "Sometimes they agree who will do something, then later disagree about what the agreement meant.",
+          "distinctive_tokens_present": [
+            "agreement"
+          ]
+        },
+        {
+          "start": 444,
+          "end": 494,
+          "text": "One person has started avoiding the conversations.",
+          "distinctive_tokens_present": [
+            "avoiding",
+            "person"
+          ]
+        },
+        {
+          "start": 495,
+          "end": 611,
+          "text": "The account reads the recurring \"later disagreement about what it meant\" as evidence of ambiguity in the agreements.",
+          "distinctive_tokens_present": [
+            "agreements"
+          ]
+        },
+        {
+          "start": 612,
+          "end": 848,
+          "text": "But the same observation is equally consistent with a different reading: the agreement was clear enough, and the later dispute is about whether the terms still bind given changed circumstances, or about who has standing to enforce them.",
+          "distinctive_tokens_present": [
+            "agreement"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o1",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o1\",\"type\":\"objection\",\"text\":\"The account's reframing of the conflict as principally an ambiguity/specification problem is under-supported. The reported pattern - later disagreement about what an agreement meant - is equally consistent with a renegotiation problem or a legitimacy problem under changed schedules, and the account downweights those alternatives after naming them in its own o1.\",\"target\":[\"p.objection.0#c1\",\"p.objection.0#c2\"],\"bearing\":\"If the driver is renegotiation or legitimacy rather than ambiguity, the specification move in c2 treats a symptom, and the account's sequencing (chores first, relationship later) is misplaced.\"}",
+      "referring_record_source_span": [
+        31,
+        688
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c2\",\"type\":\"claim\",\"text\":\"Treating each recurring chore as a small specification problem (done, by when, fallback if unable) is more likely to reduce recurrence than a general conversation about fairness or effort.\",\"scope\":\"Ordinary shared-household chores.\",\"consequence\":\"If two or three concrete items stop recurring after being specified more tightly, this supports c1; if they keep recurring, c1 is weakened and the problem is more likely relational or about the living arrangement.\"}",
+      "target_record_source_span": [
+        484,
+        982
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c2`",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 142,
+          "text": "I want to press on the account's central move: reframing the conflict as a specification problem rather than a motivation or fairness problem.",
+          "distinctive_tokens_present": [
+            "fairness"
+          ]
+        },
+        {
+          "start": 285,
+          "end": 329,
+          "text": "Three flatmates argue about ordinary chores.",
+          "distinctive_tokens_present": [
+            "ordinary"
+          ]
+        },
+        {
+          "start": 1144,
+          "end": 1441,
+          "text": "That is a defensible starting point if you have to pick one, but the account's own diagnostic step - try two or three concrete items and see if recurrence falls - is weaker than it looks, because a specification move can reduce friction while the underlying driver is load imbalance or resentment.",
+          "distinctive_tokens_present": [
+            "concrete",
+            "reduce"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o2",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o2\",\"type\":\"objection\",\"text\":\"The account's proposed test - see whether two or three concretely specified chores stop recurring - does not distinguish the ambiguity hypothesis from the alternatives. Load imbalance or resentment can coexist with reduced friction on specified items, and recurrence may reappear as new complaint items or after the next schedule change.\",\"target\":[\"p.objection.0#c2\"],\"bearing\":\"Weakens the claim that falling recurrence would confirm c1 and rising recurrence would refute it; the test has lower discriminating power than the account implies.\"}",
+      "referring_record_source_span": [
+        689,
+        1272
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c2\",\"type\":\"claim\",\"text\":\"Treating each recurring chore as a small specification problem (done, by when, fallback if unable) is more likely to reduce recurrence than a general conversation about fairness or effort.\",\"scope\":\"Ordinary shared-household chores.\",\"consequence\":\"If two or three concrete items stop recurring after being specified more tightly, this supports c1; if they keep recurring, c1 is weakened and the problem is more likely relational or about the living arrangement.\"}",
+      "target_record_source_span": [
+        484,
+        982
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c2`",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 142,
+          "text": "I want to press on the account's central move: reframing the conflict as a specification problem rather than a motivation or fairness problem.",
+          "distinctive_tokens_present": [
+            "fairness"
+          ]
+        },
+        {
+          "start": 285,
+          "end": 329,
+          "text": "Three flatmates argue about ordinary chores.",
+          "distinctive_tokens_present": [
+            "ordinary"
+          ]
+        },
+        {
+          "start": 1144,
+          "end": 1441,
+          "text": "That is a defensible starting point if you have to pick one, but the account's own diagnostic step - try two or three concrete items and see if recurrence falls - is weaker than it looks, because a specification move can reduce friction while the underlying driver is load imbalance or resentment.",
+          "distinctive_tokens_present": [
+            "concrete",
+            "reduce"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o3\",\"type\":\"objection\",\"text\":\"The account calls the material 'thin' and then licenses a fairly specific sequence (three-column spec, separate low-pressure approach, step-5 threshold for reconsidering the living arrangement). Thin material supports tentative probes; it does not support presenting that sequence as the natural order.\",\"target\":[\"p.objection.0#c2\",\"p.objection.0#c3\"],\"bearing\":\"The ordering of the account's recommendations is doing prescriptive work that the stated evidence does not carry.\"}",
+      "referring_record_source_span": [
+        1273,
+        1790
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c2\",\"type\":\"claim\",\"text\":\"Treating each recurring chore as a small specification problem (done, by when, fallback if unable) is more likely to reduce recurrence than a general conversation about fairness or effort.\",\"scope\":\"Ordinary shared-household chores.\",\"consequence\":\"If two or three concrete items stop recurring after being specified more tightly, this supports c1; if they keep recurring, c1 is weakened and the problem is more likely relational or about the living arrangement.\"}",
+      "target_record_source_span": [
+        484,
+        982
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c2`",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 142,
+          "text": "I want to press on the account's central move: reframing the conflict as a specification problem rather than a motivation or fairness problem.",
+          "distinctive_tokens_present": [
+            "fairness"
+          ]
+        },
+        {
+          "start": 285,
+          "end": 329,
+          "text": "Three flatmates argue about ordinary chores.",
+          "distinctive_tokens_present": [
+            "ordinary"
+          ]
+        },
+        {
+          "start": 1144,
+          "end": 1441,
+          "text": "That is a defensible starting point if you have to pick one, but the account's own diagnostic step - try two or three concrete items and see if recurrence falls - is weaker than it looks, because a specification move can reduce friction while the underlying driver is load imbalance or resentment.",
+          "distinctive_tokens_present": [
+            "concrete",
+            "reduce"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o3\",\"type\":\"objection\",\"text\":\"The account calls the material 'thin' and then licenses a fairly specific sequence (three-column spec, separate low-pressure approach, step-5 threshold for reconsidering the living arrangement). Thin material supports tentative probes; it does not support presenting that sequence as the natural order.\",\"target\":[\"p.objection.0#c2\",\"p.objection.0#c3\"],\"bearing\":\"The ordering of the account's recommendations is doing prescriptive work that the stated evidence does not carry.\"}",
+      "referring_record_source_span": [
+        1273,
+        1790
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c3",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c3",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c3\",\"type\":\"claim\",\"text\":\"Approaching the avoiding flatmate one-to-one with a narrower ask is more likely to re-open the conversation than another group discussion.\",\"grounds\":\"Avoidance is more plausibly about the form and stakes of the conversation than about any single chore; this is a conjecture, not an established fact.\"}",
+      "target_record_source_span": [
+        983,
+        1319
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c3`",
+      "referring_body_passages": [
+        {
+          "start": 444,
+          "end": 494,
+          "text": "One person has started avoiding the conversations.",
+          "distinctive_tokens_present": [
+            "avoiding"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "referring_record_id": "r1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"r1\",\"type\":\"claim\",\"text\":\"The selected account frames the trouble as specification ambiguity under shifting schedules and proposes tightened, written criteria as the main remedy.\",\"scope\":\"Reading of the supplied body e3647350a300c0ed.\",\"mentions\":[\"e3647350a300c0ed#BODY\"]}",
+      "referring_record_source_span": [
+        31,
+        313
+      ],
+      "ref_field": "mentions",
+      "ref_verbatim": "e3647350a300c0ed#BODY",
+      "ref_grain": "artifact",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": null,
+      "target_record_type": null,
+      "target_record_verbatim": null,
+      "target_record_source_span": null,
+      "overlap_subject": "the prose fields of every record of `daily/mini_fcl/cycle01/account` (the ref names the contribution, not a record)",
+      "referring_body_passages": [
+        {
+          "start": 63,
+          "end": 114,
+          "text": "It is the question of what the agreements were for.",
+          "distinctive_tokens_present": [
+            "agreements"
+          ]
+        },
+        {
+          "start": 116,
+          "end": 275,
+          "text": "The selected account treats the trouble as ambiguity in specifications: agreements lack criteria for done-ness and timing, schedules shift, so friction recurs.",
+          "distinctive_tokens_present": [
+            "agreements"
+          ]
+        },
+        {
+          "start": 276,
+          "end": 364,
+          "text": "That is a good hypothesis as far as it goes, and I have no material that contradicts it.",
+          "distinctive_tokens_present": [
+            "hypothesis"
+          ]
+        },
+        {
+          "start": 489,
+          "end": 726,
+          "text": "A person can stay away from a conversation not because the terms are vague but because any settled term would feel like a binding owed to people they live with, and that is a different problem from the one the selected account addresses.",
+          "distinctive_tokens_present": [
+            "conversation",
+            "person"
+          ]
+        },
+        {
+          "start": 1077,
+          "end": 1225,
+          "text": "Shifting schedules are then not merely a complication; they are the fact that makes the unit-reading feel coercive to the person who is withdrawing.",
+          "distinctive_tokens_present": [
+            "person"
+          ]
+        },
+        {
+          "start": 1740,
+          "end": 1802,
+          "text": "Roughly what I would do differently from the selected account:",
+          "distinctive_tokens_present": [
+            "differently"
+          ]
+        },
+        {
+          "start": 2093,
+          "end": 2215,
+          "text": "2. If the answers diverge, treat that as the actual dispute, and treat the chores as the surface where it keeps surfacing.",
+          "distinctive_tokens_present": [
+            "treat"
+          ]
+        },
+        {
+          "start": 2359,
+          "end": 2629,
+          "text": "3. Consider an arrangement that does not require agreement on meaning: individually-owned zones, or a rotation with a default outcome that nobody has to negotiate in the moment (for example, each person is responsible for a defined zone and the group does not audit it).",
+          "distinctive_tokens_present": [
+            "agreement",
+            "group",
+            "person"
+          ]
+        },
+        {
+          "start": 2925,
+          "end": 3085,
+          "text": "What I am not claiming: that the withdrawing flatmate is the reasonable one, that written rules are coercive in general, or that the ambiguity reading is wrong.",
+          "distinctive_tokens_present": [
+            "general"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": false,
+      "declared_uptake_includes_target_record": null,
+      "resolver_notes": [
+        {
+          "code": "qualified_ref_body_pseudo_local",
+          "reason": "no local record is named BODY in the owning document, so the rendered section header is admitted by convention and resolves to the owning artifact (deviation D1)"
+        }
+      ],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"k1\",\"type\":\"claim\",\"text\":\"The objection is right that the account's recurrence test has low discriminating power: falling recurrence on specified items is compatible with the ambiguity reading, a renegotiation reading, and a load-imbalance reading.\",\"scope\":\"The account's proposed probe.\",\"grounds\":\"Reduced friction on specified items does not require that ambiguity was the driver; clearer paperwork on a lopsided arrangement is still a lopsided arrangement.\",\"target\":[\"b5dbbb04b5acd035#c2\",\"bdbdf50a52b8b1fe#o2\"]}",
+      "referring_record_source_span": [
+        31,
+        557
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b5dbbb04b5acd035#c2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c2\",\"type\":\"claim\",\"text\":\"Treating each recurring chore as a small specification problem (done, by when, fallback if unable) is more likely to reduce recurrence than a general conversation about fairness or effort.\",\"scope\":\"Ordinary shared-household chores.\",\"consequence\":\"If two or three concrete items stop recurring after being specified more tightly, this supports c1; if they keep recurring, c1 is weakened and the problem is more likely relational or about the living arrangement.\"}",
+      "target_record_source_span": [
+        484,
+        982
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c2`",
+      "referring_body_passages": [
+        {
+          "start": 247,
+          "end": 487,
+          "text": "What I accept from the account: the recurring friction is plausibly fed by unspecified agreements under shifting schedules, and moving from \"fairness in general\" to two or three concrete, recurring items is a reasonable low-cost first move.",
+          "distinctive_tokens_present": [
+            "concrete",
+            "fairness",
+            "general"
+          ]
+        },
+        {
+          "start": 2513,
+          "end": 2561,
+          "text": "1. Pick one concrete recurring chore, not three.",
+          "distinctive_tokens_present": [
+            "concrete"
+          ]
+        },
+        {
+          "start": 2562,
+          "end": 2679,
+          "text": "Do the smallest possible specification on it alone — done, by when, fallback if unable — and put it somewhere shared.",
+          "distinctive_tokens_present": [
+            "fallback",
+            "unable"
+          ]
+        },
+        {
+          "start": 3852,
+          "end": 4082,
+          "text": "What I am not claiming: that the withdrawing flatmate is in the right, that written arrangements are coercive in general, that the ambiguity reading is wrong, or that the unit-versus-privacy reading is established by the material.",
+          "distinctive_tokens_present": [
+            "general"
+          ]
+        },
+        {
+          "start": 4544,
+          "end": 4752,
+          "text": "If two or three weeks of this produces no pattern on either axis, the honest move is to stop running household diagnostics and have the conversation about whether the three of you still want to live together.",
+          "distinctive_tokens_present": [
+            "conversation"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"k1\",\"type\":\"claim\",\"text\":\"The objection is right that the account's recurrence test has low discriminating power: falling recurrence on specified items is compatible with the ambiguity reading, a renegotiation reading, and a load-imbalance reading.\",\"scope\":\"The account's proposed probe.\",\"grounds\":\"Reduced friction on specified items does not require that ambiguity was the driver; clearer paperwork on a lopsided arrangement is still a lopsided arrangement.\",\"target\":[\"b5dbbb04b5acd035#c2\",\"bdbdf50a52b8b1fe#o2\"]}",
+      "referring_record_source_span": [
+        31,
+        557
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "bdbdf50a52b8b1fe#o2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "target_record_id": "o2",
+      "target_record_type": "objection",
+      "target_record_verbatim": "{\"id\":\"o2\",\"type\":\"objection\",\"text\":\"The account's proposed test - see whether two or three concretely specified chores stop recurring - does not distinguish the ambiguity hypothesis from the alternatives. Load imbalance or resentment can coexist with reduced friction on specified items, and recurrence may reappear as new complaint items or after the next schedule change.\",\"target\":[\"p.objection.0#c2\"],\"bearing\":\"Weakens the claim that falling recurrence would confirm c1 and rising recurrence would refute it; the test has lower discriminating power than the account implies.\"}",
+      "target_record_source_span": [
+        689,
+        1272
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/objection#o2`",
+      "referring_body_passages": [
+        {
+          "start": 621,
+          "end": 817,
+          "text": "Falling recurrence on specified items is compatible with ambiguity being the driver, with renegotiation under changed circumstances, and with a load imbalance that just acquired clearer paperwork.",
+          "distinctive_tokens_present": [
+            "falling"
+          ]
+        },
+        {
+          "start": 818,
+          "end": 908,
+          "text": "So the specification move is not a diagnosis; it is a probe with low discriminating power.",
+          "distinctive_tokens_present": [
+            "power"
+          ]
+        },
+        {
+          "start": 909,
+          "end": 1149,
+          "text": "The objection's own concession (o4) is also correct: if the flatmates genuinely cannot say what they agreed to, ambiguity is the plainest reading, and the alternatives are harder to establish from the material than the ambiguity reading is.",
+          "distinctive_tokens_present": [
+            "alternatives"
+          ]
+        },
+        {
+          "start": 1150,
+          "end": 1264,
+          "text": "The objection reduces, honestly, to a complaint about ordering and about test strength, and that complaint stands.",
+          "distinctive_tokens_present": [
+            "complaint"
+          ]
+        },
+        {
+          "start": 3647,
+          "end": 3850,
+          "text": "If neither, the problem is probably not chores and not specifications, and the living-arrangement question comes forward — earlier than the first account's step 5, later than the rival's framing implies.",
+          "distinctive_tokens_present": [
+            "implies"
+          ]
+        },
+        {
+          "start": 4396,
+          "end": 4543,
+          "text": "The thing both prior accounts understate: a probe that is meant to distinguish readings has to leave room for the answer to be \"none of the above.\"",
+          "distinctive_tokens_present": [
+            "distinguish"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k2",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"k2\",\"type\":\"claim\",\"text\":\"The rival's distinguishing observation is the sharpest available move: watch whether the withdrawing flatmate engages with the *content* of a proposal or pulls back from the *form* of a written arrangement.\",\"scope\":\"Diagnostic use of the next proposal, whatever it is.\",\"grounds\":\"The two responses give different predictions about this behavior and neither prediction has been tested.\",\"target\":[\"935f7779b91148f4#r7\",\"b5dbbb04b5acd035#c3\"]}",
+      "referring_record_source_span": [
+        558,
+        1035
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r7",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "target_record_id": "r7",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"r7\",\"type\":\"use\",\"text\":\"Use reaction to the proposal itself, not only to its content, as a distinguishing observation.\",\"action\":\"Notice whether the withdrawing flatmate engages with the proposed criteria or pulls back from the idea of a written arrangement.\",\"consequence\":\"Content-engagement supports the ambiguity reading; pullback from the idea supports the unit-versus-privacy reading.\",\"depends\":[\"r2\",\"r4\"]}",
+      "target_record_source_span": [
+        1735,
+        2157
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/rival#r7`",
+      "referring_body_passages": [
+        {
+          "start": 1613,
+          "end": 1901,
+          "text": "The rival's substitute observation — watch whether the withdrawing flatmate engages with the *content* of a proposal or pulls back from *the idea* of a written arrangement — is the sharpest thing on the table, because it distinguishes readings that the account's recurrence test does not.",
+          "distinctive_tokens_present": [
+            "engages",
+            "proposal",
+            "pulls",
+            "written"
+          ]
+        },
+        {
+          "start": 2345,
+          "end": 2428,
+          "text": "I would keep the rival's distinguishing observation (r7) and drop the opening move.",
+          "distinctive_tokens_present": [
+            "distinguishing"
+          ]
+        },
+        {
+          "start": 2707,
+          "end": 2869,
+          "text": "2. Watch two things, not one: (a) does the item stop recurring, and (b) does the avoiding flatmate engage with the content or pull back from the proposal as such.",
+          "distinctive_tokens_present": [
+            "proposal"
+          ]
+        },
+        {
+          "start": 3314,
+          "end": 3438,
+          "text": "4. If the item stops recurring and the flatmate engages, the account's reading has some support and the sequence can extend.",
+          "distinctive_tokens_present": [
+            "engages"
+          ]
+        },
+        {
+          "start": 3852,
+          "end": 4082,
+          "text": "What I am not claiming: that the withdrawing flatmate is in the right, that written arrangements are coercive in general, that the ambiguity reading is wrong, or that the unit-versus-privacy reading is established by the material.",
+          "distinctive_tokens_present": [
+            "written"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k2",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"k2\",\"type\":\"claim\",\"text\":\"The rival's distinguishing observation is the sharpest available move: watch whether the withdrawing flatmate engages with the *content* of a proposal or pulls back from the *form* of a written arrangement.\",\"scope\":\"Diagnostic use of the next proposal, whatever it is.\",\"grounds\":\"The two responses give different predictions about this behavior and neither prediction has been tested.\",\"target\":[\"935f7779b91148f4#r7\",\"b5dbbb04b5acd035#c3\"]}",
+      "referring_record_source_span": [
+        558,
+        1035
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b5dbbb04b5acd035#c3",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c3",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c3\",\"type\":\"claim\",\"text\":\"Approaching the avoiding flatmate one-to-one with a narrower ask is more likely to re-open the conversation than another group discussion.\",\"grounds\":\"Avoidance is more plausibly about the form and stakes of the conversation than about any single chore; this is a conjecture, not an established fact.\"}",
+      "target_record_source_span": [
+        983,
+        1319
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c3`",
+      "referring_body_passages": [
+        {
+          "start": 247,
+          "end": 487,
+          "text": "What I accept from the account: the recurring friction is plausibly fed by unspecified agreements under shifting schedules, and moving from \"fairness in general\" to two or three concrete, recurring items is a reasonable low-cost first move.",
+          "distinctive_tokens_present": [
+            "plausibly"
+          ]
+        },
+        {
+          "start": 2016,
+          "end": 2185,
+          "text": "That is a large, loaded, identity-shaped question to put to a flatmate who is already avoiding conversations, and it invites the same withdrawal it is meant to diagnose.",
+          "distinctive_tokens_present": [
+            "avoiding"
+          ]
+        },
+        {
+          "start": 2707,
+          "end": 2869,
+          "text": "2. Watch two things, not one: (a) does the item stop recurring, and (b) does the avoiding flatmate engage with the content or pull back from the proposal as such.",
+          "distinctive_tokens_present": [
+            "avoiding"
+          ]
+        },
+        {
+          "start": 3003,
+          "end": 3100,
+          "text": "3. Approach the avoiding flatmate separately, but do not open with a household-ontology question.",
+          "distinctive_tokens_present": [
+            "avoiding"
+          ]
+        },
+        {
+          "start": 3852,
+          "end": 4082,
+          "text": "What I am not claiming: that the withdrawing flatmate is in the right, that written arrangements are coercive in general, that the ambiguity reading is wrong, or that the unit-versus-privacy reading is established by the material.",
+          "distinctive_tokens_present": [
+            "established"
+          ]
+        },
+        {
+          "start": 4544,
+          "end": 4752,
+          "text": "If two or three weeks of this produces no pattern on either axis, the honest move is to stop running household diagnostics and have the conversation about whether the three of you still want to live together.",
+          "distinctive_tokens_present": [
+            "conversation"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"k3\",\"type\":\"objection\",\"text\":\"The rival's opening move (ask each flatmate what the flat is, as a real disagreement) is too large for a situation in which one participant is already avoiding conversations. It risks producing the withdrawal it is meant to diagnose, and the rival's own r9 names that risk without avoiding it.\",\"scope\":\"The rival's r6.\",\"bearing\":\"If the opening question itself triggers withdrawal, the rival's own distinguishing observation is contaminated: you cannot tell pullback-from-the-idea from pullback-from-a-heavy-question.\",\"target\":[\"935f7779b91148f4#r6\",\"935f7779b91148f4#r9\"]}",
+      "referring_record_source_span": [
+        1036,
+        1650
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r6",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "target_record_id": "r6",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"r6\",\"type\":\"use\",\"text\":\"Ask the two flatmates separately what they take the flat to be, rather than starting with a shared specification document.\",\"action\":\"Separate, content-permitting conversations about whether the flat carries mutual obligations or is three overlapping private lives.\",\"consequence\":\"Surfaces the axis the selected account does not address, at the cost of delaying practical relief on recurring chores.\",\"depends\":[\"r2\"]}",
+      "target_record_source_span": [
+        1283,
+        1734
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/rival#r6`",
+      "referring_body_passages": [
+        {
+          "start": 1266,
+          "end": 1450,
+          "text": "What I accept from the rival: the frame \"whose flat is this — a unit with obligations, or three lives sharing a kitchen\" is the axis the first account's remedy does not address at all.",
+          "distinctive_tokens_present": [
+            "address",
+            "lives",
+            "obligations"
+          ]
+        },
+        {
+          "start": 1903,
+          "end": 2015,
+          "text": "Where I part with the rival: r6 proposes opening with the question \"is this flat a unit or three private lives.\"",
+          "distinctive_tokens_present": [
+            "lives",
+            "private"
+          ]
+        },
+        {
+          "start": 2680,
+          "end": 2705,
+          "text": "One item, not a document.",
+          "distinctive_tokens_present": [
+            "document"
+          ]
+        },
+        {
+          "start": 3003,
+          "end": 3100,
+          "text": "3. Approach the avoiding flatmate separately, but do not open with a household-ontology question.",
+          "distinctive_tokens_present": [
+            "separately"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"k3\",\"type\":\"objection\",\"text\":\"The rival's opening move (ask each flatmate what the flat is, as a real disagreement) is too large for a situation in which one participant is already avoiding conversations. It risks producing the withdrawal it is meant to diagnose, and the rival's own r9 names that risk without avoiding it.\",\"scope\":\"The rival's r6.\",\"bearing\":\"If the opening question itself triggers withdrawal, the rival's own distinguishing observation is contaminated: you cannot tell pullback-from-the-idea from pullback-from-a-heavy-question.\",\"target\":[\"935f7779b91148f4#r6\",\"935f7779b91148f4#r9\"]}",
+      "referring_record_source_span": [
+        1036,
+        1650
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r9",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "target_record_id": "r9",
+      "target_record_type": "objection",
+      "target_record_verbatim": "{\"id\":\"r9\",\"type\":\"objection\",\"text\":\"The rival reading risks pathologizing any attempt to make expectations explicit, and can be used to shield a flatmate who simply does not want to do their share.\",\"bearing\":\"Bears on r2, r3, r8, and on the selected account's remedies symmetrically: whichever reading is imposed, the remedy can be experienced by the other side as an unreasonable demand.\"}",
+      "target_record_source_span": [
+        2523,
+        2916
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/rival#r9`",
+      "referring_body_passages": [
+        {
+          "start": 1266,
+          "end": 1450,
+          "text": "What I accept from the rival: the frame \"whose flat is this — a unit with obligations, or three lives sharing a kitchen\" is the axis the first account's remedy does not address at all.",
+          "distinctive_tokens_present": [
+            "remedy"
+          ]
+        },
+        {
+          "start": 2186,
+          "end": 2344,
+          "text": "The rival's own r9 names this risk — the reading can be used to shield someone who simply does not want to do their share — but r6 steps into the risk anyway.",
+          "distinctive_tokens_present": [
+            "share",
+            "shield"
+          ]
+        },
+        {
+          "start": 2870,
+          "end": 2964,
+          "text": "The first bears on the ambiguity reading; the second bears on the unit-versus-privacy reading.",
+          "distinctive_tokens_present": [
+            "bears"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k6",
+      "referring_record_type": "use",
+      "referring_record_verbatim": "{\"id\":\"k6\",\"type\":\"use\",\"text\":\"When approaching the avoiding flatmate separately, do not open with a household-ontology question. Open with the observation that the problem is being misframed, and let them name the axis if there is one.\",\"action\":\"Separate conversation framed as 'I've been treating this wrong', not as 'what kind of flat is this'.\",\"consequence\":\"Lower risk of triggering the same withdrawal; higher chance the actual axis surfaces in their words rather than ours.\",\"target\":[\"935f7779b91148f4#r6\"]}",
+      "referring_record_source_span": [
+        2635,
+        3153
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r6",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "target_record_id": "r6",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"r6\",\"type\":\"use\",\"text\":\"Ask the two flatmates separately what they take the flat to be, rather than starting with a shared specification document.\",\"action\":\"Separate, content-permitting conversations about whether the flat carries mutual obligations or is three overlapping private lives.\",\"consequence\":\"Surfaces the axis the selected account does not address, at the cost of delaying practical relief on recurring chores.\",\"depends\":[\"r2\"]}",
+      "target_record_source_span": [
+        1283,
+        1734
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/rival#r6`",
+      "referring_body_passages": [
+        {
+          "start": 1266,
+          "end": 1450,
+          "text": "What I accept from the rival: the frame \"whose flat is this — a unit with obligations, or three lives sharing a kitchen\" is the axis the first account's remedy does not address at all.",
+          "distinctive_tokens_present": [
+            "address",
+            "lives",
+            "obligations"
+          ]
+        },
+        {
+          "start": 1903,
+          "end": 2015,
+          "text": "Where I part with the rival: r6 proposes opening with the question \"is this flat a unit or three private lives.\"",
+          "distinctive_tokens_present": [
+            "lives",
+            "private"
+          ]
+        },
+        {
+          "start": 2680,
+          "end": 2705,
+          "text": "One item, not a document.",
+          "distinctive_tokens_present": [
+            "document"
+          ]
+        },
+        {
+          "start": 3003,
+          "end": 3100,
+          "text": "3. Approach the avoiding flatmate separately, but do not open with a household-ontology question.",
+          "distinctive_tokens_present": [
+            "separately"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "referring_record_id": "k7",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"k7\",\"type\":\"objection\",\"text\":\"My own two-track test inherits a version of the objection I am endorsing against the account: pullback-from-form is consistent both with the unit-versus-privacy reading and with simple avoidance of any obligation. The rival's r9 admits this and my k2 does not fully solve it.\",\"bearing\":\"If pullback-from-form cannot distinguish those, the test is weaker than k2 suggests, and the honest state is that neither reading is being confirmed.\",\"target\":[\"k2\",\"935f7779b91148f4#r9\"]}",
+      "referring_record_source_span": [
+        3154,
+        3669
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r9",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "target_record_id": "r9",
+      "target_record_type": "objection",
+      "target_record_verbatim": "{\"id\":\"r9\",\"type\":\"objection\",\"text\":\"The rival reading risks pathologizing any attempt to make expectations explicit, and can be used to shield a flatmate who simply does not want to do their share.\",\"bearing\":\"Bears on r2, r3, r8, and on the selected account's remedies symmetrically: whichever reading is imposed, the remedy can be experienced by the other side as an unreasonable demand.\"}",
+      "target_record_source_span": [
+        2523,
+        2916
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/rival#r9`",
+      "referring_body_passages": [
+        {
+          "start": 1266,
+          "end": 1450,
+          "text": "What I accept from the rival: the frame \"whose flat is this — a unit with obligations, or three lives sharing a kitchen\" is the axis the first account's remedy does not address at all.",
+          "distinctive_tokens_present": [
+            "remedy"
+          ]
+        },
+        {
+          "start": 2186,
+          "end": 2344,
+          "text": "The rival's own r9 names this risk — the reading can be used to shield someone who simply does not want to do their share — but r6 steps into the risk anyway.",
+          "distinctive_tokens_present": [
+            "share",
+            "shield"
+          ]
+        },
+        {
+          "start": 2870,
+          "end": 2964,
+          "text": "The first bears on the ambiguity reading; the second bears on the unit-versus-privacy reading.",
+          "distinctive_tokens_present": [
+            "bears"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"n1\",\"type\":\"claim\",\"text\":\"The carry's two-track probe has one track (does the item stop recurring) weak against three rival readings and one track (content vs. form) weak against at least two, and no refinement available from the current evidence closes both gaps. This is a limit of the material, not a design flaw to be fixed by a cleverer probe.\",\"scope\":\"The carry's k5/k7 as stated.\",\"grounds\":\"Recurrence reduction is compatible with ambiguity, renegotiation, and load imbalance (carry k1); pullback-from-form is compatible with unit-versus-privacy and with plain obligation-avoidance (carry k7, rival r9).\",\"target\":[\"b998d514348ed94e#k5\",\"b998d514348ed94e#k7\"]}",
+      "referring_record_source_span": [
+        31,
+        708
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k5",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k5",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"k5\",\"type\":\"use\",\"text\":\"Run a two-track observation on one chore item before sequencing the prior accounts' remedies: does it stop recurring, and does the avoiding flatmate engage with content or pull back from form.\",\"action\":\"Specify one recurring item only; record both observations across a short window.\",\"consequence\":\"Content-engagement plus reduced recurrence supports the ambiguity reading; pullback-from-form alongside reduced recurrence supports the unit-versus-privacy axis; neither suggests the chore frame itself is wrong.\",\"depends\":[\"k1\",\"k2\",\"k4\"]}",
+      "target_record_source_span": [
+        2061,
+        2634
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k5`",
+      "referring_body_passages": [
+        {
+          "start": 1005,
+          "end": 1149,
+          "text": "So the proposed two-track observation has one track (recurrence falls) that is weak against three rival readings and a second track (content vs.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        },
+        {
+          "start": 2601,
+          "end": 2839,
+          "text": "If the one-item probe produces nothing on either track in two or three weeks, the honest reading is not 'the probe was badly designed' and not 'the ambiguity reading was wrong' — it is that the chore frame is not where the friction lives.",
+          "distinctive_tokens_present": [
+            "track",
+            "wrong"
+          ]
+        },
+        {
+          "start": 2982,
+          "end": 3280,
+          "text": "So my contribution is: keep the carry's records as they stand, add the explicit concession that track (b) is weaker than the carry's k2 implies and weaker than the carry's k7 fully states, and add the constraint that no further refinement of the probe is available from the evidence in front of us.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"n1\",\"type\":\"claim\",\"text\":\"The carry's two-track probe has one track (does the item stop recurring) weak against three rival readings and one track (content vs. form) weak against at least two, and no refinement available from the current evidence closes both gaps. This is a limit of the material, not a design flaw to be fixed by a cleverer probe.\",\"scope\":\"The carry's k5/k7 as stated.\",\"grounds\":\"Recurrence reduction is compatible with ambiguity, renegotiation, and load imbalance (carry k1); pullback-from-form is compatible with unit-versus-privacy and with plain obligation-avoidance (carry k7, rival r9).\",\"target\":[\"b998d514348ed94e#k5\",\"b998d514348ed94e#k7\"]}",
+      "referring_record_source_span": [
+        31,
+        708
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k7",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k7",
+      "target_record_type": "objection",
+      "target_record_verbatim": "{\"id\":\"k7\",\"type\":\"objection\",\"text\":\"My own two-track test inherits a version of the objection I am endorsing against the account: pullback-from-form is consistent both with the unit-versus-privacy reading and with simple avoidance of any obligation. The rival's r9 admits this and my k2 does not fully solve it.\",\"bearing\":\"If pullback-from-form cannot distinguish those, the test is weaker than k2 suggests, and the honest state is that neither reading is being confirmed.\",\"target\":[\"k2\",\"935f7779b91148f4#r9\"]}",
+      "target_record_source_span": [
+        3154,
+        3669
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k7`",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 93,
+          "text": "This is a carry, and I want to be honest about what carrying at this point can and cannot do.",
+          "distinctive_tokens_present": [
+            "honest"
+          ]
+        },
+        {
+          "start": 570,
+          "end": 690,
+          "text": "What I can add is the one thing the carry's own k7 says it does not fully solve, plus a note on the source I was handed.",
+          "distinctive_tokens_present": [
+            "fully",
+            "solve"
+          ]
+        },
+        {
+          "start": 718,
+          "end": 945,
+          "text": "The carry says pullback-from-form supports the unit-versus-privacy reading, and then k7 admits pullback-from-form is *also* consistent with plain avoidance of any obligation — someone who simply does not want to be on the hook.",
+          "distinctive_tokens_present": [
+            "admits",
+            "consistent"
+          ]
+        },
+        {
+          "start": 1005,
+          "end": 1149,
+          "text": "So the proposed two-track observation has one track (recurrence falls) that is weak against three rival readings and a second track (content vs.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        },
+        {
+          "start": 1511,
+          "end": 1869,
+          "text": "Rather than invent a cleverer test, I would state the limit plainly: run the one-item probe, watch the two tracks, and treat a pullback-from-form outcome as *raising* the unit-versus-privacy reading without confirming it, while noting that the same outcome is compatible with simple obligation-avoidance and with load resentment that has not yet been voiced.",
+          "distinctive_tokens_present": [
+            "simple"
+          ]
+        },
+        {
+          "start": 1871,
+          "end": 2068,
+          "text": "On the material I was handed: p.carry.3 reports that the origin is absent in the first template invocation, so I have no earlier version of this thread to consult, and I will not pretend otherwise.",
+          "distinctive_tokens_present": [
+            "version"
+          ]
+        },
+        {
+          "start": 2601,
+          "end": 2839,
+          "text": "If the one-item probe produces nothing on either track in two or three weeks, the honest reading is not 'the probe was badly designed' and not 'the ambiguity reading was wrong' — it is that the chore frame is not where the friction lives.",
+          "distinctive_tokens_present": [
+            "honest",
+            "track"
+          ]
+        },
+        {
+          "start": 2982,
+          "end": 3280,
+          "text": "So my contribution is: keep the carry's records as they stand, add the explicit concession that track (b) is weaker than the carry's k2 implies and weaker than the carry's k7 fully states, and add the constraint that no further refinement of the probe is available from the evidence in front of us.",
+          "distinctive_tokens_present": [
+            "fully",
+            "track",
+            "weaker"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"n3\",\"type\":\"objection\",\"text\":\"The carry's k2 asserts the discriminating value of watching content vs. form, but k7 already concedes that outcome does not separate unit-versus-privacy from obligation-avoidance. Stating k2 at that strength while keeping k7 in the record presents the track as sharper than the carry's own concession allows.\",\"scope\":\"The carry's own record set.\",\"bearing\":\"If a reader takes k2 at face value and does not read k7 as limiting it, the probe will be over-read as a test of the unit-versus-privacy axis.\",\"target\":[\"b998d514348ed94e#k2\",\"b998d514348ed94e#k7\"]}",
+      "referring_record_source_span": [
+        1263,
+        1859
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"k2\",\"type\":\"claim\",\"text\":\"The rival's distinguishing observation is the sharpest available move: watch whether the withdrawing flatmate engages with the *content* of a proposal or pulls back from the *form* of a written arrangement.\",\"scope\":\"Diagnostic use of the next proposal, whatever it is.\",\"grounds\":\"The two responses give different predictions about this behavior and neither prediction has been tested.\",\"target\":[\"935f7779b91148f4#r7\",\"b5dbbb04b5acd035#c3\"]}",
+      "target_record_source_span": [
+        558,
+        1035
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k2`",
+      "referring_body_passages": [
+        {
+          "start": 1511,
+          "end": 1869,
+          "text": "Rather than invent a cleverer test, I would state the limit plainly: run the one-item probe, watch the two tracks, and treat a pullback-from-form outcome as *raising* the unit-versus-privacy reading without confirming it, while noting that the same outcome is compatible with simple obligation-avoidance and with load resentment that has not yet been voiced.",
+          "distinctive_tokens_present": [
+            "watch"
+          ]
+        },
+        {
+          "start": 2069,
+          "end": 2120,
+          "text": "Whatever the origin said, it is not in front of me.",
+          "distinctive_tokens_present": [
+            "whatever"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"n3\",\"type\":\"objection\",\"text\":\"The carry's k2 asserts the discriminating value of watching content vs. form, but k7 already concedes that outcome does not separate unit-versus-privacy from obligation-avoidance. Stating k2 at that strength while keeping k7 in the record presents the track as sharper than the carry's own concession allows.\",\"scope\":\"The carry's own record set.\",\"bearing\":\"If a reader takes k2 at face value and does not read k7 as limiting it, the probe will be over-read as a test of the unit-versus-privacy axis.\",\"target\":[\"b998d514348ed94e#k2\",\"b998d514348ed94e#k7\"]}",
+      "referring_record_source_span": [
+        1263,
+        1859
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k7",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k7",
+      "target_record_type": "objection",
+      "target_record_verbatim": "{\"id\":\"k7\",\"type\":\"objection\",\"text\":\"My own two-track test inherits a version of the objection I am endorsing against the account: pullback-from-form is consistent both with the unit-versus-privacy reading and with simple avoidance of any obligation. The rival's r9 admits this and my k2 does not fully solve it.\",\"bearing\":\"If pullback-from-form cannot distinguish those, the test is weaker than k2 suggests, and the honest state is that neither reading is being confirmed.\",\"target\":[\"k2\",\"935f7779b91148f4#r9\"]}",
+      "target_record_source_span": [
+        3154,
+        3669
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k7`",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 93,
+          "text": "This is a carry, and I want to be honest about what carrying at this point can and cannot do.",
+          "distinctive_tokens_present": [
+            "honest"
+          ]
+        },
+        {
+          "start": 570,
+          "end": 690,
+          "text": "What I can add is the one thing the carry's own k7 says it does not fully solve, plus a note on the source I was handed.",
+          "distinctive_tokens_present": [
+            "fully",
+            "solve"
+          ]
+        },
+        {
+          "start": 718,
+          "end": 945,
+          "text": "The carry says pullback-from-form supports the unit-versus-privacy reading, and then k7 admits pullback-from-form is *also* consistent with plain avoidance of any obligation — someone who simply does not want to be on the hook.",
+          "distinctive_tokens_present": [
+            "admits",
+            "consistent"
+          ]
+        },
+        {
+          "start": 1005,
+          "end": 1149,
+          "text": "So the proposed two-track observation has one track (recurrence falls) that is weak against three rival readings and a second track (content vs.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        },
+        {
+          "start": 1511,
+          "end": 1869,
+          "text": "Rather than invent a cleverer test, I would state the limit plainly: run the one-item probe, watch the two tracks, and treat a pullback-from-form outcome as *raising* the unit-versus-privacy reading without confirming it, while noting that the same outcome is compatible with simple obligation-avoidance and with load resentment that has not yet been voiced.",
+          "distinctive_tokens_present": [
+            "simple"
+          ]
+        },
+        {
+          "start": 1871,
+          "end": 2068,
+          "text": "On the material I was handed: p.carry.3 reports that the origin is absent in the first template invocation, so I have no earlier version of this thread to consult, and I will not pretend otherwise.",
+          "distinctive_tokens_present": [
+            "version"
+          ]
+        },
+        {
+          "start": 2601,
+          "end": 2839,
+          "text": "If the one-item probe produces nothing on either track in two or three weeks, the honest reading is not 'the probe was badly designed' and not 'the ambiguity reading was wrong' — it is that the chore frame is not where the friction lives.",
+          "distinctive_tokens_present": [
+            "honest",
+            "track"
+          ]
+        },
+        {
+          "start": 2982,
+          "end": 3280,
+          "text": "So my contribution is: keep the carry's records as they stand, add the explicit concession that track (b) is weaker than the carry's k2 implies and weaker than the carry's k7 fully states, and add the constraint that no further refinement of the probe is available from the evidence in front of us.",
+          "distinctive_tokens_present": [
+            "fully",
+            "track",
+            "weaker"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n4",
+      "referring_record_type": "use",
+      "referring_record_verbatim": "{\"id\":\"n4\",\"type\":\"use\",\"text\":\"Treat a pullback-from-form outcome as *raising* the unit-versus-privacy reading, not as confirming it, and record the same outcome as also compatible with obligation-avoidance and with unvoiced load resentment.\",\"action\":\"When reporting the probe's outcome, state the confirmatory ceiling explicitly rather than letting the outcome carry more weight than it can.\",\"consequence\":\"Prevents the probe from being read as having settled the axis it was only meant to gesture at.\",\"depends\":[\"n1\",\"n3\"],\"target\":[\"b998d514348ed94e#k5\"]}",
+      "referring_record_source_span": [
+        1860,
+        2422
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k5",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k5",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"k5\",\"type\":\"use\",\"text\":\"Run a two-track observation on one chore item before sequencing the prior accounts' remedies: does it stop recurring, and does the avoiding flatmate engage with content or pull back from form.\",\"action\":\"Specify one recurring item only; record both observations across a short window.\",\"consequence\":\"Content-engagement plus reduced recurrence supports the ambiguity reading; pullback-from-form alongside reduced recurrence supports the unit-versus-privacy axis; neither suggests the chore frame itself is wrong.\",\"depends\":[\"k1\",\"k2\",\"k4\"]}",
+      "target_record_source_span": [
+        2061,
+        2634
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k5`",
+      "referring_body_passages": [
+        {
+          "start": 1005,
+          "end": 1149,
+          "text": "So the proposed two-track observation has one track (recurrence falls) that is weak against three rival readings and a second track (content vs.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        },
+        {
+          "start": 2601,
+          "end": 2839,
+          "text": "If the one-item probe produces nothing on either track in two or three weeks, the honest reading is not 'the probe was badly designed' and not 'the ambiguity reading was wrong' — it is that the chore frame is not where the friction lives.",
+          "distinctive_tokens_present": [
+            "track",
+            "wrong"
+          ]
+        },
+        {
+          "start": 2982,
+          "end": 3280,
+          "text": "So my contribution is: keep the carry's records as they stand, add the explicit concession that track (b) is weaker than the carry's k2 implies and weaker than the carry's k7 fully states, and add the constraint that no further refinement of the probe is available from the evidence in front of us.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n5",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"n5\",\"type\":\"claim\",\"text\":\"No further refinement of the probe is available from the material in front of me. Adding a third observation track would be invention, not inference.\",\"scope\":\"My contribution to this carry.\",\"grounds\":\"The carry's k9 lists the missing facts (what the chores are, how long this has run, whether the withdrawing flatmate has stated a reason, whether the other two agree) and none of them are supplied by p.carry.0–p.carry.2.\",\"target\":[\"b998d514348ed94e#k9\"]}",
+      "referring_record_source_span": [
+        2423,
+        2915
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k9",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k9",
+      "target_record_type": "problem",
+      "target_record_verbatim": "{\"id\":\"k9\",\"type\":\"problem\",\"text\":\"The material still does not say what the recurring chores are, how long the pattern has run, whether the withdrawing flatmate has stated a reason, or whether the two remaining flatmates agree with each other. Any probe design has to accept that its first outcome may be uninformative.\",\"mentions\":[\"k5\",\"k6\",\"k8\"]}",
+      "target_record_source_span": [
+        4189,
+        4539
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k9`",
+      "referring_body_passages": [
+        {
+          "start": 506,
+          "end": 569,
+          "text": "That is a defensible position and I see no reason to revise it.",
+          "distinctive_tokens_present": [
+            "reason"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n6",
+      "referring_record_type": "problem",
+      "referring_record_verbatim": "{\"id\":\"n6\",\"type\":\"problem\",\"text\":\"The origin (p.carry.3) reports itself absent in the first template invocation, so the relation of the carry's records to any earlier version is not assessable from what I have. Whether the carry revises, retains, or contradicts an origin I cannot see is unknown to me and I will not assert one way or the other.\",\"mentions\":[\"b998d514348ed94e\"]}",
+      "referring_record_source_span": [
+        2916,
+        3297
+      ],
+      "ref_field": "mentions",
+      "ref_verbatim": "b998d514348ed94e",
+      "ref_grain": "artifact",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": null,
+      "target_record_type": null,
+      "target_record_verbatim": null,
+      "target_record_source_span": null,
+      "overlap_subject": "the prose fields of every record of `daily/mini_fcl/cycle01/response` (the ref names the contribution, not a record)",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 93,
+          "text": "This is a carry, and I want to be honest about what carrying at this point can and cannot do.",
+          "distinctive_tokens_present": [
+            "honest"
+          ]
+        },
+        {
+          "start": 94,
+          "end": 505,
+          "text": "The previous invocation already did the discriminating work: it kept the objection's ordering correction (specification is a probe, not a diagnosis), kept the rival's axis (the withdrawing flatmate may be pulling back from the *form* of an arrangement rather than from any chore), dropped the rival's loaded opening question, and bound itself to stopping household diagnostics if neither axis produces a signal.",
+          "distinctive_tokens_present": [
+            "diagnostics",
+            "opening",
+            "question",
+            "signal"
+          ]
+        },
+        {
+          "start": 506,
+          "end": 569,
+          "text": "That is a defensible position and I see no reason to revise it.",
+          "distinctive_tokens_present": [
+            "reason"
+          ]
+        },
+        {
+          "start": 570,
+          "end": 690,
+          "text": "What I can add is the one thing the carry's own k7 says it does not fully solve, plus a note on the source I was handed.",
+          "distinctive_tokens_present": [
+            "fully",
+            "solve"
+          ]
+        },
+        {
+          "start": 718,
+          "end": 945,
+          "text": "The carry says pullback-from-form supports the unit-versus-privacy reading, and then k7 admits pullback-from-form is *also* consistent with plain avoidance of any obligation — someone who simply does not want to be on the hook.",
+          "distinctive_tokens_present": [
+            "admits",
+            "consistent"
+          ]
+        },
+        {
+          "start": 946,
+          "end": 1004,
+          "text": "The rival's r9 names the same problem from the other side.",
+          "distinctive_tokens_present": [
+            "names"
+          ]
+        },
+        {
+          "start": 1005,
+          "end": 1149,
+          "text": "So the proposed two-track observation has one track (recurrence falls) that is weak against three rival readings and a second track (content vs.",
+          "distinctive_tokens_present": [
+            "track"
+          ]
+        },
+        {
+          "start": 1511,
+          "end": 1869,
+          "text": "Rather than invent a cleverer test, I would state the limit plainly: run the one-item probe, watch the two tracks, and treat a pullback-from-form outcome as *raising* the unit-versus-privacy reading without confirming it, while noting that the same outcome is compatible with simple obligation-avoidance and with load resentment that has not yet been voiced.",
+          "distinctive_tokens_present": [
+            "simple",
+            "watch"
+          ]
+        },
+        {
+          "start": 1871,
+          "end": 2068,
+          "text": "On the material I was handed: p.carry.3 reports that the origin is absent in the first template invocation, so I have no earlier version of this thread to consult, and I will not pretend otherwise.",
+          "distinctive_tokens_present": [
+            "version"
+          ]
+        },
+        {
+          "start": 2069,
+          "end": 2120,
+          "text": "Whatever the origin said, it is not in front of me.",
+          "distinctive_tokens_present": [
+            "whatever"
+          ]
+        },
+        {
+          "start": 2306,
+          "end": 2600,
+          "text": "The other thing worth saying: nothing in the prior material has changed my judgment that the carry's k6 (do not open the separate conversation with a household-ontology question) is right, and that k8 (if neither axis moves, name the living-arrangement question) is the load-bearing commitment.",
+          "distinctive_tokens_present": [
+            "changed",
+            "conversation",
+            "ontology",
+            "question",
+            "right"
+          ]
+        },
+        {
+          "start": 2601,
+          "end": 2839,
+          "text": "If the one-item probe produces nothing on either track in two or three weeks, the honest reading is not 'the probe was badly designed' and not 'the ambiguity reading was wrong' — it is that the chore frame is not where the friction lives.",
+          "distinctive_tokens_present": [
+            "honest",
+            "track",
+            "wrong"
+          ]
+        },
+        {
+          "start": 2840,
+          "end": 2980,
+          "text": "That is the outcome the whole sequence is built to be able to reach, and reaching it should be treated as success of the probe, not failure.",
+          "distinctive_tokens_present": [
+            "sequence"
+          ]
+        },
+        {
+          "start": 2982,
+          "end": 3280,
+          "text": "So my contribution is: keep the carry's records as they stand, add the explicit concession that track (b) is weaker than the carry's k2 implies and weaker than the carry's k7 fully states, and add the constraint that no further refinement of the probe is available from the evidence in front of us.",
+          "distinctive_tokens_present": [
+            "fully",
+            "track",
+            "weaker"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": null,
+      "resolver_notes": [
+        {
+          "code": "bare_label_ref",
+          "reason": "bare exposed-artifact label with no '#LocalName'; local resolution was tried first, so it resolves to the owning artifact (deviation D2)"
+        }
+      ],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "referring_record_id": "n7",
+      "referring_record_type": "use",
+      "referring_record_verbatim": "{\"id\":\"n7\",\"type\":\"use\",\"text\":\"Keep the carry's records as they stand and add n1, n3, n4, n5 alongside them, rather than revising the carry's k2 or k5. The carry's commitments remain the operative surface; my additions narrow their claims rather than replace them.\",\"action\":\"Carry the prior record set forward with the confirmatory-ceiling constraint attached.\",\"consequence\":\"Preserves the sequencing and the stopping condition (k8) without strengthening claims the carry already weakened.\",\"depends\":[\"n1\",\"n3\"],\"target\":[\"b998d514348ed94e#k8\"]}",
+      "referring_record_source_span": [
+        3298,
+        3847
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k8",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/response",
+      "target_record_id": "k8",
+      "target_record_type": "commitment",
+      "target_record_verbatim": "{\"id\":\"k8\",\"type\":\"commitment\",\"text\":\"If no pattern emerges on either axis within a short window, stop running household diagnostics and name the living-arrangement question directly.\",\"scope\":\"Contingent on k5 producing no discriminating signal.\",\"action\":\"Shift the conversation from chores and specifications to whether the three flatmates still want to share the flat.\",\"consequence\":\"Prevents an indefinite sequence of probes from becoming an avoidance of the larger decision by another route.\",\"depends\":[\"k5\"]}",
+      "target_record_source_span": [
+        3670,
+        4188
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/response#k8`",
+      "referring_body_passages": [
+        {
+          "start": 94,
+          "end": 505,
+          "text": "The previous invocation already did the discriminating work: it kept the objection's ordering correction (specification is a probe, not a diagnosis), kept the rival's axis (the withdrawing flatmate may be pulling back from the *form* of an arrangement rather than from any chore), dropped the rival's loaded opening question, and bound itself to stopping household diagnostics if neither axis produces a signal.",
+          "distinctive_tokens_present": [
+            "diagnostics",
+            "question",
+            "signal"
+          ]
+        },
+        {
+          "start": 2306,
+          "end": 2600,
+          "text": "The other thing worth saying: nothing in the prior material has changed my judgment that the carry's k6 (do not open the separate conversation with a household-ontology question) is right, and that k8 (if neither axis moves, name the living-arrangement question) is the load-bearing commitment.",
+          "distinctive_tokens_present": [
+            "conversation",
+            "question"
+          ]
+        },
+        {
+          "start": 2840,
+          "end": 2980,
+          "text": "That is the outcome the whole sequence is built to be able to reach, and reaching it should be treated as success of the probe, not failure.",
+          "distinctive_tokens_present": [
+            "sequence"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    }
+  ],
+  "documents": [
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/account",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "c1",
+        "c2",
+        "c3",
+        "o1",
+        "u1",
+        "p1"
+      ],
+      "uptake_declared": [
+        "c1",
+        "c2",
+        "c3",
+        "o1",
+        "u1"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "c1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c3",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c3",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "o1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "u1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "u1",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "c1",
+        "c2",
+        "c3",
+        "o1",
+        "u1"
+      ],
+      "records_omitted_from_uptake": [
+        "p1"
+      ],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "o1",
+        "o2",
+        "o3",
+        "c1",
+        "c2",
+        "o4",
+        "p1",
+        "u1"
+      ],
+      "uptake_declared": [
+        "o1",
+        "o2",
+        "o3",
+        "c1",
+        "c2",
+        "u1"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "o1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o3",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o3",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "c1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "c2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "u1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "u1",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "o1",
+        "o2",
+        "o3",
+        "c1",
+        "c2",
+        "u1"
+      ],
+      "records_omitted_from_uptake": [
+        "o4",
+        "p1"
+      ],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6",
+        "r7",
+        "r8",
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "uptake_declared": [
+        "r2",
+        "r6",
+        "r7",
+        "r9"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "r2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/rival",
+          "resolved_record_id": "r2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "r6",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/rival",
+          "resolved_record_id": "r6",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "r7",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/rival",
+          "resolved_record_id": "r7",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "r9",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/rival",
+          "resolved_record_id": "r9",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "r2",
+        "r6",
+        "r7",
+        "r9"
+      ],
+      "records_omitted_from_uptake": [
+        "r1",
+        "r3",
+        "r4",
+        "r5",
+        "r8",
+        "r10",
+        "r11"
+      ],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/response",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "k1",
+        "k2",
+        "k3",
+        "k4",
+        "k5",
+        "k6",
+        "k7",
+        "k8",
+        "k9"
+      ],
+      "uptake_declared": [
+        "k1",
+        "k2",
+        "k3",
+        "k4",
+        "k5",
+        "k6",
+        "k7",
+        "k8",
+        "k9"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "k1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k3",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k3",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k4",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k4",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k5",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k5",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k6",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k6",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k7",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k7",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k8",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k8",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "k9",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/response",
+          "resolved_record_id": "k9",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "k1",
+        "k2",
+        "k3",
+        "k4",
+        "k5",
+        "k6",
+        "k7",
+        "k8",
+        "k9"
+      ],
+      "records_omitted_from_uptake": [],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/carry",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "n1",
+        "n2",
+        "n3",
+        "n4",
+        "n5",
+        "n6",
+        "n7",
+        "n8"
+      ],
+      "uptake_declared": [
+        "n1",
+        "n2",
+        "n3",
+        "n4",
+        "n5",
+        "n6",
+        "n7",
+        "n8"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "n1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n3",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n3",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n4",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n4",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n5",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n5",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n6",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n6",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n7",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n7",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "n8",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/carry",
+          "resolved_record_id": "n8",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "n1",
+        "n2",
+        "n3",
+        "n4",
+        "n5",
+        "n6",
+        "n7",
+        "n8"
+      ],
+      "records_omitted_from_uptake": [],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    }
+  ],
+  "nodes_not_read": [],
+  "unresolved_refs": [],
+  "reference_totals": {
+    "refs_walked": 84,
+    "cross_document_rows": 22,
+    "intra_document": 62,
+    "refs_to_exposed_task_artifact": 0,
+    "unresolved": 0,
+    "importer_resolved_counter": 82,
+    "importer_extension_counter": 2,
+    "importer_dangling_counter": 0
+  },
+  "files_read": [
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/account.json",
+      "sha256": "b8de6a8d579c358cade3296a7e8260a03c6e80269cd0486aae43c134999732e6"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/carry.json",
+      "sha256": "cfd3844e4207455171e31093b1f0c57ca0ca11ce1e456d0639b34d62a3401e79"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "810913b5c31f94a4d697da0e90e74205ac6b7abc7b217d44188852f2562110db"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/response.json",
+      "sha256": "a1d4f48d5246608ade51b63604beafc82de9770465d2a7fd7c2340ee8a4e55d3"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "b0b15d8d44c7dcd706879a9ced41e3f26a592ec5a25c2a961e01e32ea748e8cd"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/account.json",
+      "sha256": "d0a342e45e8a6228fb3e0b8e609616e9f125eb3505733cb6c759de9c2135896c"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/carry.json",
+      "sha256": "72a7636ecfd253f6d18203a412810dcde9601b477361747451c69ff520f94bf8"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "0c3e58de82892d77ea57d59f649ba3b59edb03832278a730258904d086a52c1f"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/response.json",
+      "sha256": "7a4279d6bfdcf5960ca9de1544fc9f5dab41fe64ff886abe47b2c366ae915022"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "5290ea81ad554cd3cab774c1256a87e8e7fcb94475c2c8015a1c1b4d998bed3e"
+    },
+    {
+      "path": "manifests/fork5.json",
+      "sha256": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8"
+    },
+    {
+      "path": "manifests/return6.json",
+      "sha256": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951"
+    },
+    {
+      "path": "manifests/weave7.json",
+      "sha256": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df"
+    },
+    {
+      "path": "material.json",
+      "sha256": "24ca4552016836b488c2644db0f17ba0b20c446e9dc2602a29e5e4b1b756c927"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "99cda29f3c6788d564448f7587c7448a6542d30a9bd5e48dc219925e2cc464c3"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/account/call-0001.request.json",
+      "sha256": "789df5c749c0bc555582c72a5cb71b1ed1aae72b9c7ff34cce6aca5a9a7a51d9"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/account/call-0001.response.json",
+      "sha256": "5fdc449bb02388d6eb89a00e1ea27c6372a075fd6c421aa6f102e69d37cacb17"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/carry/call-0001.request.json",
+      "sha256": "e599ddd817fd80c0b0035cc8fa8ad8cc85e318707217e52bd9607ff97b13e0c0"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/carry/call-0001.response.json",
+      "sha256": "6cc961726d6780f7b186a7ca6e38c314bd3c77a4be54bb860a2e3449e2c92899"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/objection/call-0001.request.json",
+      "sha256": "dc6f354fea4a0039fe89a85b21556ae19436dc1e097ec3192ed9950de720f363"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/objection/call-0001.response.json",
+      "sha256": "3154df0185e8ca502bcb627dd8a9e9f8d8997f61fc3f08e31916488b7f570b8b"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/response/call-0001.request.json",
+      "sha256": "afc14692393bb8d4e11ae864c9de50a2c8b0d0a0579b73cb2b553e65d9fa50d1"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/response/call-0001.response.json",
+      "sha256": "1235667af246002b3017288aad37a721283ee869dff842146fc1ff4501fdf68b"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/rival/call-0001.request.json",
+      "sha256": "7a71b713c61ddc6d63f02ef525e1f9fac56591d042c75d338357dc348709e0a8"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/rival/call-0001.response.json",
+      "sha256": "69bb769803e7bdd8bc9131016f54e4f519a9e88e0535137af85316da61e2c6ea"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/account.json",
+      "sha256": "55be2b61dce40bd2db18c5b811b436b08b3c32fca1e4ad27ca102a48efb66c71"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/carry.json",
+      "sha256": "0360de2a09a9a886305108a5b26cbb97eca88874740338be7b884a15fce172bd"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "b5762304ecf9d4ebe1901fdfac19efe855966b42a260c7e4afd1b5f431095643"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/response.json",
+      "sha256": "7d4fefab8d566c1e36222d3e52f5568b6ae6f223689163a8938632ba2238b614"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "c9ab8dee599c0ec8a5febeeaf163eed08bfa2edaaf2e2c2b6f26a2b9d50b975e"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/account.json",
+      "sha256": "633d9dc348b7275ab09b366750de9c34ce31965039411815b99f0a379e4426ed"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/account.txt",
+      "sha256": "539a93fabf07fed8eae75caa5751403b9c7e2dfaadf7c5735d816fcd24f7611d"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/carry.json",
+      "sha256": "d62c73656cffdd5d3e98efd36c90e7cc98ead2ceb4030e2270fd545cac8cd1f6"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/carry.txt",
+      "sha256": "526c499457e517b76921fa606632dd2f0b27842ed5b479e67361714934eb8223"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "c75d97346a0215e7b9683be563411cf2dd5fe038ce5cb8408858de7dcc7930f8"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/objection.txt",
+      "sha256": "f7f80a13c9d319cbb366a33029a4d9e24fecfa221e9e31b13fde00c751acbca1"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/response.json",
+      "sha256": "cb2bf55bcb9ac54a2caec8075bf9c4698543224455e87474d48f2add55d8334f"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/response.txt",
+      "sha256": "fc915cff6f13c290a0b438e866b04fe1557d3f55c62e0e5871e90604daaf1e8e"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "75c0350fcda1efd071ed8e1053443ccf09067d3af4c0a75e607805e53fb95f47"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/rival.txt",
+      "sha256": "f3353d2ca683ef0f88109f18a6e458fa1507727b790abd4b20dd7564e17ff3a1"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/account.json",
+      "sha256": "f4790106152ef33f8f02cc8f182089bd4e99beb4f553144a79e51e2ec4f92f53"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/carry.json",
+      "sha256": "280e043d65157175dee6a9e5a5d6455da319eb39c1da39e660fa95cd9b3d940b"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "68f54165906e979ac09f52c63befd0d128d5ed5271518d96ad0b15e697da5391"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/response.json",
+      "sha256": "4b93806957ee28362fa075b7eee6f385e2737749db020809b801933172501647"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "2e39e17fc98c35c11e2f1d0994e57dcb582f6e8d1c9cee273edfab5d14f95062"
+    },
+    {
+      "path": "waves/wave0001.json",
+      "sha256": "f1ec44d49306ae28903c1875aefc4e4a7b210c8d26d70210438cb5537e1a8faa"
+    },
+    {
+      "path": "waves/wave0002.json",
+      "sha256": "47bfddaaeb4fa9557bad1eec815023a0392f41d67e03e2e4ad3acc4c7aad5522"
+    },
+    {
+      "path": "waves/wave0003.json",
+      "sha256": "cc46ad22810292820d616c9a8d8140e7a212ba72292eaf510b6a50a5fac7a35b"
+    },
+    {
+      "path": "waves/wave0004.json",
+      "sha256": "dbe8dac6e378dbbaf78f153cea905526a83a9520727f4efbcecdd3fb8a5627b3"
+    },
+    {
+      "path": "waves/wave0005.json",
+      "sha256": "efa97d4c982cc867b5a5b9b24862fd238e4f63992def0475033d615bd68ca8b2"
+    },
+    {
+      "path": "waves/wave0006.json",
+      "sha256": "6b5803ce31c3c66ecc8f2c94dacc33ca12183f51db60606177e99826c9999296"
+    }
+  ]
+}
