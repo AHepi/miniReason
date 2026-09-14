@@ -31,3 +31,8 @@ deepreason_core = ["LICENSE"]
 # against. The library also resolves it by filesystem path, so a source
 # checkout works without this entry; it matters for a built wheel.
 minireason = ["data/*.json"]
+# Ship the automated loop's frozen standard data: the claim ceiling and the
+# byte-identical PLAN 8a mirror. minireason.loop.standard reads both at import
+# and pins their sha256 into loop_plan_id, so a wheel without them cannot even
+# be imported, let alone verify a plan.
+"minireason.loop" = ["data/*"]

@@ -1,0 +1,1007 @@
+{
+  "schema": "minireason.loop.reading-set.v1",
+  "run_id": "L001-loop-first-live-2026-09-14",
+  "config_reading_set_matches": true,
+  "size": {
+    "total": 38,
+    "c001_mark_cells": 16,
+    "h005_rows": 22
+  },
+  "order_rationale": [
+    "1. The C001 occurrence-02 grid comes first because its delivery record is clean: all 20 replicates across all four cases are `delivery_status: COMPLETE`, `comparable: true`, `state: PRESENT` and `fcl.parse: OK`, and the published `unresolved_cells` list is empty. G10(b)'s three-resolved-replicates rule is therefore satisfiable for every case by inspection of the published record, before a single call is made.",
+    "2. Inside the C001 leg the within-ORIGINAL baseline row comes first, because PLAN §8a requires it - 'the baseline note is written first and is not revised afterwards' - and G8 makes that physically irreversible by pinning its sha256 into every later call record. The four baseline cells cost no calls; they are the seal the rest of the leg depends on.",
+    "3. The three cross-case comparisons then follow in falsifier order: ORIGINAL vs CONTROL (D1), vs RECODING (F2), vs CARRIER (F3); and within each comparison the registers follow PLAN §8a's own order T, E, D, G. The order is the frozen plan's, not the loop's.",
+    "4. The H005 rows follow in the order the published instrument emitted them, which is the instrument's own deterministic order and is not re-sorted here. Reading them second means the readings that feed the cycle-2 audit's paraphrase-invariance and premise-deletion arms already exist.",
+    "5. C001 occurrence-01 is deliberately NOT in this set. Its `deepseek-flash`/`fcl` juxtaposition delivered 1 of 20 replicates COMPLETE at that occurrence's 8192/180 s ceiling and carries 19 unresolved cells, so G10(b) pre-empts marking for it; its other eleven juxtapositions would need 132 further cross-case cells, well past the declared boundary. Its cells are named `unread` - unreached by spend - and are protected as unresolved by obligation p10. They are never rendered as unresolved by inquiry.",
+    "6. The published figure of 90 use-table rows counts the H005 golden and full tables separately. Their `rows` arrays are byte-identical (22 rows each, all in `daily/mini_fcl/cycle01`); the `full` scope covers 17 coordinates but yields no additional row. The reading set names those 22 distinct rows once. Reading them twice would be re-reading the same cell, which G11 forbids without a `reopen_reason`."
+  ],
+  "max_calls_derivation": {
+    "guarded_row_cost_h005": {
+      "critic": 1,
+      "defender": 1,
+      "judges_canonical_order": 2,
+      "judges_swapped_order_G6": 2,
+      "variator_one_call_yielding_TRIAL_PARAPHRASE_N_2": 1,
+      "judges_re_ruling_each_paraphrase_G7": 4,
+      "total_worst_case": 11,
+      "arithmetic": "1 + 1 + 2 + 2 + 1 + (2 judges x 2 paraphrases = 4) = 11",
+      "best_case": 1,
+      "best_case_note": "critic answers `relation: none`; the row ends at one call and the cell stays unresolved",
+      "deviation_from_design": "§9.1 estimates 'roughly nine calls' for a fully guarded row. That prose estimate does not say whether each paraphrase is re-ruled by both judge seats. This pre-registration declares the strict reading - both seats re-rule both paraphrases, because G7 blocks on 'any flip, or any split on a paraphrase', and a split is only observable if both seats rule - so the budgeted worst case is 11, not 9. Paraphrase re-rulings run in the canonical presentation order only; G6's doubling applies to the adjudication, not to the spot-check."
+    },
+    "guarded_mark_cost_c001": {
+      "marker_seats_canonical_order": 2,
+      "marker_seats_swapped_order_G6": 2,
+      "variator_one_call_yielding_TRIAL_PARAPHRASE_N_2": 1,
+      "marker_seats_re_marking_each_paraphrase_G7": 4,
+      "total_worst_case": 9,
+      "arithmetic": "2 + 2 + 1 + (2 seats x 2 paraphrases = 4) = 9",
+      "note": "The marker reuses the judge pair (`standard.GUARD_PARAMETERS['marker_reuses_judge_seats'] is True`). One call per (cell, comparison, register): a marker pack never carries more than one register, so no call can trade registers off."
+    },
+    "legs": [
+      {
+        "leg": "c001-mark (baseline)",
+        "cells": 4,
+        "cost_each": 0,
+        "subtotal": 0,
+        "why": "the within-ORIGINAL grid is computed and sealed by markprep before any cross-case pack renders (G8); no provider call"
+      },
+      {
+        "leg": "c001-mark (cross-case)",
+        "cells": 12,
+        "cost_each": 9,
+        "subtotal": 108,
+        "why": "3 comparisons (ORIGINAL vs CONTROL / RECODING / CARRIER) x 4 registers (T, E, D, G)"
+      },
+      {
+        "leg": "h005-row",
+        "cells": 22,
+        "cost_each": 11,
+        "subtotal": 242,
+        "why": "the 22 distinct rows of the H005 occurrence-01 use table"
+      },
+      {
+        "leg": "audit window",
+        "cells": 1,
+        "cost_each": 46,
+        "subtotal": 46,
+        "why": "one window, due at the cycle n where n mod audit.period == 0, which inside a 3-cycle budget is cycle 2 only. Planted-flaw calibration: 9 constructed rows x 2 judge seats = 18. Paraphrase invariance over a declared sample of 4 readings already on record: 4 variator calls + 2 seats x 2 paraphrases x 4 readings = 16, subtotal 20. Premise deletion over the same 4 readings: 2 seats x 4 readings = 8. Ensemble disagreement is read off existing records at 0 calls. 18 + 20 + 8 = 46."
+      },
+      {
+        "leg": "dispatch (S4-S7 runner v2)",
+        "cells": 0,
+        "cost_each": 0,
+        "subtotal": 0,
+        "why": "both named occurrences are published and delivery-complete - H005 occurrence-01 is frozen, and C001 occurrence-02's single juxtaposition is 20/20 COMPLETE with zero unresolved cells - so `ready_coordinates` is empty and `send_round` dispatches nothing. A non-empty queue is a planned != expected discrepancy and PREFLIGHT refuses before any spend."
+      }
+    ],
+    "max_calls": 396,
+    "arithmetic": "0 + 108 + 242 + 46 + 0 = 396",
+    "boundary_statement": "396 is a declared attention-and-spend boundary, not a prediction and not an adjudication. PREFLIGHT refuses a plan whose planned call count exceeds it and asserts planned == expected with provider_calls == 0. The expected spend is far lower: G10(d) is expected to remove the six T and D cross-case cells from the hot path entirely (-54), a `relation: none` from the critic ends a row at one call, and G7 runs only on a sustained ruling. Where the boundary is reached, the stop is `resource_boundary`, the unreached entries are printed as `unread`, and the record says which boundary was reached and what would reopen the question. It is never reported as the inquiry running out of things to say.",
+    "audit_schedule_declaration": "An audit window is due in a cycle n where n mod audit.period == 0. With audit.period = 2 and cycle_budget = 3 that is cycle 2 and only cycle 2: exactly one window, 46 calls. §2.5 says 'every AUDIT_PERIOD cycles' without fixing the phase, so a schedule of {1, 3} is a second reading of the same words and would cost two windows. The phase is declared here, before the first call, and PREFLIGHT's planned == expected assertion refuses rather than overspending if the implementation schedules otherwise."
+  },
+  "entries": [
+    {
+      "order": 1,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "T",
+      "carries_falsifier": [],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 2,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "E",
+      "carries_falsifier": [],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 3,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "D",
+      "carries_falsifier": [],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 4,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/within-original-baseline/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"within ORIGINAL (baseline, written first)\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "within ORIGINAL (baseline, written first)",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "baseline grid: computed and sealed by markprep (G8); no marker call",
+      "budgeted_calls": 0
+    },
+    {
+      "order": 5,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "T",
+      "carries_falsifier": [
+        "D1"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 6,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "E",
+      "carries_falsifier": [
+        "D1"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(c): a bare id token shared with the account document forces `unresolved` for this register and never `differs`; only the prefix-resolved residue reaches a trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 7,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "D",
+      "carries_falsifier": [
+        "D1"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 8,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-control/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CONTROL\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CONTROL",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "no program pre-empt; the mark is decided by a guarded pairwise trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 9,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "T",
+      "carries_falsifier": [
+        "F2"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 10,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "E",
+      "carries_falsifier": [
+        "F2"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(c): a bare id token shared with the account document forces `unresolved` for this register and never `differs`; only the prefix-resolved residue reaches a trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 11,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "D",
+      "carries_falsifier": [
+        "F2"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 12,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-recoding/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs RECODING\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs RECODING",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "no program pre-empt; the mark is decided by a guarded pairwise trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 13,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/T",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"T\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "T",
+      "carries_falsifier": [
+        "F3"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 14,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/E",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"E\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "E",
+      "carries_falsifier": [
+        "F3"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(c): a bare id token shared with the account document forces `unresolved` for this register and never `differs`; only the prefix-resolved residue reaches a trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 15,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/D",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"D\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "D",
+      "carries_falsifier": [
+        "F3"
+      ],
+      "falsifier_exclusion": null,
+      "program_preempt_expected": "G10(d): FCL arm, parse OK on all 20 replicates, so the mark is program-computed and no judge is called",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 16,
+      "key": "c001-mark/C001/occurrence-02/deepseek-flash/fcl/original-vs-carrier/G",
+      "leg": "c001-mark",
+      "published_cell": {
+        "file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+        "path": "tables[0].root_register_marks[\"ORIGINAL vs CARRIER\"][\"G\"]",
+        "rendered_in": "experiments/diagnostics/C001-contrast-triple/occurrence-02/COMPARISON.md",
+        "published_value": ""
+      },
+      "comparison": "ORIGINAL vs CARRIER",
+      "register": "G",
+      "carries_falsifier": [],
+      "falsifier_exclusion": "G alone never carries D1, and F2/F3 fire only on T, E or D (PLAN §8a register-to-falsifier mapping)",
+      "program_preempt_expected": "no program pre-empt; the mark is decided by a guarded pairwise trial",
+      "budgeted_calls": 9
+    },
+    {
+      "order": 17,
+      "key": "h005-row/daily/mini_fcl/cycle01/objection#o1/target/p.objection.0#c1->daily/mini_fcl/cycle01/account#c1",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[0].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/objection#o1",
+      "target": "daily/mini_fcl/cycle01/account#c1",
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c1",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          688
+        ],
+        "target_record_span": [
+          31,
+          483
+        ],
+        "referring_body_passages": 5,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 18,
+      "key": "h005-row/daily/mini_fcl/cycle01/objection#o1/target/p.objection.0#c2->daily/mini_fcl/cycle01/account#c2",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[1].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/objection#o1",
+      "target": "daily/mini_fcl/cycle01/account#c2",
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c2",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          688
+        ],
+        "target_record_span": [
+          484,
+          982
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 19,
+      "key": "h005-row/daily/mini_fcl/cycle01/objection#o2/target/p.objection.0#c2->daily/mini_fcl/cycle01/account#c2",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[2].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/objection#o2",
+      "target": "daily/mini_fcl/cycle01/account#c2",
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c2",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          689,
+          1272
+        ],
+        "target_record_span": [
+          484,
+          982
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 20,
+      "key": "h005-row/daily/mini_fcl/cycle01/objection#o3/target/p.objection.0#c2->daily/mini_fcl/cycle01/account#c2",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[3].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/objection#o3",
+      "target": "daily/mini_fcl/cycle01/account#c2",
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c2",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1273,
+          1790
+        ],
+        "target_record_span": [
+          484,
+          982
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 21,
+      "key": "h005-row/daily/mini_fcl/cycle01/objection#o3/target/p.objection.0#c3->daily/mini_fcl/cycle01/account#c3",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[4].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/objection#o3",
+      "target": "daily/mini_fcl/cycle01/account#c3",
+      "ref_field": "target",
+      "ref_verbatim": "p.objection.0#c3",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1273,
+          1790
+        ],
+        "target_record_span": [
+          983,
+          1319
+        ],
+        "referring_body_passages": 1,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 22,
+      "key": "h005-row/daily/mini_fcl/cycle01/rival#r1/mentions/e3647350a300c0ed#BODY->daily/mini_fcl/cycle01/account#BODY",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[5].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/rival#r1",
+      "target": "daily/mini_fcl/cycle01/account#BODY",
+      "ref_field": "mentions",
+      "ref_verbatim": "e3647350a300c0ed#BODY",
+      "ref_grain": "artifact",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          313
+        ],
+        "target_record_span": null,
+        "referring_body_passages": 9,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 23,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k1/target/b5dbbb04b5acd035#c2->daily/mini_fcl/cycle01/account#c2",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[6].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k1",
+      "target": "daily/mini_fcl/cycle01/account#c2",
+      "ref_field": "target",
+      "ref_verbatim": "b5dbbb04b5acd035#c2",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          557
+        ],
+        "target_record_span": [
+          484,
+          982
+        ],
+        "referring_body_passages": 5,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 24,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k1/target/bdbdf50a52b8b1fe#o2->daily/mini_fcl/cycle01/objection#o2",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[7].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k1",
+      "target": "daily/mini_fcl/cycle01/objection#o2",
+      "ref_field": "target",
+      "ref_verbatim": "bdbdf50a52b8b1fe#o2",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          557
+        ],
+        "target_record_span": [
+          689,
+          1272
+        ],
+        "referring_body_passages": 6,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 25,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k2/target/935f7779b91148f4#r7->daily/mini_fcl/cycle01/rival#r7",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[8].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k2",
+      "target": "daily/mini_fcl/cycle01/rival#r7",
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r7",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          558,
+          1035
+        ],
+        "target_record_span": [
+          1735,
+          2157
+        ],
+        "referring_body_passages": 5,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 26,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k2/target/b5dbbb04b5acd035#c3->daily/mini_fcl/cycle01/account#c3",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[9].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k2",
+      "target": "daily/mini_fcl/cycle01/account#c3",
+      "ref_field": "target",
+      "ref_verbatim": "b5dbbb04b5acd035#c3",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          558,
+          1035
+        ],
+        "target_record_span": [
+          983,
+          1319
+        ],
+        "referring_body_passages": 6,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 27,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k3/target/935f7779b91148f4#r6->daily/mini_fcl/cycle01/rival#r6",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[10].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k3",
+      "target": "daily/mini_fcl/cycle01/rival#r6",
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r6",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1036,
+          1650
+        ],
+        "target_record_span": [
+          1283,
+          1734
+        ],
+        "referring_body_passages": 4,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 28,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k3/target/935f7779b91148f4#r9->daily/mini_fcl/cycle01/rival#r9",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[11].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k3",
+      "target": "daily/mini_fcl/cycle01/rival#r9",
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r9",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1036,
+          1650
+        ],
+        "target_record_span": [
+          2523,
+          2916
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 29,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k6/target/935f7779b91148f4#r6->daily/mini_fcl/cycle01/rival#r6",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[12].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k6",
+      "target": "daily/mini_fcl/cycle01/rival#r6",
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r6",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          2635,
+          3153
+        ],
+        "target_record_span": [
+          1283,
+          1734
+        ],
+        "referring_body_passages": 4,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 30,
+      "key": "h005-row/daily/mini_fcl/cycle01/response#k7/target/935f7779b91148f4#r9->daily/mini_fcl/cycle01/rival#r9",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[13].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/response#k7",
+      "target": "daily/mini_fcl/cycle01/rival#r9",
+      "ref_field": "target",
+      "ref_verbatim": "935f7779b91148f4#r9",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          3154,
+          3669
+        ],
+        "target_record_span": [
+          2523,
+          2916
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 31,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n1/target/b998d514348ed94e#k5->daily/mini_fcl/cycle01/response#k5",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[14].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n1",
+      "target": "daily/mini_fcl/cycle01/response#k5",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k5",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          708
+        ],
+        "target_record_span": [
+          2061,
+          2634
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 32,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n1/target/b998d514348ed94e#k7->daily/mini_fcl/cycle01/response#k7",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[15].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n1",
+      "target": "daily/mini_fcl/cycle01/response#k7",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k7",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          31,
+          708
+        ],
+        "target_record_span": [
+          3154,
+          3669
+        ],
+        "referring_body_passages": 8,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 33,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n3/target/b998d514348ed94e#k2->daily/mini_fcl/cycle01/response#k2",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[16].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n3",
+      "target": "daily/mini_fcl/cycle01/response#k2",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k2",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1263,
+          1859
+        ],
+        "target_record_span": [
+          558,
+          1035
+        ],
+        "referring_body_passages": 2,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 34,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n3/target/b998d514348ed94e#k7->daily/mini_fcl/cycle01/response#k7",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[17].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n3",
+      "target": "daily/mini_fcl/cycle01/response#k7",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k7",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1263,
+          1859
+        ],
+        "target_record_span": [
+          3154,
+          3669
+        ],
+        "referring_body_passages": 8,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 35,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n4/target/b998d514348ed94e#k5->daily/mini_fcl/cycle01/response#k5",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[18].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n4",
+      "target": "daily/mini_fcl/cycle01/response#k5",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k5",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          1860,
+          2422
+        ],
+        "target_record_span": [
+          2061,
+          2634
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 36,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n5/target/b998d514348ed94e#k9->daily/mini_fcl/cycle01/response#k9",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[19].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n5",
+      "target": "daily/mini_fcl/cycle01/response#k9",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k9",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          2423,
+          2915
+        ],
+        "target_record_span": [
+          4189,
+          4539
+        ],
+        "referring_body_passages": 1,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 37,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n6/mentions/b998d514348ed94e->daily/mini_fcl/cycle01/response#BODY",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[20].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n6",
+      "target": "daily/mini_fcl/cycle01/response#BODY",
+      "ref_field": "mentions",
+      "ref_verbatim": "b998d514348ed94e",
+      "ref_grain": "artifact",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          2916,
+          3297
+        ],
+        "target_record_span": null,
+        "referring_body_passages": 14,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    },
+    {
+      "order": 38,
+      "key": "h005-row/daily/mini_fcl/cycle01/carry#n7/target/b998d514348ed94e#k8->daily/mini_fcl/cycle01/response#k8",
+      "leg": "h005-row",
+      "published_cell": {
+        "file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+        "path": "rows[21].root_reading / .root_passage_cited / .root_notes / .root_initials_date",
+        "rendered_in": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/USE_TABLE.md",
+        "published_value": ""
+      },
+      "referring": "daily/mini_fcl/cycle01/carry#n7",
+      "target": "daily/mini_fcl/cycle01/response#k8",
+      "ref_field": "target",
+      "ref_verbatim": "b998d514348ed94e#k8",
+      "ref_grain": "record",
+      "resolvable_surface_M": {
+        "referring_record_span": [
+          3298,
+          3847
+        ],
+        "target_record_span": [
+          3670,
+          4188
+        ],
+        "referring_body_passages": 3,
+        "note": "M = referring record bytes ∪ target record bytes ∪ the listed `referring_body_passages`. The uptake booleans, the `resolver_notes` and the instrument banner are framing: a span resolving into them is void under G3."
+      },
+      "budgeted_calls": 11
+    }
+  ]
+}

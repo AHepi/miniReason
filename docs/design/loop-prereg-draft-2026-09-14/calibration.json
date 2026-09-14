@@ -1,0 +1,311 @@
+{
+  "schema": "minireason.loop.calibration.v1",
+  "run_id": "L001-loop-first-live-2026-09-14",
+  "design_section": "§2.5 planted-flaw calibration; anchors mirror `standard.CALIBRATION_ANCHORS`",
+  "pinned_before_first_call": true,
+  "bytes_policy": "Every anchor is assembled from bytes already published in this repository - `experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json` and `experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json` - and from nothing else. No anchor invents a record, a model output or a reading. Where an anchor embeds a quotation it embeds the published span byte-identically, and the checker re-asserts the sha256 of every source before the window runs.",
+  "ground_truth_policy": "Every anchor's ground truth is true *by construction*: it follows from how the anchor was assembled - one byte string on both sides, an empty token intersection, an embedded verbatim quotation, a span placed outside the declared regions, a string that was never written into the exchange, a second copy of a sentence, the symmetry of set equality, or a span held out of paraphrase - and is recomputed by program from the pinned bytes at the start of every audit window. No anchor's ground truth is anyone's reading of the material.",
+  "scoring": "An error is an anchor whose observed outcome disagrees with its `error_if` clause, counted per (anchor, seat). The resulting rate is compared against `config.audit.judge_err_max` = 0.2 by the instrument-fault guard rail only. It is a declared threshold on the instrument's own behaviour; it is not a clause of the O/P repair condition, it never adjudicates a cell, and a rate above it stops the reading arm and Spawns `audit-the-reader` rather than loosening any check.",
+  "seats": [
+    "ollama/gpt-oss-120b",
+    "ollama/qwen3.5-397b"
+  ],
+  "calls_per_window": 18,
+  "calls_arithmetic": "9 anchors x 2 judge seats = 18",
+  "anchor_coverage": {
+    "a_reading_that_must_be_sustained": [
+      "cal-01",
+      "cal-03",
+      "cal-09"
+    ],
+    "a_reading_whose_decisive_point_is_fabricated_and_must_be_blocked": [
+      "cal-06",
+      "cal-07"
+    ],
+    "an_order_swap_sensitive_pair": [
+      "cal-08"
+    ],
+    "a_paraphrase_invariant_pair": [
+      "cal-09"
+    ],
+    "clean_controls_that_must_not_sustain": [
+      "cal-02",
+      "cal-04",
+      "cal-05"
+    ]
+  },
+  "rows": [
+    {
+      "id": "cal-01",
+      "anchor": "self-juxtaposition",
+      "kind": "reading",
+      "construction": "The referring record and the target record are the same bytes: `daily/mini_fcl/cycle01/account#c1` juxtaposed with itself, copied byte-identically from the published use table's `target_record_verbatim`. The resolvable surface M is that record twice.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/account#c1",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "5f547be3e7dc4510600646244fa6f638a4ee8c4b8f8c35158e80dcd5246355e9",
+          "bytes": 452
+        }
+      ],
+      "ground_truth": {
+        "relation": "retains",
+        "must_sustain": true,
+        "expected_outcome": "sustained"
+      },
+      "true_by_construction": "A record retains its own content because it *is* its own content. The ground truth is a property of how the anchor was assembled - one byte string used on both sides - not a reading of it. Any verbatim span of the record resolves inside a declared region, so G2a and G3 are satisfiable.",
+      "error_if": "the seat does not sustain `retains`, or sustains some other relation"
+    },
+    {
+      "id": "cal-02",
+      "anchor": "no-shared-reference",
+      "kind": "reading",
+      "construction": "`daily/mini_fcl/cycle01/account#c1` juxtaposed with `daily/mini_fcl/cycle01/rival#r9`. Neither record carries a `target`, `depends`, `mentions`, `revises` or `withdraws` field naming the other; neither quotes the other; and their distinctive-token sets (content words of length >= 4 drawn from `text`, `scope`, `grounds`, `bearing`, `consequence` and `action`, minus a closed stoplist) intersect in the empty set.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/account#c1",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "5f547be3e7dc4510600646244fa6f638a4ee8c4b8f8c35158e80dcd5246355e9",
+          "bytes": 452
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/rival#r9",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "afbe44ab21e14db8fc080edeb15b973ee31402767e1ad7ff3aee0eb1f11ccc60",
+          "bytes": 393
+        }
+      ],
+      "ground_truth": {
+        "relation": null,
+        "must_sustain": false,
+        "expected_outcome": "critic answers `none`, or the trial is not sustained"
+      },
+      "true_by_construction": "Nothing in either record can bind a role in the other: there is no reference, no quotation, and no shared distinctive token to carry one. No relation from the six-value vocabulary is established. The empty intersection is recomputed by the checker from the two pinned byte strings, so the ground truth is verified, not asserted.",
+      "error_if": "the seat sustains any relation"
+    },
+    {
+      "id": "cal-03",
+      "anchor": "quotes-and-rejects",
+      "kind": "reading",
+      "construction": "A referring record assembled from published bytes: its `text` embeds, verbatim and byte-identically, the substring `Ask the two flatmates separately what they take the flat to be` taken from `daily/mini_fcl/cycle01/rival#r6`, and its `bearing` embeds, verbatim, the substring `It risks producing the withdrawal it is meant to diagnose` taken from `daily/mini_fcl/cycle01/response#k3`. The target record is `rival#r6` unaltered. No byte of either quoted span is rewritten; the surrounding FCL envelope is the published record's own field layout.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/rival#r6",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "41f00aca138e8c7508ea7bc1873f3ed171202cb1cfc39c3cf4629992806be021",
+          "bytes": 451
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/response#k3",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "61d6739ebbc33eb1bfbe6baefdfcaeb56ad7b824939ce2020950423154f9b625",
+          "bytes": 614
+        }
+      ],
+      "quoted_spans": [
+        {
+          "from": "daily/mini_fcl/cycle01/rival#r6",
+          "text": "Ask the two flatmates separately what they take the flat to be"
+        },
+        {
+          "from": "daily/mini_fcl/cycle01/response#k3",
+          "text": "It risks producing the withdrawal it is meant to diagnose"
+        }
+      ],
+      "ground_truth": {
+        "relation": "rejects-with-reason",
+        "must_sustain": true,
+        "expected_outcome": "sustained"
+      },
+      "true_by_construction": "The quotation supplies the passage and the stated ground supplies the reason, both placed there by the construction. The checker asserts both spans occur exactly once in M (`M.count(q) == 1`) and inside the declared referring or target record, so a sustaining seat has a resolvable decisive point available and an unsustaining one cannot blame the material.",
+      "error_if": "the seat does not sustain `rejects-with-reason`"
+    },
+    {
+      "id": "cal-04",
+      "anchor": "clean-control-lexical-overlap-only",
+      "kind": "reading",
+      "construction": "`daily/mini_fcl/cycle01/response#k5` juxtaposed with `daily/mini_fcl/cycle01/rival#r7`. The two records share ten distinctive tokens - `ambiguity`, `back`, `content`, `content-engagement`, `flatmate`, `itself`, `observation`, `reading`, `supports`, `unit-versus-privacy` - and neither record references or quotes the other: k5's only reference field is `depends: [\"k1\",\"k2\",\"k4\"]`, all same-document, and r7's is `depends: [\"r2\",\"r4\"]`, all same-document. The response document's k2 does target `935f7779b91148f4#r7`; that is a fact about k2 and not about k5, and k2 is not in this anchor.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/response#k5",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "89036e634cb9b0d6a31711a8046fff2a64b727cb0c0c29ac3f24b52872d89bb7",
+          "bytes": 573
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/rival#r7",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "4cc34778fb6c725984bf819d4fb712281d7bd7bcd5cee9138ac68ea322ed203f",
+          "bytes": 422
+        }
+      ],
+      "ground_truth": {
+        "relation": null,
+        "must_sustain": false,
+        "expected_outcome": "critic answers `none`, or the trial is not sustained"
+      },
+      "true_by_construction": "A lexical overlap is not evidence of use - the published instrument's own banner says so, quoting FCL-1's rule that `depends` and `mentions` are 'not automatically inferred from citation or lexical overlap' and FW5:628's requirement that a witness 'must preserve internal role bindings, not merely the endpoint string'. No role binding is preserved between these two records by construction: there is no reference to carry one. A seat that sustains here is reading the overlap.",
+      "error_if": "the seat sustains any relation"
+    },
+    {
+      "id": "cal-05",
+      "anchor": "clean-control-framing-only-passage",
+      "kind": "reading",
+      "construction": "`daily/mini_fcl/cycle01/objection#o2` juxtaposed with `daily/mini_fcl/cycle01/account#c2`, with a critic case whose only candidate `passage_quote` is the substring `A lexical overlap is not evidence of use.` - which occurs in the use table's own `banner` field and in no declared record, body passage or target record of this pair.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/objection#o2",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "73b014abe3c5d456879ca7adc9c00c2d7e2c03de88b774b124b56f69248f3dcd",
+          "bytes": 583
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/account#c2",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "4db1fc14257465b349b28b1d7196653c5bf84d7442cb3111ce868b1df5f8fb1d",
+          "bytes": 498
+        },
+        {
+          "field": "banner",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "f92fc56f0f901bb934caa1fc09f7c9cc7e5a6194c1d4e65fc26e57670564d329",
+          "bytes": 1251
+        }
+      ],
+      "ground_truth": {
+        "relation": null,
+        "must_sustain": false,
+        "expected_outcome": "blocked:operative-target"
+      },
+      "true_by_construction": "The quote lies in the pack's framing, not in the material. The checker asserts `M.count(q) == 0` on the resolvable surface and `count == 1` on the banner bytes, so the guard must decline it on G3 before any seat's opinion matters. A reading grounded in the prompt's own scaffolding is not a reading of the material.",
+      "error_if": "the guard registers a warrant, or the block is recorded under any code other than `blocked:operative-target`"
+    },
+    {
+      "id": "cal-06",
+      "anchor": "fabricated-decisive-point",
+      "kind": "judge-ruling",
+      "construction": "The exchange of `cal-03` re-used verbatim, with a judge ruling whose `decisive_point` is the same sentence as cal-03's grounds quote with one interior character altered, so that the string does not occur in `E = case + \"\\n\" + answer` at all.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/rival#r6",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "41f00aca138e8c7508ea7bc1873f3ed171202cb1cfc39c3cf4629992806be021",
+          "bytes": 451
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/response#k3",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "61d6739ebbc33eb1bfbe6baefdfcaeb56ad7b824939ce2020950423154f9b625",
+          "bytes": 614
+        }
+      ],
+      "ground_truth": {
+        "relation": null,
+        "must_sustain": false,
+        "expected_outcome": "blocked:referential-integrity"
+      },
+      "true_by_construction": "`E.count(d) == 0` by construction: the altered string was never written into the exchange. G2b must block and register nothing. This anchor tests the guard's own uniqueness check, not a seat's judgement - a judge pointing at itself rather than at the material.",
+      "error_if": "a warrant is registered, or the vendored `harness.conforming_transcript` accepts the transcript"
+    },
+    {
+      "id": "cal-07",
+      "anchor": "duplicated-passage-non-unique-offset",
+      "kind": "reading",
+      "construction": "`daily/mini_fcl/cycle01/objection#o2` juxtaposed with `daily/mini_fcl/cycle01/account#c2`, with one listed `referring_body_passage` whose bytes are an exact second copy of the sentence `Load imbalance or resentment can coexist with reduced friction on specified items` already present in o2's own `text`. The critic case cites that sentence.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/objection#o2",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "73b014abe3c5d456879ca7adc9c00c2d7e2c03de88b774b124b56f69248f3dcd",
+          "bytes": 583
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/account#c2",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "4db1fc14257465b349b28b1d7196653c5bf84d7442cb3111ce868b1df5f8fb1d",
+          "bytes": 498
+        }
+      ],
+      "ground_truth": {
+        "relation": null,
+        "must_sustain": false,
+        "expected_outcome": "blocked:referential-integrity"
+      },
+      "true_by_construction": "`M.count(q) == 2` by construction, because the construction placed the second copy there. G2a requires exactly one occurrence and must block. The anchor separates 'the citation is fabricated' from 'the citation is ambiguous'; both are refusals to read, and neither is an absence of relations.",
+      "error_if": "a warrant is registered, or the block is recorded under any code other than `blocked:referential-integrity`"
+    },
+    {
+      "id": "cal-08",
+      "anchor": "order-swap-sensitive-pair",
+      "kind": "mark-pair",
+      "construction": "Two constructed pairwise mark comparisons over register T, each presented in both orders with labels reassigned, built from the published `fcl.targets_named` sets of `experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json`, `tables[0]`:\n  (a) ORIGINAL rep2 (`targets_named` = the empty set) against CONTROL rep1 (`targets_named` = the empty set). PLAN §8a: T `differs` iff the two sets of distinct targets are not the same set. Two empty sets are the same set, so the mark is `same` in both orders.\n  (b) ORIGINAL rep4 (`targets_named` = {`n1`, `n2`, `n4`}) against CONTROL rep3 (`targets_named` = {`n1`, `n2`}). The two sets are not the same set, so the mark is `differs` in both orders, with `difference_kind` = `target_set_membership`.",
+      "source_bytes": [
+        {
+          "field": "tables[0].cases.original[1].fcl.targets_named",
+          "source_file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "value": []
+        },
+        {
+          "field": "tables[0].cases.control[0].fcl.targets_named",
+          "source_file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "value": []
+        },
+        {
+          "field": "tables[0].cases.original[3].fcl.targets_named",
+          "source_file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "value": [
+            "n1",
+            "n2",
+            "n4"
+          ]
+        },
+        {
+          "field": "tables[0].cases.control[2].fcl.targets_named",
+          "source_file": "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "value": [
+            "n1",
+            "n2"
+          ]
+        }
+      ],
+      "ground_truth": {
+        "marks": {
+          "a": "same",
+          "b": "differs"
+        },
+        "difference_kind_b": "target_set_membership",
+        "must_sustain": true,
+        "expected_outcome": "identical mark in both presentation orders"
+      },
+      "true_by_construction": "Set equality and set inequality are symmetric relations, so the correct mark cannot depend on which side is presented first. The checker recomputes both set comparisons from the pinned published values. A seat that returns different marks in the two orders is order-sensitive and the difference is a hit, logged against that seat; the guard blocks the cell as `blocked:order-swap` and registers nothing.",
+      "error_if": "a seat's mark differs between the two presentation orders, or either mark disagrees with the constructed ground truth"
+    },
+    {
+      "id": "cal-09",
+      "anchor": "paraphrase-invariant-pair",
+      "kind": "exchange",
+      "construction": "The sustained exchange of `cal-03`, with two variator paraphrases of `case + \"\\n\" + answer` in which both quoted spans - `Ask the two flatmates separately what they take the flat to be` and `It risks producing the withdrawal it is meant to diagnose` - are extracted before paraphrasing, held out, and re-inserted byte-identically afterwards. Only the connective framing around them varies. The material itself is never paraphrased: its bytes are what the offsets resolve against.",
+      "source_bytes": [
+        {
+          "record": "daily/mini_fcl/cycle01/rival#r6",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "41f00aca138e8c7508ea7bc1873f3ed171202cb1cfc39c3cf4629992806be021",
+          "bytes": 451
+        },
+        {
+          "record": "daily/mini_fcl/cycle01/response#k3",
+          "source_file": "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+          "sha256": "61d6739ebbc33eb1bfbe6baefdfcaeb56ad7b824939ce2020950423154f9b625",
+          "bytes": 614
+        }
+      ],
+      "ground_truth": {
+        "relation": "rejects-with-reason",
+        "must_sustain": true,
+        "expected_outcome": "the same `sustained: true` on the original exchange and on both paraphrases"
+      },
+      "true_by_construction": "The decisive point is carried entirely by spans the paraphrase is forbidden to touch, and the program asserts their byte-identical survival before any re-ruling. The relation the case asserts is therefore established by exactly the same bytes in all three renderings. A flip is not a disagreement about the material; it is evidence about the seat, and it registers as an `eval:program` demonstrative warrant against that seat's readings' `nu_soundness`. If a paraphrase fails the span-survival assertion, the spot-check is recorded `paraphrase_check: not_performed` and is not scored as a pass.",
+      "error_if": "a seat sustains on one rendering and not on another"
+    }
+  ]
+}

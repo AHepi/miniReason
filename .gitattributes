@@ -1,0 +1,25 @@
+# Files whose BYTES are evidence, marked so git never rewrites a line ending in
+# them on checkout or on commit.
+#
+# docs/lessons/operations.md (OPS-20260914-LEDGERCRLF) states the rule: the scope
+# is any tracked file whose bytes are evidence. Two such files exist today.
+#
+#   src/minireason/loop/data/**   the standard's shipped data. Their sha256 is
+#                                 pinned into `loop_plan_id` by
+#                                 minireason.loop.standard (CEILING_SHA256 and,
+#                                 through the ceiling digest, STANDARD_BODY_SHA256).
+#                                 A CRLF checkout changes both digests while every
+#                                 required sentence still parses -- text-mode
+#                                 universal newlines hide it -- so the plan identity
+#                                 would move and nothing would say so.
+#   docs/DECISION_LEDGER.md       append-only, and already carries CRLF lines from
+#                                 earlier publishers. `-text` keeps them exactly as
+#                                 they are; the ledger writer only ever appends.
+#
+# There is deliberately NO global `* text=auto eol=lf` line. This repository
+# carries historical CRLF bytes in tracked files, and a global rule would renormalise
+# them on the next checkout -- a large diff of files nobody edited, which is noise in
+# front of the two files that actually matter here.
+
+src/minireason/loop/data/** -text
+docs/DECISION_LEDGER.md -text

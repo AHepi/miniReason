@@ -1,5 +1,65 @@
 # Current research status
 
+## The automated loop's waves 0-2 are published as a recoverable checkpoint — 2026-09-14
+
+REC-20260914-AA, re-attempted under its own identifier after its first attempt failed its own
+gate, publishes the **automated end-to-end harness loop's waves 0-2** on this branch. The
+section below, "The automated loop's waves 0-2 checkpoint was verified and refused", records
+that first attempt and is left standing unedited; **this section supersedes its outcome and
+nothing else in it.**
+
+**What completed.** The two defects that refused the first attempt are repaired and the repair
+of each is proved by the test that caught it. `tests/loop/test_roles.py` now captures the
+pristine `socket.socket`, `socket.create_connection` and `provider_openai_compat._open` once at
+import and installs its refusal under a lock behind a depth counter, so six concurrent threads
+can no longer leave the process patched; `tests/test_provider_openai_compat.py`'s two
+no-network tests pass inside the full run. `src/minireason/loop/data/plan_8a_mirror.json` is
+re-pinned to the C001 `PLAN.md` this branch carries (`a27fe94a…`), so
+`tests/loop/test_standard.py`'s digest assertion passes rather than skipping. **Wave 2 is
+integrated**, which discharges the opening receipt's limit (3):
+[`WAVE2-INTERFACE.md`](design/loop-impl/WAVE2-INTERFACE.md) exists, items 24-28, 42 and 48-54 of
+the integration list are dispositioned in it, twenty-nine failure codes were folded in so
+`types.FAILURE_CODES` carries 201 and its frontier is empty, and `STANDARD_BODY_SHA256` has
+moved twice to `a9007dc7…` (the second move is the `cal-01` repair, PR-06). The gate:
+`PYTHONPATH=src python3 -X utf8 -m unittest discover -s tests` reports **`Ran 2673 tests in
+214.278s`, `OK (skipped=2)`** — the 1,450 already on record plus the loop's 1,223. Credential
+scan over every staged file, **0 matches**. **Zero provider calls and no credential read.**
+
+**Published paths.** `src/minireason/loop/` (sixteen modules, `__init__.py` and two data files),
+`tests/loop/` (seventeen files), `.gitattributes` marking the loop's data and the ledger `-text`,
+one `pyproject.toml` package-data line, the [design of
+record](design/automated-loop-design-2026-09-14.md), six documents under
+[`design/loop-impl/`](design/loop-impl/), and the eight-file L001 bundle under
+[`design/loop-prereg-draft-2026-09-14/`](design/loop-prereg-draft-2026-09-14/) **as a labelled
+draft**, with a README naming its stale pins and its thirteen open blockers.
+
+**What this does not establish.** The loop has **never been run**: no driver exists, nothing has
+executed end to end, and every number above is a test result and not a run result. **No provider
+call is authorised by any of it.** Waves 3-6 are unbuilt — no trial runner, no marker, no driver,
+no report, no operator page. The pre-registration bundle **is not a pre-registration**: it is not
+minted until S0 PREFLIGHT against the tree that exists then, its `STANDARD_BODY_SHA256` is stale
+by two generations, its `VALIDATION.md` pins a superseded `config.json`, and **all thirteen
+blockers PR-01 through PR-13 are open as bundle edits** — five of them (PR-02, PR-05, PR-06,
+PR-07, PR-12) have had their code half repaired and recorded in `WAVE2-INTERFACE.md` §10, and no
+bundle edit is made. The two declared narrowings of `use_relation_h005` — the six-value reading
+vocabulary and the "the reading is root's" banner a loop table would contradict — are applied
+nowhere; the instrument is untouched and the twenty-four published analysis artifacts keep their
+banner. A new finding is recorded and **not** fixed: on a cold bytecode cache, **ten** of the
+seventeen import targets fail `python3 -W error` with `SyntaxError: invalid escape sequence '\s'`
+raised from `src/minireason/use_relation_h005.py:301`; that is a repository defect belonging to
+`SRC-003`, not to this package, and the first attempt's "all seventeen OK" was a warm-cache false
+negative.
+
+**Next authorized task, in order.** (1) **Build waves 3-6** — trial runner, marker, driver,
+report, operator page — against `WAVE2-INTERFACE.md` §11's open list. (2) **Revise the
+pre-registration bundle against `REVIEW-PREREG.md`**, closing PR-01 through PR-13, regenerating
+`VALIDATION.md` **before** publication rather than after, and re-deriving every pin against the
+tree that exists then. (3) **A dry run with zero provider calls**, on synthetic fixtures, before
+any live run is a question at all. **Only then** is a live run a decision, and it would be a new
+decision with its own receipt: **no provider call is authorised by anything above.** Ruling 7
+holds throughout — the harness defines no metric and no optimisation target over the material —
+and ruling 9's prohibition on an automatic search for a winning configuration holds with it.
+
 ## A001 is published as an in-progress record — the Account challenge of FW5 — 2026-09-14
 
 REC-20260914-AB publishes **A001**, the independent Account sufficiency/necessity challenge to the

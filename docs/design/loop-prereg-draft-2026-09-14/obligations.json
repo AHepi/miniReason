@@ -1,0 +1,298 @@
+{
+  "schema": "minireason.loop.obligations.v1",
+  "run_id": "L001-loop-first-live-2026-09-14",
+  "loop_design_section": "§5 of the automated end-to-end harness loop design of record; FW5 R8 (P) at FW5:787-802",
+  "fixed_before_first_look": true,
+  "material": {
+    "h005_occurrence": "experiments/diagnostics/H005-open-prose-commitments/occurrence-01",
+    "h005_published_tables": [
+      "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-golden/use_table.json",
+      "experiments/analyses/H005-occurrence-01-cycle01-snapshot-2026-09-14/use-table-full/use_table.json"
+    ],
+    "c001_study": "experiments/diagnostics/C001-contrast-triple",
+    "c001_occurrences_in_reading_set": [
+      "experiments/diagnostics/C001-contrast-triple/occurrence-02"
+    ],
+    "c001_occurrences_referenced_but_not_read": [
+      "experiments/diagnostics/C001-contrast-triple/occurrence-01"
+    ],
+    "note": "The golden and full H005 use tables carry byte-identical row lists (22 rows each); the published total of 90 rows counts those 22 twice. The reading set names the 22 distinct rows once. C001 occurrence-01's 12 juxtapositions are referenced by p10 as material that must stay unresolved, and are named `unread` - unreached by spend - not `unresolved`."
+  },
+  "repair_condition": "Continue only when some o in O failed at the prior situation xi and holds at the cycle-end situation xi', AND the artifacts that make it hold were registered by this cycle (ProducedBy discharged, not temporal succession), AND every r in P that held at xi still holds at xi'. Any protected loss stops the chain as `protected_loss` with the loss named. Losses outside P are written every cycle, present even when empty.",
+  "no_clause_is_a_count": "EXPLICIT DECLARATION. No clause of O or of P reads a quantity. Every clause above is one of: a universal quantification over a fixed, pre-registered, named key set; an existential over that same set; a set-membership test against a closed vocabulary; a byte or digest equality; a uniqueness predicate (`str.count(q) == 1`, which asserts that a citation resolves to exactly one place and is not a threshold on a measured quantity); a span-containment test; an emptiness assertion on a set defined by kind; a verbatim substring presence; or a recency comparison on a cycle index. No clause counts readings, marks, agreeing endpoints, `differs` marks, blocks, rows resolved or calls spent, and none compares any such quantity against a threshold. The block register and the audit error rate are printed for a reader and read by the instrument-fault guard rail, which is a declared threshold on the instrument's own behaviour and is not a clause of this repair condition. A cycle may be net withdrawal - more cells moving to unresolved than away from it - and still be recorded as progress if an o was discharged, or as no progress if none was (FW5:810).",
+  "transport": "The interpretation of every o and r across the two representations in play - the published instruments' own vocabularies and the loop's graph artifacts - is fixed by the key maps in `reading_set.json`: each declared reading-set key names exactly one published cell or row and exactly one `C_open` artifact. Without that map the two are not silently compared (FW5:800).",
+  "obligations": [
+    {
+      "id": "o1",
+      "set": "O",
+      "statement": "For every entry of `config.reading_set` beginning `h005-row/` - the 22 rows of the H005 occurrence-01 use-relation table, named one by one in `reading_set.json` - the graph holds either (a) one registered reading artifact `A_reading` whose `cell` is that row key, whose `relation` is a member of `standard.NOMINABLE_RELATIONS`, and whose recorded passage offset was produced by a `resolve_unique` that returned a span lying inside that row's declared referring record, declared target record, or one of its listed `referring_body_passages`; or (b) one registered disposition record for that row key whose `reason` is a member of the closed set {`critic-none`, `unresolved:outside-vocabulary`, `blocked:<code>` for a `code` in `types.BLOCK_CODES`, `NOT_DISPATCHED`, `INDETERMINATE`, `unreached`}.",
+      "check": {
+        "predicate": "obligations.row_disposition_complete",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/cycles/cycle-NN/readings/<row_dir>/outcome.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/graph/log.jsonl"
+        ],
+        "detail": "Iterate the 22 declared row keys in their pre-registered order; for each, look up exactly one outcome record by key and assert the disjunction above on that record's own fields. A missing key, an unlisted reason, a relation outside the vocabulary, or an offset that does not re-resolve on the recorded surface digest fails the obligation and names the row that failed."
+      },
+      "why_not_a_count": "A universal quantification over a fixed set of 22 named keys, each checked against its own record. Nothing compares a quantity of resolved rows with anything."
+    },
+    {
+      "id": "o2",
+      "set": "O",
+      "statement": "For every entry of `config.reading_set` beginning `c001-mark/` - the 16 cells of the C001 occurrence-02 `deepseek-flash`/`fcl` mark grid, four comparisons by the four PLAN §8a registers T, E, D, G - the graph holds either (a) one registered mark artifact carrying a `mark` from `standard.MARKS` and, where the mark is `differs`, a `difference_kind` token drawn from `standard.DIFFERENCE_KINDS[<register>]`; or (b) one registered per-register reason record whose `reason` is a member of the closed set {`program-computed`, `baseline-forced-same`, `under-replicated`, `bare-token-ambiguity`, `byte-identity-defeater`, `blocked:<code>` for a `code` in `types.BLOCK_CODES`, `unreached`}. The four registers are recorded separately; no record may carry a combined or reduced mark.",
+      "check": {
+        "predicate": "obligations.mark_disposition_complete",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/cycles/cycle-NN/contrast/marks.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/graph/log.jsonl"
+        ],
+        "detail": "Iterate the 16 declared cell keys in their pre-registered order and assert the disjunction per key. Additionally assert `contracts.assert_no_scoring_keys` over each mark record, so a combined field is unexpressible rather than merely absent."
+      },
+      "why_not_a_count": "A universal quantification over a fixed set of 16 named keys. The number of `differs` marks, of `same` marks and of registers that resolved is never read by this clause."
+    },
+    {
+      "id": "o3",
+      "set": "O",
+      "statement": "Every registered reading and every registered mark carries a citation that re-resolves: the critic's `passage_quote` q satisfies `M.count(q) == 1` on the recorded resolvable surface M (referring record union target record union listed `referring_body_passages`) and `M.index(q)` maps to a span inside one of those three declared regions; and, for a reading, each judge's `decisive_point` d satisfies `E.count(d) == 1` on `E = case + \"\\n\" + answer` as recorded in that reading's transcript blob. For a mark, the recorded `left_quote` and `right_quote` each re-resolve uniquely on their own side's commitment surface.",
+      "check": {
+        "predicate": "obligations.citations_reresolve",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/graph/blobs/<transcript>",
+          "experiments/loops/L001-loop-first-live-2026-09-14/cycles/cycle-NN/readings/<row_dir>/outcome.json"
+        ],
+        "detail": "Rebuild the surface from the pinned occurrence bytes, assert its sha256 equals the `surface_digest` written into the artifact, then re-run `surface.resolve_unique` and `surface.within_declared_span` for every recorded citation. The obligation fails naming the first artifact whose citation does not re-resolve; a surface digest mismatch fails as custody, not as a reading result."
+      },
+      "why_not_a_count": "Two `str.count == 1` equalities and a span-containment test per artifact. `count == 1` is a uniqueness predicate, not a quantity compared against a threshold."
+    },
+    {
+      "id": "o4",
+      "set": "O",
+      "statement": "Every cell of the reading set whose outcome is a block carries a `block_code` that is a member of `types.BLOCK_CODES`, a `prompt_blob_ref` and a `raw_blob_ref`, and appears in the rendered block register under that code. No cell carries a block without a code, and no rendered file names a block code outside `types.BLOCK_CODES`.",
+      "check": {
+        "predicate": "obligations.blocks_named",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/cycles/cycle-NN/readings/<row_dir>/outcome.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/READING_TABLE.md",
+          "experiments/loops/L001-loop-first-live-2026-09-14/COMPARISON.md"
+        ],
+        "detail": "Set membership of each recorded code in `types.BLOCK_CODES`, presence of both blob refs, and presence of the code as a heading in the rendered block register. The register prints counts; this obligation reads the headings, never the counts."
+      },
+      "why_not_a_count": "Set membership and field presence per blocked cell. The block register's counts are printed for a reader and are not read by any clause of the decision rule."
+    },
+    {
+      "id": "o5",
+      "set": "O",
+      "statement": "An audit report artifact is in force: one registered `AuditReport` whose `cycle` index n satisfies `current_cycle - n < audit.period` (= 2 for this run), which covers both judge seats named in `config.seats.judges` by endpoint name, and which carries a planted-flaw calibration result computed against the nine calibration rows pinned in `calibration.json` at the sha256 recorded in `plan.json`.",
+      "check": {
+        "predicate": "obligations.audit_in_force",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/audits/cycle-NN/audit.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/plan.json"
+        ],
+        "detail": "Find the audit report of greatest cycle index, assert its cycle recency against `audit.period`, assert both seat names appear in its `seats` field, and assert its `calibration_set_sha256` equals the pinned digest. Absence of any audit report fails the obligation, which is its state at the opening situation."
+      },
+      "why_not_a_count": "A recency comparison on a cycle index and two set-membership assertions. The audit's own error rate is compared against `audit.judge_err_max` by the instrument-fault guard rail, which is a declared threshold on the instrument and not a clause of the repair condition."
+    },
+    {
+      "id": "o6",
+      "set": "O",
+      "statement": "The within-ORIGINAL baseline for the C001 occurrence-02 juxtaposition exists, was written before any cross-case pack was rendered, and is pinned: a baseline grid artifact covering all four registers is registered, its sha256 is recorded in `plan.json`, and every marker call record for one of the twelve cross-case cells carries that same sha256.",
+      "check": {
+        "predicate": "obligations.baseline_sealed_and_carried",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/cycles/cycle-NN/contrast/baseline.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/readings/<cell_dir>/requests/*.json"
+        ],
+        "detail": "Recompute the baseline artifact's sha256 from its own bytes, assert equality with the pinned value, and assert byte equality of `baseline_sha256` on every cross-case call record. A cross-case call record without the pin is `BASELINE_NOT_FIRST`."
+      },
+      "why_not_a_count": "Three byte equalities on sha256 digests and an existence assertion."
+    },
+    {
+      "id": "o7",
+      "set": "O",
+      "statement": "Every one of the 38 declared reading-set cells appears in the rendered record under exactly one of four printed states: a relation or a mark; `unresolved` (a deliberate reading that stays unresolved); `machine-unresolved:<block code>`; or `unread` (never dispatched, named as unreached by spend). No cell appears under two states and none is absent from the rendered record.",
+      "check": {
+        "predicate": "obligations.trichotomy_rendered",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/READING_TABLE.md",
+          "experiments/loops/L001-loop-first-live-2026-09-14/COMPARISON.md"
+        ],
+        "detail": "Parse the rendered tables, key by cell, and assert exactly one state column is non-empty per declared key and that the key set of the render equals the declared reading set exactly."
+      },
+      "why_not_a_count": "A bijection assertion between the declared key set and the rendered key set, plus an exactly-one-of-four state test per key."
+    },
+    {
+      "id": "p1",
+      "set": "P",
+      "statement": "The ORIGINAL bytes remain the occurrence's bytes. For the C001 occurrence-02 juxtaposition, each of the five ORIGINAL replicates' `public_text_sha256` and `commitments_sha256` in the published `comparison.json` equal the values pinned at PREREGISTER; and the H005 occurrence-01 `material_sha256` equals `24ca4552016836b488c2644db0f17ba0b20c446e9dc2602a29e5e4b1b756c927`.",
+      "check": {
+        "predicate": "obligations.original_bytes_unchanged",
+        "artifact": [
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/material.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/plan.json"
+        ],
+        "detail": "Byte equality of ten recorded digests plus one material digest against the pinned map."
+      },
+      "why_not_a_count": "Digest equalities."
+    },
+    {
+      "id": "p2",
+      "set": "P",
+      "statement": "The recoding correspondence table stays complete and published before dispatch: `experiments/diagnostics/C001-contrast-triple/occurrence-02/RECODING_TABLE.md` and `experiments/diagnostics/C001-contrast-triple/RECODING_TABLE.md` are present at their pinned sha256, and every recoded unit named in the occurrence's `material.json` has a correspondence row in it.",
+      "check": {
+        "predicate": "obligations.recoding_table_complete",
+        "artifact": [
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/RECODING_TABLE.md",
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/material.json"
+        ],
+        "detail": "Digest equality plus a per-unit presence assertion keyed by recoded unit id."
+      },
+      "why_not_a_count": "Digest equality and a per-unit presence assertion over a named unit set."
+    },
+    {
+      "id": "p3",
+      "set": "P",
+      "statement": "No case's request differs outside the objection block. Re-running C001's own envelope check over the occurrence's published request records raises neither `SHARED_ENVELOPE_MISMATCH` nor `ORIGINAL_CASE_NOT_THE_OCCURRENCE_BYTES` (PLAN §8 F4).",
+      "check": {
+        "predicate": "obligations.shared_envelope_intact",
+        "artifact": [
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/requests/",
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/audit.json"
+        ],
+        "detail": "Compare the four cases' request bodies pairwise outside the declared objection block span and assert byte equality; assert the audit record's own verdict is unchanged."
+      },
+      "why_not_a_count": "Pairwise byte equality outside a declared span."
+    },
+    {
+      "id": "p4",
+      "set": "P",
+      "statement": "No scoring key appears anywhere. `contracts.assert_no_scoring_keys` over every artifact the run registers, every table header and every file rendered under the run root returns no hit, and `SCORING_KEY_FORBIDDEN` is never suppressed.",
+      "check": {
+        "predicate": "obligations.no_scoring_key",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/**"
+        ],
+        "detail": "Recursive scan of every emitted JSON value and every rendered heading."
+      },
+      "why_not_a_count": "A forbidden-key scan; the clause reads key names, never values."
+    },
+    {
+      "id": "p5",
+      "set": "P",
+      "statement": "Provider and study records stay write-once with no replay. Every coordinate under `experiments/loops/L001-loop-first-live-2026-09-14/readings/` has at most one response record; no request, attempt or response file is ever rewritten; `NO_REPLAY` is never bypassed and no retry of a spent call is issued.",
+      "check": {
+        "predicate": "obligations.write_once_no_replay",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/readings/",
+          "experiments/loops/L001-loop-first-live-2026-09-14/steps/"
+        ],
+        "detail": "Assert each coordinate directory holds at most one response; assert every file's recorded creation digest still matches its bytes; assert no step receipt carries a repeat of an already-terminal coordinate."
+      },
+      "why_not_a_count": "An at-most-one uniqueness assertion per coordinate and a digest equality per file - not a comparison of how many calls were made."
+    },
+    {
+      "id": "p6",
+      "set": "P",
+      "statement": "No reading is averaged or majority-voted. No registered artifact and no rendered file carries a mean, median, majority, weighted, summed, ranked or otherwise aggregated field over rulings or marks; every judge split is recorded as `blocked:ensemble-split` with both rulings verbatim and leaves the cell unresolved.",
+      "check": {
+        "predicate": "obligations.no_aggregation",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/**",
+          "experiments/loops/L001-loop-first-live-2026-09-14/graph/log.jsonl"
+        ],
+        "detail": "Forbidden-key scan for aggregate field names, plus: for every recorded pair of judge rulings that disagree, assert the cell's outcome is `blocked:ensemble-split` and both raw rulings are present verbatim in the transcript blob."
+      },
+      "why_not_a_count": "A key scan and a per-split implication. The clause never counts splits; it asserts what each split produced."
+    },
+    {
+      "id": "p7",
+      "set": "P",
+      "statement": "No reading mints an `att` or `dep` edge on any node under study. The set of `att` and `dep` edges whose target is an `E_row` or `E_cell` material artifact is empty; every reading's attack targets its own `C_open`, and a declared `rejects-with-reason` relation creates no attack edge while a `re-deploys` relation creates no support edge.",
+      "check": {
+        "predicate": "obligations.no_edges_on_studied_nodes",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/graph/log.jsonl"
+        ],
+        "detail": "Walk the registered edge set, partition by target artifact kind, and assert the material partition is empty."
+      },
+      "why_not_a_count": "An emptiness assertion on a set defined by target kind."
+    },
+    {
+      "id": "p8",
+      "set": "P",
+      "statement": "The appellate remains optional: no step's status depends on the presence of a file under `experiments/loops/L001-loop-first-live-2026-09-14/appeals/`, and a run whose appeals directory is empty reaches CLOSE and renders `appellate_rulings: 0` with the not-validated sentence.",
+      "check": {
+        "predicate": "obligations.appellate_optional",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/steps/",
+          "experiments/loops/L001-loop-first-live-2026-09-14/CLOSING.md"
+        ],
+        "detail": "Assert no step receipt carries a failure code naming a missing ruling, and assert the closing record carries the `appellate_rulings` line and, at zero, the ceiling's not-validated sentence verbatim."
+      },
+      "why_not_a_count": "A failure-code absence assertion and a verbatim-sentence presence assertion."
+    },
+    {
+      "id": "p9",
+      "set": "P",
+      "statement": "The baseline of every marked cell is still at the sha256 pinned in its call records: recomputing the baseline artifact's digest at cycle end reproduces the value every cross-case call record carries.",
+      "check": {
+        "predicate": "obligations.baseline_still_pinned",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/cycles/cycle-NN/contrast/baseline.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/readings/<cell_dir>/requests/*.json"
+        ],
+        "detail": "Digest recomputation and byte equality against every carrying call record."
+      },
+      "why_not_a_count": "Digest equality."
+    },
+    {
+      "id": "p10",
+      "set": "P",
+      "statement": "Every C001 cell that is unresolved in the published record remains unresolved unless a guarded reading attacks it. For each of the 78 empty `root_reading` cells and the 208 empty register-mark cells across `experiments/diagnostics/C001-contrast-triple/occurrence-01/comparison.json` and `experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json`, the corresponding `C_open` artifact carries the adjudicated label `accepted` - which means *unresolved* - unless there exists a registered warrant against that exact `C_open` which passed the whole guard G0-G12 and whose transcript conforms. In particular no published byte is edited: the published grids stay empty and the loop's readings live beside them.",
+      "check": {
+        "predicate": "obligations.published_unresolved_preserved",
+        "artifact": [
+          "experiments/diagnostics/C001-contrast-triple/occurrence-01/comparison.json",
+          "experiments/diagnostics/C001-contrast-triple/occurrence-02/comparison.json",
+          "experiments/loops/L001-loop-first-live-2026-09-14/graph/log.jsonl"
+        ],
+        "detail": "Enumerate the empty cells of both published grids by key; for each, look up its `C_open`; assert `final_labels` gives `accepted`, or else that exactly the warrants attacking it are guarded readings with conforming transcripts. Separately assert both published files are byte-unchanged against their pinned sha256."
+      },
+      "why_not_a_count": "A per-cell implication over an enumerated key set plus two file-digest equalities. The clause never compares how many cells resolved."
+    },
+    {
+      "id": "p11",
+      "set": "P",
+      "statement": "Nothing published is written. No file under `experiments/diagnostics/**` or `experiments/analyses/**` is created, modified, renamed or deleted by the run; the run writes only under `experiments/loops/L001-loop-first-live-2026-09-14/` plus append-only additions to `docs/DECISION_LEDGER.md` and the repo activity log.",
+      "check": {
+        "predicate": "obligations.published_tree_untouched",
+        "artifact": [
+          "experiments/diagnostics/",
+          "experiments/analyses/",
+          "experiments/loops/L001-loop-first-live-2026-09-14/plan.json"
+        ],
+        "detail": "Recompute the digest of every file under both published trees against the map pinned at PREREGISTER, and assert the staged path set of every publish step is a subset of the run root plus the two append-only records."
+      },
+      "why_not_a_count": "Per-path digest equality and a path-set subset assertion."
+    },
+    {
+      "id": "p12",
+      "set": "P",
+      "statement": "The claim ceiling is present and the three cell states are never collapsed. Every rendered table and the closing record contain each sentence of `standard.CEILING_REQUIRED_SENTENCES` verbatim and the ceiling body at its pinned sha256; and no rendered file describes an `unread` or a `machine-unresolved` cell as unresolved by inquiry, and no rendered file carries the one forbidden stop-vocabulary token outside the ceiling's own denial clause.",
+      "check": {
+        "predicate": "obligations.ceiling_and_trichotomy_intact",
+        "artifact": [
+          "experiments/loops/L001-loop-first-live-2026-09-14/READING_TABLE.md",
+          "experiments/loops/L001-loop-first-live-2026-09-14/COMPARISON.md",
+          "experiments/loops/L001-loop-first-live-2026-09-14/CLOSING.md",
+          "experiments/loops/L001-loop-first-live-2026-09-14/CEILING.md"
+        ],
+        "detail": "Substring presence for each required sentence, digest equality for `CEILING.md`, and the standard module's forbidden-stop-token scan over every rendered file, whose one exemption is the ceiling's own denial clause."
+      },
+      "why_not_a_count": "Verbatim substring presence, a digest equality and a forbidden-stem scan."
+    }
+  ],
+  "obligations_sha256": "713119a7cd255296058b18084a40cbac7a3353903bbf8cd260b6e78c173e4302",
+  "obligations_sha256_recipe": "sha256_hex(deepreason_core.canonical.canonical_json(document_without_the_two_digest_keys)) - json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(\",\",\":\")).encode(), the repository's canonical structure digest, byte-identical to minireason.provider.digest's."
+}
