@@ -28,6 +28,13 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.11', '3.12']
+        # Floor leg switch. The base legs resolve pydantic freely; the extra
+        # leg below pins the floor declared in pyproject.toml so the
+        # declaration is exercised, not merely asserted.
+        pydantic-floor: [false]
+        include:
+          - python-version: '3.12'
+            pydantic-floor: true
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -37,6 +44,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install the package and its declared dependencies
         run: python -m pip install -e .
+      - name: Pin the declared pydantic floor
+        if: ${{ matrix.pydantic-floor }}
+        run: python -m pip install "pydantic==2.7.*"
       - name: Run the complete offline suite
         run: python -X utf8 -m unittest discover -s tests -v
       - name: Run the Lean declaration guard

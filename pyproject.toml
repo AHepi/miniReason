@@ -7,7 +7,10 @@ name = "minireason"
 version = "0.1.0"
 description = "A standalone Mini reasoning harness and ECS experiment laboratory"
 requires-python = ">=3.11"
-dependencies = ["jsonschema==4.25.1", "referencing==0.37.0"]
+# pydantic is added by the vendored deepreason_core harness core
+# (AHepi/DeepReason@9607fba, MIT). ">=2.7" is upstream DeepReason's own
+# declared floor; see docs/sources/deepreason-core-provenance.json.
+dependencies = ["jsonschema==4.25.1", "referencing==0.37.0", "pydantic>=2.7"]
 
 [project.scripts]
 minireason = "minireason.campaign:main"
@@ -21,3 +24,6 @@ where = ["src"]
 [tool.setuptools.package-data]
 "creib.forge.mini" = ["data/schema/*.json", "data/policies/*.json"]
 "creib.forge.conformance" = ["data/schema/*.json"]
+# Ship upstream DeepReason's MIT licence text inside the vendored package, so
+# a built wheel carries the licence of the code it contains.
+deepreason_core = ["LICENSE"]
