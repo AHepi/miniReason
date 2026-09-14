@@ -1,0 +1,571 @@
+{
+  "att_edges": [],
+  "commitment_surface_states": {
+    "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15": "unavailable_decode_failure",
+    "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6": "prose_not_parsed",
+    "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527": "schema_failure",
+    "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a": "prose_not_parsed",
+    "cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1": "prose_not_parsed"
+  },
+  "commitments": [],
+  "custody": {
+    "cross_file": [
+      {
+        "check": "plan.material_sha256 == sha256(material.json)",
+        "key": "material_pin",
+        "kind": "cross_file",
+        "ran": 1,
+        "result": "verified (1/1 occurrence)",
+        "skipped": [],
+        "total": 1,
+        "unit": "occurrence"
+      },
+      {
+        "check": "plan.manifests[tid] == sha256(manifests/<tid>.json)",
+        "key": "manifest_pins",
+        "kind": "cross_file",
+        "ran": 3,
+        "result": "verified (3/3 manifests)",
+        "skipped": [],
+        "total": 3,
+        "unit": "manifest"
+      },
+      {
+        "check": "per node: receipt present (responses/<node>.json)",
+        "key": "receipt_present",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(artifacts/<node>.json) == receipt.artifact_sha256",
+        "key": "artifact_bytes_vs_receipt",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: receipt.status == delivery_status and receipt.envelope_status == envelope_status (recorded, never read as a verdict)",
+        "key": "status_vs_receipt",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(responses/<node>.txt) == artifact.public_text_sha256",
+        "key": "public_text",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: attempt.request_sha256 == receipt.request_sha256",
+        "key": "attempt_vs_receipt",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: study_digest(requests/<node>.json) == attempt.request_sha256 == receipt.request_sha256",
+        "key": "request_record",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: request.trace_sha256 == study_digest(traces/<node>.json), checked before the trace is read by the label index or the projection resolver; counted as run only where the request record is itself pinned by an attempt or a receipt",
+        "key": "trace_pinned",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(provider/<coord>/call-0001.{request,response}.json) == receipt.provider_{request,response}_sha256 (skipped only for a FAILED receipt)",
+        "key": "provider_bytes",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: attempt.wave_id is the wave listing the coordinate and wave.request_hashes[<coordinate>] == attempt.request_sha256",
+        "key": "wave_placement",
+        "kind": "cross_file",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per projection: selected_source artifact_id/body_sha256/commitments_sha256 equal the authored artifact record it names",
+        "key": "projection_source",
+        "kind": "cross_file",
+        "ran": 2,
+        "result": "verified (2/4 projections; 2 projection(s) had no exposed source (the slot is absent): `daily/mini_fcl/cycle01/account#p.account.0`, `daily/mini_prose/cycle01/account#p.account.0`)",
+        "skipped": [
+          {
+            "missing": "exposed source (the slot is absent)",
+            "subject": "daily/mini_fcl/cycle01/account#p.account.0"
+          },
+          {
+            "missing": "exposed source (the slot is absent)",
+            "subject": "daily/mini_prose/cycle01/account#p.account.0"
+          }
+        ],
+        "total": 4,
+        "unit": "projection"
+      }
+    ],
+    "event_ts_nondecreasing": false,
+    "files": {
+      "artifacts/daily/bare/cycle01/answer.json": "caf27324cf87d3e3f7a5999d35c6035545c5cb0c88297c062dbb474fd9ebb242",
+      "artifacts/daily/mini_fcl/cycle01/account.json": "f34da0cb4b9a31c5b4072596258b04eb94849fd08380b1899a5cad1e14bc09a6",
+      "artifacts/daily/mini_prose/cycle01/account.json": "561294d73c77e7778ab70f3fe86033bbda54b3c34b58d31eb401f1928031725a",
+      "artifacts/daily/mini_prose/cycle01/objection.json": "2896cf1b3bda4e1423c637c05c4197003982e162c63ca06d005cbd81f3675354",
+      "artifacts/daily/mini_prose/cycle01/rival.json": "09e9828de01550b78b05073041beb53ba1088c6f9708848882740576a60002f5",
+      "attempts/daily/bare/cycle01/answer.json": "2049bee56a72dc767c38c3bf08fbaaea1cd0121c2d31bea0e7f979c7da513604",
+      "attempts/daily/mini_fcl/cycle01/account.json": "a0ec87d46cca9519d52c2b957974dea803a21636ab18aa3bf3e45495f47f6980",
+      "attempts/daily/mini_prose/cycle01/account.json": "f46dc2a428984415340448844424df26d8f1ac1a73d6e6f6b83150d2222fc023",
+      "attempts/daily/mini_prose/cycle01/objection.json": "f9a2ad95441f8ff39b5b76049ea6008a2e226d838e1cfdfbe893c7a0a95d8c8d",
+      "attempts/daily/mini_prose/cycle01/rival.json": "9b70bffabe83f3bb26d909d45ac21a6f2be4884ccf46869858669b2aebeff605",
+      "manifests/fork5.json": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8",
+      "manifests/return6.json": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951",
+      "manifests/weave7.json": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df",
+      "material.json": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff",
+      "plan.json": "7d06bdaae719af403cf1df715cee213e87ca310ebaf71a85a92ab5f9ba9ffc1f",
+      "provider/daily/bare/cycle01/answer/call-0001.request.json": "34f7863f8de4df6beec51d8cc377ca097dc177040fe6886baf76aa0926d13f03",
+      "provider/daily/bare/cycle01/answer/call-0001.response.json": "c7362cbfea1092abbb8903e2f217320736ed4dea29bb62efb29d1a40853d8155",
+      "provider/daily/mini_fcl/cycle01/account/call-0001.request.json": "9542a2ee60a9755658234457073f0850f1878f966f779f9f9aed8647caea1fb2",
+      "provider/daily/mini_fcl/cycle01/account/call-0001.response.json": "51aa4b7d7a71aa4d91ca4afc3e7516a189f78f4bb7ddac4e6d6a790f91860ff1",
+      "provider/daily/mini_prose/cycle01/account/call-0001.request.json": "70e863c8fc8b24358051b50416a77734594766fe825460c3c28cbccc82ee9f00",
+      "provider/daily/mini_prose/cycle01/account/call-0001.response.json": "373f5bcbdd4a3eb6be4f881719cfe91f8182ad21194881a022862c6439dc658e",
+      "provider/daily/mini_prose/cycle01/objection/call-0001.request.json": "9ffc3d2d09a5e7578232ab36ba2540cd5de3895b6d6df245908488f18669a205",
+      "provider/daily/mini_prose/cycle01/objection/call-0001.response.json": "ee1df90b05361f0537213e80f05e433d2f60afd1b0bef355c5a4b8550f3df502",
+      "provider/daily/mini_prose/cycle01/rival/call-0001.request.json": "de4eb440ccc239a9faf6f215ed18f5d53287cb3004c8e56ae094fc92f0d6bdc6",
+      "provider/daily/mini_prose/cycle01/rival/call-0001.response.json": "1c32e613312b6439c83ba991438a0853a694a85292f824485b110f15a0010e02",
+      "requests/daily/bare/cycle01/answer.json": "a97b3c0fe6ca5fed4d530fda2866011f5cc81e727c438f30522b1d3cd38f246f",
+      "requests/daily/mini_fcl/cycle01/account.json": "ab4f587a944e3ba378e813d1bb3552bb4dc586914ef0d88b7b0f54f7c289f4b2",
+      "requests/daily/mini_prose/cycle01/account.json": "2cf23803ffdf899d4b70304879a6c7a60f4e91cb840f4562aa3b4e6084492341",
+      "requests/daily/mini_prose/cycle01/objection.json": "dfa9663f43573ad4a1c7069b707bbd35ff86a70847545b6909eca9112022a0b0",
+      "requests/daily/mini_prose/cycle01/rival.json": "47b72a451476ecec5b18a85b4e0d66bc138d495e24d4f8bcfd2c1d2d32017582",
+      "responses/daily/bare/cycle01/answer.json": "e0385b7721a1da523b87b8b6f1ae6bbc62180c1a84eb69cfca36485c2281c69a",
+      "responses/daily/bare/cycle01/answer.txt": "32eb2260eb171fce2866cd2c4e332dca82fb675a50ac4680dc66625876ee0e2d",
+      "responses/daily/mini_fcl/cycle01/account.json": "8e5f276e4e7995882ae8057e67baf3476fb1b415443a655d43012e05a46890a9",
+      "responses/daily/mini_fcl/cycle01/account.txt": "f74d74e6d6238a11c8de6d80d0a64c1b2908161f026e0492032d6137a7e117fd",
+      "responses/daily/mini_prose/cycle01/account.json": "424b90c27c11fbe6a91113222c40a10b204e893fdac2895c93f7a4ae30381c2b",
+      "responses/daily/mini_prose/cycle01/account.txt": "617ac46b19414a96239e2723aca727458c4cd80a307269f713c04f69b5976824",
+      "responses/daily/mini_prose/cycle01/objection.json": "8e2f612fd181c5a0a29d3976f664d866f89b1a4835f28700002328efd105a478",
+      "responses/daily/mini_prose/cycle01/objection.txt": "ba463a76efc70fdf99cf6c9c2c9ffc5f3a24a8af1e59fed6ca9303d769ba0c9e",
+      "responses/daily/mini_prose/cycle01/rival.json": "3af8b73b59ef50ce6939951234517d2a4dc4cae45739ad994657ec5e1438ee5b",
+      "responses/daily/mini_prose/cycle01/rival.txt": "30bdf4de45500870eab88b0c7b9796a5f2354f1308a56a595e06fb6f9164b498",
+      "traces/daily/bare/cycle01/answer.json": "4ff68da01ac0c9cfd4c060d4a822f7ced327003f53e9e96f1e3fb08916a7fbab",
+      "traces/daily/mini_fcl/cycle01/account.json": "f4790106152ef33f8f02cc8f182089bd4e99beb4f553144a79e51e2ec4f92f53",
+      "traces/daily/mini_prose/cycle01/account.json": "5725e108b01c89983c73bc7e84268aa9bbf8b77d8b6fe57c79df1137bd5db455",
+      "traces/daily/mini_prose/cycle01/objection.json": "035d8191d2e1de7379d69af14238f70ca674729f883b4e4161c3de0aab45b313",
+      "traces/daily/mini_prose/cycle01/rival.json": "b7fc440d6bcc585505058030694859fd840b4f80b045b4dc110784e2e0b82e92",
+      "waves/wave0001.json": "d0d352601d9e8304ae68bc7bd3c017b733a8db669aae06473ce8b03644ccdbba",
+      "waves/wave0002.json": "c2195939b9aa16f3e409e5760f200cc795bdf524df8e0dceb64ead8d88336e2b",
+      "waves/wave0003.json": "f83162c1b8bd9eddb614e6510b2a928b2a6e27c9536616c41707b49f620951bb"
+    },
+    "manifests": {
+      "fork5": {
+        "pin": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8",
+        "present": true,
+        "verified": true
+      },
+      "return6": {
+        "pin": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951",
+        "present": true,
+        "verified": true
+      },
+      "weave7": {
+        "pin": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df",
+        "present": true,
+        "verified": true
+      }
+    },
+    "material_sha256": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff",
+    "plan_id": "e2e3357ef2d67dda270a53f65151c6b1e94265000d487876e0cad735a9cc83c1",
+    "self_consistency": [
+      {
+        "check": "plan_id == study_digest(plan without plan_id)",
+        "key": "plan_identity",
+        "kind": "self_consistency",
+        "ran": 1,
+        "result": "verified (1/1 occurrence)",
+        "skipped": [],
+        "total": 1,
+        "unit": "occurrence"
+      },
+      {
+        "check": "per node: sha256(body) == body_sha256, sha256(commitments) == commitments_sha256, and <field>_ref == <field>_sha256",
+        "key": "artifact_self_hash",
+        "kind": "self_consistency",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: the artifact record's own coordinate is the one it is filed under",
+        "key": "artifact_coordinate",
+        "kind": "self_consistency",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(trace.original_brief) == trace.original_brief_sha256",
+        "key": "brief_pinned",
+        "kind": "self_consistency",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: every [label] line in the brief indexes the projection slot it names, and the brief's label set equals the projection set",
+        "key": "brief_label_index",
+        "kind": "self_consistency",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      },
+      {
+        "check": "per node: the exposed task label agrees with trace.task_artifact.artifact_id",
+        "key": "task_label",
+        "kind": "self_consistency",
+        "ran": 5,
+        "result": "verified (5/5 nodes)",
+        "skipped": [],
+        "total": 5,
+        "unit": "node"
+      }
+    ]
+  },
+  "declared_deviations": [
+    {
+      "code": "adjudication_batched",
+      "what": "no separate terminal Adj event is emitted",
+      "why": "spec §3 recomputes after every registration and the vendored P0 Harness does exactly that inside each registration event, but it exposes no public Adj emitter; the import writes through the registration API only and never forges a log line, so the terminal adjudication is the state after the last event"
+    },
+    {
+      "code": "problem_trigger_approximated",
+      "what": "imported FCL problem records use SpawnTrigger.SEED",
+      "why": "the vendored enum has no 'import' member; 'seed' is the only trigger that does not assert an in-graph derivation. The clean fix is an enum addition, requested rather than papered over"
+    },
+    {
+      "code": "problem_trigger_research_not_in_v13_enum",
+      "what": "research problems use SpawnTrigger.RESEARCH with empty criteria",
+      "why": "the vendored enum has the member and §12 is exactly this path, but the trigger is not part of the v1.3 enum text; criteria stay empty because no instantiated commitment id is a criterion"
+    },
+    {
+      "code": "depends_intra_document",
+      "what": "document-local depends refs are dropped, not turned into dep edges",
+      "why": "at node granularity they would be dep self-loops, i.e. cycles; toposort rejects them and a self-loop asserts nothing the author declared"
+    },
+    {
+      "code": "objection_self_target_only",
+      "what": "a self-targeting objection mints no warrant",
+      "why": "a Dung self-attack means 'this argument is self-defeating', which is not what an intra-document caveat asserts; minting it would flip two labels for reasons that have nothing to do with the evidence"
+    },
+    {
+      "code": "criticism_of_criticism_retargeted",
+      "what": "an objection against a record this import reified as a warrant attacks that warrant's validity node, not the node artifact",
+      "why": "spec §1 closure: attackers of a validity node attack the warrant and every carrier of it, so criticism of a criticism keeps its force instead of collapsing into a plain edge onto the carrier"
+    },
+    {
+      "code": "criticism_of_criticism_intra_document_dropped",
+      "what": "the retargeting rule above has ONE exception: an objection against a criticism carried by the SAME artifact is not retargeted",
+      "why": "the §1 closure lifts an attack on a validity node onto every carrier of the warrant, and for an intra-document criticism of a criticism that carrier is the objector itself, so retargeting would mint a self-attack through the closure and make the artifact self-defeating - which is not what an author asserts by qualifying their own earlier objection. `objection.o4` against `o1`/`o2` is exactly this case; it is dropped, not retargeted, and counted under its own code so the loss is visible rather than silent"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "what": "an FCL `claim` record maps to no spec construct",
+      "why": "a claim asserts content without proposing a test, so it is neither an observation-valued commitment nor a criticism nor a problem; it survives in the artifact body and in the FCL-1 document artifact, and is reported here because `uptake_refs_unmapped` covers only the claims the author put in `uptake`"
+    }
+  ],
+  "dep_edges": [],
+  "dry_run": false,
+  "error_severity_residue": {
+    "schema_failure": 1
+  },
+  "events_count": 6,
+  "importer_version": "import_h005/1",
+  "invariant_i7": "**No label produced by this import is a semantic attribution.** Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+  "labels": {
+    "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15": "accepted",
+    "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6": "accepted",
+    "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527": "accepted",
+    "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a": "accepted",
+    "cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1": "accepted"
+  },
+  "multi_arm_framing": "This scope contains 2 arms (bare, mini_prose) whose declared commitment surface is prose and 1 arm (mini_fcl) whose surface is FCL-1. A prose commitment surface is never parsed, so no warrant, no attack edge and no refuted label can arise from a prose arm under this import. The distribution of statuses across arms is therefore a property of the carrier this importer reads, not a comparison between the arms. Any cross-arm reading is root's, not this instrument's.",
+  "names": {
+    "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15": "daily/mini_prose/cycle01/objection",
+    "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6": "daily/mini_prose/cycle01/rival",
+    "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527": "daily/mini_fcl/cycle01/account",
+    "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a": "daily/mini_prose/cycle01/account",
+    "cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1": "daily/bare/cycle01/answer"
+  },
+  "occurrence": "occurrence-04",
+  "problems": [
+    {
+      "description": "I share a flat with two friends. We keep arguing about ordinary household chores. Sometimes we agree on who will do something, but later we disagree about what the agreement meant. Our work schedules change, and one friend has started avoiding the conversations. What should I do?",
+      "id": "pi:h005.task:daily",
+      "trigger": "seed"
+    }
+  ],
+  "reference_resolution": {
+    "dangling": 0,
+    "extensions": 0,
+    "refs": 0,
+    "resolved": 0,
+    "task": 0
+  },
+  "residue": [
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "bare",
+        "cycle": 1,
+        "node": "answer",
+        "problem": "daily"
+      },
+      "detail": "arm 'bare' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1",
+      "unit": "artifact"
+    },
+    {
+      "code": "schema_failure",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "uptake/0: {'record': 'u1', 'note': 'main proposed course of action, offered as a conjectured sequence rather than a certified solution'} is not of type 'string'; uptake/1: {'record': 'r4', 'note': 'adopted as a standing constraint on how the written record is introduced'} is not of type 'string'; uptake/2: {'record': 'r10', 'note': 'to be settled explicitly with the flatmates rather than defaulted'} is not of type 'string' - the artifact stays opaque; nothing is repaired (I4). The commitment surface is UNAVAILABLE to this import, which is not the same as the author having declined to commit. accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.",
+      "record_id": null,
+      "spec_artifact_id": "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527",
+      "unit": "document"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a",
+      "unit": "artifact"
+    },
+    {
+      "code": "opaque_envelope",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "The commitments string is empty because the study harness's strict JSON decode of the returned envelope failed and `decode_contribution` took its failure branch, storing the whole returned text as `body` and `\"\"` as `commitments` (`commitments_sha256` is the sha256 of the empty string). Root's published review, `docs/reviews/h005-matched-arm-envelope-asymmetry-2026-09-14.md`, measured that the same bytes parsed non-strictly do contain a commitments field: the commitments were authored and lost in decoding. The commitment surface is therefore **UNAVAILABLE, not absent**, and this is not evidence that the author declined to commit. This import does not repair it (I4): the artifact carries an empty Interface - no commitment surface, no refs - and the recorded envelope_status is metadata, never a verdict (I2). accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.",
+      "record_id": null,
+      "spec_artifact_id": "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15",
+      "unit": "artifact"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6",
+      "unit": "artifact"
+    },
+    {
+      "code": "projection_absent",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.account.0 (source 'previous') exposed nothing; any ref through it is unresolvable",
+      "record_id": null,
+      "spec_artifact_id": "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527",
+      "unit": "document"
+    },
+    {
+      "code": "projection_absent",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.account.0 (source 'previous') exposed nothing; any ref through it is unresolvable",
+      "record_id": null,
+      "spec_artifact_id": "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.objection.0 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'unavailable_decode_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.rival.0 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6",
+      "unit": "document"
+    },
+    {
+      "code": "adjudication_batched",
+      "coordinate": null,
+      "detail": "the vendored P0 Harness re-adjudicates inside every registration event and exposes no public Adj emitter, so this import emits no separate terminal Adj event (mapping.md §8.2 asked for one). Status flips are recorded in each registration event's state_diff.status_changed; the import writes through the registration API only and never forges a log line.",
+      "record_id": null,
+      "spec_artifact_id": null,
+      "unit": "file"
+    }
+  ],
+  "residue_totals": {
+    "adjudication_batched": 1,
+    "bare_label_ref": 0,
+    "claim_record_unmapped": 0,
+    "commitment_not_executable": 0,
+    "commitment_record_not_in_uptake": 0,
+    "consequence_on_non_commitment_record": 0,
+    "criticism_of_criticism_intra_document_dropped": 0,
+    "criticism_of_criticism_retargeted": 0,
+    "dependence_cycle_rejected": 0,
+    "depends_cross_document": 0,
+    "depends_intra_document": 0,
+    "grounds_absent_on_objection": 0,
+    "mentions_intra_document": 0,
+    "objection_self_target_only": 0,
+    "objection_target_self_ref_dropped": 0,
+    "objection_untargeted": 0,
+    "opaque_envelope": 1,
+    "parse_failure": 0,
+    "problem_trigger_approximated": 0,
+    "problem_trigger_research_not_in_v13_enum": 0,
+    "projection_absent": 2,
+    "projection_exposed_unreferenced": 2,
+    "prose_commitment_surface": 3,
+    "qualified_ref_body_pseudo_local": 0,
+    "ref_through_absent_projection": 0,
+    "ref_through_unexposed_view": 0,
+    "ref_to_task_artifact": 0,
+    "ref_to_unregistered_target_dropped": 0,
+    "ref_unresolved": 0,
+    "revises_unmapped": 0,
+    "schema_failure": 1,
+    "target_on_non_objection_record": 0,
+    "uptake_lists_unmapped": 0,
+    "uptake_refs_unmapped": 0,
+    "use_record_unmapped": 0,
+    "validity_node_minted_unasserted": 0,
+    "warrant_edge_deduplicated": 0,
+    "withdraws_unmapped": 0
+  },
+  "schema": "h005-import.report.v1",
+  "scope": [
+    {
+      "arm": "bare",
+      "cycle": 1,
+      "node": "answer",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "account",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "account",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "objection",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "rival",
+      "problem": "daily"
+    }
+  ],
+  "spec_id_table": {
+    "daily/bare/cycle01/answer": "cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1",
+    "daily/mini_fcl/cycle01/account": "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527",
+    "daily/mini_prose/cycle01/account": "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a",
+    "daily/mini_prose/cycle01/objection": "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15",
+    "daily/mini_prose/cycle01/rival": "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6"
+  },
+  "warrants": [],
+  "why": {
+    "568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15": "why(568dbbcbbce2335a0bea50ca896ba634562d90900e30a2634539d7d95bd93f15)\n  artifact : daily/mini_prose/cycle01/objection\n  status   : accepted\n\n  daily/mini_prose/cycle01/objection [568dbbcbbce2] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: UNAVAILABLE (unavailable_decode_failure). The authored commitments string is empty in the record because the study harness's strict JSON decode failed; root's review `docs/reviews/h005-matched-arm-envelope-asymmetry-2026-09-14.md` measured that the returned bytes do contain commitments. This import read no commitment surface for this artifact, so it could mint no warrant from it and no warrant against it. The label above is silent about what the author committed to.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6": "why(8e204479e40ae737e883e60996c170f1ec392ba35ae5de5012d68617b56396f6)\n  artifact : daily/mini_prose/cycle01/rival\n  status   : accepted\n\n  daily/mini_prose/cycle01/rival [8e204479e40a] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527": "why(9a2bcef0e44da7f46caf8334fa0f3389a1a99bab1eece886497c40bbe022b527)\n  artifact : daily/mini_fcl/cycle01/account\n  status   : accepted\n\n  daily/mini_fcl/cycle01/account [9a2bcef0e44d] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: UNAVAILABLE (schema_failure). The arm declares an FCL-1 surface and the document did not validate against fcl1.schema.json; nothing was repaired (I4), so no commitment surface was read and the label above is silent about what the author committed to.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a": "why(c7e2c6ad196c8ea341ae2285cae2cf1494a85c7a1ffa79d3e5b321df786b808a)\n  artifact : daily/mini_prose/cycle01/account\n  status   : accepted\n\n  daily/mini_prose/cycle01/account [c7e2c6ad196c] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1": "why(cc4370606f678466c476f74e42d5982e659f97595aa52704623f07e949aab6c1)\n  artifact : daily/bare/cycle01/answer\n  status   : accepted\n\n  daily/bare/cycle01/answer [cc4370606f67] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation)."
+  }
+}

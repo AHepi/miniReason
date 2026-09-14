@@ -1,0 +1,1636 @@
+{
+  "att_edges": [],
+  "commitment_surface_states": {
+    "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607": "read_fcl1",
+    "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e": "prose_not_parsed",
+    "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d": "prose_not_parsed",
+    "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6": "prose_not_parsed",
+    "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df": "read_fcl1",
+    "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf": "read_fcl1",
+    "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b": "parse_failure",
+    "c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550": "prose_not_parsed",
+    "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08": "prose_not_parsed",
+    "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d": "prose_not_parsed",
+    "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3": "parse_failure"
+  },
+  "commitments": [
+    {
+      "carrier": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "eval": "observation:h005.fcl1@421962ebfed28d363b240811994dbfdc3723370e77f90ad7663b3679c2fda67c",
+      "id": "k:h005.fcl1:daily/mini_fcl/cycle01/account#r5",
+      "observation_valued": true,
+      "research_problem": "pi:h005.fcl1.research:k:h005.fcl1:daily/mini_fcl/cycle01/account#r5"
+    },
+    {
+      "carrier": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "eval": "observation:h005.fcl1@dedc0dec2216eafd3572d0a4051ab1a1cf689e01a6d2e96765a7b043e9cbe5ad",
+      "id": "k:h005.fcl1:daily/mini_fcl/cycle01/account#r6",
+      "observation_valued": true,
+      "research_problem": "pi:h005.fcl1.research:k:h005.fcl1:daily/mini_fcl/cycle01/account#r6"
+    }
+  ],
+  "custody": {
+    "cross_file": [
+      {
+        "check": "plan.material_sha256 == sha256(material.json)",
+        "key": "material_pin",
+        "kind": "cross_file",
+        "ran": 1,
+        "result": "verified (1/1 occurrence)",
+        "skipped": [],
+        "total": 1,
+        "unit": "occurrence"
+      },
+      {
+        "check": "plan.manifests[tid] == sha256(manifests/<tid>.json)",
+        "key": "manifest_pins",
+        "kind": "cross_file",
+        "ran": 3,
+        "result": "verified (3/3 manifests)",
+        "skipped": [],
+        "total": 3,
+        "unit": "manifest"
+      },
+      {
+        "check": "per node: receipt present (responses/<node>.json)",
+        "key": "receipt_present",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(artifacts/<node>.json) == receipt.artifact_sha256",
+        "key": "artifact_bytes_vs_receipt",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: receipt.status == delivery_status and receipt.envelope_status == envelope_status (recorded, never read as a verdict)",
+        "key": "status_vs_receipt",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(responses/<node>.txt) == artifact.public_text_sha256",
+        "key": "public_text",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: attempt.request_sha256 == receipt.request_sha256",
+        "key": "attempt_vs_receipt",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: study_digest(requests/<node>.json) == attempt.request_sha256 == receipt.request_sha256",
+        "key": "request_record",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: request.trace_sha256 == study_digest(traces/<node>.json), checked before the trace is read by the label index or the projection resolver; counted as run only where the request record is itself pinned by an attempt or a receipt",
+        "key": "trace_pinned",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(provider/<coord>/call-0001.{request,response}.json) == receipt.provider_{request,response}_sha256 (skipped only for a FAILED receipt)",
+        "key": "provider_bytes",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: attempt.wave_id is the wave listing the coordinate and wave.request_hashes[<coordinate>] == attempt.request_sha256",
+        "key": "wave_placement",
+        "kind": "cross_file",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per projection: selected_source artifact_id/body_sha256/commitments_sha256 equal the authored artifact record it names",
+        "key": "projection_source",
+        "kind": "cross_file",
+        "ran": 16,
+        "result": "verified (16/20 projections; 4 projection(s) had no exposed source (the slot is absent): `daily/mini_fcl/cycle01/account#p.account.0`, `daily/mini_prose/cycle01/account#p.account.0`, `daily/mini_fcl/cycle01/carry#p.carry.3`, `daily/mini_prose/cycle01/carry#p.carry.3`)",
+        "skipped": [
+          {
+            "missing": "exposed source (the slot is absent)",
+            "subject": "daily/mini_fcl/cycle01/account#p.account.0"
+          },
+          {
+            "missing": "exposed source (the slot is absent)",
+            "subject": "daily/mini_prose/cycle01/account#p.account.0"
+          },
+          {
+            "missing": "exposed source (the slot is absent)",
+            "subject": "daily/mini_fcl/cycle01/carry#p.carry.3"
+          },
+          {
+            "missing": "exposed source (the slot is absent)",
+            "subject": "daily/mini_prose/cycle01/carry#p.carry.3"
+          }
+        ],
+        "total": 20,
+        "unit": "projection"
+      }
+    ],
+    "event_ts_nondecreasing": false,
+    "files": {
+      "artifacts/daily/bare/cycle01/answer.json": "f9fccbf0829879365eb9e2590482cd77b1dc21dbb9a89be7446d5e4ce1496843",
+      "artifacts/daily/mini_fcl/cycle01/account.json": "d42bb4fe95dd750a782409ea27b0967442f841a050b54e9f103a6e314d255931",
+      "artifacts/daily/mini_fcl/cycle01/carry.json": "b65a344869c39a49b162ebdb68790d44faa606865cef4b62111ee2ac22a31ba0",
+      "artifacts/daily/mini_fcl/cycle01/objection.json": "de866de7fdbadea24291ecfa6a74027fa6d6b95620005e38752612c3a20cbb09",
+      "artifacts/daily/mini_fcl/cycle01/response.json": "213d67082128cd0e13fda2b39c45b6f2aa67e863f57a9f0e2b388ecffdeb2d4b",
+      "artifacts/daily/mini_fcl/cycle01/rival.json": "0ada966d21486a6952db0eeeff99d233246021acc53248eaa7c5f5e651e5d515",
+      "artifacts/daily/mini_prose/cycle01/account.json": "f464fa0feb6c4cf9d08b43ec65cd7874bf1f07d856690a1bda83b3fb9c265f57",
+      "artifacts/daily/mini_prose/cycle01/carry.json": "7f9fabdf5fa0a7b12f3545eff8744d3031c2febc55a9289ec0a0a415aadb31cf",
+      "artifacts/daily/mini_prose/cycle01/objection.json": "02c4d8e4fea7d1c605754c7755eadf6507040dc5961b17c89fca8d9de722556f",
+      "artifacts/daily/mini_prose/cycle01/response.json": "ba8a3d41440cce94aee5d864bb7e68380f49ab8f91abd4b6f05b0e280b83cf66",
+      "artifacts/daily/mini_prose/cycle01/rival.json": "84c2c602b38c22ce1f3d3457bd1dac50617f976a088c8d5f5eea065d05cda66f",
+      "attempts/daily/bare/cycle01/answer.json": "2ae27bf2087f6cceaf9ce8ee49d8042b27706748cb5390e7994c23c6a165dc88",
+      "attempts/daily/mini_fcl/cycle01/account.json": "c221faacb57f4f1c88ac448cc45fde364e552b6cf93cc5e6e8e7f7c85117945c",
+      "attempts/daily/mini_fcl/cycle01/carry.json": "3a6545823efc68473e47f8ff465684fe580575a77fc3c5b8cb9ad6bc7bdb8c99",
+      "attempts/daily/mini_fcl/cycle01/objection.json": "e37a821a3164a468bd85d780e94e4aacc4ef28b79a840494ebcf9f883782e386",
+      "attempts/daily/mini_fcl/cycle01/response.json": "4be592d6fd1e685d96966a3c3d30c28707df066aebbfb8a179da47995fdcb7d1",
+      "attempts/daily/mini_fcl/cycle01/rival.json": "32d4672da14968edb2073e165e22deb64bbcd49972c97c8fe65054d5abcb96cf",
+      "attempts/daily/mini_prose/cycle01/account.json": "0d0b5c15b4595dfd13680bded0ee46ef566f0a20330a17c6514b8978c94a5edb",
+      "attempts/daily/mini_prose/cycle01/carry.json": "dc75ccc33fd7df978562758bc1d42f13d50fb123d1f57356d9ec3bc21f0d8108",
+      "attempts/daily/mini_prose/cycle01/objection.json": "17778742f207de5fc3c865a53bb8cb1eaca5a3815c017289e8a82d9638b172b4",
+      "attempts/daily/mini_prose/cycle01/response.json": "76d9fa49a0348ba4cf10d5fa1ad1e1b0ddf3fbe5dc3cda86a9e7cae1fde265fa",
+      "attempts/daily/mini_prose/cycle01/rival.json": "f05860c676eed5210440ffd1ea75b4ab38f578e24e82ed22f415788281506b20",
+      "manifests/fork5.json": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8",
+      "manifests/return6.json": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951",
+      "manifests/weave7.json": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df",
+      "material.json": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff",
+      "plan.json": "6609038beaa616d7c27467470dde0cb842071c9ec7006530c3f49ffab13ee58e",
+      "provider/daily/bare/cycle01/answer/call-0001.request.json": "0bb891e109ce6fb99a38ff50b5b44b27978961c25fafc4ff755be470ddc998c9",
+      "provider/daily/bare/cycle01/answer/call-0001.response.json": "7a692cb8887bb2811fd0706778a52c59f35f3d6d1de331aacdd59b59ca57ac92",
+      "provider/daily/mini_fcl/cycle01/account/call-0001.request.json": "146120fb9348bdfa1153e4069a0cc611baa37c7ebda1f11a2f2a267ee698b737",
+      "provider/daily/mini_fcl/cycle01/account/call-0001.response.json": "527b2d1163adc6b0b4221d9bb7f9fb00b596920747303307cbaa03ec5937e9cc",
+      "provider/daily/mini_fcl/cycle01/carry/call-0001.request.json": "312633518f980074f00be3c5ef1ac78831ae196de406b88366d3f02f4bdc823d",
+      "provider/daily/mini_fcl/cycle01/carry/call-0001.response.json": "80de0f94a709a92301efdbd99186e241120fea77e2158ff862b1158a5921912c",
+      "provider/daily/mini_fcl/cycle01/objection/call-0001.request.json": "fa7157e88ceb2f514f3a9ca8b0aebdb59b464d27ea65dcf2e1a2745b7684333f",
+      "provider/daily/mini_fcl/cycle01/objection/call-0001.response.json": "1742b65d5e414573bf94d8c71da26e4177edc4543ebf7ce9918e26be5fad64c2",
+      "provider/daily/mini_fcl/cycle01/response/call-0001.request.json": "7dc134607ed8fa11fae0fa4a04bb7dc462d56783484bca8a1a86c11fcb5d9c5f",
+      "provider/daily/mini_fcl/cycle01/response/call-0001.response.json": "5e92aefa33bf3f6329733fdc7b11893890cfa03eb27d5250183d14abb4df39a1",
+      "provider/daily/mini_fcl/cycle01/rival/call-0001.request.json": "2b95edad937cd3d498578327cdc840bb44065cc0981b0850b0498d7a18c2f09a",
+      "provider/daily/mini_fcl/cycle01/rival/call-0001.response.json": "5cf39468942dc3a93359b07801cb323631eac815283c0c6524ff0f5aeb663f0c",
+      "provider/daily/mini_prose/cycle01/account/call-0001.request.json": "82499ab89f8003af48fb1b66f84e5ddda513b9b0b41cbae60d1d1ef6bd4cc153",
+      "provider/daily/mini_prose/cycle01/account/call-0001.response.json": "ce2374165ae315d2c3e61d952628e6545c98ef15ba53a3999cc64a2770bd09ee",
+      "provider/daily/mini_prose/cycle01/carry/call-0001.request.json": "7984bdddefaf16c5e2bacfd7de37e365c841cc80fb0869870f589f38e62e3e6c",
+      "provider/daily/mini_prose/cycle01/carry/call-0001.response.json": "5fa42e89ed6ce2c3cf74d6364ad94f3f7a3798fc6daa7c137c82c24130b855ab",
+      "provider/daily/mini_prose/cycle01/objection/call-0001.request.json": "34a5a141fdc71bfc7a3c9d9e51004148e627d7ffc523107c3117a51b8642bdee",
+      "provider/daily/mini_prose/cycle01/objection/call-0001.response.json": "abd94abdb02353c404f673a5672269d4b9f0cf06f65ea4f499781feb3a7bf5dd",
+      "provider/daily/mini_prose/cycle01/response/call-0001.request.json": "12406dc04c2acf260bf7705512dca8950024c08b47b3f1062f4b7edcd9500e90",
+      "provider/daily/mini_prose/cycle01/response/call-0001.response.json": "fb1a8f27e1eca5f75c24b1be3456a09aeed273648e6d9f1ca26e3bc8043b7d5e",
+      "provider/daily/mini_prose/cycle01/rival/call-0001.request.json": "0e4f1eff5f5437feb944f93ab4a73c70de7d37d58e3be7cf5c5d931ed968010a",
+      "provider/daily/mini_prose/cycle01/rival/call-0001.response.json": "6d34e9be4de4043cab39c565f15dfbeebe7c574a5e4d370f28fdd873c98f6e5f",
+      "requests/daily/bare/cycle01/answer.json": "e56a4718c33796f7de5718492d7c7cdd3bddefa84ab1cd37b85f7fa5813ff604",
+      "requests/daily/mini_fcl/cycle01/account.json": "8fbb7de9c878c51a82b915e8875371759ef3d0c62e9fba4d8252d41a38603a54",
+      "requests/daily/mini_fcl/cycle01/carry.json": "c2195bb0ce649eaddcf16256f1e212967d6c7dec22f33681c59c5eddda61d30a",
+      "requests/daily/mini_fcl/cycle01/objection.json": "cbfec6a3701b146647c3bf9ec65c07cbe0357311f1d571d08cea6546f13ea75d",
+      "requests/daily/mini_fcl/cycle01/response.json": "9083ce00ec5b9a1a99bdf110b79f67732d843c9934d9fd9b047ea1d5f398dee6",
+      "requests/daily/mini_fcl/cycle01/rival.json": "de1fb208d4db0b70b3b545cb8d612536f1210373e853d66d9197aaf66db77aaf",
+      "requests/daily/mini_prose/cycle01/account.json": "ad0e60b8dc7bf07b68bd06a7267a3c75b27d3b65d4e07ea3675c016e68ace649",
+      "requests/daily/mini_prose/cycle01/carry.json": "062521fc5305b6153bd0674eb06ad8a99c715ef4ae93aa1348a3c9f2280f797a",
+      "requests/daily/mini_prose/cycle01/objection.json": "e0b32295f9723ad04b98e032d8284f7289e597de681b1a7b61704b6359694566",
+      "requests/daily/mini_prose/cycle01/response.json": "23ec74dc940d968c9d53d854cddbf82c0da865a44cd2dd1a8faf381d8249a755",
+      "requests/daily/mini_prose/cycle01/rival.json": "519a68192ce95f4a4d6367fd9319b1e5493ac40c00c8048b601c4986ab284022",
+      "responses/daily/bare/cycle01/answer.json": "61e8a1fac56d64ee2770f762bac99dfce77b7eeea60836b9ee1bdfeb3b904f48",
+      "responses/daily/bare/cycle01/answer.txt": "08518a860455178b01889f99b0a751cf846f67ce3b4b0f4be9d15026cdc4f0ce",
+      "responses/daily/mini_fcl/cycle01/account.json": "a8928afc409133dff82ff09f900ccb035d0fac2a5350fd6c9ad25ecb09c6593b",
+      "responses/daily/mini_fcl/cycle01/account.txt": "1837333a321e7a428651b4d9a998b4ff31bda53194d17b36de223878beeaad07",
+      "responses/daily/mini_fcl/cycle01/carry.json": "143ce05027fd467c4b5e7ef8b1214aae1bc8b1fa9bc92bb8cd1a3c25e8bdb167",
+      "responses/daily/mini_fcl/cycle01/carry.txt": "39430f227f9356ead8a90cdae49d298b0465077487156e21f29e3a3d7cca8e95",
+      "responses/daily/mini_fcl/cycle01/objection.json": "c3023a66d20e018ffd9f92ee5a333ca2b26c4971d3c00246b93173eddff36e51",
+      "responses/daily/mini_fcl/cycle01/objection.txt": "72920999de94c685d3af8ee10282dd51c79947fbba9c7b00a9d4ce3190a206cc",
+      "responses/daily/mini_fcl/cycle01/response.json": "a3372c91e28e5b292fd905ed9ce177439087df3146dc297b9c49e43f49393396",
+      "responses/daily/mini_fcl/cycle01/response.txt": "55b30127711a475d129fb88c2b2b5f2b10b5a513445bf173875946ebf8e02963",
+      "responses/daily/mini_fcl/cycle01/rival.json": "7a32cfa1a606fd1756e2af013e7fe1d109fbbcc542f4097dee010ac3cf44a0cb",
+      "responses/daily/mini_fcl/cycle01/rival.txt": "68b50ead0793040130982191c9f31ce36a513a35378c26c2dfdfcf1726dba749",
+      "responses/daily/mini_prose/cycle01/account.json": "5b295a04bc042f48f182dbdbbfd873377796b21c76b3bb6d5bc9f23239432ff6",
+      "responses/daily/mini_prose/cycle01/account.txt": "66a444cb4dbeb6531ca9487a3f50cbd843447921b6f2471a2eb9e52297d07167",
+      "responses/daily/mini_prose/cycle01/carry.json": "55f1c587c62feee9fb2862831916f7a06460240e610c58472eb7c1e03a0a8dd6",
+      "responses/daily/mini_prose/cycle01/carry.txt": "873c76fce4267cc7cdc0a8084644114c0b64e6327d9e93bf0e08f625c7f730e4",
+      "responses/daily/mini_prose/cycle01/objection.json": "a1843425e5ae4107d932b9b488bbc8889c59e604183cf1b796671667cfe7808e",
+      "responses/daily/mini_prose/cycle01/objection.txt": "194ca476fb327b0f8fa2641b35852809642bff9fa29de8aa78e239012d8dd132",
+      "responses/daily/mini_prose/cycle01/response.json": "6656d954d6053259707ae175efaa4178d931bf692fc341d6f8452c44b617f0fa",
+      "responses/daily/mini_prose/cycle01/response.txt": "9b41e50e99bbdaea1c2face7afa2a047a65b75a11c7e65582f08d26849f3e449",
+      "responses/daily/mini_prose/cycle01/rival.json": "fd1a2486cd2ffa64bb848937fa05a189c5df7c53ab612e4ace157cb2a47886bf",
+      "responses/daily/mini_prose/cycle01/rival.txt": "2b2e62acc1304406d852e592d54cc343d7d414e31b26329a9eef687a0515c1fe",
+      "traces/daily/bare/cycle01/answer.json": "4ff68da01ac0c9cfd4c060d4a822f7ced327003f53e9e96f1e3fb08916a7fbab",
+      "traces/daily/mini_fcl/cycle01/account.json": "f4790106152ef33f8f02cc8f182089bd4e99beb4f553144a79e51e2ec4f92f53",
+      "traces/daily/mini_fcl/cycle01/carry.json": "b14fa40295ee5c7bec9c30212ce3f49636c0b4bce0c24db25e49e56985eddf7e",
+      "traces/daily/mini_fcl/cycle01/objection.json": "cd5dee741c8df663a6459f32b25eb1f6967ba779d5b96a3cc106351c2004f253",
+      "traces/daily/mini_fcl/cycle01/response.json": "218c3677f2103196a82ef35e1b8131d5b6addc25cab181b646c72441613c7a29",
+      "traces/daily/mini_fcl/cycle01/rival.json": "4b5461756a4c4c0ae05e956ef591c1260ac40cf81bc3df6afb29bc15676c4a68",
+      "traces/daily/mini_prose/cycle01/account.json": "5725e108b01c89983c73bc7e84268aa9bbf8b77d8b6fe57c79df1137bd5db455",
+      "traces/daily/mini_prose/cycle01/carry.json": "cc02d278e3c8bf130ccf6e99fb5b30cd69137b716d4400060e3b6b0fc1a124e0",
+      "traces/daily/mini_prose/cycle01/objection.json": "c87fec2445182313b042c2e70640af076cf643130b3d61ba1b686cbc4acc4d4e",
+      "traces/daily/mini_prose/cycle01/response.json": "80604ff32bf82a36dc98d4dcd70fec9c8e102f09b65016d5f4ecf82d45f7d3b4",
+      "traces/daily/mini_prose/cycle01/rival.json": "7c021587cea826026d78716ed0adc17004650aa1bfbc7be6093ef164ebf57996",
+      "waves/wave0001.json": "796c4e0e3a8ca0e86782f2bc760307b77963cae603c05199709273f5257c0235",
+      "waves/wave0002.json": "02e8219cbeda89e442d3542451eddb6ddc92cccd575339cb66b3c6b9e577605b",
+      "waves/wave0003.json": "30b85c6a8e0fc5a7c6adca2e16f3f436069da70393fa3d12c3f24948aa3ab2b9",
+      "waves/wave0004.json": "523cf0f373bd1cf3cca512e8ac2c1faf9695347084cb2cb16643d2ff9942b499"
+    },
+    "manifests": {
+      "fork5": {
+        "pin": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8",
+        "present": true,
+        "verified": true
+      },
+      "return6": {
+        "pin": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951",
+        "present": true,
+        "verified": true
+      },
+      "weave7": {
+        "pin": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df",
+        "present": true,
+        "verified": true
+      }
+    },
+    "material_sha256": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff",
+    "plan_id": "951ad3c58cb341f12ac922cab580e02879138d5d6cc626a0f9825af3ed29b3db",
+    "self_consistency": [
+      {
+        "check": "plan_id == study_digest(plan without plan_id)",
+        "key": "plan_identity",
+        "kind": "self_consistency",
+        "ran": 1,
+        "result": "verified (1/1 occurrence)",
+        "skipped": [],
+        "total": 1,
+        "unit": "occurrence"
+      },
+      {
+        "check": "per node: sha256(body) == body_sha256, sha256(commitments) == commitments_sha256, and <field>_ref == <field>_sha256",
+        "key": "artifact_self_hash",
+        "kind": "self_consistency",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: the artifact record's own coordinate is the one it is filed under",
+        "key": "artifact_coordinate",
+        "kind": "self_consistency",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: sha256(trace.original_brief) == trace.original_brief_sha256",
+        "key": "brief_pinned",
+        "kind": "self_consistency",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: every [label] line in the brief indexes the projection slot it names, and the brief's label set equals the projection set",
+        "key": "brief_label_index",
+        "kind": "self_consistency",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      },
+      {
+        "check": "per node: the exposed task label agrees with trace.task_artifact.artifact_id",
+        "key": "task_label",
+        "kind": "self_consistency",
+        "ran": 11,
+        "result": "verified (11/11 nodes)",
+        "skipped": [],
+        "total": 11,
+        "unit": "node"
+      }
+    ]
+  },
+  "declared_deviations": [
+    {
+      "code": "adjudication_batched",
+      "what": "no separate terminal Adj event is emitted",
+      "why": "spec §3 recomputes after every registration and the vendored P0 Harness does exactly that inside each registration event, but it exposes no public Adj emitter; the import writes through the registration API only and never forges a log line, so the terminal adjudication is the state after the last event"
+    },
+    {
+      "code": "problem_trigger_approximated",
+      "what": "imported FCL problem records use SpawnTrigger.SEED",
+      "why": "the vendored enum has no 'import' member; 'seed' is the only trigger that does not assert an in-graph derivation. The clean fix is an enum addition, requested rather than papered over"
+    },
+    {
+      "code": "problem_trigger_research_not_in_v13_enum",
+      "what": "research problems use SpawnTrigger.RESEARCH with empty criteria",
+      "why": "the vendored enum has the member and §12 is exactly this path, but the trigger is not part of the v1.3 enum text; criteria stay empty because no instantiated commitment id is a criterion"
+    },
+    {
+      "code": "depends_intra_document",
+      "what": "document-local depends refs are dropped, not turned into dep edges",
+      "why": "at node granularity they would be dep self-loops, i.e. cycles; toposort rejects them and a self-loop asserts nothing the author declared"
+    },
+    {
+      "code": "objection_self_target_only",
+      "what": "a self-targeting objection mints no warrant",
+      "why": "a Dung self-attack means 'this argument is self-defeating', which is not what an intra-document caveat asserts; minting it would flip two labels for reasons that have nothing to do with the evidence"
+    },
+    {
+      "code": "criticism_of_criticism_retargeted",
+      "what": "an objection against a record this import reified as a warrant attacks that warrant's validity node, not the node artifact",
+      "why": "spec §1 closure: attackers of a validity node attack the warrant and every carrier of it, so criticism of a criticism keeps its force instead of collapsing into a plain edge onto the carrier"
+    },
+    {
+      "code": "criticism_of_criticism_intra_document_dropped",
+      "what": "the retargeting rule above has ONE exception: an objection against a criticism carried by the SAME artifact is not retargeted",
+      "why": "the §1 closure lifts an attack on a validity node onto every carrier of the warrant, and for an intra-document criticism of a criticism that carrier is the objector itself, so retargeting would mint a self-attack through the closure and make the artifact self-defeating - which is not what an author asserts by qualifying their own earlier objection. `objection.o4` against `o1`/`o2` is exactly this case; it is dropped, not retargeted, and counted under its own code so the loss is visible rather than silent"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "what": "an FCL `claim` record maps to no spec construct",
+      "why": "a claim asserts content without proposing a test, so it is neither an observation-valued commitment nor a criticism nor a problem; it survives in the artifact body and in the FCL-1 document artifact, and is reported here because `uptake_refs_unmapped` covers only the claims the author put in `uptake`"
+    }
+  ],
+  "dep_edges": [],
+  "dry_run": false,
+  "error_severity_residue": {
+    "parse_failure": 2,
+    "ref_unresolved": 11
+  },
+  "events_count": 21,
+  "importer_version": "import_h005/1",
+  "invariant_i7": "**No label produced by this import is a semantic attribution.** Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+  "labels": {
+    "0eb08b8cb2b656429081e696d4e72afc053ba400cfde33710d641519b9ac71b5": "accepted",
+    "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607": "accepted",
+    "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e": "accepted",
+    "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d": "accepted",
+    "54f914dab10b58d5cf24cd6d9bb74f245196e088a05f9d3231c4a800dcb5742c": "accepted",
+    "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6": "accepted",
+    "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df": "accepted",
+    "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf": "accepted",
+    "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b": "accepted",
+    "c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550": "accepted",
+    "eb9e3436e2861e8ebb9d87876a98286e42e30537deabeda9f6db095fb44b4e4d": "accepted",
+    "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08": "accepted",
+    "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d": "accepted",
+    "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3": "accepted"
+  },
+  "multi_arm_framing": "This scope contains 2 arms (bare, mini_prose) whose declared commitment surface is prose and 1 arm (mini_fcl) whose surface is FCL-1. A prose commitment surface is never parsed, so no warrant, no attack edge and no refuted label can arise from a prose arm under this import. The distribution of statuses across arms is therefore a property of the carrier this importer reads, not a comparison between the arms. Any cross-arm reading is root's, not this instrument's.",
+  "names": {
+    "0eb08b8cb2b656429081e696d4e72afc053ba400cfde33710d641519b9ac71b5": "daily/mini_fcl/cycle01/objection#commitments",
+    "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607": "daily/mini_fcl/cycle01/objection",
+    "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e": "daily/mini_prose/cycle01/response",
+    "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d": "daily/mini_prose/cycle01/objection",
+    "54f914dab10b58d5cf24cd6d9bb74f245196e088a05f9d3231c4a800dcb5742c": "daily/mini_fcl/cycle01/account#commitments",
+    "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6": "daily/mini_prose/cycle01/account",
+    "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df": "daily/mini_fcl/cycle01/rival",
+    "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf": "daily/mini_fcl/cycle01/account",
+    "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b": "daily/mini_fcl/cycle01/carry",
+    "c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550": "daily/bare/cycle01/answer",
+    "eb9e3436e2861e8ebb9d87876a98286e42e30537deabeda9f6db095fb44b4e4d": "daily/mini_fcl/cycle01/rival#commitments",
+    "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08": "daily/mini_prose/cycle01/carry",
+    "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d": "daily/mini_prose/cycle01/rival",
+    "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3": "daily/mini_fcl/cycle01/response"
+  },
+  "occurrence": "occurrence-02",
+  "problems": [
+    {
+      "description": "I share a flat with two friends. We keep arguing about ordinary household chores. Sometimes we agree on who will do something, but later we disagree about what the agreement meant. Our work schedules change, and one friend has started avoiding the conversations. What should I do?",
+      "id": "pi:h005.task:daily",
+      "trigger": "seed"
+    },
+    {
+      "description": "How can the household establish a sustainable chore coordination system that accommodates shifting schedules and encourages open communication?",
+      "id": "pi:h005.fcl1:daily/mini_fcl/cycle01/account#r4",
+      "trigger": "seed"
+    },
+    {
+      "description": "How can the household address underlying relational tensions while implementing any coordination tool, ensuring both procedural clarity and emotional safety?",
+      "id": "pi:h005.fcl1:daily/mini_fcl/cycle01/objection#r12",
+      "trigger": "seed"
+    },
+    {
+      "description": "Observation-valued commitment with no covering evidence (daily/mini_fcl/cycle01/account#r5): Create a shared, visible chore calendar (e.g., whiteboard or digital app) where assignments are recorded and can be updated as schedules change.",
+      "id": "pi:h005.fcl1.research:k:h005.fcl1:daily/mini_fcl/cycle01/account#r5",
+      "trigger": "research"
+    },
+    {
+      "description": "Observation-valued commitment with no covering evidence (daily/mini_fcl/cycle01/account#r6): Hold a brief house meeting within the next week to discuss the new system and express any concerns, ensuring each person has a chance to speak.",
+      "id": "pi:h005.fcl1.research:k:h005.fcl1:daily/mini_fcl/cycle01/account#r6",
+      "trigger": "research"
+    }
+  ],
+  "reference_resolution": {
+    "dangling": 11,
+    "extensions": 0,
+    "refs": 15,
+    "resolved": 4,
+    "task": 0
+  },
+  "residue": [
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "bare",
+        "cycle": 1,
+        "node": "answer",
+        "problem": "daily"
+      },
+      "detail": "arm 'bare' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550",
+      "unit": "artifact"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6",
+      "unit": "artifact"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d",
+      "unit": "artifact"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d",
+      "unit": "artifact"
+    },
+    {
+      "code": "parse_failure",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "commitments string is not JSON: Expecting ',' delimiter: line 5 column 322 (char 1062) - the artifact stays opaque; nothing is repaired (I4). The commitment surface is UNAVAILABLE to this import, which is not the same as the author having declined to commit. accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.",
+      "record_id": null,
+      "spec_artifact_id": "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3",
+      "unit": "document"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e",
+      "unit": "artifact"
+    },
+    {
+      "code": "parse_failure",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "commitments string is not JSON: Extra data: line 10 column 327 (char 2659) - the artifact stays opaque; nothing is repaired (I4). The commitment surface is UNAVAILABLE to this import, which is not the same as the author having declined to commit. accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.",
+      "record_id": null,
+      "spec_artifact_id": "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b",
+      "unit": "document"
+    },
+    {
+      "code": "prose_commitment_surface",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "arm 'mini_prose' declares a prose commitment surface, so the string is not an FCL-1 document and is never parsed as one - the author was never asked for FCL-1. The artifact IS adjudicated: it is registered, it is in the graph, and it is labelled. With no commitment surface read it has no attacker, so grounded semantics labels it accepted by position, and that label carries no information about the arm. The text is preserved verbatim as a blob and in the side table.",
+      "record_id": null,
+      "spec_artifact_id": "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08",
+      "unit": "artifact"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "a claim record asserts content without proposing a test: it is neither an observation-valued commitment (no action/consequence to schedule), nor a criticism, nor a problem, so it maps to no spec construct and survives only as part of the artifact body and of the FCL-1 document artifact. Its own refs are still resolved and reported. A claim in the document's uptake list is additionally covered by uptake_refs_unmapped; a claim the author left OUT of uptake is covered by nothing else, which is why this code exists.",
+      "record_id": "r1",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "a claim record asserts content without proposing a test: it is neither an observation-valued commitment (no action/consequence to schedule), nor a criticism, nor a problem, so it maps to no spec construct and survives only as part of the artifact body and of the FCL-1 document artifact. Its own refs are still resolved and reported. A claim in the document's uptake list is additionally covered by uptake_refs_unmapped; a claim the author left OUT of uptake is covered by nothing else, which is why this code exists.",
+      "record_id": "r2",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "a claim record asserts content without proposing a test: it is neither an observation-valued commitment (no action/consequence to schedule), nor a criticism, nor a problem, so it maps to no spec construct and survives only as part of the artifact body and of the FCL-1 document artifact. Its own refs are still resolved and reported. A claim in the document's uptake list is additionally covered by uptake_refs_unmapped; a claim the author left OUT of uptake is covered by nothing else, which is why this code exists.",
+      "record_id": "r3",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "problem_trigger_approximated",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "SpawnTrigger has no 'import' member; 'seed' is the only trigger that does not assert an in-graph derivation, but it slightly over-claims for a problem carried in from another study. The clean fix is an enum addition.",
+      "record_id": "r4",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "problem"
+    },
+    {
+      "code": "commitment_not_executable",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "observation-valued commitment with no covering evidence artifact: it spawns a research problem (spec §12) and stays scheduled-pending, never failed. The eval string is a content-addressed placeholder outside every executable eval class, so nothing can dispatch it.",
+      "record_id": "r5",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "commitment_record_not_in_uptake",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "the author did not put this commitment in the document's uptake list. Uptake is a local standing claim and never a status, so the commitment is imported unchanged; the divergence is reported, not resolved.",
+      "record_id": "r5",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "depends_intra_document",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "resolves to the carrier itself; a dep self-loop is a cycle (spec §1), so the edge is dropped",
+      "record_id": "r5",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "ref"
+    },
+    {
+      "code": "depends_intra_document",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "resolves to the carrier itself; a dep self-loop is a cycle (spec §1), so the edge is dropped",
+      "record_id": "r5",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "ref"
+    },
+    {
+      "code": "commitment_not_executable",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "observation-valued commitment with no covering evidence artifact: it spawns a research problem (spec §12) and stays scheduled-pending, never failed. The eval string is a content-addressed placeholder outside every executable eval class, so nothing can dispatch it.",
+      "record_id": "r6",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "commitment_record_not_in_uptake",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "the author did not put this commitment in the document's uptake list. Uptake is a local standing claim and never a status, so the commitment is imported unchanged; the divergence is reported, not resolved.",
+      "record_id": "r6",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "depends_intra_document",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "resolves to the carrier itself; a dep self-loop is a cycle (spec §1), so the edge is dropped",
+      "record_id": "r6",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "ref"
+    },
+    {
+      "code": "use_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "a use record proposes future uptake; it is neither a testable commitment nor a criticism and has no spec construct",
+      "record_id": "r7",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "record"
+    },
+    {
+      "code": "depends_intra_document",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "resolves to the carrier itself; a dep self-loop is a cycle (spec §1), so the edge is dropped",
+      "record_id": "r7",
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_lists_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "uptake is a local claim about standing, never a harness verdict, status or acceptance",
+      "record_id": null,
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "document"
+    },
+    {
+      "code": "problem_trigger_research_not_in_v13_enum",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "pi:h005.fcl1.research:k:h005.fcl1:daily/mini_fcl/cycle01/account#r5 uses SpawnTrigger.RESEARCH, which the vendored enum has and spec §12 describes, but which is not part of the v1.3 enum text; criteria are empty and the originating commitment is in provenance.from",
+      "record_id": null,
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "problem"
+    },
+    {
+      "code": "problem_trigger_research_not_in_v13_enum",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "pi:h005.fcl1.research:k:h005.fcl1:daily/mini_fcl/cycle01/account#r6 uses SpawnTrigger.RESEARCH, which the vendored enum has and spec §12 describes, but which is not part of the v1.3 enum text; criteria are empty and the originating commitment is in provenance.from",
+      "record_id": null,
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "problem"
+    },
+    {
+      "code": "projection_absent",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.account.0 (source 'previous') exposed nothing; any ref through it is unresolvable",
+      "record_id": null,
+      "spec_artifact_id": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+      "unit": "document"
+    },
+    {
+      "code": "projection_absent",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "account",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.account.0 (source 'previous') exposed nothing; any ref through it is unresolvable",
+      "record_id": null,
+      "spec_artifact_id": "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6",
+      "unit": "document"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": "r8",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": "r9",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": "r10",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": "r11",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "problem_trigger_approximated",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "SpawnTrigger has no 'import' member; 'seed' is the only trigger that does not assert an in-graph derivation, but it slightly over-claims for a problem carried in from another study. The clean fix is an enum addition.",
+      "record_id": "r12",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "problem"
+    },
+    {
+      "code": "uptake_lists_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake is a local claim about standing, never a harness verdict, status or acceptance",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "document"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "ref_unresolved",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "neither a local record name nor an exposed-artifact label; dropped, never invented",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "uptake_refs_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "uptake refs are never mapped to an edge, a status or a label",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "ref"
+    },
+    {
+      "code": "grounds_absent_on_objection",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "the validity node carries text + bearing (+ scope) only; no grounds were authored",
+      "record_id": "r8",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "objection_untargeted",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "no target field: nothing to attack, so no warrant is minted",
+      "record_id": "r8",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "grounds_absent_on_objection",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "the validity node carries text + bearing (+ scope) only; no grounds were authored",
+      "record_id": "r9",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "objection_untargeted",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "no target field: nothing to attack, so no warrant is minted",
+      "record_id": "r9",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "grounds_absent_on_objection",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "the validity node carries text + bearing (+ scope) only; no grounds were authored",
+      "record_id": "r10",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "objection_untargeted",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "no target field: nothing to attack, so no warrant is minted",
+      "record_id": "r10",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "grounds_absent_on_objection",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "the validity node carries text + bearing (+ scope) only; no grounds were authored",
+      "record_id": "r11",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "objection_untargeted",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "no target field: nothing to attack, so no warrant is minted",
+      "record_id": "r11",
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "record"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.objection.0 (source 'account') was exposed in the brief but no FCL ref cites it",
+      "record_id": null,
+      "spec_artifact_id": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "objection",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.objection.0 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d",
+      "unit": "document"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "a claim record asserts content without proposing a test: it is neither an observation-valued commitment (no action/consequence to schedule), nor a criticism, nor a problem, so it maps to no spec construct and survives only as part of the artifact body and of the FCL-1 document artifact. Its own refs are still resolved and reported. A claim in the document's uptake list is additionally covered by uptake_refs_unmapped; a claim the author left OUT of uptake is covered by nothing else, which is why this code exists.",
+      "record_id": "r1",
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "record"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "a claim record asserts content without proposing a test: it is neither an observation-valued commitment (no action/consequence to schedule), nor a criticism, nor a problem, so it maps to no spec construct and survives only as part of the artifact body and of the FCL-1 document artifact. Its own refs are still resolved and reported. A claim in the document's uptake list is additionally covered by uptake_refs_unmapped; a claim the author left OUT of uptake is covered by nothing else, which is why this code exists.",
+      "record_id": "r2",
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "record"
+    },
+    {
+      "code": "claim_record_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "a claim record asserts content without proposing a test: it is neither an observation-valued commitment (no action/consequence to schedule), nor a criticism, nor a problem, so it maps to no spec construct and survives only as part of the artifact body and of the FCL-1 document artifact. Its own refs are still resolved and reported. A claim in the document's uptake list is additionally covered by uptake_refs_unmapped; a claim the author left OUT of uptake is covered by nothing else, which is why this code exists.",
+      "record_id": "r3",
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "record"
+    },
+    {
+      "code": "uptake_lists_unmapped",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "uptake is a local claim about standing, never a harness verdict, status or acceptance",
+      "record_id": null,
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "document"
+    },
+    {
+      "code": "grounds_absent_on_objection",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "the validity node carries text + bearing (+ scope) only; no grounds were authored",
+      "record_id": "r4",
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "record"
+    },
+    {
+      "code": "objection_untargeted",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "no target field: nothing to attack, so no warrant is minted",
+      "record_id": "r4",
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "record"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.rival.0 (source 'account') was exposed in the brief but no FCL ref cites it",
+      "record_id": null,
+      "spec_artifact_id": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "rival",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.rival.0 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.response.0 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'parse_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.response.1 (source 'objection') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'parse_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.response.2 (source 'rival') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'parse_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.response.0 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.response.1 (source 'objection') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "response",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.response.2 (source 'rival') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.0 (source 'response') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'parse_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.1 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'parse_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.2 (source 'objection') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'parse_failure'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b",
+      "unit": "document"
+    },
+    {
+      "code": "projection_absent",
+      "coordinate": {
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.3 (source 'origin') exposed nothing; any ref through it is unresolvable",
+      "record_id": null,
+      "spec_artifact_id": "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.0 (source 'response') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.1 (source 'account') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08",
+      "unit": "document"
+    },
+    {
+      "code": "projection_exposed_unreferenced",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.2 (source 'objection') was exposed in the brief but this node's commitment surface was not read by this import (commitment_surface_state = 'prose_not_parsed'), so no ref could cite it. Nothing is implied about whether the author used the exposed material",
+      "record_id": null,
+      "spec_artifact_id": "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08",
+      "unit": "document"
+    },
+    {
+      "code": "projection_absent",
+      "coordinate": {
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "carry",
+        "problem": "daily"
+      },
+      "detail": "projection slot p.carry.3 (source 'origin') exposed nothing; any ref through it is unresolvable",
+      "record_id": null,
+      "spec_artifact_id": "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08",
+      "unit": "document"
+    },
+    {
+      "code": "adjudication_batched",
+      "coordinate": null,
+      "detail": "the vendored P0 Harness re-adjudicates inside every registration event and exposes no public Adj emitter, so this import emits no separate terminal Adj event (mapping.md §8.2 asked for one). Status flips are recorded in each registration event's state_diff.status_changed; the import writes through the registration API only and never forges a log line.",
+      "record_id": null,
+      "spec_artifact_id": null,
+      "unit": "file"
+    }
+  ],
+  "residue_totals": {
+    "adjudication_batched": 1,
+    "bare_label_ref": 0,
+    "claim_record_unmapped": 6,
+    "commitment_not_executable": 2,
+    "commitment_record_not_in_uptake": 2,
+    "consequence_on_non_commitment_record": 0,
+    "criticism_of_criticism_intra_document_dropped": 0,
+    "criticism_of_criticism_retargeted": 0,
+    "dependence_cycle_rejected": 0,
+    "depends_cross_document": 0,
+    "depends_intra_document": 4,
+    "grounds_absent_on_objection": 5,
+    "mentions_intra_document": 0,
+    "objection_self_target_only": 0,
+    "objection_target_self_ref_dropped": 0,
+    "objection_untargeted": 5,
+    "opaque_envelope": 0,
+    "parse_failure": 2,
+    "problem_trigger_approximated": 2,
+    "problem_trigger_research_not_in_v13_enum": 2,
+    "projection_absent": 4,
+    "projection_exposed_unreferenced": 16,
+    "prose_commitment_surface": 6,
+    "qualified_ref_body_pseudo_local": 0,
+    "ref_through_absent_projection": 0,
+    "ref_through_unexposed_view": 0,
+    "ref_to_task_artifact": 0,
+    "ref_to_unregistered_target_dropped": 0,
+    "ref_unresolved": 11,
+    "revises_unmapped": 0,
+    "schema_failure": 0,
+    "target_on_non_objection_record": 0,
+    "uptake_lists_unmapped": 3,
+    "uptake_refs_unmapped": 7,
+    "use_record_unmapped": 1,
+    "validity_node_minted_unasserted": 0,
+    "warrant_edge_deduplicated": 0,
+    "withdraws_unmapped": 0
+  },
+  "schema": "h005-import.report.v1",
+  "scope": [
+    {
+      "arm": "bare",
+      "cycle": 1,
+      "node": "answer",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "account",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "account",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "objection",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "objection",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "rival",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "rival",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "response",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "response",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "carry",
+      "problem": "daily"
+    },
+    {
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "carry",
+      "problem": "daily"
+    }
+  ],
+  "spec_id_table": {
+    "daily/bare/cycle01/answer": "c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550",
+    "daily/mini_fcl/cycle01/account": "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf",
+    "daily/mini_fcl/cycle01/carry": "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b",
+    "daily/mini_fcl/cycle01/objection": "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607",
+    "daily/mini_fcl/cycle01/response": "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3",
+    "daily/mini_fcl/cycle01/rival": "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df",
+    "daily/mini_prose/cycle01/account": "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6",
+    "daily/mini_prose/cycle01/carry": "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08",
+    "daily/mini_prose/cycle01/objection": "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d",
+    "daily/mini_prose/cycle01/response": "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e",
+    "daily/mini_prose/cycle01/rival": "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d"
+  },
+  "warrants": [],
+  "why": {
+    "0eb08b8cb2b656429081e696d4e72afc053ba400cfde33710d641519b9ac71b5": "why(0eb08b8cb2b656429081e696d4e72afc053ba400cfde33710d641519b9ac71b5)\n  artifact : daily/mini_fcl/cycle01/objection#commitments\n  status   : accepted\n\n  daily/mini_fcl/cycle01/objection#commitments [0eb08b8cb2b6] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607": "why(2e553f33d88754ed550cccd3e4f3ca7a2506e468ac140987f048dca2d7d88607)\n  artifact : daily/mini_fcl/cycle01/objection\n  status   : accepted\n\n  daily/mini_fcl/cycle01/objection [2e553f33d887] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e": "why(493b07bdf9c62ac18435f1696ea62caeeab2757f61aefa6af83909659a784c1e)\n  artifact : daily/mini_prose/cycle01/response\n  status   : accepted\n\n  daily/mini_prose/cycle01/response [493b07bdf9c6] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d": "why(4b2571deafd0bab9c92068a7f209cf8e504fc2693bca6b48e444b2d9e4a3ab4d)\n  artifact : daily/mini_prose/cycle01/objection\n  status   : accepted\n\n  daily/mini_prose/cycle01/objection [4b2571deafd0] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "54f914dab10b58d5cf24cd6d9bb74f245196e088a05f9d3231c4a800dcb5742c": "why(54f914dab10b58d5cf24cd6d9bb74f245196e088a05f9d3231c4a800dcb5742c)\n  artifact : daily/mini_fcl/cycle01/account#commitments\n  status   : accepted\n\n  daily/mini_fcl/cycle01/account#commitments [54f914dab10b] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6": "why(93f6d3e1623a548841ea2f20bda4f53bdc1b37d7bb09600b3520578d2df9eef6)\n  artifact : daily/mini_prose/cycle01/account\n  status   : accepted\n\n  daily/mini_prose/cycle01/account [93f6d3e1623a] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df": "why(94c642468f6700fae561f6ceb00a651979b146755dfa65a7355b9036d4cda2df)\n  artifact : daily/mini_fcl/cycle01/rival\n  status   : accepted\n\n  daily/mini_fcl/cycle01/rival [94c642468f67] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf": "why(9c543a96366de5bce401470308a9548d8d54d893f252626a6fb8895e2c1b04bf)\n  artifact : daily/mini_fcl/cycle01/account\n  status   : accepted\n\n  daily/mini_fcl/cycle01/account [9c543a96366d] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b": "why(ace12329bf4ed638d4df46a21174642df9da56e5970c3763ed1df695a8e4340b)\n  artifact : daily/mini_fcl/cycle01/carry\n  status   : accepted\n\n  daily/mini_fcl/cycle01/carry [ace12329bf4e] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: UNAVAILABLE (parse_failure). The arm declares an FCL-1 surface and the string did not parse as JSON; nothing was repaired (I4), so no commitment surface was read and the label above is silent about what the author committed to.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550": "why(c301885e54e122f6f471b66ec6be495dbd1310c45a3e603074c96c222d026550)\n  artifact : daily/bare/cycle01/answer\n  status   : accepted\n\n  daily/bare/cycle01/answer [c301885e54e1] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "eb9e3436e2861e8ebb9d87876a98286e42e30537deabeda9f6db095fb44b4e4d": "why(eb9e3436e2861e8ebb9d87876a98286e42e30537deabeda9f6db095fb44b4e4d)\n  artifact : daily/mini_fcl/cycle01/rival#commitments\n  status   : accepted\n\n  daily/mini_fcl/cycle01/rival#commitments [eb9e3436e286] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08": "why(f3e6fe00afde79eb99fb189652bdf9adbe6fbcc80889d710706f6e347861cb08)\n  artifact : daily/mini_prose/cycle01/carry\n  status   : accepted\n\n  daily/mini_prose/cycle01/carry [f3e6fe00afde] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d": "why(f4ad3fb419774ab51e1b4a85580a953757e895698ac01d2ed66fb903412fb36d)\n  artifact : daily/mini_prose/cycle01/rival\n  status   : accepted\n\n  daily/mini_prose/cycle01/rival [f4ad3fb41977] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: NOT READ (prose_not_parsed). This arm's declared commitment surface is prose; the author was never asked for FCL-1 and the string is never parsed as one. No warrant, no attack edge and no refuted label can arise from it under this import, so the label above is a property of the carrier, not of the contribution.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation).",
+    "f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3": "why(f7cb4521d8bba40f02944fac0cd4f5b3f432555b3dff55e787665f73059a94b3)\n  artifact : daily/mini_fcl/cycle01/response\n  status   : accepted\n\n  daily/mini_fcl/cycle01/response [f7cb4521d8bb] -- accepted\n  (no attacker in the imported relation)\n\n  accepted: unattacked in the imported attack relation, so it enters the grounded extension at the first Kleene step. This is accept-by-position: no warrant in this import targets it. This import reified criticism only from an FCL-1 commitment surface, so the absence of an attacker is not evidence that the contribution was uncriticised.\n  declared dependence (dep): none, so pass 2 is a no-op for this artifact.\n  commitment surface: UNAVAILABLE (parse_failure). The arm declares an FCL-1 surface and the string did not parse as JSON; nothing was repaired (I4), so no commitment surface was read and the label above is silent about what the author committed to.\n  I7: No label produced by this import is a semantic attribution. Statuses are mechanism bookkeeping over the imported attack relation; they do not bear on the FCL-1 hypothesis, on FW5, or on the merit of any contribution. Root alone interprets substantive output (PROTOCOL.md §Interpretation)."
+  }
+}

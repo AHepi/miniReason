@@ -1,0 +1,739 @@
+{
+  "schema": "h005-use-relation.use-table.v1",
+  "instrument_version": "use_relation_h005/1",
+  "occurrence": "occurrence-04",
+  "banner": "**The tool records juxtapositions; the reading is root's.** This table places each authored cross-document reference beside passages a root reader may find worth starting from - a finding aid, never a closed search space - and stops there. It scores nothing, ranks nothing, classifies nothing and mints no relation of its own; it has no `att`, no `dep`, no status and no label. **A lexical overlap is not evidence of use.** FCL-1's own rule is that `depends` and `mentions` are \"not automatically inferred from citation or lexical overlap\"; a witness of reason use \"must preserve internal role bindings, not merely the endpoint string\" (FW5:628); actual use is \"not automatically machine-maintainable\" while prompt appearance is only a delivery fact (FW5:640); and no function of an input-output projection agrees with the accounting predicate across models differing in active route (FW5:1218), \"semantic use inferred from delivery logs\" included (FW5:1222) - all as summarised in the FW5-versus-harness-spec review, `fw5-vs-harness-spec-review.md` §1 R2-R4, §3.1 and §5 P1/P6. Root fills the four empty cells by reading; `unresolved` is a legal value and stays unresolved (FW5:634). An empty cell is an **unread row**, not a reading of `unresolved`.",
+  "scope": [
+    {
+      "problem": "daily",
+      "arm": "bare",
+      "cycle": 1,
+      "node": "answer"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "account"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "account"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "objection"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "rival"
+    }
+  ],
+  "custody": {
+    "plan_id": "e2e3357ef2d67dda270a53f65151c6b1e94265000d487876e0cad735a9cc83c1",
+    "material_sha256": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff",
+    "checks": {
+      "cross_file": [
+        {
+          "key": "material_pin",
+          "kind": "cross_file",
+          "check": "plan.material_sha256 == sha256(material.json)",
+          "unit": "occurrence",
+          "ran": 1,
+          "total": 1,
+          "skipped": [],
+          "result": "verified (1/1 occurrence)"
+        },
+        {
+          "key": "manifest_pins",
+          "kind": "cross_file",
+          "check": "plan.manifests[tid] == sha256(manifests/<tid>.json)",
+          "unit": "manifest",
+          "ran": 3,
+          "total": 3,
+          "skipped": [],
+          "result": "verified (3/3 manifests)"
+        },
+        {
+          "key": "receipt_present",
+          "kind": "cross_file",
+          "check": "per node: receipt present (responses/<node>.json)",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "artifact_bytes_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: sha256(artifacts/<node>.json) == receipt.artifact_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "status_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: receipt.status == delivery_status and receipt.envelope_status == envelope_status (recorded, never read as a verdict)",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "public_text",
+          "kind": "cross_file",
+          "check": "per node: sha256(responses/<node>.txt) == artifact.public_text_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "attempt_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: attempt.request_sha256 == receipt.request_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "request_record",
+          "kind": "cross_file",
+          "check": "per node: study_digest(requests/<node>.json) == attempt.request_sha256 == receipt.request_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "trace_pinned",
+          "kind": "cross_file",
+          "check": "per node: request.trace_sha256 == study_digest(traces/<node>.json), checked before the trace is read by the label index or the projection resolver; counted as run only where the request record is itself pinned by an attempt or a receipt",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "provider_bytes",
+          "kind": "cross_file",
+          "check": "per node: sha256(provider/<coord>/call-0001.{request,response}.json) == receipt.provider_{request,response}_sha256 (skipped only for a FAILED receipt)",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "wave_placement",
+          "kind": "cross_file",
+          "check": "per node: attempt.wave_id is the wave listing the coordinate and wave.request_hashes[<coordinate>] == attempt.request_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "projection_source",
+          "kind": "cross_file",
+          "check": "per projection: selected_source artifact_id/body_sha256/commitments_sha256 equal the authored artifact record it names",
+          "unit": "projection",
+          "ran": 2,
+          "total": 4,
+          "skipped": [
+            {
+              "subject": "daily/mini_fcl/cycle01/account#p.account.0",
+              "missing": "exposed source (the slot is absent)"
+            },
+            {
+              "subject": "daily/mini_prose/cycle01/account#p.account.0",
+              "missing": "exposed source (the slot is absent)"
+            }
+          ],
+          "result": "verified (2/4 projections; 2 projection(s) had no exposed source (the slot is absent): `daily/mini_fcl/cycle01/account#p.account.0`, `daily/mini_prose/cycle01/account#p.account.0`)"
+        }
+      ],
+      "self_consistency": [
+        {
+          "key": "plan_identity",
+          "kind": "self_consistency",
+          "check": "plan_id == study_digest(plan without plan_id)",
+          "unit": "occurrence",
+          "ran": 1,
+          "total": 1,
+          "skipped": [],
+          "result": "verified (1/1 occurrence)"
+        },
+        {
+          "key": "artifact_self_hash",
+          "kind": "self_consistency",
+          "check": "per node: sha256(body) == body_sha256, sha256(commitments) == commitments_sha256, and <field>_ref == <field>_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "artifact_coordinate",
+          "kind": "self_consistency",
+          "check": "per node: the artifact record's own coordinate is the one it is filed under",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "brief_pinned",
+          "kind": "self_consistency",
+          "check": "per node: sha256(trace.original_brief) == trace.original_brief_sha256",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "brief_label_index",
+          "kind": "self_consistency",
+          "check": "per node: every [label] line in the brief indexes the projection slot it names, and the brief's label set equals the projection set",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        },
+        {
+          "key": "task_label",
+          "kind": "self_consistency",
+          "check": "per node: the exposed task label agrees with trace.task_artifact.artifact_id",
+          "unit": "node",
+          "ran": 5,
+          "total": 5,
+          "skipped": [],
+          "result": "verified (5/5 nodes)"
+        }
+      ]
+    }
+  },
+  "method": {
+    "prose": [
+      "**Sentence.** The referring node's `body` is cut at every match of the published boundary regular expression and nowhere else; leading and trailing whitespace is trimmed out of each span *and out of its offsets*, so `body[start:end]` is exactly the quoted sentence. The boundary is one or more of `.` `!` `?` preceded by a lowercase letter or a closing bracket/quote and followed by whitespace or end-of-string, together with any closing quotes that follow it; or a run of newlines. This is not linguistic sentence segmentation: a numbered list marker (\"1. Separate ...\") does not split, and an abbreviation such as \"e.g.\" does.",
+      "**Token.** The string is lowercased and every maximal run of ASCII letters and digits is a token, in order of occurrence.",
+      "**The target record's text.** The concatenation, separated by single spaces, of the target record's prose fields in this order: `text`, `scope`, `action`, `consequence`, `grounds`, `bearing`. `id`, `type` and every ref array are excluded: they are names and pointers, not content. When the ref names the owning contribution as a whole rather than one of its records - a bare exposed-artifact label, or the `#BODY` section header - the subject is instead the same concatenation over **every** record of the owning document, in document order, and the row says so in `overlap_subject`.",
+      "**Distinctive token.** A token `t` of the target record's text is *distinctive* when all three hold: (1) `len(t) >= 5` characters after lowercasing; (2) `t` is not in the closed stopword list below; (3) `document_frequency(t) <= 2`, where `document_frequency(t)` is the number of in-scope FCL-1 documents whose record prose contains `t`, and the threshold is `max(2, number_of_in_scope_FCL-1_documents // 2)` - here `max(2, 0 // 2)`. Clause (3) makes the criterion **scope-dependent**: it is computed over the documents listed under `corpus_documents`, and re-running over a different scope can change which tokens count. That is stated rather than hidden, because a partition-invariance question about this instrument (review §5 P5) has to be answerable from its own output.",
+      "**A passage is listed** when the sentence contains at least one distinctive token of the target record's text. Passages are listed in body order, never ordered or selected by how many tokens they carry; `distinctive_tokens_present` is an audit aid so a reader can see *why* a sentence was listed, and is not a measure. When no sentence qualifies the row says `no lexical overlap found`.",
+      "**What a listed passage is not.** It is not evidence that the referring node used the target's content, and its absence is not evidence that it did not. Shared vocabulary is shared vocabulary. The relation columns of this table report what an author *wrote* in a ref-valued field; the passage columns report what a mechanical string comparison found; neither is a reading, and the four `root_*` cells are where a reading would go.",
+      "**Declared uptake columns.** `declared_uptake_includes_referring_record` is true when the referring record's local name is in its own document's `uptake` list; `declared_uptake_includes_target_record` is true when the target record's local name is in the *target* document's `uptake` list. `n/a` means the row has no such record to look up (a document-level `uptake` ref has no referring record; a ref to a whole contribution has no target record).",
+      "**What a blank root cell means.** An empty `root_reading`, `root_passage_cited`, `root_notes` or `root_initials_date` is an **unread row**: nobody has read it yet. It is *not* a reading of `unresolved`, and it is not a finding of indeterminacy. `unresolved` is a reading root may write, deliberately, and it then stays unresolved (FW5:634); a blank cell asserts nothing at all. Conflating the two would let an unfinished worksheet read as a finding, which is exactly the move FW5:688 forbids.",
+      "**What the listed passages are.** A finding aid, not a search space. The overlap rule is mechanical and shallow; root may cite **any** passage of either contribution, including one this rule did not surface, and a row with `no lexical overlap found` is not a row with nothing to read. `root_passage_cited` is free text for that reason.",
+      "**The `root_reading` vocabulary is a suggestion.** The six values below are published so that two readers of two tables mean the same thing by the same word, not to constrain root to one of them: a row may carry more than one, and root may write a reading the vocabulary does not cover and say so. Nothing about it is enforced in code."
+    ],
+    "token_regex": "[a-z0-9]+",
+    "sentence_boundary_regex": "(?<=[a-z\\)\\]’'\"])[.!?]+[\"'\\)\\]”]*(?=\\s|$)|\n+",
+    "record_prose_fields": [
+      "text",
+      "scope",
+      "action",
+      "consequence",
+      "grounds",
+      "bearing"
+    ],
+    "ref_fields_resolution_order": [
+      "mentions",
+      "revises",
+      "withdraws",
+      "target",
+      "depends",
+      "uptake",
+      "target (objection, pass 2)"
+    ],
+    "ref_fields_walked": [
+      "target",
+      "depends",
+      "mentions",
+      "revises",
+      "withdraws",
+      "uptake"
+    ],
+    "span_offsets": "code point offsets into the decoded `commitments` string (Python string indices), not utf-8 byte offsets and not offsets into the artifact JSON file",
+    "min_token_length": 5,
+    "stopwords": [
+      "about",
+      "above",
+      "across",
+      "after",
+      "again",
+      "against",
+      "almost",
+      "alone",
+      "along",
+      "already",
+      "also",
+      "although",
+      "always",
+      "among",
+      "another",
+      "anyone",
+      "anything",
+      "around",
+      "because",
+      "become",
+      "becomes",
+      "before",
+      "begin",
+      "behind",
+      "being",
+      "below",
+      "beside",
+      "better",
+      "between",
+      "beyond",
+      "cannot",
+      "could",
+      "does",
+      "doing",
+      "done",
+      "during",
+      "each",
+      "either",
+      "enough",
+      "equally",
+      "especially",
+      "even",
+      "every",
+      "everything",
+      "except",
+      "exist",
+      "exists",
+      "first",
+      "from",
+      "further",
+      "given",
+      "goes",
+      "going",
+      "gone",
+      "hardly",
+      "have",
+      "having",
+      "hence",
+      "here",
+      "however",
+      "inside",
+      "instead",
+      "into",
+      "itself",
+      "just",
+      "keep",
+      "kept",
+      "later",
+      "least",
+      "less",
+      "like",
+      "likely",
+      "made",
+      "make",
+      "makes",
+      "making",
+      "many",
+      "maybe",
+      "might",
+      "more",
+      "most",
+      "much",
+      "must",
+      "near",
+      "need",
+      "needs",
+      "neither",
+      "never",
+      "next",
+      "nobody",
+      "none",
+      "nothing",
+      "often",
+      "once",
+      "only",
+      "onto",
+      "other",
+      "others",
+      "ought",
+      "over",
+      "perhaps",
+      "quite",
+      "rather",
+      "really",
+      "same",
+      "seem",
+      "seems",
+      "seen",
+      "several",
+      "shall",
+      "should",
+      "simply",
+      "since",
+      "some",
+      "something",
+      "sometimes",
+      "still",
+      "such",
+      "take",
+      "taken",
+      "than",
+      "that",
+      "their",
+      "them",
+      "themselves",
+      "then",
+      "there",
+      "therefore",
+      "these",
+      "they",
+      "thing",
+      "things",
+      "think",
+      "this",
+      "those",
+      "though",
+      "three",
+      "through",
+      "thus",
+      "together",
+      "toward",
+      "under",
+      "unless",
+      "until",
+      "upon",
+      "very",
+      "well",
+      "were",
+      "what",
+      "when",
+      "where",
+      "whether",
+      "which",
+      "while",
+      "whole",
+      "whom",
+      "whose",
+      "will",
+      "with",
+      "within",
+      "without",
+      "would",
+      "your",
+      "yours"
+    ],
+    "distinctive_document_frequency_threshold": 2,
+    "corpus_documents": [],
+    "root_cells": [
+      "root_reading",
+      "root_passage_cited",
+      "root_notes",
+      "root_initials_date"
+    ],
+    "root_reading_vocabulary": [
+      "re-deploys",
+      "qualifies",
+      "rejects-with-reason",
+      "repairs",
+      "retains",
+      "unresolved"
+    ],
+    "reused_from_importer": [
+      "verify_custody",
+      "parse_fcl1_document / fcl1_validator (FCL-1 schema validation)",
+      "_Reader (read-only, path-confined, sha256-recording occurrence reader)",
+      "_Importer.discover_scope / load_nodes / parse_documents",
+      "iter_references (the import's own public reference walk: field order, wave-order availability and two-hop resolution)",
+      "UNRESOLVED_RESIDUE_CODES / EXTENSION_RESIDUE_CODES (the import's own classification of what a residue code means for a ref)"
+    ],
+    "not_used_from_importer": [
+      "graph construction (Harness, registration, events)",
+      "adjudication (build_att / build_dep / label computation)",
+      "every status and label the importer computes"
+    ]
+  },
+  "rows": [],
+  "documents": [],
+  "nodes_not_read": [
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "bare",
+        "cycle": 1,
+        "node": "answer"
+      },
+      "coordinate_key": "daily/bare/cycle01/answer",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/account",
+      "commitment_surface": "schema_failure",
+      "note": "commitment surface: schema_failure; references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "account"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/account",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/objection",
+      "commitment_surface": "unavailable_decode_failure",
+      "note": "commitment surface: unavailable_decode_failure; references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/rival",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    }
+  ],
+  "unresolved_refs": [],
+  "reference_totals": {
+    "refs_walked": 0,
+    "cross_document_rows": 0,
+    "intra_document": 0,
+    "refs_to_exposed_task_artifact": 0,
+    "unresolved": 0,
+    "importer_resolved_counter": 0,
+    "importer_extension_counter": 0,
+    "importer_dangling_counter": 0
+  },
+  "files_read": [
+    {
+      "path": "artifacts/daily/bare/cycle01/answer.json",
+      "sha256": "caf27324cf87d3e3f7a5999d35c6035545c5cb0c88297c062dbb474fd9ebb242"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/account.json",
+      "sha256": "f34da0cb4b9a31c5b4072596258b04eb94849fd08380b1899a5cad1e14bc09a6"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/account.json",
+      "sha256": "561294d73c77e7778ab70f3fe86033bbda54b3c34b58d31eb401f1928031725a"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/objection.json",
+      "sha256": "2896cf1b3bda4e1423c637c05c4197003982e162c63ca06d005cbd81f3675354"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/rival.json",
+      "sha256": "09e9828de01550b78b05073041beb53ba1088c6f9708848882740576a60002f5"
+    },
+    {
+      "path": "attempts/daily/bare/cycle01/answer.json",
+      "sha256": "2049bee56a72dc767c38c3bf08fbaaea1cd0121c2d31bea0e7f979c7da513604"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/account.json",
+      "sha256": "a0ec87d46cca9519d52c2b957974dea803a21636ab18aa3bf3e45495f47f6980"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/account.json",
+      "sha256": "f46dc2a428984415340448844424df26d8f1ac1a73d6e6f6b83150d2222fc023"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/objection.json",
+      "sha256": "f9a2ad95441f8ff39b5b76049ea6008a2e226d838e1cfdfbe893c7a0a95d8c8d"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/rival.json",
+      "sha256": "9b70bffabe83f3bb26d909d45ac21a6f2be4884ccf46869858669b2aebeff605"
+    },
+    {
+      "path": "manifests/fork5.json",
+      "sha256": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8"
+    },
+    {
+      "path": "manifests/return6.json",
+      "sha256": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951"
+    },
+    {
+      "path": "manifests/weave7.json",
+      "sha256": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df"
+    },
+    {
+      "path": "material.json",
+      "sha256": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "7d06bdaae719af403cf1df715cee213e87ca310ebaf71a85a92ab5f9ba9ffc1f"
+    },
+    {
+      "path": "provider/daily/bare/cycle01/answer/call-0001.request.json",
+      "sha256": "34f7863f8de4df6beec51d8cc377ca097dc177040fe6886baf76aa0926d13f03"
+    },
+    {
+      "path": "provider/daily/bare/cycle01/answer/call-0001.response.json",
+      "sha256": "c7362cbfea1092abbb8903e2f217320736ed4dea29bb62efb29d1a40853d8155"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/account/call-0001.request.json",
+      "sha256": "9542a2ee60a9755658234457073f0850f1878f966f779f9f9aed8647caea1fb2"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/account/call-0001.response.json",
+      "sha256": "51aa4b7d7a71aa4d91ca4afc3e7516a189f78f4bb7ddac4e6d6a790f91860ff1"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/account/call-0001.request.json",
+      "sha256": "70e863c8fc8b24358051b50416a77734594766fe825460c3c28cbccc82ee9f00"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/account/call-0001.response.json",
+      "sha256": "373f5bcbdd4a3eb6be4f881719cfe91f8182ad21194881a022862c6439dc658e"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/objection/call-0001.request.json",
+      "sha256": "9ffc3d2d09a5e7578232ab36ba2540cd5de3895b6d6df245908488f18669a205"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/objection/call-0001.response.json",
+      "sha256": "ee1df90b05361f0537213e80f05e433d2f60afd1b0bef355c5a4b8550f3df502"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/rival/call-0001.request.json",
+      "sha256": "de4eb440ccc239a9faf6f215ed18f5d53287cb3004c8e56ae094fc92f0d6bdc6"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/rival/call-0001.response.json",
+      "sha256": "1c32e613312b6439c83ba991438a0853a694a85292f824485b110f15a0010e02"
+    },
+    {
+      "path": "requests/daily/bare/cycle01/answer.json",
+      "sha256": "a97b3c0fe6ca5fed4d530fda2866011f5cc81e727c438f30522b1d3cd38f246f"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/account.json",
+      "sha256": "ab4f587a944e3ba378e813d1bb3552bb4dc586914ef0d88b7b0f54f7c289f4b2"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/account.json",
+      "sha256": "2cf23803ffdf899d4b70304879a6c7a60f4e91cb840f4562aa3b4e6084492341"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/objection.json",
+      "sha256": "dfa9663f43573ad4a1c7069b707bbd35ff86a70847545b6909eca9112022a0b0"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/rival.json",
+      "sha256": "47b72a451476ecec5b18a85b4e0d66bc138d495e24d4f8bcfd2c1d2d32017582"
+    },
+    {
+      "path": "responses/daily/bare/cycle01/answer.json",
+      "sha256": "e0385b7721a1da523b87b8b6f1ae6bbc62180c1a84eb69cfca36485c2281c69a"
+    },
+    {
+      "path": "responses/daily/bare/cycle01/answer.txt",
+      "sha256": "32eb2260eb171fce2866cd2c4e332dca82fb675a50ac4680dc66625876ee0e2d"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/account.json",
+      "sha256": "8e5f276e4e7995882ae8057e67baf3476fb1b415443a655d43012e05a46890a9"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/account.txt",
+      "sha256": "f74d74e6d6238a11c8de6d80d0a64c1b2908161f026e0492032d6137a7e117fd"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/account.json",
+      "sha256": "424b90c27c11fbe6a91113222c40a10b204e893fdac2895c93f7a4ae30381c2b"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/account.txt",
+      "sha256": "617ac46b19414a96239e2723aca727458c4cd80a307269f713c04f69b5976824"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/objection.json",
+      "sha256": "8e2f612fd181c5a0a29d3976f664d866f89b1a4835f28700002328efd105a478"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/objection.txt",
+      "sha256": "ba463a76efc70fdf99cf6c9c2c9ffc5f3a24a8af1e59fed6ca9303d769ba0c9e"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/rival.json",
+      "sha256": "3af8b73b59ef50ce6939951234517d2a4dc4cae45739ad994657ec5e1438ee5b"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/rival.txt",
+      "sha256": "30bdf4de45500870eab88b0c7b9796a5f2354f1308a56a595e06fb6f9164b498"
+    },
+    {
+      "path": "traces/daily/bare/cycle01/answer.json",
+      "sha256": "4ff68da01ac0c9cfd4c060d4a822f7ced327003f53e9e96f1e3fb08916a7fbab"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/account.json",
+      "sha256": "f4790106152ef33f8f02cc8f182089bd4e99beb4f553144a79e51e2ec4f92f53"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/account.json",
+      "sha256": "5725e108b01c89983c73bc7e84268aa9bbf8b77d8b6fe57c79df1137bd5db455"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/objection.json",
+      "sha256": "035d8191d2e1de7379d69af14238f70ca674729f883b4e4161c3de0aab45b313"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/rival.json",
+      "sha256": "b7fc440d6bcc585505058030694859fd840b4f80b045b4dc110784e2e0b82e92"
+    },
+    {
+      "path": "waves/wave0001.json",
+      "sha256": "d0d352601d9e8304ae68bc7bd3c017b733a8db669aae06473ce8b03644ccdbba"
+    },
+    {
+      "path": "waves/wave0002.json",
+      "sha256": "c2195939b9aa16f3e409e5760f200cc795bdf524df8e0dceb64ead8d88336e2b"
+    },
+    {
+      "path": "waves/wave0003.json",
+      "sha256": "f83162c1b8bd9eddb614e6510b2a928b2a6e27c9536616c41707b49f620951bb"
+    }
+  ]
+}

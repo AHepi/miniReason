@@ -1,0 +1,2798 @@
+{
+  "schema": "h005-use-relation.use-table.v1",
+  "instrument_version": "use_relation_h005/1",
+  "occurrence": "occurrence-05",
+  "banner": "**The tool records juxtapositions; the reading is root's.** This table places each authored cross-document reference beside passages a root reader may find worth starting from - a finding aid, never a closed search space - and stops there. It scores nothing, ranks nothing, classifies nothing and mints no relation of its own; it has no `att`, no `dep`, no status and no label. **A lexical overlap is not evidence of use.** FCL-1's own rule is that `depends` and `mentions` are \"not automatically inferred from citation or lexical overlap\"; a witness of reason use \"must preserve internal role bindings, not merely the endpoint string\" (FW5:628); actual use is \"not automatically machine-maintainable\" while prompt appearance is only a delivery fact (FW5:640); and no function of an input-output projection agrees with the accounting predicate across models differing in active route (FW5:1218), \"semantic use inferred from delivery logs\" included (FW5:1222) - all as summarised in the FW5-versus-harness-spec review, `fw5-vs-harness-spec-review.md` §1 R2-R4, §3.1 and §5 P1/P6. Root fills the four empty cells by reading; `unresolved` is a legal value and stays unresolved (FW5:634). An empty cell is an **unread row**, not a reading of `unresolved`.",
+  "scope": [
+    {
+      "problem": "daily",
+      "arm": "bare",
+      "cycle": 1,
+      "node": "answer"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "account"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "account"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "objection"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "objection"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_fcl",
+      "cycle": 1,
+      "node": "rival"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "rival"
+    },
+    {
+      "problem": "daily",
+      "arm": "mini_prose",
+      "cycle": 1,
+      "node": "response"
+    }
+  ],
+  "custody": {
+    "plan_id": "620ee8bc7e6653dde7b16c221d8c2e0e2ace4968acdad2eeb34c4925380d1e4c",
+    "material_sha256": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff",
+    "checks": {
+      "cross_file": [
+        {
+          "key": "material_pin",
+          "kind": "cross_file",
+          "check": "plan.material_sha256 == sha256(material.json)",
+          "unit": "occurrence",
+          "ran": 1,
+          "total": 1,
+          "skipped": [],
+          "result": "verified (1/1 occurrence)"
+        },
+        {
+          "key": "manifest_pins",
+          "kind": "cross_file",
+          "check": "plan.manifests[tid] == sha256(manifests/<tid>.json)",
+          "unit": "manifest",
+          "ran": 3,
+          "total": 3,
+          "skipped": [],
+          "result": "verified (3/3 manifests)"
+        },
+        {
+          "key": "receipt_present",
+          "kind": "cross_file",
+          "check": "per node: receipt present (responses/<node>.json)",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "artifact_bytes_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: sha256(artifacts/<node>.json) == receipt.artifact_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "status_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: receipt.status == delivery_status and receipt.envelope_status == envelope_status (recorded, never read as a verdict)",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "public_text",
+          "kind": "cross_file",
+          "check": "per node: sha256(responses/<node>.txt) == artifact.public_text_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "attempt_vs_receipt",
+          "kind": "cross_file",
+          "check": "per node: attempt.request_sha256 == receipt.request_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "request_record",
+          "kind": "cross_file",
+          "check": "per node: study_digest(requests/<node>.json) == attempt.request_sha256 == receipt.request_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "trace_pinned",
+          "kind": "cross_file",
+          "check": "per node: request.trace_sha256 == study_digest(traces/<node>.json), checked before the trace is read by the label index or the projection resolver; counted as run only where the request record is itself pinned by an attempt or a receipt",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "provider_bytes",
+          "kind": "cross_file",
+          "check": "per node: sha256(provider/<coord>/call-0001.{request,response}.json) == receipt.provider_{request,response}_sha256 (skipped only for a FAILED receipt)",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "wave_placement",
+          "kind": "cross_file",
+          "check": "per node: attempt.wave_id is the wave listing the coordinate and wave.request_hashes[<coordinate>] == attempt.request_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "projection_source",
+          "kind": "cross_file",
+          "check": "per projection: selected_source artifact_id/body_sha256/commitments_sha256 equal the authored artifact record it names",
+          "unit": "projection",
+          "ran": 7,
+          "total": 9,
+          "skipped": [
+            {
+              "subject": "daily/mini_fcl/cycle01/account#p.account.0",
+              "missing": "exposed source (the slot is absent)"
+            },
+            {
+              "subject": "daily/mini_prose/cycle01/account#p.account.0",
+              "missing": "exposed source (the slot is absent)"
+            }
+          ],
+          "result": "verified (7/9 projections; 2 projection(s) had no exposed source (the slot is absent): `daily/mini_fcl/cycle01/account#p.account.0`, `daily/mini_prose/cycle01/account#p.account.0`)"
+        }
+      ],
+      "self_consistency": [
+        {
+          "key": "plan_identity",
+          "kind": "self_consistency",
+          "check": "plan_id == study_digest(plan without plan_id)",
+          "unit": "occurrence",
+          "ran": 1,
+          "total": 1,
+          "skipped": [],
+          "result": "verified (1/1 occurrence)"
+        },
+        {
+          "key": "artifact_self_hash",
+          "kind": "self_consistency",
+          "check": "per node: sha256(body) == body_sha256, sha256(commitments) == commitments_sha256, and <field>_ref == <field>_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "artifact_coordinate",
+          "kind": "self_consistency",
+          "check": "per node: the artifact record's own coordinate is the one it is filed under",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "brief_pinned",
+          "kind": "self_consistency",
+          "check": "per node: sha256(trace.original_brief) == trace.original_brief_sha256",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "brief_label_index",
+          "kind": "self_consistency",
+          "check": "per node: every [label] line in the brief indexes the projection slot it names, and the brief's label set equals the projection set",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        },
+        {
+          "key": "task_label",
+          "kind": "self_consistency",
+          "check": "per node: the exposed task label agrees with trace.task_artifact.artifact_id",
+          "unit": "node",
+          "ran": 8,
+          "total": 8,
+          "skipped": [],
+          "result": "verified (8/8 nodes)"
+        }
+      ]
+    }
+  },
+  "method": {
+    "prose": [
+      "**Sentence.** The referring node's `body` is cut at every match of the published boundary regular expression and nowhere else; leading and trailing whitespace is trimmed out of each span *and out of its offsets*, so `body[start:end]` is exactly the quoted sentence. The boundary is one or more of `.` `!` `?` preceded by a lowercase letter or a closing bracket/quote and followed by whitespace or end-of-string, together with any closing quotes that follow it; or a run of newlines. This is not linguistic sentence segmentation: a numbered list marker (\"1. Separate ...\") does not split, and an abbreviation such as \"e.g.\" does.",
+      "**Token.** The string is lowercased and every maximal run of ASCII letters and digits is a token, in order of occurrence.",
+      "**The target record's text.** The concatenation, separated by single spaces, of the target record's prose fields in this order: `text`, `scope`, `action`, `consequence`, `grounds`, `bearing`. `id`, `type` and every ref array are excluded: they are names and pointers, not content. When the ref names the owning contribution as a whole rather than one of its records - a bare exposed-artifact label, or the `#BODY` section header - the subject is instead the same concatenation over **every** record of the owning document, in document order, and the row says so in `overlap_subject`.",
+      "**Distinctive token.** A token `t` of the target record's text is *distinctive* when all three hold: (1) `len(t) >= 5` characters after lowercasing; (2) `t` is not in the closed stopword list below; (3) `document_frequency(t) <= 2`, where `document_frequency(t)` is the number of in-scope FCL-1 documents whose record prose contains `t`, and the threshold is `max(2, number_of_in_scope_FCL-1_documents // 2)` - here `max(2, 2 // 2)`. Clause (3) makes the criterion **scope-dependent**: it is computed over the documents listed under `corpus_documents`, and re-running over a different scope can change which tokens count. That is stated rather than hidden, because a partition-invariance question about this instrument (review §5 P5) has to be answerable from its own output.",
+      "**A passage is listed** when the sentence contains at least one distinctive token of the target record's text. Passages are listed in body order, never ordered or selected by how many tokens they carry; `distinctive_tokens_present` is an audit aid so a reader can see *why* a sentence was listed, and is not a measure. When no sentence qualifies the row says `no lexical overlap found`.",
+      "**What a listed passage is not.** It is not evidence that the referring node used the target's content, and its absence is not evidence that it did not. Shared vocabulary is shared vocabulary. The relation columns of this table report what an author *wrote* in a ref-valued field; the passage columns report what a mechanical string comparison found; neither is a reading, and the four `root_*` cells are where a reading would go.",
+      "**Declared uptake columns.** `declared_uptake_includes_referring_record` is true when the referring record's local name is in its own document's `uptake` list; `declared_uptake_includes_target_record` is true when the target record's local name is in the *target* document's `uptake` list. `n/a` means the row has no such record to look up (a document-level `uptake` ref has no referring record; a ref to a whole contribution has no target record).",
+      "**What a blank root cell means.** An empty `root_reading`, `root_passage_cited`, `root_notes` or `root_initials_date` is an **unread row**: nobody has read it yet. It is *not* a reading of `unresolved`, and it is not a finding of indeterminacy. `unresolved` is a reading root may write, deliberately, and it then stays unresolved (FW5:634); a blank cell asserts nothing at all. Conflating the two would let an unfinished worksheet read as a finding, which is exactly the move FW5:688 forbids.",
+      "**What the listed passages are.** A finding aid, not a search space. The overlap rule is mechanical and shallow; root may cite **any** passage of either contribution, including one this rule did not surface, and a row with `no lexical overlap found` is not a row with nothing to read. `root_passage_cited` is free text for that reason.",
+      "**The `root_reading` vocabulary is a suggestion.** The six values below are published so that two readers of two tables mean the same thing by the same word, not to constrain root to one of them: a row may carry more than one, and root may write a reading the vocabulary does not cover and say so. Nothing about it is enforced in code."
+    ],
+    "token_regex": "[a-z0-9]+",
+    "sentence_boundary_regex": "(?<=[a-z\\)\\]’'\"])[.!?]+[\"'\\)\\]”]*(?=\\s|$)|\n+",
+    "record_prose_fields": [
+      "text",
+      "scope",
+      "action",
+      "consequence",
+      "grounds",
+      "bearing"
+    ],
+    "ref_fields_resolution_order": [
+      "mentions",
+      "revises",
+      "withdraws",
+      "target",
+      "depends",
+      "uptake",
+      "target (objection, pass 2)"
+    ],
+    "ref_fields_walked": [
+      "target",
+      "depends",
+      "mentions",
+      "revises",
+      "withdraws",
+      "uptake"
+    ],
+    "span_offsets": "code point offsets into the decoded `commitments` string (Python string indices), not utf-8 byte offsets and not offsets into the artifact JSON file",
+    "min_token_length": 5,
+    "stopwords": [
+      "about",
+      "above",
+      "across",
+      "after",
+      "again",
+      "against",
+      "almost",
+      "alone",
+      "along",
+      "already",
+      "also",
+      "although",
+      "always",
+      "among",
+      "another",
+      "anyone",
+      "anything",
+      "around",
+      "because",
+      "become",
+      "becomes",
+      "before",
+      "begin",
+      "behind",
+      "being",
+      "below",
+      "beside",
+      "better",
+      "between",
+      "beyond",
+      "cannot",
+      "could",
+      "does",
+      "doing",
+      "done",
+      "during",
+      "each",
+      "either",
+      "enough",
+      "equally",
+      "especially",
+      "even",
+      "every",
+      "everything",
+      "except",
+      "exist",
+      "exists",
+      "first",
+      "from",
+      "further",
+      "given",
+      "goes",
+      "going",
+      "gone",
+      "hardly",
+      "have",
+      "having",
+      "hence",
+      "here",
+      "however",
+      "inside",
+      "instead",
+      "into",
+      "itself",
+      "just",
+      "keep",
+      "kept",
+      "later",
+      "least",
+      "less",
+      "like",
+      "likely",
+      "made",
+      "make",
+      "makes",
+      "making",
+      "many",
+      "maybe",
+      "might",
+      "more",
+      "most",
+      "much",
+      "must",
+      "near",
+      "need",
+      "needs",
+      "neither",
+      "never",
+      "next",
+      "nobody",
+      "none",
+      "nothing",
+      "often",
+      "once",
+      "only",
+      "onto",
+      "other",
+      "others",
+      "ought",
+      "over",
+      "perhaps",
+      "quite",
+      "rather",
+      "really",
+      "same",
+      "seem",
+      "seems",
+      "seen",
+      "several",
+      "shall",
+      "should",
+      "simply",
+      "since",
+      "some",
+      "something",
+      "sometimes",
+      "still",
+      "such",
+      "take",
+      "taken",
+      "than",
+      "that",
+      "their",
+      "them",
+      "themselves",
+      "then",
+      "there",
+      "therefore",
+      "these",
+      "they",
+      "thing",
+      "things",
+      "think",
+      "this",
+      "those",
+      "though",
+      "three",
+      "through",
+      "thus",
+      "together",
+      "toward",
+      "under",
+      "unless",
+      "until",
+      "upon",
+      "very",
+      "well",
+      "were",
+      "what",
+      "when",
+      "where",
+      "whether",
+      "which",
+      "while",
+      "whole",
+      "whom",
+      "whose",
+      "will",
+      "with",
+      "within",
+      "without",
+      "would",
+      "your",
+      "yours"
+    ],
+    "distinctive_document_frequency_threshold": 2,
+    "corpus_documents": [
+      "daily/mini_fcl/cycle01/account",
+      "daily/mini_fcl/cycle01/objection"
+    ],
+    "root_cells": [
+      "root_reading",
+      "root_passage_cited",
+      "root_notes",
+      "root_initials_date"
+    ],
+    "root_reading_vocabulary": [
+      "re-deploys",
+      "qualifies",
+      "rejects-with-reason",
+      "repairs",
+      "retains",
+      "unresolved"
+    ],
+    "reused_from_importer": [
+      "verify_custody",
+      "parse_fcl1_document / fcl1_validator (FCL-1 schema validation)",
+      "_Reader (read-only, path-confined, sha256-recording occurrence reader)",
+      "_Importer.discover_scope / load_nodes / parse_documents",
+      "iter_references (the import's own public reference walk: field order, wave-order availability and two-hop resolution)",
+      "UNRESOLVED_RESIDUE_CODES / EXTENSION_RESIDUE_CODES (the import's own classification of what a residue code means for a ref)"
+    ],
+    "not_used_from_importer": [
+      "graph construction (Harness, registration, events)",
+      "adjudication (build_att / build_dep / label computation)",
+      "every status and label the importer computes"
+    ]
+  },
+  "rows": [
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "c1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"c1\",\"type\":\"claim\",\"text\":\"Scope note: every objection here is built from the same thin task text the account used, so each is as conjectural as what it targets; the criticisms bear on the recommendation layer and on completeness, and even where they land they reorder or extend the account rather than refute its core conjectures.\",\"scope\":\"stance\",\"mentions\":[\"b825b2df18dab817#c2\",\"b825b2df18dab817#c3\",\"b825b2df18dab817#c4\"]}",
+      "referring_record_source_span": [
+        31,
+        467
+      ],
+      "ref_field": "mentions",
+      "ref_verbatim": "b825b2df18dab817#c2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c2\",\"type\":\"claim\",\"text\":\"Conjecture: the recurring disputes over what an agreement meant are mainly underspecification — agreements leave open by-when, how-often, and what-counts-as-done — with an open alternative that ambiguity is being used to renegotiate silently when schedules change.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        651,
+        988
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c2`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "recurring"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "change",
+            "schedules"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "agreement",
+            "conjecture",
+            "meant"
+          ]
+        },
+        {
+          "start": 2156,
+          "end": 2387,
+          "text": "Besides underspecification and quiet re-tailoring when circumstances change, retrospective excuse-manufacture after plain non-performance fits the text equally well — ambiguity produced on demand because producing it costs nothing.",
+          "distinctive_tokens_present": [
+            "ambiguity",
+            "change",
+            "underspecification"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreement",
+            "agreements",
+            "ambiguity",
+            "change",
+            "disputes"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis"
+          ]
+        },
+        {
+          "start": 3304,
+          "end": 3478,
+          "text": "One open question: the task is a first-person participant's account — 'we keep arguing' — so the reporter is inside the disputes and could be part of what the avoider avoids.",
+          "distinctive_tokens_present": [
+            "disputes"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "c1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"c1\",\"type\":\"claim\",\"text\":\"Scope note: every objection here is built from the same thin task text the account used, so each is as conjectural as what it targets; the criticisms bear on the recommendation layer and on completeness, and even where they land they reorder or extend the account rather than refute its core conjectures.\",\"scope\":\"stance\",\"mentions\":[\"b825b2df18dab817#c2\",\"b825b2df18dab817#c3\",\"b825b2df18dab817#c4\"]}",
+      "referring_record_source_span": [
+        31,
+        467
+      ],
+      "ref_field": "mentions",
+      "ref_verbatim": "b825b2df18dab817#c3",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c3",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c3\",\"type\":\"claim\",\"text\":\"Conjecture: the deeper defect is a missing mechanism rather than a bad allocation — there is no routine, low-friction way to revise who does what, so every schedule change forces a fresh full negotiation.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        989,
+        1266
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c3`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 517,
+          "end": 547,
+          "text": "First, a bootstrapping defect.",
+          "distinctive_tokens_present": [
+            "defect"
+          ]
+        },
+        {
+          "start": 662,
+          "end": 771,
+          "text": "Installing them requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone.",
+          "distinctive_tokens_present": [
+            "negotiation"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 2156,
+          "end": 2387,
+          "text": "Besides underspecification and quiet re-tailoring when circumstances change, retrospective excuse-manufacture after plain non-performance fits the text equally well — ambiguity produced on demand because producing it costs nothing.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2388,
+          "end": 2525,
+          "text": "And 'we wrote' is not innocent: written words still get interpreted, and control of the shared record becomes a fresh negotiable surface.",
+          "distinctive_tokens_present": [
+            "fresh"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis",
+            "mechanism",
+            "negotiation"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "allocation",
+            "mechanism"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "c1",
+      "referring_record_type": "claim",
+      "referring_record_verbatim": "{\"id\":\"c1\",\"type\":\"claim\",\"text\":\"Scope note: every objection here is built from the same thin task text the account used, so each is as conjectural as what it targets; the criticisms bear on the recommendation layer and on completeness, and even where they land they reorder or extend the account rather than refute its core conjectures.\",\"scope\":\"stance\",\"mentions\":[\"b825b2df18dab817#c2\",\"b825b2df18dab817#c3\",\"b825b2df18dab817#c4\"]}",
+      "referring_record_source_span": [
+        31,
+        467
+      ],
+      "ref_field": "mentions",
+      "ref_verbatim": "b825b2df18dab817#c4",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c4",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c4\",\"type\":\"claim\",\"text\":\"Conjecture: the friend's avoidance is information about the conversation's cost or format, not only about chores; remedies that require long three-way face-to-face sessions are structurally mismatched to this fault.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        1267,
+        1555
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c4`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "remedies"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "conversation"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "avoidance",
+            "fault",
+            "remedies"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis",
+            "remedies"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "fault"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o1",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o1\",\"type\":\"objection\",\"text\":\"Bootstrapping defect: the remedy bundle (written shared agreements, standing review, swap rule) consists of agreements about how to agree, and installing it requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone. The account's own point that the asker's lever is only their own moves covers the one-on-one outreach but not the institutional pieces, which need buy-in from both other flatmates.\",\"target\":[\"b825b2df18dab817#u1\"],\"bearing\":\"If this holds, the recommendations need ordering by unilateral feasibility (personal record-keeping, a declared zone split, async outreach), with shared institutions treated as proposals contingent on that groundwork rather than as the core fix.\"}",
+      "referring_record_source_span": [
+        468,
+        1230
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#u1",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "u1",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"u1\",\"type\":\"use\",\"text\":\"Proposed direction for whoever continues: (1) treat meaning disputes as specification bugs and make future agreements written, shared, and checkable — what, by when, what done means; (2) replace one-off negotiation with a short standing review that absorbs schedule changes, plus a default swap rule for missed slots; (3) shrink the negotiable set by assigning zones or recurring ownership; (4) approach the avoider one-on-one and possibly asynchronously, asking what would make the exchanges easier rather than why they have been absent; (5) frame the asker's own proposed format changes, not control of the other two, as the available lever.\",\"depends\":[\"c2\",\"c3\",\"c4\"]}",
+      "target_record_source_span": [
+        2599,
+        3303
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#u1`",
+      "referring_body_passages": [
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "review",
+            "shared",
+            "standing",
+            "written"
+          ]
+        },
+        {
+          "start": 662,
+          "end": 771,
+          "text": "Installing them requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone.",
+          "distinctive_tokens_present": [
+            "negotiation"
+          ]
+        },
+        {
+          "start": 772,
+          "end": 967,
+          "text": "The account's own point (5) concedes the asker's only lever is their own moves, but that covers the one-on-one outreach, not the institutional pieces, which need buy-in from both other flatmates.",
+          "distinctive_tokens_present": [
+            "asker",
+            "lever"
+          ]
+        },
+        {
+          "start": 968,
+          "end": 1238,
+          "text": "If this holds, the list needs ordering by unilateral feasibility — personal record-keeping, a proposed zone split the asker simply declares they will follow, async outreach — with the shared institutions treated as proposals contingent on that work, not as the core fix.",
+          "distinctive_tokens_present": [
+            "asker",
+            "proposed",
+            "shared"
+          ]
+        },
+        {
+          "start": 1240,
+          "end": 1303,
+          "text": "Second, an internal tension between c4 and the standing review.",
+          "distinctive_tokens_present": [
+            "review",
+            "standing"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "recurring",
+            "review"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format",
+            "short"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "zones"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "review",
+            "zones"
+          ]
+        },
+        {
+          "start": 2006,
+          "end": 2061,
+          "text": "If the review is rejected, the account has no fallback.",
+          "distinctive_tokens_present": [
+            "review"
+          ]
+        },
+        {
+          "start": 2388,
+          "end": 2525,
+          "text": "And 'we wrote' is not innocent: written words still get interpreted, and control of the shared record becomes a fresh negotiable surface.",
+          "distinctive_tokens_present": [
+            "control",
+            "negotiable",
+            "shared",
+            "written"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "disputes",
+            "written"
+          ]
+        },
+        {
+          "start": 2780,
+          "end": 2870,
+          "text": "Fifth, the option space is tacitly limited to better governance of the shared chore stock.",
+          "distinctive_tokens_present": [
+            "shared"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "negotiation",
+            "shared",
+            "shrink"
+          ]
+        },
+        {
+          "start": 3304,
+          "end": 3478,
+          "text": "One open question: the task is a first-person participant's account — 'we keep arguing' — so the reporter is inside the disputes and could be part of what the avoider avoids.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "disputes"
+          ]
+        },
+        {
+          "start": 3479,
+          "end": 3599,
+          "text": "Neither the text nor the account can settle this, but the account treats the asker as a neutral repair agent throughout.",
+          "distinctive_tokens_present": [
+            "asker"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "avoider"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o2",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o2\",\"type\":\"objection\",\"text\":\"Internal tension: the standing review is a recurring three-way conversation, and the avoider is avoiding the conversations. 'Short' is asserted as the fix, but neither the task text nor the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what the avoider avoids.\",\"target\":[\"b825b2df18dab817#u1\",\"b825b2df18dab817#c4\"],\"bearing\":\"Unless the one-on-one establishes what is being avoided, the review should be specified as asynchronous or opt-in, or dropped as the load-bearing element.\"}",
+      "referring_record_source_span": [
+        1231,
+        1798
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#u1",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "u1",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"u1\",\"type\":\"use\",\"text\":\"Proposed direction for whoever continues: (1) treat meaning disputes as specification bugs and make future agreements written, shared, and checkable — what, by when, what done means; (2) replace one-off negotiation with a short standing review that absorbs schedule changes, plus a default swap rule for missed slots; (3) shrink the negotiable set by assigning zones or recurring ownership; (4) approach the avoider one-on-one and possibly asynchronously, asking what would make the exchanges easier rather than why they have been absent; (5) frame the asker's own proposed format changes, not control of the other two, as the available lever.\",\"depends\":[\"c2\",\"c3\",\"c4\"]}",
+      "target_record_source_span": [
+        2599,
+        3303
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#u1`",
+      "referring_body_passages": [
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "review",
+            "shared",
+            "standing",
+            "written"
+          ]
+        },
+        {
+          "start": 662,
+          "end": 771,
+          "text": "Installing them requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone.",
+          "distinctive_tokens_present": [
+            "negotiation"
+          ]
+        },
+        {
+          "start": 772,
+          "end": 967,
+          "text": "The account's own point (5) concedes the asker's only lever is their own moves, but that covers the one-on-one outreach, not the institutional pieces, which need buy-in from both other flatmates.",
+          "distinctive_tokens_present": [
+            "asker",
+            "lever"
+          ]
+        },
+        {
+          "start": 968,
+          "end": 1238,
+          "text": "If this holds, the list needs ordering by unilateral feasibility — personal record-keeping, a proposed zone split the asker simply declares they will follow, async outreach — with the shared institutions treated as proposals contingent on that work, not as the core fix.",
+          "distinctive_tokens_present": [
+            "asker",
+            "proposed",
+            "shared"
+          ]
+        },
+        {
+          "start": 1240,
+          "end": 1303,
+          "text": "Second, an internal tension between c4 and the standing review.",
+          "distinctive_tokens_present": [
+            "review",
+            "standing"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "recurring",
+            "review"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format",
+            "short"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "zones"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "review",
+            "zones"
+          ]
+        },
+        {
+          "start": 2006,
+          "end": 2061,
+          "text": "If the review is rejected, the account has no fallback.",
+          "distinctive_tokens_present": [
+            "review"
+          ]
+        },
+        {
+          "start": 2388,
+          "end": 2525,
+          "text": "And 'we wrote' is not innocent: written words still get interpreted, and control of the shared record becomes a fresh negotiable surface.",
+          "distinctive_tokens_present": [
+            "control",
+            "negotiable",
+            "shared",
+            "written"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "disputes",
+            "written"
+          ]
+        },
+        {
+          "start": 2780,
+          "end": 2870,
+          "text": "Fifth, the option space is tacitly limited to better governance of the shared chore stock.",
+          "distinctive_tokens_present": [
+            "shared"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "negotiation",
+            "shared",
+            "shrink"
+          ]
+        },
+        {
+          "start": 3304,
+          "end": 3478,
+          "text": "One open question: the task is a first-person participant's account — 'we keep arguing' — so the reporter is inside the disputes and could be part of what the avoider avoids.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "disputes"
+          ]
+        },
+        {
+          "start": 3479,
+          "end": 3599,
+          "text": "Neither the text nor the account can settle this, but the account treats the asker as a neutral repair agent throughout.",
+          "distinctive_tokens_present": [
+            "asker"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "avoider"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o2",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o2\",\"type\":\"objection\",\"text\":\"Internal tension: the standing review is a recurring three-way conversation, and the avoider is avoiding the conversations. 'Short' is asserted as the fix, but neither the task text nor the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what the avoider avoids.\",\"target\":[\"b825b2df18dab817#u1\",\"b825b2df18dab817#c4\"],\"bearing\":\"Unless the one-on-one establishes what is being avoided, the review should be specified as asynchronous or opt-in, or dropped as the load-bearing element.\"}",
+      "referring_record_source_span": [
+        1231,
+        1798
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#c4",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c4",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c4\",\"type\":\"claim\",\"text\":\"Conjecture: the friend's avoidance is information about the conversation's cost or format, not only about chores; remedies that require long three-way face-to-face sessions are structurally mismatched to this fault.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        1267,
+        1555
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c4`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "remedies"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "conversation"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "avoidance",
+            "fault",
+            "remedies"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis",
+            "remedies"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "fault"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o3\",\"type\":\"objection\",\"text\":\"Remedy (3), fixed zones or recurring ownership, is itself an allocation and by the account's own c3 allocations decay when schedules change; zones stay current only if the standing review works. The five-point list is therefore less a set of independent remedies than it appears, with nearly all the load on the element most exposed to the avoidance fault.\",\"target\":[\"b825b2df18dab817#u1\",\"b825b2df18dab817#c3\"],\"bearing\":\"If the review fails or is rejected, zones and written agreements decay on schedule and the account has no fallback; the effective remedy set is smaller and more fragile than u1 presents.\"}",
+      "referring_record_source_span": [
+        1799,
+        2449
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#u1",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "u1",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"u1\",\"type\":\"use\",\"text\":\"Proposed direction for whoever continues: (1) treat meaning disputes as specification bugs and make future agreements written, shared, and checkable — what, by when, what done means; (2) replace one-off negotiation with a short standing review that absorbs schedule changes, plus a default swap rule for missed slots; (3) shrink the negotiable set by assigning zones or recurring ownership; (4) approach the avoider one-on-one and possibly asynchronously, asking what would make the exchanges easier rather than why they have been absent; (5) frame the asker's own proposed format changes, not control of the other two, as the available lever.\",\"depends\":[\"c2\",\"c3\",\"c4\"]}",
+      "target_record_source_span": [
+        2599,
+        3303
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#u1`",
+      "referring_body_passages": [
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "review",
+            "shared",
+            "standing",
+            "written"
+          ]
+        },
+        {
+          "start": 662,
+          "end": 771,
+          "text": "Installing them requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone.",
+          "distinctive_tokens_present": [
+            "negotiation"
+          ]
+        },
+        {
+          "start": 772,
+          "end": 967,
+          "text": "The account's own point (5) concedes the asker's only lever is their own moves, but that covers the one-on-one outreach, not the institutional pieces, which need buy-in from both other flatmates.",
+          "distinctive_tokens_present": [
+            "asker",
+            "lever"
+          ]
+        },
+        {
+          "start": 968,
+          "end": 1238,
+          "text": "If this holds, the list needs ordering by unilateral feasibility — personal record-keeping, a proposed zone split the asker simply declares they will follow, async outreach — with the shared institutions treated as proposals contingent on that work, not as the core fix.",
+          "distinctive_tokens_present": [
+            "asker",
+            "proposed",
+            "shared"
+          ]
+        },
+        {
+          "start": 1240,
+          "end": 1303,
+          "text": "Second, an internal tension between c4 and the standing review.",
+          "distinctive_tokens_present": [
+            "review",
+            "standing"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "recurring",
+            "review"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format",
+            "short"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "zones"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "review",
+            "zones"
+          ]
+        },
+        {
+          "start": 2006,
+          "end": 2061,
+          "text": "If the review is rejected, the account has no fallback.",
+          "distinctive_tokens_present": [
+            "review"
+          ]
+        },
+        {
+          "start": 2388,
+          "end": 2525,
+          "text": "And 'we wrote' is not innocent: written words still get interpreted, and control of the shared record becomes a fresh negotiable surface.",
+          "distinctive_tokens_present": [
+            "control",
+            "negotiable",
+            "shared",
+            "written"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "disputes",
+            "written"
+          ]
+        },
+        {
+          "start": 2780,
+          "end": 2870,
+          "text": "Fifth, the option space is tacitly limited to better governance of the shared chore stock.",
+          "distinctive_tokens_present": [
+            "shared"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "negotiation",
+            "shared",
+            "shrink"
+          ]
+        },
+        {
+          "start": 3304,
+          "end": 3478,
+          "text": "One open question: the task is a first-person participant's account — 'we keep arguing' — so the reporter is inside the disputes and could be part of what the avoider avoids.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "disputes"
+          ]
+        },
+        {
+          "start": 3479,
+          "end": 3599,
+          "text": "Neither the text nor the account can settle this, but the account treats the asker as a neutral repair agent throughout.",
+          "distinctive_tokens_present": [
+            "asker"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "avoider"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o3",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o3\",\"type\":\"objection\",\"text\":\"Remedy (3), fixed zones or recurring ownership, is itself an allocation and by the account's own c3 allocations decay when schedules change; zones stay current only if the standing review works. The five-point list is therefore less a set of independent remedies than it appears, with nearly all the load on the element most exposed to the avoidance fault.\",\"target\":[\"b825b2df18dab817#u1\",\"b825b2df18dab817#c3\"],\"bearing\":\"If the review fails or is rejected, zones and written agreements decay on schedule and the account has no fallback; the effective remedy set is smaller and more fragile than u1 presents.\"}",
+      "referring_record_source_span": [
+        1799,
+        2449
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#c3",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c3",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c3\",\"type\":\"claim\",\"text\":\"Conjecture: the deeper defect is a missing mechanism rather than a bad allocation — there is no routine, low-friction way to revise who does what, so every schedule change forces a fresh full negotiation.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        989,
+        1266
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c3`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 517,
+          "end": 547,
+          "text": "First, a bootstrapping defect.",
+          "distinctive_tokens_present": [
+            "defect"
+          ]
+        },
+        {
+          "start": 662,
+          "end": 771,
+          "text": "Installing them requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone.",
+          "distinctive_tokens_present": [
+            "negotiation"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 2156,
+          "end": 2387,
+          "text": "Besides underspecification and quiet re-tailoring when circumstances change, retrospective excuse-manufacture after plain non-performance fits the text equally well — ambiguity produced on demand because producing it costs nothing.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2388,
+          "end": 2525,
+          "text": "And 'we wrote' is not innocent: written words still get interpreted, and control of the shared record becomes a fresh negotiable surface.",
+          "distinctive_tokens_present": [
+            "fresh"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis",
+            "mechanism",
+            "negotiation"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "allocation",
+            "mechanism"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o4",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o4\",\"type\":\"objection\",\"text\":\"The conjecture space for 'we disagree about what the agreement meant' is incomplete: besides underspecification and quiet re-tailoring when schedules change, retrospective excuse-manufacture after plain non-performance fits the text equally well — ambiguity produced on demand because producing it costs nothing. Relatedly, 'we wrote' is not innocent: written words still require interpretation and control of the shared record becomes a new negotiable surface.\",\"target\":[\"b825b2df18dab817#c2\"],\"bearing\":\"Writing agreements down still helps under this reading because it raises the cost of on-demand ambiguity, but expectations shift: disputes relocate more than settle, and what happens when a written agreement is still not met is a question the task text gives no leverage on and the account leaves untouched.\"}",
+      "referring_record_source_span": [
+        2450,
+        3304
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#c2",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c2",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c2\",\"type\":\"claim\",\"text\":\"Conjecture: the recurring disputes over what an agreement meant are mainly underspecification — agreements leave open by-when, how-often, and what-counts-as-done — with an open alternative that ambiguity is being used to renegotiate silently when schedules change.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        651,
+        988
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c2`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "recurring"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "change",
+            "schedules"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "agreement",
+            "conjecture",
+            "meant"
+          ]
+        },
+        {
+          "start": 2156,
+          "end": 2387,
+          "text": "Besides underspecification and quiet re-tailoring when circumstances change, retrospective excuse-manufacture after plain non-performance fits the text equally well — ambiguity produced on demand because producing it costs nothing.",
+          "distinctive_tokens_present": [
+            "ambiguity",
+            "change",
+            "underspecification"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreement",
+            "agreements",
+            "ambiguity",
+            "change",
+            "disputes"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis"
+          ]
+        },
+        {
+          "start": 3304,
+          "end": 3478,
+          "text": "One open question: the task is a first-person participant's account — 'we keep arguing' — so the reporter is inside the disputes and could be part of what the avoider avoids.",
+          "distinctive_tokens_present": [
+            "disputes"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o5",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o5\",\"type\":\"objection\",\"text\":\"The option space is tacitly limited to better governance of the shared chore stock; dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (costly negotiation, one party opting out) fits shrink-the-surface remedies as well as or better than mechanism design.\",\"target\":[\"b825b2df18dab817#u1\",\"b825b2df18dab817#c1\"],\"bearing\":\"If a large share of chores can be de-collectivized, the allocation mechanism may be over-engineering for a residual that zones plus a simple rota cover; at minimum the account should say why governance rather than dissolution.\"}",
+      "referring_record_source_span": [
+        3305,
+        4076
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#u1",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "u1",
+      "target_record_type": "use",
+      "target_record_verbatim": "{\"id\":\"u1\",\"type\":\"use\",\"text\":\"Proposed direction for whoever continues: (1) treat meaning disputes as specification bugs and make future agreements written, shared, and checkable — what, by when, what done means; (2) replace one-off negotiation with a short standing review that absorbs schedule changes, plus a default swap rule for missed slots; (3) shrink the negotiable set by assigning zones or recurring ownership; (4) approach the avoider one-on-one and possibly asynchronously, asking what would make the exchanges easier rather than why they have been absent; (5) frame the asker's own proposed format changes, not control of the other two, as the available lever.\",\"depends\":[\"c2\",\"c3\",\"c4\"]}",
+      "target_record_source_span": [
+        2599,
+        3303
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#u1`",
+      "referring_body_passages": [
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "review",
+            "shared",
+            "standing",
+            "written"
+          ]
+        },
+        {
+          "start": 662,
+          "end": 771,
+          "text": "Installing them requires a negotiation of exactly the kind the account diagnoses as costly and dispute-prone.",
+          "distinctive_tokens_present": [
+            "negotiation"
+          ]
+        },
+        {
+          "start": 772,
+          "end": 967,
+          "text": "The account's own point (5) concedes the asker's only lever is their own moves, but that covers the one-on-one outreach, not the institutional pieces, which need buy-in from both other flatmates.",
+          "distinctive_tokens_present": [
+            "asker",
+            "lever"
+          ]
+        },
+        {
+          "start": 968,
+          "end": 1238,
+          "text": "If this holds, the list needs ordering by unilateral feasibility — personal record-keeping, a proposed zone split the asker simply declares they will follow, async outreach — with the shared institutions treated as proposals contingent on that work, not as the core fix.",
+          "distinctive_tokens_present": [
+            "asker",
+            "proposed",
+            "shared"
+          ]
+        },
+        {
+          "start": 1240,
+          "end": 1303,
+          "text": "Second, an internal tension between c4 and the standing review.",
+          "distinctive_tokens_present": [
+            "review",
+            "standing"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "recurring",
+            "review"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format",
+            "short"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "zones"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "review",
+            "zones"
+          ]
+        },
+        {
+          "start": 2006,
+          "end": 2061,
+          "text": "If the review is rejected, the account has no fallback.",
+          "distinctive_tokens_present": [
+            "review"
+          ]
+        },
+        {
+          "start": 2388,
+          "end": 2525,
+          "text": "And 'we wrote' is not innocent: written words still get interpreted, and control of the shared record becomes a fresh negotiable surface.",
+          "distinctive_tokens_present": [
+            "control",
+            "negotiable",
+            "shared",
+            "written"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "disputes",
+            "written"
+          ]
+        },
+        {
+          "start": 2780,
+          "end": 2870,
+          "text": "Fifth, the option space is tacitly limited to better governance of the shared chore stock.",
+          "distinctive_tokens_present": [
+            "shared"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "negotiation",
+            "shared",
+            "shrink"
+          ]
+        },
+        {
+          "start": 3304,
+          "end": 3478,
+          "text": "One open question: the task is a first-person participant's account — 'we keep arguing' — so the reporter is inside the disputes and could be part of what the avoider avoids.",
+          "distinctive_tokens_present": [
+            "avoider",
+            "disputes"
+          ]
+        },
+        {
+          "start": 3479,
+          "end": 3599,
+          "text": "Neither the text nor the account can settle this, but the account treats the asker as a neutral repair agent throughout.",
+          "distinctive_tokens_present": [
+            "asker"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "avoider"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "o5",
+      "referring_record_type": "objection",
+      "referring_record_verbatim": "{\"id\":\"o5\",\"type\":\"objection\",\"text\":\"The option space is tacitly limited to better governance of the shared chore stock; dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (costly negotiation, one party opting out) fits shrink-the-surface remedies as well as or better than mechanism design.\",\"target\":[\"b825b2df18dab817#u1\",\"b825b2df18dab817#c1\"],\"bearing\":\"If a large share of chores can be de-collectivized, the allocation mechanism may be over-engineering for a residual that zones plus a simple rota cover; at minimum the account should say why governance rather than dissolution.\"}",
+      "referring_record_source_span": [
+        3305,
+        4076
+      ],
+      "ref_field": "target",
+      "ref_verbatim": "b825b2df18dab817#c1",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c1",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c1\",\"type\":\"claim\",\"text\":\"The flat's trouble is three separable faults braided together: agreements whose meaning drifts, an allocation that decays as schedules change, and one flatmate withdrawing from the conversations. Each fault needs different handling, so a fix aimed at only one will disappoint.\",\"grounds\":\"task text\"}",
+      "target_record_source_span": [
+        316,
+        650
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c1`",
+      "referring_body_passages": [
+        {
+          "start": 0,
+          "end": 203,
+          "text": "This account is unusually careful: it separates the three faults, tags conjectures as conjectures, flags its own weakest move (o1 against the speculative psychology of c5), and holds open questions open.",
+          "distinctive_tokens_present": [
+            "faults"
+          ]
+        },
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "agreements"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "conversations"
+          ]
+        },
+        {
+          "start": 1687,
+          "end": 1828,
+          "text": "Third, remedy (3) undercuts c3. Fixed zones are still allocations, and by the account's own analysis allocations decay when schedules change.",
+          "distinctive_tokens_present": [
+            "change",
+            "schedules"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "fault"
+          ]
+        },
+        {
+          "start": 2156,
+          "end": 2387,
+          "text": "Besides underspecification and quiet re-tailoring when circumstances change, retrospective excuse-manufacture after plain non-performance fits the text equally well — ambiguity produced on demand because producing it costs nothing.",
+          "distinctive_tokens_present": [
+            "change"
+          ]
+        },
+        {
+          "start": 2526,
+          "end": 2778,
+          "text": "Written agreements still help under this reading (they raise the cost of on-demand ambiguity), but expectations change: disputes get relocated more than settled, and the account says nothing about what happens when a written agreement is still not met.",
+          "distinctive_tokens_present": [
+            "agreements",
+            "change"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "allocation",
+            "fault"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    },
+    {
+      "referring_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "referring_coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "referring_record_id": "p1",
+      "referring_record_type": "problem",
+      "referring_record_verbatim": "{\"id\":\"p1\",\"type\":\"problem\",\"text\":\"The task is a first-person participant's account ('we keep arguing'), so the reporter is inside the disputes and may be part of what the avoider avoids; neither the task text nor the account can settle this, yet the account treats the asker as a neutral repair agent throughout.\",\"mentions\":[\"b825b2df18dab817#c4\"]}",
+      "referring_record_source_span": [
+        4077,
+        4428
+      ],
+      "ref_field": "mentions",
+      "ref_verbatim": "b825b2df18dab817#c4",
+      "ref_grain": "record",
+      "target_coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "target_coordinate_key": "daily/mini_fcl/cycle01/account",
+      "target_record_id": "c4",
+      "target_record_type": "claim",
+      "target_record_verbatim": "{\"id\":\"c4\",\"type\":\"claim\",\"text\":\"Conjecture: the friend's avoidance is information about the conversation's cost or format, not only about chores; remedies that require long three-way face-to-face sessions are structurally mismatched to this fault.\",\"scope\":\"diagnosis\",\"depends\":[\"c1\"]}",
+      "target_record_source_span": [
+        1267,
+        1555
+      ],
+      "overlap_subject": "the prose fields of `daily/mini_fcl/cycle01/account#c4`",
+      "referring_body_passages": [
+        {
+          "start": 204,
+          "end": 318,
+          "text": "So the objections below mostly strike at the recommendation layer and at the completeness of the conjecture space.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 548,
+          "end": 661,
+          "text": "Remedies (1)–(3) — written shared agreements, a standing review, a swap rule — are agreements about how to agree.",
+          "distinctive_tokens_present": [
+            "remedies"
+          ]
+        },
+        {
+          "start": 1304,
+          "end": 1396,
+          "text": "The avoider is avoiding the conversations; the review is a recurring three-way conversation.",
+          "distinctive_tokens_present": [
+            "conversation"
+          ]
+        },
+        {
+          "start": 1397,
+          "end": 1573,
+          "text": "'Short' is asserted as the fix, but nothing in the text or the account gives grounds that duration, rather than format, outcome, or anticipated blame, is what is being avoided.",
+          "distinctive_tokens_present": [
+            "format"
+          ]
+        },
+        {
+          "start": 1829,
+          "end": 2005,
+          "text": "Zones only stay current if the review works — so the five points are not independent remedies, and nearly all the load lands on the element most exposed to the avoidance fault.",
+          "distinctive_tokens_present": [
+            "avoidance",
+            "fault",
+            "remedies"
+          ]
+        },
+        {
+          "start": 2063,
+          "end": 2155,
+          "text": "Fourth, the conjecture space for 'we disagree about what the agreement meant' is incomplete.",
+          "distinctive_tokens_present": [
+            "conjecture"
+          ]
+        },
+        {
+          "start": 2871,
+          "end": 3228,
+          "text": "Dissolving interdependence — each person handles their own dishes and mess, a paid clean of common areas split three ways if affordable, or a consciously lower shared standard — is never considered, though the account's own diagnosis (negotiation is expensive, one party opts out) fits shrink-the-surface remedies as well as or better than mechanism design.",
+          "distinctive_tokens_present": [
+            "diagnosis",
+            "remedies"
+          ]
+        },
+        {
+          "start": 3600,
+          "end": 3753,
+          "text": "What survives all this: the three-fault separation, the mechanism-over-allocation framing, and the asynchronous, forward-looking outreach to the avoider.",
+          "distinctive_tokens_present": [
+            "fault"
+          ]
+        }
+      ],
+      "lexical_overlap_note": "",
+      "declared_uptake_includes_referring_record": true,
+      "declared_uptake_includes_target_record": true,
+      "resolver_notes": [],
+      "root_reading": "",
+      "root_passage_cited": "",
+      "root_notes": "",
+      "root_initials_date": ""
+    }
+  ],
+  "documents": [
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "account"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/account",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "c0",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "o1",
+        "p1",
+        "p2",
+        "u1"
+      ],
+      "uptake_declared": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "u1",
+        "p1",
+        "o1"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "c1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c3",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c3",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "c4",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "c4",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "u1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "u1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "p1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "p1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/account",
+          "resolved_record_id": "o1",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "o1",
+        "p1",
+        "u1"
+      ],
+      "records_omitted_from_uptake": [
+        "c0",
+        "c5",
+        "p2"
+      ],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/objection",
+      "commitment_surface": "read_fcl1",
+      "records_present": [
+        "c1",
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5",
+        "p1"
+      ],
+      "uptake_declared": [
+        "c1",
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5",
+        "p1"
+      ],
+      "uptake_entries": [
+        {
+          "ref_verbatim": "c1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "c1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o1",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o2",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o2",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o3",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o3",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o4",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o4",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "o5",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "o5",
+          "resolver_notes": []
+        },
+        {
+          "ref_verbatim": "p1",
+          "resolved_coordinate_key": "daily/mini_fcl/cycle01/objection",
+          "resolved_record_id": "p1",
+          "resolver_notes": []
+        }
+      ],
+      "records_in_uptake": [
+        "c1",
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5",
+        "p1"
+      ],
+      "records_omitted_from_uptake": [],
+      "uptake_entries_naming_nothing": [],
+      "uptake_entries_naming_another_document": [],
+      "uptake_entries_naming_this_contribution_not_a_record": []
+    }
+  ],
+  "nodes_not_read": [
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "bare",
+        "cycle": 1,
+        "node": "answer"
+      },
+      "coordinate_key": "daily/bare/cycle01/answer",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "account"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/account",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "objection"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/objection",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_fcl",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "coordinate_key": "daily/mini_fcl/cycle01/rival",
+      "commitment_surface": "unavailable_decode_failure",
+      "note": "commitment surface: unavailable_decode_failure; references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "rival"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/rival",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    },
+    {
+      "coordinate": {
+        "problem": "daily",
+        "arm": "mini_prose",
+        "cycle": 1,
+        "node": "response"
+      },
+      "coordinate_key": "daily/mini_prose/cycle01/response",
+      "commitment_surface": "prose_not_parsed",
+      "note": "commitment surface: prose (not parsed); references not extractable by this instrument"
+    }
+  ],
+  "unresolved_refs": [],
+  "reference_totals": {
+    "refs_walked": 34,
+    "cross_document_rows": 12,
+    "intra_document": 22,
+    "refs_to_exposed_task_artifact": 0,
+    "unresolved": 0,
+    "importer_resolved_counter": 34,
+    "importer_extension_counter": 0,
+    "importer_dangling_counter": 0
+  },
+  "files_read": [
+    {
+      "path": "artifacts/daily/bare/cycle01/answer.json",
+      "sha256": "5f8649f563fa59dba1f9e507130ee0470ba3afe7e22127921fe641ccba0d95df"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/account.json",
+      "sha256": "199fdfce722f92d5341a2b28b03c95856bced948fe10704985fd6caeff313ebf"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "68257ce650e37d87cc23869e7793e10282aba93bc37c59e8d9d4922b2747ba9e"
+    },
+    {
+      "path": "artifacts/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "7fa39b7cb4264888b550828e662b0127e6b97f0fc62bd704c06cc7fc40795741"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/account.json",
+      "sha256": "399e611599467995f5a3fa41c772b23ddc49be66f362aaf9181cdf4285ed4ce3"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/objection.json",
+      "sha256": "3796177d5680ea1913ee8eb939fcbc7a755e97204a99926735161dc5e879a53c"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/response.json",
+      "sha256": "3066b5652c09dab4fde54829d2dcf7c36f181058f8b62fd3402ab2d7ba3e194b"
+    },
+    {
+      "path": "artifacts/daily/mini_prose/cycle01/rival.json",
+      "sha256": "8872042f76fa0e877e0369decd8b48ec89f38b54a3a05e54907e895352463950"
+    },
+    {
+      "path": "attempts/daily/bare/cycle01/answer.json",
+      "sha256": "7b631103ba0bdf4422a23b44fd4c4d39a0ac3022fec4cee17d4796f0cad92b97"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/account.json",
+      "sha256": "fbba2aac8900f266ae06c374eabcaa92e3b0a8758815da15ac9d67b250aecaf6"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "3ec900860ed3e3f901c2ec1e4aee4dda006bcc11a1369e23978cf35c53f969ab"
+    },
+    {
+      "path": "attempts/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "0641393ab443ea33ebf7fc97e7baf00b4dd61c739650c38f85f672c29885acb6"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/account.json",
+      "sha256": "1105d0772c7b932332e42a6a8dadc429ff458f9f06ea31c18cb3f88a400e2782"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/objection.json",
+      "sha256": "f5328624ee22d6f739103303a8219108009b8d7b079c995f7e42aec03fbc7120"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/response.json",
+      "sha256": "2cc015834612197e7aa58833b577e098f559d7d337c19953ef7fe1fbe1f7f5bd"
+    },
+    {
+      "path": "attempts/daily/mini_prose/cycle01/rival.json",
+      "sha256": "8989c51a856173ec69a7072d5263a60b689e2bcf60081d06b1bb0a3e8f80feb9"
+    },
+    {
+      "path": "manifests/fork5.json",
+      "sha256": "f7e727daea6d3ba4353b1b2f93ae7e461a648c99877cf2ee97ca7653e30e1ee8"
+    },
+    {
+      "path": "manifests/return6.json",
+      "sha256": "f3ece835e680452807d9e0dd69232c34a452b67062cba75c4ba46bf87bb93951"
+    },
+    {
+      "path": "manifests/weave7.json",
+      "sha256": "ea8174af734dabde382a36cd85323a064ef9a8302490b9f85e1f9f360e7686df"
+    },
+    {
+      "path": "material.json",
+      "sha256": "8a00ff1246d43dde4856d9850d8563bfd57579a42e456236ed8b22c7437c4eff"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "4a756b51d9ceb45b787b9741b025104caa5e8e2627bea0d94c85e48622956342"
+    },
+    {
+      "path": "provider/daily/bare/cycle01/answer/call-0001.request.json",
+      "sha256": "f249cc67679bc5661683e69836c01b416adfe55514e676906fadbe8c0b12fd20"
+    },
+    {
+      "path": "provider/daily/bare/cycle01/answer/call-0001.response.json",
+      "sha256": "8e776c57f70a1e7cf06f6e8ccffddaec32fa54a125692dfc69204daad01bea5a"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/account/call-0001.request.json",
+      "sha256": "3834e60c3dedb7fd817457e8b778005149ed0a1ab83fef3635f94a3fa19d6c0e"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/account/call-0001.response.json",
+      "sha256": "6a3e628116bfc5da381f9343d73f675bb93b299adebfc9af06c4eb30ae767f77"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/objection/call-0001.request.json",
+      "sha256": "ab155588e7bcf32e4c29f88527a4e1970ad026f41172babb836300f2521f2267"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/objection/call-0001.response.json",
+      "sha256": "72e34dbc9be3897097f2948bce69503167cfbdf3d97f5e89179d048783224449"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/rival/call-0001.request.json",
+      "sha256": "79c688b3996f897bbaeba48d7937df4ec2d8e4444022e15dac902680bc78d5e0"
+    },
+    {
+      "path": "provider/daily/mini_fcl/cycle01/rival/call-0001.response.json",
+      "sha256": "4e6e865cbf1a397f8536f30ff0f5bb37adb667f7acb3452f1023f40069b7890c"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/account/call-0001.request.json",
+      "sha256": "5855061f9b1ce0d84cc8cf178551c5465ada25aae2e902df33d2b99a594d8cdc"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/account/call-0001.response.json",
+      "sha256": "a9d4607827616681409362841e039a394ba310cf1abad43b9813c1535bbaf28a"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/objection/call-0001.request.json",
+      "sha256": "14a6e8a83fb25922271a5cc76b91b27b6e0e4d5378b7875b4b5379bbb6111cae"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/objection/call-0001.response.json",
+      "sha256": "321e2022572beb380e642cfd96792c69c90332db4ebcee0188996c2400d7e1ea"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/response/call-0001.request.json",
+      "sha256": "ef08eb2c2bd429a781be0674921792b2af206353436da01b71e039c2509fd4a8"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/response/call-0001.response.json",
+      "sha256": "608b3ea0099fc8b17a5b10123f5bae75ea055ed9038d6d0d0af13483f93538c2"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/rival/call-0001.request.json",
+      "sha256": "1ed1cf36141d46a2af6c57d80656f88ec90174b45ac13ef480370502ff80c949"
+    },
+    {
+      "path": "provider/daily/mini_prose/cycle01/rival/call-0001.response.json",
+      "sha256": "a3a9964860c9218389ef75334fb8f783dbbf9a1631e3c0f61ab477ca8ffd7e1f"
+    },
+    {
+      "path": "requests/daily/bare/cycle01/answer.json",
+      "sha256": "ede0a4cfd3296d41c6d30850e6875d855badb82ba85e101c2c6000b38fd004b0"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/account.json",
+      "sha256": "ccb45382acf61a3ec6c0a7fb2344271c2e3c83ee2a3e4e5a6da118a09752d7d5"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "e5943043b43114c08e99e555b52eb39dae5151ce89d97591ff455ad233dda9fb"
+    },
+    {
+      "path": "requests/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "dd8805a0dc98263af8bdc65687382264b6906b5d426c19f312ba815069cc8a20"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/account.json",
+      "sha256": "6e63c8e3f80953621e3188d1cf3062ad574856766510d8818e55e8fe30220220"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/objection.json",
+      "sha256": "ffd4ba700d199ea598e296a4047e56e40c6657e9fa47aeb474fa7decda9b950a"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/response.json",
+      "sha256": "2b08d4702f37389c52322b7d99c48fcf2f91a698585869c918cd0b47b3090155"
+    },
+    {
+      "path": "requests/daily/mini_prose/cycle01/rival.json",
+      "sha256": "f0b0119ae1fb570ca2fd7bdf1ac7413dab8a1073cacabcaab5384d0489c182f3"
+    },
+    {
+      "path": "responses/daily/bare/cycle01/answer.json",
+      "sha256": "453730edc500fc5fd58e5d491dfeaf71d11019449c9f529e093fa1198b4f07d7"
+    },
+    {
+      "path": "responses/daily/bare/cycle01/answer.txt",
+      "sha256": "5d10d81f761ec16d0299f6fa440ce34110ebf53dcd450f1311bc5ffe5138cd4a"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/account.json",
+      "sha256": "7676ce6e4aac785a2203fc3977d677d8f9eb7d55e25e4b9ffb27bec678f0eb0d"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/account.txt",
+      "sha256": "cfd108866b6b35d61428b358bb31578e916ee2000821b570597915660f99b6f7"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "2bf843f277435fd136b1343d535806ed94a353e6bd589674a42d5307702f34eb"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/objection.txt",
+      "sha256": "ba0acc61c02ef86708c7106eebdc40cd0c5f26a9e7820ff42dc354b3ffb65abc"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "89ee231489ee673f1b8f6730c7013ce6dff807b47b3167c8d92d1cbc79d7e7c1"
+    },
+    {
+      "path": "responses/daily/mini_fcl/cycle01/rival.txt",
+      "sha256": "a013725a7d4e87b5af96edf712895a31c38025544875506c4691d736f7ff4a11"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/account.json",
+      "sha256": "2d4ad8ae5bd7832530570ae2696d74fc5694c87bbc1e7e28d27efa5d538f57b6"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/account.txt",
+      "sha256": "c375eacdc84980cf922677a3a66a650ef43922888db63ba7d3e6ecfd4698179b"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/objection.json",
+      "sha256": "c9a04cd24836abc188f13a9885a16889e7f58ff5a2f92e6a45ecfbb56ecbbb20"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/objection.txt",
+      "sha256": "e7babcd58a8117f861ea476aeea8a9dab78c1f53bdb4f1edb5a876067fc7f2ae"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/response.json",
+      "sha256": "ea9d610c3ed5819180f368bb0de823ef083fcf60dd7b620ca29d904ba2ba299b"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/response.txt",
+      "sha256": "edf3d5b2985433aec3ee605860c1c21d99ce33d68b1e949e9e3fb53c09a2569a"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/rival.json",
+      "sha256": "6272b7e5b4a62b4d81c02555e674d4c250531852c895c77fdc70443dfeaf86d9"
+    },
+    {
+      "path": "responses/daily/mini_prose/cycle01/rival.txt",
+      "sha256": "d2c2fe1cb53d7e20520ea74e7d4c374702c57abfceabbdd251b16b55430d45aa"
+    },
+    {
+      "path": "traces/daily/bare/cycle01/answer.json",
+      "sha256": "4ff68da01ac0c9cfd4c060d4a822f7ced327003f53e9e96f1e3fb08916a7fbab"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/account.json",
+      "sha256": "f4790106152ef33f8f02cc8f182089bd4e99beb4f553144a79e51e2ec4f92f53"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/objection.json",
+      "sha256": "ebeb44b61d39a103e9cc85b67d4203098425cd32883eef6cfb23545ca6d28de0"
+    },
+    {
+      "path": "traces/daily/mini_fcl/cycle01/rival.json",
+      "sha256": "75beee6bc0501968f5bcb94f73c1b0197af2a017421682afb69de64c5977a019"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/account.json",
+      "sha256": "5725e108b01c89983c73bc7e84268aa9bbf8b77d8b6fe57c79df1137bd5db455"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/objection.json",
+      "sha256": "1f70c81fc2a4aa5fdb5470fa2c75cca0d5c2a2ae4f28dde426577a222f946765"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/response.json",
+      "sha256": "ad320bc23381168ea9512eb2801e9af70d764d14cbd0de1a4a0a662c2a1f76f8"
+    },
+    {
+      "path": "traces/daily/mini_prose/cycle01/rival.json",
+      "sha256": "e4e3f246b335b3b6247905d24000870409300a33a412afb9e472492c1678a05c"
+    },
+    {
+      "path": "waves/wave0001.json",
+      "sha256": "78c98d402f066cf2835c2a75fdeebc7b13ab3ac82924dead8a39f1d498e8acda"
+    },
+    {
+      "path": "waves/wave0002.json",
+      "sha256": "908a20cd5eac2d745e54fccbe3bd63e88e7f58e5baa40743b8bb92042b5a41b3"
+    },
+    {
+      "path": "waves/wave0003.json",
+      "sha256": "1946457f4bdb598d670e14063f681c835b5f2fefdf59021e57c69e30b3b737b4"
+    },
+    {
+      "path": "waves/wave0004.json",
+      "sha256": "c2a89d6741d85558395f20191f828b7270657c3ccff2e1aabdbc3c125666f59e"
+    }
+  ]
+}
