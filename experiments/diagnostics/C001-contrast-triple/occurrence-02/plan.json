@@ -1,0 +1,409 @@
+{
+  "arms": [
+    "fcl",
+    "prose"
+  ],
+  "briefs": {
+    "fcl": {
+      "cases": {
+        "carrier": {
+          "brief_sha256": "4e3ebf3175f772abe0663b9506ab4fb25664f3264f3c00880161337b8f686354",
+          "messages_sha256": "fbf4b8e95b76e908eb0036654cdb28a1fcf8801551c91b6bab0f18117779086a",
+          "objection_projection_sha256": "02fac43f8db53c0c63ff251f9ca842d15f79de3d0c65128db1d0d61b6c51e4d5"
+        },
+        "control": {
+          "brief_sha256": "c1cad2f35d53288fab35043f804b8d2f6a587ad4baba08bffa800094096fe447",
+          "messages_sha256": "04f531f8d051e3d236d911488baea1cd70ba95c51108113b93615afba2a6fd27",
+          "objection_projection_sha256": "c3bd1a177086911563277b6364324eb80334b85187b7bebda4d9ddaa76871cc9"
+        },
+        "original": {
+          "brief_sha256": "b458837d9c28bd6110d28e24e3f5e2b75e80e06dfcc845b93a0e33da00363c95",
+          "messages_sha256": "1fb9e46190609799774e561a596142735152a99f463f6adafc88b5611b3893ed",
+          "objection_projection_sha256": "7d7dd2ee139f5d48cd2caf67d9c0ca0c14c3fdbb6559cd93f93c2af945c928b5"
+        },
+        "recoding": {
+          "brief_sha256": "f4782a1449116d86116919858daa613bdfcb3a52c79bc64d13597a40258222b0",
+          "messages_sha256": "825147c4ae80d9c862ba32ac7f199446afd418152dd00764ced5075e88392b48",
+          "objection_projection_sha256": "093e84e6e4ee5fa81fb169c8d882c3615cc26e255335cc9a7f0e72f597c4d3a9"
+        }
+      },
+      "shared_prefix_chars": 7460,
+      "shared_prefix_sha256": "a11c82d604612f0d26ecd1f0b86b6bac4bc4b862e6829ea3622f1ee8d2792f10",
+      "shared_suffix_chars": 7846,
+      "shared_suffix_sha256": "7cba98bb9748a1ea7e89620568883f6ed0a9a92207fadd618d1dcfc801f2bb7d"
+    },
+    "prose": {
+      "cases": {
+        "carrier": {
+          "brief_sha256": "06e0fba983f4c60b76ce857508f3cd47946a7f29053eae06728124a567b75c7f",
+          "messages_sha256": "be214223213b5d325508e495f3f108f319577735b7e4055c76bc414bc1243dbb",
+          "objection_projection_sha256": "30d1be13b47863f5e58faee5b692155e4b75561fb2459aebc79c18f872e42175"
+        },
+        "control": {
+          "brief_sha256": "9b68c9fec273fb476d0489a04c4d44f5e24522ed7b2e609f8e61ed04556146eb",
+          "messages_sha256": "02288d3306d8814779fbfbc202d37aa0795bcac44b188c0bb4ec2e6448857417",
+          "objection_projection_sha256": "c3bd1a177086911563277b6364324eb80334b85187b7bebda4d9ddaa76871cc9"
+        },
+        "original": {
+          "brief_sha256": "99dc343556aac3225ebbb2b64a92d88fd55ef7e7038a672007efcae1ab4dfdc6",
+          "messages_sha256": "6eb3225de4f6abf1503b2eb7d7403087f310dcb2e03d43f4b07c79affac188f0",
+          "objection_projection_sha256": "09e9b23f5971172b08bdcf7b1c5978a2c5c19eae15ee4d0d0300020cdcfdff43"
+        },
+        "recoding": {
+          "brief_sha256": "38a06087bacc8babe91232c991742678aca52749cdf1bd73b1441d364317a41e",
+          "messages_sha256": "ec928352b9166425a4935ebac78e7345e5861e50e3097b03f55b1733cf8d5f42",
+          "objection_projection_sha256": "816f84032cd810f11563ee2e7824d4da360960933819d985f69e9053cb85d9fa"
+        }
+      },
+      "shared_prefix_chars": 6485,
+      "shared_prefix_sha256": "9522c1d76bf8f92a474021f39725a15ed3b8e06604457e9be5117021250216e4",
+      "shared_suffix_chars": 8731,
+      "shared_suffix_sha256": "00f39fd6a38029bddb110cff2c8c63e5c28ba610e183160f5fe5fd3d1ccef4a4"
+    }
+  },
+  "cases": [
+    "original",
+    "recoding",
+    "carrier",
+    "control"
+  ],
+  "ceilings": {
+    "automatic_retries": 0,
+    "max_concurrent_per_key": 5,
+    "max_tokens": {
+      "deepseek-flash": 32768,
+      "ollama/gemma4-31b": 32768,
+      "ollama/glm-5.3": 32768,
+      "ollama/gpt-oss-120b": 32768,
+      "ollama/kimi-k3": 32768,
+      "ollama/qwen3.5-397b": 32768
+    },
+    "max_tokens_authorised_maximum": 32768,
+    "max_tokens_policy": "max_tokens is declared PER ENDPOINT, not once for the study, and the value for each endpoint is frozen in endpoints[].max_tokens as well as here; `prepare` refuses unless the two agree and unless every built payload carries its own endpoint's value (CEILING_NOT_APPLIED). In THIS material every endpoint carries 32768, the authorised maximum. The five Ollama endpoints carried it in occurrence-01 already, on the live evidence published under REC-20260914-S (F001 occurrence-04, ollama/glm-5.3; occurrence-05, ollama/kimi-k3: at max_tokens 8192 five nodes returned INCOMPLETE_GENERATION with finish_reason \"length\", completion_tokens 8192 and no content at all, and two further nodes came back PARTIAL). deepseek-flash is raised from 8192 to 32768 here, BEFORE dispatch, on occurrence-01's own terminal records: its forty coordinates finished COMPLETE 21 / PARTIAL 8 / FAILED 11, and the whole of that residue is the fcl arm, which is 1 COMPLETE, 8 PARTIAL and 11 FAILED against the prose arm's 20 of 20 at the same ceiling. Every PARTIAL carries finish_reason \"length\" at completion_tokens exactly 8192; every FAILED carries INCOMPLETE_GENERATION with validation_failure_type NO_PUBLIC_CONTENT, no finish_reason and no usage at all; the nine fcl calls that reported usage spent 5488 to 7890 tokens on reasoning; and the single fcl COMPLETE finished at 8083, one hundred and nine tokens under the ceiling. Occurrence-01 gave deepseek-flash 8192 because it \"sends no reasoning on the wire, and 8192 was ample for it\". Both halves are false of C001 as dispatched: 29 of those 40 receipts record reasoning_content_present true, and C001's briefs are far longer than the H005 briefs that reason was formed on. That the endpoint ACCEPTS the raised value is not assumed either: one probe call was sent to deepseek-flash at max_tokens 32768 with a trivial prompt through this study's own transport and came back COMPLETE, finish_reason \"stop\", in 1837 ms, its request record carrying max_tokens 32768 and its usage carrying 81 reasoning tokens of 100. That probe establishes acceptance of the argument and nothing more: the answer was 100 tokens long, so nothing above 8192 was exercised, and 32768 is NOT predicted to be sufficient. Raising the ceiling does NOT manipulate reasoning: temperature, thinking and reasoning_effort are still never sent, the endpoint default still decides whether and how much it reasons, and the study's own reasoning policy is unchanged. It buys the reply room to exist beside the reasoning, nothing more. A cell that hits even the raised ceiling is still a PARTIAL or a refusal, is still marked unresolved and is still compared against nothing (partial_delivery_rule; FW5:634). One consequence is recorded rather than passed over: because deepseek-flash now carries what the Ollama endpoints carry, the six endpoints share a single completion ceiling again, so occurrence-01's recorded cost -- that a deepseek-versus-Ollama difference had one more uncontrolled difference behind it -- does not apply to this material. NO OCCURRENCE-01 RECORD IS MODIFIED, RELABELLED, REPAIRED OR SUPERSEDED by this material. Occurrence-01's nineteen unusable fcl cells stay exactly as they are and are still read exactly as PLAN section 6 says; this is a second ceiling beside the first, which is the rule docs/lessons/operations.md already records from E001/E002: \"new budget conditions require separate freezing rather than retrospective repair\".",
+    "native_reasoning": "not manipulated; endpoint default; recorded as reported or unknown",
+    "response_format": {
+      "type": "json_object"
+    },
+    "temperature": "provider-default",
+    "timeout_seconds": {
+      "deepseek-flash": 600,
+      "ollama/gemma4-31b": 600,
+      "ollama/glm-5.3": 600,
+      "ollama/gpt-oss-120b": 600,
+      "ollama/kimi-k3": 600,
+      "ollama/qwen3.5-397b": 600
+    },
+    "timeout_seconds_authorised_maximum": 600,
+    "timeout_seconds_policy": "timeout_seconds is declared PER ENDPOINT, exactly as max_tokens is, and the value for each endpoint is frozen in endpoints[].timeout_seconds as well as here. It is a WALL-CLOCK READ TIMEOUT on the socket, not a payload field: no new parameter is sent, no payload byte changes, and the plan_id-bearing request bytes are the same bytes they would be at any timeout. The driver applies it to the registry Endpoint through `dataclasses.replace` at provider construction (resolve_endpoint), so src/minireason/data/endpoints.json is NEVER edited: that file is published, pinned here in transport_pins, and pinned by other studies' plans, and a study that rewrote it would invalidate them. prepare, run and audit all refuse unless the frozen plan, the material, the call spec, the request record, the receipt and the transport's own settings view carry the same value (TIMEOUT_NOT_APPLIED). In THIS material deepseek-flash carries 600 s as well, and the reason is the raised completion ceiling. At 8192 its twenty fcl calls in occurrence-01 took 36.0 to 45.7 seconds of wall clock (median 40.4), an observed generation rate of 179.2 to 227.5 tokens per second on the fcl arm and 152.6 to 227.5 across all forty of its calls. A call that spends the whole 32768 ceiling at those same observed rates takes 144 seconds at the fastest, 183 at the slowest fcl rate and 215 at the slowest rate of the forty -- two of the three past the 180-second wall clock occurrence-01 gave it. Leaving the timeout at 180 while quadrupling the ceiling would therefore have planned the same refusal REC-20260914-T recorded on ollama/glm-5.3 and ollama/kimi-k3: not a ceiling truncation but a read timeout, TRANSPORT_OR_RESPONSE_ERROR with no finish_reason, no usage and no content. The extrapolation is arithmetic over published records, not a prediction about this model, and a call that exceeds even 600 seconds is still a refusal recorded with its failure code and still compared against nothing. The five Ollama endpoints carry 600 s, which is the transport's OWN validation maximum: minireason.provider_openai_compat.Endpoint.__post_init__ admits 1..600 seconds and refuses anything else, so 600 is a bound this study reaches rather than one it invents. The raise is made BEFORE dispatch, on live evidence published under REC-20260914-T in experiments/diagnostics/F001-fork5-multifamily. Two nodes of that run failed, and both failed this way: occurrence-07 (ollama/glm-5.3) responses/daily/mini_fcl/cycle01/objection.json, failure_code TRANSPORT_OR_RESPONSE_ERROR, whose provider record provider/daily/mini_fcl/cycle01/objection/call-0001.response.json carries error \"The read operation timed out\", elapsed_ms 180368 and settings.timeout_seconds 180; and occurrence-08 (ollama/kimi-k3) responses/daily/mini_fcl/cycle01/carry.json with the same failure_code, whose provider record carries the same error at elapsed_ms 180456 against the same 180-second setting. Both were sent at max_tokens 32768; both returned no finish_reason, no usage and no content; neither is INCOMPLETE_GENERATION and neither is a ceiling truncation - finish_reason \"length\" occurs ZERO times in either occurrence, and the largest single completion there was 16871 tokens. What those two calls met was the fixed 180-second wall clock, which did not move when the completion ceiling moved. Raising it manipulates no reasoning: temperature, thinking and reasoning_effort are still never sent, the endpoint default still decides whether and how much it reasons, and the study's own reasoning policy is unchanged; a longer permitted generation is simply given the wall-clock room to arrive. Its cost is recorded: the six endpoints no longer share one timeout, so a difference between deepseek-flash and an Ollama endpoint has one more uncontrolled difference behind it. A call that exceeds even 600 seconds is still a refusal recorded with its failure code (TRANSPORT_OR_RESPONSE_ERROR), still compared against nothing, and NO CELL IS RESCUED by the raise."
+  },
+  "claim_ceiling": "One system, one problem, one respect. Consistent-with, never a reason-use witness (FW5:628). An unresolved cell stays unresolved (FW5:634).",
+  "coordinates": [
+    {
+      "arm": "fcl",
+      "case": "original",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 1
+    },
+    {
+      "arm": "fcl",
+      "case": "original",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 2
+    },
+    {
+      "arm": "fcl",
+      "case": "original",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 3
+    },
+    {
+      "arm": "fcl",
+      "case": "original",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 4
+    },
+    {
+      "arm": "fcl",
+      "case": "original",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 5
+    },
+    {
+      "arm": "fcl",
+      "case": "recoding",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 1
+    },
+    {
+      "arm": "fcl",
+      "case": "recoding",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 2
+    },
+    {
+      "arm": "fcl",
+      "case": "recoding",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 3
+    },
+    {
+      "arm": "fcl",
+      "case": "recoding",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 4
+    },
+    {
+      "arm": "fcl",
+      "case": "recoding",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 5
+    },
+    {
+      "arm": "fcl",
+      "case": "carrier",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 1
+    },
+    {
+      "arm": "fcl",
+      "case": "carrier",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 2
+    },
+    {
+      "arm": "fcl",
+      "case": "carrier",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 3
+    },
+    {
+      "arm": "fcl",
+      "case": "carrier",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 4
+    },
+    {
+      "arm": "fcl",
+      "case": "carrier",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 5
+    },
+    {
+      "arm": "fcl",
+      "case": "control",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 1
+    },
+    {
+      "arm": "fcl",
+      "case": "control",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 2
+    },
+    {
+      "arm": "fcl",
+      "case": "control",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 3
+    },
+    {
+      "arm": "fcl",
+      "case": "control",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 4
+    },
+    {
+      "arm": "fcl",
+      "case": "control",
+      "endpoint_slug": "deepseek-flash",
+      "replicate": 5
+    }
+  ],
+  "determinism": "No wall clock enters plan_id, any request digest or any artifact digest.",
+  "dispatch_scope": {
+    "arms": [
+      "fcl"
+    ],
+    "endpoints": [
+      "deepseek-flash"
+    ],
+    "reason": "One cell, dispatched to answer one question occurrence-01 left open: whether the fcl envelope fits beside deepseek-flash's reasoning when the ceiling is not 8192. Occurrence-01 answered it for the prose arm (20 of 20 COMPLETE) and could not answer it for the fcl arm (1 of 20). Dispatching the other five endpoints again would re-spend two hundred calls on cells occurrence-01 already resolved and would answer nothing, and dispatching the prose arm again would re-spend twenty on an arm that never met the ceiling. The scope is frozen in plan_id: this occurrence cannot quietly widen it."
+  },
+  "endpoints": [
+    {
+      "family": "deepseek",
+      "honors_seed": null,
+      "id": "deepseek-flash",
+      "key_env": "DEEPSEEK_API_KEY",
+      "max_tokens": 32768,
+      "model": "deepseek-flash",
+      "slug": "deepseek-flash",
+      "timeout_seconds": 600
+    },
+    {
+      "family": "ollama-cloud/gpt-oss",
+      "honors_seed": true,
+      "id": "ollama/gpt-oss-120b",
+      "key_env": "OLLAMA_API_KEY",
+      "max_tokens": 32768,
+      "model": "gpt-oss:120b",
+      "slug": "ollama-gpt-oss-120b",
+      "timeout_seconds": 600
+    },
+    {
+      "family": "ollama-cloud/qwen",
+      "honors_seed": true,
+      "id": "ollama/qwen3.5-397b",
+      "key_env": "OLLAMA_API_KEY",
+      "max_tokens": 32768,
+      "model": "qwen3.5:397b",
+      "slug": "ollama-qwen3.5-397b",
+      "timeout_seconds": 600
+    },
+    {
+      "family": "ollama-cloud/glm",
+      "honors_seed": true,
+      "id": "ollama/glm-5.3",
+      "key_env": "OLLAMA_API_KEY",
+      "max_tokens": 32768,
+      "model": "glm-5.3",
+      "slug": "ollama-glm-5.3",
+      "timeout_seconds": 600
+    },
+    {
+      "family": "ollama-cloud/kimi",
+      "honors_seed": true,
+      "id": "ollama/kimi-k3",
+      "key_env": "OLLAMA_API_KEY",
+      "max_tokens": 32768,
+      "model": "kimi-k3",
+      "slug": "ollama-kimi-k3",
+      "timeout_seconds": 600
+    },
+    {
+      "family": "ollama-cloud/gemma",
+      "honors_seed": true,
+      "id": "ollama/gemma4-31b",
+      "key_env": "OLLAMA_API_KEY",
+      "max_tokens": 32768,
+      "model": "gemma4:31b",
+      "slug": "ollama-gemma4-31b",
+      "timeout_seconds": 600
+    }
+  ],
+  "envelope_unwrap": {
+    "guarantees": [
+      "raw delivered bytes are preserved untouched in responses/<...>.txt and in the write-once provider record",
+      "every call records envelope_repairs and strict_parse_would_succeed",
+      "no other repair is ever applied to content"
+    ],
+    "reason": "Ollama cloud accepts response_format json_object but does not enforce it: a model may fence the JSON or return invalid JSON, and most Ollama models emit reasoning by default, which counts against max_tokens. H005 ran one endpoint that did enforce it, so its decoder needed no unwrap.",
+    "steps": [
+      "1. strict json.loads of the delivered content; if it yields {\"body\",\"commitments\"} of strings, no repair is recorded",
+      "2. otherwise strip ONE outer code fence (```lang ... ```) and retry the strict parse; records envelope_repairs += [\"strip_outer_code_fence\"]",
+      "3. otherwise retry with json.loads(strict=False) (control characters admitted inside strings); records envelope_repairs += [\"json_strict_false\"]",
+      "4. otherwise the envelope is OPAQUE and the whole delivered text is kept as the body"
+    ]
+  },
+  "helper_sha256": "1857110385da3e2e4740086410ba6f840947dc4d8267527c6c9b86aada80f9cf",
+  "material_sha256": "1ba7be081b6fb0c56af7433589ae8bd8591c3a9e697a816d32b0950851874f30",
+  "node": {
+    "frozen_inputs": [
+      "account",
+      "rival"
+    ],
+    "instruction_sha256": "c5df8f8abfe229ed819769b7469206ba329f7ed6ee13aa1eb39b2f1fd3823a25",
+    "node_id": "response",
+    "template_id": "fork5",
+    "varying_input": {
+      "source": "objection",
+      "view": "both"
+    }
+  },
+  "partial_delivery_rule": "A PARTIAL delivery (finish_reason \"length\" at the endpoint's own declared max_tokens ceiling - 32768 for every endpoint of this material) yields a truncated commitment surface. Such a cell is marked unresolved in the evidence table and is not compared against any other case (FW5:634; EXPERIMENT_METHOD operational-failure table). A delivery that returns no content at all because the ceiling went entirely to reasoning is a refusal (INCOMPLETE_GENERATION), recorded with its failure code and likewise compared against nothing. Raising deepseek-flash's ceiling from occurrence-01's 8192 makes those outcomes less likely; it does not change how they are read, and it rescues no cell of occurrence-01, which stands unaltered.",
+  "plan_id": "1d9f47acdc692146792e354afdd9c6944036cb7d55bd83cc32c905e7c4ffeb83",
+  "planned_calls": 20,
+  "question": "At one responder node - the fork5 `response` node, instruction and non-objection inputs frozen from the H005 material and occurrence-01 - does the successor's authored commitment surface differ against a no-objection control, and NOT under a content-preserving recoding of the objection, and NOT under a carrier disturbance at fixed content? (FW5:630 contrast contract, redirected from the judge to the responder.)",
+  "reading_rule": {
+    "marks": [
+      "differs",
+      "same",
+      "unresolved"
+    ],
+    "never_aggregated": "No mark is a quantity. The four registers are never summed, averaged, weighted, ranked or reduced to a single mark (FW5:851; PURPOSE.md, \"no scalar progress meter\").",
+    "order_of_reading": "Root reads the five ORIGINAL replicates and writes the within-ORIGINAL spread on all four registers into COMPARISON.md BEFORE opening any other case’s juxtaposition for that cell. The baseline note is written first and is not revised afterwards.",
+    "preamble": "Root reads every cross-case comparison on exactly the four registers below and records for each one of `differs` / `same` / `unresolved`. The four marks are reported separately and stand or fall separately; they are never summed, averaged, weighted or reduced to one mark.",
+    "register_to_falsifier": {
+      "D1": "exhibited in a cell only if T, E or D differs ORIGINAL vs CONTROL. G alone does not carry D1: the control has no objection grounds to cite, so a G difference there is forced by the design.",
+      "F2": "fires if T, E or D differs ORIGINAL vs RECODING.",
+      "F3": "fires if T, E or D differs ORIGINAL vs CARRIER."
+    },
+    "registers": [
+      {
+        "differs_iff": "the two sets of distinct targets are not the same set",
+        "id": "T",
+        "name": "target named",
+        "reads": "The represented target of the successor's own engagement. FCL arm: the set of values in `target` arrays, read with the source artifact prefix intact (a reference into the account is not a reference into the objection). Prose arm: the phrase by which the successor says what it is responding to."
+      },
+      {
+        "differs_iff": "the sets of prefix-resolved objection records engaged are not the same set. A bare id token shared with the account document (o1 c1 c2 p1 u1) is `unresolved` for this register and never `differs`.",
+        "id": "E",
+        "name": "objection record engaged, prefix-resolved",
+        "reads": "Which of the objection document's records (o1 o2 o3 c1 c2 o4 p1 u1) the successor takes up, by prefix-qualified reference or by quotation of that record's own text. The prefix is resolved against the declared artifact addresses (arms.<arm>.artifact_addresses)."
+      },
+      {
+        "differs_iff": "the disposition attached to the same criticism changes",
+        "id": "D",
+        "name": "proposed action (disposition)",
+        "reads": "What the successor proposes to do about the criticism: use, leave open, revise, reject or withdraw. FCL arm: read off record `type`, `uptake`, `revises`, `withdraws` and the `action` field. Prose arm: read off the text."
+      },
+      {
+        "differs_iff": "the cited source of grounds is not the same",
+        "id": "G",
+        "name": "grounds cited",
+        "reads": "Whether the successor grounds that disposition in the objection's grounds, the account's, the rival's, or none."
+      }
+    ],
+    "replicate_baseline": "A register is marked `differs` for a case pair only if the difference root reads between the two cases is one root does NOT also read between at least one pair of replicates inside ORIGINAL. Where the same kind of difference already appears inside ORIGINAL's own five replicates, the register is `same` for that pair and the fact is recorded.",
+    "schema": "minireason.c001.reading_rule.v1",
+    "title": "What \"differs\" means, pre-declared (PLAN.md §8a)",
+    "two_readers": "The registers are written so that two readers of the same juxtaposition mark the same cells. Where two readers disagree on a register, that register is `unresolved` for that cell and the disagreement is recorded, never averaged (FW5:634)."
+  },
+  "record_layout": {
+    "artifact": "artifacts/<endpoint_slug>/<arm>/<case>/rep<N>.json",
+    "attempt": "attempts/<endpoint_slug>/<arm>/<case>/rep<N>.json",
+    "brief": "briefs/<arm>/<case>.json",
+    "provider": "provider/<endpoint_slug>/<arm>/<case>/rep<N>/call-0001.{request,response}.json",
+    "request": "requests/<endpoint_slug>/<arm>/<case>/rep<N>.json",
+    "response": "responses/<endpoint_slug>/<arm>/<case>/rep<N>.json (+ .txt, raw bytes)"
+  },
+  "replicates": 5,
+  "schema": "minireason.c001.plan.v1",
+  "seed_policy": "Send seed=<replicate> to every endpoint whose declared honors_seed is true or null (unverified); send no seed only where honors_seed is declared false. Every call record states seed_requested, seed_sent, honors_seed and seed_echoed_in_response. Ollama honours seed (smoke test); DeepSeek seed support is unverified, so its replicates are recorded as independent samples whose seed effect is unestablished.",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "source_pins": {
+    "docs/sources/FW5-explanatory-construction.md": "8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a",
+    "experiments/diagnostics/H005-open-prose-commitments/material.json": "24ca4552016836b488c2644db0f17ba0b20c446e9dc2602a29e5e4b1b756c927",
+    "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/account.json": "b8de6a8d579c358cade3296a7e8260a03c6e80269cd0486aae43c134999732e6",
+    "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/objection.json": "810913b5c31f94a4d697da0e90e74205ac6b7abc7b217d44188852f2562110db",
+    "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_fcl/cycle01/rival.json": "b0b15d8d44c7dcd706879a9ced41e3f26a592ec5a25c2a961e01e32ea748e8cd",
+    "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/account.json": "11bdb5753d4fe7e0bcf2b357cf37afe751e38157e9f1d676f9e32ce63e3f1005",
+    "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/objection.json": "7a331fe944fe20018b3087531e131ddcf3f0dd9eee3255e8a239036b0280ad06",
+    "experiments/diagnostics/H005-open-prose-commitments/occurrence-01/artifacts/daily/mini_prose/cycle01/rival.json": "e60b3d93f1bf628f637c05a03de32f0cc72441f3ef93a820747325cef0a6df52"
+  },
+  "study": "C001-contrast-triple",
+  "transport_pins": {
+    "module": "minireason/provider_openai_compat.py",
+    "module_sha256": "cdc4b5711263eae2eebf9eadda3a52ad7b9c1f2320a780adc955bcb3cdaee5db",
+    "note": "base_url, chat_path, timeout_seconds and max_concurrency reach this study from the transport module and its endpoint registry rather than from this material, which is why both are pinned here by sha256 and re-hashed by every command. The pinned bytes are the PUBLISHED repository files src/minireason/provider_openai_compat.py and src/minireason/data/endpoints.json; an earlier build of this material was made while those files existed only in a staging provider package, and its note said so, which is no longer true of either file. C001 reads them and never writes them: the study's per-endpoint timeout_seconds is applied to the resolved Endpoint value by dataclasses.replace at provider construction, so the registry file itself is untouched and the plans of other studies that pin the same bytes stay valid. A change to either file mints a new plan_id (PLAN §13).",
+    "package": "minireason, resolved from the imported module: the staged provider package before publication, the repository src/minireason/ after it",
+    "registry": "minireason/data/endpoints.json",
+    "registry_sha256": "03eff16b8f575c113871a1266439874b2622a75d200ecb84a1b79464aa98aee7"
+  }
+}
