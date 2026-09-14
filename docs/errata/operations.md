@@ -165,3 +165,55 @@ Corrective action, **specified and not applied here**. First defect: `no_sockets
 **Resolution, appended 2026-09-14 16:22 UTC under the same receipt, `REC-20260914-AA`. Nothing above this paragraph is edited.** Both defects are repaired and the checkpoint is published. **First defect.** `tests/loop/test_roles.py` now captures the pristine `socket.socket`, `socket.create_connection` and `minireason.provider_openai_compat._open` **once at import**, into a module-level constant, and `no_sockets()` installs the refusal under a `threading.Lock` behind a depth counter: only the outermost block restores, and what it restores is always the pristine triple and never whatever a concurrent or nested block had installed. The six-thread concurrency test that exposed the leak is unchanged and still runs. The corrective action the paragraph above specified — "a re-entrant guard whose saved originals are captured under a lock by the first enterer only" — is the one taken, in its capture-once-at-import form, which is stronger: a block can no longer save a refusal even if it is the first enterer after one leaked. **Second defect.** `src/minireason/loop/data/plan_8a_mirror.json` is re-pinned against this branch: `plan_sha256` is now `a27fe94a0d04bcf549a4752243e3f34a9a945697e0354d445122755ba9327235`, the digest of `experiments/diagnostics/C001-contrast-triple/PLAN.md` at `f302c3a`, re-hashed by this publisher at publication; the companion `material_sha256` `94edfe61…` is unmoved and the §8a register definitions still match the live PLAN byte-for-byte. Re-pinning moves the demonstration `loop_plan_id`; it is taken here rather than deferred to the pre-registration receipt because **no plan has ever been minted**, so nothing pins the old value, and a shipped standard whose own data file pins a digest the branch does not carry is a known-false artifact. **Checked: yes, and by the gate that refused the first attempt.** `PYTHONPATH=src python3 -X utf8 -m unittest discover -s tests` on the transplanted tree reports **Ran 2673 tests in 214.278s, OK (skipped=2)** — 1,450 pre-existing plus the loop's 1,223, with the two skips being the loop's one declared skip and the pre-existing one. `tests/test_provider_openai_compat.py`'s two no-network tests pass inside that run, which is the direct refutation of the first defect, and `tests/loop/test_standard.py`'s PLAN-digest assertion passes rather than skipping, which is the direct refutation of the second.
 
 **A third finding, recorded here because this erratum is where the `-W error` gate lives, and NOT fixed.** The first attempt reported that all seventeen import targets returned `OK` under `python3 -W error`. That was true of a **warm** `.pyc` cache and is a false negative. With the caches cleared and `PYTHONDONTWRITEBYTECODE=1`, **ten of the seventeen fail**: `contracts`, `standard`, `surface`, `seats`, `graph`, `synthetic`, `packs`, `roles`, `markprep` and `decide` all raise `SyntaxError: invalid escape sequence '\s'` from `src/minireason/use_relation_h005.py:301`, the docstring of `_records_array_start`, whose line 304 writes `"records"\s*:\s*[` in a non-raw string; `minireason.loop` itself and `types`, `custody`, `receipts`, `obligations`, `publish` and `steps` import clean. Reproduced by copying `src/` to a scratch directory, removing every `__pycache__` under it, and importing each target with `PYTHONPATH=<copy>/src PYTHONDONTWRITEBYTECODE=1 python3 -W error -c "import minireason.loop.<m>"`. Without `-W error` all seventeen import `OK`, cold and warm alike. **This is not the loop package's defect and it is not fixed here**: `use_relation_h005.py` is a published instrument, editing it bumps its `source_identity` and invalidates every frozen plan that pins it, so the repair belongs to `SRC-003` in `docs/errata/sources.md`, which already carries that file's other unapplied corrective action. `tests/loop/test_types.py` asserts that no module of the loop package adds to the pile. **Operational lesson, for the lesson files: a `-W error` gate that passes on a warm bytecode cache has verified nothing**, because a `SyntaxWarning` is raised at compile time and a cached `.pyc` is not compiled; any future import gate in this repository must clear the caches of the whole import chain, not only of the package under test, and must set `PYTHONDONTWRITEBYTECODE=1` so that the first run does not warm the cache for the second. Two import warnings in a staged harness adjudicate nothing about any model, any arm or any reading.
+
+## OPS-20260914-LOOPOCCURRENCE — The first live loop run declared an occurrence runner v2 cannot dispatch for
+
+**What happened.** L001, the first live run of the automated end-to-end harness loop
+(`REC-20260914-AI`, `loop_plan_id f8bea0cc…`), minted its receipt at S0, published its plan at
+`b4190270`, and stopped four minutes later at the first SEND with `STEP_BODY_FAILED: cycle 1 did
+not drain in 64 waves`. **Zero provider calls were spent**; no transport was reached and no
+credential name was looked up.
+
+**Cause.** `config.occurrences` named `experiments/diagnostics/H005-open-prose-commitments/occurrence-01`,
+a published, closed study. It carries no `arms.json`, which runner v2's `verify()` reads first, and
+it carries `waves/wave0006.json`, a wave prepared and never sent whose five `daily`/cycle-2
+coordinates hold a request and a trace and no attempt, so `pending_wave()` never clears and
+`prepare_wave` refuses `PREPARED_WAVE_PENDING`. The loop may neither send that wave — the
+occurrence is published material and re-entering it is a replay — nor ignore it.
+
+**Repair, already published.** `REC-20260914-AJ` (`5105b10e`, verified at `2897496c`): S1 PREFLIGHT
+verifies every declared occurrence through runner v2's own contract and refuses
+`OCCURRENCE_NOT_DISPATCHABLE` **before anything is published**; a delivery runner v2 refused fails
+its step by code instead of being digested as a completed step; the dispatch loop refuses when two
+iterations arrive in the same state instead of spinning sixty-four waves; `_prepare` records why it
+skipped an occurrence. `types.FAILURE_CODES` 218 → 219; seven tests; suite `Ran 3129 OK (skipped=2)`.
+
+**What this erratum adds, and it is the transferable part.** Read again across the published trees
+when the successor bundle was written: **`arms.json` is absent from every published occurrence of
+both studies** — H005 occurrence-01, C001 occurrence-01 and C001 occurrence-02 — and the only
+occurrence in the repository that carries one is F002 occurrence-03, written by the newer runner.
+So this was not a poor choice among declarable occurrences: there were none. A loop whose
+`config.occurrences` is simultaneously its dispatch list (S4/S6), its import list (S8) and its
+use-table list (S9) **cannot read a published study and dispatch at the same time** unless that
+study was written by a runner that froze an `arms.json`. Writing one into published material to
+make it dispatchable is refused: it edits a published observation, which `p11` and AGENTS.md both
+forbid.
+
+**Lesson.** A pre-registration that names an occurrence must assert, before it is frozen, that the
+occurrence *verifies under the runner that will dispatch it* — not merely that its bytes exist and
+its published tables are complete. L001's bundle checked delivery completeness, replicate counts
+and unresolved-cell lists against the published record, all of which were true, and never asked the
+one question that decides dispatchability. The successor bundle (L002) asserts it in `validate.py`
+and declares the staging of a **new** occurrence as a precondition of S0.
+
+**Two defects recorded here and not repaired.** (1) A publication step that stages no change still
+emits a `VERIFIED` line indistinguishable from one that moved the ref: L001's `0004-PUBLISH_IN` and
+`0006-PUBLISH_EV` name the same commit and tree as `0001-PUBLISH_PLAN` because the runner wrote
+nothing. (2) Running `preflight` as a diagnostic against a run whose `preflight.json` is already
+published **overwrites** it with the truncated record a refusal writes; it was restored byte-for-byte
+in L001 the moment it was noticed. A refusal record needs somewhere else to go.
+
+**Status.** L001 is closed as an operational failure and is not resumed; its run directory is
+committed unchanged, `run.lock` included, as the record. It is superseded by L002 under a new
+`loop_plan_id`. No reading, mark, decision or evidence about any arm, model, family or account was
+produced by it, and none is claimed.
