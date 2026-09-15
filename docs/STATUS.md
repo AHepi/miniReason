@@ -736,3 +736,8 @@ The resume ran twice. First: **0027 PUBLISH_CY** published and verified; cycle *
 > published bytes. That is a smaller claim than L001's and it is the honest one available.
 
 **Still owed, unchanged:** C001 root reading, with the owner's decision on delegation pending; A001 **items 8-10** and the owed replacements for withdrawn witnesses, reachability demonstration, independently sourced interpretive technical case, and counterexample-and-clause deliverable (STATUS:703; ledger:1703); **main merge pending owner (ruling 2)** (STATUS:709). This recording starts no successor, reading or provider call and makes no state-changing Git command.
+
+
+### REC-20260915-B completion publication verified ? 2026-09-15T08:44:35Z
+
+The L003 completion, approved wording corrections and all 27 unchanged driver residue files are published to `claude/project-state-direction-j5rbun` at commit `e44dc34506f4e9f7fc48b4725f3e894527b56acc`, tree `96dc8082d99792e0d29a0720894a30fa3d738cb1`. Fresh fetch and ls-remote agree with local HEAD, and local/remote trees are identical. **Completion publication: COMPLETE.** The separate acknowledgement commit is pending its own push verification. The next authorized task and owed items listed above remain unchanged; main merge remains pending owner action. This publisher made no provider calls.
