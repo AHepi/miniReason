@@ -388,3 +388,21 @@ four are where it is most likely to have overcorrected.
    every other figure in the table names its rule, and check that no sentence
    anywhere in v4 treats any of them as adjudicating anything. Then re-count at
    the ledger's bytes at the moment of reading, since all of them move.
+
+---
+
+## Appended review round 4 — 2026-09-15 05:14:18 UTC — REC-20260915-C
+
+This dated entry records [A001 round 4, F68-F72](../A001-account-challenge-2026-09-14.md#review-round-4), applied after the eleven carried open items from a draft by one Astra worker and the authoritative independent judgement of a second. All preceding history bytes are preserved. These are corrected successor specifications and withdrawals, with no completed reading or adopted section-5 contribution.
+
+| Carried item | Finding | Disposition | Successor location and remaining obligation |
+|---|---|---|---|
+| 3 | F68 | **fixed** | A001 round 4 section A; correct (b6) provenance, retaining the rule and assignments. A substantive assessment of fitting remains owed. |
+| 4 | F69 | **withdrawn** | Section B; A15 witness and completed reachability claim withdrawn, A16 conditional. Replacement witnesses and the full reachability demonstration remain owed. |
+| 5 | F70 | **fixed** as conditional specification | Sections B and D; shared Boolean condition and A05-specific alternative assessment. Completed exhibits are **NOT FOUND**. |
+| 6 | F71 | **fixed** as proposed specification; overstated draft premise **declined with reason** | Section C; existing evidence requirement is acknowledged; explicit incomplete status and evidence types recorded. Actual worksheet is **NOT FOUND**. |
+| 7 | F72 | **fixed** as prospective specification | Section D; consistent gates, exits and complete Boolean conditions. Strengthened evidence/routing proposal remains **proposed, not adopted**. |
+
+**Earlier claims qualified by this new round:** CHANGES-v4:14-15,159-168,224-226's demonstrated-reachability assertions are superseded by F69-F70's withdrawals and outstanding exhibits. CHANGES-v4:245's (b6) stated-example disclosure is superseded by F68's dated correction. The earlier paragraphs themselves are unchanged; the distinct E2 accessibility claims are retained. The companion receives a dated correction for Cells:158-159,186,192-211,307-326.
+
+Items 8-11 are assessments only. Section E's A001:661-662 wording is recorded as an item-9 assessment proposal; (r2), (r3), (P-Ans), A29, the charge table and all recorded case verdicts are unchanged. A-S failed under (P-Ans), with the D22 alternative; B-N dropped; no counterexample to sufficiency or necessity; the executable leg cannot charge Account. Judge section 5's four contributions are explicitly **proposed, not adopted**. The independent technical case and counterexample-and-clause deliverable remain owed. No provider calls or publication under this receipt.

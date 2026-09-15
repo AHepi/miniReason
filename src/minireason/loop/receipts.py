@@ -16,7 +16,8 @@ Three properties are load-bearing and are the reason this module exists at all.
   endings (37 CRLF lines at the time of writing) and carries non-ASCII prose. A
   read-modify-write through a text handle would normalise both and would clobber
   a concurrent publisher's append. Every write here follows
-  ``tools/repo_activity.append``'s discipline exactly: ``open("ab", buffering=0)``,
+  ``tools/repo_activity.append``'s discipline: ``open("ab", buffering=0)``
+  (``"a+b"`` on Windows so locked reads use the same handle),
   an exclusive ``flock`` (``msvcrt.locking`` on Windows), ``seek(0, SEEK_END)``, a
   short-write loop over a ``memoryview``, ``flush``, unlock in ``finally``.
 * **The receipt id is minted under the same lock that performs the append**, so
@@ -504,7 +505,16 @@ def _read_bytes(path: Path) -> bytes:
 def _open_append(path: Path) -> Any:
     """Open ``path`` for unbuffered binary append. A documented test seam."""
 
-    return path.open("ab", buffering=0)
+    return path.open("a+b" if os.name == "nt" else "ab", buffering=0)
+
+
+def _read_locked_bytes(path: Path, handle: Any) -> bytes:
+    """Read under the append lock without a second Windows handle."""
+
+    if os.name == "nt":
+        handle.seek(0)
+        return handle.read()
+    return _read_bytes(path)
 
 
 def _lock(handle: Any) -> None:
@@ -604,7 +614,7 @@ def _append(path: Path, render: _Render, *, newline: bytes = b"\n",
             with _open_append(path) as handle:
                 _lock(handle)
                 try:
-                    data = _read_bytes(path)
+                    data = _read_locked_bytes(path, handle)
                     text, receipt_id = render(data)
                     text = _cleared(text, path)
                     payload = _separator(data, newline) + text.encode("utf-8") + newline
@@ -615,7 +625,7 @@ def _append(path: Path, render: _Render, *, newline: bytes = b"\n",
                     # Read back while the lock is still held: a digest taken
                     # after it is released is a digest of whatever the next
                     # writer had already added, attributed to this append.
-                    after = _read_bytes(path)
+                    after = _read_locked_bytes(path, handle)
                 finally:
                     _unlock(handle)
         finally:

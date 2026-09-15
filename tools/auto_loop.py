@@ -541,7 +541,8 @@ def _write_json(path: Path, value: Any) -> None:
 
 
 def _read_json(path: Path) -> Any:
-    return json.loads(path.read_bytes().decode("utf-8"))
+    with path.open("r", encoding="utf-8", newline="") as stream:
+        return json.load(stream)
 
 
 def _write_overrides(run_root: Path, overrides: Mapping[str, Any]) -> None:
@@ -932,7 +933,7 @@ def _stage_bundle(drv: _Driver) -> None:
     drv.obligations = obligations_module.load_obligations(obligations_src)
     if drv.paths.obligations.resolve() != obligations_src.resolve():
         drv.paths.obligations.write_bytes(body)
-    drv.paths.ceiling.write_text(standard_module.CEILING_TEXT, encoding="utf-8")
+    drv.paths.ceiling.write_text(standard_module.CEILING_TEXT, encoding="utf-8", newline="")
     target = drv.paths.run_root / _CALIBRATION_NAME
     if not target.is_file():
         if drv.config.audit.period:
@@ -1129,7 +1130,7 @@ def preregister(config: LoopConfig | str | Path, *,
         loop_plan_id=drv.plan_id, run_id=config.run_id,
         source_identity=decide_module.DECIDE_SHA256)
     standard_module.assert_no_exhaustion_claim(prereg_text, "preregistration.md")
-    drv.paths.preregistration.write_text(prereg_text, encoding="utf-8")
+    drv.paths.preregistration.write_text(prereg_text, encoding="utf-8", newline="")
 
     drv.harness = drv._open_harness()
     standard_id = graph_module.register_standard(drv.harness)
@@ -1995,7 +1996,9 @@ def _read(drv: _Driver, cycle: int, table: Sequence[Mapping[str, Any]]) -> Any:
         handle.record_output("block_streak", streak)
         return {"planned": readings.planned, "dispatched": readings.dispatched}
 
-    drv._run_step("READ", cycle, {"cycle": cycle}, body)
+    outcome = drv._run_step("READ", cycle, {"cycle": cycle}, body)
+    if outcome.status == "SKIPPED":
+        _reload_read(drv, cycle, table, outcome)
     return drv.readings_by_cycle.get(cycle)
 
 
@@ -2033,7 +2036,155 @@ def _mark(drv: _Driver, cycle: int) -> None:
         handle.record_output("marks", {"cells": len(cells), "marked": marked})
         return {"cells": len(cells)}
 
-    drv._run_step("MARK", cycle, {"cycle": cycle}, body)
+    outcome = drv._run_step("MARK", cycle, {"cycle": cycle}, body)
+    if outcome.status == "SKIPPED":
+        _reload_marks(drv, cycle, outcome)
+
+
+def _verify_reload(outcome: Any, name: str, value: Any) -> None:
+    """Compare available named summary digests, not complete artifact bytes."""
+
+    expected = outcome.outputs.get(name)
+    if expected is not None and custody.digest(value) != expected:
+        raise steps_module.StepNondeterministic(
+            f"{outcome.kind} recorded result cannot be restored: {name}",
+            step_key=outcome.step_key, differing=[name])
+
+
+def _reload_read(drv: _Driver, cycle: int,
+                 table: Sequence[Mapping[str, Any]], outcome: Any) -> None:
+    """Restore W4-READER's write-once row records without entering a trial.
+
+    Row records are run-scoped.  Earlier restored passes identify spent rows;
+    the receipt checks that attribution before any recovered state is used.
+    A legacy record whose cycle membership cannot be recovered refuses rather
+    than silently rendering a different register.
+    """
+
+    rows, unresolved = _reading_rows(drv, table)
+    if unresolved:
+        raise _fail("READING_ROW_UNRESOLVED", ", ".join(unresolved))
+    prior_keys = {
+        row.row_key
+        for previous, readings in drv.readings_by_cycle.items() if previous < cycle
+        for group in (readings.blocks, readings.registered,
+                      readings.indeterminate, readings.dispositions)
+        for row in group
+    }
+    existing = sorted(row["row_key"] for row in rows
+                      if custody.fenced(drv.paths.readings, row["row_key"]).exists())
+    already = sorted(set(existing) & prior_keys)
+    # The first pass may have skipped every pre-existing coordinate, including
+    # an unanswered claim.  Only accept a candidate the receipt actually names.
+    for candidate in (already, existing, []):
+        if custody.digest(candidate) == outcome.outputs.get("already_read"):
+            already = candidate
+            break
+    _verify_reload(outcome, "already_read", already)
+    reason = next((value for value in ("", *drv.config.reopen_reasons)
+                   if custody.digest(value) == outcome.outputs.get("reopen_reason")), "")
+    _verify_reload(outcome, "reopen_reason", reason)
+    selected = [row for row in rows if reason or row["row_key"] not in already]
+    blocks, registered, indeterminate, dispositions = [], [], [], []
+    for row in selected:
+        directory = custody.fenced(drv.paths.readings, row["row_key"])
+        for path in sorted(directory.glob("block-*.json"),
+                           key=lambda path: int(path.stem.split("-")[-1])):
+            record = _read_json(path)
+            if record["key"] != row["row_key"] or record["cell"] != row["cell"]:
+                raise steps_module.StepNondeterministic(
+                    f"READ row identity differs in {path}",
+                    step_key=outcome.step_key, differing=["readings"])
+            blocks.append(reader_module.BlockRecord(
+                row_key=record["key"], cell=record["cell"], code=record["reason"],
+                check=record["check"], detail=record.get("detail", ""),
+                prompt_ref_path=record["prompt_ref"]["path"],
+                raw_ref_path=record["raw_ref"]["path"],
+                prompt_sha=record["prompt_ref"]["sha256"],
+                raw_sha=record["raw_ref"]["sha256"]))
+        for path in sorted(directory.glob("indeterminate-*.json"),
+                           key=lambda path: int(path.stem.split("-")[-1])):
+            record = _read_json(path)
+            indeterminate.append(reader_module.IndeterminateRecord(
+                record["key"], record["coordinate"], record.get("detail", "")))
+        if (directory / "disposition.json").is_file():
+            record = _read_json(directory / "disposition.json")
+            dispositions.append(reader_module.RowDisposition(
+                record["key"], record["cell"], record["reason"],
+                record.get(standard_module.OUTSIDE_VOCABULARY_FIELD, "")))
+        if (directory / "reading.json").is_file():
+            record = _read_json(directory / "reading.json")
+            registered.append(reader_module.RegisteredReading(
+                record["row_key"], record["cell"], record["relation"], record["seat"],
+                record["roles"], graph_module.ReadingIds(**record["ids"])))
+    read_cells = {row.cell for row in registered}
+    readings = reader_module.Readings(
+        blocks=tuple(blocks), registered=tuple(registered),
+        indeterminate=tuple(indeterminate), dispositions=tuple(dispositions),
+        unread=frozenset(standing.key for standing in
+                         graph_module.cell_standings(drv.harness)
+                         if standing.key not in read_cells),
+        planned=len(selected),
+        dispatched=len(selected) - len({row.row_key for row in indeterminate}))
+    _verify_reload(outcome, "readings", {
+        "planned": readings.planned, "dispatched": readings.dispatched,
+        "registered": [row.row_key for row in readings.registered],
+        "blocks": [[row.row_key, row.code] for row in readings.blocks],
+        "dispositions": [[row.row_key, row.reason] for row in readings.dispositions],
+        "unread": sorted(readings.unread),
+    })
+    _verify_reload(outcome, "planned", readings.planned)
+    _verify_reload(outcome, "dispatched", readings.dispatched)
+    _verify_reload(outcome, "indeterminate", {
+        "roles_layout": sorted(set(reader_module.unanswered_coordinates(drv.paths.readings))
+                               | {row.coordinate for row in readings.indeterminate}),
+        "dispatch_tree": sorted(steps_module.scan_coordinates(
+            drv.paths.readings).indeterminate),
+    })
+    blocked = {row.row_key for row in blocks}
+    streak = block_streak(blocks, [
+        (row["row_key"], trial_module.OUTCOME_BLOCKED if row["row_key"] in blocked
+         else trial_module.OUTCOME_SUSTAINED) for row in selected])
+    _verify_reload(outcome, "block_streak", streak)
+    drv.readings_by_cycle[cycle] = readings
+    drv.block_streaks[cycle] = streak
+
+
+def _reload_marks(drv: _Driver, cycle: int, outcome: Any) -> None:
+    """Restore each cell in the original dispatch order and verify its summary."""
+
+    restored = []
+    marked = []
+    for cell in _mark_cells(drv):
+        record = _read_json(drv.paths.cycle(cycle).contrast
+                            / _slugify(cell.cell_id) / "marks.json")
+        comparisons = {}
+        for pair in cell.comparisons:
+            label = markprep_module.COMPARISON_LABELS[pair]
+            comparison = record["comparisons"][label]
+            rows = {}
+            for register in marker_module.REGISTERS:
+                row = dict(comparison["registers"][register])
+                row["forced_by"] = tuple(row.get("forced_by", ()))
+                rows[register] = marker_module.MarkRow(**row)
+            comparisons[label] = marker_module.RegisterMarks(
+                comparison["comparison"], comparison["left_case"],
+                comparison["right_case"], rows)
+        marks = marker_module.CellMarks(
+            record["cell"], record["endpoint"], record["arm"],
+            record["baseline_sha256"], comparisons,
+            record.get("program_findings", {}), tuple(record.get("calls", ())))
+        restored.append(marks)
+        marked.append({
+            "cell": marks.cell, "baseline_sha256": marks.baseline_sha256,
+            "rows": [[comparison, register, row.mark, row.block or ""]
+                     for comparison, register_marks in sorted(marks.comparisons.items())
+                     for register, row in sorted(register_marks.rows.items())],
+        })
+    _verify_reload(outcome, "marks", {"cells": len(restored), "marked": marked}
+                   if restored else {"cells": 0, "contrast_attached": False})
+    _verify_reload(outcome, "cells", len(restored))
+    drv.marks_by_cycle[cycle] = restored
 
 
 def _slugify(value: str) -> str:
@@ -2289,8 +2440,8 @@ def _render_tables(drv: _Driver, cycle: int) -> dict[str, str]:
     state = _cycle_state(drv, cycle)
     table = report_module.render_reading_table(drv.harness, plan, state=state)
     comparison = report_module.render_comparison(drv.harness, plan, state=state)
-    drv.paths.reading_table.write_text(table, encoding="utf-8")
-    drv.paths.comparison.write_text(comparison, encoding="utf-8")
+    drv.paths.reading_table.write_text(table, encoding="utf-8", newline="")
+    drv.paths.comparison.write_text(comparison, encoding="utf-8", newline="")
     drv.rendered = {drv.rel(drv.paths.reading_table): table,
                     drv.rel(drv.paths.comparison): comparison}
     return dict(drv.rendered)
@@ -2395,7 +2546,7 @@ def _publish_cycle(drv: _Driver, cycle: int, decision: Any) -> None:
     standard_module.assert_no_exhaustion_claim(text, f"cycle-{cycle:02d}/CYCLE.md")
     cycle_md = drv.paths.cycle(cycle).cycle_md
     cycle_md.parent.mkdir(parents=True, exist_ok=True)
-    cycle_md.write_text(text, encoding="utf-8")
+    cycle_md.write_text(text, encoding="utf-8", newline="")
     paths = [drv.rel(drv.paths.cycles), drv.rel(drv.paths.reading_table),
              drv.rel(drv.paths.comparison)]
     if drv.paths.readings.is_dir():
@@ -2485,7 +2636,7 @@ def close(run_ref: str | Path | None = None, *,
         text += "\n".join(named or [NOTHING_REFUSED]) + "\n"
         standard_module.assert_no_exhaustion_claim(text, "CLOSING.md")
         drv.paths.closing.parent.mkdir(parents=True, exist_ok=True)
-        drv.paths.closing.write_text(text, encoding="utf-8")
+        drv.paths.closing.write_text(text, encoding="utf-8", newline="")
         handle.record_output("closing", custody.sha256_bytes(text.encode("utf-8")))
         handle.record_output("stop_reason", decision.reason)
         handle.record_output("arms_ended", arms)

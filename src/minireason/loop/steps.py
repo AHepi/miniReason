@@ -494,8 +494,19 @@ class RunLock:
     def holder(self) -> dict[str, Any] | None:
         """What the lock file says, or ``None`` when it says nothing legible."""
 
+        if self._handle is not None:
+            return self._read_holder(self._handle)
         try:
-            raw = self.path.read_bytes()
+            with self.path.open("rb") as handle:
+                return self._read_holder(handle)
+        except OSError:
+            return None
+
+    @staticmethod
+    def _read_holder(handle: Any) -> dict[str, Any] | None:
+        try:
+            handle.seek(0)
+            raw = handle.read()
         except OSError:
             return None
         try:
@@ -517,7 +528,8 @@ class RunLock:
             raise RunLocked(
                 f"{self.path}: held by pid {prior.get('pid')} since "
                 f"{prior.get('started_utc')}") from None
-        prior = self.holder()
+        # Windows byte locks block reads through a separately opened handle.
+        prior = self._read_holder(handle)
         if prior and prior.get("loop_plan_id") not in (None, self.loop_plan_id):
             _unlock(handle)
             handle.close()
@@ -980,15 +992,19 @@ class StepLedger:
     def pending_publication(self) -> StepRecord | None:
         """The publication that is still ``PENDING``, if any (design O7)."""
 
-        seen: dict[str, StepRecord] = {}
+        pending: dict[str, StepRecord] = {}
         for row in self.records():
-            if row.receipt.kind in PUBLICATION_STEPS:
-                seen[row.step_key] = row
-        for row in sorted(seen.values(), key=lambda item: item.index):
-            if (row.receipt.status == "FAILED"
-                    and row.receipt.failure_code == "PUBLISH_PENDING"):
-                return row
-        return None
+            receipt = row.receipt
+            if receipt.kind not in PUBLICATION_STEPS:
+                continue
+            if (receipt.status == "FAILED"
+                    and receipt.failure_code == "PUBLISH_PENDING"):
+                pending[row.step_key] = row
+            elif receipt.status == "COMPLETE" and receipt.published_commit:
+                # A later failure or an empty no-op proves nothing about the
+                # remote. Only a successful publication resolves the pending one.
+                pending.pop(row.step_key, None)
+        return min(pending.values(), key=lambda item: item.index, default=None)
 
     def verified_line(self, step_key: str) -> str | None:
         """The ``VERIFIED`` line this publication filed beside its receipt."""
@@ -1127,6 +1143,10 @@ class StepLedger:
         self.guard(key)
 
         prior = self.completed(key)
+        pending = self.pending_publication()
+        if pending is not None and pending.step_key == key:
+            # Recover an older COMPLETE(false) receipt that never published.
+            prior = None
         replay = prior is not None and prior.receipt.replayable
         skipped = prior is not None and not replay
         index = prior.index if skipped else self.next_index()
@@ -1189,6 +1209,8 @@ class StepLedger:
         run = publisher if publisher is not None else publish_module.publish
         key = self.step_key(kind, cycle, wave, inputs)
         attempt = self.attempts_for(key) + 1
+        pending = self.pending_publication()
+        retry_pending = pending is not None and pending.step_key == key
         handle = self.begin(kind, cycle=cycle, wave=wave, inputs=inputs)
         if handle.skipped:
             assert handle.prior is not None
@@ -1197,11 +1219,21 @@ class StepLedger:
                                outputs=dict(handle.prior.receipt.outputs_sha256),
                                verified_line=self.verified_line(key))
         try:
+            retry_options = {"retry_pending": True} if retry_pending else {}
             result = run(repo, paths, message, ref, attempt=attempt, git=git,
-                         sleep=sleep, now=now)
+                         sleep=sleep, now=now, **retry_options)
         except BaseException as exc:  # noqa: BLE001 - recorded, then re-raised
             handle.fail_from(exc)
             raise
+        if result.status == publish_module.UNCHANGED:
+            if retry_pending:
+                outcome = handle.fail("PUBLISH_PENDING",
+                                      "an empty retry did not verify the pending publication")
+                return replace(outcome, value=result)
+            # Keep the closed receipt schema: outputs record the digest of false.
+            # COMPLETE satisfies resume; no commit or VERIFIED claim was made.
+            outcome = handle.complete({"published": False})
+            return replace(outcome, value=result)
         if not result.published:
             pending = result.pending
             reason = getattr(pending, "reason", "REMOTE_NOT_CONFIRMED")

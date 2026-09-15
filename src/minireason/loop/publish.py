@@ -97,6 +97,7 @@ from __future__ import annotations
 
 import os
 import re
+import stat
 import subprocess
 import time
 from dataclasses import dataclass
@@ -111,6 +112,7 @@ __all__ = [
     "VERIFIED_LINE",
     "PUBLISHED",
     "PENDING",
+    "UNCHANGED",
     "PENDING_REASONS",
     "PUSH_REJECTED",
     "PUSH_TIMEOUT",
@@ -151,6 +153,7 @@ VERIFIED_LINE: str = (
 
 PUBLISHED: str = "PUBLISHED"
 PENDING: str = "PENDING"
+UNCHANGED: str = "UNCHANGED"
 
 PUSH_REJECTED: str = "PUSH_REJECTED"
 PUSH_TIMEOUT: str = "PUSH_TIMEOUT"
@@ -585,7 +588,8 @@ def split_publish_ref(ref: str) -> tuple[str, str]:
 # Paths and credentials
 # --------------------------------------------------------------------------- #
 
-def _explicit_paths(repo: Path, paths: Iterable[str | os.PathLike[str]]) -> tuple[str, ...]:
+def _explicit_paths(repo: Path, paths: Iterable[str | os.PathLike[str]], *,
+                    allow_empty: bool = False) -> tuple[str, ...]:
     """Repo-relative POSIX names for the caller's explicit paths.
 
     Refuses pathspec magic, the repo root, anything outside the repo and
@@ -610,6 +614,19 @@ def _explicit_paths(repo: Path, paths: Iterable[str | os.PathLike[str]]) -> tupl
             # are decoded as UTF-8 here, so such a name could be staged and then
             # never matched against what was staged.
             raise PublishError("PATH_NOT_EXPLICIT", ascii(raw)) from None
+        if not raw or "\x00" in raw or raw != raw.strip():
+            raise PublishError("PATH_NOT_EXPLICIT", repr(raw))
+        candidate = Path(raw)
+        if ".." in candidate.parts:
+            raise PublishError("PATH_OUTSIDE_REPO", raw)
+        if candidate.is_absolute():
+            try:
+                candidate = candidate.relative_to(repo)
+            except ValueError:
+                raise PublishError("PATH_OUTSIDE_REPO", raw) from None
+        # Native Windows separators and drive prefixes are path syntax, not
+        # Git pathspec syntax. Validate the repository-relative POSIX spelling.
+        raw = candidate.as_posix()
         if any(character in raw for character in _PATHSPEC_MAGIC):
             # ``report[1].md`` reaches git as a WILDMATCH pathspec, so
             # ``report1.md`` is staged, committed and pushed as well - a file the
@@ -632,7 +649,7 @@ def _explicit_paths(repo: Path, paths: Iterable[str | os.PathLike[str]]) -> tupl
             raise PublishError("PATH_MISSING", name)
         if name not in names:
             names.append(name)
-    if not names:
+    if not names and not allow_empty:
         raise PublishError("PUBLISH_PATHS_EMPTY", "")
     return tuple(names)
 
@@ -689,6 +706,65 @@ def _scan_set(git: LocalGit, names: Sequence[str]) -> tuple[str, ...]:
         return _walk_files(git.repo, names)
     return tuple(entry for entry in outcome.stdout.decode("utf-8", "replace").split("\0")
                  if entry)
+
+
+def _publication_files(git: LocalGit, paths: Iterable[str | os.PathLike[str]]
+                       ) -> tuple[str, ...]:
+    """Expand regular files and tracked deletions without following links."""
+    paths = tuple(paths)
+    names = _explicit_paths(git.repo, paths, allow_empty=True)
+    found: set[str] = set()
+    directories = [name for name in names if (git.repo / name).is_dir()]
+
+    def inspect(path: Path) -> os.stat_result:
+        info = path.lstat()
+        if (stat.S_ISLNK(info.st_mode)
+                or getattr(info, "st_file_attributes", 0)
+                & stat.FILE_ATTRIBUTE_REPARSE_POINT):
+            raise PublishError("PATH_NOT_EXPLICIT", str(path))
+        return info
+
+    # _explicit_paths resolves caller paths; refuse links before using those
+    # resolved names, including links in a selected path's parent components.
+    for entry in paths:
+        target = Path(entry)
+        target = target if target.is_absolute() else git.repo / target
+        for path in (target, *target.parents):
+            if path == git.repo:
+                break
+            inspect(path)
+
+    def visit(path: Path) -> None:
+        relative = path.relative_to(git.repo).as_posix()
+        if ".git" in relative.split("/"):
+            return
+        info = inspect(path)
+        if stat.S_ISREG(info.st_mode):
+            found.add(relative)
+        elif stat.S_ISDIR(info.st_mode):
+            for child in path.iterdir():
+                visit(child)
+
+    for name in names:
+        visit(git.repo / name)
+    if directories:
+        # Preserve Git's existing directory ignore semantics. Explicitly named
+        # files stay explicit, including ignored files that git add will refuse.
+        admitted = set(_scan_set(git, directories))
+        explicit = set(names) - set(directories)
+        found = {name for name in found if name in explicit or name in admitted}
+    # A deleted tracked regular file still names a file in HEAD. Preserve
+    # directory-selected deletions, including ones already staged in the index.
+    if directories and git.status("rev-parse", "--verify", "--quiet", "HEAD").ok:
+        raw = git.run("ls-tree", "-r", "-z", "HEAD", "--", *directories)
+        for entry in raw.decode("utf-8").split("\0"):
+            if not entry:
+                continue
+            meta, name = entry.split("\t", 1)
+            if (meta.split()[0] in ("100644", "100755")
+                    and not (git.repo / name).exists()):
+                found.add(name)
+    return tuple(sorted(found))
 
 
 def _tracked_files(git: LocalGit, names: Sequence[str]) -> tuple[str, ...]:
@@ -961,6 +1037,7 @@ def publish(repo: str | os.PathLike[str] | LocalGit,
             ref: str | None = None,
             *,
             attempt: int = 1,
+            retry_pending: bool = False,
             git: LocalGit | None = None,
             sleep: Callable[[float], None] | None = None,
             now: Callable[[], datetime] | None = None) -> PublishResult:
@@ -971,9 +1048,14 @@ def publish(repo: str | os.PathLike[str] | LocalGit,
     ``attempt`` is the driver's count of publish steps for this publication:
     the third non-converging attempt raises :class:`PublishNotConverging`.
 
-    Returns a :class:`PublishResult`. ``result.published`` is the only state
-    that may precede a dispatch; a ``PENDING`` result carries a
-    :class:`PublishPending` naming why, and blocks every successor step.
+    Directories expand to regular files in sorted order. Only an empty
+    selection returns ``UNCHANGED``, with published=false and no VERIFIED line.
+    Already-committed files still go through push and remote read-back.
+    ``retry_pending`` retains that obligation even if a prior deletion commit
+    emptied the selection. A remote-tracking difference also prevents a no-op;
+    only the push and remote read-back below can establish publication.
+    A ``PENDING`` result blocks every successor step; dispatch still checks
+    its input custody independently.
     """
 
     resolved = _git_for(repo, git)
@@ -986,28 +1068,57 @@ def publish(repo: str | os.PathLike[str] | LocalGit,
     if not str(message).strip():
         raise PublishError("PUBLISH_MESSAGE_EMPTY", "")
 
-    names = _explicit_paths(resolved.repo, paths)
+    paths = tuple(paths)
+    names = _publication_files(resolved, paths)
+    if not names and not retry_pending:
+        selected = _explicit_paths(resolved.repo, paths, allow_empty=True)
+        if selected:
+            # A committed deletion disappears from HEAD and the working tree.
+            # The last observed remote tree still carries its selected name.
+            if ref:
+                split_publish_ref(ref)
+            previous = resolved.status(
+                "rev-parse", "--verify", "--quiet",
+                "refs/remotes/" + ref if ref else "@{u}")
+            if previous.ok:
+                retry_pending = bool(resolved.run(
+                    "diff", "--name-only", "-z", previous.stdout.decode("utf-8").strip(),
+                    "HEAD", "--", *selected))
+    if not names and not retry_pending:
+        return PublishResult(status=UNCHANGED, ref=ref or "", paths=names,
+                             files=names, attempt=attempt, committed=False)
     publish_ref = ref or upstream_ref(resolved)
     remote, qualified = split_publish_ref(publish_ref)
 
     # Deviation 3: before the index is touched, so a refusal never leaves a
     # credential staged in a repository this module may not reset.
-    _refuse_credentials(resolved.repo, names, resolved)
+    if names:
+        _refuse_credentials(resolved.repo, names, resolved)
     stray = [name for name in _staged_names(resolved) if not _covered(name, names)]
     if stray:
         raise PublishError("UNEXPECTED_STAGED_FILES", ", ".join(sorted(stray)[:8]))
 
-    resolved.run("add", "--", *names)
-    _refuse_added_lines(
-        resolved.run("diff", "--cached", "--no-color", "--", *names).decode("utf-8", "replace"),
-        "staged diff")
+    files: tuple[str, ...] = ()
+    committed = False
+    if names:
+        # An already-staged deletion is absent from both disk and index: git add
+        # rejects that explicit pathspec. Leave it staged, while still adding
+        # missing files that remain in the index to stage unstaged deletions.
+        indexed = set(_tracked_files(resolved, names))
+        stageable = tuple(name for name in names
+                         if name in indexed or (resolved.repo / name).is_file())
+        if stageable:
+            resolved.run("add", "--", *stageable)
+        _refuse_added_lines(
+            resolved.run("diff", "--cached", "--no-color", "--", *names).decode("utf-8", "replace"),
+            "staged diff")
 
-    files = _tracked_files(resolved, names)
-    if not files:
-        raise PublishError("PUBLISH_PATHS_UNTRACKED", ", ".join(names))
-    committed = bool(_staged_names(resolved))
-    if committed:
-        resolved.run("commit", "-m", str(message), "--", *names)
+        files = _tracked_files(resolved, names)
+        committed = bool(_staged_names(resolved))
+        if not files and not committed:
+            raise PublishError("PUBLISH_PATHS_UNTRACKED", ", ".join(names))
+        if committed:
+            resolved.run("commit", "-m", str(message), "--", *names)
 
     local = resolved.text("rev-parse", "HEAD")
     tree = resolved.text("rev-parse", "HEAD^{tree}")

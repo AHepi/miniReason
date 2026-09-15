@@ -11,7 +11,9 @@ and this suite would catch a writer that re-encoded them.
 """
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -255,6 +257,38 @@ class ContentionTests(LedgerTestCase):
             self.assertEqual(data[index + len(encoded):index + len(encoded) + 1], b"\n")
         expected = len(FIXTURE) + sum(len(p.encode("utf-8")) + 2 for p in paragraphs)
         self.assertEqual(len(data), expected)
+
+    def test_two_concurrent_verified_appends_preserve_tail_bytes_and_digests(self) -> None:
+        # Use real handles and native locks, including msvcrt.locking on Windows.
+        paragraphs = ("VERIFIED first TREE one", "VERIFIED second TREE two")
+        for ending, separators in ((b"", 2), (b"\n", 1), (b"\r\n", 1),
+                                   (b"\n\n", 0), (b"\r\n\r\n", 0), (b"\n\r\n", 0)):
+            for newline in (b"\n", b"\r\n"):
+                with self.subTest(ending=ending, newline=newline):
+                    prefix = FIXTURE.rstrip(b"\r\n") + ending
+                    with self.ledger.open("w", encoding="utf-8", newline="") as handle:
+                        handle.write(prefix.decode("utf-8"))
+                    start = threading.Barrier(2)
+
+                    def append(paragraph: str):
+                        start.wait(timeout=10)
+                        return receipts.ledger_append(paragraph, self.ledger, newline=newline)
+
+                    with ThreadPoolExecutor(max_workers=2) as workers:
+                        futures = [workers.submit(append, paragraph) for paragraph in paragraphs]
+                        appends = sorted((future.result(timeout=30) for future in futures),
+                                         key=lambda result: result.offset)
+                    self.assertCountEqual([result.text for result in appends], paragraphs)
+                    expected = prefix
+                    for index, result in enumerate(appends):
+                        payload = (newline * (separators if index == 0 else 1)
+                                   + result.text.encode("utf-8") + newline)
+                        self.assertEqual(result.offset, len(expected))
+                        self.assertEqual(result.written, len(payload))
+                        expected += payload
+                        self.assertEqual(result.sha256, hashlib.sha256(expected).hexdigest())
+                    self.assertEqual(self.data(), expected)
+                    self.assertEqual(self.data()[:len(prefix)], prefix)
 
     def test_id_minting_under_contention_never_collides(self) -> None:
         minted: list[str] = []
@@ -894,6 +928,8 @@ class HardeningFindings(LedgerTestCase):
         planted.write_text("#\n", encoding="utf-8")
         with mock.patch.object(receipts, "__file__", str(planted)):
             self.assertIsNone(receipts._repository_root())
+        # Stop at the fixture boundary even when TMP is inside a real checkout.
+        (self.root / ".git").mkdir()
         # A marker with no .git beside it is not a checkout either.
         bare = self.root / "not-a-checkout"
         (bare / "tools").mkdir(parents=True)

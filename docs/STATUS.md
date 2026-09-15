@@ -642,3 +642,65 @@ The preserved successor ECS 2.0 is byte-identical to [the stored source](sources
 ## Recovery discipline
 
 Use minireason-progress-ledger when installed, one publisher and atomic activity logging. The skill was absent on the Windows recovery host, so explicit UTC receipts and the same publication duties were used. During active work, independently check both five-minute deadlines, publish every completed document immediately, and preserve stable partial evidence during larger uploads. Earlier cadence misses remain ledgered; no inactive period is claimed as monitored work. Verify remote main and exact local/remote trees. The [template-chain workflow](workflows/template-chain.md) supplies commands, but its original prepared-state descriptions are historical; this status and the latest ledger receipts give the current state.
+
+[Owner-relayed repair-mill critique](sources/owner-relayed-repair-mill-critique-2026-09-14.md) preserves both exact chat inputs with FW5 clause locators (2026-09-15); the T6/null-case proposal remains OPEN, with no provider call or publication.
+
+## L003/AQ recovery onto the durable Windows checkout - 2026-09-15
+
+**Recorded at 2026-09-15 05:01:14 UTC, under REC-20260915-B.** STATUS had not been updated for
+REC-20260914-AQ until this appended section. The earlier **"Next authorized task: the first live
+run, L001"** section is historical; L001 and L002 are closed operational failures, and this
+recovery concerns the interrupted L003.
+
+**What AQ preserved.** The last verified remote publication is **REC-20260914-AQ**, commit
+`c76fc1ef78b5b35baadc23366c271610b0721e5a`, tree `9194745a177690bdae9773d4c6f3b4d362fc37c5`,
+acknowledged by `8ad1f58a1664d9f8dc4498309e327ae5f9ec8806` on
+`origin/claude/project-state-direction-j5rbun`. The preserved ledger receipt and local Git objects
+confirm that boundary; no new remote verification is claimed here. L003's steps **0001-0025 are
+COMPLETE**; **0026 PUBLISH_CY is FAILED, GIT_OPERATION_FAILED**, with no published-commit
+acknowledgement, because the empty `readings/` directory was passed to Git as a pathspec. The
+preserved `run.lock` records **lock released at 2026-09-14T23:59:17Z**, with `pid: null`.
+**18 provider calls were preserved: 11 dispatch calls in F001 occurrence-09 and 7 cycle-1 marking
+calls.** Cycle 1's decision is **CONTINUE / chain_open** (`no_clause_fired`). Its **12 mark results**
+are **5 same, baseline-forced**, and **7 unresolved**. These are operational record counts and
+guarded marks, not findings about an instrument, arm, model or account. AQ preserved the run's
+outputs and receipts as the driver left them; completed coordinates must not be replayed.
+
+**Recovery facts.** The owner reports that the cloud session which ran L003 has stopped and is
+unrecoverable. `C:\Users\darre\OneDrive\Desktop\Codex\miniReason-claude-project-state-direction-j5rbun`
+is a git-less mid-run snapshot exported approximately **00:37Z**, discarded as a source of state.
+Its only salvaged content was the owner-inputs source file, re-applied under **REC-20260915-A**;
+that receipt is now **COMPLETE locally**, with the source and earlier STATUS pointer unchanged.
+The working checkout is **`C:\Dev\miniReason`**, cloned at **`8ad1f58a`**, with
+**`core.autocrlf=false`** and **all 9,080 tracked files byte-verified at clone recovery**, as reported
+by the owner; this recovery confirms the tracked-file count, HEAD and autocrlf setting. The host is
+**Windows 11, Python 3.11.9, E. Australia Standard Time (UTC+10)**. Earlier ledger stamps labelled
+UTC through pre-append line 1650 were local time; they remain unchanged. The clock evidence is
+occurrence-09 provider epoch **1789430323 = 2026-09-14T23:58:43Z** and Git's AQ/acknowledgement
+commit times **2026-09-15T00:35:10Z / 2026-09-15T00:35:35Z**. New receipts use real UTC.
+
+**What remains pending.** The concurrent worker is implementing the publish-step repair under
+REC-20260915-B in `tools/auto_loop.py` and `src/minireason/loop/publish.py`, with
+`src/minireason/loop/steps.py` if needed and tests in `tests/loop/`. Each publish step must pass
+only file paths to Git; an empty publication records `published=false` and no VERIFIED line;
+already-committed paths count as published. The offline host log
+[`work/tests-durable/unittest.log`](../work/tests-durable/unittest.log) reports **`Ran 3040 tests
+in 215.360s`, `FAILED (failures=62, errors=480, skipped=8)`**, against the recorded Linux baseline
+**3,129 tests, OK (skipped=2)**. This is a **host-portability limitation to be triaged**, not evidence
+about any instrument. By the owner's **2026-09-15 instruction**, workers are **gpt-6-astra via the
+Codex CLI**, a declared session deviation superseding **ruling 16**, recorded in the manner of
+ruling 3. No provider calls under REC-20260915-B so far; no credential write, commit or push in
+this documentation task. Publication is a separate later step; REC-20260915-B stays **PENDING**
+until the repair is reviewed and the resume runs.
+
+**Next authorized task: land the publish-step repair under REC-20260915-B, then resume L003 with run; no other publisher while the driver holds the branch.**
+The recorded resume command is `run --config docs/design/loop-prereg-draft-2026-09-14/v4/config.json`
+from the repository root, with both key names in the shell only, after the repair is reviewed and
+landed. This documentation update does not run that command.
+
+---
+
+**A001 continuation — 2026-09-15 05:14:18 UTC, REC-20260915-C.** Appended [review round 4, F68-F72](reviews/A001-account-challenge-2026-09-14.md#review-round-4) after the carried open items, from one Astra worker's draft independently judged by a second. This continues the A001 section at STATUS:246-266 and is appended after the preserved REC-20260915-A/B and L003 recovery tail. Items 3-7 now have a dated disposition map: the (b6) disclosure is corrected, the defective witness and completed reachability claim are withdrawn, and the missing antecedents, evidence states and table exits are recorded as corrected successor specifications. Companion and history notices are appended; every earlier byte is retained. **Next authorized A001 task:** address items 8-10, including (r2)/(r3), the conditional wording and (P-Ans), the English conditional rule/A29 and the remaining disclosure argument; supply replacements for withdrawn witnesses, the reachability demonstration, the independently sourced interpretive technical case and the counterexample-and-clause deliverable. Those deliverables remain owed. Items 8-11 are assessments only and the separate instrument/semantic contributions are **proposed, not adopted**. A-S remains failed under (P-Ans), with the D22 alternative; B-N dropped; no counterexample to sufficiency or necessity; the executable leg cannot charge Account. No reading step, provider calls or publication under this receipt.
+
+
+**REC-20260915-B publication checkpoint ? 2026-09-15T07:42:07Z.** The publish/steps/receipts repairs and resume-reload fixes are approved for publication under the owner's explicit acceptance of review-6e.md plus its applied exact patch in work-6f.md. Final recorded focused verification: 263 run, zero failures/errors, two symlink privilege skips; real L003 0024/0025 output digest maps reproduced. A001 F68-F72 (review-7 APPROVE as-is), its companion/history appends and the owner-inputs source are included. Publication state is pending the verified session-branch push and acknowledgement; main remains pending owner merge (ruling 2). The historical Windows offline-suite failures remain a host-portability limitation: recon-M2 accounts for all 542 entries; LongPathsEnabled=0 still affects readings/ fixtures, while L003 has zero reading rows. No provider call or live resume occurred in this publisher task. **Next authorized task:** after this checkpoint is verified, the later operator may follow the existing REC-B L003 resume instructions; A001 items 8-10 and owed deliverables remain separate pending work. Prior STATUS and stop-receipt bytes are preserved.

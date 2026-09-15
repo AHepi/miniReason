@@ -1647,3 +1647,282 @@ reading step and for whoever attacks this record next.*
     automated-loop checkpoint receipt. A001's §7 proposal must therefore be re-checked against the
     ledger at the moment of the append — which §7 already requires — and the `Letter:` field must record
     what was actually free, not what this staging proposed.
+
+---
+
+<a id="review-round-4"></a>
+
+# Review round 4 — 2026-09-15 — F68-F72
+
+**REC-20260915-C; appended at 2026-09-15 05:12:48 UTC.** The supplied draft was written by one Astra worker and independently judged by a second. The judge's verdict is **ACCEPT WITH THE EXACT EDITS, as a new review round**; its corrections govern where the draft differs. Draft: `work-2-a001-draft.md`; judge: `judge-2.md`, both in the supplied `scratchpad/reports/` directory. Their SHA-256 identities are recorded below. The first three rounds remain F1-F29, F30-F50 and F51-F67. A prior F68 assignment was **NOT FOUND** in A001 and its history before this append; this round takes F68-F72.
+
+**Preservation and scope.** Every byte before this append remains unchanged, including the v4 body and all eleven carried open items. The entries below are dated **old → new successor wording**, not edits to those earlier passages. A disposition of **fixed** records the corrected successor specification; it does not adopt the separately criticizable instrument proposals, fill a worksheet, assign a reading class, or demonstrate reachability. Sections A-E reproduce the judge's exact endorsed wording. Section E belongs to item 9's assessment only. FW5 is the sole semantic target under owner ruling 17 (`session-rulings-2026-09-14.md:27-29`); FW5 citations identify reading-edition lines only.
+
+## Findings and appended open-item disposition map
+
+| Finding / carried item | Finding and affected A001 locators | Disposition and reason | Remaining obligation |
+|---|---|---|---|
+| **F68 / item 3** | The (b6) example was deleted between v3 and v4 without disclosure, while the disclosure still invoked it: A001:309-312, 414-415, 1234; carried item at 1601-1606. | **Fixed** by section A's dated provenance correction and dependent fragments. A001:381 and the frozen assignments remain unchanged. Provenance alone does not establish that the general condition is defective or lacks application elsewhere. | Reassess the extent of fitting with a substantive argument; this leg still cannot confirm the bridge. |
+| **F69 / item 4** | X3/A15's three-record obstruction conflicts with X1/A16's presumed reconstruction: A001:1050-1074, with the dependent locators in section B; carried item at 1607-1613. | **Withdrawn**: the A15 witness and the claimed completed reachability demonstration. A16 remains a conditional reader state; X6/A11 and X5/A04 are not implicitly certified. Record count or a changed target identifier does not establish the required obstruction or reconstruction. | Complete replacement witnesses and a reachability demonstration consistent with the fixed grain, boundary and references remain owed. The distinct E2 accessibility claims at A001:1141-1149,1544 are retained. |
+| **F70 / item 5** | The four Boolean proposals omit their complete `not-free` antecedents; A05 lacks its own examination of A04's D6 alternative: A001:1000-1014,1056,1063-1066; carried item at 1614-1617. | **Fixed** as a conditional specification by section B's shared condition and A05 comparison, synchronized with section D's Boolean conditions. Adding an antecedent does not exhibit its satisfaction. | The required complete Boolean exhibits and target-specific A05 assessment are **NOT FOUND**; no witness is certified. |
+| **F71 / item 6** | The worksheet specification omits explicit evidence types, an incomplete-assessment status and routing: A001:997-1008,1346-1350; carried item at 1618-1622. | **Fixed** in the proposed specification by section C. The draft's claim that the existing text supplied no rule against an unperformed search is **declined with reason**: A001:997-1008 already required evidence and a record of what was tried. Three statuses and evidence type NONE make the remaining gap explicit. | The actual diagnostic worksheet is **NOT FOUND**. Completed search records and exclusion arguments remain owed; SEARCH-NO-EXHIBIT proves only what the recorded search exhibited. |
+| **F72 / item 7** | Overlapping Boolean/X5 conditions, an unstated table exit, reversed gate order and reconstruction disagreement: A001:954-975,1010-1014,1026-1031,1037,1040-1043; carried item at 1623-1627. | **Fixed** in section D's prospective procedure and table specification. An attempted unresolved :620 check is distinguished from a check not yet reached; exits apply only when their conditions are established. | The strengthened evidence and routing policy remains a separate proposal, not adopted. Complete exhibits remain owed; the disposition and charge columns are unchanged. |
+
+Items 3-7 remain in their historical list at A001:1601-1627 and now point, through this appended map, to F68-F72 respectively. Their recorded corrections and withdrawals do not discharge the remaining obligations. Items 1, 2 and 11 retain the earlier REC-20260914-AB housekeeping disposition.
+
+## Exact judge-endorsed old → new entries
+
+The locators below refer to the preserved pre-append A001 and companion. **Old** reproduces the judge's specified old wording or locator description, including its abbreviations; the historical text itself is retained byte-for-byte.
+
+## A. Item 3: disclosure
+
+### A001:309–312
+
+**Old:**
+
+> **(b6)** is written from :609's own defect list, but its stated example - "(e.g. 'alleges an internal inconsistency between .')" - **is the `bearing` text of F001 occurrence-01 rows 4, 5, 6, 20, 21 and 22 verbatim**. It is fitted too, and is disclosed as fitted at this revision.
+
+**New:**
+
+> **(b6)** uses FW5:609’s named defect kind, inconsistency. Its general condition restates the inconsistency allegation in A15–A17 and A21–A23: “alleges an internal inconsistency between raising c6 and leaving c3 and c4 unchanged”. The branch was written with these cells in view. v3 included an abbreviated example; v4 deleted that example without recording the deletion. This correction records that deletion: the current rule contains the general condition, not the example. The deletion establishes no independence from the cells, and the frozen assignments remain unchanged. This provenance does not itself establish that the general condition is defective or lacks application elsewhere; the prohibition on confirming the bridge through this leg remains.
+
+### Dependent fragments
+
+| Location | Old → New |
+|---|---|
+| `A001:414–415` | “(b6) on the six cells whose `bearing` is the text its own stated example quotes” → “(b6) on the six cells whose inconsistency allegation its general condition restates” |
+| `A001:1234` | “(b6)'s stated example is the `bearing` text of six cells verbatim” → “(b6)'s general condition restates the inconsistency allegation of six cells read before the rule was written” |
+
+**A001:381 remains unchanged.** The companion’s corresponding fragment at `Cells:158–159` needs the same dated correction, preserving its earlier bytes. (`Draft:127–143`)
+
+## B. Items 4–5: witnesses and reachability
+
+### A001:1060 — X3/A15 reader-state text
+
+**Old:**
+
+> both readers report that the target organization \(D\) of \(p_\delta\) cannot be written out at all: the alleged defect is an inconsistency **between** `c6` and `c3`/`c4`, three records, while the frozen grain \(\ell\) is the **single record keyed by id**, so no admissible \(D\) at that grain carries all three commitments and the grain may not be varied. Both name \(D\) as the absent component
+
+**New:**
+
+> **The stated witness is withdrawn.** The fact that the alleged inconsistency spans `c6`, `c3` and `c4` does not, without an argument about the frozen grain and boundary, establish that no admissible \(D\) can be reconstructed. A complete obstruction establishing X3 on A15 is **NOT FOUND** in this record.
+
+### A001:1065 — X1/A16 reader-state text
+
+**Old:**
+
+> both agree (E) **holds** and the alleged inconsistency **obtains** of `account#c3`
+
+**New:**
+
+> **Conditional reader state only.** Both readers must exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), agree that the :620 check passes, agree that (E) holds and the alleged inconsistency obtains, and satisfy the shared Boolean-state condition. A complete exhibit satisfying those requirements is **NOT FOUND** in this record. The withdrawn A15 argument cannot simultaneously establish a reconstruction obstruction here.
+
+### Before A001:1056
+
+**No shared witness condition → add:**
+
+> **Shared condition for the four Boolean reader states.** Both readers exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), agree that the :620 check passes, and record determinate, agreed J1 and J2. For each reader and every per-cell declaration used to obtain those judgments, the worksheet records `not-free` with a completed TEXT-EXCLUSION or SEARCH-NO-EXHIBIT record. Neither reader records `free` at any such declaration. A blank or unperformed check does not satisfy this condition.
+>
+> **Required A05 comparison.** Each reader considers the D6 alternative proposed for A04 on A05’s own target and reconstruction. The record states the alternative, its admissibility assessment, and the resulting J1/J2, or quotes the FW5 clause and supplies the argument excluding it. Different target identifiers or identical `bearing` text alone settle neither admissibility nor effect. An admitted judgment-changing alternative cannot be recorded as `not-free`.
+>
+> These are requirements on proposed reader states, not completed observations. The required evidence is **NOT FOUND** in the current Boolean entries. SEARCH-NO-EXHIBIT records only the stated search.
+
+### A001:1050–1054
+
+**Old:**
+
+> **These are reachability witnesses. They are NOT predictions, NOT assignments, and no cell's class is decided here.** Each names a real cell of the register and a reader state that would place it in that class, so that the class is shown to be *occupiable* rather than merely defined. The reading step decides every one of them, and may put none of these cells where its witness sits.
+
+**New:**
+
+> **These are proposed reader states, not demonstrated reachability witnesses.** No reading-class assignment is made here. Each retained proposal must satisfy its class’s complete antecedent on the named cell. This includes the reconstruction and :620 requirements for X6/A11 and the complete reconstruction, determinate agreed judgments, and flipping alternatives required for X5/A04.
+
+### A001:1068–1074
+
+**Old:**
+
+> **Stated so it is not over-read.** A witness shows a class is occupiable by a state a reader could actually record on a named cell; it does not show that any reader will record it. **Every one of the seven read-cell classes has a witness over the 13 read cells, so no class in this table is reachable only in principle.** If the reading step leaves a class empty, that is a fact about the 13 cells and is reported as one - never as evidence about FW5, about the records or about their authors (rule 6).
+
+**New:**
+
+> **Correction to the reachability claim.** The table does not demonstrate that every reading class is occupiable over the registered cells. The A15/A16 entries do not establish joint occupiability. A replacement must interpret the fixed grain, boundary and references consistently across A15–A17 and A21–A23 and exhibit the claimed obstruction or successful reconstruction. Changing the target identifier alone does not answer the shared-defect objection. The Boolean entries lack their required complete exhibits; the X6 and X5 sketches are not certified by this correction. Failure of a proposed witness leaves reachability unestablished; it does not prove the class unreachable. No replacement witness is asserted here.
+
+### Remaining dependent assertions
+
+| Location | Old → New |
+|---|---|
+| `A001:64–65` | “reachability is exhibited” → “the previous assertion of demonstrated reachability is withdrawn” |
+| `A001:123–124` | “whose reachability is exhibited cell by cell” → “whose reachability remains unestablished where the required exhibit is absent” |
+| `A001:1048` | “Reachability, exhibited cell by cell (F52)” → “Proposed reader states and outstanding reachability obligations” |
+| `A001:1336` | “the reachability table” → “the qualified proposed-reader-state table” |
+| `A001:1476–1477` | “each with a named reachability witness” → “with proposed reader states whose reachability has not been fully demonstrated” |
+
+**A001:1298–1301, old reachability assertion →**
+
+> No class is reported as demonstrated reachable without an exhibit satisfying its full condition. A failed proposed witness leaves that obligation open. Any later empty class is reported only within the registered-cell scope and supplies no evidence about FW5.
+
+**A001:1537–1540, old A15 witness assertion →**
+
+> The withdrawn A15 witness identifies an unresolved grain-and-boundary question concerning a defect spanning three records. Record count alone does not establish the claimed reconstruction obstruction.
+
+**A001:1574–1576, old inference from failed witness to unreachable class →**
+
+> The proposed reader states remain attackable. If a proposal fails its class’s full condition, that proposal is withdrawn or corrected; the class’s reachability remains unestablished unless another complete witness supplies it.
+
+These corrections also cover `Cells:186,192–211`. The new round should explicitly identify the corresponding superseded claims in `History/CHANGES-v4.md:14–15,159–168,224–226,245`, without changing that history. **Do not withdraw the distinct E2 accessibility claims.** (`A001:1141–1149,1544`)
+
+## C. Item 6: evidence states
+
+### A001:997–998
+
+**Old:**
+
+> For each per-cell declaration \(d\), the reader records one of two values, each with its required evidence written into the row:
+
+**New:**
+
+> For each per-cell declaration \(d\), the reader records `free`, `not-free`, or `NOT ASSESSED`, with the evidence or missing-assessment reason required for that status.
+
+### A001:1005–1008
+
+**Old:**
+
+> **`not-free`** - the reader records **either** a quoted line of the reading edition that excludes every such \(d'\), **or** the sentence "searched, none exhibited", with what was tried. **The two are distinguished in the row**, and only the first is a record about FW5's text.
+
+**New:**
+
+> **`not-free` has two distinct evidence types:**
+>
+> - **TEXT-EXCLUSION:** identify all judgment-changing alternatives at the relevant §2 row that respect the leg’s fixed declarations, quote the FW5 clause, and argue why it excludes every such alternative. Excluding only a selected subclass does not complete this record.
+> - **SEARCH-NO-EXHIBIT:** list the alternatives actually considered, why they were considered, their admissibility assessments, and the resulting J1/J2. Conclude only: “Among the alternatives recorded here, no admissible judgment-changing alternative was exhibited.”
+>
+> A quotation without its exclusion argument does not complete TEXT-EXCLUSION. An empty list, an unperformed search, or an unexplained assertion completes neither route. Record the missing assessment as **NOT ASSESSED**, with its reason and evidence type **NONE**. Missing required evidence prevents a Boolean classification; if neither an earlier exit nor X6 or X5 applies, the cell remains X4. SEARCH-NO-EXHIBIT does not establish that FW5 excludes every alternative.
+
+### A001:1348
+
+**Old:**
+
+> the per-declaration free/not-free records
+
+**New:**
+
+> a declaration-evidence subtable keyed by cell, reader and declaration, recording: §2 dependency; original declaration \(d\); judgment supported; status (`free`, `not-free`, `NOT ASSESSED`); evidence type (`FLIPPING-EXHIBIT`, `TEXT-EXCLUSION`, `SEARCH-NO-EXHIBIT`, `NONE`); alternative \(d'\) or alternative class; reason for considering it; quoted FW5 clause where applicable; admissibility or exclusion argument; resulting J1/J2; search scope and limitations; and the reason for any missing assessment
+
+The actual diagnostic worksheet is **NOT FOUND**; this corrects its proposed specification, not an existing filled artifact. (`A001:30–35,1346–1350`; `docs/STATUS.md:253–256`)
+
+## D. Item 7: procedure and table
+
+### A001:954–959 — entire gate step
+
+**Old gate ordering:** (b5)/E3 → X4, then record absence → X0.
+
+**New:**
+
+> **Gate, before any reading: X0 first.** A cell with a record-level absence—in this register, no target record identifier—is X0, and its bridge is not consulted. Otherwise, a cell whose bridge returns (b5), or which is in E3, is X4. Both gated classes remain unread. The existing assignments remain nineteen gated X4 cells and one X0 cell; thirteen cells remain eligible for reading.
+
+### A001:962 — after “names the component.”
+
+**No immediate reconstruction decision → add:**
+
+> Apply X3 immediately if its full condition holds. Otherwise, if the readers do not exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), record X4 and stop reading that cell.
+
+### A001:969
+
+**Old:**
+
+> Otherwise the cell proceeds.
+
+**New:**
+
+> The cell proceeds to J1/J2 only if both readers record that the :620 check passes. An attempted but unevaluable check leaves X4 with no charge.
+
+### After A001:1037
+
+**No explicit early X4 row → add:**
+
+| Order | Class | Condition | Disposition |
+|---|---|---|---|
+| 1a | X4 UNRESOLVED — explicit exit | After X3 is ruled out, the completed exhibition step does not yield the same complete \(\mathcal E_c\) and \(p_\delta\); or the attempted :620 check fails or remains unresolved; or a disagreement specified by the reading procedure has been established. Apply the exit at the step establishing its condition. | D21 only when both readers record a :620 mismatch; otherwise no charge. Record the actual reason. |
+
+### A001:1040–1043 — condition cells only
+
+Replace their present abbreviated conditions with the following common prefix and respective ending:
+
+> Both readers exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), agree that the :620 check passes, satisfy the shared Boolean-state condition with completed `not-free` evidence for every per-cell declaration, and agree that:
+
+| Class | Exact ending |
+|---|---|
+| X2 | “(E) holds and the alleged defect does not obtain of the quoted target passage.” |
+| X2b | “(E) fails and the alleged defect obtains of the quoted target passage.” |
+| X1 | “(E) holds and the alleged defect obtains of the quoted target passage.” |
+| X1b | “(E) fails and the alleged defect does not obtain of the quoted target passage.” |
+
+Their disposition and charge columns remain unchanged. (`A001:1040–1043,1088–1091`)
+
+### A001:1010–1014 — entire X5 paragraph
+
+**Old:** X5’s unconditional “if and only if” statement and the following disagreement/Boolean-routing sentences.
+
+**New:**
+
+> After earlier exits are ruled out, X5 fires if and only if the original J1 and J2 are determinate and agreed, and both readers record `free` at the same §2 row, each exhibiting its own judgment-changing alternative. A recorded disagreement about whether a declaration is `free` goes to X4. Alternatives recorded at different §2 rows do not constitute the required same-row agreement. The Boolean rows require neither reader to record `free` anywhere and require completed `not-free` evidence for every per-cell declaration. Missing evidence does not satisfy that requirement.
+
+### A001:1026–1031 — entire ordering explanation
+
+**Old:** the existing rows-1–7/residue explanation and claim that the reachability table answers F52.
+
+**New:**
+
+> X0 and gated X4 are assigned before reading, in that order. For read cells, X3 is followed by the explicit X4 exit at row 1a, then X6, X5 and the four Boolean rows; the final X4 row remains the residue. Apply an exit when the relevant procedural step establishes its condition. Exhaustiveness follows from the residue row. Reachability requires separate complete exhibits and remains subject to this round’s withdrawals and outstanding obligations.
+
+### A001:975
+
+**Old:**
+
+> **Class assignment** by the ordered table, below. First match wins.
+
+**New:**
+
+> **Class assignment.** Retain any exit already established during exhibition or the :620 check. Otherwise apply the ordered table, including any disagreement established during J1/J2 or the free-declaration assessment. First match wins; states satisfying no earlier condition are X4.
+
+The companion’s summary must receive the same dated successor procedure. (`Cells:307–326`)
+
+## E. Item 9: conditional wording
+
+### A001:661–662
+
+**Old:**
+
+> Under (P-Ans): (A) Question fidelity fails, at :208, under every \(\lambda\).
+
+**New:**
+
+> For the fixed parallel organization \(E\), active-route query and declared edit/boundary translations, assuming (P-Ans), (A) fails regardless of the choice of \(\lambda\) while those other data remain fixed.
+
+The remainder of the bullet, its conditional disclaimer, and the alternative reading remain intact. (`A001:663–695`)
+
+**No changes to (r2), (r3), A-S’s disposition, B-N’s disposition, or the charge table are endorsed.** Their reconsideration is separate from these instrument corrections. (`A001:549–560,700–710,829–833,1081–1095`)
+
+## Items 8-11 — assessments only
+
+- **Item 8: (r3), with (r2), remains open.** FW5:1364 supplies the direct sufficiency criterion; FW5:1368 distinguishes criticism of the theory from use of its definition. These do not require a counterexample to survive every proposed amendment. This corrects the draft's citation scope: FW5:228's explicit change example concerns necessity and is not the support for this sufficiency assessment. Neither (r2) nor (r3) is changed; any reassessment of A-S at A001:706-710 is separate.
+- **Item 9: conditional wording only.** The current locator is A001:661-662, not the earlier staging locator preserved in item 9. Section E records the exact self-contained successor wording as an assessment proposal only. It neither adopts (P-Ans) nor changes the preserved bullet, its disclaimer, the alternative reading or its verdict (FW5:170,202-208,1402).
+- **Item 10: carried debts remain owed.** The explicit candidate-profile equation `Ans_E = Q(E,.,.)` is **NOT FOUND** in FW5; compare FW5:125,128-130,162,202,210. The English conditional rule and the A29 assignment require separate arguments. Cells:175's distinction between an unaddressed question and an undrawn distinction is the companion's interpretation, not FW5's verdict. Disclosure still requires a proportionate argument; the independently sourced interpretive technical case and counterexample-and-clause deliverable remain owed (A001:337-363,1235,1302-1304,1637-1644).
+- **Item 11: already handled.** A001:13-21 and REC-20260914-AB record use of `-AB` after `-AA` was taken and rejection of the lexical-sort rationale. This assessment preserves that historical housekeeping outcome and makes no fresh remote-verification claim.
+
+## Separate criticizable contributions — judge section 5
+
+1. **Strengthened evidence schema and prospective routing policy**, including NOT ASSESSED, completed evidence requirements and the early disagreement exit — **proposed, not adopted**; an instrument choice, not a FW5 clause.
+2. **Any new grain/boundary interpretation or replacement reconstruction witness** — **proposed, not adopted**; an explicit argument is owed and withdrawal does not authorize boundary expansion (FW5:140,146,154).
+3. **Any amendment of (r2)/(r3), adoption of (P-Ans), or other P9 answer-profile rule** — **proposed, not adopted**; separate semantic argument and any separately identified A-S reassessment must preserve its earlier verdict.
+4. **Any revision of the English conditional rule or A29's assignment** — **proposed, not adopted**; discussion supplies no demonstrated replacement rule.
+
+## Terminology correction and unchanged verdicts
+
+Draft:378's “no standing determination under K2” → **“no standing determination under FW5:638 and no usability determination under K2 at FW5:642–653.”** K2 defines Usable and uses standing among its conditions; it does not define standing.
+
+**Recorded verdicts unchanged:** A-S failed under **(P-Ans)**, with the missing-definition **D22 alternative**; B-N is **dropped**; A001 supplies **no counterexample to sufficiency or necessity**; the **executable leg cannot charge Account** (A001:700-710,829-833,1081-1095,1268-1272). No provider call or reading step occurred, and no new cell assessment or semantic attribution is recorded.
+
+**Next authorized A001 task:** address items 8-10 and the carried debts as separate arguments. Replacements for the withdrawn witnesses, the complete reachability demonstration, the independent technical case and the counterexample-and-clause deliverable remain owed. Those completed deliverables are **NOT FOUND** in the supplied draft and judge report. This append does not pre-register the executable leg, authorize its reading step or adopt any section-5 contribution.
+
+**Input identities.** Draft SHA-256 `0fe9b56b2fae907dce03f5a3746665ed9a5a9ec55bac41e34ce2a48dff33b400`; judge SHA-256 `def859bdc23865af8d70ed23efc716c75a6c564bd2a3e68c50b8ae3ce1b02b40`. Both supplied inputs remain unchanged.

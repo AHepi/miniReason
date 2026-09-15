@@ -332,3 +332,100 @@ supplied in full by the record's own fields. The register-level finding 2
 against D14 that this entails, and the register-level finding-1 fact that
 \(\ell\), \(\beta\), \(\mathcal C\) and \(\kappa\) had to be declared at all,
 are both declared **before** the reading and cannot be strengthened by it.
+
+---
+
+## Review round 4 companion correction — 2026-09-15 05:14:18 UTC
+
+REC-20260915-C. This dated successor notice accompanies [A001 review round 4, F68-F72](A001-account-challenge-2026-09-14.md#review-round-4). All earlier companion bytes and frozen cell assignments remain unchanged. The strengthened evidence schema and prospective routing are **proposed, not adopted**; no worksheet is filled and no reading class is assigned.
+
+**F68, Cells:158-159, old → new:** “(b6) on the six cells whose `bearing` is the text its own stated example quotes” → “(b6) on the six cells whose inconsistency allegation its general condition restates”. A001 round 4 section A records the v3 example's deletion and limits the inference: provenance does not itself establish that the general condition is defective or lacks application elsewhere. This leg cannot confirm the bridge.
+
+**F69-F70, Cells:186,192-211.** The heading's “reachability witnesses” → “proposed reader states and outstanding reachability obligations”. The assertion that all seven read-cell classes have a witness is **withdrawn**. A15's obstruction is withdrawn; A16 is conditional only. The X6/A11 and X5/A04 sketches are not certified. Complete replacement witnesses, the consistent grain/boundary argument, the Boolean exhibits and the A05-specific examination of A04's alternative remain **NOT FOUND**. The distinct E2 accessibility claims and assigned X0/gated X4 cells are retained.
+
+The shared successor condition for Cells:204-207 is recorded exactly below:
+
+> **Shared condition for the four Boolean reader states.** Both readers exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), agree that the :620 check passes, and record determinate, agreed J1 and J2. For each reader and every per-cell declaration used to obtain those judgments, the worksheet records `not-free` with a completed TEXT-EXCLUSION or SEARCH-NO-EXHIBIT record. Neither reader records `free` at any such declaration. A blank or unperformed check does not satisfy this condition.
+>
+> **Required A05 comparison.** Each reader considers the D6 alternative proposed for A04 on A05’s own target and reconstruction. The record states the alternative, its admissibility assessment, and the resulting J1/J2, or quotes the FW5 clause and supplies the argument excluding it. Different target identifiers or identical `bearing` text alone settle neither admissibility nor effect. An admitted judgment-changing alternative cannot be recorded as `not-free`.
+>
+> These are requirements on proposed reader states, not completed observations. The required evidence is **NOT FOUND** in the current Boolean entries. SEARCH-NO-EXHIBIT records only the stated search.
+
+**F71-F72, Cells:307-326.** The successor evidence specification is A001 round 4 section C: `free`, `not-free`, or `NOT ASSESSED`, with evidence types `FLIPPING-EXHIBIT`, `TEXT-EXCLUSION`, `SEARCH-NO-EXHIBIT`, or `NONE`. The same dated prospective procedure for this companion summary follows verbatim from judge section D; its A001 locators identify the preserved passages whose successor wording the summary follows. The charge table and Account ceiling remain unchanged.
+
+## D. Item 7: procedure and table
+
+### A001:954–959 — entire gate step
+
+**Old gate ordering:** (b5)/E3 → X4, then record absence → X0.
+
+**New:**
+
+> **Gate, before any reading: X0 first.** A cell with a record-level absence—in this register, no target record identifier—is X0, and its bridge is not consulted. Otherwise, a cell whose bridge returns (b5), or which is in E3, is X4. Both gated classes remain unread. The existing assignments remain nineteen gated X4 cells and one X0 cell; thirteen cells remain eligible for reading.
+
+### A001:962 — after “names the component.”
+
+**No immediate reconstruction decision → add:**
+
+> Apply X3 immediately if its full condition holds. Otherwise, if the readers do not exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), record X4 and stop reading that cell.
+
+### A001:969
+
+**Old:**
+
+> Otherwise the cell proceeds.
+
+**New:**
+
+> The cell proceeds to J1/J2 only if both readers record that the :620 check passes. An attempted but unevaluable check leaves X4 with no charge.
+
+### After A001:1037
+
+**No explicit early X4 row → add:**
+
+| Order | Class | Condition | Disposition |
+|---|---|---|---|
+| 1a | X4 UNRESOLVED — explicit exit | After X3 is ruled out, the completed exhibition step does not yield the same complete \(\mathcal E_c\) and \(p_\delta\); or the attempted :620 check fails or remains unresolved; or a disagreement specified by the reading procedure has been established. Apply the exit at the step establishing its condition. | D21 only when both readers record a :620 mismatch; otherwise no charge. Record the actual reason. |
+
+### A001:1040–1043 — condition cells only
+
+Replace their present abbreviated conditions with the following common prefix and respective ending:
+
+> Both readers exhibit the same complete \(\mathcal E_c\) and \(p_\delta\), agree that the :620 check passes, satisfy the shared Boolean-state condition with completed `not-free` evidence for every per-cell declaration, and agree that:
+
+| Class | Exact ending |
+|---|---|
+| X2 | “(E) holds and the alleged defect does not obtain of the quoted target passage.” |
+| X2b | “(E) fails and the alleged defect obtains of the quoted target passage.” |
+| X1 | “(E) holds and the alleged defect obtains of the quoted target passage.” |
+| X1b | “(E) fails and the alleged defect does not obtain of the quoted target passage.” |
+
+Their disposition and charge columns remain unchanged. (`A001:1040–1043,1088–1091`)
+
+### A001:1010–1014 — entire X5 paragraph
+
+**Old:** X5’s unconditional “if and only if” statement and the following disagreement/Boolean-routing sentences.
+
+**New:**
+
+> After earlier exits are ruled out, X5 fires if and only if the original J1 and J2 are determinate and agreed, and both readers record `free` at the same §2 row, each exhibiting its own judgment-changing alternative. A recorded disagreement about whether a declaration is `free` goes to X4. Alternatives recorded at different §2 rows do not constitute the required same-row agreement. The Boolean rows require neither reader to record `free` anywhere and require completed `not-free` evidence for every per-cell declaration. Missing evidence does not satisfy that requirement.
+
+### A001:1026–1031 — entire ordering explanation
+
+**Old:** the existing rows-1–7/residue explanation and claim that the reachability table answers F52.
+
+**New:**
+
+> X0 and gated X4 are assigned before reading, in that order. For read cells, X3 is followed by the explicit X4 exit at row 1a, then X6, X5 and the four Boolean rows; the final X4 row remains the residue. Apply an exit when the relevant procedural step establishes its condition. Exhaustiveness follows from the residue row. Reachability requires separate complete exhibits and remains subject to this round’s withdrawals and outstanding obligations.
+
+### A001:975
+
+**Old:**
+
+> **Class assignment** by the ordered table, below. First match wins.
+
+**New:**
+
+> **Class assignment.** Retain any exit already established during exhibition or the :620 check. Otherwise apply the ordered table, including any disagreement established during J1/J2 or the free-declaration assessment. First match wins; states satisfying no earlier condition are X4.
+
+The companion’s summary must receive the same dated successor procedure. (`Cells:307–326`)

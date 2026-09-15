@@ -272,6 +272,7 @@ class Gate:
         self.out = self.root / "dry-run-out"
         self.spawned: list[str] = []
         self.outputs: dict[str, object] = {}
+        self.publication_files: dict[str, tuple[str, ...]] = {}
         #: Every provider factory this gate handed the driver.  The walk's own
         #: are snapshotted when it ends, so a later read-back that needs a
         #: ``Modules`` cannot dilute what the walk actually spent.
@@ -287,6 +288,7 @@ class Gate:
         self._write_contrast_leg()
         original_popen = subprocess.Popen
         original_run = subprocess.run
+        original_publish_step = steps_module.StepLedger.publish_step
 
         def watch(argv):
             self.spawned.append(" ".join(str(part) for part in argv)
@@ -300,6 +302,22 @@ class Gate:
             watch(argv)
             return original_run(argv, *args, **kwargs)
 
+        def watching_publish(ledger, kind, repo, paths, message, **kwargs):
+            selected = tuple(paths)
+            root = Path(repo)
+            files = set()
+            for value in selected:
+                path = Path(value)
+                path = path if path.is_absolute() else root / path
+                candidates = (path,) if path.is_file() else path.rglob("*")
+                files.update(child.relative_to(root).as_posix() for child in candidates
+                             if child.is_file() and ".git" not in child.relative_to(root).parts)
+            outcome = original_publish_step(ledger, kind, repo, selected, message, **kwargs)
+            if outcome.status == "COMPLETE":
+                self.publication_files[outcome.step_key] = tuple(sorted(files))
+            return outcome
+
+        steps_module.StepLedger.publish_step = watching_publish
         subprocess.Popen = watching_popen
         subprocess.run = watching_run
         try:
@@ -308,6 +326,7 @@ class Gate:
         finally:
             subprocess.Popen = original_popen
             subprocess.run = original_run
+            steps_module.StepLedger.publish_step = original_publish_step
             self._restore_runner()
         self.closing_text = self.paths.closing.read_text(encoding="utf-8")
         self.named_codes = closing_codes(self.closing_text)
@@ -824,13 +843,20 @@ class ZeroProviderNetworkCalls(GateCase):
 
 class EveryGitOperationRanThroughPublish(GateCase):
 
-    def test_every_completed_publication_filed_a_verified_line(self):
+    def test_every_completed_publication_is_verified_or_selected_no_files(self):
         ledger = self.gate.ledger()
         verified = 0
         for row in self.gate.rows():
             if not row["kind"].startswith("PUBLISH_") or row["status"] != "COMPLETE":
                 continue
             line = ledger.verified_line(row["step_key"])
+            if row["outputs_sha256"].get("published") == custody.sha256_bytes(b"false"):
+                self.assertEqual(self.gate.publication_files[row["step_key"]], ())
+                self.assertIsNone(row["published_commit"])
+                self.assertIsNone(line)
+                self.assertNotIn("verified_line", row["outputs_sha256"])
+                continue
+            self.assertTrue(self.gate.publication_files[row["step_key"]])
             self.assertIsNotNone(line, row["kind"])
             self.assertRegex(line or "", _VERIFIED_RE)
             verified += 1

@@ -633,3 +633,17 @@ The bytes below are `src/minireason/loop/data/ceiling_v1.md` at sha256
 
 **What would reopen this:** an appellate ruling; a successful attack on `std:reading-rubric/v1` or on a register definition, which collapses every ν citing it in pass 1; a custody correction; a third judge family; more replicates; a raised budget under a new `loop_plan_id`.
 <!-- CEILING:END -->
+
+## Publication correction - 2026-09-15 (REC-20260914-AQ)
+
+The publication rows above and [WAVE6-INTERFACE.md](../design/loop-impl/WAVE6-INTERFACE.md#clause-by-clause)
+describe nonempty selections. An empty expanded file selection records a COMPLETE
+receipt with `outputs_sha256["published"] = sha256(b"false")` (`published=false`),
+`published_commit=null`, and no VERIFIED line or sidecar. Nonempty selections,
+including already-committed files, still require push and remote commit/tree/blob
+read-back verification before recording PUBLISHED and a VERIFIED line naming the
+verified existing commit; no new commit is needed when the selected files are clean.
+
+### Pending publication exception
+
+The empty-selection no-op above applies only when no publication remains pending and the selection is genuinely empty. A PUBLISH_PENDING receipt for the step key remains outstanding across retries, later failures and older COMPLETE(false) receipts. An empty selection with a difference from the last observed remote-tracking tree also requires publication. Those retries push the existing HEAD and read back the remote ref and tree; only a verified PUBLISHED result clears pending status. They record no new commit when there is nothing to stage.

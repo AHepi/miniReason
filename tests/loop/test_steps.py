@@ -19,11 +19,12 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 from minireason import provider_openai_compat as compat
 from minireason.loop import custody, receipts
 from minireason.loop import steps as steps_module
-from minireason.loop.publish import PublishPending, PublishResult, publish
+from minireason.loop.publish import GitOutcome, LocalGit, PublishPending, PublishResult, publish
 from minireason.loop.steps import (
     CUSTODY_HALT_CODES,
     MARKER_KEPT_CODES,
@@ -228,6 +229,214 @@ class TheHappyPathWalksSZeroToSThree(unittest.TestCase):
         self.assertEqual(again.status, "SKIPPED")
         self.assertEqual(again.step_key, first.step_key)
         self.assertEqual(again.verified_line, first.verified_line)
+
+    def assert_noop_publication_resumes(self, paths):
+        head = self.raw(self.repo, "rev-parse", "HEAD")
+        with self.ledger_file.open(encoding="utf-8", newline="") as handle:
+            ledger_before = handle.read()
+        outcome = self.ledger.publish_step(
+            "PUBLISH_CY", self.repo, paths, "Nothing new", ref="origin/main",
+            cycle=1, inputs={"cycle": b"one"})
+        self.assertEqual(outcome.status, "COMPLETE")
+        self.assertFalse(outcome.value.published)
+        self.assertEqual(outcome.value.paths, ())
+        self.assertEqual(outcome.value.files, ())
+        self.assertFalse(outcome.value.committed)
+        self.assertIsNone(outcome.verified_line)
+        self.assertIsNone(outcome.receipt.published_commit)
+        self.assertEqual(outcome.receipt.outputs_sha256,
+                         {"published": custody.sha256_bytes(b"false")})
+        self.assertEqual(list(self.paths.steps.glob("*.verified")), [])
+        with self.ledger_file.open(encoding="utf-8", newline="") as handle:
+            self.assertEqual(handle.read(), ledger_before)
+        self.assertEqual(self.raw(self.repo, "rev-parse", "HEAD"), head)
+        resumed = StepLedger(self.paths.run_root, PLAN_ID, clock=Clock(),
+                             monotonic=Monotonic())
+        self.assertIsNone(resumed.pending_publication())
+        self.assertIsNone(resumed.guard())
+        self.assertEqual([row.action for row in resumed.resume_plan()], ["SKIP"])
+
+        def refuse(*_args, **_kwargs):
+            raise AssertionError("a completed no-op must not republish")
+
+        again = resumed.publish_step(
+            "PUBLISH_CY", self.repo, paths, "Nothing new", ref="origin/main",
+            cycle=1, inputs={"cycle": b"one"}, publisher=refuse)
+        self.assertEqual(again.status, "SKIPPED")
+        self.assertEqual(resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None).status,
+                         "COMPLETE")
+        return outcome
+
+    def test_an_empty_directory_completes_without_verified_and_resumes(self):
+        empty = self.paths.run_root / "readings"
+        empty.mkdir()
+        self.assert_noop_publication_resumes([empty.relative_to(self.repo).as_posix()])
+
+    def test_failed_git_retry_verifies_already_committed_paths_and_resumes(self):
+        with self.paths.config.open("w", encoding="utf-8", newline="") as handle:
+            handle.write("{}\n")
+        selected = [self.paths.config.relative_to(self.repo).as_posix()]
+
+        def failed(*_args, **_kwargs):
+            raise LoopError("GIT_OPERATION_FAILED", "the former empty directory pathspec")
+
+        with self.assertRaises(LoopError):
+            self.ledger.publish_step(
+                "PUBLISH_CY", self.repo, selected, "Publish cycle", ref="origin/main",
+                cycle=1, inputs={"cycle": b"one"}, publisher=failed)
+        old = self.paths.step_path(1, "PUBLISH_CY")
+        with old.open(encoding="utf-8", newline="") as handle:
+            before = handle.read()
+        self.raw(self.repo, "add", "--", *selected)
+        self.raw(self.repo, "commit", "-m", "External checkpoint")
+        head = self.raw(self.repo, "rev-parse", "HEAD")
+        self.assertEqual(self.ledger.resume_plan()[0].action, "RETRY")
+        outcome = self.ledger.publish_step(
+            "PUBLISH_CY", self.repo, selected, "Publish cycle", ref="origin/main",
+            cycle=1, inputs={"cycle": b"one"})
+        self.assertEqual((outcome.index, outcome.status), (2, "COMPLETE"))
+        self.assertTrue(outcome.value.published)
+        self.assertFalse(outcome.value.committed)
+        self.assertEqual(outcome.receipt.published_commit, head)
+        self.assertEqual(self.raw(self.remote, "rev-parse", "refs/heads/main"), head)
+        self.assertTrue(outcome.verified_line.startswith("VERIFIED " + head))
+        self.assertEqual(outcome.receipt.outputs_sha256["verified_line"],
+                         custody.sha256_bytes(outcome.verified_line.encode("utf-8")))
+        with (self.paths.steps / "0002-PUBLISH_CY.verified").open(
+                encoding="utf-8", newline="") as handle:
+            self.assertEqual(handle.read(), outcome.verified_line + "\n")
+        with self.ledger_file.open(encoding="utf-8", newline="") as handle:
+            self.assertIn(outcome.verified_line, handle.read())
+        with old.open(encoding="utf-8", newline="") as handle:
+            self.assertEqual(handle.read(), before)
+        resumed = StepLedger(self.paths.run_root, PLAN_ID, clock=Clock(),
+                             monotonic=Monotonic())
+        self.assertIsNone(resumed.pending_publication())
+        self.assertIsNone(resumed.guard())
+        self.assertEqual([row.action for row in resumed.resume_plan()], ["SKIP"])
+        again = resumed.publish_step(
+            "PUBLISH_CY", self.repo, selected, "Publish cycle", ref="origin/main",
+            cycle=1, inputs={"cycle": b"one"}, publisher=failed)
+        self.assertEqual(again.status, "SKIPPED")
+        self.assertEqual(again.verified_line, outcome.verified_line)
+        self.assertEqual(resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None).status,
+                         "COMPLETE")
+
+    def test_a_failed_git_step_is_preserved_and_retried_as_a_noop(self):
+        empty = self.paths.run_root / "readings"
+        empty.mkdir()
+
+        def failed(*_args, **_kwargs):
+            raise LoopError("GIT_OPERATION_FAILED", "the former empty directory pathspec")
+
+        with self.assertRaises(LoopError):
+            self.ledger.publish_step(
+                "PUBLISH_CY", self.repo, [empty.relative_to(self.repo).as_posix()], "Nothing new", ref="origin/main",
+                cycle=1, inputs={"cycle": b"one"}, publisher=failed)
+        old = self.paths.step_path(1, "PUBLISH_CY")
+        with old.open(encoding="utf-8", newline="") as handle:
+            before = handle.read()
+        self.assertEqual(self.ledger.resume_plan()[0].action, "RETRY")
+        outcome = self.assert_noop_publication_resumes([empty.relative_to(self.repo).as_posix()])
+        self.assertEqual(outcome.index, 2)
+        with old.open(encoding="utf-8", newline="") as handle:
+            self.assertEqual(handle.read(), before)
+
+    def test_deletion_only_timeout_retries_push_and_verification_after_reload(self):
+        selected = self.repo / "selected"
+        selected.mkdir()
+        deleted = selected / "deleted.json"
+        with deleted.open("w", encoding="utf-8", newline="") as handle:
+            handle.write("{}\n")
+        relative = deleted.relative_to(self.repo).as_posix()
+        self.raw(self.repo, "add", "--", relative)
+        self.raw(self.repo, "commit", "-m", "Seed deletion-only selection")
+        self.raw(self.repo, "push", "origin", "HEAD:refs/heads/main")
+        deleted.unlink()
+
+        class RecordingGit(LocalGit):
+            timeout_push = False
+
+            def _invoke(self, tokens):
+                self.calls.append(tuple(tokens))
+                if tokens and tokens[0] == "push" and self.timeout_push:
+                    return GitOutcome(-1, b"", b"", True, tuple(tokens))
+                return super()._invoke(tokens)
+
+        first_git = RecordingGit(self.repo)
+        first_git.calls = []
+        first_git.timeout_push = True
+        first = self.ledger.publish_step(
+            "PUBLISH_CY", self.repo, ["selected"], "Publish deletion", ref="origin/main",
+            cycle=1, git=first_git)
+        self.assertEqual((first.status, first.failure_code),
+                         ("FAILED", "PUBLISH_PENDING"))
+        self.assertTrue(first.value.committed)
+        self.assertEqual(first.value.files, ())
+        self.assertIsNone(first.verified_line)
+        self.assertEqual(self.raw(self.repo, "ls-tree", "-r", "--name-only", "HEAD",
+                                  "--", relative), "")
+        self.assertEqual(self.raw(self.remote, "ls-tree", "-r", "--name-only",
+                                  "refs/heads/main", "--", relative), relative)
+        with self.paths.step_path(first.index, "PUBLISH_CY").open(
+                encoding="utf-8", newline="") as handle:
+            first_receipt = handle.read()
+        resumed = StepLedger(self.paths.run_root, PLAN_ID, clock=Clock(),
+                             monotonic=Monotonic())
+        with self.assertRaises(PublishBlocked):
+            resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None)
+        retry_git = RecordingGit(self.repo)
+        retry_git.calls = []
+        landed = resumed.publish_step(
+            "PUBLISH_CY", self.repo, ["selected"], "Publish deletion", ref="origin/main",
+            cycle=1, git=retry_git)
+        self.assertEqual((landed.status, landed.value.status), ("COMPLETE", "PUBLISHED"))
+        self.assertFalse(landed.value.committed)
+        self.assertTrue(landed.verified_line.startswith("VERIFIED "))
+        self.assertEqual(landed.receipt.published_commit,
+                         self.raw(self.remote, "rev-parse", "refs/heads/main"))
+        verbs = [call[0] for call in retry_git.calls]
+        self.assertIn("push", verbs)
+        self.assertIn("ls-remote", verbs)
+        self.assertIn("fetch", verbs)
+        self.assertIn(("rev-parse", "FETCH_HEAD^{tree}"), retry_git.calls)
+        self.assertEqual(self.raw(self.remote, "ls-tree", "-r", "--name-only",
+                                  "refs/heads/main", "--", relative), "")
+        with self.paths.step_path(first.index, "PUBLISH_CY").open(
+                encoding="utf-8", newline="") as handle:
+            self.assertEqual(handle.read(), first_receipt)
+        self.assertIsNone(resumed.pending_publication())
+        self.assertEqual(resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None).status,
+                         "COMPLETE")
+
+    def test_a_pending_push_with_clean_paths_still_retries_and_blocks(self):
+        with self.paths.config.open("w", encoding="utf-8", newline="") as handle:
+            handle.write("{}\n")
+
+        class TimedOutPush(LocalGit):
+            def _invoke(self, tokens):
+                if tokens and tokens[0] == "push":
+                    return GitOutcome(-1, b"", b"", True, tuple(tokens))
+                return super()._invoke(tokens)
+
+        for attempt in (1, 2):
+            outcome = self.ledger.publish_step(
+                "PUBLISH_PLAN", self.repo, [self.paths.config.relative_to(self.repo).as_posix()], "Publish plan",
+                ref="origin/main", inputs={"config": b"c"}, git=TimedOutPush(self.repo))
+            self.assertEqual((outcome.status, outcome.failure_code),
+                             ("FAILED", "PUBLISH_PENDING"))
+            self.assertEqual(outcome.value.attempt, attempt)
+            self.assertIsNone(outcome.verified_line)
+            self.assertIsNotNone(self.ledger.pending_publication())
+            with self.assertRaises(PublishBlocked):
+                self.ledger.run_step("CYCLE_OPEN", 1, {}, lambda _: None)
+        landed = self.ledger.publish_step(
+            "PUBLISH_PLAN", self.repo, [self.paths.config.relative_to(self.repo).as_posix()], "Publish plan",
+            ref="origin/main", inputs={"config": b"c"})
+        self.assertEqual(landed.status, "COMPLETE")
+        self.assertTrue(landed.value.published)
+        self.assertFalse(landed.value.committed)
+        self.assertIsNone(self.ledger.pending_publication())
 
 
 # ------------------------------------------------------------------------- #
@@ -662,6 +871,80 @@ class APendingPublicationBlocksEverySuccessorStep(LedgerFixture):
                                   wave="w1").status,
             "COMPLETE")
 
+    def test_pending_survives_a_later_publication_exception(self) -> None:
+        first = self.build().publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=self.pending_publisher("PUSH_TIMEOUT"))
+        seen = []
+
+        def failed(*_args, **kwargs):
+            seen.append(kwargs.get("retry_pending"))
+            raise LoopError("GIT_OPERATION_FAILED", "read-back unavailable")
+
+        with self.assertRaises(LoopError):
+            self.build().publish_step(
+                "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+                publisher=failed)
+        self.assertEqual(seen, [True])
+        resumed = self.build()
+        self.assertEqual(resumed.pending_publication().index, first.index)
+        self.assertEqual(resumed.latest(first.step_key).receipt.failure_code,
+                         "GIT_OPERATION_FAILED")
+        with self.assertRaises(PublishBlocked):
+            resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None)
+        landed = resumed.publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=self.landing_publisher())
+        self.assertEqual(landed.status, "COMPLETE")
+        self.assertIsNone(self.build().pending_publication())
+
+    def test_an_unchanged_retry_cannot_clear_pending(self) -> None:
+        self.build().publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=self.pending_publisher("PUSH_TIMEOUT"))
+        seen = []
+
+        def unchanged(*_args, attempt=1, **kwargs):
+            seen.append(kwargs.get("retry_pending"))
+            return PublishResult(status="UNCHANGED", ref="origin/main",
+                                 paths=(), files=(), attempt=attempt, committed=False)
+
+        outcome = self.build().publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=unchanged)
+        self.assertEqual(seen, [True])
+        self.assertEqual((outcome.status, outcome.failure_code),
+                         ("FAILED", "PUBLISH_PENDING"))
+        self.assertIsNone(outcome.verified_line)
+        self.assertIsNone(outcome.receipt.published_commit)
+        self.assertEqual(list(self.paths.steps.glob("*.verified")), [])
+        resumed = self.build()
+        self.assertIsNotNone(resumed.pending_publication())
+        with self.assertRaises(PublishBlocked):
+            resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None)
+        landed = resumed.publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=self.landing_publisher())
+        self.assertEqual(landed.status, "COMPLETE")
+        self.assertIsNone(self.build().pending_publication())
+
+    def test_an_old_unpublished_complete_receipt_does_not_skip_pending_retry(self) -> None:
+        first = self.build().publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=self.pending_publisher("PUSH_TIMEOUT"))
+        # Preserve a receipt written by the former empty-selection retry bug.
+        self.build().begin("PUBLISH_CY", cycle=1).complete({"published": False})
+        resumed = self.build()
+        self.assertEqual(resumed.pending_publication().index, first.index)
+        with self.assertRaises(PublishBlocked):
+            resumed.run_step("CYCLE_OPEN", 2, {}, lambda _: None)
+        landed = resumed.publish_step(
+            "PUBLISH_CY", self.repo_root, ["selected"], "m", cycle=1,
+            publisher=self.landing_publisher())
+        self.assertEqual((landed.index, landed.status), (3, "COMPLETE"))
+        self.assertTrue(landed.value.published)
+        self.assertIsNone(self.build().pending_publication())
+
     def test_the_attempt_count_lives_in_the_ledger_not_in_publish(self) -> None:
         ledger = self.build()
         for expected in (1, 2):
@@ -937,6 +1220,26 @@ class RunLockRefusesASecondDriver(LedgerFixture):
         with self.assertRaises(StepError) as caught:
             RunLock(self.paths.lock, PLAN_ID, clock=self.clock).acquire()
         self.assertEqual(caught.exception.code, "PLAN_ID_MISMATCH")
+
+    def test_a_plan_id_mismatch_preserves_the_record_when_diagnostics_are_unavailable(self) -> None:
+        RunLock(self.paths.lock, OTHER_PLAN_ID, clock=self.clock).acquire().release()
+        with self.paths.lock.open(encoding="utf-8", newline="") as handle:
+            before = handle.read()
+        released = json.loads(before)
+        self.assertIsNone(released["pid"])
+        self.assertIsNone(released["started_utc"])
+        self.assertTrue(released["released_utc"].endswith("Z"))
+        second = RunLock(self.paths.lock, PLAN_ID, clock=self.clock)
+        self.addCleanup(second.release)
+        with patch.object(second, "holder", return_value=None):
+            with self.assertRaises(StepError) as caught:
+                second.acquire()
+        self.assertEqual(caught.exception.code, "PLAN_ID_MISMATCH")
+        self.assertFalse(second.held)
+        with self.paths.lock.open(encoding="utf-8", newline="") as handle:
+            self.assertEqual(handle.read(), before)
+        with RunLock(self.paths.lock, OTHER_PLAN_ID, clock=self.clock) as resumed:
+            self.assertTrue(resumed.held)
 
 
 # ------------------------------------------------------------------------- #

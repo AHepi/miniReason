@@ -1,17 +1,19 @@
 """Acceptance tests for ``minireason.loop.publish`` (wave plan W0-PUBLISH).
 
-Every test is named after the clause of the module's acceptance list it
-discharges. Nothing here is simulated: each test builds a real temporary bare
+Integration tests are named after the clause of the module's acceptance list
+they discharge. Each builds a real temporary bare
 repository and a real working clone under ``tempfile``, and every push and
 read-back runs against that bare repo through the module's own
 :class:`~minireason.loop.publish.LocalGit`. No network, no provider, no
 credential — the one "credential" planted is a fixed non-secret literal
-registered under a test-only environment name.
+registered under a test-only environment name. Separate filesystem regressions
+exercise selection without invoking Git.
 """
 from __future__ import annotations
 
 import os
 import re
+import stat
 import subprocess
 import sys
 import tempfile
@@ -224,6 +226,399 @@ class ExplicitPathsTests(PublishFixture):
             publish(self.repo, [target], "Publish one step receipt", self.ref)
         self.assertEqual(caught.exception.code, "UNEXPECTED_STAGED_FILES")
         self.assertEqual(self.remote_head(), self.initial)
+
+
+class PublicationFileSelectionTests(unittest.TestCase):
+    """Filesystem regressions independent of the real Git integration fixtures."""
+
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.repo = Path(temp.name).resolve()
+        self.selected = self.repo / "selected"
+        self.selected.mkdir()
+        self.git = mock.Mock(spec=LocalGit, repo=self.repo)
+        self.git.status.return_value = GitOutcome(128, b"", b"", False, ())
+
+    def write(self, name):
+        path = self.repo / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            handle.write("{}\n")
+        return path
+
+    def test_absolute_native_string_is_normalized(self):
+        target = self.write("selected/absolute.json")
+        self.assertEqual(publish_module._publication_files(self.git, [str(target)]),
+                         ("selected/absolute.json",))
+
+    @unittest.skipUnless(os.name == "nt", "native Windows path spelling")
+    def test_relative_native_backslashes_are_normalized(self):
+        self.write("selected/native.json")
+        self.assertEqual(publish_module._publication_files(
+            self.git, ["selected\\native.json"]), ("selected/native.json",))
+
+    def test_path_object_is_normalized(self):
+        target = self.write("selected/object.json")
+        self.assertEqual(publish_module._publication_files(self.git, [target]),
+                         ("selected/object.json",))
+
+    def test_absolute_path_outside_repo_is_refused(self):
+        with self.assertRaises(PublishError) as caught:
+            publish(self.repo, [self.repo.parent / "outside.json"], "Refused",
+                    "origin/main", git=self.git)
+        self.assertEqual(caught.exception.code, "PATH_OUTSIDE_REPO")
+        self.git.run.assert_not_called()
+        self.git.status.assert_not_called()
+
+    def test_parent_traversal_inside_repo_is_still_refused(self):
+        self.write("selected/target.json")
+        with self.assertRaises(PublishError) as caught:
+            publish(self.repo, ["selected/../selected/target.json"], "Refused",
+                    "origin/main", git=self.git)
+        self.assertEqual(caught.exception.code, "PATH_OUTSIDE_REPO")
+        self.git.run.assert_not_called()
+        self.git.status.assert_not_called()
+
+    def test_empty_pending_selection_requires_push_and_remote_verification(self):
+        commit, tree = "a" * 40, "b" * 40
+        for mismatch in (False, True):
+            with self.subTest(mismatch=mismatch):
+                git = mock.Mock(spec=LocalGit, repo=self.repo)
+                git.status.return_value = GitOutcome(0, b"", b"", False, ())
+                git.run.return_value = b""
+                git.text.side_effect = lambda *args: {
+                    ("rev-parse", "HEAD"): commit,
+                    ("rev-parse", "HEAD^{tree}"): tree,
+                    ("ls-remote", "--refs", "origin", "refs/heads/main"):
+                        commit + "\trefs/heads/main",
+                    ("rev-parse", "FETCH_HEAD"): commit,
+                    ("rev-parse", "FETCH_HEAD^{tree}"):
+                        "c" * 40 if mismatch else tree,
+                }[args]
+                result = publish(self.repo, [], "Retry pending deletion",
+                                 "origin/main", attempt=2, retry_pending=True, git=git)
+                self.assertEqual(result.published, not mismatch)
+                self.assertEqual(result.status, publish_module.PENDING if mismatch
+                                 else publish_module.PUBLISHED)
+                self.assertEqual(result.paths, ())
+                self.assertEqual(result.files, ())
+                self.assertFalse(result.committed)
+                self.assertEqual(result.verified_line is None, mismatch)
+                git.status.assert_any_call("push", "--porcelain", "--set-upstream",
+                                           "origin", "HEAD:refs/heads/main")
+                git.run.assert_any_call("fetch", "--no-tags", "origin", "refs/heads/main")
+                self.assertFalse(any(call.args[0] in ("add", "commit", "ls-files")
+                                     for call in git.run.call_args_list))
+
+    def test_empty_pending_selection_refuses_staged_strangers(self):
+        self.git.status.return_value = GitOutcome(0, b"", b"", False, ())
+        self.git.run.return_value = b"stranger.json\0"
+        with self.assertRaises(PublishError) as caught:
+            publish(self.repo, [], "Retry pending deletion", "origin/main",
+                    retry_pending=True, git=self.git)
+        self.assertEqual(caught.exception.code, "UNEXPECTED_STAGED_FILES")
+        self.assertFalse(any(call.args[0] == "push"
+                             for call in self.git.status.call_args_list))
+
+    def test_descendant_names_are_preserved_and_sorted(self):
+        self.write("selected/z.json")
+        self.write("selected/nested/report[1].json")
+        (self.selected / "empty").mkdir()
+        self.assertEqual(
+            publish_module._publication_files(
+                self.git, ["selected", "selected/nested", "selected/z.json"]),
+            ("selected/nested/report[1].json", "selected/z.json"))
+        self.git.run.assert_not_called()
+
+    def test_clean_files_require_remote_tree_and_blob_verification(self):
+        target = "selected/kept.json"
+        self.write(target)
+        commit, tree, remote = "a" * 40, "b" * 40, "c" * 40
+        for mismatch in (None, "tree", "blob"):
+            with self.subTest(mismatch=mismatch):
+                git = mock.Mock(spec=LocalGit, repo=self.repo)
+                git.status.return_value = GitOutcome(0, b"", b"", False, ())
+
+                def run(*args):
+                    if args[0] == "ls-files":
+                        return (target + "\0").encode("utf-8")
+                    if args[0] == "ls-tree":
+                        blob = "wrong" if mismatch == "blob" and args[3] == remote else "same"
+                        return (f"100644 blob {blob}\t{target}\0").encode("utf-8")
+                    return b""
+
+                git.run.side_effect = run
+                git.text.side_effect = lambda *args: {
+                    ("rev-parse", "HEAD"): commit,
+                    ("rev-parse", "HEAD^{tree}"): tree,
+                    ("ls-remote", "--refs", "origin", "refs/heads/main"):
+                        remote + "\trefs/heads/main",
+                    ("rev-parse", "FETCH_HEAD"): remote,
+                    ("rev-parse", "FETCH_HEAD^{tree}"):
+                        "d" * 40 if mismatch == "tree" else tree,
+                }[args]
+                with mock.patch.object(publish_module, "_redact_with_names",
+                                       side_effect=lambda text: (text, ())):
+                    result = publish(self.repo, [target], "Already committed",
+                                     "origin/main", attempt=2, git=git)
+                self.assertEqual(result.published, mismatch is None)
+                self.assertFalse(result.committed)
+                self.assertEqual(result.local_commit, commit)
+                git.text.assert_any_call(
+                    "ls-remote", "--refs", "origin", "refs/heads/main")
+                git.run.assert_any_call("fetch", "--no-tags", "origin", "refs/heads/main")
+                if mismatch is None:
+                    self.assertTrue(result.verified_line.startswith("VERIFIED " + remote))
+                else:
+                    self.assertEqual(result.status, publish_module.PENDING)
+                    self.assertIsNone(result.verified_line)
+
+    def test_directory_ignore_rules_do_not_filter_explicitly_named_files(self):
+        self.write("selected/kept.json")
+        self.write("selected/ignored.json")
+        self.git.status.side_effect = lambda *args: GitOutcome(
+            0 if args[0] == "ls-files" else 128,
+            b"selected/kept.json\0" if args[0] == "ls-files" else b"",
+            b"", False, args)
+        self.assertEqual(publish_module._publication_files(self.git, ["selected"]),
+                         ("selected/kept.json",))
+        self.assertEqual(publish_module._publication_files(
+            self.git, ["selected", "selected/ignored.json"]),
+            ("selected/ignored.json", "selected/kept.json"))
+
+    def test_missing_tracked_regular_descendants_remain_named_for_deletion(self):
+        self.write("selected/kept.json")
+        self.git.status.side_effect = lambda *args: GitOutcome(
+            0, b"selected/kept.json\0" if args[0] == "ls-files" else b"",
+            b"", False, args)
+        self.git.run.return_value = (
+            b"100644 blob abc\tselected/deleted.json\0"
+            b"100755 blob def\tselected/deleted-script\0"
+            b"120000 blob ghi\tselected/deleted-link\0")
+        self.assertEqual(publish_module._publication_files(self.git, ["selected"]),
+                         ("selected/deleted-script", "selected/deleted.json",
+                          "selected/kept.json"))
+        self.git.run.assert_called_once_with(
+            "ls-tree", "-r", "-z", "HEAD", "--", "selected")
+
+    def test_nested_file_symlink_is_refused_without_substituting_its_target(self):
+        target = self.write("elsewhere/target.json")
+        link = self.selected / "link.json"
+        try:
+            link.symlink_to(target)
+        except OSError as exc:
+            self.skipTest(f"symlink creation unavailable: {exc}")
+        with self.assertRaises(PublishError) as caught:
+            publish_module._publication_files(self.git, ["selected"])
+        self.assertEqual(caught.exception.code, "PATH_NOT_EXPLICIT")
+
+    def test_nested_directory_symlink_is_refused(self):
+        target = self.write("elsewhere/target.json").parent
+        try:
+            (self.selected / "linked").symlink_to(target, target_is_directory=True)
+        except OSError as exc:
+            self.skipTest(f"symlink creation unavailable: {exc}")
+        with self.assertRaises(PublishError) as caught:
+            publish_module._publication_files(self.git, ["selected"])
+        self.assertEqual(caught.exception.code, "PATH_NOT_EXPLICIT")
+
+    def test_reparse_files_and_directories_are_refused_before_traversal(self):
+        leaf = self.write("selected/leaf.json")
+        directory = self.selected / "nested"
+        directory.mkdir()
+        real_lstat = Path.lstat
+        for target in (leaf, directory):
+            with self.subTest(target=target.name):
+                def reparse(path, *args, **kwargs):
+                    info = real_lstat(path, *args, **kwargs)
+                    if path == target:
+                        return mock.Mock(
+                            st_mode=info.st_mode,
+                            st_file_attributes=stat.FILE_ATTRIBUTE_REPARSE_POINT)
+                    return info
+
+                with mock.patch.object(Path, "lstat", reparse):
+                    with self.assertRaises(PublishError) as caught:
+                        publish_module._publication_files(self.git, ["selected"])
+                self.assertEqual(caught.exception.code, "PATH_NOT_EXPLICIT")
+
+
+class PublicationDeletionTests(PublishFixture):
+
+    def assert_directory_deletion_published(self, *, staged, keep_file=True):
+        selected = self.repo / "selected"
+        selected.mkdir()
+        names = ("selected/deleted.json",)
+        if keep_file:
+            names += ("selected/kept.json",)
+        for name in names:
+            with (self.repo / name).open("w", encoding="utf-8", newline="") as handle:
+                handle.write("{}\n")
+        self.raw(self.repo, "add", "--", *names)
+        self.raw(self.repo, "commit", "-m", "Commit selected files")
+        if staged:
+            self.raw(self.repo, "rm", "--", "selected/deleted.json")
+        else:
+            (selected / "deleted.json").unlink()
+        # git rm may remove the directory when its last file is deleted.
+        selected.mkdir(exist_ok=True)
+        with (self.repo / "unselected.json").open(
+                "w", encoding="utf-8", newline="") as handle:
+            handle.write("{}\n")
+        git = RecordingGit(self.repo)
+
+        result = publish(self.repo, ["selected"], "Publish selected deletion",
+                         self.ref, git=git)
+
+        self.assertEqual(result.status, publish_module.PUBLISHED)
+        self.assertTrue(result.published)
+        self.assertTrue(result.committed)
+        self.assertRegex(result.verified_line or "", VERIFIED_RE)
+        self.assertEqual(result.paths, names)
+        kept = ("selected/kept.json",) if keep_file else ()
+        self.assertEqual(result.files, kept)
+        stageable = kept if staged else names
+        self.assertEqual([row for row in git.argv if row[0] == "add"],
+                         [("add", "--", *stageable)] if stageable else [])
+        self.assertEqual(result.remote_commit, self.remote_head())
+        remote_files = self.raw(
+            self.remote, "ls-tree", "-r", "--name-only", "refs/heads/main").splitlines()
+        self.assertNotIn("selected/deleted.json", remote_files)
+        self.assertNotIn("unselected.json", remote_files)
+        if keep_file:
+            self.assertIn("selected/kept.json", remote_files)
+
+    def test_directory_unstaged_deletion_publishes_and_verifies(self):
+        self.assert_directory_deletion_published(staged=False)
+
+    def test_directory_already_staged_deletion_publishes_and_verifies(self):
+        self.assert_directory_deletion_published(staged=True)
+
+    def test_directory_only_unstaged_deletion_publishes_and_verifies(self):
+        self.assert_directory_deletion_published(staged=False, keep_file=False)
+
+    def test_directory_only_already_staged_deletion_publishes_and_verifies(self):
+        self.assert_directory_deletion_published(staged=True, keep_file=False)
+
+    def test_committed_deletion_retry_uses_remote_tracking_selection(self):
+        selected = self.repo / "selected"
+        selected.mkdir()
+        target = selected / "deleted.json"
+        with target.open("w", encoding="utf-8", newline="") as handle:
+            handle.write("{}\n")
+        self.raw(self.repo, "add", "--", "selected/deleted.json")
+        self.raw(self.repo, "commit", "-m", "Seed selected file")
+        self.raw(self.repo, "push", "origin", "HEAD:refs/heads/main")
+        before = self.remote_head()
+        target.unlink()
+        first = publish(self.repo, ["selected"], "Delete selected file", self.ref,
+                        git=FailingPushGit(self.repo, failures=1, timed_out=True))
+        self.assertEqual(first.status, publish_module.PENDING)
+        self.assertTrue(first.committed)
+        self.assertEqual(self.remote_head(), before)
+        git = RecordingGit(self.repo)
+        retry = publish(self.repo, ["selected"], "Retry selected deletion",
+                        self.ref, attempt=2, git=git)
+        self.assertTrue(retry.published)
+        self.assertFalse(retry.committed)
+        self.assertEqual(retry.paths, ())
+        self.assertEqual(retry.remote_commit, first.local_commit)
+        self.assertEqual(self.remote_head(), first.local_commit)
+        self.assertRegex(retry.verified_line or "", VERIFIED_RE)
+        for command in ("push", "ls-remote", "fetch", "ls-tree"):
+            self.assertTrue(any(row[0] == command for row in git.argv), command)
+        self.assertNotIn("selected/deleted.json", self.raw(
+            self.remote, "ls-tree", "-r", "--name-only", "refs/heads/main").splitlines())
+
+
+
+class PublicationWithoutChangesTests(PublishFixture):
+
+    def assert_unchanged(self, result, git, head):
+        self.assertEqual(result.status, publish_module.UNCHANGED)
+        self.assertFalse(result.published)
+        self.assertFalse(result.committed)
+        self.assertIsNone(result.pending)
+        self.assertIsNone(result.verified_line)
+        self.assertIsNone(result.as_receipt()["published_commit"])
+        self.assertEqual(self.raw(self.repo, "rev-parse", "HEAD"), head)
+        self.assertFalse(any(row[0] in ("add", "commit", "push", "fetch", "ls-remote")
+                             for row in git.argv))
+
+    def test_directories_expand_to_sorted_unique_regular_files(self):
+        nested = self.run_dir / "nested"
+        nested.mkdir()
+        (nested / "empty").mkdir()
+        targets = [self.run_dir / "z.json", nested / "a.json"]
+        for target in targets:
+            with target.open("w", encoding="utf-8", newline="") as handle:
+                handle.write("{}\n")
+        git = RecordingGit(self.repo)
+        selected = [path.relative_to(self.repo).as_posix()
+                    for path in (self.run_dir, targets[1], nested)]
+        result = publish(self.repo, selected,
+                         "Publish expanded files", self.ref, git=git)
+        expected = tuple(sorted(target.relative_to(self.repo).as_posix()
+                                for target in targets))
+        self.assertEqual(result.paths, expected)
+        self.assertEqual(result.files, expected)
+        self.assertEqual([row for row in git.argv if row[0] == "add"],
+                         [("add", "--", *expected)])
+        self.assertTrue(result.published)
+        self.assertTrue(verify_published(self.repo, expected, result.local_commit, self.ref))
+        self.assertEqual(result.remote_commit, self.remote_head())
+
+    def test_empty_list_and_empty_directory_do_not_publish(self):
+        for paths in ([], [self.run_dir.relative_to(self.repo).as_posix()]):
+            with self.subTest(paths=paths):
+                git = RecordingGit(self.repo)
+                result = publish(self.repo, paths, "Nothing to publish", self.ref, git=git)
+                self.assert_unchanged(result, git, self.initial)
+                self.assertEqual(result.paths, ())
+                self.assertEqual(result.files, ())
+        self.assertEqual(self.remote_head(), self.initial)
+
+    def test_already_committed_paths_publish_and_verify_the_existing_commit(self):
+        target = self.step().relative_to(self.repo).as_posix()
+        self.raw(self.repo, "add", "--", target)
+        self.raw(self.repo, "commit", "-m", "External checkpoint")
+        head = self.raw(self.repo, "rev-parse", "HEAD")
+        self.assertEqual(self.remote_head(), self.initial)
+        for already_remote in (False, True):
+            with self.subTest(already_remote=already_remote):
+                git = RecordingGit(self.repo)
+                result = publish(self.repo, [target], "Already in HEAD", self.ref, git=git)
+                self.assertTrue(result.published)
+                self.assertFalse(result.committed)
+                self.assertEqual(result.local_commit, head)
+                self.assertEqual(result.remote_commit, head)
+                self.assertEqual(self.remote_head(), head)
+                self.assertRegex(result.verified_line or "", VERIFIED_RE)
+                self.assertEqual(self.raw(self.repo, "rev-parse", "HEAD"), head)
+                commands = [row[0] for row in git.argv]
+                for command in ("push", "ls-remote", "fetch", "ls-tree"):
+                    self.assertIn(command, commands)
+                self.assertNotIn("commit", commands)
+
+    def test_staged_and_working_tree_changes_still_publish_and_verify(self):
+        target = self.step()
+        self.raw(self.repo, "add", "--", target.relative_to(self.repo).as_posix())
+        self.raw(self.repo, "commit", "-m", "Initial target")
+        for staged in (True, False):
+            with self.subTest(staged=staged):
+                with target.open("w", encoding="utf-8", newline="") as handle:
+                    handle.write(str(staged) + "\n")
+                if staged:
+                    self.raw(self.repo, "add", "--", target.relative_to(self.repo).as_posix())
+                result = publish(self.repo, [target.relative_to(self.repo).as_posix()],
+                                 "Publish changed target", self.ref)
+                self.assertTrue(result.published)
+                self.assertTrue(result.committed)
+                self.assertIsNotNone(result.verified_line)
+                self.assertTrue(verify_published(
+                    self.repo, [target.relative_to(self.repo).as_posix()],
+                    result.local_commit, self.ref))
 
 
 # ------------------------------------------------------------------------- #
@@ -782,14 +1177,15 @@ class HardeningFindings(PublishFixture):
             with self.subTest(path=magic):
                 with self.assertRaises(PublishError) as caught:
                     publish(self.repo, [self.run_dir / magic], "m", self.ref)
-                self.assertEqual(caught.exception.code, "PATH_NOT_EXPLICIT")
+                expected = ("PATH_MISSING" if os.name == "nt" and magic == "a\\b.md"
+                            else "PATH_NOT_EXPLICIT")
+                self.assertEqual(caught.exception.code, expected)
 
     def test_item43_what_is_scanned_is_what_git_would_stage(self):
         target = self.step()
         git = publish_module.LocalGit(self.repo)
-        self.assertEqual(
-            set(publish_module._scan_set(git, [str(target.relative_to(self.repo))])),
-            {str(target.relative_to(self.repo))})
+        name = target.relative_to(self.repo).as_posix()
+        self.assertEqual(set(publish_module._scan_set(git, [name])), {name})
         # An ignored neighbour is neither staged nor scanned ...
         (self.repo / ".gitignore").write_bytes(b"experiments/loops/RUN-01/ignored.txt\n")
         (self.run_dir / "ignored.txt").write_bytes(b"not published\n")
@@ -881,10 +1277,11 @@ class HardeningFindings(PublishFixture):
         self.assertEqual(self.remote_head(), self.initial)
 
     def test_item45e_a_non_utf8_path_name_is_refused_before_the_add(self):
-        raw = os.fsdecode(b"experiments/loops/RUN-01/\xff\xfe.json")
-        (self.repo / raw).write_bytes(b"{}\n")
+        raw = b"experiments/loops/RUN-01/\xff\xfe.json"
+        if os.name != "nt":
+            (self.repo / os.fsdecode(raw)).write_bytes(b"{}\n")
         with self.assertRaises(PublishError) as caught:
-            publish(self.repo, [raw.encode("utf-8", "surrogateescape")],
+            publish(self.repo, [raw],
                     "Publish an undecodable name", self.ref)
         self.assertEqual(caught.exception.code, "PATH_NOT_EXPLICIT")
         self.assertEqual(self.remote_head(), self.initial)
