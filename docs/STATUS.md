@@ -905,3 +905,8 @@ Independent custody:3204 byte-equal copies of1314 originals;80/80 archived P02-c
 ### REC-20260916-F judged R001 publication underway - 2026-09-16T20:45:58.485731+00:00
 
 Delivery A and the already-published Delivery B are APPROVED-AS-CORRECTED; no further source-code fix was required. The publisher reviewed3275 paths: REPORT, ten readings, three append-only records and3261 custody files. Fresh origin equals65a1a45cbf1722f339682488c46d27f5ba236d72; no fast-forward was needed. R001 retains no witnessed completed correct-loop/wrong-native error correction, P01-P07 baseline sufficiency and P08 censoring. Branch-only publication and separate verified acknowledgement are pending; no provider calls or main merge. R002 and work/w18 remain with the concurrent worker. Next: verify both requested pushes and hand off; further inquiry requires its separately authorized scope.
+
+
+### REC-20260916-F R001 delivery verified - 2026-09-16T20:48:40.570644+00:00
+
+Published3275 approved paths on claude/project-state-direction-j5rbun at 81bc2a76f25384fc77cebcafc3899b24e3373003, tree f0a540c993e9fb6e6bfc9fe92fb5a34eb1da135a. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed at 2026-09-16T20:47:50Z. Delivery A is complete; the approved published Delivery B required no additional code correction. The negative endpoint finding and P08 censoring remain unchanged. This separate acknowledgement checkpoint is pending its own remote verification, which will be reported with final Git status and .env tracking check in the publisher handoff. Next authorized work remains the concurrent R002 worker scope or a separately directed follow-up; no provider calls or main merge occurred.
