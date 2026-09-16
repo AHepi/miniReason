@@ -1,0 +1,64 @@
+{
+  "schema_version": "minireason.reason.recipe.v1",
+  "ceilings": {
+    "completion_tokens": 8192,
+    "native_completion_tokens": 32768,
+    "wall_seconds": 300
+  },
+  "inventory": [
+    "work/w12/INVENTORY.md#inv-02",
+    "work/w12/INVENTORY.md#inv-03",
+    "work/w12/INVENTORY.md#inv-08",
+    "work/w12/INVENTORY.md#inv-09",
+    "work/w12/INVENTORY.md#inv-11",
+    "work/w12/INVENTORY.md#inv-12",
+    "work/w12/INVENTORY.md#inv-01"
+  ],
+  "components": {
+    "conjecture": "Makes a prose working answer available to criticism and later use. Holds fixed the exact problem text, declared conjecturer endpoint and completion ceiling; statements remain fallible working claims.",
+    "criticism": "Makes explicit objections available, each naming the claim or consequence it would defeat. Holds fixed the current working answer and exact problem; criticism remains fallible and may return an empty list. After allowed recovery, CEILING_HIT, TRANSPORT_OR_RESPONSE_ERROR or SCHEMA_FAILURE marks that critic unavailable; the cycle continues only if at least one critic returns a parsed list. Two separate Qwen and GLM critics receive the same answer, and both differ in lineage from the DeepSeek conjecturer; this provides an explicit multi-family fork. Critics receive prior objections with dispositions and the rival when present; each objection must name a specific claim or step and checkable evidence or derivation that would show it wrong, rather than merely request caveats. Visible working is separate from final objection text; each final text is at most 1200 characters.",
+    "return": "Delivers every open objection verbatim to the conjecturer input. Holds fixed objection identity and requires taken-up, rejected-with-reason or unresolved with an explanation for every delivered objection; earlier answers remain preserved. With closing_return enabled, one conditional final return gives all open objections a final disposition if any use objection remains open after the last cycle.",
+    "use": "Pose a concrete question depending on the working answer. Derive its answer from the problem alone with a public derivation, then separately from the working answer. Raise an objection if they disagree or the working answer cannot decide. Both derivations remain fallible; this is not an independent correctness certificate. After allowed recovery, CEILING_HIT, TRANSPORT_OR_RESPONSE_ERROR or SCHEMA_FAILURE marks use unavailable and the cycle completes without use objections. Optional visible working stays in local records and is excluded from downstream prompt history.",
+    "stop": "Ends at the requested cycle count with cycle_budget, or when every current critic returns an empty objection list and use raises none and no unresolved objection remains with no_new_objections. Holds fixed these mechanical stopping conditions; neither establishes correctness.",
+    "baseline": "When requested, runs the exact problem once bare on the conjecturer endpoint and once with native thinking when an explicit control is available. Uses an 8192 bare ceiling and 32768 native ceiling; baseline failures are recorded without stopping the loop; all outputs are retained for reading without a computed comparison. Extra loop calls remain a resource difference.",
+    "scheduling": "Runs dependency-ready roles sequentially for transparent personal use. Holds causal order conjecture, optional rival, critics, return and use; it makes no claim from historical wave scheduling.",
+    "thinking": "Each seat declares native, off or gateway-default. All shipped direct DeepSeek seats use native thinking; Ollama seats use their declared native /api/chat endpoints with thinking off via the existing think=false extra. Compatibility /v1 Ollama routes remain gateway-default because their thinking control is unsupported. The requested wire setting does not establish that a model honored it; reasoning presence remains recorded. Every seat declares medium reasoning effort; return and the native baseline reuse the conjecture effort. DeepSeek currently maps medium to high, so this is not an established effort reduction. Return reuses the conjecture seat setting. Bare baseline overrides off; native baseline overrides native when supported. Native and gateway-default routes may expose hidden reasoning and use the 32768 native_completion_tokens ceiling for hidden reasoning plus the public answer; only off uses the 8192 completion_tokens ceiling. A native loop ceiling stop permits one declared off fallback at that same ceiling. Hidden reasoning is never persisted."
+  },
+  "name": "cross-family",
+  "cross_family": true,
+  "seats": {
+    "conjecture": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium"
+    },
+    "critics": [
+      {
+        "endpoint": "ollama/qwen3.5-397b.native",
+        "thinking": "off",
+        "reasoning_effort": "medium"
+      },
+      {
+        "endpoint": "ollama/glm-5.3.native",
+        "thinking": "off",
+        "reasoning_effort": "medium"
+      }
+    ],
+    "use": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium"
+    },
+    "rival": null
+  },
+  "lineages": {
+    "deepseek-flash": "deepseek",
+    "ollama/qwen3.5-397b.native": "qwen",
+    "ollama/glm-5.3.native": "glm"
+  },
+  "limitations": [
+    "Personal composition is not a finding from a matched study.",
+    "Ollama native /api/chat uses the existing think control; model compliance is not established by this recipe."
+  ],
+  "closing_return": true
+}

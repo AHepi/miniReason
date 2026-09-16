@@ -1,0 +1,59 @@
+{
+  "baselines": {
+    "bare": "COMPLETE",
+    "native": "COMPLETE"
+  },
+  "calls": 13,
+  "completed_cycles": 1,
+  "failed_cycle": 2,
+  "mode": "live",
+  "objections": [
+    {
+      "born_cycle": 1,
+      "defeats": "The claim that Step 2 results in y=7 and the derived emitted symbol 'E'.",
+      "history": [
+        {
+          "cycle": 1,
+          "reason": "New objection awaiting operative return.",
+          "status": "unresolved"
+        },
+        {
+          "cycle": 1,
+          "id": "c0001-k01-o001",
+          "reason": "The objection misreads Step 1. At Step 1 A,L, the simultaneous update gives new x=2+5=7 and new y=x+3=2+3=5, not y=7. Thus Step 2 pre-step values are x=7, y=5. B,R then gives new x=7+5=12≡2 and new y=x+2y=7+2*5=17≡7, exactly as the working answer states. The claim that Step 2 should use y=7 and yield y=1 is false.",
+          "status": "rejected-with-reason"
+        }
+      ],
+      "id": "c0001-k01-o001",
+      "reason": "The objection misreads Step 1. At Step 1 A,L, the simultaneous update gives new x=2+5=7 and new y=x+3=2+3=5, not y=7. Thus Step 2 pre-step values are x=7, y=5. B,R then gives new x=7+5=12≡2 and new y=x+2y=7+2*5=17≡7, exactly as the working answer states. The claim that Step 2 should use y=7 and yield y=1 is false.",
+      "source": "ollama/qwen3.5-397b.native",
+      "status": "rejected-with-reason",
+      "text": "Step 2 calculation error: The transition is B,R -> A. The rule for New x is 'x + 5'. Using pre-step values x=7, y=7 (from Step 1), New x should be 7 + 5 = 12 ≡ 2 (mod 10). The working answer correctly calculates x=2. However, the rule for New y is 'x + 2y'. Using pre-step values x=7, y=7, New y should be 7 + 2*7 = 7 + 14 = 21 ≡ 1 (mod 10). The working answer claims y=7 (calculating 7+2*5=17=7), incorrectly using the old y value from Step 0 (y=5) instead of the current pre-step y value (y=7). This invalidates Step 2 and all subsequent steps."
+    },
+    {
+      "born_cycle": 1,
+      "defeats": "The validity of the trace from Step 3 onwards and the final emitted word.",
+      "history": [
+        {
+          "cycle": 1,
+          "reason": "New objection awaiting operative return.",
+          "status": "unresolved"
+        },
+        {
+          "cycle": 1,
+          "id": "c0001-k01-o002",
+          "reason": "This objection depends on the false Step 2 premise in c0001-k01-o001. Step 2 correctly ends with x=2, y=7, so Step 3 A,R correctly uses those values: new x=2*2+7=11≡1 and new y=7+4=11≡1. The later trace and emitted word are not invalidated on this ground.",
+          "status": "rejected-with-reason"
+        }
+      ],
+      "id": "c0001-k01-o002",
+      "reason": "This objection depends on the false Step 2 premise in c0001-k01-o001. Step 2 correctly ends with x=2, y=7, so Step 3 A,R correctly uses those values: new x=2*2+7=11≡1 and new y=7+4=11≡1. The later trace and emitted word are not invalidated on this ground.",
+      "source": "ollama/qwen3.5-397b.native",
+      "status": "rejected-with-reason",
+      "text": "Step 3 dependency failure: Because Step 2 produced incorrect register values (x=2, y=7 instead of x=2, y=1), the inputs to Step 3 (A,R) are wrong. The working answer uses x=2, y=7 to compute Step 3. Correct pre-step values should be x=2, y=1. Consequently, the calculation 'x=2*2+7=11=1' and 'y=7+4=11=1' in the working answer is based on faulty premises, making the result coincidental or incorrect and invalidating the trace from this point forward."
+    }
+  ],
+  "run_id": "20260916T103424Z-04bf836ad4-795717",
+  "stop_reason": "SCHEMA_FAILURE",
+  "updated_epoch": 1789555002.4154766
+}

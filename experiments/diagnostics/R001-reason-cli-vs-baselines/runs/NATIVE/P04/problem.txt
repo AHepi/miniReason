@@ -1,0 +1,55 @@
+P04. Defined SQL left-join semantics
+
+Use only the tables, query, and semantic rules below. Return the ordered output rows as team, rows_seen, valued, total.
+
+Table agents has columns id, team, threshold, enabled and these rows:
+
+1, Red, 5, 1
+2, Red, 7, 0
+3, Blue, 6, 1
+4, Blue, 8, 1
+5, Gold, 4, 1
+
+Table events has columns agent_id, status, value and these rows:
+
+1, ok, 6
+1, ok, 4
+2, ok, 10
+3, ok, NULL
+4, ok, 9
+4, bad, 12
+6, ok, 10
+
+The query is:
+
+SELECT a.team,
+       COUNT(*) AS rows_seen,
+       COUNT(e.value) AS valued,
+       SUM(COALESCE(e.value, a.threshold)) AS total
+FROM agents AS a
+LEFT JOIN events AS e
+  ON e.agent_id = a.id
+ AND e.status = 'ok'
+ AND e.value >= a.threshold
+WHERE a.enabled = 1
+GROUP BY a.team
+HAVING COUNT(e.value) < COUNT(*)
+ORDER BY total DESC, a.team ASC;
+
+Apply these exact semantics:
+
+- Tables and intermediate results are bags (multisets): each listed row occurrence contributes separately, and no duplicate elimination is performed.
+
+- A comparison with NULL has truth value UNKNOWN, except that this task does not use IS NULL.
+- For the ON clause, only TRUE qualifies an event row. FALSE and UNKNOWN do not qualify it.
+- For each agents row, LEFT JOIN emits every qualifying event row. If none qualifies, it emits exactly one synthetic row that retains the agents columns and gives every events column NULL.
+- WHERE is applied after the join and retains only rows for which its condition is TRUE.
+- GROUP BY forms one group for each retained team value.
+- COUNT(*) counts every row in a group. COUNT(e.value) counts only rows whose e.value is not NULL.
+- COALESCE(e.value, a.threshold) is e.value when it is not NULL and otherwise is a.threshold. SUM adds that quantity over all rows in the group.
+- HAVING is applied after aggregation.
+- ORDER BY sorts larger total first, breaking a tie by team in ascending alphabetical order.
+
+Give the final ordered rows and enough working to show the joined rows and group aggregates.
+
+Work from the supplied prose only. No code execution, calculators, external tools, or retrieval are available.

@@ -1,0 +1,24 @@
+P03
+
+A deterministic transducer has states A, B, and C, two decimal registers x and y, and input symbols L and R. Initially the state is A, x is 2, and y is 5.
+
+For each input symbol, select one row of the table using the pre-step state and the current input. Compute both new register values from the same pre-step values of x and y, then install the next state and both registers. All register arithmetic is modulo 10, with each register represented by its unique residue in {0,1,...,9}.
+
+| Pre-step state | Input | Next state | New x | New y |
+| --- | --- | --- | --- | --- |
+| A | L | B | x + y | x + 3 |
+| A | R | C | 2x + y | y + 4 |
+| B | L | C | x + 2y | x + y |
+| B | R | A | x + 5 | x + 2y |
+| C | L | A | 3x + y | y + 6 |
+| C | R | B | x + y + 1 | 2x + y |
+
+After each step, emit E when the new x is less than the new y, T when they are equal, and G when the new x is greater than the new y.
+
+Process this input from left to right:
+
+LRRLLRLRRLLRRL
+
+Report the final state, final x, final y, and the complete 14-symbol emitted word. Show enough of the trace to make the simultaneous updates checkable.
+
+Work from the prose only. Do not use code or retrieval.

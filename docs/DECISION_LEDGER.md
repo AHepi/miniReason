@@ -2493,3 +2493,182 @@ CHOICE / REASON / GOAL / PENDING: Complete the interrupted acknowledgement on cl
 
 
 REC-20260916-F completion gate at 2026-09-16T18:45:33.834252+00:00: Root reviewed the preserved acknowledgement and current recovery appends; credential-shape and whitespace checks pass. Fresh fetch confirms local and remote owner branch both 2564d36bce45181430baac9e20f7cc5e558cf2e5, with no owner advance. Independent mechanical check confirms all three exact HEAD byte prefixes, the exact three modified paths and empty index; delegate activity is complete. Proceed with the already authorized exact title/trailer commit and non-forced branch push, then fresh fetch/ls-remote/commit/tree/clean-status verification. Publication remains pending until those external outcomes pass; no further tracked append follows the seal.
+
+
+### REC-20260916-F W15 reader opening - 2026-09-16T19:47:41.589651+00:00
+
+Choice: read all R001 occurrences and produce the eight guarded readings, inventory, summary, report and byte-preserved custody under the current mandate. Reader is OpenAI Codex, GPT-6-based (exact runtime variant is not independently exposed); independent of DeepSeek/Qwen/GLM participant seats. No provider/model calls, subagent model dispatch, .env reads or Git mutations. Root retains the substantive reading. Current user instructions supersede historical immediate-publication requirements; a separate judge/publisher follows. The personal minireason-progress-ledger skill was not found in the installed skill roots by SKILL.md discovery; use explicit UTC five-minute receipts. Initial required-order reads and logger discovery preceded activity bootstrap; the first attempted Python -c bootstrap failed before execution because of PowerShell quote loss. This is a logging deviation, not participant evidence. Subsequent operations use UTF-8 stdin scripts and logged begin/outcome receipts. Pending: read complete manifest and traces, distinguish archived failures from current outcomes, preserve raw bytes, make guarded conclusions.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T19:49:47.483533+00:00
+
+Evidence boundary fixed: all 16 current loop runs have good terminal states; eight archived predecessors must remain separate. Choice: inventory every manifest attempt, retain full public response and wire custody, and interpret current four-condition outcomes with historical supplements. Mechanical extraction will preserve complete text; no response will be reduced to an automated quality score. Root alone reads and judges, honoring the explicit no-model-call mandate. Initial console UTF-8 failure and guessed outcome filename failure are recorded in activity; subsequent reads use -X utf8 and observed response.json paths. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T19:53:44.637525+00:00
+
+Substantive finding: current native P01-P07 reaches the sealed answers; P08 bare/native both end CEILING_HIT, hence undecidable rather than wrong. Both current loop initial answers already reach every requested endpoint. The archived P02-single first occurrence visibly changes 2 to false 38 through critic uptake, then 38 to 41 through use-seat objection uptake before a later schema stop. Preserve that local correction without promoting the failed run to a final answer or a critic-seat witness. Current P08-single repairs a real completeness-of-DP argument while retaining 253. Root will distinguish explanation repair, false-objection resistance, and endpoint correction, and apply the plan claim ceiling. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T19:55:15.063012+00:00
+
+Choose targeted read-only arithmetic checks for disputed use subquestions and P08 proof details, not new participant tests. The archived P03-single use has a complete underlying provider response (5685 reported tokens) but no outer outcome; retain this distinction and its INTERRUPTED_CALL run status. One archived transport record reports 26927141 ms, so aggregate elapsed must expose that outlier instead of silently imposing the requested 300-second wall. Credential scan candidates are hashes, paths, identifiers and one repeated arithmetic expression; no secret-shaped credential detected without opening .env. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T19:59:07.093437+00:00
+
+Completed INVENTORY.md, published-scope runs/INVENTORY.md and custody documents locally. All24 run directories are preserved at50 condition destinations (3204 files; maximum152-character absolute path), each with source SHA-256 manifest. No provider calls or Git changes. Distinct operational totals:183 logical calls,206 attempt intents,21 repairs,2 fallbacks; known489409 prompt +1254018 completion =1743427 total tokens with6 usage-unknown transport attempts. Current selected occurrences account for131 logical/144 attempts and1153389 tokens; archived attempts are retained separately. Full reading/report drafting remains pending; publication is not claimed. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.210839+00:00
+
+Drafting decisions and interpretive limits are recorded in work/w15/judgments.json and objection-notes.json. BARE P06 explicitly retracts its opening wrong order and is correct; BARE P07 has a false No alongside a correct final recap, so the strict no-contradictory-assertion reading marks it incorrect while preserving the alternate implicit-retraction reading for the judge. No native-loop inference depends on that ambiguity. The first reading-render attempt stopped before writing a document because Windows relative hash keys used backslashes; correct to explicit POSIX citation keys and rerun only local drafting. No model/evidence changes. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.416719+00:00
+
+Completed guarded P01 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P01.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.432088+00:00
+
+Completed guarded P02 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P02.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.459458+00:00
+
+Completed guarded P03 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P03.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.477229+00:00
+
+Completed guarded P04 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P04.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.479842+00:00
+
+Completed guarded P05 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P05.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.495747+00:00
+
+Completed guarded P06 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P06.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.522597+00:00
+
+Completed guarded P07 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P07.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: baseline sufficient; no required-answer correction beyond NATIVE. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:04:00.539049+00:00
+
+Completed guarded P08 reading locally at experiments\diagnostics\R001-reason-cli-vs-baselines\readings\P08.md. It includes exact current and historical answer/objection/disposition/use quotations, hashes, conditions, critical episodes and basin comparison. Decision: incomplete native comparison with correct loop endpoints and visible explanation repair. Source evidence remains unchanged; next task is the remaining readings and cross-problem synthesis. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:09:54.793991+00:00
+
+CADENCE MISS: 354.3 seconds since preceding substantive receipt; no backdating. Draft SUMMARY and REPORT now state the direct negative endpoint finding, seven baseline-sufficient cases and P08 censoring, while retaining P08 explanation repair and the archived P02 use correction. CADENCE: drafting the long report crossed the five-minute receipt boundary; this receipt records actual elapsed time without backdating. No publication was due under the current no-git mandate. A further malformed archived P02 critic object visibly concludes no objection despite its invalid JSON; publish a separate parsing supplement with its raw bytes rather than silently rewriting the completed P02 reading. Pending: source/quote/delivery and resource checks, final documents, STATUS and handoff checklist. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:09:54.860664+00:00
+
+Completed P02-SUPPLEMENT.md locally: a separately identified malformed archived critic object is now documented as self-defeating attempted criticism, repaired to empty and never delivered. Original P02 reading and provider bytes remain unchanged. Next: finish verification and publishable-scope summary/report handoff, without Git mutation. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:11:46.399703+00:00
+
+Review found the repository-wide runs/ ignore rule also hides the requested study custody copies. Do not change .gitignore or stage files in this reader task. Preserve the exact requested status-based PUBLISH-CHECKLIST and add a separate explicit EVIDENCE-PATHS list plus PUBLISH-NOTES so the judge/publisher sees every ignored custody file. Exact provider request audit confirms all54 checked objection/return deliveries include their recorded text and target; no hidden-reasoning-persisted flag is true. RUN attempt/repair/fallback counts reconcile to the provider inventory. Pending final document copy, append-only completion receipts and custody recheck. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:11:46.402977+00:00
+
+Completed experiments\diagnostics\R001-reason-cli-vs-baselines\readings\SUMMARY.md locally after quotation/resource review. Direct answer: no completed correct-over-wrong-native route is witnessed; baseline sufficient on P01-P07, P08 native censored. Retained explanation repair, historical use-only correction, false-objection resistance, deviations, named event bookkeeping, successor conditions and verbatim PLAN ceiling. Document is ready for the following independent judge; no publication or model call occurred. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:11:46.402977+00:00
+
+Completed experiments\diagnostics\R001-reason-cli-vs-baselines\REPORT.md locally after quotation/resource review. Direct answer: no completed correct-over-wrong-native route is witnessed; baseline sufficient on P01-P07, P08 native censored. Retained explanation repair, historical use-only correction, false-objection resistance, deviations, named event bookkeeping, successor conditions and verbatim PLAN ceiling. Document is ready for the following independent judge; no publication or model call occurred. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:12:28.959785+00:00
+
+Correction to the preceding delivery-audit count: the written audit contains76 objection/return membership rows, not54. All76 have exact ID/text/target membership in provider request messages, including prior history where applicable. The substantive delivery finding is unchanged; this append preserves the mistaken count rather than rewriting it. Final SUMMARY and REPORT are completed locally. Next: final SHA/prefix/format checks, explicit ignored-evidence handoff, STATUS and completion receipt. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:13:39.554945+00:00
+
+Final byte verification passed for1314 original files and3204 custody copies; HEAD/branch/index and append-only document prefixes match the opening baseline. Citation check found two reader-generated links to absent ANSWER/TRACE views in the archived P03-single interruption. Correct only those reader links to explicit missing-view notes, preserving the prior local draft in work/w15; do not fabricate the missing artifacts. Three apparent P05 links are literal bracketed algebra followed by parentheses inside model quotations, not intended citations. Next: final status/completion handoff. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F W15 reader - 2026-09-16T20:15:04.858376+00:00
+
+COMPLETION / STOP DECISION: The authorized R001 reading/report/custody task is complete locally, with independent judge/publication next. Direct answer: no completed correct-loop/wrong-native criticism-return-use route is witnessed; NATIVE P01-P07 already succeeds and P08 native is censored. Both selected initials already have the correct answers. Preserve P08-SINGLE explanation repair and archived P02-SINGLE use-only38-to41 correction before schema failure; no five-conjunct witness or harmful correct-to-incorrect loop endpoint is claimed. Operational figures:183 logical calls,206 attempts,21 repairs,2 fallbacks;489409 prompt+1254018 completion=1743427 known tokens with6 usage-unknown attempts;33078874ms elapsed including the26927141ms outlier. Current131 logical/144 attempts/1153389 tokens/27 cycles; archived52 logical/62 attempts/590038 known tokens/5 completed cycles. Custody verification:1314 originals unchanged;3204 byte-equal copies; maximum152 characters;76 exact objection-delivery audit rows; no key value detected without reading .env. STATUS names the pending judge/publisher and the ignored-evidence path list. Stop because this bounded mandate is fulfilled, not because inquiry is exhausted. Reopen on a concrete oracle/task/custody defect, a challenged reading such as P07 BARE, or separately authorized successor. No Git state change or provider/model call. Publication remains assigned to the following publisher under the current no-git-change mandate.
+
+
+### REC-20260916-F independent JUDGE review15 opening - 2026-09-16T20:18:22.682143+00:00
+
+CHOICE: independently judge the uncommitted R001 reading and the published return-contract fix; verify all 32 verdict cells, episode quotations/counts/source claims, custody, and offline tests; correct only authorized delivery code/prose and append records. WHY: owner requests retrospective review before joint publication. CONTRIBUTION: separate semantic evidence from operational delivery and leave reproducible corrections. STATE: pending. No provider/model calls, .env reads or Git state changes; no writes under R002-* or work/w18. Root performs this review without delegating model work under the explicit no-model-call limit. Publication cadence is superseded by current read-only Git instruction; explicit substantive UTC cadence starts now.
+
+BOOTSTRAP ERRATUM: initial skill, failure guide and activity-logger reads preceded logger setup. A subsequent large context read exceeded displayed output and personal-skill search hit an inaccessible nested SKILL.md; bounded rereads and permission-tolerant exact-frontmatter discovery will recover context. No review result was inferred from truncation. All notes, checks and corrections will be retained under work/review15; Python UTF-8 newline-empty writes only.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:20:41.648389+00:00
+
+FINDING / CHOICE: all 32 selected final-answer verdicts independently match PLAN line82 and sealed answers. P07 BARE retains an explicit false No without explicit withdrawal, so incorrect is upheld; P06 explicitly retracts its wrong opening, so correct is upheld. Both P08 baselines are CEILING_HIT and undecidable, while both loops supply253 plus all schedule facts. Preserve the table. Next verify quoted episodes/counts, GLM provider diagnosis, custody and return-contract code/tests. These checks constrain endpoint claims without adjudicating explanatory adequacy from output alone. STATE: Delivery A partially verified; Delivery B pending.
+
+CADENCE: 139.0 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:24:26.028602+00:00
+
+FINDING / NEXT: all148 reason tests and26 docs-pin tests pass at the supplied HEAD. Source inspection confirms v2 required/open dispositions, optional explicit resolved-ID re-disposition, exact carried status/reason, extra-field persistence and named schema diagnostics. No code defect identified yet; checking historical exact messages and archived bytes before approval. The inspected GLM record is an actual length stop at8192 with think:false, not transport/schema; verify all nine before diagnostic completion. FW5 active-route, contrast and critical-episode quotations match cited passages; historical-New/protected-repair/recursive-limit citations need more precise source anchors. STATE: continue bounded evidence audit, no Git/publication or provider calls.
+
+CADENCE: 224.4 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:28:24.734848+00:00
+
+EVIDENCE / CORRECTION DECISION: custody independently matches all3204 copied files at50 destinations to1314 original files and all SHA-256 manifest entries; archive P02-cross-failed-1 has80/80 hashes equal to the pre-fix W16 snapshot and the launcher retains its identity/source version. All21 saved repair prompts reconstruct exactly. All nine selected unavailable critics are GLM c0001/c0002/c0003-k02 in P02/P05/P08: INCOMPLETE_GENERATION/length at8192 tokens, think:false; outer CEILING_HIT, no transport/schema failure. The12 self-withdrawing/confirmatory raw objects in8 attempts are verified, with empty repaired delivered lists; P02 object2 is separately an unsupported verification demand. The3 named episodes are supported as proof clarification, historical use-only38-to41 correction, and criticism of criticism, never the five-conjunct witness. CHOICE: preserve all evidence and verdict cells; correct draft prose to resolve P07 under PLAN, give P04 exact quotations and category, remove unnecessary strongest/clearest phrasing and generic initial-or-missing placeholders, sharpen FW5 limit citations, and add the GLM operational diagnosis/successor control. Save every original and exact old-to-new replacement under review15. WHY/CONTRIBUTION: make the approved reading precise and auditable without upgrading the findings. STATE: corrections pending; no code defect found.
+
+CADENCE: 238.7 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:29:41.012249+00:00
+
+ADDITIONAL READING DEFECT / CHOICE: the detailed archived five-conjunct fields reuse generic current-run wording, despite accurate history elsewhere. Replace initial correct-or-missing with the actual available state for each cited occurrence; replace archive current-run language with this occurrence; cite each historical native comparator, including P03-CROSS old2 transport-unavailable rather than the later correct native answer. For archived P02-SINGLE old1 explicitly separate the critic's valid challenge to2 plus false38 proposal from the later use-only38-to41 correction. This is a local reading correction, not a changed observation or a table reversal. Source transcripts and old-to-new records will preserve both versions. STATE: correction implementation now authorized by the owner and this receipt.
+
+CADENCE: 76.3 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:33:30.503524+00:00
+
+CORRECTIONS COMPLETED / NEXT: ten draft reading/report documents now have61 exact old-to-new replacement records, original-byte snapshots and diffs under work/review15/corrections. All32 table verdicts remain unchanged. Historical predicate fields now distinguish missing initials and historical native failure; P02's use-only correction is explicit. Report and summary diagnose all nine GLM length stops and name the successor resource-control requirement; FW5 limits cite New728-750, Repair787-802 and RC1048-1062. Four named objection-to-return-to-use paths have exact ID/text/target/returned-answer membership; all16 current initial answers appear verbatim in the case readings. Complete copied-evidence secret scans have zero high-risk or unexplained broad candidates; names occur in configuration references, no exact-value comparison with .env was attempted. NEXT: finish original-failure counterfactual replay, final notes/checklist and read-only identity/scope checks. STATE: both deliveries provisionally acceptable as corrected; no source-code change required.
+
+CADENCE: 229.5 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:38:02.363487+00:00
+
+FINAL JUDGE / BOTH DELIVERIES: Delivery A APPROVED-AS-CORRECTED; Delivery B APPROVED-AS-CORRECTED for the published return-contract fix, with additional code defect NOT FOUND. All32 verdict cells are verified and unchanged. Ten reading/report documents received61 exact replacement records: occurrence-specific archive predicates, resolved P07 contradiction, exact P04 quotations/category, precise FW5 citations, neutral wording, and provider-grounded GLM diagnosis. The12 raw self-withdrawing/confirmatory objects and9 unavailable GLM critics are verified; all9 are INCOMPLETE_GENERATION/length at8192 tokens with think:false, classified CEILING_HIT, not schema or transport. PLAN five-conjunct witness NOT FOUND; baseline sufficient P01-P07 and incomplete P08 remain the honest conclusion. All3204 copies/1314 originals and80 pre-fix archive hashes agree; all21 repair prompts reconstruct and8/8 original return failures pass counterfactual v2 parsing without changed answers. Required suites pass148+26. Source/workflow bytes equal HEAD, index empty, committed ledger/STATUS/activity prefixes preserved; changed-document links, hashes, claim ceiling, table agreement, whitespace and character checks pass. No provider/model call, .env read, Git mutation or R002/w18 access. Completed REPORT, INDEX preparation and publication checklist remain under work/review15; next authorized action belongs to the separate publisher. STOP decision: conclude after final handoff/checklist and unchanged-original recheck because this bounded review is complete; reopen on a concrete reading/contract/custody defect or separately authorized successor, not a resource-exhaustion claim.
+
+CADENCE: 271.9 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F independent JUDGE review15 - 2026-09-16T20:40:13.954222+00:00
+
+COMPLETION / HANDOFF: REPORT.md and INDEX.md are finalized under work/review15, with every requested transcript, all61 old-to-new correction records, test pastes,14-path filtered PUBLISH-CHECKLIST and3261-path ignored-evidence handoff. Final independent reread verifies1314/1314 original evidence hashes unchanged,33/33 sealed task pins unchanged, and exact designated FW5 SHA-256. The bootstrap activity begin now has an explicit late outcome at actual UTC; no backdating. All required work is complete locally and both verdicts remain APPROVED-AS-CORRECTED. The independent publisher may now review the handoff; this review makes no publication or Git-state claim beyond unchanged HEAD/tree/branch/index. Stop the bounded JUDGE task now; reopen only on a concrete defect or new owner mandate.
+
+CADENCE: 131.6 seconds since prior substantive receipt. Publication remains prohibited by the current read-only Git mandate.
+
+
+### REC-20260916-F publisher opening - 2026-09-16T20:42:47.904969+00:00
+
+CHOICE: publish judge-approved Delivery A from work/review15/PUBLISH-CHECKLIST.md and the explicitly authorized R001 custody runs directory, then publish the verified commit/tree acknowledgement. Both judge verdicts are APPROVED-AS-CORRECTED; no additional Delivery B code fix was required. WHY / CONTRIBUTION: preserve the corrected R001 reading and its evidence as a recoverable branch checkpoint without upgrading the finding. STATE: pending status, credential-pattern and exact-path checks, origin fetch, conditional non-overlapping fast-forward, explicit staging, non-forced pushes and commit/tree verification. Current user instructions override historical main publication: only claude/project-state-direction-j5rbun is authorized; never merge to main. R002-* and work/w18 belong to a concurrent worker and are excluded. No provider calls, .env read or staging, source edit or evidence alteration. Delegate only a bounded mechanical custody-list/count check; root retains review and sole Git/ledger publication. Progress skill exact-frontmatter search returned no match; explicit UTC timers start with this receipt. Bootstrap erratum: Store Python shim and historical venv path were unavailable; py -3.11 works. An oversized ledger/context read was truncated; use bounded rereads and do not infer omitted contents. These are host/read failures, not findings; transferable lesson: discover the current interpreter and bound displayed reads.
+
+
+### REC-20260916-F publisher review / publication decision - 2026-09-16T20:45:58.485731+00:00
+
+CHOICE: stage and publish3275 paths:14 checklist paths (three append-only records, REPORT and ten readings) plus3261 files under experiments/diagnostics/R001-reason-cli-vs-baselines/runs/. This nested custody directory is explicitly authorized despite the global runs ignore; top-level runs/, work/ and .env remain excluded. WHY / CONTRIBUTION: make the judge-corrected negative endpoint finding and complete successful/failed evidence recoverable. EVIDENCE: both APPROVED-AS-CORRECTED verdicts read; Delivery B requires no additional code fix; fresh origin and local HEAD both65a1a45cbf1722f339682488c46d27f5ba236d72, so no owner range or fast-forward applies. Full status reconciled to14 checklist entries plus179 concurrent R002 entries. Independent mechanical custody count:3261 unique listed files,3261 actual files,70367145 bytes, zero missing/extra/duplicate paths. All3275 publication files passed boundary-aware credential-pattern scanning without reading .env; committed ledger/STATUS/activity prefixes remain byte-identical, activity JSON parses. Root reviewed R001 REPORT and judge findings; existing independent148+26 offline tests are accepted without rerun. OPERATIONAL ERRATUM: initial loose credential regex matched a substring inside a pre-existing identifier at ledger line1421; word-boundary classification confirmed it is not a standalone credential prefix, and no matched bytes were printed. Transferable lesson: scan credential token boundaries and inspect redacted location metadata before classifying a hit. STATE: pending non-forced branch publication and exact commit/tree verification.
+
+
+REC-20260916-F publisher check outcome at 2026-09-16T20:47:16.725090+00:00: all3275 intended paths are staged. Whitespace check initially reported1410 trailing-space warnings; every warning is inside a preserved block quotation in the judged case readings, with zero generated-prose warnings. Apply the publication workflow immutable-quotation exception to those exact lines; retain every evidence byte and all other checks. This corrects the earlier check failure, without claiming an initially clean result. Lesson: classify quoted observations separately from authored prose. The independent mechanical helper has completed all activity appends. Proceed to the requested commit, non-forced branch push and exact verification; state pending.
