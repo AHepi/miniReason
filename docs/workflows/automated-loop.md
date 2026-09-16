@@ -647,3 +647,14 @@ verified existing commit; no new commit is needed when the selected files are cl
 ### Pending publication exception
 
 The empty-selection no-op above applies only when no publication remains pending and the selection is genuinely empty. A PUBLISH_PENDING receipt for the step key remains outstanding across retries, later failures and older COMPLETE(false) receipts. An empty selection with a difference from the last observed remote-tracking tree also requires publication. Those retries push the existing HEAD and read back the remote ref and tree; only a verified PUBLISHED result clears pending status. They record no new commit when there is nothing to stage.
+
+
+## 11. Opt-in contribution-pair reading rows (WAVE7)
+
+A future reviewed config can declare `reading_rows_builder: "pairs-v1"`. READ then resolves its declared keys through `src/minireason/loop/rows_pairs.py`; without the key it retains the H005 adapter and legacy canonical config fields. Existing USE_TABLE/READ step schemas and the guarded reader remain unchanged (tools/auto_loop.py:1906; src/minireason/loop/types.py:1150).
+
+The adapter enumerates criticism/response and response/carry candidate positions, retaining exact authored UTF-8 slices, full-file hashes, byte/line maps and frozen projection correspondence. No exact traceable referring passage means UNRESOLVED, never absent. S0 conditionally pins the builder and its source dependency inventory (src/minireason/loop/rows_pairs.py:188; tools/auto_loop.py:694).
+
+F003 proposes same-position RETURNED/ARCHIVED/RECODING/CHANGED/CARRIER comparisons. Withheld objection text is labelled archive context, outside operative target regions; its display does not establish delivery or use. `juxtapose` exposes separate candidate surfaces without automatic cross-case adjudication (src/minireason/loop/rows_pairs.py:347; experiments/diagnostics/F003-operative-return/PLAN.md:37-49). The draft's literal envelope limitation requires owner review (that PLAN:13).
+
+See `docs/design/loop-impl/WAVE7-INTERFACE.md` for the API, key mapping, 189/193-character computed provider paths and v5 departures; see `docs/design/loop-prereg-draft-2026-09-14/v6/` for the six prior-exposed admitted pilot rows and actual offline validation. These drafts authorize no run. A pair reference does not supply FW5's active reason-use witness or historical New (docs/sources/FW5-explanatory-construction.md:601,626-634,728-750).

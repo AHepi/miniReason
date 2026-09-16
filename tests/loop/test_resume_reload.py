@@ -148,6 +148,7 @@ class ResumeReloadL003Tests(unittest.TestCase):
 
     def test_real_l003_replays_identical_adjudicate_and_decide_digests(self):
         drv = self.driver
+        original_receipt_count = len(drv.ledger.records())
         original_tables = {
             drv.rel(drv.paths.reading_table): read_text(drv.paths.reading_table),
             drv.rel(drv.paths.comparison): read_text(drv.paths.comparison),
@@ -178,7 +179,7 @@ class ResumeReloadL003Tests(unittest.TestCase):
             print(f"L003 {filename}: exact outputs_sha256 MATCH {json.dumps(expected, sort_keys=True)}")
         self.assertFalse(decision.stop)
         self.assertEqual("chain_open", decision.reason)
-        self.assertEqual(26, len(drv.ledger.records()))
+        self.assertEqual(original_receipt_count, len(drv.ledger.records()))
 
     def test_cycle_publication_writes_lf_bytes(self):
         drv = self.driver

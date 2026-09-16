@@ -251,6 +251,8 @@ MODULE_PIN_KEYS: Mapping[str, str] = MappingProxyType({
 #: resource conditions (``ROLE_MAX_TOKENS``, the ``min(timeout, 300)`` wall,
 #: ``thinking``) are its constants and no config key carries them
 #: (CLONE-PATCH item 4); ``decide.py`` because the stop rule is its program.
+PAIR_SOURCE_PIN = "src/minireason/loop/rows_pairs.py"
+
 LOOP_SOURCE_PINS: tuple[str, ...] = (
     "src/minireason/loop/roles.py",
     "src/minireason/loop/decide.py",
@@ -696,6 +698,13 @@ class _Driver:
         wanted: list[str] = [rel for rel in PINNED_SOURCE_PATHS
                              if (root / rel).is_file()]
         wanted += [rel for rel in LOOP_SOURCE_PINS if (root / rel).is_file()]
+        if self.config.reading_rows_builder == "pairs-v1":
+            from minireason.loop import rows_pairs
+
+            wanted.append(PAIR_SOURCE_PIN)
+            for occurrence in _occurrence_dirs(root, self.config.occurrences):
+                wanted.extend(path.relative_to(root).as_posix()
+                              for path in rows_pairs.source_paths(occurrence))
         for name in ("obligations.json", "CEILING.md", _CALIBRATION_NAME):
             path = self.paths.run_root / name
             if path.is_file():
@@ -1897,6 +1906,33 @@ def _use_table(drv: _Driver, cycle: int) -> list[Mapping[str, Any]]:
 def _reading_rows(drv: _Driver, table: Sequence[Mapping[str, Any]]
                   ) -> tuple[list[dict[str, Any]], list[str]]:
     """The reader's table, and the declared keys this cycle's table cannot name."""
+
+    if drv.config.reading_rows_builder == "pairs-v1":
+        from minireason.loop import rows_pairs
+
+        pair_index: dict[str, Mapping[str, Any]] = {}
+        for occurrence in _occurrence_dirs(drv.modules.root(),
+                                           drv.config.occurrences):
+            for candidate in rows_pairs.build_rows(
+                    occurrence, repo_root=drv.modules.root()):
+                key = candidate["row_key"]
+                if key in pair_index:
+                    raise _fail("READING_ROW_UNRESOLVED",
+                                f"pair key has multiple source coordinates: {key}")
+                pair_index[key] = candidate
+        rows = []
+        unresolved = []
+        for key in drv.config.reading_set:
+            if not str(key).startswith(LEG_READING + "/"):
+                continue
+            found = pair_index.get(str(key))
+            if found is None or found["admission"] != "ADMITTED":
+                unresolved.append(str(key))
+                continue
+            rows.append({"row_key": str(key),
+                         "surface": rows_pairs.build_surface(found),
+                         "cell": cell_key_for(key)})
+        return rows, unresolved
 
     index = _table_index(table)
     rows: list[dict[str, Any]] = []

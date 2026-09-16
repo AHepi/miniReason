@@ -1146,12 +1146,14 @@ class LoopConfig:
     #: ``multicycle_commitment_study_multi_v2.MAX_PER_KEY``. The real ceiling is
     #: ``provider_openai_compat.slots_for``; this may not exceed it.
     max_per_key: int = 5
+    #: Absent preserves the historical H005 row adapter and canonical config.
+    reading_rows_builder: str | None = None
 
     _REQUIRED = frozenset({"run_id", "study", "occurrences", "runner", "cycle_budget",
                            "max_calls", "reading_set", "obligations_path", "graph_root",
                            "reopen_reasons", "audit"})
     _OPTIONAL = frozenset({"schema", "seats", "contrast", "timeouts", "publish_ref",
-                           "provider_mode", "max_per_key"})
+                           "provider_mode", "max_per_key", "reading_rows_builder"})
 
     @classmethod
     def load(cls, path: Path | str) -> "LoopConfig":
@@ -1199,7 +1201,12 @@ class LoopConfig:
         if mode not in PROVIDER_MODES:
             raise _fail("CONFIG_INVALID_VALUE",
                         f"provider_mode must be one of {list(PROVIDER_MODES)}")
+        builder = raw.get("reading_rows_builder")
+        if "reading_rows_builder" in raw and builder != "pairs-v1":
+            raise _fail("CONFIG_INVALID_VALUE",
+                        "reading_rows_builder must be pairs-v1 when declared")
         return cls(
+            reading_rows_builder=builder,
             run_id=_identifier(raw["run_id"], "run_id", "RUN_ID_INVALID"),
             study=_text(raw["study"], "study"),
             occurrences=occurrences,
@@ -1221,7 +1228,7 @@ class LoopConfig:
     def as_dict(self) -> dict[str, Any]:
         """The fully explicit config: every key present, every default resolved."""
 
-        return {
+        result = {
             "schema": CONFIG_SCHEMA,
             "audit": self.audit.as_dict(),
             "contrast": self.contrast.as_dict(),
@@ -1241,6 +1248,9 @@ class LoopConfig:
             "study": self.study,
             "timeouts": self.timeouts.as_dict(),
         }
+        if self.reading_rows_builder is not None:
+            result["reading_rows_builder"] = self.reading_rows_builder
+        return result
 
     def canonical_bytes(self) -> bytes:
         return canonical_json(self.as_dict())

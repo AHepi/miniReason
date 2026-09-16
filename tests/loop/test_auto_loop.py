@@ -1521,5 +1521,75 @@ class TheStatusAndReopenEntries(DriverFixture):
         self.assertEqual(recorded["reason"], "appellate-ruling")
 
 
+class PairRowsDriverIntegration(unittest.TestCase):
+    """Resolve real frozen pairs without initialization, dispatch or Git."""
+
+    OCCURRENCE = "experiments/diagnostics/F001-fork5-multifamily/occurrence-09"
+
+    def config(self, keys=(), builder=True):
+        raw = {
+            "run_id": "PAIR-TEST", "study": "offline pair adapter test",
+            "occurrences": [self.OCCURRENCE],
+            "runner": "tools/multicycle_commitment_study_multi_v2.py",
+            "cycle_budget": 1, "max_calls": 100,
+            "reading_set": list(keys), "obligations_path": "unused.json",
+            "graph_root": "work/w11/unused-graph", "reopen_reasons": [],
+            "audit": {"period": 1, "judge_err_max": 0.2, "streak_max": 2,
+                      "judge_err_max_account": "test", "streak_max_account": "test"},
+        }
+        if builder:
+            raw["reading_rows_builder"] = "pairs-v1"
+        return LoopConfig.from_mapping(raw)
+
+    def driver(self, config):
+        from types import SimpleNamespace
+        return SimpleNamespace(config=config,
+                               modules=auto_loop.Modules(repo_root=REPOSITORY),
+                               paths=SimpleNamespace(run_root=REPOSITORY / "work/w11/unused-run"))
+
+    def test_selected_builder_resolves_real_rows_and_missing_keys(self):
+        from minireason.loop import rows_pairs
+        candidates = rows_pairs.build_rows(REPOSITORY / self.OCCURRENCE,
+                                            repo_root=REPOSITORY)
+        keys = [r["row_key"] for r in candidates if r["admission"] == "ADMITTED"]
+        self.assertTrue(keys)
+        unknown = "h005-row/missing#u/ref/o"
+        rows, unresolved = auto_loop._reading_rows(
+            self.driver(self.config([*keys, unknown])), [])
+        self.assertEqual([r["row_key"] for r in rows], keys)
+        self.assertEqual(unresolved, [unknown])
+        for row in rows:
+            expected = next(r for r in candidates if r["row_key"] == row["row_key"])
+            self.assertEqual(row["surface"].text, rows_pairs.build_surface(expected).text)
+            self.assertEqual(row["cell"], auto_loop.cell_key_for(row["row_key"]))
+        self.assertEqual(auto_loop.planned_calls(self.config(keys))["rows"], len(keys))
+
+    def test_legacy_absence_preserves_config_shape_and_adapter(self):
+        config = self.config(builder=False)
+        self.assertIsNone(config.reading_rows_builder)
+        self.assertNotIn("reading_rows_builder", config.as_dict())
+        self.assertEqual(auto_loop._reading_rows(self.driver(config), []), ([], []))
+        self.assertEqual(LoopConfig.from_mapping(config.as_dict()).canonical_bytes(),
+                         config.canonical_bytes())
+
+    def test_unknown_builder_is_refused_before_read(self):
+        for value in (None, "pairs-v2", "", 1):
+            raw = self.config(builder=False).as_dict()
+            raw["reading_rows_builder"] = value
+            with self.assertRaises(LoopError) as caught:
+                LoopConfig.from_mapping(raw)
+            self.assertEqual(caught.exception.code, "CONFIG_INVALID_VALUE")
+
+    def test_pair_module_and_frozen_sources_are_pinned_only_when_selected(self):
+        legacy = auto_loop._Driver._path_pins(self.driver(self.config(builder=False)))
+        selected = auto_loop._Driver._path_pins(self.driver(self.config()))
+        self.assertNotIn(auto_loop.PAIR_SOURCE_PIN, legacy)
+        self.assertEqual(selected[auto_loop.PAIR_SOURCE_PIN],
+                         custody.sha256_path(REPOSITORY / auto_loop.PAIR_SOURCE_PIN))
+        self.assertTrue(any("/responses/" in p for p in selected))
+        self.assertTrue(any("/traces/" in p for p in selected))
+        self.assertTrue(set(legacy) <= set(selected))
+
+
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
