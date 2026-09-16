@@ -98,7 +98,7 @@ class ForgeIntegration(unittest.TestCase):
             root = Path(tmp)
             path = write_bundle(b"MUST-NOT-LEAK-THIS-SOURCE", root / "bundle", ExecutionEnvelope(1))[0]
             manifest = json.loads(path.read_text())
-            manifest["routing"] = {"routes": [{"from_kind": "evidence.evidence", "to": [{"target": "port_type", "port_type": "evidence_legend"}]}]}
+            manifest["routing"] = {"evidence": [{"from_tier": "evidence", "to": {"target": "port_type", "port_type": "evidence_legend"}}]}
             path.write_text(json.dumps(manifest))
             responder = RecordingResponder()
             run_open_inquiry(compile_manifest(path), root / "run", responder, responder_id="offline route isolation test")

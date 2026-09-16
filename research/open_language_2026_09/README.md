@@ -112,3 +112,110 @@ python -m unittest discover -s tests -p test_open_inquiry_forge.py -v
 ```
 
 The latter tests compilation, two-cycle routing, full text beyond the old excerpt boundary, an empty or absent source, reader isolation, explicit evidence-route isolation and resource stopping. The repository's existing offline CI discovers these files. Actual results and limits belong in `VALIDATION.md`; test definitions alone do not establish a pass. Neither suite measures creativity, universal meaning preservation or the quality of live reasoning.
+
+
+## Live responder and owner commands: local observation 2026-09-16
+
+REC-20260916-E, 2026-09-16. No provider call was made during this engineering run.
+
+### Feasibility and prerequisite
+
+The pack's eight committed files matched their SHA256SUMS entries. The nine missing example files are now preserved exactly in the repository. Fresh two-cycle configs match all four pack configs both structurally and byte-for-byte.
+
+Native Windows Python cannot currently run the unchanged durable Forge engine: its exclusive blob publisher requires directory fsync and raises PermissionError on this host. The live CLI deliberately stops with TARGET_FILESYSTEM_DURABILITY_UNAVAILABLE before any provider call. No local WSL distribution, Docker or Podman is available. A Linux/POSIX host with a supporting output filesystem must pass the actual Forge tests before a live occurrence. Installing such a host or changing the protected Forge durability implementation is outside this run. A test-only filesystem substitute passing is not a qualification.
+
+The new responder is ready for that supporting-host qualification. It selects an endpoint from the existing registry, sends precisely one user message containing each complete Forge Request.brief, does not request JSON output mode, and reuses the existing recorded transport, subprocess worker and 300-second wall. The Forge brief itself remains unchanged, including any format wording produced by Forge. This adapter does not erase that wording. No retry, schema repair, fallback, hidden conversation state, or automatic successor is added.
+
+### Choose the first template
+
+For an ordinary unsettled concern, begin with open_turn. RESEARCH_PROGRAM.md, “Beginning an inquiry without supplying its answer”, says: “Use open_turn to see what participants do without prescribed argumentative roles.” Start with language_workshop instead when representation itself is the opening concern. critical_return is a separate role-structured configuration; blind_roundtrip is a local communication comparison once there is a concrete preservation question.
+
+The owner still chooses the opening, template, endpoint, thinking setting and resource budget. The commands below propose deepseek-flash with thinking off and a per-call allowance of 8192 completion tokens; those are explicit example choices, not an observed live result or a price quotation.
+
+### Windows: write the concern and generate the bounded bundle
+
+From C:\Dev\miniReason in PowerShell:
+
+~~~powershell
+$py = 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe'
+$env:PYTHONPATH = 'src;tests'
+$env:PYTHONUTF8 = '1'
+$env:TMP = 'C:\tw13'
+$env:TEMP = 'C:\tw13'
+@'
+from pathlib import Path
+Path(r"C:\tw13").mkdir(parents=True, exist_ok=True)
+with Path(r"C:\tw13\concern.txt").open("x", encoding="utf-8", newline="") as handle:
+    handle.write("Two descriptions seem to concern the same thing, but combining them loses a distinction I cannot yet name.\n")
+'@ | & $py -X utf8 -
+& $py -X utf8 -m minireason.open_inquiry --opening C:\tw13\concern.txt --out C:\tw13\owner-ol-bundle --cycles 2 --max-calls 4 --max-completion-tokens 32768 --completion-tokens-per-call 8192
+~~~
+
+Edit the Python string to the actual concern before running it. An empty opening is also allowed. All output paths must be new; choose a fresh suffix when files already exist. Additional complete UTF-8 source files can be supplied with repeated --source arguments.
+
+This generator creates four configs with the SAME envelope. The 4-call envelope above is tailored to open_turn; it will stop the other templates before completing both cycles. To give any of the other three templates their complete two-cycle schedule, generate a NEW bundle with --max-calls 8 --max-completion-tokens 65536 --completion-tokens-per-call 8192.
+
+The requested Windows live command is:
+
+~~~powershell
+& $py -X utf8 -m minireason.open_inquiry_live --config C:\tw13\owner-ol-bundle\configs\open_turn.json --out C:\tw13\owner-ol-live --endpoint deepseek-flash --thinking off
+~~~
+
+On this host it currently exits 2 with TARGET_FILESYSTEM_DURABILITY_UNAVAILABLE and sends nothing. Do not remove the guard or rerun a used output root.
+
+### Supporting host: qualify, then run
+
+After the separate publisher has provided the reviewed checkout on a Linux/POSIX host, use its native Python environment with the repository dependencies installed. Keep the output on a filesystem supporting the unchanged Forge file and directory fsync contract. The following commands assume the owner's concern.txt has been supplied to that host and credentials have been placed in its process environment without printing them.
+
+~~~sh
+export PYTHONPATH=src:tests
+export PYTHONUTF8=1
+python3 -m unittest tests.test_open_inquiry_unit tests.test_open_inquiry_routes tests.test_open_inquiry_forge tests.test_open_inquiry_live -v
+python3 -m minireason.open_inquiry --opening concern.txt --out /tmp/owner-ol-bundle --cycles 2 --max-calls 4 --max-completion-tokens 32768 --completion-tokens-per-call 8192
+python3 -m minireason.open_inquiry_live --config /tmp/owner-ol-bundle/configs/open_turn.json --out /tmp/owner-ol-live --endpoint deepseek-flash --thinking off
+~~~
+
+Do not proceed to the live command if the actual Forge suite or durability preflight fails. This host qualification has not been performed by w13. The E028-specific historical CI workflow is not an open-language execution instruction.
+
+Optionally append --env-file followed by a gitignored, untracked file INSIDE that checkout. The loader admits only DEEPSEEK_API_KEY and OLLAMA_API_KEY, rejects unknown/duplicate names and invalid syntax before changing the environment, and refuses tracked, nonignored or outside-checkout paths including resolved symlink targets. The loader is reused from tools/reason.py. No real .env file was opened during w13; tests use dummy fixtures only.
+
+For Ollama explicit control use an existing .native endpoint such as ollama/qwen3.5-397b.native; --thinking off maps to think:false, native to think:true. A /v1 Ollama endpoint has no supported explicit off/native control in this checkout: omit --thinking to retain its gateway default, or choose its named .native entry. DeepSeek accepts explicit off/native. The default is off where supported and gateway-default otherwise. Endpoint availability and the providers honoring these settings have not been live-tested in w13.
+
+### Two-cycle resource arithmetic
+
+Counts come from the actual manifests: the source-copy machine stage spends no model call; every model stage makes one call, with no retry.
+
+| Template | Calls/cycle | Calls for 2 cycles | Full allowance at cap P | Example at P=8192 |
+|---|---:|---:|---:|---:|
+| open_turn | 2 | 4 | 4P | 32768 completion tokens |
+| critical_return | 4 | 8 | 8P | 65536 completion tokens |
+| language_workshop | 4 | 8 | 8P | 65536 completion tokens |
+| blind_roundtrip | 4 | 8 | 8P | 65536 completion tokens |
+
+The unchanged pack examples set max_calls, max_completion_tokens and completion_tokens_per_call to null. They declare no completion-token allowance; null does not mean zero. The live CLI refuses those uncapped examples. Regenerate a separately bounded bundle rather than editing the preserved examples.
+
+Forge reserves one full per-call allowance before sending, then charges reported completion usage. The transport sends that cap as max_tokens or native options.num_predict. A provider reporting more than the requested cap is recorded and raises COMPLETION_CEILING_VIOLATED; its reported count is never clamped. A length stop raises CEILING_HIT, preserves its available public prefix and usage, and stops without retry. Failures and smaller budgets can shorten the schedule. Context/prompt tokens and currency spend are not bounded by the completion allowance; all-history prompts grow. The worker gives each call at most 300 seconds (plus local overhead), so four/eight calls have 1200/2400 seconds of summed per-call wall allowance, not a guaranteed whole-run duration.
+
+### Run contents and failure custody
+
+- live-config.json: compiled manifest header, endpoint registry snapshot and actual endpoint, thinking request, cap, zero retries, 300-second wall and epoch receipt.
+- durability-probe/probe.txt and durability.json: actual Forge publication capability result. A failure occurs before dispatch.
+- run-header.json, log.jsonl and blobs/: unchanged Forge provenance and content-addressed source, prompt and framed public-response artifacts.
+- provider/000001/forge-request.json and forge-response.json (then increasing sequence numbers): Forge coordinate, public prompt, public answer/usage or a safe exception type/code, with epoch timestamps.
+- provider/000001/transport/worker-input.json and call-0001.request.json / call-0001.response.json: existing worker input, exact request JSON/body hashes, endpoint/settings, public provider result, counts, finish status and epoch timestamps. A timeout can instead leave worker-failure.json plus partial evidence.
+- verbatim-transport/000001.json: pack's exact public reply, host envelope and hashes; on failure, delegate-raised plus exception type.
+- live-outcome.json: stop reason and completed counters on success, or a refusal/interruption receipt. Ctrl+C may leave only partial evidence; preserve it.
+
+Native hidden reasoning text and credentials are never written. The raw provider chat response is not saved, because it can contain hidden reasoning; its hash and allowed public fields are retained. Exactly-once remote execution across crashes and cross-process resume are not claimed. The CLI refuses an existing root. A provider exception propagates through the real Forge runner: Forge has no provider-exception event and does not emit RUN_ENDED on that path. Custody comes from the adapter/provider JSON and open-inquiry sidecars, not an invented Forge terminal event. Missing usage remains unavailable, never zero.
+
+### What one occurrence cannot establish
+
+The pack's “Research claims not established” says:
+
+> No paid model calls or live language experiments were run. Scripted responders check transport and control flow, not reasoning quality. No claim is made that these templates have demonstrated creativity, meaning preservation, conceptual expansion or combinatorial universality. Provider context growth, autonomous retrieval, cross-process resume, host-topology mutation and complete HTTP-wire custody remain outside this implementation.
+>
+> A later completed CI result should be recorded as a new dated observation, preserving this history. It must identify the actual tested commit and must not turn a transport test into a proof of semantic adequacy.
+
+One fresh occurrence supplies an inspectable inquiry history. It cannot select a superior template, establish an advantage over bare/native reasoning or attribute a change to criticism without suitable comparisons. The programme calls for matched materials/settings, repeated occurrences and matched multi-call controls when additional calls could explain an apparent advantage.
+
+Evidence and exact local results are indexed in work/w13/INDEX.md. Publication and the live occurrence belong to separate owner-directed tasks.
