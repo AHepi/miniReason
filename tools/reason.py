@@ -3,6 +3,8 @@
 from __future__ import annotations
 import argparse
 import json
+import os
+import subprocess
 from pathlib import Path
 import sys
 
@@ -11,6 +13,68 @@ sys.path.insert(0, str(ROOT / "src"))
 from minireason.reason.engine import create_run, execute, status, GOOD_STOPS
 from minireason.reason.storage import read
 from minireason.reason.types import ReasonFailure
+
+
+ENV_KEYS = frozenset({"DEEPSEEK_API_KEY", "OLLAMA_API_KEY"})
+
+
+def load_env_file(path):
+    """Admit only provider keys from an ignored local file, without recording values."""
+    if path is None:
+        return
+    supplied = Path(os.path.abspath(path))
+    try:
+        resolved = supplied.resolve(strict=True)
+    except (OSError, RuntimeError):
+        raise ReasonFailure("ENV_FILE_UNREADABLE", "Cannot resolve environment file") from None
+    for candidate in dict.fromkeys((supplied, resolved)):
+        try:
+            relative = candidate.relative_to(ROOT).as_posix()
+        except ValueError:
+            raise ReasonFailure("ENV_FILE_OUTSIDE_REPOSITORY", "Environment file must be inside this checkout") from None
+        try:
+            tracked = subprocess.run(
+                ["git", "-C", str(ROOT), "ls-files", "--error-unmatch", "--", relative],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+            if tracked.returncode == 0:
+                raise ReasonFailure("ENV_FILE_TRACKED", "Tracked environment files are refused")
+            if tracked.returncode != 1:
+                raise ReasonFailure("ENV_FILE_GIT_CHECK_FAILED", "Cannot establish environment file tracking")
+            ignored = subprocess.run(
+                ["git", "-C", str(ROOT), "check-ignore", "--no-index", "--quiet", "--", relative],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        except OSError:
+            raise ReasonFailure("ENV_FILE_GIT_CHECK_FAILED", "Cannot check environment file tracking") from None
+        if ignored.returncode == 1:
+            raise ReasonFailure("ENV_FILE_NOT_IGNORED", "Environment file must be gitignored")
+        if ignored.returncode != 0:
+            raise ReasonFailure("ENV_FILE_GIT_CHECK_FAILED", "Cannot establish environment file ignore policy")
+    try:
+        with resolved.open(encoding="utf-8", newline="") as handle:
+            text = handle.read()
+    except (OSError, UnicodeError):
+        raise ReasonFailure("ENV_FILE_UNREADABLE", "Cannot read UTF-8 environment file") from None
+    values = {}
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            raise ReasonFailure("ENV_FILE_INVALID", "Expected KEY=VALUE assignments")
+        name, value = (part.strip() for part in line.split("=", 1))
+        if name not in ENV_KEYS:
+            raise ReasonFailure("ENV_FILE_KEY_NOT_ALLOWED", "Only declared provider key names are allowed")
+        if name in values:
+            raise ReasonFailure("ENV_FILE_INVALID", "Duplicate environment key")
+        if value.startswith(("'", '"')):
+            if len(value) < 2 or value[-1] != value[0]:
+                raise ReasonFailure("ENV_FILE_INVALID", "Unclosed quoted value")
+            value = value[1:-1]
+        if not value or "\x00" in value:
+            raise ReasonFailure("ENV_FILE_INVALID", "Empty or invalid environment value")
+        values[name] = value
+    # Parse and validate the whole file first, so a refused file changes no keys.
+    os.environ.update(values)
 
 
 def parser():
@@ -24,14 +88,20 @@ def parser():
     run.add_argument("--out", type=Path)
     run.add_argument("--mode", choices=["live", "offline"], default="offline")
     run.add_argument("--retry-transport", type=int, default=0)
+    run.add_argument("--env-file", type=Path, help="Load provider keys from a gitignored file inside this checkout")
     for name in ("status", "resume"):
-        commands.add_parser(name).add_argument("--run", type=Path, required=True)
+        command = commands.add_parser(name)
+        command.add_argument("--run", type=Path, required=True)
+        if name == "resume":
+            command.add_argument("--env-file", type=Path, help="Load provider keys from a gitignored file inside this checkout")
     return result
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command in {"run", "resume"}:
+            load_env_file(args.env_file)
         if args.command == "run":
             directory = create_run(read(args.problem), args.cycles, args.recipe,
                 args.out, args.mode, args.baseline, args.retry_transport)

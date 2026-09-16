@@ -10,10 +10,32 @@ import sys
 import time
 from typing import Any
 from minireason import provider_openai_compat as provider
-from .config import endpoint_for, thinking_for
+from .config import endpoint_for, thinking_for, reasoning_effort_for
 from .types import ReasonFailure
 
 WALL_SECONDS = 300
+
+
+class _ReasoningEffortCompatibility:
+    def _validate_call_args(self, *, max_tokens, reasoning_effort, extra):
+        # The protected transport validator predates DeepSeek's medium alias.
+        # Validate its other controls unchanged; builder and wire retain medium.
+        super()._validate_call_args(
+            max_tokens=max_tokens,
+            reasoning_effort="high" if reasoning_effort == "medium" else reasoning_effort,
+            extra=extra)
+
+
+class _PreparedCaller(_ReasoningEffortCompatibility, provider._RecordedCaller):
+    pass
+
+
+class _OfflineProvider(_ReasoningEffortCompatibility, provider.OfflineProvider):
+    pass
+
+
+class _LiveProvider(_ReasoningEffortCompatibility, provider.OpenAICompatProvider):
+    pass
 
 def _read(path: Path) -> Any:
     try:
@@ -94,12 +116,20 @@ class Adapter:
             snapshot = snapshot["data"]
         declared_thinking = thinking_for(seat, thinking, snapshot)
         thinking = {"native": True, "off": False, "gateway-default": None}[declared_thinking]
-        caller = provider._RecordedCaller(endpoint, Path("."))
+        extra = None
+        if endpoint.native and endpoint.family.startswith("ollama-cloud/"):
+            if thinking is not None:
+                extra = {"think": thinking}
+            # The transport thinking parameter is DeepSeek-specific. Preserve
+            # Ollama control in actual extra/settings/wire evidence instead.
+            thinking = None
+        effort = reasoning_effort_for(seat)
+        caller = _PreparedCaller(endpoint, Path("."))
         kwargs = {"max_tokens": max_tokens, "response_format": {"type": "json_object"},
-                  "temperature": None, "seed": None, "extra": None,
-                  "thinking": thinking, "reasoning_effort": "high"}
+                  "temperature": None, "seed": None, "extra": extra,
+                  "thinking": thinking, "reasoning_effort": effort}
         try:
-            caller._validate_call_args(max_tokens=max_tokens, reasoning_effort="high", extra=None)
+            caller._validate_call_args(max_tokens=max_tokens, reasoning_effort=effort, extra=extra)
             caller._check_json_mode_prompt(messages, kwargs["response_format"])
             payload = caller._build_payload(messages, **kwargs)
         except (TypeError, ValueError) as error:
@@ -110,7 +140,7 @@ class Adapter:
         if credentials:
             raise ReasonFailure("SECRET_IN_REQUEST", "Credential found in the proposed request")
         return {"endpoint": asdict(endpoint), "messages": messages, "kwargs": kwargs,
-                "thinking": declared_thinking,
+                "thinking": declared_thinking, "reasoning_effort": effort,
                 "payload": payload, "wire_body_text": wire,
                 "wire_body_sha256": hashlib.sha256(wire.encode("utf-8")).hexdigest(),
                 "mode": self.mode, "prepared_epoch": time.time(), "wall_seconds": WALL_SECONDS}
@@ -198,9 +228,9 @@ def _execute(prepared: dict, records: Path, scripted: dict | str | None = None) 
         provider.write_new = _provider_write
         try:
             if prepared["mode"] == "offline":
-                caller = provider.OfflineProvider(endpoint, records, [scripted])
+                caller = _OfflineProvider(endpoint, records, [scripted])
             else:
-                caller = provider.OpenAICompatProvider(endpoint, records)
+                caller = _LiveProvider(endpoint, records)
             caller.complete(prepared["messages"], **prepared["kwargs"])
         except provider.ProviderFailure as error:
             # The durable terminal record, when present, preserves public

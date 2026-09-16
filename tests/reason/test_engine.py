@@ -1,4 +1,4 @@
-"""Acceptance cases preserve every fixture run under ignored work/w12."""
+"""Acceptance cases preserve every fixture run under ignored work/review12b."""
 from __future__ import annotations
 import contextlib
 import hashlib
@@ -15,7 +15,7 @@ from minireason.reason import config, engine
 from minireason.reason.types import ReasonFailure
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "work" / "review12" / "e"
+EVIDENCE = ROOT / "work" / "review12b" / "e"
 
 
 def read(path):
@@ -317,7 +317,8 @@ class OfflineEngineTests(unittest.TestCase):
         run = self.new_run()
         result = engine.execute(run, scripted=length_stop)
         self.assertEqual(result["stop_reason"], "CEILING_HIT")
-        self.assertEqual(result["calls"], 1)
+        self.assertEqual(result["calls"], 2)
+        self.assertFalse((run / "calls" / "initial" / "a02").exists())
         response = load(run / "calls" / "initial" / "a00" / "provider" / "call-0001.response.json")
         self.assertEqual(response["content"], "Partial answer retained.")
         self.assertEqual(response["usage"]["completion_tokens"], 8192)
@@ -421,7 +422,8 @@ class OfflineEngineTests(unittest.TestCase):
             self.assertLessEqual(request["epoch"], response["epoch"])
             prepared = request["prepared"]
             self.assertEqual(prepared["wall_seconds"], 300)
-            self.assertEqual(prepared["kwargs"]["max_tokens"], 8192)
+            expected_cap = 32768 if request["thinking"] == "native" else 8192
+            self.assertEqual(prepared["kwargs"]["max_tokens"], expected_cap)
             expected = hashlib.sha256(prepared["wire_body_text"].encode("utf-8")).hexdigest()
             self.assertEqual(prepared["wire_body_sha256"], expected)
             provider_request = load(request_path.parent / "provider" / "call-0001.request.json")
@@ -454,7 +456,8 @@ class OfflineEngineTests(unittest.TestCase):
         bare = load(run / "calls" / "base-bare" / "a00" / "request.json")["prepared"]
         native = load(run / "calls" / "base-native" / "a00" / "request.json")["prepared"]
         self.assertEqual(bare["messages"], native["messages"])
-        self.assertEqual(bare["kwargs"]["max_tokens"], native["kwargs"]["max_tokens"])
+        self.assertEqual(bare["kwargs"]["max_tokens"], 8192)
+        self.assertEqual(native["kwargs"]["max_tokens"], 32768)
         self.assertIs(bare["kwargs"]["thinking"], False)
         self.assertIs(native["kwargs"]["thinking"], True)
         record = load(run / "calls" / "base-native" / "a00" / "provider" / "call-0001.response.json")

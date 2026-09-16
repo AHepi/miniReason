@@ -12,6 +12,19 @@ from .storage import get, put, read, write, sha, guard, run_lock
 
 CLAIM = "This is a personal working tool. Its output is a working answer with its objections, not a finding."
 GOOD_STOPS = {"cycle_budget", "no_new_objections"}
+RESILIENCE_POLICY = "reasoning-exposure-v2"
+RESILIENT_POLICIES = {"native-off-v1", RESILIENCE_POLICY}
+UNAVAILABLE_CODES = {"CEILING_HIT", "TRANSPORT_OR_RESPONSE_ERROR", "SCHEMA_FAILURE"}
+
+
+def _completion_tokens(cfg, recipe, thinking):
+    # Old runs reconstruct the exact ceilings frozen under their original policy.
+    if cfg.get("resilience_policy") == RESILIENCE_POLICY:
+        return config.completion_tokens_for(recipe, thinking)
+    key = ("native_completion_tokens"
+           if cfg.get("resilience_policy") == "native-off-v1" and thinking == "native"
+           else "completion_tokens")
+    return recipe["ceilings"][key]
 
 
 def create_run(problem, cycles, recipe="cross-family", out=None, mode="offline",
@@ -32,7 +45,7 @@ def create_run(problem, cycles, recipe="cross-family", out=None, mode="offline",
     rid = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-" + loaded["sha256"][:10] + "-" + uuid.uuid4().hex[:6]
     directory = Path(out) if out is not None else Path("runs") / rid
     # Reserve more than the longest nested provider evidence filename.
-    guard(directory / "calls" / "c9999-return" / "a99" / "provider" / ("x" * 65))
+    guard(directory / "calls" / "c9999-closing-return" / "a99" / "provider" / ("x" * 65))
     if directory.exists():
         raise ValueError("RUN_EXISTS")
     directory.mkdir(parents=True)
@@ -42,6 +55,9 @@ def create_run(problem, cycles, recipe="cross-family", out=None, mode="offline",
     put(directory / "config.json", {"schema": "minireason.reason.v1", "run_id": rid,
         "created_epoch": time.time(), "mode": mode, "cycles": cycles,
         "baseline": baseline, "retry_transport": retry_transport,
+        "resilience_policy": RESILIENCE_POLICY,
+        "prompt_contract": "public-working-v1",
+        "closing_return": loaded["data"].get("closing_return", False),
         "recipe_sha256": loaded["sha256"], "problem_sha256": sha(problem),
         "endpoints_sha256": endpoints["sha256"], "claim_ceiling": CLAIM})
     return directory
@@ -81,10 +97,22 @@ def _code(exc):
 
 def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
           problem, answer, objections, rival, history, scripted, after_call, native):
+    contract = cfg.get("prompt_contract", "legacy-v1")
     messages = prompts.render(role, problem, answer=answer, objections=objections,
-                              rival=rival, history=history)
-    cap = recipe["ceilings"]["completion_tokens"]
+                              rival=rival, history=history, contract_version=contract)
+    resilient = cfg.get("resilience_policy") in RESILIENT_POLICIES
+    cap = _completion_tokens(cfg, recipe, native)
     attempt, transport_retries, schema_repairs = 0, 0, 0
+    ceiling_fallback = False
+
+    def save_outcome(path, saved):
+        if resilient:
+            saved.update(thinking=native, max_tokens=cap,
+                         ceiling_fallback=ceiling_fallback)
+            if (saved["status"] == "CEILING_HIT" and role != "baseline"
+                    and native == "native" and not ceiling_fallback):
+                saved["next_attempt"] = "One native-to-off ceiling fallback; same context and ceiling."
+        put(path, saved)
     while True:
         folder = directory / "calls" / call_id / f"a{attempt:02d}"
         response_path = folder / "response.json"
@@ -96,7 +124,9 @@ def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
                     or prepared["messages"] != messages
                     or prepared["kwargs"]["max_tokens"] != cap
                     or intent.get("thinking", native) != native
-                    or intent.get("schema_repair", False) != bool(schema_repairs)):
+                    or intent.get("schema_repair", False) != bool(schema_repairs)
+                    or intent.get("ceiling_fallback", False) != ceiling_fallback
+                    or prepared["kwargs"].get("reasoning_effort", "high") != config.reasoning_effort_for(seat)):
                 raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved call input differs from reconstructed input")
         if response_path.exists():
             if not request_path.exists():
@@ -114,15 +144,17 @@ def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
                         raise
                     saved = {"epoch": time.time(), "status": _code(exc),
                              "detail": "Recovered provider failure.", "record": exc.record}
-                    put(response_path, saved)
+                    save_outcome(response_path, saved)
                     result = None
             else:
                 prepared = adapter.prepare(seat=seat, messages=messages, max_tokens=cap,
                     thinking=native, role=role, coordinate={"call_id": call_id,
-                    "cycle": cycle, "attempt": attempt, "schema_repair": bool(schema_repairs)})
+                    "cycle": cycle, "attempt": attempt, "schema_repair": bool(schema_repairs),
+                    "ceiling_fallback": ceiling_fallback})
                 put(request_path, {"epoch": time.time(), "role": role, "seat": seat,
                     "cycle": cycle, "attempt": attempt, "thinking": native,
-                    "schema_repair": bool(schema_repairs), "prepared": prepared})
+                    "schema_repair": bool(schema_repairs), "ceiling_fallback": ceiling_fallback,
+                    "prepared": prepared})
                 try:
                     fixture = (scripted or offline_reply)(role, cycle, objections) if cfg["mode"] == "offline" else None
                     if isinstance(fixture, dict) and "content" not in fixture:
@@ -130,25 +162,36 @@ def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
                     result = adapter.call(seat=seat, messages=messages, records_dir=folder / "provider",
                         max_tokens=cap, thinking=native, role=role,
                         coordinate={"call_id": call_id, "cycle": cycle, "attempt": attempt,
-                                    "schema_repair": bool(schema_repairs)}, scripted=fixture)
+                                    "schema_repair": bool(schema_repairs),
+                                    "ceiling_fallback": ceiling_fallback}, scripted=fixture)
                 except ReasonFailure as exc:
                     saved = {"epoch": time.time(), "status": _code(exc),
                              "detail": "Provider attempt stopped; inspect provider evidence.", "record": exc.record}
-                    put(response_path, saved)
+                    save_outcome(response_path, saved)
                     result = None
             if result is not None:
                 try:
-                    parsed = prompts.parse(role, result["content"], objections=objections)
+                    parsed = prompts.parse(role, result["content"], objections=objections,
+                                           contract_version=contract)
                     saved = {"epoch": time.time(), "status": "COMPLETE", "result": result, "parsed": parsed}
-                except (ReasonFailure, ValueError, TypeError, KeyError):
-                    saved = {"epoch": time.time(), "status": "SCHEMA_FAILURE", "result": result}
-                put(response_path, saved)
+                except (ReasonFailure, ValueError, TypeError, KeyError) as exc:
+                    saved = {"epoch": time.time(), "status": "SCHEMA_FAILURE", "result": result,
+                             "detail": str(exc) if isinstance(exc, ReasonFailure) else "ROLE_CONTRACT_INVALID"}
+                save_outcome(response_path, saved)
             if after_call is not None:
                 after_call(call_id, saved)
         if saved["status"] == "COMPLETE":
             return saved["parsed"]
-        if saved["status"] == "SCHEMA_FAILURE" and schema_repairs == 0:
-            messages = prompts.repair(messages, saved["result"]["content"], role)
+        if ceiling_fallback:
+            raise ReasonFailure(saved["status"], "Recorded ceiling fallback did not complete")
+        if (resilient and saved["status"] == "CEILING_HIT"
+                and role != "baseline" and native == "native"):
+            native = "off"
+            ceiling_fallback = True
+        elif (saved["status"] == "SCHEMA_FAILURE" and schema_repairs == 0
+              and isinstance(saved.get("result", {}).get("content"), str)):
+            messages = prompts.repair(messages, saved["result"]["content"], role,
+                                      contract_version=contract, failure_reason=saved.get("detail"))
             schema_repairs = 1
         elif (saved["status"] == "TRANSPORT_OR_RESPONSE_ERROR" and schema_repairs == 0
               and transport_retries < cfg["retry_transport"]):
@@ -191,47 +234,118 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
         trace += f"## {obj['id']}\n\nSource: {obj['source']}; introduced cycle {obj['born_cycle']}.\n\n"
         trace += obj["text"] + "\n\nWould defeat: " + obj["defeats"] + "\n\n"
         for entry in obj["history"]:
-            trace += f"Cycle {entry['cycle']}: **{entry['status']}** - {entry['reason']}\n\n"
+            phase = " closing return" if entry.get("phase") == "closing_return" else ""
+            trace += f"Cycle {entry['cycle']}{phase}: **{entry['status']}** - {entry['reason']}\n\n"
         trace += f"Current disposition: **{obj['status']}** - {obj['reason']}\n\n"
     if not objections:
         trace += "No objection has been recorded. This does not establish correctness.\n"
-    write(directory / "TRACE.md", trace, replace=True)
-    cap = recipe["ceilings"]["completion_tokens"]
-    per_cycle = len(recipe["seats"]["critics"]) + 2 + bool(recipe["seats"].get("rival"))
-    bare_count = 1 + bool(config.native_thinking_available(recipe["seats"]["conjecture"])) if cfg["baseline"] else 0
-    planned = 1 + cfg["cycles"] * per_cycle + bare_count
-    maximum_attempts = planned * (2 + cfg["retry_transport"])
-    schema_repairs = 0
+    resilient = cfg.get("resilience_policy") in RESILIENT_POLICIES
+    seats = recipe["seats"]
+    planned_seats = [("conjecture", seats["conjecture"], 1),
+                     ("return", seats["conjecture"], cfg["cycles"]),
+                     ("use", seats["use"], cfg["cycles"])]
+    planned_seats += [(f"critic-{i}", seat, cfg["cycles"])
+                      for i, seat in enumerate(seats["critics"], 1)]
+    if seats.get("rival"):
+        planned_seats.append(("rival", seats["rival"], cfg["cycles"]))
+    if cfg.get("closing_return", False):
+        planned_seats.append(("closing-return (conditional)", seats["conjecture"], 1))
+    seat_controls = []
+    for role, seat, count in planned_seats:
+        thinking = config.thinking_for(seat)
+        seat_controls.append({"role": role, "seat": config.seat_name(seat), "thinking": thinking,
+            "reasoning_effort": config.reasoning_effort_for(seat), "logical_calls": count,
+            "completion_tokens": _completion_tokens(cfg, recipe, thinking),
+            "fallback_allowed": resilient and thinking == "native"})
+    if cfg["baseline"]:
+        for label, thinking in [("bare", "off"), ("native", "native")]:
+            if thinking == "native" and not config.native_thinking_available(seats["conjecture"]):
+                continue
+            seat_controls.append({"role": "baseline-" + label,
+                "seat": config.seat_name(seats["conjecture"]), "thinking": thinking,
+                "reasoning_effort": config.reasoning_effort_for(seats["conjecture"]), "logical_calls": 1,
+                "completion_tokens": _completion_tokens(cfg, recipe, thinking), "fallback_allowed": False})
+    planned = sum(item["logical_calls"] for item in seat_controls)
+    allowance = sum(item["logical_calls"] * item["completion_tokens"] for item in seat_controls)
+    fallback_count = sum(item["logical_calls"] for item in seat_controls if item["fallback_allowed"])
+    fallback_allowance = sum(item["logical_calls"] * item["completion_tokens"]
+                             for item in seat_controls if item["fallback_allowed"])
+    maximum_attempts = planned * (2 + cfg["retry_transport"]) + fallback_count
+    maximum_allowance = allowance * (2 + cfg["retry_transport"]) + fallback_allowance
+    repaired_calls = set()
+    fallbacks = []
     controls = []
     usage = []
+    cycle_working = {}
     for path in attempts:
+        intent = None
         if (path / "request.json").exists():
             intent = get(path / "request.json")
-            schema_repairs += bool(intent.get("schema_repair"))
+            if intent.get("schema_repair"):
+                repaired_calls.add(path.parent.name)
+            if intent.get("ceiling_fallback"):
+                fallbacks.append(str(path.relative_to(directory)))
             controls.append({"call": str(path.relative_to(directory)), "seat": intent["seat"],
                              "thinking": intent.get("thinking", intent["prepared"].get("thinking")),
-                             "schema_repair": bool(intent.get("schema_repair"))})
+                             "schema_repair": bool(intent.get("schema_repair")),
+                             "ceiling_fallback": bool(intent.get("ceiling_fallback")),
+                             "max_tokens": intent["prepared"]["kwargs"]["max_tokens"],
+                             "reasoning_effort": intent["prepared"]["kwargs"].get("reasoning_effort"),
+                             "wire_reasoning_effort": intent["prepared"]["payload"].get("reasoning_effort"),
+                             "wire_think": intent["prepared"]["payload"].get("think")})
         if (path / "response.json").exists():
             try:
                 item = get(path / "response.json")
             except ReasonFailure:
                 item = {"status": "RUN_INTEGRITY_ERROR"}
+            working = item.get("parsed", {}).get("working")
+            if intent and intent["cycle"] and working:
+                cycle_working.setdefault(intent["cycle"], []).append(
+                    (path.parent.name + "/" + path.name, working))
             usage.append({"call": str(path.relative_to(directory)), "status": item["status"],
                           "usage": item.get("result", {}).get("usage", item.get("record", {}).get("usage"))})
+    schema_repairs = len(repaired_calls)
+    if fallbacks:
+        trace += "\n## Ceiling fallbacks\n\n"
+        for path in fallbacks:
+            trace += f"`{path}`: native-to-off fallback after CEILING_HIT; same context and completion ceiling.\n\n"
+    unavailable = state.get("unavailable_seats", [])
+    unavailable_critics = sum(item["role"] == "critic" for item in unavailable)
+    unavailable_use = sum(item["role"] == "use" for item in unavailable)
+    if unavailable:
+        trace += "\n## Unavailable seats\n\n"
+        for item in unavailable:
+            trace += (f"Cycle {item['cycle']}, {item['call_id']} ({item['seat']}): "
+                      f"{item['role']} unavailable: {item['code']}\n\n")
+    write(directory / "TRACE.md", trace, replace=True)
     run = ("# Personal reasoning run\n\n" + banner + CLAIM + "\n\n" +
            f"Run ID: `{cfg['run_id']}`\n\nRecipe: `{recipe['name']}`; SHA-256 `{cfg['recipe_sha256']}`.\n\n" +
            f"Seats: `{json.dumps(recipe['seats'], ensure_ascii=False)}`\n\n" +
            f"Requested cycles: {cfg['cycles']}; completed cycles: {state['completed_cycles']}.\n\n" +
            f"Recorded call attempts: {state['calls']}; planned logical calls without early stop: {planned}. " +
-           f"Completion ceiling per call: {cap}; completion allowance without repair/retry: {planned * cap}. " +
+           ("Includes one conditional closing return allowance. " if cfg.get("closing_return", False) else "") +
+           f"Completion allowance without repair/retry/fallback: {allowance}. " +
            "Input tokens are additional and depend on problem and growing objection history.\n\n" +
+           f"Closing return enabled: {cfg.get('closing_return', False)}; outcome: {state.get('closing_return', 'not required')}. "
+           "When enabled, one extra logical return follows cycle_budget if any use objection remains open; "
+           "it supplies a final disposition for all open objections and preserves cycle_budget on success.\n\n" +
            f"Wall per attempt: 300 seconds; explicit transport retries: {cfg['retry_transport']}.\n\n" +
-           f"Schema repair calls: {schema_repairs}; at most one per logical call. Repair attempts are not retried. " +
-           f"Maximum attempts including repairs and configured transport retries: {maximum_attempts}; " +
-           f"maximum completion allowance: {maximum_attempts * cap}.\n\n" +
-           "Thinking and repair setting actually recorded for each attempt:\n\n```json\n" +
+           f"Schema repair calls: {schema_repairs}; at most one per logical call. Repair transport errors are not retried; a native ceiling may use the declared fallback. " +
+           f"Maximum attempts including repairs, fallbacks and configured transport retries: {maximum_attempts}; " +
+           f"maximum completion allowance: {maximum_allowance}.\n\n" +
+           f"Native-to-off ceiling fallback calls: {len(fallbacks)}; allowance: {fallback_count}. " +
+           "Each allowed fallback keeps the same context and ceiling; failure ends that logical call. "
+           "Under reasoning-exposure-v2, named critic/use failures are recorded as unavailable.\n\n" +
+           f"Unavailable critic seats: {unavailable_critics}; Unavailable use seats: {unavailable_use}. "
+           "Counts are logical seat occurrences across cycles, not failed attempts.\n\n" +
+           "Declared ceilings and reasoning effort per seat (effort is sent only when the provider builder supports it):\n\n```json\n" +
+           json.dumps(seat_controls, ensure_ascii=False, indent=2) + "\n```\n\n" +
+           "Thinking, ceiling, effort, repair and fallback actually recorded for each attempt:\n\n```json\n" +
            json.dumps(controls, ensure_ascii=False, indent=2) + "\n```\n\n" +
            f"Stop reason: `{state['stop_reason']}`.\n\n" +
+           "Baseline outcomes: `" + json.dumps(state.get("baselines", {}), sort_keys=True) + "`.\n\n" +
+           ("Baselines run first; named ceiling, transport and schema failures are nonfatal under the saved resilience policy. "
+            if resilient else "Legacy baseline failures retain their original terminal behavior. ") +
            "Baseline outputs, when requested, are in BASELINE.md. Extra loop calls are not matched multi-call controls. " +
            "No comparison is computed. Native support means locally implemented explicit control, not a fresh service capability check.\n\n" +
            "The use reader derives a dependent question separately from the problem and working answer; both derivations can be wrong. " +
@@ -240,7 +354,14 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
            "JSON validation checks custody fields only and does not decide the legitimacy of prose criticism.\n\n" +
            "Reported usage by attempt (null means unknown):\n\n```json\n" + json.dumps(usage, indent=2) + "\n```\n")
     write(directory / "RUN.md", run, replace=True)
-    for number, note in cycle_notes.items():
+    for number in sorted(set(cycle_notes) | set(cycle_working) | {item["cycle"] for item in unavailable}):
+        note = cycle_notes.get(number, f"# Cycle {number} incomplete\n\n")
+        for cid, working in cycle_working.get(number, []):
+            note += f"\n## Visible working: {cid}\n\n{working}\n\n"
+        for item in unavailable:
+            if item["cycle"] == number:
+                note += (f"\n{item['call_id']} ({item['seat']}): "
+                         f"{item['role']} unavailable: {item['code']}\n")
         write(directory / "cycles" / f"c{number:04d}" / "CYCLE.md", note, replace=True)
 
 
@@ -254,6 +375,13 @@ def execute(run_dir, *, scripted=None, after_call=None):
                  "mode": cfg["mode"], "run_id": cfg["run_id"]}
         answer, objections, history, cycle_notes = "", [], [], {}
         cycle = 0
+        optional_recovery = cfg.get("resilience_policy") == RESILIENCE_POLICY
+
+        def record_unavailable(role, seat, cid, error):
+            state.setdefault("unavailable_seats", []).append({
+                "cycle": cycle, "call_id": cid, "role": role,
+                "seat": config.seat_name(seat), "code": error.code})
+
         def call(role, seat, cid, current=0, pending=(), rival="", native=None):
             if native is None:
                 native = config.thinking_for(seat)
@@ -267,13 +395,24 @@ def execute(run_dir, *, scripted=None, after_call=None):
                 if any(not os.environ.get(config.endpoint_for(seat, endpoints).key_env) for seat in required_seats):
                     raise ReasonFailure("KEY_MISSING", "One or more required environment keys are absent")
             if cfg["baseline"]:
-                baseline_text = "# Baseline readings\n\nSame problem and conjecturer; one call per mode. No computed comparison.\n\n"
+                baseline_text = "# Baseline readings\n\nSame problem and conjecturer; one logical call per mode, with recorded attempts. No computed comparison.\n\n"
                 for label, native in [("bare", "off"), ("native", "native")]:
                     if native == "native" and not config.native_thinking_available(seats["conjecture"]):
                         baseline_text += "Native baseline unavailable through the declared adapter control.\n"
                         continue
-                    result = call("baseline", seats["conjecture"], "base-" + label, native=native)
-                    baseline_text += "## " + label + "\n\n" + result["answer"] + "\n\n"
+                    try:
+                        result = call("baseline", seats["conjecture"], "base-" + label, native=native)
+                        outcome, body = "COMPLETE", result["answer"]
+                    except ReasonFailure as exc:
+                        if (cfg.get("resilience_policy") not in RESILIENT_POLICIES
+                                or exc.code not in UNAVAILABLE_CODES):
+                            raise
+                        outcome, body = exc.code, "Baseline did not complete; loop execution continues."
+                    state.setdefault("baselines", {})[label] = outcome
+                    cap = _completion_tokens(cfg, recipe, native)
+                    baseline_text += ("## " + label + "\n\nOutcome: `" + outcome + "`.\n\n" +
+                        f"Thinking: {native}; completion ceiling: {cap}; declared reasoning effort: " +
+                        config.reasoning_effort_for(seats["conjecture"]) + ".\n\n" + body + "\n\n")
                     write(directory / "BASELINE.md", baseline_text, replace=True)
             answer = call("conjecture", seats["conjecture"], "initial")["answer"]
             for cycle in range(1, cfg["cycles"] + 1):
@@ -283,10 +422,22 @@ def execute(run_dir, *, scripted=None, after_call=None):
                     rival = call("rival", seats["rival"], prefix + "-rival", cycle, objections)["answer"]
                 prior_objections = list(objections)
                 new_critic = []
+                returned_critics = 0
+                last_critic_failure = None
                 for index, seat in enumerate(seats["critics"], 1):
                     cid = prefix + f"-k{index:02d}"
-                    result = call("critic", seat, cid, cycle, prior_objections, rival=rival)
+                    try:
+                        result = call("critic", seat, cid, cycle, prior_objections, rival=rival)
+                    except ReasonFailure as exc:
+                        if not optional_recovery or exc.code not in UNAVAILABLE_CODES:
+                            raise
+                        record_unavailable("critic", seat, cid, exc)
+                        last_critic_failure = exc
+                        continue
+                    returned_critics += 1
                     new_critic.extend(_new_objections(result["objections"], cid, cycle, seat, objections))
+                if not returned_critics:
+                    raise last_critic_failure
                 pending = [o for o in objections if o["status"] == "unresolved"]
                 result = call("return", seats["conjecture"], prefix + "-return", cycle, pending, rival)
                 answer = result["answer"]
@@ -295,9 +446,14 @@ def execute(run_dir, *, scripted=None, after_call=None):
                     obj = lookup[disposition["id"]]
                     obj.update(status=disposition["status"], reason=disposition["reason"])
                     obj["history"].append({"cycle": cycle, **disposition})
-                used = call("use", seats["use"], prefix + "-use", cycle,
-                            objections)
-                new_use = _new_objections(used["objections"], prefix + "-use", cycle, seats["use"], objections)
+                try:
+                    used = call("use", seats["use"], prefix + "-use", cycle, objections)
+                except ReasonFailure as exc:
+                    if not optional_recovery or exc.code not in UNAVAILABLE_CODES:
+                        raise
+                    record_unavailable("use", seats["use"], prefix + "-use", exc)
+                    used = {"unavailable": exc.code}
+                new_use = _new_objections(used.get("objections", []), prefix + "-use", cycle, seats["use"], objections)
                 for obj in new_use:
                     obj["history"].append({"cycle": cycle, "status": "unresolved",
                                            "reason": "Use objection awaiting the next operative return."})
@@ -306,25 +462,52 @@ def execute(run_dir, *, scripted=None, after_call=None):
                         obj["history"].append({"cycle": cycle, "status": obj["status"],
                                                "reason": "Carried disposition: " + obj["reason"]})
                 history.append({"cycle": cycle, "answer": answer,
-                                "dispositions": result["dispositions"], "use": used,
+                                "dispositions": result["dispositions"],
+                                "use": {k: v for k, v in used.items() if k != "working"},
                                 "objections": [{k: o[k] for k in ("id", "text", "defeats", "status", "reason")} for o in objections]})
                 state["completed_cycles"] = cycle
+                use_note = ("Use derivation unavailable; inspect the recorded seat outcome.\n\n"
+                            if "unavailable" in used else
+                            "Use question:\n\n" + used["question"] +
+                            "\n\nIndependent derivation from PROBLEM:\n\n" + used["problem_derivation"] +
+                            "\n\nDerivation from WORKING ANSWER:\n\n" + used["working_derivation"] + "\n\n")
                 cycle_notes[cycle] = (f"# Cycle {cycle}\n\nWorking answer after return:\n\n{answer}\n\n" +
-                    "Use question:\n\n" + used["question"] + "\n\nIndependent derivation from PROBLEM:\n\n" + used["problem_derivation"] +
-                    "\n\nDerivation from WORKING ANSWER:\n\n" + used["working_derivation"] + "\n\n" +
+                    use_note +
                     "Dispositions and new use objections:\n\n```json\n" +
                     json.dumps({"dispositions": result["dispositions"], "use_objections": new_use}, ensure_ascii=False, indent=2) +
                     "\n```\n\nExact requests and responses: ../../calls/" + prefix + "-*\n")
-                if not new_critic and not new_use and not any(o["status"] == "unresolved" for o in objections):
+                if (returned_critics == len(seats["critics"]) and "unavailable" not in used
+                        and not new_critic and not new_use
+                        and not any(o["status"] == "unresolved" for o in objections)):
                     state["stop_reason"] = "no_new_objections"
                     break
                 _reports(directory, cfg, recipe, state, answer, objections, cycle_notes)
             else:
                 state["stop_reason"] = "cycle_budget"
+            if (state["stop_reason"] == "cycle_budget" and cfg.get("closing_return", False)
+                    and any(o["status"] == "unresolved" and "-use-o" in o["id"] for o in objections)):
+                state["closing_return"] = "pending"
+                pending = [o for o in objections if o["status"] == "unresolved"]
+                closed = call("return", seats["conjecture"], f"c{cycle:04d}-closing-return",
+                              cycle, pending)
+                answer = closed["answer"]
+                lookup = {o["id"]: o for o in pending}
+                for disposition in closed["dispositions"]:
+                    obj = lookup[disposition["id"]]
+                    obj.update(status=disposition["status"], reason=disposition["reason"])
+                    obj["history"].append({"cycle": cycle, "phase": "closing_return", **disposition})
+                state["closing_return"] = "complete"
+                cycle_notes[cycle] += ("\n## Closing return\n\nWorking answer after final disposition:\n\n" +
+                    answer + "\n\n" +
+                    "Final dispositions:\n\n" + chr(96) * 3 + "json\n" +
+                    json.dumps(closed["dispositions"], ensure_ascii=False, indent=2) + "\n" + chr(96) * 3 + "\n")
         except ReasonFailure as exc:
             state["stop_reason"] = _code(exc)
             state["failed_cycle"] = cycle
-            if cycle:
+            if state.get("closing_return") == "pending":
+                state["closing_return"] = "failed: " + state["stop_reason"]
+                cycle_notes[cycle] += f"\nClosing return failed: {state['stop_reason']}; open objections remain.\n"
+            elif cycle:
                 cycle_notes[cycle] = f"# Cycle {cycle} stopped\n\nReason: `{state['stop_reason']}`. Partial call evidence is retained in calls/.\n"
         except (KeyboardInterrupt, SystemExit):
             state["stop_reason"] = "interrupted"

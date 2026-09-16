@@ -86,16 +86,16 @@ class JudgeEngineTests(unittest.TestCase):
         state = engine.execute(run, scripted=fixture.scripted_reply)
         self.assertEqual(state["stop_reason"], "cycle_budget")
         expected = {"base-bare": "off", "base-native": "native", "initial": "native",
-                    "c0001-rival": "gateway-default", "c0001-k01": "gateway-default",
-                    "c0001-k02": "gateway-default", "c0001-return": "native", "c0001-use": "gateway-default"}
+                    "c0001-rival": "off", "c0001-k01": "off",
+                    "c0001-k02": "off", "c0001-return": "native", "c0001-use": "off"}
         for call, setting in expected.items():
             req = fixture.load(run / "calls" / call / "a00/request.json")
             self.assertEqual(req["thinking"], setting)
             self.assertEqual(req["prepared"]["thinking"], setting)
             payload = req["prepared"]["payload"]
-            if setting == "gateway-default":
+            if req["prepared"]["endpoint"]["native"]:
                 self.assertNotIn("thinking", payload)
-                self.assertNotIn("think", payload)
+                self.assertEqual(payload["think"], setting == "native")
             else:
                 self.assertEqual(payload["thinking"]["type"], "enabled" if setting == "native" else "disabled")
             self.assertIn(call, fixture.read(run / "RUN.md"))
@@ -103,7 +103,7 @@ class JudgeEngineTests(unittest.TestCase):
         native = fixture.load(run / "calls/base-native/a00/request.json")
         self.assertEqual(bare["prepared"]["messages"], native["prepared"]["messages"])
 
-    def test_last_return_and_open_use_objection_are_in_answer(self):
+    def test_last_return_closes_final_use_and_trace_preserves_objection(self):
         def reply(role, cycle, objections):
             result = fixture.scripted_reply(role, cycle, objections)
             if role == "use":
@@ -115,8 +115,12 @@ class JudgeEngineTests(unittest.TestCase):
         answer = fixture.read(run / "ANSWER.md")
         self.assertIn("Revised answer 2", answer)
         self.assertNotIn("Revised answer 1", answer)
-        self.assertIn("c0002-use-o001", answer)
-        self.assertIn("Independent derivation contradicts", answer)
+        self.assertIn("No open objection", answer)
+        trace = fixture.read(run / "TRACE.md")
+        self.assertIn("c0002-use-o001", trace)
+        self.assertIn("Independent derivation contradicts", trace)
+        self.assertIn("Cycle 2 closing return: **taken-up**", trace)
+        self.assertEqual(state["closing_return"], "complete")
         for obj in state["objections"]:
             for cycle in range(obj["born_cycle"], 3):
                 self.assertTrue(any(item["cycle"] == cycle for item in obj["history"]))

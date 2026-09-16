@@ -40,8 +40,10 @@ def endpoint_for(name: str | dict, endpoints_data: dict | None = None) -> provid
 
 def native_thinking_available(seat: str | dict | provider.Endpoint) -> bool:
     endpoint = seat if isinstance(seat, provider.Endpoint) else endpoint_for(seat)
-    # Registry `native` means Ollama transport, not thinking capability.
-    return endpoint.family == "deepseek"
+    # Ollama native /api/chat accepts its existing provider-specific think
+    # extra; the compatibility /v1 route has no supported thinking control.
+    return endpoint.family == "deepseek" or (
+        endpoint.native and endpoint.family.startswith("ollama-cloud/"))
 
 def thinking_for(seat: str | dict, setting: str | bool | None = None,
                  endpoints_data: dict | None = None) -> str:
@@ -61,6 +63,23 @@ def thinking_for(seat: str | dict, setting: str | bool | None = None,
     return setting
 
 
+def reasoning_effort_for(seat: str | dict) -> str:
+    # Frozen recipes without this optional field keep their original high effort.
+    effort = seat.get("reasoning_effort", "high") if isinstance(seat, dict) else "high"
+    if not isinstance(effort, str) or effort not in {"medium", "high"}:
+        raise ReasonFailure("CONFIG_ERROR", "Reasoning effort must be medium or high")
+    return effort
+
+
+def completion_tokens_for(recipe: dict, thinking: str) -> int:
+    if not isinstance(thinking, str) or thinking not in {"native", "off", "gateway-default"}:
+        raise ReasonFailure("CONFIG_ERROR", "Thinking must be native, off or gateway-default")
+    # Keep the saved key name; both explicit native and gateway-default routes
+    # may spend their completion allowance on hidden reasoning.
+    key = "completion_tokens" if thinking == "off" else "native_completion_tokens"
+    return recipe["ceilings"][key]
+
+
 def lineage(seat: str | dict, endpoints_data: dict | None = None) -> str:
     return endpoint_for(seat, endpoints_data).family.rsplit("/", 1)[-1]
 
@@ -71,6 +90,8 @@ def validate_recipe(data: dict[str, Any]) -> None:
         refuse("Unsupported recipe schema")
     if not isinstance(data.get("name"), str) or not data["name"].strip():
         refuse("Recipe needs a name")
+    if "closing_return" in data and type(data["closing_return"]) is not bool:
+        refuse("closing_return must be a boolean")
     seats = data.get("seats", {})
     if not isinstance(seats, dict) or not {"conjecture", "critics", "use", "rival"} <= seats.keys():
         refuse("Recipe must declare conjecture, critics, use and optional rival seats")
@@ -81,10 +102,12 @@ def validate_recipe(data: dict[str, Any]) -> None:
     if seats["rival"] is not None:
         names.append(seats["rival"])
     for name in names:
-        if isinstance(name, dict) and set(name) != {"endpoint", "thinking"}:
-            refuse("Seat objects must declare exactly endpoint and thinking")
+        if isinstance(name, dict) and (not {"endpoint", "thinking"} <= name.keys()
+                                      or set(name) - {"endpoint", "thinking", "reasoning_effort"}):
+            refuse("Seat objects must declare endpoint, thinking and optional reasoning_effort")
         endpoint_for(name)
         thinking_for(name)
+        reasoning_effort_for(name)
     if data.get("cross_family") is True:
         family = lineage(seats["conjecture"])
         if any(lineage(name) == family for name in critics):
@@ -100,8 +123,8 @@ def validate_recipe(data: dict[str, Any]) -> None:
     for key in ("completion_tokens", "native_completion_tokens"):
         if type(ceilings.get(key)) is not int or not 1 <= ceilings[key] <= 32768:
             refuse("Completion ceiling must be an integer between 1 and 32768")
-    if ceilings["native_completion_tokens"] != ceilings["completion_tokens"]:
-        refuse("Baseline and loop completion ceilings must match")
+    if ceilings["native_completion_tokens"] < ceilings["completion_tokens"]:
+        refuse("Reasoning-exposed completion ceiling must be at least the off ceiling")
     if ceilings.get("wall_seconds") != 300:
         refuse("The personal harness requires a 300 second call wall")
     components = data.get("components")
