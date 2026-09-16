@@ -780,3 +780,22 @@ The independent judge's REJECT is preserved. The orchestrator approved and root 
 Actual F003 throwaway initialize/verify both PASS at C:/tf11/f003-proof. Its plan_id is confined to the throwaway proof and is NOT the study identity; no real initialization occurred. No F003 repair was needed. Append-only proof is in F003/VALIDATION.md; its v6 pin is refreshed and v6 validation passes. Owner decisions remain: envelope confound, operator candidate/task extension, topology/protected obligations, budget/resources/seats, then real initialization under its own receipt. L004/v6 minting follows completed F003 evidence and its actual source/row/budget/launch decisions. Existing C001/A001/main-merge obligations are unchanged.
 
 Bounded fix-up complete locally; publication belongs to the following publisher. No provider calls or Git index/reference changes. Full commands, outputs, exact error paths and the 34-path publisher inventory: work/w11b/INDEX.md and work/w11b/PUBLISH-CHECKLIST.md.
+
+
+## 2026-09-16T07:14:52.156689+00:00 Self-service reasoning CLI (offline delivery)
+
+REC-20260916-C delivers tools/reason.py and src/minireason/reason/: explicit single-family, cross-family and cross-family-rival recipes; verbatim prose/objection delivery; per-objection return dispositions; dependent use questions; optional bare/native DeepSeek readings; complete personal run records under ignored runs/; terminal-response recovery without replay; explicit transport retries and a300second worker wall. Operator page: docs/workflows/reason-cli.md. This is a personal working tool; its output is a working answer with its objections, not a finding.
+
+Offline verification completed:30reason tests passed;26unchanged docs-pin tests passed; three-cycle baseline CLI run/status/resume succeeded with15calls and60unchanged call JSON files. Initial fixture error and completed-resume key-order defect are preserved with corrections under work/w12; no failed evidence was erased. Inventory covers12mechanisms and24endpoint seats and identifies actual registry src/minireason/data/endpoints.json. No live provider/model/network call, study identity, Git staging, commit or push occurred. Only isolated offline personal fixture identifiers were created. Publication is separate and pending the publisher.
+
+Next steps: publish the reviewed explicit paths in work/w12/PUBLISH-CHECKLIST.md; conduct the first live smoke under its own receipt using work/w12/LIVE-SMOKE.md; then owner use on pasted prose problems. Read work/w12/INDEX.md for all retained investigation, tests, failure evidence and receipt text. Live usefulness and comparative benefit remain unestablished; future comparison needs declared matched multi-call conditions.
+
+
+### Self-service reasoning CLI judge correction round - 2026-09-16T07:32:21.280573+00:00
+
+REC-20260916-C: independent offline judge corrections applied to per-seat native thinking, tolerant JSON with one recorded schema repair, separate problem/working-answer use derivations, checkable criticism, final open objections and per-cycle dispositions. Final reason suite: 59 passed; unchanged documentation pins: 26 passed. Two-cycle cross-family baseline fixture: 11 calls, 44 unchanged call records after status/resume. Judge evidence: work/review12/INDEX.md and REPORT.md; corrected live plan: work/review12/LIVE-SMOKE.md. Pending: separate publication using work/review12/PUBLISH-CHECKLIST.md, then separately receipted live smoke and owner use. No provider call or Git mutation in this judge round; live benefit remains unestablished.
+
+
+### REC-20260916-C publisher / REC-20260916-D opening - 2026-09-16T07:46:04.775595+00:00
+
+The approved 22-path CLI delivery is accepted for branch-only publication after preserving AHepi's eleven concurrent commits 94d6f5fa..fd0c4d34 by a verified nonoverlapping fast-forward. Publication is pending. REC-20260916-D is opened prospectively for the two-cycle cross-family baseline live smoke, at most 11 logical calls and one schema repair each, 8192 completion tokens and 300 seconds per call, no transport retry. No provider call occurred in this publisher task. Next: finish both verified branch publication commits, then the separate live operator executes the child-environment launcher and records actual calls, repairs, stop reason and plumbing outcome. No answer-quality claim. No merge to main.
