@@ -799,3 +799,8 @@ REC-20260916-C: independent offline judge corrections applied to per-seat native
 ### REC-20260916-C publisher / REC-20260916-D opening - 2026-09-16T07:46:04.775595+00:00
 
 The approved 22-path CLI delivery is accepted for branch-only publication after preserving AHepi's eleven concurrent commits 94d6f5fa..fd0c4d34 by a verified nonoverlapping fast-forward. Publication is pending. REC-20260916-D is opened prospectively for the two-cycle cross-family baseline live smoke, at most 11 logical calls and one schema repair each, 8192 completion tokens and 300 seconds per call, no transport retry. No provider call occurred in this publisher task. Next: finish both verified branch publication commits, then the separate live operator executes the child-environment launcher and records actual calls, repairs, stop reason and plumbing outcome. No answer-quality claim. No merge to main.
+
+
+### REC-20260916-C verified branch publication - 2026-09-16T07:47:45Z
+
+The 22-path approved CLI and prospective REC-20260916-D opening are published at c4508af45c1e15b2cafeff3c125f20a5464d1b78, tree cf4236e0c7d6dd2b3eed79257b2e738e89b6968e, on claude/project-state-direction-j5rbun. Non-forced push, fresh fetch, ls-remote and local/remote commit/tree equality passed. AHepi's eleven concurrent commits remain ancestors. The verification acknowledgement is being published separately. REC-D smoke execution is pending; this publisher made no provider calls and no merge to main. Next authorized task belongs to the separate live operator under the recorded smoke limits and child-only credential environment.
