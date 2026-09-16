@@ -164,6 +164,21 @@ def make_manifest(template: str, source_paths: Sequence[str], envelope: Executio
     }
 
 
+def _evidence_targets(routing: Any, tier: str) -> tuple[Any, ...]:
+    """Support the route APIs encountered during the pinned Forge review."""
+    if callable(getattr(routing, "for_kind", None)):
+        return tuple(routing.for_kind(f"evidence.{tier}"))
+    if callable(getattr(routing, "for_evidence", None)):
+        return tuple(routing.for_evidence(tier))
+    raise TypeError("Unsupported Forge routing API; refusing to bypass source routes")
+
+
+def _target_matches_port(target: Any, port: Any) -> bool:
+    tag = getattr(target, "tag", getattr(target, "target", None))
+    return ((tag == "port_type" and target.port_type == port.port_type)
+            or (tag == "pid" and target.port_id == port.port_id))
+
+
 def _source_visible(context: Any, source: Any) -> bool:
     """Respect declared evidence ports, windows, permissions and explicit routes."""
     from creib.forge.mini.ports import port_draws_tiers
@@ -178,8 +193,8 @@ def _source_visible(context: Any, source: Any) -> bool:
             continue
         if source.tier not in port_draws_tiers(port_type, port.params):
             continue
-        routes = plan.routing.for_evidence(source.tier)
-        if not routes or any(r.target == "port_type" and r.port_type == port.port_type for r in routes):
+        routes = _evidence_targets(plan.routing, source.tier)
+        if not routes or any(_target_matches_port(target, port) for target in routes):
             return True
     return False
 
