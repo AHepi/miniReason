@@ -186,15 +186,27 @@ class Adapter:
         worker_env = dict(os.environ)
         worker_env["PYTHONPATH"] = str(Path(__file__).resolve().parents[2]) + os.pathsep + worker_env.get("PYTHONPATH", "")
         worker_env["PYTHONUTF8"] = "1"
+        strict = bool((coordinate or {}).get("strict"))
+        job = None
+        wall_reached = False
         try:
+            if strict and os.name == "nt":
+                from .checker import _WindowsJob
+                job = _WindowsJob(None)
             process = subprocess.Popen(
                 [sys.executable, "-X", "utf8", "-m", "minireason.reason.worker", str(spec_path.resolve()), str(records.resolve())],
                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                 creationflags=flags, env=worker_env)
+            if job is not None:
+                job.assign(process)
             try:
                 process.wait(timeout=max(0.01, WALL_SECONDS - (time.monotonic() - started)))
             except subprocess.TimeoutExpired:
-                process.kill()
+                wall_reached = True
+                if job is not None:
+                    job.close()
+                else:
+                    process.kill()
                 process.wait()
                 terminal = recover(records)
                 if terminal is not None:
@@ -203,12 +215,30 @@ class Adapter:
                 _write(records / "worker-failure.json", failure)
                 raise ReasonFailure(failure["code"], failure["detail"], failure)
         except OSError as error:
+            if "process" in locals() and process.poll() is None:
+                if job is not None:
+                    job.close()
+                process.kill()
+                process.wait()
             raise ReasonFailure("TRANSPORT_OR_RESPONSE_ERROR", "Live worker could not start") from error
         except BaseException:
             if "process" in locals() and process.poll() is None:
                 process.kill()
                 process.wait()
             raise
+        finally:
+            if job is not None:
+                job.close()
+            if strict:
+                elapsed_ms = int((time.monotonic() - started) * 1000)
+                _write(records / "supervision.json", {
+                    "schema": "minireason.reason.worker-supervision.v1",
+                    "requested_wall_seconds": WALL_SECONDS,
+                    "elapsed_ms": elapsed_ms,
+                    "limit_breaches": ["wall_seconds"] if wall_reached or elapsed_ms > WALL_SECONDS * 1000 else [],
+                    "termination_backend": "windows-job-kill-on-close-single-process" if os.name == "nt" else "worker-process",
+                    "exit_code": process.poll() if "process" in locals() else None,
+                })
         terminal = recover(records)
         if terminal is None:
             failure = {"code": "TRANSPORT_OR_RESPONSE_ERROR", "detail": "Worker stopped without a terminal provider record", "recorded_epoch": time.time()}

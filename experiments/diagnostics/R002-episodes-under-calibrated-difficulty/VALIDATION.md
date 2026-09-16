@@ -473,3 +473,156 @@ The user's as-found branch remains claude/project-state-direction-j5rbun. A conc
 No provider, checker sandbox, live timeout enforcement, hidden-reasoning custody or new contract execution has been qualified here. Live mode refuses even a capability marker until separate engineering implements the adapter. Unchanged legacy CROSS's repair/fallback behavior conflicts with strict no-repeat policy; its live command remains gated pending a prospective resolution, as PLAN and INSTRUMENT state. The budget retains its conservative historical maximum rather than concealing those extra attempts.
 
 [MATERIAL_PINS.json](MATERIAL_PINS.json) freezes this draft's study artifacts except the pin file itself. Notes, earlier snapshots, operational failures and final receipts remain under [work/w18/INDEX.md](../../../work/w18/INDEX.md). No scientific comparison has run; the next task is engineering and independent review/publication, followed only by separately authorized calibration.
+
+
+## W20 offline engineering verification - 2026-09-16T22:32:19.425840+00:00
+
+REC-20260917-A. The mutable R002 implementation is tools/run_R002.py and src/minireason/reason/r002*.py with checker.py; the published draft launcher, contracts, recipes and other study files remain unchanged. This append is a completion supplement, not a rewrite of the earlier draft observations.
+
+The final required reason discovery suite passed 212 tests (74.029 seconds); tests.loop.test_docs_pins passed 26 tests (0.018 seconds). Contracts, cannot-decide branches, actual request schema/reference delivery, strict critic/native ceilings, fork/redo binding, tail edits, recoding, stall switches, checker refusal/timeout/memory/output/mismatch/match, checker receipt recovery binding, episodes, counters and launcher resume/rerun custody are covered by offline fixtures. All seven recipe maximum-call fixtures fit the unchanged offline prompt cap; that byte counter is not a model tokenizer qualification. The independent checker receipt finding is resolved and reviewed in work/w20/checker/FINAL-REVIEW-RESOLUTION.md.
+
+Standalone launcher calibration for C01/C02 made one synthetic native slot each. Main completed all five default conditions for both candidates: 50 synthetic slots total. These default fixtures respond cannot_decide; they execute no checker (checker_runs=0). The separate checker/engine fixture suites exercise actual isolated subprocesses and mismatch delivery. Both launcher resume commands returned zero; all 560 phase files remained byte-identical. No semantic admission judgement, live provider call, root .env read, Git mutation or sandbox qualification occurred. Source pins match the final current implementation exactly.
+
+Exact command/output paste:
+
+```text
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase calibration --mode offline --run-root C:\Dev\miniReason\work\w20\l\final03 --problems C01 C02 --env-file C:/tw20/nonexistent-w20.env
+{"mode": "offline", "phase": "calibration", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01", "C02"], "status": "COMPLETE"}
+
+EXIT: 0
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:\Dev\miniReason\work\w20\l\final03 --problems C01 C02 --env-file C:/tw20/nonexistent-w20.env --admission-receipt C:\Dev\miniReason\work\w20\launcher-admission-fixture.json
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01", "C02"], "status": "COMPLETE"}
+
+EXIT: 0
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase calibration --mode offline --run-root C:\Dev\miniReason\work\w20\l\final03 --problems C01 C02 --env-file C:/tw20/nonexistent-w20.env --resume
+{"mode": "offline", "phase": "calibration", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01", "C02"], "status": "COMPLETE"}
+
+EXIT: 0
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:\Dev\miniReason\work\w20\l\final03 --problems C01 C02 --env-file C:/tw20/nonexistent-w20.env --admission-receipt C:\Dev\miniReason\work\w20\launcher-admission-fixture.json --resume
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01", "C02"], "status": "COMPLETE"}
+
+EXIT: 0
+```
+
+Required test command/output paste:
+
+```text
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+Run directory: C:\Dev\miniReason\work\w20\tests\cli\20d025a9
+{"run_id": "20260916T222900Z-r002-2a2095", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260916T222900Z-r002-2a2095", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+.....................................................CONFIG_ERROR
+...............................................................................................................................................................
+----------------------------------------------------------------------
+Ran 212 tests in 74.029s
+
+OK
+
+EXIT: 0
+ELAPSED_SECONDS: 74.407
+
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.018s
+
+OK
+
+EXIT: 0
+ELAPSED_SECONDS: 0.531
+```
+
+Full custody: work/w20/INDEX.md, TESTS-FINAL.txt, DOCS-PINS-FINAL.txt, LAUNCHER-FINAL.txt, LAUNCHER-VERIFICATION.json, SOURCE-VERIFICATION.json and l/final03/. Historical final01/final02 and intermediate/failing probes are preserved and are not final-source proof. Future live calibration requires its own receipt, published engineering review capability and qualified local tokenizer pins. The detached 24-call command is in work/w20/CALIBRATION-LAUNCH.md and was not executed. Live CHECKER remains refused until a qualified OS/container backend exists; Python subprocess guards alone are not that qualification.
+
+
+W20 scope correction - 2026-09-16T22:34:08.005009+00:00: The final byte-level audit found that the raw Git index hash differs from its opening fingerprint. HEAD and branch remain unchanged, and git diff --cached --exit-code --quiet HEAD returns 0: staged contents still exactly equal HEAD. W20 used only read-only Git verbs; such commands may refresh index stat-cache metadata, and exclusive attribution versus concurrent writers is unproven. No restoration or Git mutation command was attempted. Subsequent reads set GIT_OPTIONAL_LOCKS=0 and preserve the current index bytes. Earlier blanket no-Git-mutation statements mean no explicit mutating command; raw-index byte preservation was not achieved. Evidence: work/w20/INDEX-CACHE-OBSERVATION.json and SCOPE-AUDIT-INITIAL.json. This exception does not change source/test results or permit publication in this task.
+
+
+## VALIDATION - independent review20 - 2026-09-16T23:14:22.590000+00:00
+
+REC-20260917-A; root-review20. APPROVED-AS-CORRECTED for publication under the owner's addenda. This is offline engineering evidence, not model/scientific evidence. No provider/model call, root .env read or Git mutation. Full judgment, corrections, failed probes and final evidence: work/review20/REPORT.md and INDEX.md. Source stable for the final runs below.
+
+Corrections: conclusion-only tail detection; checker redo source/output delivery; no invented dependence on equal conclusions; profiler/frame/os escape containment; reviewed runtime qualification; strict Windows provider-worker process-tree supervision; automatic source-pinned exact-wire calibration preflight; corrected Unicode tokenizer proof; exact original-prefix material validation for append-only path clarification. All have regression coverage in the final suite.
+
+Original profiler attack created one review-owned empty directory outside child cwd before correction; preserved evidence is checker/PROFILER-PRE-FIX.json. Corrected final battery:12/12 pass, plus original profiler replay refused and independent runtime profiler/os mutation denials. Default5-second wall observed5093ms; default256MiB refused512MiB allocation. LOOP-CHECKER is runnable on this host WITH ITS DECLARED LIMITS:
+
+Reviewed host limits (REC-20260917-A): windows-personal-python-guard-v2 is runnable on this Windows host with CPython 3.11.9 executable SHA-256 5f7b89a612c9b8af1d6456cdfcd1dbe5ca630849e79aebced9bee9a6694952ec. Each check uses a fresh empty working directory, explicit JSON stdin, a cleared environment, UTF-8, UTC and PYTHONHASHSEED=0; startup uses -P -s -S -B -X utf8. The AST allowlist permits only collections, decimal, fractions, functools, itertools, json, math, operator, statistics and sys, rejects filesystem/process/network/dynamic-import/reflection access, and is reinforced by runtime import/open/audit guards, including socket, profiler/frame and os mutation denial. Windows Job Objects limit the child to one process and 256 MiB; the host enforces a 5-second wall and terminates the job. Source is limited to 32768 UTF-8 bytes and retained stdout/stderr to 65536 bytes each. The monitor polls every 5 ms: actual termination time and temporary output size can exceed the requested limits, and elapsed time/breaches are recorded. Only one finite JSON object with the expected relation, value and derivation is accepted. Code, stdin, bounded output, exit status, elapsed time, policy and runtime hashes are retained; mismatch supplies source and output to the next return as an objection. No repository, sealed answer/oracle or credential data is supplied. This is tested containment for the owner's restricted personal harness, not OS/container filesystem or network separation, a disk quota, or a proof against all hostile Python/interpreter defects. Qualification on another runtime/host requires a new review; nonmatching live runtimes fail closed.
+
+Capability is required by INSTRUMENT207-228 and supplied at work/review20/reviewed-engine-capability.json with exact12 schema/7 recipe digests and REC-20260917-A review reference. PLAN6 permits the qualified exact-wire alternative; calibration needs no hand-made tokenizer file. All24 corrected public-serializer prompt counts independently reproduce (940-1192); provider usage remains unobserved. Main dynamic tokenizer pins remain a separate requirement. Complete detached24-call calibration command: work/review20/CALIBRATION-LAUNCH.md; not executed.
+
+All35 prepared seat wires carry native32768/off16384; max14-call loop completion ceiling311296. Guarantee that every possible critic fits is not established: published schema has unbounded fields; any length stop must stay censored. R001 recipe and old-contract prompt bytes match HEAD; copied actual run resumed without call evidence mutation. Historical derived report/timestamp rewrites are documented separately.
+
+### Final reason unittest discovery
+
+```text
+..........................................................CONFIG_ERROR
+.......................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 225 tests in 71.219s
+
+OK
+Run directory: C:\Dev\miniReason\work\review20\tests\cli\357e7158
+{"run_id": "20260916T230912Z-r002-80128e", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260916T230912Z-r002-80128e", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+
+EXIT CODE: 0
+```
+
+### Final documentation pins
+
+```text
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.019s
+
+OK
+
+EXIT CODE: 0
+```
+
+### Final corrected-source offline launcher and exact resumes
+
+```text
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase calibration --mode offline --run-root C:\tr20\review20-final-corrected --problems C01 C02
+
+{"mode": "offline", "phase": "calibration", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01", "C02"], "status": "COMPLETE"}
+
+exit 0
+
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:\tr20\review20-final-corrected --admission-receipt C:\tr20\review20-admission.json --problems C01
+
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01"], "status": "COMPLETE"}
+
+exit 0
+
+BEFORE RESUME: {"aggregate_sha256": "a48b38b4264ecc4e8d35fc0fa7f1ddad3000ddde4a7b0790e4ab014d7cbd02a3", "files": 310}
+
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase calibration --mode offline --run-root C:\tr20\review20-final-corrected --problems C01 C02 --resume
+
+{"mode": "offline", "phase": "calibration", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01", "C02"], "status": "COMPLETE"}
+
+exit 0
+
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:\tr20\review20-final-corrected --admission-receipt C:\tr20\review20-admission.json --problems C01 --resume
+
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01"], "status": "COMPLETE"}
+
+exit 0
+
+AFTER RESUME: {"aggregate_sha256": "a48b38b4264ecc4e8d35fc0fa7f1ddad3000ddde4a7b0790e4ab014d7cbd02a3", "files": 310}
+
+VERIFY: {"active_source_version": 1, "conditions": ["LOOP-CHECKER", "LOOP-CROSS", "LOOP-RECODED", "LOOP-TESTED", "NATIVE"], "source_files": 199, "source_pin_equal": true}
+```
+
+Earlier standalone rerun-failed and versioned-source tests passed; focused launcher/preflight11 passed and the full final suite repeats rerun custody. The final manifest contains199 matching source pins; all five main conditions are present. Original published/preregistered bytes remain intact; PLAN and LAUNCHER contain only the permitted CHANGES append directing execution to tools/run_R002.py.
+
+
+### Final corrected rerun and durable archive supplement - 2026-09-16T23:15:16.367059+00:00
+
+The separate corrected-source rerun-failed probe also completed: failed predecessor bytes preserved; successor complete; separate rerun phase receipt; source pins equal. Full corrected run311files, rerun367files and admission copy are byte-equal under work/review20/launcher, verified in ARCHIVE-CORRECTED-VERIFY.json.
+
+```text
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:\tr20\review20-final-corrected-rerun --admission-receipt C:\tr20\review20-admission.json --problems C01 --rerun-failed
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01"], "status": "COMPLETE"}
+VERIFY: {"active_source_version": 1, "archived_byte_equal": true, "archived_stop": "SCHEMA_FAILURE", "attempt_source_versions": [1, 1], "attempt_statuses": ["archived-failed", "complete"], "current_stop": "no_new_objections", "rerun_receipts": ["phase-receipt-rerun-001.json"], "source_pin_equal": true, "source_versions": 1}
+```

@@ -42,3 +42,8 @@ Capability `r002-contracts-v2` must pin every recipe/schema basename/hash and ad
 ## Evidence
 
 Original W18 offline transcripts remain unchanged under work/w18. Current judge transcripts, unit checks, manifests and hashes are copied under work/review16/launcher and summarized in VALIDATION-REVIEW16.md. No provider/model calls, hidden reasoning, credential read, git change, completed scientific occurrence or episode is represented by these fixtures.
+
+
+## CHANGES - review20 launcher implementation clarification - 2026-09-16T22:50:35.258749+00:00
+
+REC-20260917-A: The published `run_R002.py` in this experiment directory remains the frozen draft. The implemented, independently judged launcher is `tools/run_R002.py`, backed by `src/minireason/reason/r002_launcher.py`. Use that path for the calibration/main phases, exact-evidence resume and separately receipted main rerun-failed occurrences described in PLAN section 6. This append does not rewrite the pre-registered phases, conditions, candidate order, no-retry policy or budgets. Calibration remains24 fresh native calls at32768 completion each; main admissions require their separate guarded reading. See `work/review20/REPORT.md`, `work/review20/CALIBRATION-LAUNCH.md` and the appended VALIDATION observations. All review activity is offline; no participant call or Git mutation occurred.

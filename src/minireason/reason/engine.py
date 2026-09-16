@@ -39,6 +39,8 @@ def create_run(problem, cycles, recipe="cross-family", out=None, mode="offline",
     if transport.redact_with_names(problem)[1]:
         raise ReasonFailure("SECRET_IN_REQUEST", "Problem contains a declared credential")
     loaded = config.load_recipe(recipe)
+    if loaded["data"].get("schema_version") == "minireason.reason.recipe.r002-proposed.v1":
+        raise ReasonFailure("CONFIG_ERROR", "R002 recipes require create_r002_run / run-r002")
     endpoints = config.load_endpoint_snapshot()
     if transport.redact_with_names(loaded["text"])[1]:
         raise ReasonFailure("SECRET_IN_REQUEST", "Recipe contains a declared credential")
@@ -565,3 +567,25 @@ def status(run_dir):
         return get(directory / "state.json")
     cfg = get(directory / "config.json")
     return {"run_id": cfg["run_id"], "stop_reason": "not_started", "completed_cycles": 0, "calls": 0}
+
+
+# R002 is isolated from the shipped recovery engine. Lazy imports keep the
+# historical path unchanged until an R002 command is explicitly selected.
+def create_r002_run(*args, **kwargs):
+    from .r002 import create_r002_run as implementation
+    return implementation(*args, **kwargs)
+
+
+def create_r002_native_run(*args, **kwargs):
+    from .r002 import create_r002_native_run as implementation
+    return implementation(*args, **kwargs)
+
+
+def execute_r002(*args, **kwargs):
+    from .r002 import execute_r002 as implementation
+    return implementation(*args, **kwargs)
+
+
+def status_r002(*args, **kwargs):
+    from .r002 import status_r002 as implementation
+    return implementation(*args, **kwargs)

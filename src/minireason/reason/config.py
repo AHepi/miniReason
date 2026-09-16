@@ -76,7 +76,7 @@ def completion_tokens_for(recipe: dict, thinking: str) -> int:
         raise ReasonFailure("CONFIG_ERROR", "Thinking must be native, off or gateway-default")
     # Keep the saved key name; both explicit native and gateway-default routes
     # may spend their completion allowance on hidden reasoning.
-    key = "completion_tokens" if thinking == "off" else "native_completion_tokens"
+    key = ("off_completion_tokens" if "off_completion_tokens" in recipe["ceilings"] else "completion_tokens") if thinking == "off" else "native_completion_tokens"
     return recipe["ceilings"][key]
 
 
@@ -84,6 +84,9 @@ def lineage(seat: str | dict, endpoints_data: dict | None = None) -> str:
     return endpoint_for(seat, endpoints_data).family.rsplit("/", 1)[-1]
 
 def validate_recipe(data: dict[str, Any]) -> None:
+    if isinstance(data, dict) and data.get("schema_version") == "minireason.reason.recipe.r002-proposed.v1":
+        validate_r002_recipe(data)
+        return
     def refuse(detail: str) -> None:
         raise ReasonFailure("CONFIG_ERROR", detail)
     if not isinstance(data, dict) or data.get("schema_version") != "minireason.reason.recipe.v1":
@@ -139,6 +142,8 @@ def validate_recipe(data: dict[str, Any]) -> None:
 def load_recipe(name_or_path: str | Path) -> dict[str, Any]:
     candidate = Path(name_or_path)
     path = candidate if candidate.is_file() else RECIPES_DIR / (str(name_or_path) + ".json")
+    if not path.is_file() and (str(name_or_path) + ".json") in R002_RECIPE_SHA256:
+        path = R002_DIR / "recipes" / (str(name_or_path) + ".json")
     try:
         text = _read(path)
         data = json.loads(text)
@@ -149,3 +154,30 @@ def load_recipe(name_or_path: str | Path) -> dict[str, Any]:
         raise ReasonFailure("CONFIG_ERROR", "Recipe could not be read or validated") from error
     return {"data": data, "text": text,
             "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "source": str(path)}
+
+
+# The published draft is immutable input; R002 activation is a separate gate.
+R002_DIR = Path(__file__).resolve().parents[3] / "experiments" / "diagnostics" / "R002-episodes-under-calibrated-difficulty"
+R002_RECIPE_SHA256 = {'r002-carrier-v1.json': '56529db41ba2ae8bd16bc0440bbabd39450bd3c584a15b7be603b2b909a3af92', 'r002-checker-v1.json': 'dc89e15b9643ec7962da2906fb2f82e830a56b510400ac846f849289121c78f4', 'r002-cross-match-v1.json': '38616a0aaf40ce2f58cb117266fc8dbe08b7d5b5551a52c1efae5d86acb26c91', 'r002-cross-v2.json': '87c0eae4fdc72af755f9532d1dfe2e857a854e1e8589feb3a7c5c239f0e4361f', 'r002-native-match-v1.json': '3a75c0a3560ed09e3321c61f5c28f6b34cf215dbdcc4eb65ace885ab02136b8e', 'r002-recoded-v1.json': 'ddae570a2b68373c6cf5e6f30d17f9c97ed874577c066be3b3155bc3e215f3fd', 'r002-tested-cross-v1.json': 'dc1fc3c1f0bfe28ec320c9ad40f038bc7565f1d27f2d97c30454863b03441fec'}
+
+
+def validate_r002_recipe(data: dict[str, Any]) -> None:
+    """Accept exactly a judged recipe, never silently adapt a historical one."""
+    filename = str(data.get("name", "")) + ".json"
+    if filename not in R002_RECIPE_SHA256:
+        raise ReasonFailure("CONFIG_ERROR", "Unknown R002 recipe identity")
+    path = R002_DIR / "recipes" / filename
+    if hashlib.sha256(path.read_bytes()).hexdigest() != R002_RECIPE_SHA256[filename]:
+        raise ReasonFailure("CONFIG_ERROR", "Published R002 recipe bytes changed")
+    if data != json.loads(_read(path)):
+        raise ReasonFailure("CONFIG_ERROR", "R002 recipe differs from the judged condition")
+    for seat in data["seats"].values():
+        endpoint_for(seat)
+        thinking_for(seat)
+        reasoning_effort_for(seat)
+
+
+def load_r002_recipe(name_or_path):
+    snapshot = load_recipe(name_or_path)
+    validate_r002_recipe(snapshot["data"])
+    return snapshot

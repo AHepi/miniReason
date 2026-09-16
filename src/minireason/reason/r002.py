@@ -1,0 +1,1110 @@
+"""Strict, recoverable R002 reasoning episodes over frozen public contracts."""
+from __future__ import annotations
+
+from copy import deepcopy
+import hashlib
+import json
+from pathlib import Path
+import time
+import uuid
+from typing import Any
+
+from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
+
+from . import config, prompts
+from .adapter import Adapter
+from .r002_preflight import token_preflight, validate_capability, snapshot_tokenizers
+from .storage import get, put, read, write, sha, guard, run_lock
+from .types import ReasonFailure
+
+
+R002_SCHEMA = "minireason.reason.r002.v1"
+R002_STATE_SCHEMA = "minireason.reason.r002-state.v1"
+CLAIM = "OFFLINE FIXTURE records are structural evidence only; no model result or correctness finding is implied."
+ROLE_SCHEMAS = {
+    "answer": "answer.schema.json",
+    "prose_critic": "prose-objection.schema.json",
+    "tested_critic": "tested-objection.schema.json",
+    "prose_return": "prose-return.schema.json",
+    "tested_return": "tested-return.schema.json",
+    "propagation_use": "propagation-use.schema.json",
+    "blind_coding_solve": "recoding-solve.schema.json",
+    "native_match_note": "native-match-note.schema.json",
+    "native_match_synthesis": "native-match-note.schema.json",
+}
+
+
+def _json(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+def _load_object(value, label: str, *, optional: bool = False):
+    if value is None and optional:
+        return None, None, None
+    if isinstance(value, dict):
+        text = json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        return deepcopy(value), text, None
+    path = Path(value)
+    text = read(path)
+    try:
+        data = json.loads(text)
+    except ValueError as exc:
+        raise ReasonFailure("CONFIG_ERROR", f"{label} is not valid JSON") from exc
+    return data, text, path
+
+
+def _candidate(registry: dict, problem_id: str, label: str) -> dict:
+    matches = [item for item in registry.get("candidates", [])
+               if item.get("candidate_id") == problem_id]
+    if len(matches) != 1:
+        raise ReasonFailure("CONFIG_ERROR", f"{label} has no unique {problem_id} entry")
+    return matches[0]
+
+
+def _relation_entry(registry: dict, problem_id: str) -> dict:
+    item = _candidate(registry, problem_id, "relation registry")
+    relations = item.get("relations")
+    if not isinstance(relations, list) or not relations:
+        raise ReasonFailure("CONFIG_ERROR", "Problem has no declared public relations")
+    ids = [r.get("relation_id") for r in relations]
+    if any(not isinstance(x, str) or not x for x in ids) or len(set(ids)) != len(ids):
+        raise ReasonFailure("CONFIG_ERROR", "Public relation IDs are invalid or duplicated")
+    return item
+
+
+def _infer_problem_id(problem_id, problem, registry):
+    if isinstance(problem_id, str) and problem_id:
+        return problem_id
+    candidates = registry.get("candidates", [])
+    if len(candidates) == 1:
+        return candidates[0]["candidate_id"]
+    raise ReasonFailure("CONFIG_ERROR", "problem_id is required for a multi-candidate registry")
+
+
+class ContractSet:
+    """Validate frozen schema bytes with their relative references."""
+
+    def __init__(self, directory: str | Path):
+        self.directory = Path(directory)
+        self.schemas = {}
+        resources = []
+        for path in sorted(self.directory.glob("*.schema.json")):
+            schema = get(path)
+            self.schemas[path.name] = schema
+            if "$id" in schema:
+                resources.append((schema["$id"], Resource.from_contents(schema)))
+        if not self.schemas:
+            raise ReasonFailure("CONFIG_ERROR", "No R002 schemas found")
+        self.registry = Registry().with_resources(resources)
+
+    def validate(self, name: str, value: dict) -> dict:
+        schema = self.schemas.get(name)
+        if schema is None:
+            raise ReasonFailure("CONFIG_ERROR", "Unknown R002 schema: " + name)
+        errors = sorted(Draft202012Validator(schema, registry=self.registry).iter_errors(value),
+                        key=lambda error: list(error.absolute_path))
+        if errors:
+            error = errors[0]
+            location = ".".join(str(part) for part in error.absolute_path) or "$"
+            raise ReasonFailure("SCHEMA_FAILURE", f"{name}:{location}: {error.message}")
+        return value
+
+    def closure(self, role: str) -> list[tuple[str, dict]]:
+        """Return the role schema and transitive local external-reference closure."""
+        root = ROLE_SCHEMAS.get(role)
+        if root is None:
+            raise ReasonFailure("CONFIG_ERROR", "Unknown R002 schema role: " + role)
+        ordered = []
+        seen = set()
+
+        def references(value):
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    if key == "$ref" and isinstance(item, str) and not item.startswith("#"):
+                        yield item.split("#", 1)[0].rsplit("/", 1)[-1]
+                    else:
+                        yield from references(item)
+            elif isinstance(value, list):
+                for item in value:
+                    yield from references(item)
+
+        def visit(name):
+            if name in seen:
+                return
+            schema = self.schemas.get(name)
+            if schema is None:
+                raise ReasonFailure("CONFIG_ERROR", "Missing local schema dependency: " + name)
+            seen.add(name)
+            ordered.append((name, schema))
+            for dependency in sorted(set(references(schema))):
+                visit(dependency)
+
+        visit(root)
+        return ordered
+
+    def prompt_blocks(self, role: str) -> list[tuple[str, str]]:
+        blocks = []
+        for index, (name, schema) in enumerate(self.closure(role)):
+            label = "RESPONSE SCHEMA" if index == 0 else "RESPONSE SCHEMA DEPENDENCY"
+            blocks.append((label + " " + name, _json(schema)))
+        return blocks
+
+
+def _response_object(content: str) -> dict:
+    if not isinstance(content, str):
+        raise ReasonFailure("SCHEMA_FAILURE", "Public response must be text")
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            if key in result:
+                raise ReasonFailure("SCHEMA_FAILURE", "Duplicate JSON key: " + key)
+            result[key] = value
+        return result
+    def constant(value):
+        raise ReasonFailure("SCHEMA_FAILURE", "Non-finite JSON number: " + value)
+    try:
+        value = json.loads(content, object_pairs_hook=pairs, parse_constant=constant)
+        if not isinstance(value, dict):
+            raise ReasonFailure("SCHEMA_FAILURE", "R002 response must be exactly one JSON object")
+        return value
+    except ReasonFailure:
+        raise
+    except (TypeError, ValueError) as exc:
+        raise ReasonFailure("SCHEMA_FAILURE", str(exc)) from exc
+
+
+def _validate_steps(steps: list[dict], label="derivation_steps"):
+    indices = [step["step_index"] for step in steps]
+    if indices != list(range(1, len(steps) + 1)):
+        raise ReasonFailure("SCHEMA_FAILURE", f"{label} must be contiguous and start at 1")
+    for step in steps:
+        if any(parent >= step["step_index"] for parent in step["depends_on"]):
+            raise ReasonFailure("SCHEMA_FAILURE", f"{label} dependencies must name earlier steps")
+
+
+def _claim_map(claims: list[dict]) -> dict[str, Any]:
+    result = {}
+    for claim in claims:
+        relation_id = claim["relation_id"]
+        if relation_id in result:
+            raise ReasonFailure("SCHEMA_FAILURE", "Duplicate relation ID: " + relation_id)
+        try:
+            _json(claim["value"])
+        except (TypeError, ValueError) as exc:
+            raise ReasonFailure("SCHEMA_FAILURE", "Claim value is not canonical JSON") from exc
+        result[relation_id] = claim["value"]
+    return result
+
+
+def validate_answer(data: dict, relation: dict) -> dict:
+    _validate_steps(data["derivation_steps"])
+    claims = _claim_map(data["claims"])
+    expected = {item["relation_id"] for item in relation["relations"]}
+    if data["decision"] == "answered" and set(claims) != expected:
+        raise ReasonFailure("SCHEMA_FAILURE", "Answered relation IDs do not exactly cover the registry")
+    for claim in data["claims"]:
+        if claim["quote"] not in data["answer"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Claim quote is absent from answer")
+    return data
+
+
+def validate_objections(data: dict, answer: dict, fork: dict, *, tested: bool) -> dict:
+    steps = {step["step_index"]: step for step in answer.get("derivation_steps", [])}
+    check_ids = []
+    for objection in data["objections"]:
+        locator = objection["fork"]
+        step = steps.get(locator["step_index"])
+        if step is None or locator["step_quote"] != step["statement"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Fork locator does not quote the named derivation step exactly")
+        if locator["branch_point_id"] != fork["branch_point_id"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Fork locator names the wrong public branch")
+        if tested:
+            check_ids.append(objection["check"]["check_id"])
+    if len(set(check_ids)) != len(check_ids):
+        raise ReasonFailure("SCHEMA_FAILURE", "Duplicate check ID")
+    return data
+
+
+def validate_return(data: dict, before: dict, objections: list[dict], relation: dict,
+                    *, tested: bool) -> dict:
+    validate_answer(data, relation)
+    expected = [obj["id"] for obj in objections if obj.get("status") == "unresolved"]
+    known = [obj["id"] for obj in objections]
+    actual = [item["id"] for item in data["dispositions"]]
+    if (len(set(actual)) != len(actual) or not set(expected) <= set(actual)
+            or not set(actual) <= set(known)):
+        raise ReasonFailure("SCHEMA_FAILURE", "Return must cover every open ID and may redispose only supplied resolved IDs")
+    by_id = {obj["id"]: obj for obj in objections}
+    final_steps = {step["step_index"]: step for step in data["derivation_steps"]}
+    if data["decision"] == "cannot_decide":
+        if data["claims"] != before.get("claims", []) or data["derivation_steps"] != before.get("derivation_steps", []):
+            raise ReasonFailure("SCHEMA_FAILURE", "cannot_decide return must retain prior claims and derivation steps")
+    for disposition in data["dispositions"]:
+        objection = by_id[disposition["id"]]
+        rederivation = disposition["rederivation"]
+        fork_index = objection["fork"]["step_index"]
+        if rederivation["objection_id"] != disposition["id"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Rederivation names the wrong objection")
+        if disposition["status"] == "taken-up":
+            if rederivation["from_step_index"] != fork_index:
+                raise ReasonFailure("SCHEMA_FAILURE", "Uptake must rederive from the challenged fork")
+            steps = rederivation["steps"]
+            if not steps or steps[0]["step_index"] != fork_index:
+                raise ReasonFailure("SCHEMA_FAILURE", "Rederivation does not start at the challenged fork")
+            indices = [step["step_index"] for step in steps]
+            if indices != list(range(fork_index, max(final_steps) + 1)):
+                raise ReasonFailure("SCHEMA_FAILURE", "Uptake must reconstruct the full derivation suffix")
+            for step in steps:
+                if final_steps.get(step["step_index"]) != step:
+                    raise ReasonFailure("SCHEMA_FAILURE", "Rederivation is not the returned derivation suffix")
+        if tested:
+            redo = disposition["redo"]
+            check = objection.get("check")
+            if check is None or redo["check_id"] != check["check_id"]:
+                raise ReasonFailure("SCHEMA_FAILURE", "Return redo does not bind the supplied check")
+            if disposition["status"] in {"taken-up", "rejected-with-reason"} and redo["status"] != "redone":
+                raise ReasonFailure("SCHEMA_FAILURE", "Substantive disposition requires a redone check")
+            if redo["status"] == "cannot_redo" and disposition["status"] != "unresolved":
+                raise ReasonFailure("SCHEMA_FAILURE", "cannot_redo permits only unresolved")
+    return data
+
+
+def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: dict,
+                 *, checker_eligible: bool) -> dict:
+    dependency = data["dependency"]
+    known = {item["relation_id"] for item in relation["relations"]}
+    if dependency["relation_id"] not in known:
+        raise ReasonFailure("SCHEMA_FAILURE", "Use dependency relation is not in the registry")
+    if dependency["before_quote"] not in before["answer"]:
+        raise ReasonFailure("SCHEMA_FAILURE", "Before quote is absent from before answer")
+    if dependency["after_quote"] not in after["answer"]:
+        raise ReasonFailure("SCHEMA_FAILURE", "After quote is absent from after answer")
+    before_claims, after_claims = _claim_map(before.get("claims", [])), _claim_map(after.get("claims", []))
+    changed = {relation_id for relation_id in set(before_claims) & set(after_claims)
+               if type(before_claims[relation_id]) is not type(after_claims[relation_id])
+               or _json(before_claims[relation_id]) != _json(after_claims[relation_id])}
+    if changed and dependency["relation_id"] not in changed:
+        raise ReasonFailure("SCHEMA_FAILURE", "Use must bind a changed relation when one exists")
+    same_conclusion = (type(data["before"]["conclusion"]) is type(data["after"]["conclusion"])
+                       and _json(data["before"]["conclusion"]) == _json(data["after"]["conclusion"]))
+    if dependency["result_depends_on_change"] and (same_conclusion or not changed):
+        raise ReasonFailure("SCHEMA_FAILURE", "Unchanged evaluations cannot claim dependence on change")
+    if data["decision"] != "cannot_decide" and checker_eligible != (data["checker"] is not None):
+        expected = "proposal" if checker_eligible else "null"
+        raise ReasonFailure("SCHEMA_FAILURE", "Checker field must be " + expected)
+    if data["checker"] is not None:
+        proposal = data["checker"]
+        if proposal["query_id"] != data["query_id"] or proposal["question"] != data["question"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Checker proposal changes the use query")
+        if proposal["relation_id"] != dependency["relation_id"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Checker proposal changes the use relation")
+        if proposal["working_claim_quote"] != dependency["after_quote"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Checker proposal does not quote the working claim")
+        if dependency["relation_id"] not in after_claims or (
+                type(proposal["working_value"]) is not type(after_claims[dependency["relation_id"]])
+                or _json(proposal["working_value"]) != _json(after_claims[dependency["relation_id"]])):
+            raise ReasonFailure("SCHEMA_FAILURE", "Checker working_value does not bind the returned claim")
+    if data["objections"]:
+        validate_objections({"objections": data["objections"]}, after, fork, tested=True)
+    return data
+
+
+def validate_recoding_solve(data: dict, relation: dict, coding_id: str) -> dict:
+    _validate_steps(data["derivation_steps"])
+    if data["coding_id"] != coding_id:
+        raise ReasonFailure("SCHEMA_FAILURE", "Blind solve uses the wrong coding ID")
+    claims = _claim_map(data["claims"])
+    expected = {item["relation_id"] for item in relation["relations"]}
+    if data["decision"] == "answered" and set(claims) != expected:
+        raise ReasonFailure("SCHEMA_FAILURE", "Blind solve relation IDs do not exactly cover the registry")
+    return data
+
+
+def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dict,
+               answer=None, before=None, objections=(), fork=None,
+               coding_id=None, checker_eligible=False) -> dict:
+    if role not in ROLE_SCHEMAS:
+        raise ReasonFailure("CONFIG_ERROR", "Unknown R002 parse role: " + role)
+    data = contracts.validate(ROLE_SCHEMAS[role], _response_object(content))
+    if role == "answer":
+        return validate_answer(data, relation)
+    if role in {"prose_critic", "tested_critic"}:
+        return validate_objections(data, answer, fork, tested=role == "tested_critic")
+    if role in {"prose_return", "tested_return"}:
+        return validate_return(data, before, list(objections), relation,
+                               tested=role == "tested_return")
+    if role == "propagation_use":
+        return validate_use(data, before, answer, relation, fork,
+                            checker_eligible=checker_eligible)
+    if role == "blind_coding_solve":
+        return validate_recoding_solve(data, relation, coding_id)
+    return data
+
+
+def claims_equal(a: dict, b: dict, relation_ids: list[str]) -> bool | None:
+    try:
+        left, right = _claim_map(a["claims"]), _claim_map(b["claims"])
+    except (KeyError, ReasonFailure):
+        return None
+    if set(left) != set(relation_ids) or set(right) != set(relation_ids):
+        return None
+    for relation_id in relation_ids:
+        x, y = left[relation_id], right[relation_id]
+        if type(x) is not type(y) or _json(x) != _json(y):
+            return False
+    return True
+
+
+def stall_switch_due(initial: dict, first: dict, second: dict,
+                     open_objections: list[dict], relation_ids: list[str]) -> bool | None:
+    if not open_objections:
+        return False
+    first_equal = claims_equal(initial, first, relation_ids)
+    second_equal = claims_equal(first, second, relation_ids)
+    if first_equal is None or second_equal is None:
+        return None
+    return first_equal and second_equal
+
+
+def detect_tail_edit(before: dict, after: dict, disposition: dict) -> bool:
+    if disposition.get("status") != "taken-up":
+        return False
+    old = before.get("derivation_steps", [])
+    new = after.get("derivation_steps", [])
+    if not old or len(old) != len(new):
+        return False
+    claims_changed = _json(before.get("claims", [])) != _json(after.get("claims", []))
+    answer_changed = before.get("answer") != after.get("answer")
+    # A conclusion can be patched outside the numbered derivation as well as
+    # in its final step. This literal flag leaves substantive uptake to readers.
+    if old == new:
+        return claims_changed or answer_changed
+    return len(old) >= 2 and old[:-1] == new[:-1] and claims_changed
+
+
+def _host_objection_id(prefix: str, relation_id: str, number: int) -> str:
+    safe = "".join(ch if ch.isalnum() else "-" for ch in relation_id).strip("-")
+    return f"{prefix}-{number:03d}-{safe}"
+
+
+def _fork_locator(answer: dict, fork: dict, relation_id: str) -> dict | None:
+    claim = next((item for item in answer.get("claims", [])
+                  if item["relation_id"] == relation_id), None)
+    if claim is None:
+        return None
+    for step in answer.get("derivation_steps", []):
+        if claim["quote"] in step["statement"] or relation_id in step["statement"]:
+            return {"step_index": step["step_index"], "step_quote": step["statement"],
+                    "branch_point_id": fork["branch_point_id"],
+                    "earliest_reason": "Earliest public step explicitly supporting the discrepant relation."}
+    return None
+
+
+def construct_recoding_objections(canonical: dict, recoded: dict, working: dict,
+                                  fork: dict, *, prefix="recoding", map_identity="identity") -> list[dict]:
+    if canonical.get("decision") != "answered" or recoded.get("decision") != "answered":
+        return []
+    left, right = _claim_map(canonical["claims"]), _claim_map(recoded["claims"])
+    objections = []
+    for relation_id in sorted(set(left) & set(right)):
+        if type(left[relation_id]) is type(right[relation_id]) and _json(left[relation_id]) == _json(right[relation_id]):
+            continue
+        locator = _fork_locator(working, fork, relation_id)
+        if locator is None:
+            continue
+        check_id = _host_objection_id(prefix + "-check", relation_id, len(objections) + 1)
+        objections.append({
+            "target_claim": relation_id,
+            "text": ("The canonical and transformed blind solves disagree after the declared inverse map: "
+                     f"{_json(left[relation_id])} versus {_json(right[relation_id])}. No winner is declared."),
+            "defeats": "The working value for " + relation_id,
+            "check": {"check_id": check_id, "kind": "value",
+                      "inputs": [{"name": "canonical", "value": left[relation_id],
+                                  "source": "blind canonical solve: " + canonical.get("derivation", "")},
+                                 {"name": "transformed", "value": right[relation_id],
+                                  "source": "blind transformed solve: " + recoded.get("derivation", "")},
+                                 {"name": "inverse_map", "value": map_identity,
+                                  "source": "validated coding manifest"}],
+                      "procedure": "Recompute both coded problems and apply the declared inverse output map.",
+                      "claimed_result": {"canonical": left[relation_id], "transformed": right[relation_id]},
+                      "falsifies_when": "The independently recomputed canonical values agree type-preservingly."},
+            "fork": locator,
+        })
+    return objections
+
+
+def construct_checker_objection(execution: dict, proposal: dict, working: dict,
+                                 fork: dict, *, prefix="checker") -> dict | None:
+    if execution.get("status") != "COMPLETE" or execution.get("comparison") != "disagrees":
+        return None
+    parsed = execution.get("parsed") or {}
+    relation_id = proposal["relation_id"]
+    locator = _fork_locator(working, fork, relation_id)
+    if locator is None:
+        return None
+    check_id = _host_objection_id(prefix + "-check", relation_id, 1)
+    return {"target_claim": relation_id,
+            "text": ("The host-run bounded checker disagrees with the working claim: "
+                     f"working {_json(proposal['working_value'])}; checker {_json(parsed.get('value'))}."),
+            "defeats": "The working value for " + relation_id,
+            "check": {"check_id": check_id, "kind": "value",
+                      "inputs": [{"name": "stdin_json", "value": proposal["stdin_json"], "source": "use proposal"},
+                                 {"name": "source", "value": proposal["source"], "source": "exact use proposal source"},
+                                  {"name": "source_sha256", "value": sha(proposal["source"]), "source": "use proposal source"},
+                                  {"name": "stdout_utf8", "value": execution.get("stdout_utf8", ""), "source": "exact host stdout"},
+                                  {"name": "host_result", "value": parsed, "source": "parsed host result"},
+                                 {"name": "stdout_sha256", "value": execution.get("stdout_sha256"), "source": "host execution"}],
+                      "procedure": "Redo the proposed deterministic computation from its preserved source and input.",
+                      "claimed_result": parsed.get("value"),
+                      "falsifies_when": "The redone computation agrees type-preservingly with the working value."},
+            "fork": locator}
+
+
+def bind_checker_execution(execution: dict, proposal_bytes: bytes,
+                           policy: dict, proposal: dict) -> dict:
+    """Bind a schema-valid checker receipt to the exact current public inputs."""
+    expected = {
+        "proposal_sha256": hashlib.sha256(proposal_bytes).hexdigest(),
+        "policy_sha256": hashlib.sha256((_json(policy) + "\n").encode("utf-8")).hexdigest(),
+        "source_sha256": hashlib.sha256(proposal["source"].encode("utf-8")).hexdigest(),
+        "stdin_sha256": hashlib.sha256((_json(proposal["stdin_json"]) + "\n").encode("utf-8")).hexdigest(),
+    }
+    mismatches = [key for key, value in expected.items() if execution.get(key) != value]
+    if execution.get("status") == "COMPLETE":
+        parsed = execution.get("parsed")
+        if not isinstance(parsed, dict) or parsed.get("relation_id") != proposal["relation_id"]:
+            mismatches.append("parsed.relation_id")
+    if mismatches:
+        raise ReasonFailure("RUN_INTEGRITY_ERROR",
+                            "Checker execution does not bind current inputs: " + ", ".join(mismatches))
+    return execution
+
+
+def _mint(items: list[dict], prefix: str, cycle: int, source: str) -> list[dict]:
+    result = []
+    for number, item in enumerate(items, 1):
+        saved = deepcopy(item)
+        source_call = saved.pop("_source_call", None)
+        source_lineage = saved.pop("_source_endpoint", None)
+        saved.update(id=f"{prefix}-o{number:03d}", source=source, born_cycle=cycle,
+                     status="unresolved", reason="Awaiting operative return.",
+                     history=[{"cycle": cycle, "status": "unresolved",
+                               "reason": "New objection awaiting operative return."}])
+        if source_call:
+            saved["source_call"] = source_call
+        if source_lineage:
+            saved["source_lineage"] = source_lineage
+        result.append(saved)
+    return result
+
+
+def _check_unique_ids(existing: list[dict], new_items: list[dict]):
+    ids = [obj.get("check", {}).get("check_id") for obj in [*existing, *new_items]
+           if obj.get("check")]
+    if len(ids) != len(set(ids)):
+        raise ReasonFailure("SCHEMA_FAILURE", "Check IDs must be unique across the occurrence")
+
+
+def _problem_paths(coding_path, coding, problem_id, problem=None, relation=None, fork=None):
+    from .r002_custody import validate_coding
+    return validate_coding(coding_path, coding, problem_id, problem, relation, fork)
+
+
+def _create(problem: str, out, *, mode: str, condition: str, problem_id,
+            relation_registry, recipe_path=None, cycles=3, attempt_policy="strict",
+            prompt_token_cap=32768, tokenizer_pins=None, fork_registry=None,
+            coding_manifest=None, checker_policy=None, capability=None,
+            schema_path=None, completion_tokens=32768):
+    if not isinstance(problem, str) or not problem.strip():
+        raise ValueError("PROBLEM_EMPTY")
+    if type(completion_tokens) is not int or completion_tokens != 32768:
+        raise ReasonFailure("CONFIG_ERROR", "R002 native completion ceiling is exactly 32768")
+    if mode not in {"offline", "live"} or attempt_policy != "strict":
+        raise ReasonFailure("CONFIG_ERROR", "R002 requires offline/live mode and strict attempts")
+    if type(cycles) is not int or not 1 <= cycles <= 3 or prompt_token_cap != 32768:
+        raise ReasonFailure("CONFIG_ERROR", "R002 permits one to three cycles and a 32768 prompt cap")
+    relations, relations_text, _relations_path = _load_object(relation_registry, "relation registry")
+    problem_id = _infer_problem_id(problem_id, problem, relations)
+    relation = _relation_entry(relations, problem_id)
+    ContractSet(config.R002_DIR / "contracts").validate("relations.schema.json", relations)
+    cap = validate_capability(capability, condition, mode)
+    if condition == "LOOP-CHECKER" and mode == "live":
+        from .checker import host_qualified
+        if not host_qualified():
+            raise ReasonFailure("CHECKER_UNQUALIFIED", "Checker host/runtime lacks this review qualification")
+    tokenizers = snapshot_tokenizers(tokenizer_pins, mode)
+    endpoints = config.load_endpoint_snapshot()
+    recipe = recipe_text = recipe_source = None
+    if recipe_path is not None:
+        loaded = config.load_r002_recipe(recipe_path)
+        recipe, recipe_text = loaded["data"], loaded["text"]
+        recipe_source = Path(loaded["source"])
+        if recipe["condition"] != condition:
+            raise ReasonFailure("CONFIG_ERROR", "Condition does not match recipe")
+        if cycles > recipe["cycles"]:
+            raise ReasonFailure("CONFIG_ERROR", "Cycle request exceeds recipe")
+    forks, forks_text, _forks_path = _load_object(fork_registry, "fork registry", optional=True)
+    coding, coding_text, coding_path = _load_object(coding_manifest, "coding manifest", optional=True)
+    if recipe is not None and forks is None:
+        raise ReasonFailure("CONFIG_ERROR", "Loop conditions require the public fork registry")
+    fork = _candidate(forks, problem_id, "fork registry") if forks else None
+    coding_entry = _candidate(coding, problem_id, "coding manifest") if coding else None
+    if recipe is not None:
+        ContractSet(config.R002_DIR / "contracts").validate("coding-manifest.schema.json", coding)
+        coded = _problem_paths(coding_path, coding, problem_id, problem, relation, fork)
+    else:
+        coded = {}
+    directory = Path(out)
+    guard(directory / "calls" / "c0003-signal-a" / "a00" / "provider" / ("x" * 65))
+    if directory.exists():
+        raise ValueError("RUN_EXISTS")
+    directory.mkdir(parents=True)
+    contract_source = config.R002_DIR / "contracts"
+    if schema_path is not None and (Path(schema_path).name != "answer.schema.json" or
+            Path(schema_path).read_bytes() != (contract_source / "answer.schema.json").read_bytes()):
+        raise ReasonFailure("CONFIG_ERROR", "Native schema differs from the published answer contract")
+    for path in sorted(contract_source.glob("*.schema.json")):
+        write(directory / "contracts" / path.name, read(path))
+    write(directory / "problem.txt", problem)
+    write(directory / "relations.json", relations_text)
+    write(directory / "endpoints.json", endpoints["text"])
+    if recipe_text:
+        write(directory / "recipe.json", recipe_text)
+    if forks_text:
+        write(directory / "forks.json", forks_text)
+    if coding_text:
+        write(directory / "coding-manifest.json", coding_text)
+    for key, text in coded.items():
+        write(directory / "coded" / (key + ".txt"), text)
+    if condition == "LOOP-CHECKER" and checker_policy is None:
+        from .checker import DEFAULT_POLICY
+        checker_policy = DEFAULT_POLICY
+    if checker_policy is not None:
+        if isinstance(checker_policy, dict):
+            checker_text = json.dumps(checker_policy, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        else:
+            checker_text = read(Path(checker_policy))
+        write(directory / "checker-policy.json", checker_text)
+    run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-r002-" + uuid.uuid4().hex[:6]
+    cfg = {"schema": R002_SCHEMA, "run_id": run_id, "created_epoch": time.time(),
+           "mode": mode, "condition": condition, "problem_id": problem_id, "cycles": cycles,
+           "attempt_policy": "strict", "prompt_token_cap": prompt_token_cap,
+           "prompt_contract": prompts.R002_CONTRACT, "completion_tokens": completion_tokens,
+           "problem_sha256": sha(problem), "relations_sha256": sha(relations_text),
+           "endpoints_sha256": endpoints["sha256"], "tokenizers": tokenizers,
+           "capability": cap, "claim_ceiling": CLAIM,
+           "checker_policy_sha256": sha(read(directory / "checker-policy.json"))
+               if (directory / "checker-policy.json").exists() else None,
+           "inputs": {"recipe": sha(recipe_text) if recipe_text else None,
+                      "forks": sha(forks_text) if forks_text else None,
+                      "coding": sha(coding_text) if coding_text else None}}
+    from .r002_custody import freeze_inputs
+    freeze_inputs(directory, cfg)
+    return directory
+
+
+def create_r002_run(problem: str, recipe_path, out, *, mode="offline", cycles=3,
+                    attempt_policy="strict", prompt_token_cap=32768, tokenizer_pins=None,
+                    relation_registry=None, fork_registry=None, coding_manifest=None,
+                    checker_policy=None, capability=None, problem_id=None) -> Path:
+    loaded = config.load_r002_recipe(recipe_path)
+    return _create(problem, out, mode=mode, condition=loaded["data"]["condition"],
+                   problem_id=problem_id, relation_registry=relation_registry,
+                   recipe_path=recipe_path, cycles=cycles, attempt_policy=attempt_policy,
+                   prompt_token_cap=prompt_token_cap, tokenizer_pins=tokenizer_pins,
+                   fork_registry=fork_registry, coding_manifest=coding_manifest,
+                   checker_policy=checker_policy, capability=capability)
+
+
+def create_r002_native_run(problem: str, out, *, mode="offline", condition="NATIVE",
+                           schema_path=None, completion_tokens=32768,
+                           attempt_policy="strict", prompt_token_cap=32768,
+                           tokenizer_pins=None, relation_registry=None, capability=None,
+                           problem_id=None) -> Path:
+    if condition not in {"NATIVE", "CAL-NATIVE"}:
+        raise ReasonFailure("CONFIG_ERROR", "Native condition must be NATIVE or CAL-NATIVE")
+    return _create(problem, out, mode=mode, condition=condition, problem_id=problem_id,
+                   relation_registry=relation_registry, schema_path=schema_path,
+                   cycles=1, attempt_policy=attempt_policy, prompt_token_cap=prompt_token_cap,
+                   tokenizer_pins=tokenizer_pins, capability=capability,
+                   completion_tokens=completion_tokens)
+
+
+def _validate_run(directory: Path):
+    from .r002_custody import validate_frozen_inputs
+    cfg = validate_frozen_inputs(directory)
+    for name, key in (("problem.txt", "problem_sha256"), ("relations.json", "relations_sha256"),
+                      ("endpoints.json", "endpoints_sha256")):
+        if sha(read(directory / name)) != cfg[key]:
+            raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved R002 input changed: " + name)
+    for name, digest in cfg["inputs"].items():
+        if digest is not None:
+            actual_name = {"recipe": "recipe.json", "forks": "forks.json",
+                           "coding": "coding-manifest.json"}[name]
+            if sha(read(directory / actual_name)) != digest:
+                raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved R002 input changed: " + actual_name)
+    recipe = get(directory / "recipe.json") if (directory / "recipe.json").exists() else None
+    relations = get(directory / "relations.json")
+    relation = _relation_entry(relations, cfg["problem_id"])
+    fork = _candidate(get(directory / "forks.json"), cfg["problem_id"], "fork registry") \
+        if (directory / "forks.json").exists() else None
+    coding = _candidate(get(directory / "coding-manifest.json"), cfg["problem_id"], "coding manifest") \
+        if (directory / "coding-manifest.json").exists() else None
+    return cfg, recipe, read(directory / "problem.txt"), relation, fork, coding, get(directory / "endpoints.json")
+
+
+def _offline(role, cycle, objections, context):
+    missing = f"OFFLINE FIXTURE: {role} has no substantive derivation."
+    if role == "answer":
+        return {"decision": "cannot_decide", "answer": "", "missing_derivation": missing,
+                "claims": [], "derivation_steps": []}
+    if role in {"prose_critic", "tested_critic"}:
+        return {"decision": "cannot_decide", "missing_derivation": missing,
+                "working": "OFFLINE FIXTURE", "objections": []}
+    if role in {"prose_return", "tested_return"}:
+        dispositions = []
+        for objection in objections:
+            item = {"id": objection["id"], "status": "unresolved", "reason": missing,
+                    "rederivation": {"from_step_index": None, "objection_id": objection["id"],
+                                     "status": "cannot_decide", "steps": [],
+                                     "missing_derivation": missing}}
+            if role == "tested_return":
+                item["redo"] = {"check_id": objection["check"]["check_id"],
+                                "status": "cannot_redo", "method": missing, "result": None,
+                                "comparison": "inconclusive"}
+            dispositions.append(item)
+        before = context["before"]
+        return {"decision": "cannot_decide", "answer": before.get("answer") or "OFFLINE FIXTURE",
+                "missing_derivation": missing, "claims": before.get("claims", []),
+                "dispositions": dispositions, "changes": [],
+                "derivation_steps": before.get("derivation_steps", [])}
+    if role == "propagation_use":
+        relation_id = context["relation"]["relations"][0]["relation_id"]
+        return {"decision": "cannot_decide", "missing_derivation": missing,
+                "query_id": f"fixture-{cycle}", "question": "", "problem_derivation": "",
+                "before": {"answer_quote": "", "derivation": "", "conclusion": None},
+                "after": {"answer_quote": "", "derivation": "", "conclusion": None},
+                "dependency": {"relation_id": relation_id, "before_quote": "", "after_quote": "",
+                               "result_depends_on_change": False, "explanation": missing},
+                "objections": [], "checker": None}
+    if role == "blind_coding_solve":
+        return {"decision": "cannot_decide", "missing_derivation": missing,
+                "coding_id": context["coding_id"], "claims": [], "derivation": "",
+                "derivation_steps": []}
+    return {"decision": "cannot_decide", "missing_derivation": missing, "answer": "", "derivation": ""}
+
+
+def _scripted_reply(scripted, role, cycle, objections, coordinate, context):
+    if scripted is None:
+        return _offline(role, cycle, objections, context)
+    try:
+        return scripted(role=role, cycle=cycle, objections=deepcopy(objections),
+                        coordinate=deepcopy(coordinate), context=deepcopy(context))
+    except TypeError:
+        return scripted(role, cycle, deepcopy(objections))
+
+
+def _call(directory: Path, adapter: Adapter, cfg: dict, contracts: ContractSet,
+          *, role: str, seat: dict, call_id: str, cycle: int, blocks: list[tuple[str, str]],
+          parse_context: dict, scripted, after_call, before_call, tokenizer_counter):
+    messages = prompts.render_r002(role, [*blocks, *contracts.prompt_blocks(role)])
+    prepared = adapter.prepare(seat=seat, messages=messages, max_tokens=(32768 if seat["thinking"] == "native" else 16384),
+                               thinking=seat["thinking"], role=role,
+                               coordinate={"call_id": call_id, "cycle": cycle, "attempt": 0,
+                                           "condition": cfg["condition"], "strict": True})
+    if tokenizer_counter is None:
+        preflight = token_preflight(
+            messages, seat["endpoint"], pins=cfg["tokenizers"], mode=cfg["mode"],
+            limit=cfg["prompt_token_cap"], wire_body_text=prepared["wire_body_text"],
+            condition=cfg["condition"], role=role)
+    else:
+        preflight = tokenizer_counter(messages, seat["endpoint"], pins=cfg["tokenizers"],
+                                      mode=cfg["mode"], limit=cfg["prompt_token_cap"])
+    folder = directory / "calls" / call_id / "a00"
+    request_path, response_path = folder / "request.json", folder / "response.json"
+    max_tokens = 32768 if seat["thinking"] == "native" else 16384
+    coordinate = {"call_id": call_id, "cycle": cycle, "attempt": 0,
+                  "condition": cfg["condition"], "strict": True}
+    # The exact prepared wire was constructed before preflight but is not written
+    # or dispatched until the input-bound check above succeeds.
+    if request_path.exists():
+        intent = get(request_path)
+        if (intent["prepared"]["messages"] != messages or intent["prepared"]["wire_body_sha256"] != prepared["wire_body_sha256"]
+                or intent["preflight"] != preflight):
+            raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved strict request differs from reconstruction")
+    if response_path.exists():
+        saved = get(response_path)
+    elif request_path.exists():
+        try:
+            result = adapter.recover(folder / "provider")
+            if result is None:
+                raise ReasonFailure("INTERRUPTED_CALL", "Dispatch outcome unknown; strict occurrence is not replayed")
+            saved = None
+        except ReasonFailure as exc:
+            if exc.code == "INTERRUPTED_CALL":
+                raise
+            saved = {"epoch": time.time(), "status": exc.code, "detail": exc.detail, "record": exc.record}
+            put(response_path, saved)
+            result = None
+    else:
+        if before_call is not None and cfg["mode"] == "live":
+            before_call(coordinate)
+        put(request_path, {"epoch": time.time(), "role": role, "seat": seat,
+                           "cycle": cycle, "attempt": 0, "preflight": preflight,
+                           "prepared": prepared})
+        fixture = _scripted_reply(scripted, role, cycle, parse_context.get("objections", []),
+                                  coordinate, parse_context) if cfg["mode"] == "offline" else None
+        try:
+            result = adapter.call(seat=seat, messages=messages, records_dir=folder / "provider",
+                                  max_tokens=max_tokens, thinking=seat["thinking"], role=role,
+                                  coordinate=coordinate, scripted=fixture)
+            saved = None
+        except ReasonFailure as exc:
+            saved = {"epoch": time.time(), "status": exc.code, "detail": exc.detail, "record": exc.record}
+            put(response_path, saved)
+            result = None
+    if saved is None and result is not None:
+        try:
+            parsed = parse_r002(role, result["content"], contracts, **parse_context)
+            saved = {"epoch": time.time(), "status": "COMPLETE", "result": result, "parsed": parsed}
+        except (ReasonFailure, TypeError, ValueError, KeyError) as exc:
+            code = getattr(exc, "code", "SCHEMA_FAILURE")
+            saved = {"epoch": time.time(), "status": code,
+                     "detail": getattr(exc, "detail", type(exc).__name__), "result": result}
+        put(response_path, saved)
+        if after_call is not None:
+            after_call(call_id, deepcopy(saved))
+    if saved["status"] != "COMPLETE":
+        raise ReasonFailure(saved["status"], saved.get("detail", "Strict R002 call failed"))
+    return saved["parsed"]
+
+
+def _seat(role, recipe):
+    if recipe is None:
+        return {"endpoint": "deepseek-flash", "thinking": "native",
+                "reasoning_effort": "medium", "role": "answer"}
+    return recipe["seats"][role]
+
+
+def _answer_blocks(problem, relation):
+    return [("PROBLEM", problem), ("PUBLIC RELATIONS", _json(relation))]
+
+
+def _answer_text(answer):
+    return _json(answer)
+
+
+def _critic_blocks(problem, answer, objections, relation, fork):
+    blocks = _answer_blocks(problem, relation)
+    blocks += [("WORKING ANSWER", _answer_text(answer)), ("PUBLIC FORK", _json(fork))]
+    if objections:
+        blocks.append(("PRIOR OBJECTIONS", _json(objections)))
+    return blocks
+
+
+def _return_blocks(problem, before, objections, relation, fork, signals=None):
+    blocks = _answer_blocks(problem, relation)
+    blocks += [("BEFORE ANSWER", _answer_text(before)), ("PUBLIC FORK", _json(fork)),
+               ("OPEN AND NEW OBJECTIONS", _json(objections))]
+    if signals:
+        blocks.append(("PUBLIC SIGNALS", _json(signals)))
+    return blocks
+
+
+def _coding_blocks(coded_problem, relation, fork, coding_entry, coding_id):
+    public = {key: coding_entry[key] for key in ("candidate_id", "presentation_transform",
+              "semantic_invariants", "relation_ids")}
+    public["coding_id"] = coding_id
+    return [("CODED PROBLEM", coded_problem), ("PUBLIC RELATIONS", _json(relation)),
+            ("PUBLIC FORK", _json(fork)), ("CODING DECLARATION", _json(public))]
+
+
+def _apply_dispositions(all_objections, dispositions, cycle, phase=None):
+    by_id = {item["id"]: item for item in dispositions}
+    for objection in all_objections:
+        if objection["id"] in by_id:
+            item = by_id[objection["id"]]
+            objection["status"], objection["reason"] = item["status"], item["reason"]
+            history = {"cycle": cycle, "status": item["status"], "reason": item["reason"]}
+            if "redo" in item:
+                history["redo"] = deepcopy(item["redo"])
+                history["check_redone"] = (
+                    "agrees" if item["redo"]["comparison"] == "supports_objection"
+                    else "disagrees" if item["redo"]["comparison"] == "opposes_objection"
+                    else "inconclusive") if item["redo"]["status"] == "redone" else "not-redone"
+            if "rederivation" in item:
+                history["rederivation"] = deepcopy(item["rederivation"])
+            if phase:
+                history["phase"] = phase
+            objection["history"].append(history)
+        else:
+            history = {"cycle": cycle, "status": objection["status"], "reason": objection["reason"],
+                       "carried": True}
+            if phase:
+                history["phase"] = phase
+            objection["history"].append(history)
+
+
+def _write_episode_records(directory: Path, cfg: dict, objections: list[dict]):
+    from .r002_reports import write_episode_records
+    return write_episode_records(directory, cfg, objections)
+
+
+def _reports(directory, cfg, state, answer, objections, events):
+    from .r002_reports import reports
+    return reports(directory, cfg, state, answer, objections, events)
+
+
+def _state(condition):
+    return {"schema": R002_STATE_SCHEMA, "condition": condition, "stop_reason": "pending",
+            "completed_cycles": 0, "calls": 0, "attempts": 0, "tail_edits": 0,
+            "stall_switches": 0, "checker_runs": 0, "cannot_decide_responses": 0,
+            "closing_return": "not-run", "objections": []}
+
+
+def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None,
+                 tokenizer_counter=None, before_call=None) -> dict:
+    directory = Path(run_dir)
+    with run_lock(directory):
+        try:
+            cfg, recipe, problem, relation, fork, coding, endpoints = _validate_run(directory)
+            if (directory / "state.json").exists():
+                prior = get(directory / "state.json")
+                if prior.get("stop_reason") != "pending":
+                    return prior
+            state, events, objections = _state(cfg["condition"]), [], []
+            contracts = ContractSet(directory / "contracts")
+            adapter = Adapter(cfg["mode"], {"data": endpoints})
+            relation_ids = [item["relation_id"] for item in relation["relations"]]
+
+            def call(role, seat, call_id, cycle, blocks, **context):
+                parsed = _call(directory, adapter, cfg, contracts, role=role, seat=seat,
+                               call_id=call_id, cycle=cycle, blocks=blocks,
+                               parse_context={"relation": relation, **context}, scripted=scripted,
+                               after_call=after_call, before_call=before_call,
+                               tokenizer_counter=tokenizer_counter)
+                if parsed.get("decision") == "cannot_decide":
+                    state["cannot_decide_responses"] += 1
+                return parsed
+
+            if recipe is None:
+                answer = call("answer", _seat("initial", None), "initial", 0,
+                              _answer_blocks(problem, relation))
+                state.update(stop_reason="complete", answer=answer)
+                _reports(directory, cfg, state, answer, objections, events)
+                return state
+
+            answer = call("answer", _seat("initial", recipe), "initial", 0,
+                          _answer_blocks(problem, relation))
+            initial = deepcopy(answer)
+            prior_answers = [deepcopy(answer)]
+            stopped_early = False
+            for cycle in range(1, cfg["cycles"] + 1):
+                open_before = [obj for obj in objections if obj["status"] == "unresolved"]
+                switch = False
+                if cycle == 3 and len(prior_answers) >= 3:
+                    stall = stall_switch_due(prior_answers[0], prior_answers[1], prior_answers[2],
+                                             open_before, relation_ids)
+                    switch = stall is True
+                    if stall is None and open_before:
+                        events.append({"event": "stall_unknown", "cycle": 3,
+                                       "open_ids": [obj["id"] for obj in open_before],
+                                       "reason": "required canonical relation map missing or unparseable"})
+                    if switch:
+                        selected = sorted(open_before, key=lambda obj: (obj["fork"]["step_index"], obj["id"]))[0]
+                        event = {"event": "stall switch", "cycle": 3,
+                                 "old_instrument": recipe["seats"]["signal_a"]["role"],
+                                 "new_instrument": "blind_coding_solve" if recipe["condition"] not in {"LOOP-RECODED", "LOOP-CARRIER"} else "tested_critic",
+                                 "open_ids": [obj["id"] for obj in open_before], "selected_id": selected["id"],
+                                 "selected_fork": selected["fork"],
+                                 "trigger_hashes": [sha(_json(_claim_map(item["claims"]))) for item in prior_answers[:3]],
+                                 "check_outcome": "pending-return-redo" if selected.get("check") else "absent"}
+                        events.append(event)
+                        state["stall_switches"] += 1
+                selected_objection = selected if switch else None
+                signal_items = []
+                new_items = []
+                if recipe["condition"] == "NATIVE-MATCH":
+                    for slot in ("signal_a", "signal_b"):
+                        result = call("native_match_note", _seat(slot, recipe), f"c{cycle:04d}-{slot.replace('_','-')}", cycle,
+                                      _answer_blocks(problem, relation), objections=[], before=answer)
+                        signal_items.append(result)
+                elif (recipe["condition"] in {"LOOP-RECODED", "LOOP-CARRIER"} and not switch) or (
+                        recipe["condition"] in {"LOOP-CROSS", "LOOP-CROSS-MATCH", "LOOP-TESTED", "LOOP-CHECKER"} and switch):
+                    if coding is None:
+                        raise ReasonFailure("CONFIG_ERROR", "Coding manifest required by recoding signal")
+                    if switch and recipe["condition"] not in {"LOOP-RECODED", "LOOP-CARRIER"}:
+                        first_key, second_key = "recoded_problem_path", "carrier_problem_path"
+                    else:
+                        first_key = "problem_path"
+                        second_key = "carrier_problem_path" if recipe["condition"] == "LOOP-CARRIER" else "recoded_problem_path"
+                    canonical = read(directory / "coded" / (first_key + ".txt"))
+                    second_text = read(directory / "coded" / (second_key + ".txt"))
+                    ids = (f"{cfg['problem_id']}-" + ("canonical" if first_key == "problem_path" else "recoded"),
+                           f"{cfg['problem_id']}-" + ("carrier" if "carrier" in second_key else "recoded"))
+                    a = call("blind_coding_solve", {**_seat("signal_a", recipe), "endpoint": "deepseek-flash"},
+                             f"c{cycle:04d}-signal-a", cycle, _coding_blocks(canonical, relation, fork, coding, ids[0]),
+                             coding_id=ids[0], objections=[])
+                    b = call("blind_coding_solve", {**_seat("signal_b", recipe), "endpoint": "deepseek-flash"},
+                             f"c{cycle:04d}-signal-b", cycle, _coding_blocks(second_text, relation, fork, coding, ids[1]),
+                             coding_id=ids[1], objections=[])
+                    signal_items = [a, b]
+                    new_items = construct_recoding_objections(
+                        a, b, answer, fork, prefix=f"c{cycle:04d}-coding",
+                        map_identity=_json(coding.get("inverse_output_map", {})))
+                    for item in new_items:
+                        item["_source_call"] = f"c{cycle:04d}-coding-host"
+                        item["_source_endpoint"] = "host recoding comparison"
+                else:
+                    tested = recipe["condition"] in {"LOOP-TESTED", "LOOP-CHECKER"} or switch
+                    role = "tested_critic" if tested else "prose_critic"
+                    for slot in ("signal_a", "signal_b"):
+                        seat = _seat(slot, recipe)
+                        if switch:
+                            seat = {**seat, "endpoint": "ollama/qwen3.5-397b.native" if slot == "signal_a" else "ollama/glm-5.3.native"}
+                        delivered = [selected_objection] if switch else list(objections)
+                        call_id = f"c{cycle:04d}-{slot.replace('_','-')}"
+                        result = call(role, seat, call_id, cycle,
+                                      _critic_blocks(problem, answer, delivered, relation, fork),
+                                      answer=answer, fork=fork, objections=delivered)
+                        signal_items.append(result)
+                        for item in result["objections"]:
+                            item = deepcopy(item)
+                            item["_source_call"] = call_id
+                            item["_source_endpoint"] = seat["endpoint"]
+                            new_items.append(item)
+                _check_unique_ids(objections, new_items)
+                minted = _mint(new_items, f"c{cycle:04d}-signal", cycle, "signals")
+                objections.extend(minted)
+                active = list(objections)
+                if recipe["condition"] == "NATIVE-MATCH":
+                    synthesized = call("native_match_synthesis", _seat("return", recipe), f"c{cycle:04d}-return", cycle,
+                                       _answer_blocks(problem, relation) + [("INDEPENDENT NOTES", _json(signal_items)),
+                                       ("PRIOR ANSWER", _answer_text(answer))], objections=[], before=answer)
+                    answer = {"decision": synthesized["decision"], "answer": synthesized["answer"],
+                              "missing_derivation": synthesized["missing_derivation"], "claims": [], "derivation_steps": []}
+                    call("native_match_note", _seat("use", recipe), f"c{cycle:04d}-use", cycle,
+                         _answer_blocks(problem, relation) + [("SYNTHESIS", _json(synthesized))], objections=[], before=answer)
+                else:
+                    return_role = "prose_return" if recipe["seats"]["return"]["role"].startswith("prose") else "tested_return"
+                    before_answer = deepcopy(answer)
+                    answer = call(return_role, _seat("return", recipe), f"c{cycle:04d}-return", cycle,
+                                  _return_blocks(problem, before_answer, active, relation, fork, signal_items),
+                                  before=before_answer, objections=active)
+                    if any(detect_tail_edit(before_answer, answer, disposition)
+                           for disposition in answer["dispositions"]):
+                        state["tail_edits"] += 1
+                    for disposition in answer["dispositions"]:
+                        obj = next(item for item in active if item["id"] == disposition["id"])
+                        if disposition.get("redo"):
+                            obj["check_redone"] = ("agrees" if disposition["redo"]["comparison"] == "supports_objection"
+                                                   else "disagrees" if disposition["redo"]["comparison"] == "opposes_objection"
+                                                   else "inconclusive") if disposition["redo"]["status"] == "redone" else "not-redone"
+                    _apply_dispositions(objections, answer["dispositions"], cycle)
+                    _write_episode_records(directory, cfg, objections)
+                    use = call("propagation_use", _seat("use", recipe), f"c{cycle:04d}-use", cycle,
+                               _answer_blocks(problem, relation) + [("BEFORE ANSWER", _answer_text(before_answer)),
+                               ("AFTER ANSWER", _answer_text(answer)),
+                               ("PUBLIC TASK MODE", _json({"candidate_id": cfg["problem_id"],
+                                  "checker_eligible": bool(coding and coding.get("checker_eligible")),
+                                  "oracle_kind": coding.get("oracle_kind") if coding else "unknown"}))],
+                               before=before_answer, answer=answer,
+                               objections=[], checker_eligible=bool(coding and coding.get("checker_eligible")),
+                               fork=fork)
+                    for item in use["objections"]:
+                        item["_source_call"] = f"c{cycle:04d}-use"
+                        item["_source_endpoint"] = _seat("use", recipe)["endpoint"]
+                    use_minted = _mint(use["objections"], f"c{cycle:04d}-use", cycle, "use")
+                    _check_unique_ids(objections, use_minted)
+                    objections.extend(use_minted)
+                    proposal = use.get("checker")
+                    if recipe["condition"] == "LOOP-CHECKER" and proposal is not None:
+                        policy = get(directory / "checker-policy.json")
+                        evidence_dir = directory / "checker" / f"c{cycle:04d}"
+                        proposal_bytes = (_json(proposal) + "\n").encode("utf-8")
+                        execution_path = evidence_dir / "execution.json"
+                        if execution_path.exists():
+                            execution = get(execution_path)
+                        else:
+                            if checker_runner is None:
+                                from .checker import CheckerRunner
+                                checker_runner = CheckerRunner(mode=cfg["mode"])
+                            execution = checker_runner.run(proposal_bytes, policy, evidence_dir)
+                            evidence_dir.mkdir(parents=True, exist_ok=True)
+                            runner_result = evidence_dir / "runner-result.json"
+                            if not runner_result.exists():
+                                put(runner_result, execution)
+                            if execution_path.exists():
+                                if get(execution_path) != execution:
+                                    raise ReasonFailure("RUN_INTEGRITY_ERROR", "Checker returned bytes differ from its saved execution")
+                            else:
+                                put(execution_path, execution)
+                        contracts.validate("checker-execution.schema.json", execution)
+                        bind_checker_execution(execution, proposal_bytes, policy, proposal)
+                        state["checker_runs"] += 1
+                        objection = construct_checker_objection(execution, proposal, answer, fork,
+                                                                 prefix=f"c{cycle:04d}-checker")
+                        if objection is not None:
+                            objection["_source_call"] = f"c{cycle:04d}-checker-host"
+                            objection["_source_endpoint"] = "host checker"
+                            host = _mint([objection], f"c{cycle:04d}-checker", cycle, "host-checker")
+                            _check_unique_ids(objections, host)
+                            host[0]["host_execution"] = str(evidence_dir)
+                            objections.extend(host)
+                    _write_episode_records(directory, cfg, objections)
+                state["completed_cycles"] = cycle
+                prior_answers.append(deepcopy(answer))
+                open_after = [obj for obj in objections if obj["status"] == "unresolved"]
+                if not minted and not open_after and recipe["condition"] != "NATIVE-MATCH":
+                    stopped_early = True
+                    break
+
+            active = list(objections)
+            if recipe["condition"] == "NATIVE-MATCH":
+                closing = call("native_match_synthesis", _seat("return", recipe), "closing-return",
+                               state["completed_cycles"], _answer_blocks(problem, relation) + [("PRIOR ANSWER", _answer_text(answer))],
+                               objections=[], before=answer)
+                answer = {"decision": closing["decision"], "answer": closing["answer"],
+                          "missing_derivation": closing["missing_derivation"], "claims": [], "derivation_steps": []}
+            else:
+                return_role = "prose_return" if recipe["seats"]["return"]["role"].startswith("prose") else "tested_return"
+                before_answer = deepcopy(answer)
+                answer = call(return_role, _seat("return", recipe), "closing-return", state["completed_cycles"],
+                              _return_blocks(problem, before_answer, active, relation, fork),
+                              before=before_answer, objections=active)
+                if any(detect_tail_edit(before_answer, answer, disposition)
+                       for disposition in answer["dispositions"]):
+                    state["tail_edits"] += 1
+                for disposition in answer["dispositions"]:
+                    obj = next(item for item in active if item["id"] == disposition["id"])
+                    if disposition.get("redo"):
+                        obj["check_redone"] = ("agrees" if disposition["redo"]["comparison"] == "supports_objection"
+                                               else "disagrees" if disposition["redo"]["comparison"] == "opposes_objection"
+                                               else "inconclusive") if disposition["redo"]["status"] == "redone" else "not-redone"
+                _apply_dispositions(objections, answer["dispositions"], state["completed_cycles"], "closing_return")
+                _write_episode_records(directory, cfg, objections)
+            state["closing_return"] = "complete"
+            state["stop_reason"] = "no_new_objections" if stopped_early else "cycle_budget"
+            state["answer"], state["events"] = answer, events
+            _write_episode_records(directory, cfg, objections)
+            _reports(directory, cfg, state, answer, objections, events)
+            return state
+        except ReasonFailure as exc:
+            try:
+                cfg = get(directory / "config.json")
+                state = locals().get("state", _state(cfg.get("condition", "UNKNOWN")))
+                state["stop_reason"] = exc.code
+                state["detail"] = exc.detail
+                state["events"] = locals().get("events", [])
+                state["answer"] = locals().get("answer")
+                _reports(directory, cfg, state, state.get("answer"), locals().get("objections", []), state["events"])
+                return state
+            except Exception:
+                raise exc
+
+
+def status_r002(run_dir) -> dict:
+    directory = Path(run_dir)
+    return get(directory / "state.json") if (directory / "state.json").exists() else {
+        "schema": R002_STATE_SCHEMA, "stop_reason": "not_started", "calls": 0, "attempts": 0}
