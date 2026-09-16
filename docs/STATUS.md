@@ -927,3 +927,8 @@ Handoff: work/review16/INDEX.md and REPORT.md, exact corrections/oracle recomput
 ### REC-20260917-A draft publication - 2026-09-16T21:39:57.381829+00:00
 
 Independent verdict APPROVED-AS-CORRECTED for publication as a draft confirmed; exact191-path scope and remote base checks passed. Publisher is preparing188R002 files plus the three append-only documentation records on claude/project-state-direction-j5rbun. Calibration pending; no provider calls, study execution or live qualification. Next authorized action: verify the draft commit and its separate publication acknowledgement. Further engineering/live work remains separately authorized.
+
+
+### REC-20260917-A draft published; calibration pending - 2026-09-16T21:42:47.376117+00:00
+
+Published191approved paths (188R002 plus three appended documentation records) on claude/project-state-direction-j5rbun at f3d6ea4fe7712f748adf799f71417a2445ec1163, tree 926c370407c1352444f3b2c5c76b553c449a435a. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed at 2026-09-16T21:41:35Z. R002 remains a DRAFT under the independent APPROVED-AS-CORRECTED verdict; calibration and live engine/checker qualification remain pending. No provider calls, study execution or main merge. This separate acknowledgement is pending its own remote verification, reported in the final publisher handoff. Next work requires the separately authorized engineering/qualification scope before any live calibration.
