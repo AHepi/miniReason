@@ -2371,3 +2371,14 @@ CHOICE: stage the 55 individually named checklist paths, inspect the index, then
 ### REC-20260916-E/F staged whitespace erratum - 2026-09-16T10:02:55.044713+00:00
 
 OUTCOME / CHOICE: the first staged diff check found one existing trailing blank line at run_R001.py:458, which the earlier unstaged tracked-file check could not inspect while this file was untracked. No commit or push occurred. Preserve the judge-approved draft bytes and apply a blank-at-EOF allowance only to experiments/diagnostics/R001-reason-cli-vs-baselines/run_R001.py; retain all whitespace checks on every other path and all other checks on this file. WHY / CONTRIBUTION: publication must not silently edit approved source or its custody. Lesson: include untracked files in the staged publication check and document any narrowly scoped immutable-byte exception. STATE: pending repeated staged check and publication.
+
+
+VERIFIED 3c642cbd67086e40336c87e3d83dcc936ffe16b8 TREE 4dead437407523d068b2892518e98a1f41dce03d at 2026-09-16T10:03:30Z local=3c642cbd67086e40336c87e3d83dcc936ffe16b8 remote=3c642cbd67086e40336c87e3d83dcc936ffe16b8 ref=origin/claude/project-state-direction-j5rbun paths=14 (REC-20260916-E: open-language Forge pack integration and live responder; state completed)
+
+
+VERIFIED 3c642cbd67086e40336c87e3d83dcc936ffe16b8 TREE 4dead437407523d068b2892518e98a1f41dce03d at 2026-09-16T10:03:30Z local=3c642cbd67086e40336c87e3d83dcc936ffe16b8 remote=3c642cbd67086e40336c87e3d83dcc936ffe16b8 ref=origin/claude/project-state-direction-j5rbun paths=38 (REC-20260916-F: R001 reasoning-CLI vs baselines study draft; state staged, live run pending)
+
+
+### REC-20260916-E/F acknowledgement and stop decision - 2026-09-16T10:04:33.829461+00:00
+
+CHOICE: commit these two VERIFIED lines, per-receipt root-publisher activity acknowledgements and current STATUS as the requested second commit, push non-forcibly, then verify fetch/ls-remote/local commit and tree equality, clean porcelain and .env untracked before reporting completion. WHY / CONTRIBUTION: preserve durable acknowledgement of the approved 55-path delivery without an endless self-referencing receipt chain. Counts above exclude the three shared receipt paths, staged once. STATE: delivery publication completed; acknowledgement publication pending final external verification. Delivery push verified at 2026-09-16T10:03:30Z, within 257 seconds of the 09:59:13Z opening; no five-minute publication miss. No provider calls or main merge. Stop the bounded publisher task only after the final gates pass; reopen for a concrete custody mismatch or new owner direction. The acknowledgement commit cannot record its own hash, so its actual hash/tree and final verification are returned in the publisher handoff and ignored work/publisher13 evidence, with no post-commit tracked append. Activity event IDs: E=604acfe4f2be4745abb42ad36eef9b40; F=aad2542cc4834747a0839b3f482c6aaf.

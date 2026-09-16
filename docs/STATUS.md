@@ -847,3 +847,8 @@ No R001 provider call or .env read occurred. Next task is the operator's reviewe
 ### REC-20260916-E/F approved branch publication - 2026-09-16T10:01:46.038090+00:00
 
 Both review13 deliveries are APPROVED-AS-CORRECTED and selected for the requested branch-only publication: E14 delivery paths, F38 draft paths and three shared receipts, 55 unique paths. Fresh origin/claude/project-state-direction-j5rbun equals the starting c1463e0a42521399ba218bafa8a30c60a0c609f5; no owner advancement or fast-forward is needed. Exact scope, immutable document prefixes, credential-shape and whitespace checks passed. Publication and its acknowledgement are pending remote verification. E is completed engineering with supporting-host Forge qualification still outstanding; F is staged, live run pending. No provider calls or merge to main. Next: verify both publication commits; later live work is outside this publisher task.
+
+
+### REC-20260916-E/F verified delivery - 2026-09-16T10:04:33.829461+00:00
+
+Published the 55 reviewed paths on claude/project-state-direction-j5rbun at 3c642cbd67086e40336c87e3d83dcc936ffe16b8, tree 4dead437407523d068b2892518e98a1f41dce03d. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed at 2026-09-16T10:03:30Z. Both deliveries were APPROVED-AS-CORRECTED: E is completed engineering with supporting-host qualification outstanding; F is staged, live run pending. Separate acknowledgement publication is being finalized and verified in the publisher handoff. No provider calls, secret reads or merge to main. Next task remains the separate owner-directed live operator/qualification and later cross-lineage reading; none runs in this publication task.
