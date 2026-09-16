@@ -960,3 +960,8 @@ Final audit supplement: Cadence correction at actual UTC: the final timer audit 
 ### REC-20260917-A instruments publication prepared - 2026-09-16T23:21:49.275601+00:00
 
 Independent judge verdict APPROVED-AS-CORRECTED accepted for the exact32 checklist paths. Final judged tests:225 reason and26 documentation-pin passes; reviewed offline calibration/main/resume/rerun evidence retained. Publisher scope, encoding, credential-shaped and whitespace checks passed; origin equals H0 c61a04e269fdee60aa5b576def89e642ecd523d4. Instruments commit and verified branch publication are pending. Calibration remains pending and requires its separate authorization; this publisher makes no provider calls and does not merge to main.
+
+
+### REC-20260917-A instruments published; calibration pending - 2026-09-16T23:24:09Z
+
+Published32 reviewed paths to claude/project-state-direction-j5rbun at 46b550789f1ef2127ff3cc8591d0e6ac9f4ca4ce, tree 7e6ea3d468675a0a6590274fb8a65479b250dd62. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed at 2026-09-16T23:23:04Z. Judge verdict APPROVED-AS-CORRECTED; final judged225 reason and26 documentation-pin tests pass. This acknowledgement is pending its separate commit/push/verification, reported in the final publisher handoff. Instruments published; calibration pending. No provider calls or main merge. Next substantive task is separately authorized calibration under the judged capability/proof and host limits.
