@@ -910,3 +910,20 @@ Delivery A and the already-published Delivery B are APPROVED-AS-CORRECTED; no fu
 ### REC-20260916-F R001 delivery verified - 2026-09-16T20:48:40.570644+00:00
 
 Published3275 approved paths on claude/project-state-direction-j5rbun at 81bc2a76f25384fc77cebcafc3899b24e3373003, tree f0a540c993e9fb6e6bfc9fe92fb5a34eb1da135a. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed at 2026-09-16T20:47:50Z. Delivery A is complete; the approved published Delivery B required no additional code correction. The negative endpoint finding and P08 censoring remain unchanged. This separate acknowledgement checkpoint is pending its own remote verification, which will be reported with final Git status and .env tracking check in the publisher handoff. Next authorized work remains the concurrent R002 worker scope or a separately directed follow-up; no provider calls or main merge occurred.
+
+
+### MIRROR-SYNC-20260917a complete - 2026-09-16T21:09:17.814387+00:00
+
+The designated git-less OneDrive mirror now matches all12621 tracked files at published branch claude/project-state-direction-j5rbun commit 0dc9182ebeb4dd350854cdbd229e5faf988d94ca, tree 40f2204ef35d2b17bd7196263ef444514b87b930. Copy counts:3274 created,20 updated,9327 unchanged. Independent fresh git-show SHA-256 verification:12621 verified,0 mismatches. No unexpected leftovers; allowed .env, work/ and sync markers preserved. Receipt: SYNC-RECEIPT-2026-09-17a.md in the mirror root. No provider calls or Git publication. Mirror task complete; existing concurrent research/publication scope is unaffected.
+
+
+## 2026-09-16T21:34:45.127675+00:00 - REC-20260917-A: R002 episodes under calibrated difficulty (draft), review16
+
+Independent judge verdict: **APPROVED-AS-CORRECTED for publication as a draft**. All24 original sealed answers independently agree; oracle disagreements NOT FOUND; problems replaced0. All six binding orchestrator amendments and the realistic-budget/optional-companion addendum are applied in R002 PLAN/INSTRUMENT/contracts/recipes/reading protocol, with append-only CHANGES rounds. Default five-condition target8 envelope:480 combined strict attempts/11010048 completion maximum; R001-derived working estimate384 calls/about1.95M completion, explicitly uncertain planning allowance2-5M. Calibration remains24 once-only NATIVE32768 calls; no-answer CEILING_HIT is eligible. Final offline C01 calibration/main and verified resume pass;11 launcher tests,12 schemas and7 recipes pass. No provider/model call, .env read, git mutation, live scientific run or episode. Current engine/checker live qualification remains NOT FOUND.
+
+Handoff: work/review16/INDEX.md and REPORT.md, exact corrections/oracle recomputations, final launcher pastes, restricted PUBLISH-CHECKLIST.md; R002 VALIDATION-REVIEW16.md and MATERIAL_PINS-REVIEW16.json identify corrected bytes. HEAD as found remains0dc9182ebeb4dd350854cdbd229e5faf988d94ca; existing concurrent work and docs prefixes preserved. Next authorized task is separate publisher review/publication of these explicit draft paths; separate engineering must implement/qualify v2 before any later live authorization. Inquiry is not exhausted.
+
+
+### REC-20260917-A draft publication - 2026-09-16T21:39:57.381829+00:00
+
+Independent verdict APPROVED-AS-CORRECTED for publication as a draft confirmed; exact191-path scope and remote base checks passed. Publisher is preparing188R002 files plus the three append-only documentation records on claude/project-state-direction-j5rbun. Calibration pending; no provider calls, study execution or live qualification. Next authorized action: verify the draft commit and its separate publication acknowledgement. Further engineering/live work remains separately authorized.

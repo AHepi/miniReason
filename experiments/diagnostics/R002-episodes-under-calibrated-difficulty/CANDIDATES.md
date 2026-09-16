@@ -1,0 +1,40 @@
+# R002 candidate pool
+
+**Status: staged and not run.** Deterministic construction; no seed. Difficulty is conjectured, not provider-established.
+
+| ID | Title | One-line summary | Oracle kind | Long chain | Checker eligible | Trap label |
+|---|---|---|---|---:|---:|---|
+| C01 | Selected-evidence Bayesian chain | Give (i) the posterior probability that Source C was chosen and (ii) the conditional probability that a fourth draw is red. Give reduced fractions and show the likelihood normalization and the final mixture. | computable | no | yes | existence/independent-evidence substitution |
+| C02 | Balanced proper bracelets | How many distinct bracelets satisfy the conditions? Also give the number of valid rotation classes before reflections are identified. Provide a Burnside-compatible explanation that accounts for reflection-fixed classes. | computable | no | yes | halve rotation classes |
+| C03 | Synchronous register machine | Give the final register triple and H, with enough intermediate checkpoints to make snapshot use auditable. | computable | yes | yes | sequential in-place update |
+| C04 | Outer-join aggregate ledger | Give the ordered result rows exactly and explain the synthetic NULL rows and the two COUNT meanings. | computable | no | yes | move ON predicate into WHERE |
+| C05 | Release/setup weighted schedule | Give the unique minimizing sequence, every processing-start/completion pair (setup precedes the listed processing start), the objective, and the second distinct objective value. | computable | yes | yes | never-idle ratio greedy |
+| C06 | Constrained monotone grid paths | Give the number of valid paths and the lexicographically first valid move string. | computable | yes | yes | at-least-one checkpoint substitution |
+| C07 | Exact stopping time in a Markov chain | Give the exact expected absorption time and the exact probability of absorption within five steps. | computable | yes | yes | geometric one-step shortcut |
+| C08 | Spanning trees with a required edge | Give (i) the number of spanning trees and (ii) the number that contain edge 01. Show a deletion/contraction or Laplacian-minor check rather than assuming all edges have equal inclusion probability. | computable | yes | yes | edge-inclusion independence |
+| C09 | Weighted finite transducer | What is the exact joint probability that exactly seven input bits are 1 and the final state is `(2,1)`? Also state how many seven-1 bit strings reach that state. | computable | yes | yes | sequential state update |
+| C10 | Composite-modulus affine observations | Give the number of possible x, the least possible x, and the sum of all possible x modulo 2520. Derive the congruences with each iterate reduced in the stated ring. | computable | yes | yes | omit affine geometric offset in f^k |
+| C11 | Precedence-constrained slot assignment | Give the minimum-cost feasible sequence, its cost, and the second distinct feasible cost. | computable | yes | yes | ignore precedence |
+| C12 | Adaptive urn after six draws | Give the most probable final `(red,blue,green)` state and its exact probability. Also give the exact probability that the sixth draw is red. | computable | yes | yes | fixed-composition replacement model |
+| C13 | Cyclic constrained multiset words | How many words satisfy all conditions? Give a recurrence/state description that includes the cyclic closure checks. | computable | yes | yes | omit wraparound constraints |
+| C14 | Prime-index floored recurrence | Give `x_20` and H, with a table of all 20 recurrence values. | computable | yes | yes | treat 1 as prime |
+| C15 | Parity-state shortest route | Give the earliest arrival time at T and the tie-broken route. | computable | no | yes | vertex-only shortest-path state |
+| C16 | Poison-total minimax game | Is the initial player winning, what is the remoteness in moves, and which first moves are optimal? | computable | yes | yes | treat landing on four as a win |
+| C17 | Degree-nine interpolation | Determine `P(20)` and the coefficient of `x^7`. Show an exact interpolation or finite-difference derivation that uses all ten data. | computable | yes | yes | fit only the first nine data |
+| C18 | Preemptive queue boundary order | Give the completion sequence with each completion time and the sum of turnaround times. | computable | yes | yes | arrival-before-completion boundary update |
+| C19 | Telescoping rational identity | Prove for every such n that `sum(k=1..n) 1/[k(k+1)(k+2)] = n(n+3)/[4(n+1)(n+2)]`. State why every division is valid and include n=0. | derivation-only | no | no | drop endpoint remainder |
+| C20 | Rank-one determinant identity without invertibility | Prove for every n>=1, including singular A, that `det(A+u v^T)=det(A)+v^T adj(A)u`. Then derive the familiar factored form when A is invertible and identify exactly why that extra hypothesis is needed only there. | derivation-only | no | no | assume invertibility and lose singular case |
+| C21 | Parameterized recurrence identity | Prove in Z[x] that for every n>=1, `a_n(x)=1+x+...+x^(n-1)`. State the specialized value at x=1 without dividing by x-1. | derivation-only | no | no | divide by x-1 and omit x=1 |
+| C22 | Finite-difference polynomial characterization | Determine P and prove uniqueness among rational polynomials. Your proof must distinguish finite difference from differentiation. | derivation-only | no | no | termwise antidifferentiation |
+| C23 | Alternating binomial reciprocal identity | Prove `sum(k=0..n) (-1)^k binom(n,k)/(k+1) = 1/(n+1)`. Give an algebraic or integral proof and justify any interchange of a finite sum. | derivation-only | no | no | cancel alternating binomial sum to zero |
+| C24 | Matrix-polynomial reduction | Prove A is invertible and give formulas for `A^{-1}` and `A^17` as linear combinations of A and I. Derive them directly in the quotient polynomial relation; do not assume a basis of eigenvectors. | derivation-only | no | no | drop interpolation intercept in power reduction |
+
+Each computable oracle executes one declared primary calculation and its named faulty route. A distinct recommended check is recorded as proposed and unexecuted; it is not evidence until separately implemented. Each derivation-only script validates a finite algebraic certificate and a concrete faulty-route check, explicitly says it is not a universal proof, and leaves the human derivation as the oracle. All recodings put the declared public branch anchor first and reverse the remaining givens under an explicit checked permutation while preserving every given sentence and the entire question/working contract byte-for-byte. Carrier controls add only their declared tag.
+
+## Manifest fields
+
+`problems/RECODING_MAPS.json` is the machine manifest. Paths are study-relative; hashes cover the canonical, recoded, carrier, answer, oracle wrapper, and shared oracle implementation. `problems/RELATIONS.json` is participant-visible and contains requested relation IDs without values or traps.
+
+## Independent judge difficulty reading
+
+All 24 original sealed answers agree with independent review16 derivations made before worker oracle execution. Oracle disagreement NOT FOUND; problems replaced: 0. The pool is not uniformly easy. C05/C06/C08/C09/C11/C12/C13/C16/C17 are plausible first-attempt native-32768 failures because exact global search, coupled rational state propagation or long interpolation is required. C01/C04/C15 and the six standard universal identities are relatively easy; C10 has a short CRT solution. Fourteen declared long-chain tags describe task structure, not empirical difficulty. Calibration may admit fewer than eight or none, and may admit no derivation-only case; the declared stopping rule is binding. Public problem text does not expose sealed numeric endpoints. Any method cue is visible to every matched loop arm via FORKS.json and is not used by the direct calibration baseline. See work/review16/CANDIDATE-REVIEW.md for per-problem ambiguity/leakage/difficulty and independent proofs.

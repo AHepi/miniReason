@@ -1,0 +1,10 @@
+C04 — Outer-join aggregate ledger
+
+Givens:
+- Evaluate: `SELECT tier, COUNT(DISTINCT c.id), COUNT(o.id), COALESCE(SUM(o.amount),0), COUNT(*) FROM customers c LEFT JOIN orders o ON c.id=o.cid AND o.status='ok' GROUP BY tier HAVING COUNT(*)>=2 ORDER BY 4 DESC, tier ASC;`
+- Standard SQLite bag and NULL semantics apply.
+- `orders(id,cid,amount,status)` contains `(101,1,10,ok),(102,1,6,void),(103,2,7,ok),(104,2,NULL,ok),(105,3,4,void),(106,4,9,ok),(107,4,3,ok)`.
+- `customers(id,tier)` contains `(1,Blue),(2,Blue),(3,Gold),(4,Gold),(5,Silver)`.
+
+Question: Give the ordered result rows exactly and explain the synthetic NULL rows and the two COUNT meanings.
+Work from the prose only. Do not use code or retrieval. If the information is insufficient, say cannot decide and name the missing derivation.
