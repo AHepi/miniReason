@@ -874,3 +874,13 @@ Final required tests: reason discovery 148 tests in 43.222s OK; docs pins 26 tes
 ### REC-20260916-F corrective publication underway - 2026-09-16T11:09:47.435503+00:00
 
 State: corrected; live rerun in progress (owner-reported). The W16 corrective checklist contains 22 exact paths; publication to claude/project-state-direction-j5rbun is underway, with a separate verified-commit/tree acknowledgement to follow. Prior offline completion receipts remain unchanged. The concurrent live operator owns runs/ and study continuation; this publisher does not inspect or change live evidence, start provider calls or merge to main. Next publisher action is verify both non-forced branch pushes and a clean final index/worktree.
+
+
+### REC-20260916-F corrective commit verified - 2026-09-16T11:11:09Z
+
+State: corrected; live rerun in progress (owner-reported). Published 22 explicit checklist paths at 2564d36bce45181430baac9e20f7cc5e558cf2e5, tree 95024609a2d6117f711c9befb4de3df0941b38be, to claude/project-state-direction-j5rbun. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed. The requested separate acknowledgement commit is pending final publication verification. The concurrent live operator retains study continuation; no runs/ access, provider call or main merge was performed by this publisher.
+
+
+### REC-20260916-F publication acknowledgement checkpoint - 2026-09-16T18:41:17.137045+00:00
+
+Corrective delivery is completed and verified at 2564d36bce45181430baac9e20f7cc5e558cf2e5, tree 95024609a2d6117f711c9befb4de3df0941b38be. This checkpoint carries the requested separate acknowledgement; its own commit/tree and final remote equality are reported in the publisher handoff and ignored work/w16/publisher-state.json. State: corrected; live rerun in progress (owner-reported). Next authorized substantive task remains the concurrent owner's study continuation and later evidence reading; the publisher task ends only after final remote and clean-tree gates pass.
