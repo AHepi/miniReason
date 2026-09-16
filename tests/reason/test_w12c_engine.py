@@ -1,4 +1,5 @@
 """Offline optional-seat failures; retained evidence under work/review12b/tests."""
+from tests.reason import artifact_root
 import contextlib
 import copy
 import json
@@ -11,7 +12,7 @@ from tests.reason import test_engine as fixture
 from minireason.reason import config, engine
 from minireason.reason.types import ReasonFailure
 
-EVIDENCE = Path(__file__).resolve().parents[2] / 'work/review12b/tests/e'
+EVIDENCE = artifact_root() / 'tests/e'
 FAILURES = ('CEILING_HIT', 'TRANSPORT_OR_RESPONSE_ERROR', 'SCHEMA_FAILURE')
 
 

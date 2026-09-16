@@ -1,5 +1,6 @@
 """Judge regressions: explicit control and real Windows worker lifecycle."""
 from pathlib import Path
+from tests.reason import artifact_root
 import json
 import os
 import subprocess
@@ -13,7 +14,7 @@ from minireason.reason import adapter, config, storage
 from minireason.reason.types import ReasonFailure
 
 ROOT = Path(__file__).resolve().parents[2]
-ARTIFACTS = ROOT / "work" / "review12b" / "adapter-test-runs"
+ARTIFACTS = artifact_root() / "adapter-test-runs"
 PROBE_CODE = '"""Offline subprocess probe, never creates a provider."""\nimport sys, time\nfrom pathlib import Path\nfrom minireason.reason import worker\nfrom minireason.reason.adapter import _write\nfrom minireason.reason.storage import run_lock\nmode = sys.argv[1]\nif mode == "lock":\n    with run_lock(sys.argv[2]):\n        with Path(sys.argv[3]).open("w", encoding="utf-8", newline="") as f:\n            f.write("lock acquired\\n")\n        time.sleep(30)\nelse:\n    def execute(prepared, records):\n        if mode == "sleep":\n            time.sleep(5)\n        elif mode == "large":\n            print("X" * 2097152)\n            print("Y" * 2097152, file=sys.stderr)\n            _write(records / "call-0001.response.json", {\n                "status": "COMPLETE", "content": "X" * 2097152,\n                "usage": {"prompt_tokens": 1, "completion_tokens": 1}})\n        else:\n            raise AssertionError("Unknown offline probe mode")\n    worker._execute = execute\n    sys.argv = [sys.argv[0], *sys.argv[2:]]\n    raise SystemExit(worker.main())\n'
 MESSAGES = [{"role": "user", "content": "Return JSON for a public test problem."}]
 

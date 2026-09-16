@@ -1,5 +1,6 @@
 """Offline regressions for per-seat completion ceilings and reasoning effort."""
 from pathlib import Path
+from tests.reason import artifact_root
 import json
 import os
 import unittest
@@ -11,7 +12,7 @@ from minireason.reason import adapter, config
 from minireason.reason.types import ReasonFailure
 
 ROOT = Path(__file__).resolve().parents[2]
-ARTIFACTS = ROOT / "work/review12b/settings/fixtures"
+ARTIFACTS = artifact_root() / "settings/fixtures"
 MESSAGES = [{"role": "user", "content": "Return JSON for this public fixture problem."}]
 
 

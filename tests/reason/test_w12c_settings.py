@@ -1,4 +1,5 @@
 """Offline regression coverage for reasoning exposure rather than wire controls."""
+from tests.reason import artifact_root
 import json
 import os
 from pathlib import Path
@@ -44,7 +45,7 @@ class ReasoningExposureCeilingTests(unittest.TestCase):
 
 class NativeOllamaControlTests(unittest.TestCase):
     def setUp(self):
-        self.case = Path(__file__).resolve().parents[2] / "work/review12b/settings/fixtures" / uuid.uuid4().hex[:8]
+        self.case = artifact_root() / "settings/fixtures" / uuid.uuid4().hex[:8]
         self.case.mkdir(parents=True)
         for patcher in (
             mock.patch.object(os, "environ", {"PYTHONUTF8": "1"}),

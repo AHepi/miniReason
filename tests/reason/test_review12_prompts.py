@@ -60,7 +60,7 @@ class Review12PromptTests(unittest.TestCase):
         variants.append({**valid, "objections": [{"text": "An objection.", "defeats": ""}]})
         for result in variants:
             with self.subTest(result=result):
-                self.assert_schema_failure("use", json.dumps(result))
+                self.assert_schema_failure("use", json.dumps(result), contract_version="public-working-v1")
 
     def test_use_contract_requires_independence_and_disagreement_objection(self):
         contract = prompts.render("use", "Original problem.", answer="Current working answer.")[0]["content"]
@@ -102,7 +102,7 @@ class Review12PromptTests(unittest.TestCase):
                 self.assertIsNot(repaired[0], original[0])
                 self.assertEqual(repaired[-2], {"role": "assistant", "content": content})
                 self.assertEqual(repaired[-1]["role"], "user")
-                self.assertTrue(repaired[-1]["content"].endswith(prompts._CONTRACTS[role]))
+                self.assertTrue(repaired[-1]["content"].endswith(prompts._contracts(prompts.CURRENT_CONTRACT)[role]))
                 self.assertIn("Preserve its substantive content and conclusions", repaired[-1]["content"])
                 self.assertIn("do not solve again", repaired[-1]["content"])
 

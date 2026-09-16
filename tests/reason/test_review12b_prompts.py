@@ -52,8 +52,8 @@ class Review12bPromptTests(unittest.TestCase):
         for bad in (None, 3, {}, [], [""], ["Premise.", 7], " "):
             self.fails("baseline", {"answer": "Conclusion.", "assumptions": bad},
                        "ANSWER_SUPPLEMENT_NOT_TEXT")
-        self.fails("baseline", {"answer": "Conclusion.", "unused": "Not supported."})
-        self.fails("critic", {"objections": [], "assumptions": "Not this role."})
+        self.fails("baseline", {"answer": "Conclusion.", "unused": "Not supported."}, contract_version="public-working-v1")
+        self.fails("critic", {"objections": [], "assumptions": "Not this role."}, contract_version="public-working-v1")
 
     def test_raw_control_characters_are_tolerated_only_in_new_contract(self):
         content = '{"answer":"Line one\nLine two\twith a tab"}'
@@ -80,7 +80,7 @@ class Review12bPromptTests(unittest.TestCase):
                     self.assertEqual(prompts.parse(role, json.dumps(result)), result)
                     self.fails(role, result, contract_version="legacy-v1")
             self.fails(role, {**data, "working": []}, "WORKING_NOT_TEXT")
-        self.fails("baseline", {"answer": "Answer.", "working": "Not a supported field for this role."})
+        self.fails("baseline", {"answer": "Answer.", "working": "Not a supported field for this role."}, contract_version="public-working-v1")
 
     def test_objection_text_bound_applies_to_critic_and_use_only_new_contract(self):
         for role in ("critic", "use"):

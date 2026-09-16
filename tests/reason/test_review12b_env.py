@@ -1,5 +1,6 @@
 """Dummy-key-only CLI credential tests; fixtures remain under ignored review12b."""
 from __future__ import annotations
+from tests.reason import artifact_root
 import contextlib
 import importlib.util
 import io
@@ -19,7 +20,7 @@ SPEC.loader.exec_module(cli)
 
 class EnvironmentFileTests(unittest.TestCase):
     def setUp(self):
-        self.directory = ROOT / "work/review12b/env-cli/fixtures" / uuid.uuid4().hex[:8]
+        self.directory = artifact_root() / "env-cli/fixtures" / uuid.uuid4().hex[:8]
         self.directory.mkdir(parents=True)
         self.environment = {"EXISTING_NAME": "dummy-existing"}
         self.environment_patch = mock.patch.object(cli.os, "environ", self.environment)

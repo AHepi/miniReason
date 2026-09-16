@@ -1,5 +1,6 @@
 """Acceptance cases preserve every fixture run under ignored work/review12b."""
 from __future__ import annotations
+from tests.reason import artifact_root
 import contextlib
 import hashlib
 import json
@@ -15,7 +16,7 @@ from minireason.reason import config, engine
 from minireason.reason.types import ReasonFailure
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "work" / "review12b" / "e"
+EVIDENCE = artifact_root() / "e"
 
 
 def read(path):

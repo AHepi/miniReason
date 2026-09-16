@@ -17,6 +17,10 @@ PROBLEM_IDS = tuple(f"P{number:02d}" for number in range(1, 9))
 RESUMABLE_STOPS = {"not_started", "running", "interrupted"}
 GOOD_STOPS = {"cycle_budget", "no_new_objections"}
 PROVIDER_KEYS = ("DEEPSEEK_API_KEY", "OLLAMA_API_KEY")
+MANIFEST_SCHEMA = "minireason.r001.launcher.v2"
+LEGACY_MANIFEST_SCHEMA = "minireason.r001.launcher.v1"
+PINS_RELATIVE = "experiments/diagnostics/R001-reason-cli-vs-baselines/SOURCE_PINS.json"
+LAUNCHER_RELATIVE = "experiments/diagnostics/R001-reason-cli-vs-baselines/run_R001.py"
 
 
 class LauncherError(RuntimeError):
@@ -67,6 +71,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         help="Launcher manifest directory; defaults to runs/R001-<mode>. Child runs always remain under runs/.",
     )
+    rerun = parser.add_mutually_exclusive_group()
+    rerun.add_argument(
+        "--rerun-failed",
+        action="store_true",
+        help="Archive and rerun each existing occurrence whose stop is not a good stop",
+    )
+    rerun.add_argument(
+        "--rerun",
+        metavar="PNN:OCC",
+        help="Archive and rerun one failed occurrence; OCC is cross or single",
+    )
     return parser.parse_args(argv)
 
 
@@ -85,41 +100,124 @@ def normalized_problem_ids(values: list[str]) -> list[str]:
     return result
 
 
+def parse_rerun(value: str) -> tuple[str, str]:
+    match = re.fullmatch(r"(P0[1-8]):(cross|single)", value, flags=re.IGNORECASE)
+    if match is None:
+        raise LauncherError("--rerun must be PNN:cross or PNN:single")
+    return match.group(1).upper(), match.group(2).lower()
+
+
+def prepared_pins(repo: Path) -> tuple[dict, str]:
+    path = repo / PINS_RELATIVE
+    pins = read_json(path)
+    if not isinstance(pins.get("source_files"), dict):
+        raise LauncherError("Prepared source pins are missing or invalid")
+    if not isinstance(pins.get("sealed_task_files"), dict):
+        raise LauncherError("Prepared task pins are missing or invalid")
+    digest = hashlib.sha256(read_text(path).encode("utf-8")).hexdigest()
+    return pins, digest
+
+
 def source_hashes(repo: Path) -> dict[str, str]:
-    paths = (
-        "tools/reason.py",
-        "src/minireason/provider_openai_compat.py",
-        "src/minireason/data/endpoints.json",
-        "src/minireason/reason/adapter.py",
-        "src/minireason/reason/config.py",
-        "src/minireason/reason/engine.py",
-        "src/minireason/reason/prompts.py",
-        "src/minireason/reason/storage.py",
-        "src/minireason/reason/types.py",
-        "src/minireason/reason/worker.py",
-        "src/minireason/reason/recipes/cross-family.json",
-        "src/minireason/reason/recipes/single-family.json",
-    )
+    pins, _ = prepared_pins(repo)
+    paths = list(pins["source_files"])
+    if LAUNCHER_RELATIVE not in paths:
+        paths.append(LAUNCHER_RELATIVE)
+    result: dict[str, str] = {}
+    for relative in sorted(paths):
+        path = repo / relative
+        if not path.is_file():
+            raise LauncherError("Current source file is missing: " + relative)
+        result[relative] = hashlib.sha256(read_text(path).encode("utf-8")).hexdigest()
+    return result
+
+
+def source_version(
+    version: int,
+    hashes: dict[str, str],
+    pins_hash: str,
+    *,
+    recorded_utc: str | None = None,
+    basis: str,
+) -> dict:
     return {
-        relative: hashlib.sha256(read_text(repo / relative).encode("utf-8")).hexdigest()
-        for relative in paths
+        "version": version,
+        "recorded_utc": recorded_utc or utc_now(),
+        "basis": basis,
+        "source_sha256": hashes,
+        "source_pins_path": PINS_RELATIVE,
+        "source_pins_sha256": pins_hash,
     }
 
 
-def validate_prepared_source_pins(repo: Path, hashes: dict[str, str]) -> str:
-    relative = "experiments/diagnostics/R001-reason-cli-vs-baselines/SOURCE_PINS.json"
-    path = repo / relative
-    pins = read_json(path).get("source_files")
-    if not isinstance(pins, dict):
-        raise LauncherError("Prepared source pins are missing or invalid")
-    for source, digest in hashes.items():
-        record = pins.get(source)
-        source_bytes = read_text(repo / source).encode("utf-8")
-        if (not isinstance(record, dict) or record.get("sha256") != digest
-                or record.get("bytes") != len(source_bytes)):
-            raise LauncherError("Current reason source differs from prepared source pin: " + source)
-    return hashlib.sha256(read_text(path).encode("utf-8")).hexdigest()
+def initial_manifest(repo: Path, run_root: Path, mode: str) -> dict:
+    hashes = source_hashes(repo)
+    _, pins_hash = prepared_pins(repo)
+    return {
+        "schema": MANIFEST_SCHEMA,
+        "study": "R001-reason-cli-vs-baselines",
+        "mode": mode,
+        "run_root": run_root.relative_to(repo).as_posix(),
+        "source_sha256": hashes,
+        "source_pins_path": PINS_RELATIVE,
+        "source_pins_sha256": pins_hash,
+        "source_versions": [source_version(1, hashes, pins_hash, basis="initial")],
+        "active_source_version": 1,
+        "updated_utc": utc_now(),
+        "problems": {},
+    }
 
+
+def load_manifest(path: Path, repo: Path, run_root: Path, mode: str) -> dict:
+    if not path.exists():
+        return initial_manifest(repo, run_root, mode)
+    manifest = read_json(path)
+    schema = manifest.get("schema")
+    if schema not in {LEGACY_MANIFEST_SCHEMA, MANIFEST_SCHEMA}:
+        raise LauncherError("Existing manifest has an unsupported schema")
+    if manifest.get("mode") != mode:
+        raise LauncherError("Existing manifest mode differs from requested mode")
+    if manifest.get("run_root") != run_root.relative_to(repo).as_posix():
+        raise LauncherError("Existing manifest run root differs from requested run root")
+    hashes = source_hashes(repo)
+    _, pins_hash = prepared_pins(repo)
+    if (manifest.get("source_pins_path") != PINS_RELATIVE
+            or manifest.get("source_pins_sha256") != pins_hash):
+        raise LauncherError("Prepared source/task pin record differs from the manifest")
+    if schema == LEGACY_MANIFEST_SCHEMA:
+        old_hashes = manifest.get("source_sha256")
+        if not isinstance(old_hashes, dict):
+            raise LauncherError("Legacy manifest source pins are invalid")
+        manifest["schema"] = MANIFEST_SCHEMA
+        manifest["source_versions"] = [source_version(
+            1, old_hashes, pins_hash,
+            recorded_utc=manifest.get("updated_utc"),
+            basis="migrated-v1",
+        )]
+        manifest["active_source_version"] = 1
+        for problem in manifest.get("problems", {}).values():
+            if not isinstance(problem, dict):
+                continue
+            for record in problem.get("occurrences", {}).values():
+                if isinstance(record, dict):
+                    record.setdefault("source_version", 1)
+    versions = manifest.get("source_versions")
+    if not isinstance(versions, list) or not versions:
+        raise LauncherError("Existing manifest source history is invalid")
+    latest = versions[-1]
+    if not isinstance(latest, dict) or not isinstance(latest.get("version"), int):
+        raise LauncherError("Existing manifest source history is invalid")
+    if latest.get("source_pins_sha256") != pins_hash:
+        raise LauncherError("Prepared source/task pin record differs from source history")
+    if latest.get("source_sha256") != hashes:
+        number = latest["version"] + 1
+        versions.append(source_version(number, hashes, pins_hash, basis="engineering-update"))
+        manifest["active_source_version"] = number
+    else:
+        manifest["active_source_version"] = latest["version"]
+    reconcile_pending_archives(manifest, repo)
+    manifest["updated_utc"] = utc_now()
+    return manifest
 
 def validate_problem_pin(repo: Path, problem_id: str, problem_file: Path) -> dict[str, object]:
     pins_path = repo / "experiments" / "diagnostics" / "R001-reason-cli-vs-baselines" / "SOURCE_PINS.json"
@@ -132,42 +230,6 @@ def validate_problem_pin(repo: Path, problem_id: str, problem_file: Path) -> dic
             or record.get("bytes") != len(problem_bytes)):
         raise LauncherError("Selected problem differs from prepared task pin: " + problem_id)
     return {"path": relative, "sha256": digest, "bytes": len(problem_bytes)}
-
-
-def initial_manifest(repo: Path, run_root: Path, mode: str) -> dict:
-    hashes = source_hashes(repo)
-    pins_hash = validate_prepared_source_pins(repo, hashes)
-    return {
-        "schema": "minireason.r001.launcher.v1",
-        "study": "R001-reason-cli-vs-baselines",
-        "mode": mode,
-        "run_root": run_root.relative_to(repo).as_posix(),
-        "source_sha256": hashes,
-        "source_pins_path": "experiments/diagnostics/R001-reason-cli-vs-baselines/SOURCE_PINS.json",
-        "source_pins_sha256": pins_hash,
-        "updated_utc": utc_now(),
-        "problems": {},
-    }
-
-
-def load_manifest(path: Path, repo: Path, run_root: Path, mode: str) -> dict:
-    if not path.exists():
-        return initial_manifest(repo, run_root, mode)
-    manifest = read_json(path)
-    if manifest.get("schema") != "minireason.r001.launcher.v1":
-        raise LauncherError("Existing manifest has an unsupported schema")
-    if manifest.get("mode") != mode:
-        raise LauncherError("Existing manifest mode differs from requested mode")
-    if manifest.get("run_root") != run_root.relative_to(repo).as_posix():
-        raise LauncherError("Existing manifest run root differs from requested run root")
-    hashes = source_hashes(repo)
-    pins_hash = validate_prepared_source_pins(repo, hashes)
-    if manifest.get("source_sha256") != hashes:
-        raise LauncherError("Current reason sources differ from the manifest source pins")
-    if (manifest.get("source_pins_path") != "experiments/diagnostics/R001-reason-cli-vs-baselines/SOURCE_PINS.json"
-            or manifest.get("source_pins_sha256") != pins_hash):
-        raise LauncherError("Prepared source pin record differs from the manifest")
-    return manifest
 
 
 def occurrence_spec(problem_id: str, kind: str, run_root: Path) -> dict:
@@ -197,8 +259,17 @@ def saved_status(directory: Path) -> tuple[str, str | None]:
     if not config_path.exists():
         raise LauncherError("Existing occurrence lacks config.json: " + str(directory))
     config = read_json(config_path)
-    state_path = directory / "state.json"
-    stop = read_json(state_path).get("stop_reason", "running") if state_path.exists() else "not_started"
+    calls = directory / "calls"
+    unmatched = (
+        request
+        for request in sorted(calls.glob("*/a*/request.json"))
+        if not request.with_name("response.json").exists()
+    ) if calls.is_dir() else ()
+    if next(iter(unmatched), None) is not None:
+        stop = "INTERRUPTED_CALL"
+    else:
+        state_path = directory / "state.json"
+        stop = read_json(state_path).get("stop_reason", "running") if state_path.exists() else "not_started"
     if not isinstance(stop, str) or not stop:
         raise LauncherError("Existing occurrence has an invalid stop reason: " + str(directory))
     run_id = config.get("run_id")
@@ -242,6 +313,91 @@ def verify_existing(
         raise LauncherError("Existing occurrence endpoints differ from current data: " + str(directory))
 
 
+def occurrence_identity(problem_id: str, kind: str, number: int) -> str:
+    return f"R001-{problem_id}-{kind}-attempt-{number:03d}"
+
+
+def ensure_attempts(
+    record: dict,
+    problem_id: str,
+    kind: str,
+    source_version_number: int,
+) -> list[dict]:
+    attempts = record.get("attempts")
+    if isinstance(attempts, list) and attempts:
+        return attempts
+    number = 1
+    attempt = {
+        "attempt_number": number,
+        "occurrence_id": occurrence_identity(problem_id, kind, number),
+        "directory": record.get("directory"),
+        "run_id": record.get("run_id"),
+        "stop_reason": record.get("stop_reason", "not_started"),
+        "returncode": record.get("returncode"),
+        "source_version": record.get("source_version", source_version_number),
+        "status": "active",
+        "updated_utc": record.get("updated_utc", utc_now()),
+    }
+    record["attempts"] = [attempt]
+    record["occurrence_id"] = attempt["occurrence_id"]
+    record["source_version"] = attempt["source_version"]
+    return record["attempts"]
+
+
+def reconcile_pending_archives(manifest: dict, repo: Path) -> None:
+    for problem_id, problem in manifest.get("problems", {}).items():
+        if not isinstance(problem, dict):
+            continue
+        for kind, record in problem.get("occurrences", {}).items():
+            if not isinstance(record, dict) or "pending_archive" not in record:
+                continue
+            pending = record["pending_archive"]
+            if not isinstance(pending, dict) or not isinstance(pending.get("directory"), str):
+                raise LauncherError("Manifest pending archive record is invalid")
+            canonical_value = record.get("directory")
+            if not isinstance(canonical_value, str):
+                raise LauncherError("Manifest occurrence directory is invalid")
+            canonical = repo / canonical_value
+            archive = repo / pending["directory"]
+            if canonical.exists() and not archive.exists():
+                record.pop("pending_archive")
+                continue
+            if canonical.exists() or not archive.exists():
+                raise LauncherError("Cannot reconcile pending occurrence archive: " + str(canonical))
+            source_number = int(record.get("source_version", 1))
+            attempts = ensure_attempts(record, problem_id, kind, source_number)
+            old = attempts[-1]
+            old.update({
+                "directory": pending["directory"],
+                "status": "archived-failed",
+                "archived_utc": utc_now(),
+            })
+            number = max(int(item.get("attempt_number", 0)) for item in attempts) + 1
+            fresh_source = int(pending.get("fresh_source_version", manifest["active_source_version"]))
+            fresh = {
+                "attempt_number": number,
+                "occurrence_id": occurrence_identity(problem_id, kind, number),
+                "directory": canonical_value,
+                "run_id": None,
+                "stop_reason": "not_started",
+                "returncode": None,
+                "source_version": fresh_source,
+                "status": "active",
+                "updated_utc": utc_now(),
+            }
+            attempts.append(fresh)
+            record.pop("pending_archive")
+            record.update({
+                "run_id": None,
+                "stop_reason": "not_started",
+                "returncode": None,
+                "last_action": "rerun-archive-recovered",
+                "updated_utc": fresh["updated_utc"],
+                "occurrence_id": fresh["occurrence_id"],
+                "source_version": fresh["source_version"],
+            })
+
+
 def update_occurrence(
     manifest: dict,
     repo: Path,
@@ -253,7 +409,18 @@ def update_occurrence(
     returncode: int | None,
 ) -> None:
     problem = manifest["problems"].setdefault(problem_id, {"occurrences": {}, "conditions": {}})
-    record = {
+    occurrences = problem.setdefault("occurrences", {})
+    record = occurrences.get(spec["kind"])
+    if not isinstance(record, dict):
+        record = {}
+        occurrences[spec["kind"]] = record
+    source_number = manifest["active_source_version"]
+    attempts = ensure_attempts(record, problem_id, spec["kind"], source_number)
+    active = attempts[-1]
+    if returncode is None:
+        returncode = active.get("returncode")
+    now = utc_now()
+    values = {
         "label": f"R001-{problem_id}-" + ("CROSS" if spec["kind"] == "cross" else "LOOP-SINGLE"),
         "directory": spec["directory"].relative_to(repo).as_posix(),
         "recipe": spec["recipe"],
@@ -263,15 +430,27 @@ def update_occurrence(
         "stop_reason": stop_reason,
         "last_action": action,
         "returncode": returncode,
-        "updated_utc": utc_now(),
+        "updated_utc": now,
+        "occurrence_id": active["occurrence_id"],
+        "source_version": active["source_version"],
     }
-    problem["occurrences"][spec["kind"]] = record
+    record.update(values)
+    active.update({
+        "directory": values["directory"],
+        "run_id": run_id,
+        "stop_reason": stop_reason,
+        "returncode": returncode,
+        "status": "active",
+        "updated_utc": now,
+    })
     for condition, label in spec["labels"].items():
-        relative_directory = spec["directory"].relative_to(repo).as_posix()
+        relative_directory = values["directory"]
         alias = {
             "label": label,
             "mode": manifest["mode"],
             "occurrence": spec["kind"],
+            "occurrence_id": record["occurrence_id"],
+            "source_version": record["source_version"],
             "run_directory": relative_directory,
             "evidence_path": relative_directory,
             "run_id": run_id,
@@ -284,8 +463,91 @@ def update_occurrence(
             alias["call_id"] = "base-native"
             alias["evidence_path"] = relative_directory + "/calls/base-native"
         problem["conditions"][condition] = alias
-    manifest["updated_utc"] = utc_now()
+    manifest["updated_utc"] = now
 
+
+def next_archive_directory(directory: Path) -> Path:
+    number = 1
+    while True:
+        candidate = directory.with_name(directory.name + f"-failed-{number}")
+        if not candidate.exists():
+            return candidate
+        number += 1
+
+
+def guarded_archive_move(repo: Path, directory: Path, archive: Path) -> None:
+    runs_root = (repo / "runs").resolve(strict=True)
+    lexical_source = Path(os.path.abspath(directory))
+    lexical_archive = Path(os.path.abspath(archive))
+    resolved_source = directory.resolve(strict=True)
+    resolved_parent = directory.parent.resolve(strict=True)
+    if os.path.normcase(str(resolved_source)) != os.path.normcase(str(lexical_source)):
+        raise LauncherError("Occurrence archive source resolves through a link: " + str(directory))
+    if resolved_source.parent != resolved_parent:
+        raise LauncherError("Occurrence archive source parent is inconsistent: " + str(directory))
+    try:
+        resolved_source.relative_to(runs_root)
+        resolved_parent.relative_to(runs_root)
+    except ValueError as exc:
+        raise LauncherError("Occurrence archive source is outside repository runs: " + str(directory)) from exc
+    if lexical_archive.parent != lexical_source.parent:
+        raise LauncherError("Occurrence archive target must have the same parent")
+    if archive.exists():
+        raise LauncherError("Occurrence archive target already exists: " + str(archive))
+    lexical_source.rename(lexical_archive)
+
+
+def archive_for_rerun(
+    manifest_path: Path,
+    manifest: dict,
+    repo: Path,
+    problem_id: str,
+    spec: dict,
+) -> Path:
+    directory = spec["directory"]
+    record = manifest["problems"][problem_id]["occurrences"][spec["kind"]]
+    attempts = ensure_attempts(record, problem_id, spec["kind"], manifest["active_source_version"])
+    archive = next_archive_directory(directory)
+    record["pending_archive"] = {
+        "directory": archive.relative_to(repo).as_posix(),
+        "fresh_source_version": manifest["active_source_version"],
+    }
+    manifest["updated_utc"] = utc_now()
+    write_json(manifest_path, manifest)
+    guarded_archive_move(repo, directory, archive)
+    old = attempts[-1]
+    old.update({
+        "directory": archive.relative_to(repo).as_posix(),
+        "status": "archived-failed",
+        "archived_utc": utc_now(),
+    })
+    number = max(int(attempt.get("attempt_number", 0)) for attempt in attempts) + 1
+    fresh = {
+        "attempt_number": number,
+        "occurrence_id": occurrence_identity(problem_id, spec["kind"], number),
+        "directory": directory.relative_to(repo).as_posix(),
+        "run_id": None,
+        "stop_reason": "not_started",
+        "returncode": None,
+        "source_version": manifest["active_source_version"],
+        "status": "active",
+        "updated_utc": utc_now(),
+    }
+    attempts.append(fresh)
+    record.pop("pending_archive", None)
+    record.update({
+        "directory": fresh["directory"],
+        "run_id": None,
+        "stop_reason": "not_started",
+        "returncode": None,
+        "last_action": "rerun-archived",
+        "updated_utc": fresh["updated_utc"],
+        "occurrence_id": fresh["occurrence_id"],
+        "source_version": fresh["source_version"],
+    })
+    manifest["updated_utc"] = fresh["updated_utc"]
+    write_json(manifest_path, manifest)
+    return archive
 
 def child_environment() -> dict[str, str]:
     child = os.environ.copy()
@@ -348,21 +610,62 @@ def run_occurrence(
     spec: dict,
     mode: str,
     env_file: Path | None,
+    rerun_mode: str | None,
 ) -> int:
     directory = spec["directory"]
     if directory.exists():
         verify_existing(repo, directory, problem_file, mode, spec["recipe"], spec["baseline"])
         stop, run_id = saved_status(directory)
-        if stop not in RESUMABLE_STOPS:
+        existing = (manifest.get("problems", {}).get(problem_id, {})
+                    .get("occurrences", {}).get(spec["kind"]))
+        attempt_source = (existing.get("source_version")
+                          if isinstance(existing, dict) else manifest["active_source_version"])
+        if (rerun_mode is None and stop in RESUMABLE_STOPS
+                and attempt_source != manifest["active_source_version"]):
+            raise LauncherError(
+                "Refusing to resume an occurrence under changed sources; use --rerun-failed: "
+                + str(directory)
+            )
+        if rerun_mode is not None:
+            if stop in GOOD_STOPS:
+                if rerun_mode == "specific":
+                    raise LauncherError("Refusing to rerun a good-stop occurrence: " + str(directory))
+                print(f"{problem_id} {spec['kind']}: skip good stop {stop} ({run_id})")
+                update_occurrence(manifest, repo, problem_id, spec, "skipped-good", stop, run_id, None)
+                write_json(manifest_path, manifest)
+                return 0
+            update_occurrence(manifest, repo, problem_id, spec, "rerun-archive-starting", stop, run_id, None)
+            write_json(manifest_path, manifest)
+            archive = archive_for_rerun(manifest_path, manifest, repo, problem_id, spec)
+            print(f"{problem_id} {spec['kind']}: archived {archive.relative_to(repo).as_posix()}")
+            stop, run_id = "not_started", None
+            action = "rerun"
+            resume = False
+        elif stop not in RESUMABLE_STOPS:
             print(f"{problem_id} {spec['kind']}: skip terminal {stop} ({run_id})")
             update_occurrence(manifest, repo, problem_id, spec, "skipped-terminal", stop, run_id, None)
             write_json(manifest_path, manifest)
             return 0 if stop in GOOD_STOPS else 2
-        action = "resume"
-        resume = True
+        else:
+            action = "resume"
+            resume = True
     else:
+        existing = (manifest.get("problems", {}).get(problem_id, {})
+                    .get("occurrences", {}).get(spec["kind"]))
+        attempts = existing.get("attempts") if isinstance(existing, dict) else None
+        recovered = (isinstance(attempts, list) and len(attempts) >= 2
+                     and attempts[-1].get("status") == "active"
+                     and attempts[-1].get("directory") == directory.relative_to(repo).as_posix()
+                     and attempts[-1].get("stop_reason") == "not_started")
+        if rerun_mode == "specific" and not recovered:
+            raise LauncherError("Selected rerun occurrence does not exist: " + str(directory))
         stop, run_id = "not_started", None
-        action = "run"
+        action = "rerun" if recovered else "run"
+        if recovered:
+            # No run directory or dispatch exists for this allocated attempt.
+            # Pin the implementation used now, even if code changed after rename.
+            existing["source_version"] = manifest["active_source_version"]
+            attempts[-1]["source_version"] = manifest["active_source_version"]
         resume = False
 
     update_occurrence(manifest, repo, problem_id, spec, action + "-starting", stop, run_id, None)
@@ -409,7 +712,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     repo = Path(__file__).resolve().parents[3]
     study = Path(__file__).resolve().parent
-    problems = normalized_problem_ids(args.problems)
+    selected_rerun = parse_rerun(args.rerun) if args.rerun else None
+    problems = ([selected_rerun[0]] if selected_rerun is not None
+                else normalized_problem_ids(args.problems))
     if args.mode == "live" and args.env_file is None:
         raise LauncherError("--env-file is required in live mode")
     manifest_root = args.run_root or repo / "runs" / ("R001-" + args.mode)
@@ -432,8 +737,12 @@ def main(argv: list[str] | None = None) -> int:
         manifest.setdefault("problem_pins", {})[problem_id] = problem_pin
         manifest["updated_utc"] = utc_now()
         write_json(manifest_path, manifest)
-        for kind in ("cross", "single"):
+        kinds = ((selected_rerun[1],) if selected_rerun is not None
+                 else ("cross", "single"))
+        for kind in kinds:
             spec = occurrence_spec(problem_id, kind, run_root)
+            rerun_mode = ("specific" if selected_rerun is not None
+                          else "failed" if args.rerun_failed else None)
             code = run_occurrence(
                 repo,
                 manifest_path,
@@ -443,6 +752,7 @@ def main(argv: list[str] | None = None) -> int:
                 spec,
                 args.mode,
                 args.env_file,
+                rerun_mode,
             )
             if code != 0:
                 result = 2

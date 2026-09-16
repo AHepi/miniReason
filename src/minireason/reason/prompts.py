@@ -28,11 +28,23 @@ for _role in ("critic", "use"):
     )
 
 
+CURRENT_CONTRACT = "public-working-v2"
+_V2_CONTRACTS = dict(_CONTRACTS)
+_V2_CONTRACTS["return"] = _CONTRACTS["return"].replace(
+    "Include exactly one disposition for EVERY supplied objection.",
+    "Include exactly one disposition for every NEW or still unresolved/open objection. "
+    "Earlier taken-up or rejected-with-reason objections are supplied with their recorded "
+    "dispositions for context and are carried automatically when omitted. You may explicitly "
+    "re-dispose any supplied known ID, but never invent, rename or duplicate an ID.")
+
+
 def _contracts(contract_version: str) -> dict[str, str]:
     if contract_version == "legacy-v1":
         return _LEGACY_CONTRACTS
     if contract_version == "public-working-v1":
         return _CONTRACTS
+    if contract_version == CURRENT_CONTRACT:
+        return _V2_CONTRACTS
     raise ReasonFailure("CONFIG_ERROR", "Unknown prompt contract version")
 
 
@@ -41,7 +53,7 @@ def _quote(label: str, text: str) -> str:
     return f"BEGIN {label} ({len(text)} characters)\n" + text + f"\nEND {label}"
 
 def render(role: str, problem: str, *, answer: str = "", objections=(), rival: str = "", history=(),
-           contract_version: str = "public-working-v1") -> list[dict[str, str]]:
+           contract_version: str = CURRENT_CONTRACT) -> list[dict[str, str]]:
     contracts = _contracts(contract_version)
     if role not in contracts:
         raise ReasonFailure("CONFIG_ERROR", "Unknown prompt role")
@@ -67,7 +79,7 @@ def render(role: str, problem: str, *, answer: str = "", objections=(), rival: s
     return [{"role": "system", "content": system}, {"role": "user", "content": "\n\n".join(parts)}]
 
 def repair(messages: list[dict[str, str]], content: str, role: str, *,
-           contract_version: str = "public-working-v1", failure_reason: str = "") -> list[dict[str, str]]:
+           contract_version: str = CURRENT_CONTRACT, failure_reason: str = "") -> list[dict[str, str]]:
     """Show the same contract and public output for one recorded schema repair."""
     contracts = _contracts(contract_version)
     if role not in contracts:
@@ -119,7 +131,9 @@ def _container_end(content: str, start: int) -> int:
             depth -= 1
             if depth == 0:
                 return index + 1
-    raise ValueError("Unclosed response container")
+    raise ReasonFailure("SCHEMA_FAILURE",
+                        f"JSON truncated at byte {len(content.encode('utf-8'))}: unclosed response container",
+                        {"json_truncated": True})
 
 
 def _first_object(content: str, *, strict: bool = False) -> dict[str, Any]:
@@ -135,10 +149,14 @@ def _first_object(content: str, *, strict: bool = False) -> dict[str, Any]:
         start = min(positions)
         try:
             value, end = decoder.raw_decode(content, start)
-        except ValueError:
-            # Ignore balanced brace notation in prose, but do not salvage a
-            # valid nested object from a malformed enclosing response.
-            offset = _container_end(content, start)
+        except json.JSONDecodeError as exc:
+            end = _container_end(content, start)
+            # Balanced prose brace notation remains skippable. A JSON-looking
+            # malformed object cannot be replaced opportunistically by a later one.
+            if content[start + 1:].lstrip().startswith('"'):
+                byte = len(content[:exc.pos].encode("utf-8"))
+                raise ReasonFailure("SCHEMA_FAILURE", f"JSON invalid at byte {byte}: {exc.msg}") from None
+            offset = end
             continue
         if isinstance(value, dict):
             return value
@@ -146,66 +164,98 @@ def _first_object(content: str, *, strict: bool = False) -> dict[str, Any]:
     raise ValueError("No top-level response object")
 
 
-def parse(role: str, content: str, *, objections=(),
-          contract_version: str = "public-working-v1") -> dict[str, Any]:
-    contracts = _contracts(contract_version)
-    legacy = contract_version == "legacy-v1"
-    def fail(reason: str = "Response does not satisfy the role contract") -> None:
-        raise ReasonFailure("SCHEMA_FAILURE", reason)
-    def text(value: Any) -> bool:
-        return isinstance(value, str) and bool(value.strip())
-    try:
-        data = _first_object(content, strict=legacy)
-    except (TypeError, ValueError):
-        fail()
-    if not isinstance(data, dict) or role not in contracts:
-        fail()
+def extra_keys(role: str, data: dict, contract_version: str = CURRENT_CONTRACT) -> list[str]:
+    required, optional = _keys(role, contract_version)
+    return sorted(set(data) - required - optional)
+
+
+def _keys(role, contract_version):
     required = ({"answer"} if role in {"conjecture", "baseline", "rival"} else
                 {"answer", "dispositions"} if role == "return" else
                 {"question", "problem_derivation", "working_derivation", "objections"} if role == "use" else
                 {"objections"})
     optional = set()
-    if not legacy:
+    if contract_version != "legacy-v1":
         if role in {"critic", "use", "return"}:
             optional.add("working")
         if role in {"conjecture", "baseline", "rival"}:
             optional.update({"assumptions", "uncertainties"})
-    if not required <= set(data) or set(data) - required - optional:
-        fail()
-    if "working" in data and not isinstance(data["working"], str):
+    return required, optional
+
+
+def parse(role: str, content: str, *, objections=(),
+          contract_version: str = CURRENT_CONTRACT) -> dict[str, Any]:
+    contracts = _contracts(contract_version)
+    legacy = contract_version == "legacy-v1"
+    flexible = contract_version == CURRENT_CONTRACT
+    def fail(reason: str) -> None:
+        raise ReasonFailure("SCHEMA_FAILURE", reason)
+    def text(value: Any) -> bool:
+        return isinstance(value, str) and bool(value.strip())
+    def keys(value, expected, label):
+        if not isinstance(value, dict):
+            fail(label + " must be an object")
+        if set(value) != expected:
+            fail(f"{label} key set {sorted(value)} expected {sorted(expected)}")
+    if role not in contracts:
+        fail("Unknown role: " + role)
+    try:
+        data = _first_object(content, strict=legacy)
+    except (TypeError, ValueError) as exc:
+        fail(str(exc))
+    required, optional = _keys(role, contract_version)
+    missing = sorted(required - set(data))
+    extras = extra_keys(role, data, contract_version)
+    if missing or (extras and not flexible):
+        fail(f"key set {sorted(data)} expected required {sorted(required)} optional {sorted(optional)}; "
+             f"missing keys {missing}; extra keys {extras}")
+    if "working" in optional and "working" in data and not isinstance(data["working"], str):
         fail("WORKING_NOT_TEXT: working must be a public explanation string")
     for key in ("assumptions", "uncertainties"):
-        if key in data:
+        if key in optional and key in data:
             value = data[key]
             if not (text(value) or isinstance(value, list) and value and all(text(item) for item in value)):
                 fail("ANSWER_SUPPLEMENT_NOT_TEXT: " + key + " must be text or a nonempty list of text")
     for key in ("answer", "question", "problem_derivation", "working_derivation"):
         if key in required and not text(data[key]):
-            fail()
+            fail(key + " must be a nonempty string")
     if "objections" in required:
         if not isinstance(data["objections"], list):
-            fail()
-        for objection in data["objections"]:
-            if not isinstance(objection, dict) or set(objection) != {"text", "defeats"} or not all(text(v) for v in objection.values()):
-                fail()
+            fail("objections must be a list")
+        for index, objection in enumerate(data["objections"]):
+            label = f"objections[{index}]"
+            keys(objection, {"text", "defeats"}, label)
+            for key in ("text", "defeats"):
+                if not text(objection[key]):
+                    fail(label + "." + key + " must be a nonempty string")
             if not legacy and len(objection["text"]) > 1200:
                 fail("OBJECTION_TEXT_TOO_LONG: final objection text exceeds 1200 characters; move public working into working")
     if role == "return":
         dispositions = data["dispositions"]
         if not isinstance(dispositions, list):
-            fail()
-        for disposition in dispositions:
-            if (not isinstance(disposition, dict) or set(disposition) != {"id", "status", "reason"}
-                    or not text(disposition["id"]) or not isinstance(disposition["status"], str)
-                    or disposition["status"] not in DISPOSITIONS
-                    or not text(disposition["reason"])):
-                fail()
+            fail("dispositions must be a list")
+        for index, disposition in enumerate(dispositions):
+            label = f"dispositions[{index}]"
+            keys(disposition, {"id", "status", "reason"}, label)
+            if not text(disposition["id"]):
+                fail(label + ".id must be a nonempty string")
+            if not isinstance(disposition["status"], str) or disposition["status"] not in DISPOSITIONS:
+                fail(f"{label} id {disposition['id']!r}: invalid status {disposition['status']!r}; expected {sorted(DISPOSITIONS)}")
+            if not text(disposition["reason"]):
+                fail(f"{label} id {disposition['id']!r}: reason must be a nonempty string")
         ids = [d["id"] for d in dispositions]
-        wanted = [o["id"] for o in objections]
-        if len(ids) != len(set(ids)) or set(ids) != set(wanted) or len(wanted) != len(set(wanted)):
-            fail()
-    # Preserve supplemental public statements both in the parsed record and in
-    # the answer that is rendered and delivered. Raw provider content is unchanged.
+        known = [o["id"] for o in objections]
+        wanted = [o["id"] for o in objections if not flexible or
+                  o.get("status") not in {"taken-up", "rejected-with-reason"}]
+        duplicates = sorted({ident for ident in ids if ids.count(ident) > 1})
+        duplicate_input = sorted({ident for ident in known if known.count(ident) > 1})
+        missing_ids = sorted(set(wanted) - set(ids))
+        unknown = sorted(set(ids) - set(known))
+        if duplicates or duplicate_input or missing_ids or unknown:
+            fail(f"dispositions missing for ids {missing_ids}; extra ids {unknown}; "
+                 f"duplicate ids {duplicates}; duplicate supplied ids {duplicate_input}")
+    # Preserve every extra field in parsed evidence, with names separately
+    # recorded in the call outcome. Required fields are always validated first.
     if not legacy and role in {"conjecture", "baseline", "rival"}:
         for key in ("assumptions", "uncertainties"):
             if key in data:

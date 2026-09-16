@@ -852,3 +852,25 @@ Both review13 deliveries are APPROVED-AS-CORRECTED and selected for the requeste
 ### REC-20260916-E/F verified delivery - 2026-09-16T10:04:33.829461+00:00
 
 Published the 55 reviewed paths on claude/project-state-direction-j5rbun at 3c642cbd67086e40336c87e3d83dcc936ffe16b8, tree 4dead437407523d068b2892518e98a1f41dce03d. Non-forced push, fresh fetch, ls-remote and exact local/remote commit/tree equality passed at 2026-09-16T10:03:30Z. Both deliveries were APPROVED-AS-CORRECTED: E is completed engineering with supporting-host qualification outstanding; F is staged, live run pending. Separate acknowledgement publication is being finalized and verified in the publisher handoff. No provider calls, secret reads or merge to main. Next task remains the separate owner-directed live operator/qualification and later cross-lineage reading; none runs in this publication task.
+
+
+### Owner-requested mirror sync completed - 2026-09-16T10:13:16.345139+00:00
+
+The git-less miniReason-claude-project-state-direction-j5rbun Desktop mirror now matches every tracked blob at fetched published branch commit d80b1d5d4036b8b8912e21b47ac169bda4bd1875 (tree 6dfa939e901355fea7987f7d50269028ecdf92bc). Total verified 9,347; SHA-256 mismatches 0. Created 49, updated 6, unchanged 9,292. No non-exempt leftovers; exempt local files preserved. Receipt: SYNC-RECEIPT-2026-09-16e.md in the mirror. No provider calls or publication; next action only on a new owner sync request or concrete mismatch.
+
+
+### REC-20260916-F W16 offline corrective engineering - 2026-09-16T10:49:50.555875+00:00
+
+R001 live stopped after three problems: P01/P02/P03 cross and P02-single failed SCHEMA_FAILURE; P01-single completed no_new_objections after one cycle; P03-single is interrupted at c0001-use/a00 with four intents/three outcomes and zero completed cycles. Exact replay finds resolved historical IDs rejected against an empty supplied-ID set, plus extra top-level type in two repairs; all eight finish_reason values are stop, no truncation. New public-working-v2 and detailed error reporting are implemented; launcher preserved-attempt reruns and final offline validation are pending. All original evidence remains unchanged. Next authorized task is finish offline tests/docs/checklist; future owner relaunch will archive failed evidence and allocate new occurrences with versioned source pins. No provider/model calls, .env reads or Git mutations in this fix-up. Existing mirror-sync status above is preserved.
+
+
+### REC-20260916-F W16 completed local fix-up - 2026-09-16T11:02:57.815604+00:00
+
+Offline fix-up completed and root-reviewed. Exact original-parser replay attributes six failed returns to extra known resolved IDs and two repair returns first to extra type (with the same latent ID mismatch); supplied-ID count is zero for all eight, finish_reason stop throughout. New public-working-v2 requires only new/open dispositions, validates optional known re-dispositions, carries omitted resolved status/reason with explicit history, retains valid top-level extras and propagates precise schema errors through repair/TRACE/RUN/CLI. Demonstrated truncation uses existing ceiling recovery. Launcher v2 archives failed/interrupted attempts byte-for-byte and records fresh identities/source snapshots via --rerun-failed or --rerun PNN:OCC, including unmatched-intent and archive-boundary recovery.
+
+Final required tests: reason discovery 148 tests in 43.222s OK; docs pins 26 tests in 0.018s OK; real offline P01 initial/bulk failed+interrupted rerun/targeted rerun all exit 0 with equal archive hashes. All 353 original R001 files and all 33 sealed task hashes remain unchanged; HEAD/branch/index unchanged, diff check clean. Work/w16 contains DIAGNOSIS, TESTS, RELAUNCH, INDEX, exact PUBLISH-CHECKLIST and errata/lessons. No provider/model call, actual .env read, Git mutation or publication occurred. Next operator action is the documented future live relaunch using --mode live --env-file .env --run-root runs/r001-live --rerun-failed; it archives P01-cross first, skips good P01-single, separately reruns the other failures/interruption, then starts untouched P04-P08. Cross baselines repeat as new observations. Reopen engineering for a concrete custody/parser defect or failed offline check; no reasoning improvement or inquiry exhaustion is claimed.
+
+
+### REC-20260916-F corrective publication underway - 2026-09-16T11:09:47.435503+00:00
+
+State: corrected; live rerun in progress (owner-reported). The W16 corrective checklist contains 22 exact paths; publication to claude/project-state-direction-j5rbun is underway, with a separate verified-commit/tree acknowledgement to follow. Prior offline completion receipts remain unchanged. The concurrent live operator owns runs/ and study continuation; this publisher does not inspect or change live evidence, start provider calls or merge to main. Next publisher action is verify both non-forced branch pushes and a clean final index/worktree.

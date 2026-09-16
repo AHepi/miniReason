@@ -56,7 +56,7 @@ def create_run(problem, cycles, recipe="cross-family", out=None, mode="offline",
         "created_epoch": time.time(), "mode": mode, "cycles": cycles,
         "baseline": baseline, "retry_transport": retry_transport,
         "resilience_policy": RESILIENCE_POLICY,
-        "prompt_contract": "public-working-v1",
+        "prompt_contract": prompts.CURRENT_CONTRACT,
         "closing_return": loaded["data"].get("closing_return", False),
         "recipe_sha256": loaded["sha256"], "problem_sha256": sha(problem),
         "endpoints_sha256": endpoints["sha256"], "claim_ceiling": CLAIM})
@@ -143,7 +143,7 @@ def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
                     if exc.code == "INTERRUPTED_CALL":
                         raise
                     saved = {"epoch": time.time(), "status": _code(exc),
-                             "detail": "Recovered provider failure.", "record": exc.record}
+                             "detail": exc.detail, "record": exc.record}
                     save_outcome(response_path, saved)
                     result = None
             else:
@@ -166,24 +166,33 @@ def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
                                     "ceiling_fallback": ceiling_fallback}, scripted=fixture)
                 except ReasonFailure as exc:
                     saved = {"epoch": time.time(), "status": _code(exc),
-                             "detail": "Provider attempt stopped; inspect provider evidence.", "record": exc.record}
+                             "detail": exc.detail, "record": exc.record}
                     save_outcome(response_path, saved)
                     result = None
             if result is not None:
                 try:
                     parsed = prompts.parse(role, result["content"], objections=objections,
                                            contract_version=contract)
-                    saved = {"epoch": time.time(), "status": "COMPLETE", "result": result, "parsed": parsed}
+                    saved = {"epoch": time.time(), "status": "COMPLETE", "result": result, "parsed": parsed,
+                             "extra_keys": prompts.extra_keys(role, parsed, contract)}
                 except (ReasonFailure, ValueError, TypeError, KeyError) as exc:
-                    saved = {"epoch": time.time(), "status": "SCHEMA_FAILURE", "result": result,
-                             "detail": str(exc) if isinstance(exc, ReasonFailure) else "ROLE_CONTRACT_INVALID"}
+                    detail = exc.detail if isinstance(exc, ReasonFailure) else "ROLE_CONTRACT_INVALID: " + type(exc).__name__
+                    record = result.get("record", {})
+                    usage = result.get("usage") or {}
+                    at_ceiling = (isinstance(usage.get("completion_tokens"), (int, float))
+                                  and usage["completion_tokens"] >= cap)
+                    truncated = isinstance(exc, ReasonFailure) and exc.record.get("json_truncated")
+                    ceiling = (record.get("finish_reason") in {"length", "max_tokens"}
+                               or (truncated and at_ceiling))
+                    saved = {"epoch": time.time(), "status": "CEILING_HIT" if ceiling else "SCHEMA_FAILURE",
+                             "result": result, "detail": detail + ("; completion ceiling reached" if ceiling else "")}
                 save_outcome(response_path, saved)
             if after_call is not None:
                 after_call(call_id, saved)
         if saved["status"] == "COMPLETE":
             return saved["parsed"]
         if ceiling_fallback:
-            raise ReasonFailure(saved["status"], "Recorded ceiling fallback did not complete")
+            raise ReasonFailure(saved["status"], saved.get("detail", "Recorded ceiling fallback did not complete"))
         if (resilient and saved["status"] == "CEILING_HIT"
                 and role != "baseline" and native == "native"):
             native = "off"
@@ -197,7 +206,7 @@ def _call(directory, adapter, cfg, recipe, role, seat, call_id, cycle,
               and transport_retries < cfg["retry_transport"]):
             transport_retries += 1
         else:
-            raise ReasonFailure(saved["status"], "Recorded call did not complete")
+            raise ReasonFailure(saved["status"], saved.get("detail", "Recorded call did not complete"))
         attempt += 1
 
 
@@ -211,6 +220,28 @@ def _new_objections(items, prefix, cycle, source, all_objections):
         all_objections.append(obj)
         added.append(obj)
     return added
+
+
+def _apply_dispositions(objections, dispositions, cycle, *, carry=False, phase=None):
+    explicit = {d["id"]: d for d in dispositions}
+    entries = []
+    for obj in objections:
+        disposition = explicit.get(obj["id"])
+        if disposition is None:
+            if not carry:
+                continue
+            # The parser already required every open objection. Retain both
+            # original status and reason rather than inventing a new decision.
+            disposition = {"id": obj["id"], "status": obj["status"],
+                           "reason": obj["reason"], "carried": True}
+        else:
+            obj.update(status=disposition["status"], reason=disposition["reason"])
+        entry = {"cycle": cycle, **disposition}
+        if phase:
+            entry["phase"] = phase
+        obj["history"].append(entry)
+        entries.append(dict(disposition))
+    return entries
 
 
 def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
@@ -235,7 +266,8 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
         trace += obj["text"] + "\n\nWould defeat: " + obj["defeats"] + "\n\n"
         for entry in obj["history"]:
             phase = " closing return" if entry.get("phase") == "closing_return" else ""
-            trace += f"Cycle {entry['cycle']}{phase}: **{entry['status']}** - {entry['reason']}\n\n"
+            carried = " (carried)" if entry.get("carried") else ""
+            trace += f"Cycle {entry['cycle']}{phase}: **{entry['status']}**{carried} - {entry['reason']}\n\n"
         trace += f"Current disposition: **{obj['status']}** - {obj['reason']}\n\n"
     if not objections:
         trace += "No objection has been recorded. This does not establish correctness.\n"
@@ -277,6 +309,7 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
     controls = []
     usage = []
     cycle_working = {}
+    diagnostics = []
     for path in attempts:
         intent = None
         if (path / "request.json").exists():
@@ -298,6 +331,9 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
                 item = get(path / "response.json")
             except ReasonFailure:
                 item = {"status": "RUN_INTEGRITY_ERROR"}
+            if item.get("detail") or item.get("extra_keys"):
+                diagnostics.append({"call": str(path.relative_to(directory)), "status": item["status"],
+                                    "detail": item.get("detail", ""), "extra_keys": item.get("extra_keys", [])})
             working = item.get("parsed", {}).get("working")
             if intent and intent["cycle"] and working:
                 cycle_working.setdefault(intent["cycle"], []).append(
@@ -317,6 +353,14 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
         for item in unavailable:
             trace += (f"Cycle {item['cycle']}, {item['call_id']} ({item['seat']}): "
                       f"{item['role']} unavailable: {item['code']}\n\n")
+    diagnostic_text = ""
+    if diagnostics:
+        diagnostic_text = "\n## Attempt diagnostics\n\n" + "\n".join(
+            f"{item['call']}: {item['status']}: {item['detail']}; extra keys {item['extra_keys']}\n"
+            for item in diagnostics)
+        trace += diagnostic_text
+    if state.get("stop_detail"):
+        trace += "\nStop detail: " + state["stop_detail"] + "\n"
     write(directory / "TRACE.md", trace, replace=True)
     run = ("# Personal reasoning run\n\n" + banner + CLAIM + "\n\n" +
            f"Run ID: `{cfg['run_id']}`\n\nRecipe: `{recipe['name']}`; SHA-256 `{cfg['recipe_sha256']}`.\n\n" +
@@ -353,6 +397,9 @@ def _reports(directory, cfg, recipe, state, answer, objections, cycle_notes):
            "Custody checker: minireason.reason.prompts.parse (first JSON object with validated role fields); semantic use checker: the declared use seat. " +
            "JSON validation checks custody fields only and does not decide the legitimacy of prose criticism.\n\n" +
            "Reported usage by attempt (null means unknown):\n\n```json\n" + json.dumps(usage, indent=2) + "\n```\n")
+    run += diagnostic_text
+    if state.get("stop_detail"):
+        run += "\nStop detail: " + state["stop_detail"] + "\n"
     write(directory / "RUN.md", run, replace=True)
     for number in sorted(set(cycle_notes) | set(cycle_working) | {item["cycle"] for item in unavailable}):
         note = cycle_notes.get(number, f"# Cycle {number} incomplete\n\n")
@@ -376,11 +423,12 @@ def execute(run_dir, *, scripted=None, after_call=None):
         answer, objections, history, cycle_notes = "", [], [], {}
         cycle = 0
         optional_recovery = cfg.get("resilience_policy") == RESILIENCE_POLICY
+        carry = cfg.get("prompt_contract") == prompts.CURRENT_CONTRACT
 
         def record_unavailable(role, seat, cid, error):
             state.setdefault("unavailable_seats", []).append({
                 "cycle": cycle, "call_id": cid, "role": role,
-                "seat": config.seat_name(seat), "code": error.code})
+                "seat": config.seat_name(seat), "code": error.code, "detail": error.detail})
 
         def call(role, seat, cid, current=0, pending=(), rival="", native=None):
             if native is None:
@@ -438,14 +486,10 @@ def execute(run_dir, *, scripted=None, after_call=None):
                     new_critic.extend(_new_objections(result["objections"], cid, cycle, seat, objections))
                 if not returned_critics:
                     raise last_critic_failure
-                pending = [o for o in objections if o["status"] == "unresolved"]
+                pending = list(objections) if carry else [o for o in objections if o["status"] == "unresolved"]
                 result = call("return", seats["conjecture"], prefix + "-return", cycle, pending, rival)
                 answer = result["answer"]
-                lookup = {o["id"]: o for o in pending}
-                for disposition in result["dispositions"]:
-                    obj = lookup[disposition["id"]]
-                    obj.update(status=disposition["status"], reason=disposition["reason"])
-                    obj["history"].append({"cycle": cycle, **disposition})
+                cycle_dispositions = _apply_dispositions(pending, result["dispositions"], cycle, carry=carry)
                 try:
                     used = call("use", seats["use"], prefix + "-use", cycle, objections)
                 except ReasonFailure as exc:
@@ -462,7 +506,7 @@ def execute(run_dir, *, scripted=None, after_call=None):
                         obj["history"].append({"cycle": cycle, "status": obj["status"],
                                                "reason": "Carried disposition: " + obj["reason"]})
                 history.append({"cycle": cycle, "answer": answer,
-                                "dispositions": result["dispositions"],
+                                "dispositions": cycle_dispositions if carry else result["dispositions"],
                                 "use": {k: v for k, v in used.items() if k != "working"},
                                 "objections": [{k: o[k] for k in ("id", "text", "defeats", "status", "reason")} for o in objections]})
                 state["completed_cycles"] = cycle
@@ -474,7 +518,7 @@ def execute(run_dir, *, scripted=None, after_call=None):
                 cycle_notes[cycle] = (f"# Cycle {cycle}\n\nWorking answer after return:\n\n{answer}\n\n" +
                     use_note +
                     "Dispositions and new use objections:\n\n```json\n" +
-                    json.dumps({"dispositions": result["dispositions"], "use_objections": new_use}, ensure_ascii=False, indent=2) +
+                    json.dumps({"dispositions": cycle_dispositions, "use_objections": new_use}, ensure_ascii=False, indent=2) +
                     "\n```\n\nExact requests and responses: ../../calls/" + prefix + "-*\n")
                 if (returned_critics == len(seats["critics"]) and "unavailable" not in used
                         and not new_critic and not new_use
@@ -487,28 +531,26 @@ def execute(run_dir, *, scripted=None, after_call=None):
             if (state["stop_reason"] == "cycle_budget" and cfg.get("closing_return", False)
                     and any(o["status"] == "unresolved" and "-use-o" in o["id"] for o in objections)):
                 state["closing_return"] = "pending"
-                pending = [o for o in objections if o["status"] == "unresolved"]
+                pending = list(objections) if carry else [o for o in objections if o["status"] == "unresolved"]
                 closed = call("return", seats["conjecture"], f"c{cycle:04d}-closing-return",
                               cycle, pending)
                 answer = closed["answer"]
-                lookup = {o["id"]: o for o in pending}
-                for disposition in closed["dispositions"]:
-                    obj = lookup[disposition["id"]]
-                    obj.update(status=disposition["status"], reason=disposition["reason"])
-                    obj["history"].append({"cycle": cycle, "phase": "closing_return", **disposition})
+                closing_dispositions = _apply_dispositions(
+                    pending, closed["dispositions"], cycle, carry=carry, phase="closing_return")
                 state["closing_return"] = "complete"
                 cycle_notes[cycle] += ("\n## Closing return\n\nWorking answer after final disposition:\n\n" +
                     answer + "\n\n" +
                     "Final dispositions:\n\n" + chr(96) * 3 + "json\n" +
-                    json.dumps(closed["dispositions"], ensure_ascii=False, indent=2) + "\n" + chr(96) * 3 + "\n")
+                    json.dumps(closing_dispositions, ensure_ascii=False, indent=2) + "\n" + chr(96) * 3 + "\n")
         except ReasonFailure as exc:
             state["stop_reason"] = _code(exc)
             state["failed_cycle"] = cycle
+            state["stop_detail"] = exc.detail
             if state.get("closing_return") == "pending":
                 state["closing_return"] = "failed: " + state["stop_reason"]
-                cycle_notes[cycle] += f"\nClosing return failed: {state['stop_reason']}; open objections remain.\n"
+                cycle_notes[cycle] += f"\nClosing return failed: {state['stop_reason']}: {exc.detail}; open objections remain.\n"
             elif cycle:
-                cycle_notes[cycle] = f"# Cycle {cycle} stopped\n\nReason: `{state['stop_reason']}`. Partial call evidence is retained in calls/.\n"
+                cycle_notes[cycle] = f"# Cycle {cycle} stopped\n\nReason: `{state['stop_reason']}`: {exc.detail}. Partial call evidence is retained in calls/.\n"
         except (KeyboardInterrupt, SystemExit):
             state["stop_reason"] = "interrupted"
             _reports(directory, cfg, recipe, state, answer, objections, cycle_notes)

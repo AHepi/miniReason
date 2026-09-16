@@ -112,10 +112,10 @@ def main(argv=None):
         else:
             result = status(args.run)
         print(json.dumps({key: result[key] for key in
-                         ("run_id", "stop_reason", "completed_cycles", "calls")}, ensure_ascii=False))
+                         ("run_id", "stop_reason", "completed_cycles", "calls", "stop_detail") if key in result}, ensure_ascii=False))
         return 0 if args.command == "status" or result["stop_reason"] in GOOD_STOPS else 2
     except ReasonFailure as exc:
-        print(exc.code, file=sys.stderr)
+        print(str(exc) if exc.code == "SCHEMA_FAILURE" else exc.code, file=sys.stderr)
         return 2
     except (ValueError, OSError, RuntimeError) as exc:
         # Never print problem, response, environment values or raw transport exceptions.

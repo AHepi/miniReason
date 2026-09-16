@@ -79,9 +79,10 @@ def _normalise(record: dict, records_dir: Path) -> dict:
               "request_path": str(records_dir / "call-0001.request.json"),
               "response_path": str(records_dir / "call-0001.response.json"),
               "finished_epoch": record.get("recorded_epoch", time.time())}
+    if code in {"COMPLETE", "INCOMPLETE_GENERATION"} and record.get("finish_reason") in {"length", "max_tokens"}:
+        raise ReasonFailure("CEILING_HIT", "Provider finish_reason=" + record["finish_reason"], result)
     if code != "COMPLETE":
-        mapped = "CEILING_HIT" if code == "INCOMPLETE_GENERATION" and record.get("finish_reason") in {"length", "max_tokens"} else code
-        raise ReasonFailure(mapped, "Provider call stopped; inspect its recorded public evidence", result)
+        raise ReasonFailure(code, "Provider call stopped; inspect its recorded public evidence", result)
     return result
 
 def recover(records_dir: str | Path) -> dict | None:
