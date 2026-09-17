@@ -1033,3 +1033,6 @@ Verification:16/16offline custody/lifecycle checks and14static checks pass; actu
 
 
 REC-20260917-A root-publisher - 2026-09-17T04:07:47Z: A2 published; occurrence-002 authorised. Verified commit 0ba1b443634069cfff1f375c82f91b3db6f25e48, tree 032a7c7b6df09480b2389402abdf1a31e7511d35, 16 paths on origin/claude/project-state-direction-j5rbun. No provider call or main merge. Next publisher task: finish A2 acknowledgement, then publish approved R003 draft and its acknowledgement. Occurrence-002 remains unlaunched.
+
+
+REC-20260917-B root-publisher - 2026-09-17T04:09:45Z: draft published; sealed briefs and instrument engineering pending. Verified commit 200f873b9553803f72d610757ec43640fb747de0, tree 1015e34216d04fdafd9563314f07c6ea922eb0a7, 31 paths on origin/claude/project-state-direction-j5rbun. No provider call or main merge. R003 remains a draft with live readiness NO; next authorized project work is independent sealed briefs and bounded instrument engineering/qualification, outside this publisher task. Publisher stops after final remote verification and clean status; reopen for a concrete publication mismatch. Final acknowledgement verification outputs are preserved under ignored work/publisher-20260917 and reported externally to avoid a self-referential tracked receipt loop.
