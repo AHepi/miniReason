@@ -699,3 +699,103 @@ C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 too
 ```
 
 24occurrences,104scripted calls, all104 exact transport/preflight hashes and byte lengths verified. Non-DeepSeek reserves2048 tokens; every summed bound<=32768. Actual built-in decomposed fixture ends initial_cannot_decide, honestly; the separate corrected-descriptor fixture completes13calls/3steps/3objection bases+3use supplements and synthesis. Input-overflow child exits2/PROMPT_TOKEN_CAP,0calls,no intent/no send. Detailed evidence in OFFLINE-MAIN-VERIFICATION.json, INPUT-OVERFLOW-PROOF.json and DECOMPOSED-BOUND-PROOF.json.
+
+
+## W24 A2 offline validation - 2026-09-17T03:22:30.937172+00:00
+
+REC-20260917-A. A2 was registered AFTER occurrence001 dispatch, explicitly declared as a deviation and scoped only to occurrence002. No provider/model call, .env read, Git mutation or runs edit occurred. The source failed occurrences remain unchanged.
+
+Actual corrected test command:
+
+```text
+C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 work/w24/run_offline_tests_v2.py r002-final-v3
+```
+
+Actual summary:
+
+```json
+{
+  "started_utc": "2026-09-17T03:17:55.504677+00:00",
+  "finished_utc": "2026-09-17T03:18:43.070077+00:00",
+  "pattern": "test_r002*.py",
+  "tests": 120,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "successful": true,
+  "network_or_dotenv_blocks": [],
+  "provider_calls": 0
+}
+```
+
+This includes one repair after prose, second-failure stop, CEILING_HIT no repair, same-seat/ceiling and format=json wires, full-output preflight refusal, recovery without resend, successful/failed repair reporting, v2 selection, wrong occurrence/phase/admission refusal, predecessor preservation, and durable A2-only receipt/identity. Native JSON mode was already wired, not newly added.
+
+Actual launcher command (offline fixture into C:/tw24; no credential path):
+
+```text
+C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:\tw24\occ2-main-v2 --occurrence 2 --amendment-a2 --problems C05 C06 C09 C12 --admission-receipt C:\Dev\miniReason\experiments\diagnostics\R002-episodes-under-calibrated-difficulty\calibration\admission.json --tokenizer-pins C:\Dev\miniReason\experiments\diagnostics\R002-episodes-under-calibrated-difficulty\calibration\main-tokenizer-pins.json --capability C:\Dev\miniReason\work\w24\r002-capability-A2.json
+```
+
+Actual launcher stdout:
+
+```text
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+```
+
+Exit code0; stderr empty. Verified exactly4cases C05/C06/C09/C12, only LOOP-DECOMPOSED v2. Each built-in fixture truthfully stops initial_cannot_decide after1call/1attempt/0cycles; the launcher returns COMPLETE for these terminal fixture records. This is structural selection evidence, not a model completion or a cycle-reach observation. All4 exact prepared/provider/preflight wire hashes,4manifested trees (37files each), phase receipt hash and205source hashes match. Durable phase budget now equals the A2 projection:52logical/104attempts maximum,2752512completion/3407872input/6160384combined,31200summedwallseconds. Each arm ID explicitly contains main-occurrence-002. Details: work/w24/occ2-verified-v2.json.
+
+Separate actual-bound structural fixture, `work/w24/full_a2_proof.py`:13logicalcalls/26attempts,3completedsteps and synthesis, all26wire hashes equal, sum of per-attempt completion ceilings688128. Every logical call consumed its one repair; known usage is fixture usage only. Source: work/w24/full-a2-proof.json. This does not establish semantic preservation of prose or a live advantage.
+
+Exact repair input checks on preserved public prose:
+
+| Case | Repair wire bytes | Conservative count | Result |
+|---|---:|---:|---|
+| C05 |43975|46023|PROMPT_TOKEN_CAP before a01 intent|
+| C06 |48729|50777|PROMPT_TOKEN_CAP before a01 intent|
+| C12 |25927|27975|accepted|
+
+C09 remains a CEILING_HIT, ineligible for repair. **A2 cannot be claimed to recover repeated saved C05/C06 full prose under the unchanged input bound.** No truncation or weaker counter was used. Separate judgment must retain this concrete limit.
+
+Preserved failed/partial verification: the first helper ran77tests with10import errors because its script sys.path omitted the repo root; corrected helper subsequently passed118tests. First offline occurrence002 root C:/tw24/occ2-main correctly selected4arms and preserved wires but recorded the old six-arm budget in phase receipt; root detected and corrected the launcher, added2tests, and created fresh occ2-main-v2. Neither prior output was overwritten. An auxiliary nested-shell parser command lost quotes before parsing the target; standalone parser passed without executing the live launch. Details in work/w24/ERRATA.md. These are instrument/verification findings, not provider observations.
+
+
+## Independent judge final A2 verification - 2026-09-17T03:44:22.082458+00:00
+
+REC-20260917-A root-review24. Corrected source/recipe is frozen at v2 SHA256 `0ea36902417fa00bbf85ac98b10a0b4bd0b94319a3807235b924e14fa654bf01`, with Qwen replacing only cycle2 GLM. No provider/model call or .env read. Environment: Python `C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe`, PYTHONPATH=src;tests, PYTHONUTF8=1, PYTHONIOENCODING=utf-8, TMP=C:/tr24. The unittest processes additionally load the review-only guard and direct all fixture outputs to temporary/review paths.
+
+Exact required commands and result tails (complete transcripts under work/review24/tests):
+
+```text
+C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe -m unittest discover -s tests/reason -t .
+...............................................................CONFIG_ERROR
+...............................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 270 tests in 93.048s
+
+OK
+
+C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe -m unittest tests.loop.test_docs_pins
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.018s
+
+OK
+```
+
+Final focused A2 suite6/6 passed, including prose->repair->parse, a second schema failure stops with no a02, native Ollama format=json, step2 Qwen same-seat repair, strict CEILING_HIT no repair, selection and preservation. Final required suites exited0 with no guard block and unchanged source/recipe hashes. Earlier failed review-only guard runs are preserved and diagnosed under work/review24/tests; they are not production failures or omitted successes. One guard self-probe unintentionally initialized then removed an isolated C:/tr24 temporary Git directory; root records that read-only-git violation honestly. Target checkout HEAD/branch/index were unchanged, with final audit recorded separately.
+
+Actual offline occurrence-002 command:
+
+```powershell
+& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:/tr24/occ2-judge --occurrence 2 --amendment-a2 --problems C05 C06 C09 C12 --admission-receipt experiments/diagnostics/R002-episodes-under-calibrated-difficulty/calibration/admission.json --tokenizer-pins experiments/diagnostics/R002-episodes-under-calibrated-difficulty/calibration/main-tokenizer-pins.json --capability work/review24/r002-capability-A2.json
+```
+
+```json
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+```
+
+Exit0, empty stderr. All four cases select only LOOP-DECOMPOSED v2 and occurrence-scoped main-occurrence-002 IDs. All148manifested files match. Durable budget104attempts/2752512completion equals the generated A2 projection. The default fixture deliberately returns initial_cannot_decide:1call and0cycles each; this proves launcher selection, not model step reach. An actual occurrence1 identity probe exits2 with `A2 is restricted to main occurrence-002`, preserving its temporary sentinel. Duplicate002 exits2 with `Existing occurrence is preserved`, and phase evidence is unchanged.
+
+A separate real-bound scripted proof reaches3cycles,13logicalcalls,26attempts,688128summed completion allowances; all26prepared/provider/preflight wire hashes match. Every critic is Qwen. Rendered step2 a00 SHA256 `abe92c2a7b34c94289660bd497e74e77728eed19e6f0e08166d4018edd386f44`, a01 `911f99a24ae284c465f54839cf620deb28fa5a26aa362618a2e919681dd9792b`; both carry `model:qwen3.5:397b`, `format:json`, `think:false`, `options.num_predict:32768`. Second failure at step2 stops at6logical/7attempts with no a02; ceiling stops6/6 with no a01. Files and reproducer: work/review24/route-proof.
+
+Pure live-mode input preflight, without any live Adapter.call, accepts a fresh74-byte public-output repair at7007counted and rejects40000bytes at46936 with PROMPT_TOKEN_CAP, untruncated. The live path is subject to the bound too; occurrence001 outputs are never replayed. The complete detached script work/review24/OCC2-LAUNCH.ps1 parses without execution and its exact argv binds main002/A2/the four cases. Its generated capability validates current recipe/schema pins; WORKER capability is superseded by work/review24/r002-capability-A2.json for this launch. Live credential availability is untested under the no-.env-read mandate. This is launch engineering readiness after publication, not a forecast of successful reasoning.

@@ -115,3 +115,23 @@ Corrected the new DECOMPOSED-A1.md PLAN link to the stable document path. Final 
 ## Review22 corrections - 2026-09-17T01:29:06.764286+00:00
 
 Conservative bound: zero template reserve on all routes -> explicit2048 reserve for every non-DeepSeek route; exact wire bytes remain distinct from upper-bound counted_tokens. Descriptor validates policy and cites primary ByteLevel/BPE and public template sources; no tokenizer hashes invented. Runtime supports strict C:/tr22 descendants for required offline judge launch. Existing five conditions' prompts/recipes and A1 scientific schedule are unchanged. Tests added in tests/reason/test_r002_review22.py. PLAN receives an append-only qualification/hidden-reasoning supplement; all old text and observations remain. Details and old->new evidence: work/review22/CORRECTIONS.md.
+
+
+## W24 amendment A2 registration - 2026-09-17T02:58:10.902592+00:00
+
+Appended PLAN A2 after occurrence001 dispatch, explicitly declaring that deviation and scoping it only to occurrence002. Corrected preliminary Qwen attribution: sixth call is GLM off16384; native format=json was already sent. Registered one schema repair per logical call, critic32768, unchanged strict CEILING_HIT, separate26attempt/688128completion maximum and four-case decomposed-only launcher. Original PLAN/A1/recipes/observations remain unchanged. Engineering implementation and offline verification are pending; no provider call, .env read, Git mutation or publication.
+
+
+## W24 engine completion and input qualification - 2026-09-17T03:16:38.938441+00:00
+
+Added pinned r002-decomposed-v2 recipe, SHA256 eaf2084901503877170a88a2d4f762fea6813360088b87f0202d2df6ed40b315; config pin, distinct A2 capability schedule, one a01 schema repair in R002 engine, critic32768, all-attempt report accounting and successful/failed repair separation. Original recipe/schema/provider/adapter bytes unchanged. Launcher adds A2-only selection/occurrence guard and strict C:/tw24 descendants; durable receipt budget/identity correction is in progress after root actual-run review, with first offline output preserved. New/extended regression tests cover repair parse, second failure, ceiling no-repair, full-output input refusal, recovery custody, wire format and selection. Root118R002tests pass;26attempt actual-bound structural proof and exact C05/C06 refusal/C12acceptance are recorded. Appended PLAN A2 qualification and DECOMPOSED-A2 page explicitly retain the full-prose readiness limit. No provider call, .env read, Git mutation or runs edit.
+
+
+## W24 final A2 validation and handoff - 2026-09-17T03:22:30.937172+00:00
+
+Root corrected the durable phase receipt to carry A2-only budget/conditions and main-occurrence-002 arm IDs; legacy phase budgets/IDs remain unchanged. Final120/120R002tests and corrected actual occurrence002 offline run pass.4exact wires,148manifested files,phase receipt and205source hashes verify; default fixture remains explicit initial_cannot_decide. Separate26attempt/3stepactual-bound proof and real-prose input limits are retained. Regenerated work/w24/r002-capability-A2.json uses actual recipe/schema pins and separate A2 schedule; unchanged adapter/provider retains the existing bound descriptor. Complete detached launch script parsed successfully but was not executed. Append-only STATUS/VALIDATION/ledger/activity and work/w24 index/checklist/report prepared for separate judge and publisher. Original PLAN/A1 prefixes,recipes/contracts,1155live records,HEAD/branch/index unchanged; final custody audit follows. Concurrent R003 work is outside this delivery and retained. No provider/.env/Git/runs action.
+
+
+## Independent judge corrections - 2026-09-17T03:38:40.376642+00:00
+
+REC-20260917-A root-review24. C01 allows strict descendants of C:/tr24 for the requested offline judge run, with sibling/traversal refusal regression. C02 changes only unpublished A2 recipe critic_cycle_2 GLM->Qwen, keeps one critic per step, repins v2 and adds an actual step2 same-seat repair regression. PLAN A2 judge supplement records R001/current/archive and R002 delivery counts, rationale, loss of critic diversity, ruling10 lineage separation, unchanged A2 resources and immediate no-fallback CEILING_HIT. The live repair-input bound remains active, contrary to the replay-only premise. Current DECOMPOSED-A2 page is synchronized. No occurrence001 or frozen PLAN/A1 bytes were changed. Final required suites, independent route proof, exact detached command/capability and separate publication/launch verdict follow in review24.

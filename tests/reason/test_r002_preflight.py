@@ -14,12 +14,17 @@ from minireason.reason.types import ReasonFailure
 
 
 class R002PreflightTests(unittest.TestCase):
-    def test_every_frozen_recipe_loads_with_16384_off_and_no_recovery(self):
+    def test_every_pinned_recipe_loads_with_declared_completion_and_recovery_policy(self):
         for filename in config.R002_RECIPE_SHA256:
             recipe = config.load_recipe(filename[:-5])["data"]
             self.assertEqual(config.completion_tokens_for(recipe, "off"), 16384)
             self.assertEqual(config.completion_tokens_for(recipe, "native"), 32768)
-            self.assertEqual(set(recipe["attempt_policy"].values()), {0})
+            if filename == "r002-decomposed-v2.json":
+                self.assertEqual(recipe["attempt_policy"], {
+                    "schema_repairs": 1, "native_fallbacks": 0, "transport_retries": 0})
+                self.assertEqual(recipe["ceilings"]["critic_completion_tokens"], 32768)
+            else:
+                self.assertEqual(set(recipe["attempt_policy"].values()), {0})
             mutated = copy.deepcopy(recipe)
             mutated["ceilings"]["off_completion_tokens"] = 8192
             with self.assertRaises(ReasonFailure):

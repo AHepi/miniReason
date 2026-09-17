@@ -797,80 +797,114 @@ def _scripted_reply(scripted, role, cycle, objections, coordinate, context):
         return scripted(role, cycle, deepcopy(objections))
 
 
+def _repair_messages(role: str, contracts: ContractSet, content: str, detail: str) -> list[dict[str, str]]:
+    """Render one bounded repair from the seat's own complete output and contract."""
+    instruction = (
+        "The preceding public response did not satisfy the response schema. Repair only its JSON "
+        "structure and required fields under the exact same role contract. Preserve its substantive "
+        "content and conclusions; do not solve again, introduce new evidence, drop a maintained "
+        "objection, or otherwise reconsider the response. Return exactly one JSON object without "
+        "markdown fences."
+    )
+    return prompts.render_r002(role, [
+        ("YOUR OWN PRECEDING PUBLIC OUTPUT", content),
+        ("RECORDED SCHEMA FAILURE", detail),
+        ("SCHEMA REPAIR INSTRUCTION", instruction),
+        *contracts.prompt_blocks(role),
+    ])
+
+
 def _call(directory: Path, adapter: Adapter, cfg: dict, contracts: ContractSet,
           *, role: str, seat: dict, call_id: str, cycle: int, blocks: list[tuple[str, str]],
-          parse_context: dict, scripted, after_call, before_call, tokenizer_counter):
+          parse_context: dict, scripted, after_call, before_call, tokenizer_counter,
+          max_tokens: int, schema_repair_budget: int = 0):
     messages = prompts.render_r002(role, [*blocks, *contracts.prompt_blocks(role)])
-    prepared = adapter.prepare(seat=seat, messages=messages, max_tokens=(32768 if seat["thinking"] == "native" else 16384),
-                               thinking=seat["thinking"], role=role,
-                               coordinate={"call_id": call_id, "cycle": cycle, "attempt": 0,
-                                           "condition": cfg["condition"], "strict": True})
-    if tokenizer_counter is None:
-        preflight = token_preflight(
-            messages, seat["endpoint"], pins=cfg["tokenizers"], mode=cfg["mode"],
-            limit=cfg["prompt_token_cap"], wire_body_text=prepared["wire_body_text"],
-            condition=cfg["condition"], role=role)
-    else:
-        preflight = tokenizer_counter(messages, seat["endpoint"], pins=cfg["tokenizers"],
-                                      mode=cfg["mode"], limit=cfg["prompt_token_cap"])
-    folder = directory / "calls" / call_id / "a00"
-    request_path, response_path = folder / "request.json", folder / "response.json"
-    max_tokens = 32768 if seat["thinking"] == "native" else 16384
-    coordinate = {"call_id": call_id, "cycle": cycle, "attempt": 0,
-                  "condition": cfg["condition"], "strict": True}
-    # The exact prepared wire was constructed before preflight but is not written
-    # or dispatched until the input-bound check above succeeds.
-    if request_path.exists():
-        intent = get(request_path)
-        if (intent["prepared"]["messages"] != messages or intent["prepared"]["wire_body_sha256"] != prepared["wire_body_sha256"]
-                or intent["preflight"] != preflight):
-            raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved strict request differs from reconstruction")
-    if response_path.exists():
-        saved = get(response_path)
-    elif request_path.exists():
-        try:
-            result = adapter.recover(folder / "provider")
-            if result is None:
-                raise ReasonFailure("INTERRUPTED_CALL", "Dispatch outcome unknown; strict occurrence is not replayed")
-            saved = None
-        except ReasonFailure as exc:
-            if exc.code == "INTERRUPTED_CALL":
-                raise
-            saved = {"epoch": time.time(), "status": exc.code, "detail": exc.detail, "record": exc.record}
+    attempt = 0
+    while True:
+        coordinate = {"call_id": call_id, "cycle": cycle, "attempt": attempt,
+                      "condition": cfg["condition"], "strict": True,
+                      "schema_repair": bool(attempt)}
+        prepared = adapter.prepare(seat=seat, messages=messages, max_tokens=max_tokens,
+                                   thinking=seat["thinking"], role=role, coordinate=coordinate)
+        if tokenizer_counter is None:
+            preflight = token_preflight(
+                messages, seat["endpoint"], pins=cfg["tokenizers"], mode=cfg["mode"],
+                limit=cfg["prompt_token_cap"], wire_body_text=prepared["wire_body_text"],
+                condition=cfg["condition"], role=role)
+        else:
+            preflight = tokenizer_counter(messages, seat["endpoint"], pins=cfg["tokenizers"],
+                                          mode=cfg["mode"], limit=cfg["prompt_token_cap"])
+        folder = directory / "calls" / call_id / f"a{attempt:02d}"
+        request_path, response_path = folder / "request.json", folder / "response.json"
+        if request_path.exists():
+            intent = get(request_path)
+            if (intent["role"] != role or intent["seat"] != seat or intent["cycle"] != cycle
+                    or intent.get("attempt", 0) != attempt
+                    or intent.get("schema_repair", False) != bool(attempt)
+                    or intent["prepared"]["messages"] != messages
+                    or intent["prepared"]["wire_body_sha256"] != prepared["wire_body_sha256"]
+                    or intent["prepared"]["kwargs"]["max_tokens"] != max_tokens
+                    or intent["preflight"] != preflight):
+                raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved strict request differs from reconstruction")
+        saved = None
+        result = None
+        wrote_response = False
+        if response_path.exists():
+            saved = get(response_path)
+        elif request_path.exists():
+            try:
+                result = adapter.recover(folder / "provider")
+                if result is None:
+                    raise ReasonFailure("INTERRUPTED_CALL", "Dispatch outcome unknown; strict occurrence is not replayed")
+            except ReasonFailure as exc:
+                if exc.code == "INTERRUPTED_CALL":
+                    raise
+                saved = {"epoch": time.time(), "status": exc.code, "detail": exc.detail,
+                         "record": exc.record}
+                put(response_path, saved)
+                wrote_response = True
+                result = None
+        else:
+            if before_call is not None and cfg["mode"] == "live":
+                before_call(coordinate)
+            put(request_path, {"epoch": time.time(), "role": role, "seat": seat,
+                               "cycle": cycle, "attempt": attempt,
+                               "schema_repair": bool(attempt), "preflight": preflight,
+                               "prepared": prepared})
+            fixture = _scripted_reply(scripted, role, cycle, parse_context.get("objections", []),
+                                      coordinate, parse_context) if cfg["mode"] == "offline" else None
+            try:
+                result = adapter.call(seat=seat, messages=messages, records_dir=folder / "provider",
+                                      max_tokens=max_tokens, thinking=seat["thinking"], role=role,
+                                      coordinate=coordinate, scripted=fixture)
+            except ReasonFailure as exc:
+                saved = {"epoch": time.time(), "status": exc.code, "detail": exc.detail,
+                         "record": exc.record}
+                put(response_path, saved)
+                wrote_response = True
+                result = None
+        if saved is None and result is not None:
+            try:
+                parsed = parse_r002(role, result["content"], contracts, **parse_context)
+                saved = {"epoch": time.time(), "status": "COMPLETE", "result": result,
+                         "parsed": parsed}
+            except (ReasonFailure, TypeError, ValueError, KeyError) as exc:
+                code = getattr(exc, "code", "SCHEMA_FAILURE")
+                saved = {"epoch": time.time(), "status": code,
+                         "detail": getattr(exc, "detail", type(exc).__name__), "result": result}
             put(response_path, saved)
-            result = None
-    else:
-        if before_call is not None and cfg["mode"] == "live":
-            before_call(coordinate)
-        put(request_path, {"epoch": time.time(), "role": role, "seat": seat,
-                           "cycle": cycle, "attempt": 0, "preflight": preflight,
-                           "prepared": prepared})
-        fixture = _scripted_reply(scripted, role, cycle, parse_context.get("objections", []),
-                                  coordinate, parse_context) if cfg["mode"] == "offline" else None
-        try:
-            result = adapter.call(seat=seat, messages=messages, records_dir=folder / "provider",
-                                  max_tokens=max_tokens, thinking=seat["thinking"], role=role,
-                                  coordinate=coordinate, scripted=fixture)
-            saved = None
-        except ReasonFailure as exc:
-            saved = {"epoch": time.time(), "status": exc.code, "detail": exc.detail, "record": exc.record}
-            put(response_path, saved)
-            result = None
-    if saved is None and result is not None:
-        try:
-            parsed = parse_r002(role, result["content"], contracts, **parse_context)
-            saved = {"epoch": time.time(), "status": "COMPLETE", "result": result, "parsed": parsed}
-        except (ReasonFailure, TypeError, ValueError, KeyError) as exc:
-            code = getattr(exc, "code", "SCHEMA_FAILURE")
-            saved = {"epoch": time.time(), "status": code,
-                     "detail": getattr(exc, "detail", type(exc).__name__), "result": result}
-        put(response_path, saved)
-        if after_call is not None:
+            wrote_response = True
+        if wrote_response and after_call is not None:
             after_call(call_id, deepcopy(saved))
-    if saved["status"] != "COMPLETE":
+        if saved["status"] == "COMPLETE":
+            return saved["parsed"]
+        if (saved["status"] == "SCHEMA_FAILURE" and attempt < schema_repair_budget
+                and isinstance(saved.get("result", {}).get("content"), str)):
+            messages = _repair_messages(role, contracts, saved["result"]["content"],
+                                        saved.get("detail", "SCHEMA_FAILURE"))
+            attempt += 1
+            continue
         raise ReasonFailure(saved["status"], saved.get("detail", "Strict R002 call failed"))
-    return saved["parsed"]
-
 
 def _seat(role, recipe):
     if recipe is None:
@@ -1121,11 +1155,17 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
             relation_ids = [item["relation_id"] for item in relation["relations"]]
 
             def call(role, seat, call_id, cycle, blocks, **context):
+                default_ceiling = 32768 if seat["thinking"] == "native" else 16384
+                max_tokens = (recipe.get("ceilings", {}).get("critic_completion_tokens", default_ceiling)
+                              if recipe is not None and role == "decomposed_critic" else default_ceiling)
+                repair_budget = (recipe.get("attempt_policy", {}).get("schema_repairs", 0)
+                                 if recipe is not None and recipe.get("condition") == "LOOP-DECOMPOSED" else 0)
                 parsed = _call(directory, adapter, cfg, contracts, role=role, seat=seat,
                                call_id=call_id, cycle=cycle, blocks=blocks,
                                parse_context={"relation": relation, **context}, scripted=scripted,
                                after_call=after_call, before_call=before_call,
-                               tokenizer_counter=tokenizer_counter)
+                               tokenizer_counter=tokenizer_counter, max_tokens=max_tokens,
+                               schema_repair_budget=repair_budget)
                 if parsed.get("decision") == "cannot_decide":
                     state["cannot_decide_responses"] += 1
                 return parsed

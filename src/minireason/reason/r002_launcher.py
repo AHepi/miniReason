@@ -28,6 +28,9 @@ DEFAULT_CONDITIONS = (
     "LOOP-DECOMPOSED",
 )
 OPTIONAL_CONDITIONS = ("LOOP-CROSS-MATCH", "LOOP-CARRIER", "NATIVE-MATCH")
+A2_ADMITTED = ("C05", "C06", "C09", "C12")
+A2_CONDITIONS = ("LOOP-DECOMPOSED",)
+A2_RECIPE_IDS = {"LOOP-DECOMPOSED": "r002-decomposed-v2"}
 RECIPE_IDS = {
     "LOOP-CROSS": "r002-cross-v2",
     "LOOP-CROSS-MATCH": "r002-cross-match-v1",
@@ -200,11 +203,12 @@ def validate_run_root(repo: Path, value: Path) -> Path:
     allowed = ((repo / "runs").resolve(), (repo / "work" / "w20").resolve(),
                (repo / "work" / "review20").resolve(), Path(r"C:/tw20").resolve(),
                Path(r"C:/tr20").resolve(), Path(r"C:/tr21").resolve(),
-               Path(r"C:/tw22").resolve(), Path(r"C:/tr22").resolve())
+               Path(r"C:/tw22").resolve(), Path(r"C:/tr22").resolve(),
+               Path(r"C:/tw24").resolve(), Path(r"C:/tr24").resolve())
     if not any(root != parent and within(root, parent) for parent in allowed):
         raise LauncherError(
             "R002 output must be below runs/, work/w20/, work/review20/, "
-            "C:/tw20, C:/tr20, C:/tr21, C:/tw22 or C:/tr22")
+            "C:/tw20, C:/tr20, C:/tr21, C:/tw22, C:/tr22, C:/tw24 or C:/tr24")
     if len(str(root)) >= 120:
         raise LauncherError("R002 run root is too long for durable nested evidence")
     return root
@@ -343,6 +347,36 @@ def budget(admitted_count: int, computable_count: int, optional_case_occurrences
         "combined_token_ceiling": completion + attempts * 32768,
         "per_attempt_wall_seconds": 300,
         "aggregate_attempt_wall_seconds": attempts * 300,
+    }
+
+
+def a2_budget(case_count: int) -> dict[str, int]:
+    if not 0 <= case_count <= len(A2_ADMITTED):
+        raise LauncherError("Invalid A2 admitted count")
+    logical_per_case = 13
+    attempts_per_case = 26
+    no_repair_completion_per_case = 344064
+    maximum_completion_per_case = 688128
+    no_repair_attempts = logical_per_case * case_count
+    maximum_attempts = attempts_per_case * case_count
+    return {
+        "cases": case_count,
+        "logical_calls": no_repair_attempts,
+        "no_repair_attempts": no_repair_attempts,
+        "maximum_attempts": maximum_attempts,
+        "no_repair_completion_token_ceiling": no_repair_completion_per_case * case_count,
+        "maximum_completion_token_ceiling": maximum_completion_per_case * case_count,
+        "no_repair_prompt_token_ceiling": no_repair_attempts * 32768,
+        "maximum_prompt_token_ceiling": maximum_attempts * 32768,
+        "no_repair_combined_token_ceiling": (
+            no_repair_completion_per_case * case_count + no_repair_attempts * 32768),
+        "maximum_combined_token_ceiling": (
+            maximum_completion_per_case * case_count + maximum_attempts * 32768),
+        "no_repair_aggregate_attempt_wall_seconds": no_repair_attempts * 300,
+        "maximum_aggregate_attempt_wall_seconds": maximum_attempts * 300,
+        "over_three_step_maximum_logical_calls_per_case": 12,
+        "over_three_step_maximum_attempts_per_case": 24,
+        "over_three_step_maximum_completion_token_ceiling_per_case": 622592,
     }
 
 
@@ -573,7 +607,7 @@ def _child_environment(repo: Path) -> dict[str, str]:
 def child_argv(repo: Path, study: Path, candidate_id: str, condition: str, out: Path,
                mode: str, *, env_file: Path | None = None, tokenizer_pins: Path | None = None,
                capability: Path | None = None, resume: bool = False,
-               cycles: int = 3) -> list[str]:
+               cycles: int = 3, recipe_id: str | None = None) -> list[str]:
     if resume:
         command = [sys.executable, str(repo / "tools" / "reason.py"), "resume", "--run", str(out)]
         if mode == "live" and env_file is not None:
@@ -597,7 +631,8 @@ def child_argv(repo: Path, study: Path, candidate_id: str, condition: str, out: 
                     "--thinking", "native", "--reasoning-effort", "medium",
                     "--completion-tokens", "32768"]
     else:
-        command += ["--recipe", str(study / "recipes" / f"{RECIPE_IDS[condition]}.json"),
+        selected_recipe = recipe_id or RECIPE_IDS[condition]
+        command += ["--recipe", str(study / "recipes" / f"{selected_recipe}.json"),
                     "--cycles", str(cycles),
                     "--fork-registry", str(study / "problems" / "FORKS.json"),
                     "--coding-manifest", str(study / "problems" / "RECODING_MAPS.json")]
@@ -629,12 +664,14 @@ def _archive(directory: Path) -> Path:
 
 
 def _attempt(record: dict[str, Any], condition: str, candidate_id: str, directory: Path,
-             run_root: Path, source_version: int) -> dict[str, Any]:
+             run_root: Path, source_version: int,
+             occurrence_scope: str | None = None) -> dict[str, Any]:
     attempts = record.setdefault("attempts", [])
     number = len(attempts) + 1
+    prefix = f"R002-{occurrence_scope}" if occurrence_scope else "R002"
     item = {
         "attempt_number": number,
-        "occurrence_id": f"R002-{candidate_id}-{condition}-attempt-{number:03d}",
+        "occurrence_id": f"{prefix}-{candidate_id}-{condition}-attempt-{number:03d}",
         "directory": directory.relative_to(run_root).as_posix(),
         "source_version": source_version,
         "status": "allocated",
@@ -702,8 +739,13 @@ def _run_occurrence(repo: Path, study: Path, run_root: Path, manifest_path: Path
             current.update({"status": "archived-failed",
                             "directory": archived.relative_to(run_root).as_posix(),
                             "archived_utc": utc_now()})
-            current = _attempt(record, condition, candidate_id, directory, run_root,
-                               manifest["active_source_version"])
+            current = _attempt(
+                record, condition, candidate_id, directory, run_root,
+                manifest["active_source_version"],
+                occurrence_scope=(
+                    f"{args.phase}-occurrence-{args.occurrence:03d}"
+                    if args.amendment_a2 else None),
+            )
         elif args.resume:
             if _good_stop(condition, stop):
                 hashes = tree_hashes(directory)
@@ -719,13 +761,18 @@ def _run_occurrence(repo: Path, study: Path, run_root: Path, manifest_path: Path
         if args.resume and attempts and attempts[-1].get("status") != "allocated":
             raise LauncherError("Manifested occurrence directory is missing")
         current = attempts[-1] if attempts and attempts[-1].get("status") == "allocated" else _attempt(
-            record, condition, candidate_id, directory, run_root, manifest["active_source_version"])
+            record, condition, candidate_id, directory, run_root,
+            manifest["active_source_version"],
+            occurrence_scope=(
+                f"{args.phase}-occurrence-{args.occurrence:03d}"
+                if args.amendment_a2 else None))
     current.update(status="running", updated_utc=utc_now())
     manifest["updated_utc"] = utc_now()
     write_json(manifest_path, manifest)
     command = child_argv(repo, study, candidate_id, condition, directory, args.mode,
                          env_file=args.env_file, tokenizer_pins=args.tokenizer_pins,
-                         capability=args.capability, resume=resume, cycles=cycles)
+                         capability=args.capability, resume=resume, cycles=cycles,
+                         recipe_id=A2_RECIPE_IDS.get(condition) if args.amendment_a2 else None)
     completed = subprocess.run(command, cwd=repo, env=_child_environment(repo),
                                capture_output=True, text=True, encoding="utf-8",
                                errors="strict", check=False)
@@ -800,6 +847,19 @@ def _phase_receipt(run_root: Path, phase_root: Path, manifest: dict[str, Any], p
     condition_order = {name: index for index, name in enumerate(
         ("CAL-NATIVE", *DEFAULT_CONDITIONS, *OPTIONAL_CONDITIONS))}
     records.sort(key=lambda item: (item["candidate_id"], condition_order.get(item["condition"], 999)))
+    if args.amendment_a2:
+        expected_projection = a2_budget(len(admitted or []))
+        if (phase.get("resource_projection") != expected_projection
+                or phase.get("selected_conditions") != list(A2_CONDITIONS)
+                or phase.get("amendment") != "A2"):
+            raise LauncherError("Saved A2 phase identity or resource projection differs")
+        receipt_budget = expected_projection
+    else:
+        receipt_budget = None if admitted is None else budget(
+            len(admitted),
+            sum(candidate_record(_study_root(), item)["checker_eligible"] for item in admitted),
+            len(admitted) * len(optional),
+        )
     receipt = {
         "schema": SCHEMA,
         "phase": args.phase,
@@ -812,10 +872,14 @@ def _phase_receipt(run_root: Path, phase_root: Path, manifest: dict[str, Any], p
         "records": records,
         "scientific_evidence": args.mode == "live",
         "pilot_output_allowed_in_main_prompts": False,
-        "budget": None if admitted is None else budget(
-            len(admitted), sum(candidate_record(_study_root(), item)["checker_eligible"] for item in admitted),
-            len(admitted) * len(optional)),
+        "budget": receipt_budget,
     }
+    if args.amendment_a2:
+        receipt.update({
+            "amendment": "A2",
+            "amendment_a2": True,
+            "selected_conditions": list(A2_CONDITIONS),
+        })
     base = phase_root / "phase-receipt.json"
     receipt_paths = phase.setdefault("phase_receipts", [])
     if not base.exists():
@@ -867,6 +931,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--env-file", type=Path)
     parser.add_argument("--tokenizer-pins", type=Path)
     parser.add_argument("--capability", type=Path)
+    parser.add_argument(
+        "--amendment-a2", action="store_true",
+        help="Run the post-dispatch A2 occurrence-002 decomposed-only schedule")
     return parser.parse_args(argv)
 
 
@@ -884,6 +951,13 @@ def main(argv: list[str] | None = None) -> int:
     material_pins_sha256 = validate_material_pins(study)
     if args.occurrence < 1 or (args.resume and args.rerun_failed):
         raise LauncherError("Occurrence must be positive and resume/rerun-failed are exclusive")
+    if args.amendment_a2:
+        if args.phase != "main" or args.occurrence != 2:
+            raise LauncherError("A2 is restricted to main occurrence-002")
+        if args.optional_receipt:
+            raise LauncherError("A2 occurrence-002 does not select optional arms")
+        if args.rerun_failed:
+            raise LauncherError("A2 occurrence-002 cannot rerun a failed occurrence")
     if args.mode == "live" and args.env_file is None:
         raise LauncherError("Live mode requires --env-file")
     if args.mode == "live" and args.capability is None:
@@ -923,6 +997,9 @@ def main(argv: list[str] | None = None) -> int:
         admitted, _receipt = validate_admission_receipt(args.admission_receipt.resolve(), study,
                                                          offline=args.mode == "offline")
         optional = validate_optional_receipts(args.optional_receipt, admitted)
+        if args.amendment_a2 and tuple(admitted) != A2_ADMITTED:
+            raise LauncherError(
+                "A2 occurrence-002 requires admitted set C05 C06 C09 C12 exactly")
         if args.problems is not None and selected != admitted:
             raise LauncherError("Main --problems must equal the frozen admitted set")
         selected = admitted
@@ -938,6 +1015,12 @@ def main(argv: list[str] | None = None) -> int:
                "material_pins_sha256": material_pins_sha256,
                "env_file_forwarded_path": str(args.env_file) if args.env_file else None,
                "env_file_read_by_launcher": False}
+    if args.amendment_a2:
+        context.update({
+            "amendment": "A2",
+            "selected_conditions": list(A2_CONDITIONS),
+            "resource_projection": a2_budget(len(selected)),
+        })
     if saved_phase is None:
         saved_phase = {**context, "created_utc": utc_now(), "candidates": {}}
         manifest["phases"][phase_key] = saved_phase
@@ -954,7 +1037,10 @@ def main(argv: list[str] | None = None) -> int:
     overall_good = True
     for candidate_id in selected:
         candidate = candidate_record(study, candidate_id)
-        conditions = ["CAL-NATIVE"] if args.phase == "calibration" else list(DEFAULT_CONDITIONS)
+        if args.amendment_a2:
+            conditions = list(A2_CONDITIONS)
+        else:
+            conditions = ["CAL-NATIVE"] if args.phase == "calibration" else list(DEFAULT_CONDITIONS)
         if not candidate["checker_eligible"] and "LOOP-CHECKER" in conditions:
             conditions.remove("LOOP-CHECKER")
         conditions += list(optional)

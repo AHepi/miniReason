@@ -24,9 +24,9 @@ class R002DecomposedTests(unittest.TestCase):
         self.fork = next(item for item in forks["candidates"] if item["candidate_id"] == "C01")
         self.contracts = r002.ContractSet(R002_DIR / "contracts")
 
-    def new_run(self, name="run"):
+    def new_run(self, name="run", recipe="r002-decomposed-v1.json"):
         return r002.create_r002_run(
-            self.problem, R002_DIR / "recipes/r002-decomposed-v1.json", self.out / name,
+            self.problem, R002_DIR / "recipes" / recipe, self.out / name,
             mode="offline", problem_id="C01",
             relation_registry=R002_DIR / "problems/RELATIONS.json",
             fork_registry=R002_DIR / "problems/FORKS.json",
@@ -306,6 +306,156 @@ class R002DecomposedTests(unittest.TestCase):
                 r002.parse_r002("decomposed_return", json.dumps(value), self.contracts,
                                 relation=self.relation,
                                 before={"step": 1}, objections=[objection])
+
+
+    def test_a2_step_two_uses_qwen_and_repairs_on_that_same_lineage(self):
+        run = self.new_run("a2-step-two-seat", "r002-decomposed-v2.json")
+        normal, _calls = self.scripted()
+
+        def step_two_repair(**context):
+            if context["role"] == "decomposed_critic" and context["cycle"] == 2 \
+                    and context["coordinate"]["attempt"] == 0:
+                return {"content": "The current step appears sound; format this as JSON."}
+            return normal(**context)
+
+        state = r002.execute_r002(run, scripted=step_two_repair)
+        self.assertEqual((state["stop_reason"], state["completed_cycles"], state["attempts"]),
+                         ("complete", 3, 14), state.get("stop_detail"))
+        for attempt in ("a00", "a01"):
+            folder = run / "calls/c0002-critic" / attempt
+            request = json.loads((folder / "request.json").read_text(encoding="utf-8"))
+            wire = json.loads(request["prepared"]["wire_body_text"])
+            self.assertEqual(request["seat"]["endpoint"], "ollama/qwen3.5-397b.native")
+            self.assertEqual(wire["model"], "qwen3.5:397b")
+            self.assertIs(wire["think"], False)
+            self.assertEqual(wire["format"], "json")
+            self.assertEqual(wire["options"]["num_predict"], 32768)
+        legacy = json.loads((R002_DIR / "recipes/r002-decomposed-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(legacy["seats"]["critic_cycle_2"]["endpoint"], "ollama/glm-5.3.native")
+
+    def test_a2_prose_critic_repairs_once_with_same_seat_ceiling_and_contract(self):
+        run = self.new_run("a2-repair", "r002-decomposed-v2.json")
+        normal, _calls = self.scripted()
+        prose = "Let me analyze the current step carefully. The displayed finite derivation appears sound."
+
+        def repair_once(**context):
+            if context["role"] == "decomposed_critic" and context["cycle"] == 1 \
+                    and context["coordinate"]["attempt"] == 0:
+                return {"content": prose}
+            return normal(**context)
+
+        state = r002.execute_r002(run, scripted=repair_once)
+        self.assertEqual((state["stop_reason"], state["calls"], state["attempts"]),
+                         ("complete", 13, 14), state.get("stop_detail"))
+        first = json.loads((run / "calls/c0001-critic/a00/request.json").read_text(encoding="utf-8"))
+        repair = json.loads((run / "calls/c0001-critic/a01/request.json").read_text(encoding="utf-8"))
+        self.assertFalse(first["schema_repair"])
+        self.assertTrue(repair["schema_repair"])
+        self.assertEqual(first["seat"], repair["seat"])
+        self.assertEqual(first["prepared"]["kwargs"]["max_tokens"], 32768)
+        self.assertEqual(repair["prepared"]["kwargs"]["max_tokens"], 32768)
+        self.assertEqual(first["prepared"]["payload"]["format"], "json")
+        self.assertEqual(repair["prepared"]["payload"]["format"], "json")
+        self.assertEqual(len(repair["prepared"]["messages"]), 2)
+        repair_text = repair["prepared"]["messages"][1]["content"]
+        self.assertIn(prose, repair_text)
+        self.assertIn("RESPONSE SCHEMA tested-objection.schema.json", repair_text)
+        self.assertIn("Repair only its JSON structure", repair_text)
+        step_record = json.loads((run / "steps/step-0001/record.json").read_text(encoding="utf-8"))
+        self.assertEqual(step_record["critic_request"]["path"], "calls/c0001-critic/a01/request.json")
+        self.assertEqual(step_record["critic_response"]["path"], "calls/c0001-critic/a01/response.json")
+        run_text = (run / "RUN.md").read_text(encoding="utf-8")
+        self.assertIn("Calls/attempts: 13/14. Schema repairs: 1.", run_text)
+        self.assertIn("Base/max completion allowance: 344064/688128.", run_text)
+        self.assertIn('Reached by repair: `["c0001-critic"]`.', run_text)
+        self.assertIn('Reached without repair:', run_text)
+
+    def test_a2_second_schema_failure_stops_without_a02(self):
+        run = self.new_run("a2-second-failure", "r002-decomposed-v2.json")
+        normal, _calls = self.scripted()
+
+        def invalid_twice(**context):
+            if context["role"] == "decomposed_critic":
+                return {"content": "Let me analyze this before giving JSON."}
+            return normal(**context)
+
+        state = r002.execute_r002(run, scripted=invalid_twice)
+        self.assertEqual((state["stop_reason"], state["calls"], state["attempts"]),
+                         ("SCHEMA_FAILURE", 2, 3))
+        self.assertTrue((run / "calls/c0001-critic/a00/response.json").is_file())
+        self.assertTrue((run / "calls/c0001-critic/a01/response.json").is_file())
+        self.assertFalse((run / "calls/c0001-critic/a02").exists())
+        run_text = (run / "RUN.md").read_text(encoding="utf-8")
+        self.assertIn("Reached by repair: `[]`.", run_text)
+        self.assertIn('Repair attempted but not completed: `["c0001-critic"]`.', run_text)
+
+    def test_a2_ceiling_hit_never_repairs_and_critic_uses_32768(self):
+        run = self.new_run("a2-ceiling", "r002-decomposed-v2.json")
+        normal, _calls = self.scripted()
+        ceiling = {"content": "", "finish_reason": "length",
+                   "usage": {"prompt_tokens": 10, "completion_tokens": 32768,
+                             "total_tokens": 32778}}
+
+        def critic_ceiling(**context):
+            return ceiling if context["role"] == "decomposed_critic" else normal(**context)
+
+        state = r002.execute_r002(run, scripted=critic_ceiling)
+        self.assertEqual((state["stop_reason"], state["calls"], state["attempts"]),
+                         ("CEILING_HIT", 2, 2))
+        request = json.loads((run / "calls/c0001-critic/a00/request.json").read_text(encoding="utf-8"))
+        self.assertEqual(request["prepared"]["kwargs"]["max_tokens"], 32768)
+        self.assertFalse((run / "calls/c0001-critic/a01").exists())
+
+    def test_a2_oversize_full_output_stops_preflight_without_repair_intent_or_truncation(self):
+        run = self.new_run("a2-oversize", "r002-decomposed-v2.json")
+        normal, _calls = self.scripted()
+        prose = "P" * 40000
+
+        def oversize(**context):
+            if context["role"] == "decomposed_critic":
+                return {"content": prose}
+            return normal(**context)
+
+        state = r002.execute_r002(run, scripted=oversize)
+        self.assertEqual(state["stop_reason"], "PROMPT_TOKEN_CAP")
+        self.assertFalse((run / "calls/c0001-critic/a01").exists())
+        first = json.loads((run / "calls/c0001-critic/a00/response.json").read_text(encoding="utf-8"))
+        self.assertEqual(first["result"]["content"], prose)
+
+    def test_a2_interrupted_after_repair_resumes_without_resending_either_attempt(self):
+        run = self.new_run("a2-resume", "r002-decomposed-v2.json")
+        normal, _calls = self.scripted()
+        prose = "Let me analyze before formatting the answer."
+
+        def repair_once(**context):
+            if context["role"] == "decomposed_critic" and context["cycle"] == 1 \
+                    and context["coordinate"]["attempt"] == 0:
+                return {"content": prose}
+            return normal(**context)
+
+        class Interrupted(BaseException):
+            pass
+
+        def interrupt_after_repair(call_id, _saved):
+            if call_id == "c0001-critic" and (run / "calls/c0001-critic/a01/response.json").is_file():
+                raise Interrupted()
+
+        with self.assertRaises(Interrupted):
+            r002.execute_r002(run, scripted=repair_once, after_call=interrupt_after_repair)
+        first_bytes = (run / "calls/c0001-critic/a00/response.json").read_bytes()
+        repair_bytes = (run / "calls/c0001-critic/a01/response.json").read_bytes()
+        resumed_calls = []
+
+        def resume(**context):
+            resumed_calls.append((context["coordinate"]["call_id"], context["coordinate"]["attempt"]))
+            return normal(**context)
+
+        state = r002.execute_r002(run, scripted=resume)
+        self.assertEqual(state["stop_reason"], "complete")
+        self.assertNotIn(("c0001-critic", 0), resumed_calls)
+        self.assertNotIn(("c0001-critic", 1), resumed_calls)
+        self.assertEqual((run / "calls/c0001-critic/a00/response.json").read_bytes(), first_bytes)
+        self.assertEqual((run / "calls/c0001-critic/a01/response.json").read_bytes(), repair_bytes)
 
 
 if __name__ == "__main__":

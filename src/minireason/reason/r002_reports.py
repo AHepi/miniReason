@@ -24,15 +24,20 @@ def _immutable(path, record):
 
 
 def _calls(directory):
+    """Return each logical call's latest attempt, preferring a completed repair."""
     result = {}
-    for path in sorted((directory / "calls").glob("*/a00/response.json")):
+    for path in sorted((directory / "calls").glob("*/a*/response.json")):
         response = get(path)
         request_path = path.with_name("request.json")
-        result[path.parent.parent.name] = {"response": response, "parsed": response.get("parsed"),
-            "request": get(request_path) if request_path.exists() else {},
-            "response_ref": _ref(directory, path), "request_ref": _ref(directory, request_path)}
+        call_id = path.parent.parent.name
+        attempt = {"response": response, "parsed": response.get("parsed"),
+                   "request": get(request_path) if request_path.exists() else {},
+                   "response_ref": _ref(directory, path), "request_ref": _ref(directory, request_path),
+                   "attempt": path.parent.name}
+        prior = result.get(call_id)
+        if prior is None or response.get("status") == "COMPLETE" or prior["response"].get("status") != "COMPLETE":
+            result[call_id] = attempt
     return result
-
 
 def write_episode_records(directory, cfg, objections):
     directory = Path(directory)
@@ -193,8 +198,9 @@ def _usage(response):
 def reports(directory, cfg, state, answer, objections, events):
     directory = Path(directory)
     calls = _calls(directory)
-    requests = sorted((directory / "calls").glob("*/a00/request.json"))
-    state.update(run_id=cfg["run_id"], calls=len(requests), attempts=len(requests),
+    requests = sorted((directory / "calls").glob("*/a*/request.json"))
+    logical_calls = len({path.parent.parent.name for path in requests})
+    state.update(run_id=cfg["run_id"], calls=logical_calls, attempts=len(requests),
                  objections=objections, updated_epoch=time.time())
     if "detail" in state:
         state["stop_detail"] = state["detail"]
@@ -204,7 +210,9 @@ def reports(directory, cfg, state, answer, objections, events):
     for path in requests:
         intent = get(path); prepared = intent["prepared"]
         call_id = path.parent.parent.name
-        reported = _usage(calls.get(call_id, {}).get("response", {}))
+        response_path = path.with_name("response.json")
+        attempt_response = get(response_path) if response_path.exists() else {}
+        reported = _usage(attempt_response)
         if not reported:
             usage["unknown_attempts"] += 1
         for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
@@ -212,11 +220,13 @@ def reports(directory, cfg, state, answer, objections, events):
                 usage[key] += reported[key]
             else:
                 usage["unknown_by_field"][key] += 1
-        settings.append({"call": call_id, "seat": intent["seat"],
+        settings.append({"call": call_id, "attempt": path.parent.name,
+                         "schema_repair": bool(intent.get("schema_repair")), "seat": intent["seat"],
                          "thinking": prepared["thinking"], "reasoning_effort": prepared["reasoning_effort"],
                          "completion_tokens": prepared["kwargs"]["max_tokens"], "wall_seconds": prepared["wall_seconds"],
-                         "endpoint": prepared["endpoint"],
-                         "usage": reported or None, "request": _ref(directory, path)})
+                         "endpoint": prepared["endpoint"], "status": attempt_response.get("status"),
+                         "usage": reported or None, "request": _ref(directory, path),
+                         "response": _ref(directory, response_path)})
     state["usage"] = usage
     write_episode_records(directory, cfg, objections)
     state["episode_records"] = len(list((directory / "episodes").glob("*/*.json"))) if (directory / "episodes").exists() else 0
@@ -248,10 +258,39 @@ def reports(directory, cfg, state, answer, objections, events):
     if not objections and not events:
         trace += "No objection or stall-switch event was recorded.\n"
     write(directory / "TRACE.md", trace, replace=True)
-    call_ceiling = 13 if cfg["condition"] == "LOOP-DECOMPOSED" else 14
+    recipe = get(directory / "recipe.json") if (directory / "recipe.json").exists() else {}
+    ceilings = recipe.get("ceilings", {})
+    default_call_ceiling = 1 if not recipe else (13 if cfg["condition"] == "LOOP-DECOMPOSED" else 14)
+    call_ceiling = ceilings.get("logical_calls", default_call_ceiling)
+    attempt_ceiling = ceilings.get("attempts", call_ceiling)
+    default_allowance = 32768 if not recipe else None
+    base_allowance = ceilings.get("base_completion_tokens_total",
+                                  ceilings.get("completion_tokens_total", default_allowance))
+    maximum_allowance = ceilings.get("completion_tokens_total", base_allowance)
+    critic_ceiling = ceilings.get("critic_completion_tokens", ceilings.get("off_completion_tokens", 16384))
+    ceiling_text = (f"native 32768; STEP/use 16384; critics {critic_ceiling}"
+                    if cfg["condition"] == "LOOP-DECOMPOSED" else "native 32768; off 16384")
+    attempted_repair_calls = sorted({path.parent.parent.name for path in requests
+                                       if get(path).get("schema_repair")})
+    complete_calls = sorted(call_id for call_id, item in calls.items()
+                            if item.get("response", {}).get("status") == "COMPLETE")
+    successful_repaired_calls = sorted(call_id for call_id, item in calls.items()
+                                       if item.get("response", {}).get("status") == "COMPLETE"
+                                       and item.get("attempt") != "a00")
+    failed_repair_calls = sorted(set(attempted_repair_calls) - set(successful_repaired_calls))
+    without_repair = sorted(set(complete_calls) - set(successful_repaired_calls))
+    repairs = len(attempted_repair_calls)
+    policy = ("one initial attempt plus at most one schema repair per logical call; zero fallbacks/transport retries; "
+              "CEILING_HIT receives no repair" if recipe.get("attempt_policy", {}).get("schema_repairs") == 1
+              else "one attempt, zero repairs/fallbacks/retries")
     run = ("# R002 run\n\n" + banner + f"Run: `{cfg['run_id']}`. Condition: `{cfg['condition']}`.\n\n"
-           f"Calls/attempts: {state['calls']}/{state['attempts']}. Strict policy: one attempt, zero repairs/fallbacks/retries.\n\n"
-           f"Ceilings: native 32768; off 16384; prompt 32768; wall 300 seconds per call; at most {call_ceiling} loop calls.\n\n"
+           f"Calls/attempts: {state['calls']}/{state['attempts']}. Schema repairs: {repairs}. Strict policy: {policy}.\n\n"
+           f"Ceilings: {ceiling_text}; prompt 32768; wall 300 seconds per attempt; "
+           f"at most {call_ceiling} logical calls and {attempt_ceiling} attempts. "
+           f"Base/max completion allowance: {base_allowance}/{maximum_allowance}.\n\n"
+           f"Reached by repair: `{json.dumps(successful_repaired_calls)}`. "
+           f"Reached without repair: `{json.dumps(without_repair)}`. "
+           f"Repair attempted but not completed: `{json.dumps(failed_repair_calls)}`.\n\n"
            f"Completed cycles: {state['completed_cycles']}. Closing return: {state['closing_return']}.\n\n"
            f"Tail edits: {state['tail_edits']}. Stall switches: {state['stall_switches']}. Checker runs: {state['checker_runs']}. "
            f"Cannot-decide responses: {state['cannot_decide_responses']}.\n\n"
