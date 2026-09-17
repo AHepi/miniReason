@@ -1292,3 +1292,6 @@ Deliverables: research/deepseek-flash-pilot/REPORT-usecases.md, readings/pilot-u
 
 
 2026-09-17T16:54:12.597825+00:00 | REC-20260917-F | root-publisher | D delivery and acknowledgement are published and verified. L54-L56 lessons are judge-approved with exact prior prefix and final hash preserved; publishing separate four-path F delivery next, followed by its acknowledgement. No provider calls or main merge.
+
+
+2026-09-17T16:55:19.730643+00:00 | REC-20260917-F | root-publisher | D delivery/acknowledgement and F L54-L56 delivery are published and verified; F delivery is 2ef26b2dad67fe9e3f74e6fe8f02b71370d62741 tree dbd491d82307073ef8cec77ff0211553a7d846d4. Final acknowledgement and terminal status/env verification are the remaining authorized actions. Completion evidence will be retained in work/publish27/FINAL-VERIFICATION.json. The reading and amendments remain bounded judge-approved observations; no successor/provider call is selected.
