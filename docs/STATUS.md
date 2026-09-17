@@ -1129,3 +1129,59 @@ REC-20260917-B; root-review29: **APPROVED-AS-CORRECTED**. Reading/report/owner p
 
 
 2026-09-17T08:58:20.597870+00:00 | REC-20260917-B | root-publisher | occurrences 1-2 reported; occurrence 3 authorised. Approved18path reading commit 336493993acde61f49b347149f57c8667260743b tree c6a6ac0f45e2c29ca5ce3207e2d939284ceb2d91 verified on claude/project-state-direction-j5rbun. R3-A2 and its acknowledgement also verified. Publisher now completes final acknowledgement verification only; any occurrence3 dispatch is a separate task. Concurrent pilot work and ignored work/runs stay unstaged; main untouched.
+
+
+2026-09-17T09:08:09.306923+00:00 | MIRROR-SYNC-20260917-J | Mirror task complete: published claude/project-state-direction-j5rbun commit b8c43a179ec830c3ab9d29b79c2b19e621b07194 / tree 195f95e439fb87ec560d3df9b2539cd21da00b51 copied from Git objects.15261tracked paths verified twice plus independent audit;36created,16updated,15209unchanged;0SHA-256 mismatches;0unexpected leftovers. Requested mirror receipt written. No provider calls or publication selected. Next: no further task selected; preserve concurrent worker work.
+
+
+## REC-20260917-D - deepseek-flash self-piloting feasibility and pilot plugin
+
+2026-09-17T10:16:32.292296+00:00 | root-review34 | Independent judgment: **REJECT** under the
+required all-tests-green gate. W33/W34 study and bounded pilot are complete
+locally with corrections; no publication was performed by this judge.
+
+Independent census verifies 314 logical Flash seats/342 attempts; typed R003
+103/103 first JSON, 83/103 first contract pass, 10/20 successful repairs and
+93/103 final passes. All 12 saved interface probes meet their declared criteria.
+The study verdict POSSIBLE WITH PROBED FEATURES remains appropriately bounded.
+Pilot fixes cover live wire custody, beta strict schema export, discovery and
+runnable first-live instructions. 49 pilot tests and 26 docs pins pass, including
+normal/repair live CLI through child-process HTTP doubles. Real integrated
+provider/owner reliability and full corrected manifest acceptance are NOT FOUND.
+
+Required reason suite: 334 run, 2 failures and 5 errors. Its launcher fixtures
+reject the user-mandated C:/tr34 root; a reason-only temp exception was requested
+and not granted. No protected source/test/topology workaround was made.
+Concurrent reason and R003 experiment changes appeared after the earlier clean
+audit; their qualification is outside this judgment. Worker-first original
+receipts and judge records are appended after the review31 gate cleared at
+10:14:13 UTC. Probe observations remain unchanged.
+
+Next authorized task: owner resolves the fixture-root constraint; a separate
+reviewer obtains green required reason regression against a stable source
+snapshot and reviews the concurrent changes before publication/live use.
+Evidence and exact corrected paths: work/review34/REPORT.md and
+work/review34/PUBLISH-CHECKLIST.md. No Git mutation or provider call by judge.
+
+
+2026-09-17T10:20:26.963723+00:00 | REC-20260917-D | root-review34 | Completion supplement: final read-through found rejected assembly could retain an unrecorded answer. C10 validates before state/action reservation; regression reproduced old defect and now passes. Final pilot50/50 (9.665s), post-import docs pins26/26 (0.019s); reason334 remains2failures/5errors. Overall REJECT remains. All earlier49-test results are historical; no protected-source edits or publication. See work/review34/REPORT.md.
+
+
+### R003 R3-A3 engineer and judge36 status - 2026-09-17T10:26:31.117816+00:00
+
+Engineer completion paragraph, agent root-w36; original action UTC retained and source preserved.
+
+2026-09-17T10:03:35.489595+00:00 | R003 occurrence4 R3-A3 EC01 engineering complete; judgment/publication pending. Added the fixed-parent cycle1 RETURNED/ARCHIVED fork under A2 contracts, equal envelopes and exact removal of the contiguous OPEN AND NEW OBJECTIONS plus PUBLIC SIGNALS span. Archive custody, branch-local returns/uses, parent/input hashes, TRACE/RUN/EPISODES and mechanical commitment projections are implemented; only RETURNED continues through the inherited main schedule. Launcher selects LOOP-CROSS O01-O08, requires o004, preserves prior occurrences and reuses o001 NATIVE only for reading. Final qualification344/344reason tests,26/26docs pins and O01/O02 scripted launcher cells at C:/tw36/ec01-final/o004 pass. All15scoped delivery paths and70source pins are reviewed mechanically; candidate capability stays UNREVIEWED under work/w36. Actual o003 report remains absent at the final read, so use-survival is not inferred. No participant call, actual.env read, git mutation or real runs edit. Next authorized task is the separate judge review, then publisher installation/publication with remote verification before any separately authorized dispatch. Handoff: work/w36/INDEX.md; complete prepared launch: work/w36/OCC4-LAUNCH.md and run_r003_occ4.cmd.
+
+
+2026-09-17T10:26:31.117816+00:00 | REC-20260917-B | root-review36 | Independent engineering qualification complete after corrections: same concrete use task frozen from initial commitment, complete recursive critic/provider archives, direct paired results, explicit C:/tr36 fixture support and reviewed R3-A3 capability/70source pins.346/346reason+26/26docs-pin tests and O01/O02 paired16-call3-cycle fixtures PASS; exact2520/2744byte deletion, equal parent/envelopes, no archived objection leak,341fixture files stable on replay/collision.4445real o001-o003 files and169protected tracked files unchanged. o003 public REPORT remains NOT FOUND; no use-survival or semantic correction claimed. One delegated broad search exposed brief snippets; disclosed in review36, not used for judgment. No provider call, actual.env content read, runs write or Git mutation. Next: final document/prefix/checklist audit, then separate publisher exact-tree verification before occurrence4 dispatch. Handoff work/review36/INDEX.md; this judge has not published or launched.
+
+
+2026-09-17T10:32:54.794457+00:00 | REC-20260917-B | root-review36 | FINAL: APPROVED-AS-CORRECTED. Publication YES; occurrence4 engineering launch readiness YES after separate publication and remote/local equal-tree verification.346reason+26docs tests including post-append check PASS; paired O01/O02 fixture and canonical wire/archive/task custody PASS;4445real prior-occurrence files and169protected files unchanged;20explicit publication paths reviewed and current other-worker paths excluded. Documentation/prefix/checklist audit is complete. Corrected fixed use task and full archive implement original PLAN131; no live result or FW5 verdict. Brief-snippet exposure incident is disclosed in work/review36/REPORT.md; no blind-reading claim. No provider call, actual.env content read, runs write or Git mutation. Next authorized owner is publisher; full command/projection in work/review36/OCC4-LAUNCH.md. Stop at completed bounded judgment, reopen for concrete defect.
+
+
+## 2026-09-17 - R003 occurrence 3 reading complete
+
+2026-09-17T10:32:57.554960+00:00 | REC-20260917-B | root-w35 | W35 completed the occurrence-3 cross-lineage reading, report, owner packet, 24-cell inventory and byte-preserved o003 custody. Direct answer: one narrow O04 allocation specification gain with later USE is supported; a net/native-reasoning or criticism-specific advantage remains unestablished. R3-A2 USE is inspectable in 6/8 cells per loop arm, with 9/11 CROSS and 6/6 reached DECOMPOSED calls complete. Nine schema failures and two semantic step_unresolved stops remain visible. Next authorized task: designated judge reviews the o003 packet, then publisher reviews explicit paths and publishes/verifies; this reader neither changes git state nor dispatches occurrence 4. Recommended successor change, pending separate prospective declaration: EC01 same-parent RETURNED/ARCHIVED with the same use question and matched envelopes. See experiments/diagnostics/R003-open-problems-trial-series/reports/o003-REPORT.md, readings/o003/SUMMARY.md and work/w35/PUBLISH-CHECKLIST.md / OWNED-PATHS.md.
+
+The concurrent R3-A3 declaration predates this report and is kept separate from its evidence. This reader recommends a question that can recognize new defensible flaws, not only sealed anticipated flaws. Judge31/34 marker guard is clear; ledger and STATUS completion records are now appended with actual UTC. No publication has been claimed.

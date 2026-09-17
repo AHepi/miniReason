@@ -612,3 +612,215 @@ R003_REFUSED: OCCURRENCE_NUMBER_CHANGED
 ```
 
 The first discovery transcript is a preserved failure; final required suites exit0/OK. Deliberate negative fixtures can print FAILED/refusal text while the suite succeeds. Direct offline cells are fixtures, not participant/model evidence.
+
+
+## R3-A3 occurrence 4 EC01 engineering qualification (2026-09-17T10:00:57.465178+00:00)
+
+No provider/model call, actual .env read, git mutation, real occurrence creation or runs/ write occurred. This is offline engineering evidence, not a semantic correction finding or independent launch approval. The o003 report remained absent at the final check; use-step survival is not inferred. Candidate capability remains UNREVIEWED under work/w36 for the separate judge/publisher.
+
+The same cycle-1 parent/critics fork into RETURNED then ARCHIVED. The unchanged A2 RETURNED rendering supplies both objection-bearing blocks; ARCHIVED deletes exactly that contiguous span, including PUBLIC SIGNALS, without replacement. Both branches run return/use with equal envelopes; only RETURNED supplies subsequent cycles/closing. Trace/run/episode views include exact parent/input hashes, delivered/archived IDs, both returns/uses and a mechanical commitment projection/diff. That projection is not a semantic verdict; generated use questions still require a comparability reading.
+
+### Required tests (actual output pasted)
+
+Environment: Python C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe; PYTHONPATH=src;tests; PYTHONUTF8=1; PYTHONIOENCODING=utf-8; TMP=TEMP=C:/tw36; MINIREASON_TEST_WORK=work/w36/t; MINIREASON_TEST_LAUNCHER_WORK=C:/tw36/l; GIT_OPTIONAL_LOCKS=0.
+
+```text
+python -B -X utf8 -m unittest discover -s tests/reason -t .
+Ran 344 tests in 114.196s
+OK
+Exit: 0
+
+python -B -X utf8 -m unittest tests.loop.test_docs_pins
+Ran 26 tests in 0.019s
+OK
+Exit: 0
+```
+
+Full transcripts: work/w36/reason-tests.txt and docs-pins-tests.txt. Ten new fork/selection tests are included: common-parent identity; exact prompt/wire deletion and unchanged RETURNED rendering; archive custody; equal return/use envelopes; no sibling leak; both branch reports; mechanical diff; empty explicit objections; one isolated ARCHIVED schema repair; branch-local failures; interruption recovery; no replay of unknown intents; terminal immutability; CROSS-only/O01-O08/o004 selection and prior-occurrence preservation. The focused fork module passed6/6 and the selection regressions21/21.
+
+The first root suite finished344tests with14failures/2errors because its fixture environment selected an external dummy-env root and the old R002 scratch allowlist lacked C:/tw36. Preserve work/w36/reason-tests-initial-fixture-failure.txt. The corrected environment puts dummy env fixtures inside ignored work/w36; r002_launcher adds only C:/tw36/work/w36 scratch destinations. No provider/model contract changed. Earlier delegate full-suite output also passes344/344 with its default historical fixture roots; the final root run above qualifies the requested w36 roots.
+
+### Final-source O01/O02 launcher fixture (actual output pasted)
+
+```text
+python -B -X utf8 work/w36/offline_demo_final.py
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+Exit: 0
+```
+
+The launcher created C:/tw36/ec01-final/o004 with separate empty scratch placeholders o001-o003 (never real observations). Each cell has16calls/16attempts,3RETURNED cycles, closing complete, two objection IDs delivered versus archived, both branch pairs COMPLETE, and a nonempty scripted commitment/use diff. The fixture returns revise in RETURNED and retain in ARCHIVED; this is deliberate test data, not a model observation. Full stdout is work/w36/offline-demo-final.txt; structured summary is OFFLINE-DEMO-FINAL.json.
+
+| Cell | Common parent SHA-256 | Return user-prompt deletion [start,end) | Removed bytes | Wire deletion bytes |
+|---|---|---|---:|---:|
+| O01 | `522d45dcf90bc2b31358097e0b4ed88805f79c1797064964601e7e9b3a251104` | [2002,4522) | 2520 | 2744 |
+| O02 | `a008d4938d391a662c9119c32a47549555fe30e09fe58c31711f5e5524045898` | [1770,4290) | 2520 | 2744 |
+
+The removed UTF-8 span hash is `099fc68851d6634b0de909ad24b11d1230bb0cf788157b655d0b9db139aecd42`; the JSON-escaped wire span hash is `937a8abbc4b567be2ddf21d5f444a853af1868bd86f760fc8023f7b7166287a6` in these two fixtures. Actual live lengths depend on exact critic content and are recorded prospectively per parent; these fixture lengths are not universal constants. FINAL-CUSTODY.json confirms terminal execute made no child call, all333files remained hash-identical, and repeat o004 creation refused with OCCURRENCE_NUMBER_CHANGED. Earlier demos remain unchanged and are identified as predating the scratch allowlist correction.
+
+Final handoff: work/w36/INDEX.md links the filtered publication checklist, old/new source hashes,70-source candidate pins, UNREVIEWED capability, full detached command/projection, ledger/STATUS paragraphs and all failed/successful validation receipts. Following judge and publisher own approval, capability installation and publication; engineering did not perform them.
+
+
+### Independent judge36 final-source qualification - 2026-09-17T10:28:07.400650+00:00
+
+REC-20260917-B, root-review36.346/346reason tests and26/26docs-pin tests PASS. Fresh O01/O02 scripted launcher cells at C:/tr36/ec01-final/o004 each complete16logical calls/16attempts/3main cycles. Both branch parents hash identically per cell. Each return pair has exactly2520rendered UTF-8 bytes /2744serialized-wire bytes deleted, with no replacement and no other difference. No objection text/ID/source or branch/time leakage was found in ARCHIVED input;8/8canonical provider wires match outer prepared bytes. The uses have identical system/task/context except their own AFTER ANSWER. All8critic files per cell, including provider records, match archive copies.341fixture files are unchanged after terminal replay and occurrence-number collision. The full required suites include intentional failing-cell fixtures; those stdout labels are expected and the unittest suites pass.
+
+All4445real o001-o003 files remain byte-identical during review;169protected non-brief tracked files match HEAD; frozen document prefixes are retained.70source pins/current reviewed capability and the pure LOOP-CROSS input gate pass. No provider/model call, actual.env content read, runs write or Git mutation. One delegated broad search exposed brief snippets; it is disclosed under work/review36/ERRATA.md and is not used to assess outcomes. o003-REPORT.md: NOT FOUND at qualification. These are engineering facts, not a live correction or FW5 verdict. Earlier fixture/byte-probe failures and pre-correction evidence remain under work/review36.
+
+Exact reason-final-tests.txt transcript:
+
+```text
+Command: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+Started: 2026-09-17T10:19:50.508887+00:00
+...............................................................CONFIG_ERROR
+...........................................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 346 tests in 129.549s
+
+OK
+Run directory: C:\Dev\miniReason\work\review36\t\cli\2b844c05
+{"run_id": "20260917T102013Z-r002-a7b6b0", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260917T102013Z-r002-a7b6b0", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+O01-n: COMPLETE rc=0
+O01-x: FAILED rc=2
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: FAILED rc=2
+O02-d: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O01-n: FAILED rc=2
+O01-n: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tr36\\a1-sf5kf_fx\\o002", "result": {"failed": 0}}
+{"occurrence": "C:\\tr36\\a2-sa_r0oym\\o003", "result": {"failed": 0}}
+{"occurrence": "C:\\tr36\\a3-6r3xpguf\\o004", "result": {"failed": 0}}
+O01-d: COMPLETE rc=0
+
+Exit: 0
+Finished: 2026-09-17T10:22:00.508446+00:00
+```
+
+Exact docs-pins-final-tests.txt transcript:
+
+```text
+Command: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+Started: 2026-09-17T10:20:06.970732+00:00
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.020s
+
+OK
+
+Exit: 0
+Finished: 2026-09-17T10:20:07.649794+00:00
+```
+
+Exact offline-final-tests.txt transcript:
+
+```text
+Command: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 C:\Dev\miniReason\work\review36\offline_demo_final.py
+Started: 2026-09-17T10:20:06.962203+00:00
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+{
+  "cells": [
+    {
+      "archived_answer": "OFFLINE FIXTURE ARCHIVED: retain the decision because no objection was delivered.",
+      "archived_objection_ids": [
+        "c0001-signal-o001",
+        "c0001-signal-o002"
+      ],
+      "archived_use_conclusion": "retain",
+      "attempts": 16,
+      "calls": 16,
+      "completed_cycles": 3,
+      "delivered_objection_ids": [
+        "c0001-signal-o001",
+        "c0001-signal-o002"
+      ],
+      "first_seven_calls": [
+        "initial",
+        "c0001-signal-a",
+        "c0001-signal-b",
+        "c0001-R-return",
+        "c0001-R-use",
+        "c0001-A-return",
+        "c0001-A-use"
+      ],
+      "identical_inputs_sha256": "882236e4da8907b33d143c44d9434ea5787759ed31191a0f7c4e2058ac775045",
+      "mechanical_diff_nonempty": true,
+      "output": "r/O01/x",
+      "parent_state_sha256": "2e73f9eeefece3e8830074591bb966b08010a1a4c241094fffc13b960bbc1ffe",
+      "problem": "O01",
+      "removed_labels": [
+        "OPEN AND NEW OBJECTIONS",
+        "PUBLIC SIGNALS"
+      ],
+      "removed_utf8_bytes": 2520,
+      "returned_answer": "OFFLINE FIXTURE RETURNED: revise the decision because the delivered rival applies.",
+      "returned_use_conclusion": "revise",
+      "stop_reason": "cycle_budget"
+    },
+    {
+      "archived_answer": "OFFLINE FIXTURE ARCHIVED: retain the decision because no objection was delivered.",
+      "archived_objection_ids": [
+        "c0001-signal-o001",
+        "c0001-signal-o002"
+      ],
+      "archived_use_conclusion": "retain",
+      "attempts": 16,
+      "calls": 16,
+      "completed_cycles": 3,
+      "delivered_objection_ids": [
+        "c0001-signal-o001",
+        "c0001-signal-o002"
+      ],
+      "first_seven_calls": [
+        "initial",
+        "c0001-signal-a",
+        "c0001-signal-b",
+        "c0001-R-return",
+        "c0001-R-use",
+        "c0001-A-return",
+        "c0001-A-use"
+      ],
+      "identical_inputs_sha256": "46341a80866125c99e782a405b06a2747894bb63921eb527b6aa31111a223a0c",
+      "mechanical_diff_nonempty": true,
+      "output": "r/O02/x",
+      "parent_state_sha256": "f3806ddfb18acb07db1b27f4cef3fae9f0f10b26e42c84b88af09e76808e3b6c",
+      "problem": "O02",
+      "removed_labels": [
+        "OPEN AND NEW OBJECTIONS",
+        "PUBLIC SIGNALS"
+      ],
+      "removed_utf8_bytes": 2520,
+      "returned_answer": "OFFLINE FIXTURE RETURNED: revise the decision because the delivered rival applies.",
+      "returned_use_conclusion": "revise",
+      "stop_reason": "cycle_budget"
+    }
+  ],
+  "claim": "Offline scripted fixture only; provider/model calls: 0",
+  "launcher_result": {
+    "failed": 0,
+    "rows": 2,
+    "status": "FINISHED"
+  },
+  "occurrence": "C:\\tr36\\ec01-final\\o004",
+  "schema": "minireason.r003.r3-a3-offline-launcher-demo.v1"
+}
+
+Exit: 0
+Finished: 2026-09-17T10:20:12.063481+00:00
+```
+

@@ -135,6 +135,8 @@ def write_episode_records(directory, cfg, objections):
     if "closing-return" in calls:
         returns.append("closing-return")
     for call_id in returns:
+        if cfg.get("amendment") == "R3-A3" and call_id.startswith("c0001-A-"):
+            continue  # Archived evidence is separate; it cannot advance main-chain before.
         call = calls[call_id]
         after = call["parsed"]
         if not isinstance(after, dict):
@@ -258,6 +260,11 @@ def reports(directory, cfg, state, answer, objections, events):
         trace += f"## {event['event']}\n\n```json\n{json.dumps(event, ensure_ascii=False, indent=2, sort_keys=True)}\n```\n\n"
     if not objections and not events:
         trace += "No objection or stall-switch event was recorded.\n"
+    from .r003_ec01 import reading_view
+    paired_view = reading_view(directory) if cfg.get("amendment") == "R3-A3" else ""
+    if paired_view:
+        trace += paired_view
+        write(directory / "EPISODES.md", "# R003 paired episodes\n\n" + banner + paired_view, replace=True)
     write(directory / "TRACE.md", trace, replace=True)
     recipe = get(directory / "recipe.json") if (directory / "recipe.json").exists() else {}
     ceilings = recipe.get("ceilings", {})
@@ -284,9 +291,13 @@ def reports(directory, cfg, state, answer, objections, events):
     policy = ("one initial attempt plus at most one schema repair per logical call; zero fallbacks/transport retries; "
               "CEILING_HIT receives no repair" if recipe.get("attempt_policy", {}).get("schema_repairs") == 1
               else "one attempt, zero repairs/fallbacks/retries")
+    prompt_description = "32768"
+    if cfg.get("amendment") == "R3-A3":
+        ceiling_text = "native 32768; critics 32768; use 16384"
+        prompt_description = "per-route inherited R3-A1 descriptor (see actual request controls)"
     run = (f"# {study_label} run\n\n" + banner + f"Run: `{cfg['run_id']}`. Condition: `{cfg['condition']}`.\n\n"
            f"Calls/attempts: {state['calls']}/{state['attempts']}. Schema repairs: {repairs}. Strict policy: {policy}.\n\n"
-           f"Ceilings: {ceiling_text}; prompt 32768; wall 300 seconds per attempt; "
+           f"Ceilings: {ceiling_text}; prompt {prompt_description}; wall 300 seconds per attempt; "
            f"at most {call_ceiling} logical calls and {attempt_ceiling} attempts. "
            f"Base/max completion allowance: {base_allowance}/{maximum_allowance}.\n\n"
            f"Reached by repair: `{json.dumps(successful_repaired_calls)}`. "
@@ -300,4 +311,4 @@ def reports(directory, cfg, state, answer, objections, events):
            f"Stop reason: `{state['stop_reason']}`. {state.get('stop_detail', '')}\n\n"
            "Schema, counter and episode assembly success is custody evidence, not a score or correctness verdict.\n\n"
            "## Actual request controls and reported usage\n\n```json\n" + json.dumps(settings, ensure_ascii=False, indent=2, sort_keys=True) + "\n```\n")
-    write(directory / "RUN.md", run, replace=True)
+    write(directory / "RUN.md", run + paired_view, replace=True)

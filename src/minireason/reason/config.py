@@ -173,6 +173,7 @@ R003_RECIPE_SHA256.update({
     'r003-cross-v2.json': '800fabaafa1f4a82a476bcf85177359a2a004ac49f4fb64d9a17a7beb2d4aa00',
     'r003-decomposed-v2.json': '208b3b34ac669b7a91642f6ffb33fadb8a21f70f7d87406ac5f6c67beb9451ab',
     'r003-cross-v3.json': 'e9b08a83301b527d83ef639765892f7d84b807cf7da1c8f5af4a3c1e3c13c753',
+    'r003-cross-v4.json': '19ba27f6d055cb49f0b83d80d19d67b276395286fb4c30d9fdc643f4d05a2da7',
     'r003-decomposed-v3.json': '574bb12200266c2b9eabbf0e3f237fdaef3941b0506495d197be2f434423dcb8',
 })
 R003_SCHEMA_SHA256 = {

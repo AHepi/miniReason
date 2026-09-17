@@ -375,7 +375,11 @@ def validate_return(data: dict, before: dict, objections: list[dict], relation: 
 
 def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: dict,
                  *, checker_eligible: bool, study_profile=None, prior_objections=(),
-                 contract_version=None) -> dict:
+                 contract_version=None, expected_use_task=None) -> dict:
+    if expected_use_task is not None and (
+            data["query_id"] != expected_use_task["query_id"]
+            or data["question"] != expected_use_task["question"]):
+        raise ReasonFailure("SCHEMA_FAILURE", "Use response changes the frozen EC01 use task")
     dependency = data["dependency"]
     known = {item["relation_id"] for item in relation["relations"]}
     if dependency["relation_id"] not in known:
@@ -585,7 +589,7 @@ def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dic
                answer=None, before=None, objections=(), fork=None,
                coding_id=None, checker_eligible=False, expected_step=None,
                accepted_steps=(), study_profile=None, prior_objections=(),
-               contract_version=None, decisive_step=None) -> dict:
+               contract_version=None, decisive_step=None, expected_use_task=None) -> dict:
     schema_name = _role_schema(role, contract_version)
     if schema_name is None:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R002 parse role: " + role)
@@ -609,7 +613,8 @@ def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dic
         return validate_use(data, before, answer, relation, fork,
                             checker_eligible=checker_eligible, study_profile=study_profile,
                             prior_objections=prior_objections,
-                            contract_version=contract_version)
+                            contract_version=contract_version,
+                            expected_use_task=expected_use_task)
     if role == "decomposed_return":
         return validate_decomposed_return(data, before, list(objections),
                                           contract_version=contract_version)
@@ -847,16 +852,18 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
         if recipe["condition"] == "LOOP-DECOMPOSED" and cycles != 3:
             raise ReasonFailure("CONFIG_ERROR", "LOOP-DECOMPOSED has exactly three one-step cycles")
     amendment = recipe.get("amendment") if recipe is not None else None
-    if amendment not in {None, "R3-A1", "R3-A2"}:
+    if amendment not in {None, "R3-A1", "R3-A2", "R3-A3"}:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R003 amendment")
-    if amendment in {"R3-A1", "R3-A2"} and study_profile != config.R003_PROFILE:
+    if amendment in {"R3-A1", "R3-A2", "R3-A3"} and study_profile != config.R003_PROFILE:
         raise ReasonFailure("CONFIG_ERROR", f"{amendment} is specific to r003-open-v1")
-    if amendment in {"R3-A1", "R3-A2"} and mode == "live":
+    if amendment in {"R3-A1", "R3-A2", "R3-A3"} and mode == "live":
         expected_preflight = get(config.R003_DIR / "R003-input-preflight.json")
         if tokenizers != expected_preflight:
             raise ReasonFailure(
                 "TOKENIZER_MISMATCH",
                 f"{amendment} live runs require the exact registered R003 input-preflight descriptor")
+    if amendment == "R3-A3" and (condition != "LOOP-CROSS" or cycles != 3):
+        raise ReasonFailure("CONFIG_ERROR", "R3-A3 requires LOOP-CROSS with the three-cycle main schedule")
     forks, forks_text, _forks_path = _load_object(fork_registry, "fork registry", optional=True)
     coding, coding_text, coding_path = _load_object(coding_manifest, "coding manifest", optional=True)
     if recipe is not None and forks is None:
@@ -920,7 +927,7 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
     cfg = {"schema": R002_SCHEMA, "run_id": run_id, "created_epoch": time.time(),
            "mode": mode, "condition": condition, "problem_id": problem_id, "cycles": cycles,
            "attempt_policy": "strict", "prompt_token_cap": prompt_token_cap,
-           "prompt_contract": (prompts.R003_A2_CONTRACT if amendment == "R3-A2" else
+           "prompt_contract": (prompts.R003_A2_CONTRACT if amendment in {"R3-A2", "R3-A3"} else
                                 prompts.R003_A1_CONTRACT if amendment == "R3-A1" else
                                 config.R003_PROFILE if study_profile == config.R003_PROFILE else
                                 prompts.R002_CONTRACT),
@@ -1145,12 +1152,26 @@ def _call(directory: Path, adapter: Adapter, cfg: dict, contracts: ContractSet,
     messages = prompts.render_r002(
         role, [*blocks, *contracts.prompt_blocks(role, contract_version)],
         study_profile=cfg.get("study_profile"), contract_version=contract_version)
+    expected_use_task = parse_context.get("expected_use_task")
+    ec01_use_instruction = (
+        "For this call the concrete question has already been selected in SHARED EC01 USE TASK. "
+        "Evaluate it; echo its query_id and question exactly, including for cannot_decide. "
+        "Do not select a different question.")
+    if (cfg.get("amendment") == "R3-A3" and role == "propagation_use"
+            and expected_use_task is not None):
+        messages[0]["content"] += "\n" + ec01_use_instruction
     original_user_content = messages[1]["content"]
     attempt = 0
     while True:
         coordinate = {"call_id": call_id, "cycle": cycle, "attempt": attempt,
                       "condition": cfg["condition"], "strict": True,
                       "schema_repair": bool(attempt)}
+        if cfg.get("amendment") == "R3-A3":
+            coordinate["branch_id"] = ("ARCHIVED" if call_id.startswith("c0001-A-") else
+                "SHARED" if call_id in {"initial", "c0001-signal-a", "c0001-signal-b"} else "RETURNED")
+            if (directory / "ec01/parent.json").exists():
+                coordinate["parent_state_sha256"] = hashlib.sha256(
+                    (directory / "ec01/parent.json").read_bytes()).hexdigest()
         prepared = adapter.prepare(seat=seat, messages=messages, max_tokens=max_tokens,
                                    thinking=seat["thinking"], role=role, coordinate=coordinate)
         if tokenizer_counter is None:
@@ -1234,6 +1255,9 @@ def _call(directory: Path, adapter: Adapter, cfg: dict, contracts: ContractSet,
                                         study_profile=cfg.get("study_profile"),
                                         contract_version=contract_version,
                                         original_user_content=original_user_content)
+            if (cfg.get("amendment") == "R3-A3" and role == "propagation_use"
+                    and expected_use_task is not None):
+                messages[0]["content"] += "\n" + ec01_use_instruction
             attempt += 1
             continue
         raise ReasonFailure(saved["status"], saved.get("detail", "Strict R002 call failed"))
@@ -1543,7 +1567,7 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
             def call(role, seat, call_id, cycle, blocks, **context):
                 default_ceiling = 32768 if seat["thinking"] == "native" else 16384
                 critic_ceiling = (role == "decomposed_critic" or (
-                    recipe is not None and recipe.get("amendment") in {"R3-A1", "R3-A2"}
+                    recipe is not None and recipe.get("amendment") in {"R3-A1", "R3-A2", "R3-A3"}
                     and role in {"prose_critic", "tested_critic"}))
                 max_tokens = (recipe.get("ceilings", {}).get("critic_completion_tokens", default_ceiling)
                               if recipe is not None and critic_ceiling else default_ceiling)
@@ -1667,6 +1691,30 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
                               "missing_derivation": synthesized["missing_derivation"], "claims": [], "derivation_steps": []}
                     call("native_match_note", _seat("use", recipe), f"c{cycle:04d}-use", cycle,
                          _answer_blocks(problem, relation) + [("SYNTHESIS", _json(synthesized))], objections=[], before=answer)
+                elif cfg.get("amendment") == "R3-A3" and cycle == 1:
+                    from .r003_ec01 import execute_pair
+                    before_answer = deepcopy(answer)
+                    def use_blocks(branch_answer, shared_use_task):
+                        return _answer_blocks(problem, relation) + [
+                            ("BEFORE ANSWER", _answer_text(before_answer)),
+                            ("AFTER ANSWER", _answer_text(branch_answer) if branch_answer is not None
+                             else "EC01 custody template slot: this branch's return"),
+                            ("SHARED EC01 USE TASK", _json(shared_use_task)),
+                            ("SHARED EC01 USE TASK RULE",
+                             "The query_id and question above were frozen before either branch. "
+                             "Evaluate that exact question and echo both strings exactly; do not "
+                             "choose, rewrite, or replace the task."),
+                            ("PUBLIC TASK MODE", _json({"candidate_id": cfg["problem_id"],
+                             "checker_eligible": False, "oracle_kind": "unknown"}))]
+                    paired = execute_pair(directory, cfg, recipe, state, before_answer,
+                        deepcopy(active), deepcopy(signal_items), "prose_return",
+                        _return_blocks(problem, before_answer, active, relation, fork, signal_items),
+                        use_blocks, contracts, adapter, tokenizer_counter, call, relation, fork)
+                    answer = paired["return"]["parsed"]
+                    objections[:] = paired["objections"]
+                    state["tail_edits"] += paired["tail_edits"]
+                    events.append({"event": "EC01 route fork", "cycle": 1, **state["ec01"]})
+                    _write_episode_records(directory, cfg, objections)
                 else:
                     return_role = "prose_return" if recipe["seats"]["return"]["role"].startswith("prose") else "tested_return"
                     before_answer = deepcopy(answer)

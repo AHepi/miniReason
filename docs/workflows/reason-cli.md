@@ -180,3 +180,157 @@ Independent judge coverage clarification: the normalized rule covers every criti
 
 
 Final judge receipt 2026-09-17T08:20:08.589160+00:00: the earlier engineer pending-candidate wording above is superseded by actual root-review32 APPROVED-AS-CORRECTED. Publication YES; occurrence3 engineering launch readiness YES.334reason+26docs tests and4offlinecells pass; exact68pins and both pure live-input gates pass. Full detached command/projection: experiments/diagnostics/R003-open-problems-trial-series/COMMANDS.md and work/review32/OCC3-LAUNCH.md. C:/tr32/work/review32 are judge fixture destinations. Exact publication remains required before dispatch; this task made no provider call or Git mutation.
+
+
+### R003 R3-A3 occurrence 4: EC01 fork custody (2026-09-17)
+
+R3-A3 runs O01-O08 under LOOP-CROSS only and creates exactly o004 with `--amendment R3-A3 --expected-occurrence o004`. NATIVE is not rerun; the later reader may reuse o001 NATIVE. Occurrences o001-o003 remain immutable. The R3-A2 schemas, locator/commitment rules, routes, ceilings, repair limit and early-stop behavior remain in force.
+
+After one shared initial proposal and the two shared cycle-1 critics, the runner freezes the common parent and creates RETURNED and ARCHIVED custody branches. RETURNED uses call IDs `c0001-R-return` and `c0001-R-use`; ARCHIVED uses `c0001-A-return` and `c0001-A-use`. Branch labels are record metadata only. Run RETURNED before ARCHIVED. The archived branch ends after use; cycles 2-3 and any closing return continue only from a successful RETURNED cycle-1 gate.
+
+The RETURNED return prompt is the unchanged A2 rendering. ARCHIVED deletes one contiguous byte span: the `OPEN AND NEW OBJECTIONS` block, its separators and `PUBLIC SIGNALS`, which can carry objection content and working/missing-derivation signals. It inserts no placeholder; system, role and schema bytes are unchanged. Records preserve exact removed bytes, rendered byte start/end/length/SHA-256, wire byte start/length/SHA-256, both prompt/wire hashes and the identical prefix/suffix assertion. The archive stores the objection records outside participant context. No objection ID, summary, disposition, history, signal or branch label may leak into the ARCHIVED prompt. Empty critic objection lists establish only the absence of explicit objection items; inspect removed signals before calling the difference metadata-only, and never infer nonconstant content dependence from metadata alone.
+
+Both branches retain the same endpoint, role, thinking/effort, completion/input allowance, repair, transport and wall settings. The use-task template and frozen parent/use inputs are the same, but each use seat generates its concrete question from its branch-local return. Preserve both questions and let the reader decide whether they are comparable. Never copy a question or answer across branches to force equality.
+
+`TRACE.md`, `RUN.md`, manifests and episode records show both branches side by side: common parent/input hash; delivered versus archived objection IDs; return/use request, response and public-result hashes; terminal state; and the string-level diff of declared decisive commitments. This is custody evidence only. It does not decide whether an objection was understood, whether a change corrected an error, or whether FW5 applies.
+
+A failure is branch-local and immutable. Continue an independently viable sibling, but do not create cycles 2-3 or closing when RETURNED did not complete its return/use gate. Resume verifies the occurrence's frozen manifest/source custody before execution; launcher result records already present cause terminal cells to be skipped. It does not reconstruct every archive inside an already terminal cell. Unknown or indeterminate delivery is never replayed.
+
+The maximum per problem is 16 logical calls and 32 attempts with one repair each. Across eight problems the maximum is 128 logical calls, 256 attempts, 7,340,032 completion tokens and 211,899,392 prompt tokens; the combined allowance is 219,239,424. See the R003 PLAN R3-A3 section, COMMANDS.md and `work/w36/OCC4-LAUNCH.md` for the declared interpretation, full detached command and exact projection. Offline fixtures establish wiring and custody only; they make no semantic or provider claim.
+
+
+## DeepSeek Flash bounded pilot
+
+The `minireason.pilot` package is a separate, host-controlled
+task-to-route-to-spawn-to-assemble-to-verify workflow. It reuses the reason
+adapter, endpoint registry, restricted checker, env-file loader, and report
+conventions, but it does not alter historical reason recipes or saved runs.
+The twelve preparatory interface probes passed their declared criteria; this
+qualifies the bounded interfaces, not autonomous reliability or superiority.
+
+Run the shipped offline direct fixture from the repository root:
+
+```powershell
+$env:PYTHONPATH='src;tests'
+$env:PYTHONUTF8='1'
+$env:PYTHONIOENCODING='utf-8'
+$env:TMP='C:\tw34'
+New-Item -ItemType Directory -Force -Path 'C:\tw34' | Out-Null
+& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 -m minireason.pilot run `
+  --task research/deepseek-flash-pilot/examples/direct.task.json `
+  --mode offline `
+  --scripted research/deepseek-flash-pilot/examples/direct.scripted.json `
+  --out C:\tw34\pilot-direct `
+  --max-calls 24
+```
+
+Offline is the default and requires `--scripted` JSON. It never opens
+`--env-file`. Live mode rejects scripted responses and may opt into the same
+ignored/untracked, allowed-key env-file loader as the reason CLI:
+
+```powershell
+& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 -m minireason.pilot run `
+  --task C:\path\to\owner.task.json `
+  --mode live `
+  --env-file C:\path\to\ignored-untracked.env `
+  --out C:\tw34\pilot-live-001 `
+  --max-calls 24
+```
+
+The task is a JSON object with required `task` and optional `features`,
+`inputs`, `check`, and `critic_seats`. The catalogue contains `direct_answer`,
+`evidence_read`, `engineer_patch`, `critic_return`, and
+`decompose_synthesize`. A structured `features.kind` can select the intended
+route; the host checks required inputs and deterministically replaces an
+invalid or unsuitable model choice. A computable `check` runs through the
+existing restricted checker. Otherwise verification requires an owner-listed
+different-lineage endpoint that supports thinking off; unavailability yields
+a partial or unavailable result.
+
+The run directory freezes task, catalogue, tool manifest, endpoint snapshot,
+configuration, and source hashes. Read `ANSWER.md`, `RUN.md`, `TRACE.md`,
+`verification/result.json`, then `calls/`. Each attempt retains a pre-call
+decision, actual request/response paths, exact wire custody, public output
+digest, epoch, latency, usage, returned identity, finish status, and
+reasoning-presence metadata. Hidden reasoning is not persisted. The Markdown
+files are views; attempt files remain the evidence.
+
+`src/minireason/pilot/tools.json` exposes `route`, `spawn`, `assemble`, and
+`verify` as OpenAI function tools. Beta strict mode passed its probe and the
+generated manifest uses `strict:true`; remove that member for an ordinary
+endpoint. An external harness instantiates
+`Pilot(task, out, mode, max_calls, scripted)`, submits each OpenAI-shaped tool
+call to `pilot.dispatch`, appends the returned `role:tool` message using the
+matching `tool_call_id`, and calls `pilot.finish` after a terminal state.
+Control turns keep thinking disabled. The external harness must record its own
+actual control wire/response bytes, public tool IDs and arguments, usage,
+epochs, latency, finish reason, returned model, and reasoning-presence flag,
+and count control calls in the same global budget. The existing reason
+`Adapter` does not round-trip tool calls, so the built-in CLI uses the probed
+JSON control envelopes instead.
+
+Fan-out defaults to 3 and is hard-bounded at 8; depth is at most 2, with no
+recursive decomposition at depth 2. The current dispatcher is sequential; an
+external scheduler still caps active provider requests at five. The 24-call
+maximum includes the single allowed schema repair per logical call. There is
+no transport retry, overwrite, resume, replay, automatic cap escalation, or
+self-modification. A new occurrence uses a fresh short directory.
+
+`engineer_patch` proposes allowlisted patches and test commands but changes no
+file and executes no claimed test; its result stays partial pending owner
+work. Critic-dependent templates stay partial when a different lineage is
+unavailable. Local checks prove only their declared propositions and critic
+judgments remain fallible. There is no price guarantee or general correctness,
+creativity, production-reliability, or matched-control claim. Owner examples
+and expected call schedules are in `work/w34/USE-CASES.md`; study evidence and
+the full harness interface are in `research/deepseek-flash-pilot/README.md`.
+
+The external tool harness must reserve a fixed control-call allowance C and
+instantiate Pilot with max_calls=N-C, enforcing C itself (including repair and
+final control turns). This keeps the combined run within N; the built-in CLI
+already counts its own controls and workers together. W34 qualification:
+46/46 offline tests passed and two 3-call CLI fixtures completed; no live
+integrated pilot was run.
+
+
+### Judge correction supplement - review34, 2026-09-17
+
+The worker section above is retained verbatim. The constructor uses keyword-only
+options: `Pilot(task, out, mode="live", max_calls=N-C, scripted=None)`; reserve
+and enforce the external control allowance as described above. The shipped
+strict wire manifest omits unsupported string/array length constraints, while
+local host validation retains them. Actual provider acceptance of the full
+corrected manifest is NOT FOUND.
+
+For a concrete first live task, from `C:\Dev\miniReason`, use the following
+command after setting `PYTHONPATH=src;tests`, UTF-8 variables, and creating the
+short temp directory. It calls the live provider; the judge exercised this
+route only with an HTTP transport double and a synthetic env file.
+
+```powershell
+& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 -m minireason.pilot run `
+  --task research/deepseek-flash-pilot/examples/direct.task.json `
+  --mode live --env-file .env `
+  --out C:\tw34\pilot-live-001 --max-calls 24
+```
+
+The env file must be ignored and untracked inside this source checkout; the
+earlier `C:\path` placeholders are not runnable defaults. The normal fixture
+uses three provider calls and an owner-sealed local checker. Inputs must be
+short enough to fit the spawn control's 2,048-token repeated-input envelope.
+Only JSON/schema errors receive one repair; source-custody errors stop.
+
+The judge corrected a live-only wire mismatch by freezing pilot message
+mapping order before both preparation and dispatch. The existing reason
+worker, provider modules, checker and historical records were unchanged.
+49 pilot tests now pass, including normal and repaired live child HTTP doubles.
+This is offline qualification, not an integrated provider run or a guarantee
+of substantive correctness, engineering success or autonomous reliability.
+
+
+### R3-A3 judge supplement: same concrete use task and full custody
+
+2026-09-17T10:28:07.400650+00:00, REC-20260917-B, root-review36. The preceding permission for two independently generated cycle-1 questions is superseded: both EC01 branches receive one exact task/query_id frozen from the initial working_position quote before either return. It is the application question documented in the PLAN judge supplement. The A2 schema remains unchanged; exact echo is checked on both use attempts and any existing shape repair. The common task/hash, branch-local return/use results and mechanical comparison are exposed side by side. The ARCHIVED return's only prompt/wire difference remains the objection-bearing span deletion. Complete critic attempts, including nested provider custody, are archived byte-for-byte. No archived objection enters either ARCHIVED participant call. C:/tr36 and work/review36 are explicit judge fixture roots.
+
+Use `--amendment R3-A3 --expected-occurrence o004 --conditions LOOP-CROSS` with all O01-O08 and reviewed `R003-CAPABILITY.R3-A3.json`; source identity is `SOURCE_PINS.R3-A3.json`. NATIVE is reused from o001 only in the later reading. The complete detached command/projection is in work/review36/OCC4-LAUNCH.md. Review qualification is recorded in VALIDATION. Exact publication and remote/local tree verification precede any separately authorized dispatch; this judge made no provider call or Git mutation.
+

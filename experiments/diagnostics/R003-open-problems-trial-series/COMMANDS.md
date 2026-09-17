@@ -191,3 +191,140 @@ echo exit=%ERRORLEVEL% > "C:\Dev\miniReason\work\review32\r003-occ3.exit"
 | Maximum prompt allowance | 22,618,496 | 22,618,496 | 361,895,936 |
 
 Combined maximum: 374,478,848 tokens. Sequential attempt envelope: 448 x 300 seconds = 134,400 seconds (37h20m). These are loose authorization ceilings, not predicted cost/duration. No transport retry, fallback or ceiling retry. Same eight problems/question; o001 NATIVE reused only by the reader. No live run was performed by this judge. Publication and exact remote/local tree verification must precede launch.
+
+
+## R3-A3 occurrence-4 EC01 command (declared 2026-09-17)
+
+This command is prospective and unexecuted. The exact R3-A3 source, tests, source pins and independently reviewed `R003-CAPABILITY.R3-A3.json` must be published and remotely verified before the external command file is installed or launched. This engineering task made no provider/model call and did not read `.env`.
+
+From `cmd.exe`, after installing the reviewed command file at the shown external path, detach it with:
+
+```cmd
+start "" /b cmd.exe /d /c "C:\Dev\minireason-launch\run_r003_occ4.cmd"
+```
+
+Complete command-file contents:
+
+```cmd
+@echo off
+cd /d C:\Dev\miniReason
+if not exist C:\tw36 mkdir C:\tw36
+set PYTHONUTF8=1
+set PYTHONIOENCODING=utf-8
+set PYTHONDONTWRITEBYTECODE=1
+set PYTHONPATH=src;tests
+set GIT_OPTIONAL_LOCKS=0
+set TMP=C:\tw36
+set TEMP=C:\tw36
+if not exist C:\tw36 ( echo exit=refused-tmp-unavailable > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o001\MANIFEST.json ( echo exit=refused-missing-o001 > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o002\MANIFEST.json ( echo exit=refused-missing-o002 > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o003\MANIFEST.json ( echo exit=refused-missing-o003 > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if exist C:\Dev\miniReason\runs\R003-open-v1\o004 ( echo exit=refused-o004-exists > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\Dev\miniReason\runs\R003-open-v1 --amendment R3-A3 --expected-occurrence o004 --problems O01 O02 O03 O04 O05 O06 O07 O08 --conditions LOOP-CROSS --question "On the same initial proposal, does delivering cycle-1 objections change a response and later use on a flaw named in the sealed brief, compared with generating and archiving those same objections?" --mode live --env-file C:\Dev\miniReason\.env --tokenizer-pins C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\R003-input-preflight.json --capability C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\R003-CAPABILITY.R3-A3.json --brief-manifest C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\briefs\MANIFEST.json --authorize-live > "C:\Dev\minireason-launch\r003-occ4.log" 2>&1
+echo exit=%ERRORLEVEL% > "C:\Dev\minireason-launch\r003-occ4.exit"
+```
+
+The presence guards require all prior occurrence manifests and refuse any existing o004. `--expected-occurrence o004`, the series lock and create-only writes refuse an unexpected allocation or overwrite. Explicit `--conditions LOOP-CROSS` selects the only R3-A3 condition. The reader may reuse o001 NATIVE later; no participant sees that baseline.
+
+Per problem the shared prefix is initial + Qwen critic + Kimi critic. Cycle 1 then runs `c0001-R-return`, `c0001-R-use`, `c0001-A-return`, `c0001-A-use`, in that order. ARCHIVED ends there. Cycles 2-3 and closing continue only from RETURNED under existing early-stop rules.
+
+| Projection | Per problem | Eight problems |
+|---|---:|---:|
+| Logical/base attempts | 16 | 128 |
+| Maximum attempts with one repair each | 32 | 256 |
+| Base completion allowance | 458,752 | 3,670,016 |
+| Maximum completion allowance | 917,504 | 7,340,032 |
+| Base prompt allowance including reserve | 13,243,712 | 105,949,696 |
+| Maximum prompt allowance | 26,487,424 | 211,899,392 |
+
+Combined maximum allowance is 219,239,424 tokens. The sequential 256-attempt, 300-second envelope is 76,800 seconds (21h20m). These are loose authorization ceilings, not predicted spend or duration. No transport retry, fallback or ceiling retry is authorized. A branch failure is preserved; an independently viable sibling may complete, but cycles 2-3/closing require the RETURNED return/use gate.
+
+Status and recovery after a separately authorized launch use the normal commands:
+
+```cmd
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py status --occurrence C:\Dev\miniReason\runs\R003-open-v1\o004
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py resume --occurrence C:\Dev\miniReason\runs\R003-open-v1\o004
+```
+
+Resume verifies the frozen occurrence manifest/source custody before execution and skips cells with terminal launcher result records. It does not reconstruct every internal archive in those already terminal cells, and never replays unknown or indeterminate delivery. `work/w36/OCC4-LAUNCH.md` preserves the same command and projection for the judge/publisher handoff.
+
+
+### Judge36 complete occurrence-4 command and projection - 2026-09-17T10:28:07.400650+00:00
+
+# R003 occurrence 4 detached command and projection
+
+Prospective only. Do not create or run the external command file until the exact R3-A3 source, tests, source pins and independently reviewed `R003-CAPABILITY.R3-A3.json` have been published and remotely verified. This judge task made no provider/model call and did not read actual `.env` content.
+
+From `cmd.exe`, detached:
+
+```cmd
+start "" /b cmd.exe /d /c "C:\Dev\minireason-launch\run_r003_occ4.cmd"
+```
+
+Complete `C:\Dev\minireason-launch\run_r003_occ4.cmd` contents:
+
+```cmd
+@echo off
+cd /d C:\Dev\miniReason
+if not exist C:\tr36 mkdir C:\tr36
+set PYTHONUTF8=1
+set PYTHONIOENCODING=utf-8
+set PYTHONDONTWRITEBYTECODE=1
+set PYTHONPATH=src;tests
+set GIT_OPTIONAL_LOCKS=0
+set TMP=C:\tr36
+set TEMP=C:\tr36
+if not exist C:\tr36 ( echo exit=refused-tmp-unavailable > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o001\MANIFEST.json ( echo exit=refused-missing-o001 > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o002\MANIFEST.json ( echo exit=refused-missing-o002 > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o003\MANIFEST.json ( echo exit=refused-missing-o003 > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+if exist C:\Dev\miniReason\runs\R003-open-v1\o004 ( echo exit=refused-o004-exists > "C:\Dev\minireason-launch\r003-occ4.exit" & exit /b 3 )
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\Dev\miniReason\runs\R003-open-v1 --amendment R3-A3 --expected-occurrence o004 --problems O01 O02 O03 O04 O05 O06 O07 O08 --conditions LOOP-CROSS --question "On the same initial proposal, does delivering cycle-1 objections change a response and later use on a flaw named in the sealed brief, compared with generating and archiving those same objections?" --mode live --env-file C:\Dev\miniReason\.env --tokenizer-pins C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\R003-input-preflight.json --capability C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\R003-CAPABILITY.R3-A3.json --brief-manifest C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\briefs\MANIFEST.json --authorize-live > "C:\Dev\minireason-launch\r003-occ4.log" 2>&1
+echo exit=%ERRORLEVEL% > "C:\Dev\minireason-launch\r003-occ4.exit"
+```
+
+The command refuses a missing o001/o002/o003 manifest, existing o004, unexpected occurrence number, unsupported condition, unreviewed capability or source/input drift. It selects LOOP-CROSS only and creates o004 without modifying earlier occurrences.
+
+Per problem:
+
+1. Shared cycle 1: initial + Qwen critic + Kimi critic.
+2. RETURNED then ARCHIVED: `c0001-R-return`, `c0001-R-use`, `c0001-A-return`, `c0001-A-use`.
+3. ARCHIVED ends after its use. RETURNED alone may run cycles 2-3 (two critics + return + use per cycle) and closing, subject to existing stops.
+
+That is 16 logical calls and at most 32 attempts per problem. Across eight problems it is 128 logical calls and at most 256 attempts.
+
+| Allowance | Per problem | Eight problems |
+|---|---:|---:|
+| Base completion | 458,752 | 3,670,016 |
+| All-repair completion | 917,504 | 7,340,032 |
+| Base prompt including reserve | 13,243,712 | 105,949,696 |
+| All-repair prompt | 26,487,424 | 211,899,392 |
+
+Combined maximum allowance: 219,239,424 tokens. Sequential wall envelope: 256 x 300 seconds = 76,800 seconds (21h20m). These are ceilings, not forecasts. No transport retry, fallback or ceiling retry.
+
+The exact return prompt declaration is `ARCHIVED = RETURNED` with one contiguous UTF-8 span deleted and no replacement: the rendered `OPEN AND NEW OBJECTIONS` block, separators and `PUBLIC SIGNALS` block. System, role and schema bytes are unchanged. The occurrence records rendered start/end and the JSON-escaped wire start plus length, exact removed spans and SHA-256 values; all bytes outside the span are identical. Empty critic objection arrays establish only that no explicit objection items exist because `PUBLIC SIGNALS` can still contain substantive working/missing-derivation content. Inspect the removed signals before calling the difference metadata-only, and never infer nonconstant objection-content dependence from metadata alone.
+
+After a separately authorized launch:
+
+```cmd
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py status --occurrence C:\Dev\miniReason\runs\R003-open-v1\o004
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py resume --occurrence C:\Dev\miniReason\runs\R003-open-v1\o004
+```
+
+Resume verifies the frozen occurrence manifest/source custody before execution and skips cells with terminal launcher result records. It does not reconstruct every internal archive in those already terminal cells. Unknown or indeterminate delivery is never replayed.
+
+A reviewable copy of those exact command-file contents is prepared at `C:/Dev/miniReason/work/review36/run_r003_occ4.cmd`. It has not been executed. After judge/publisher completion, the detached invocation can use this existing copy:
+
+```cmd
+start "" /b cmd.exe /d /c "C:\Dev\miniReason\work\review36\run_r003_occ4.cmd"
+```
+
+
+Judge correction accepted 2026-09-17T10:28:07.400650+00:00: the paired uses now freeze one concrete question/query ID from the initial working_position claim before either return. Final-source qualification:346reason+26docs-pin tests and both O01/O02 paired fixtures PASS. Reviewed capability and70source pins exact; pure input gate PASS. Earlier independent-question wording in engineer documents is superseded by the dated judge supplement, not silently rewritten.
+
+Approval for publication and occurrence-4 engineering launch: APPROVED-AS-CORRECTED, subject to the final review36 scope audit. Actual execution still requires publication and remote/local equal-tree verification. This file and run_r003_occ4.cmd were not executed.
+
+
+
+Final judge36 acknowledgement 2026-09-17T10:32:54.794457+00:00: the final scope/document audit referenced above PASSED. Publication and occurrence4 engineering launch readiness are APPROVED-AS-CORRECTED. The command remains unexecuted; publication and remote/local equal-tree verification still precede dispatch.

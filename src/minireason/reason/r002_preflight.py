@@ -139,7 +139,8 @@ def r003_capability_snapshot(review_receipt="UNREVIEWED"):
                 raise ReasonFailure("CAPABILITY_REFUSED", "Versioned R003 " + folder + " bytes changed")
     reason_dir = Path(__file__).resolve().parent
     runtime_names = ("adapter.py", "config.py", "engine.py", "prompts.py", "r002.py",
-                     "r002_custody.py", "r002_preflight.py", "r003_preflight.py", "r002_reports.py", "storage.py", "types.py")
+                     "r002_custody.py", "r002_preflight.py", "r003_ec01.py",
+                     "r003_preflight.py", "r002_reports.py", "storage.py", "types.py")
     from .r002_custody import prompt_snapshot
     prompt_text = json.dumps(prompt_snapshot(R003_PROFILE), ensure_ascii=False,
                              sort_keys=True, separators=(",", ":"), allow_nan=False)
@@ -176,8 +177,31 @@ def r003_capability_snapshot(review_receipt="UNREVIEWED"):
                    "prompt_snapshot_sha256": hashlib.sha256(json.dumps(
                         prompt_snapshot(R003_PROFILE, "r003-open-v1-r3-a2"), ensure_ascii=False,
                         sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()},
+        "r3_a3": {"amendment": "R3-A3", "contract": "r003-open-v1-r3-a2",
+                   "resource_inheritance": (
+                       "Exact R3-A1 descriptor, R3-A2 contracts, routes and allowances"
+                   ),
+                   "input_caps": descriptor["input_caps"],
+                   "critic_completion_tokens": 32768, "plan_steps_max": 3,
+                   "route_intervention": {
+                       "id": "EC01", "fork_after_cycle": 1,
+                       "branches": ["RETURNED", "ARCHIVED"],
+                       "order": ["RETURNED", "ARCHIVED"],
+                       "continuation_branch": "RETURNED",
+                       "archived_branch_end": "after_use",
+                       "archived_objection_delivery": "none",
+                   },
+                   "logical_calls_per_problem": 16,
+                   "maximum_attempts_per_problem": 32,
+                   "base_completion_tokens_per_problem": 458752,
+                   "maximum_completion_tokens_per_problem": 917504,
+                   "route_intervention_added_prompt_tokens_per_problem": 3868928,
+                   "prompt_snapshot_sha256": hashlib.sha256(json.dumps(
+                        prompt_snapshot(R003_PROFILE, "r003-open-v1-r3-a2"), ensure_ascii=False,
+                        sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()},
         "r3_a1_input_descriptor_sha256": descriptor_sha256,
         "r3_a2_inherited_input_descriptor_sha256": descriptor_sha256,
+        "r3_a3_inherited_input_descriptor_sha256": descriptor_sha256,
         "prompt_snapshot_sha256": hashlib.sha256(prompt_text.encode("utf-8")).hexdigest(),
         "runtime_sha256": {name: hashlib.sha256((reason_dir / name).read_bytes()).hexdigest()
                            for name in runtime_names},

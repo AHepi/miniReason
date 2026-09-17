@@ -38,10 +38,22 @@ RECIPES = {
 }
 R3_A1_RECIPES = {key: value.replace("-v1.json", "-v2.json") for key, value in RECIPES.items()}
 R3_A2_RECIPES = {key: value.replace("-v1.json", "-v3.json") for key, value in RECIPES.items()}
-AMENDMENT_RECIPES = {"R3-A1": R3_A1_RECIPES, "R3-A2": R3_A2_RECIPES}
+R3_A3_RECIPES = {"LOOP-CROSS": "r003-cross-v4.json"}
+AMENDMENT_RECIPES = {
+    "R3-A1": R3_A1_RECIPES,
+    "R3-A2": R3_A2_RECIPES,
+    "R3-A3": R3_A3_RECIPES,
+}
 DEFAULT_PREFLIGHT = STUDY / "R003-input-preflight.json"
+R3_A3_DEFAULT_CAPABILITY = STUDY / "R003-CAPABILITY.R3-A3.json"
 R3_A1_CONDITIONS = ("LOOP-CROSS", "LOOP-DECOMPOSED")
 R3_A2_CONDITIONS = R3_A1_CONDITIONS
+R3_A3_CONDITIONS = ("LOOP-CROSS",)
+AMENDMENT_CONDITIONS = {
+    "R3-A1": R3_A1_CONDITIONS,
+    "R3-A2": R3_A2_CONDITIONS,
+    "R3-A3": R3_A3_CONDITIONS,
+}
 PROSE_AMENDMENTS = frozenset(AMENDMENT_RECIPES)
 
 PROVIDER_KEY_NAMES = frozenset({"DEEPSEEK_API_KEY", "OLLAMA_API_KEY", "API_KEY",
@@ -95,7 +107,7 @@ def allowed_write(path: Path) -> Path:
     roots = (ROOT / "runs", ROOT / "work" / "w28", ROOT / "work" / "review28",
              Path(r"C:\tw28"), Path(r"C:\tr28"), Path(r"C:\tw30"), ROOT / "work" / "w30",
              Path(r"C:\tr30"), ROOT / "work" / "review30", Path(r"C:\tw32"), ROOT / "work" / "w32",
-             Path(r"C:\tr32"), ROOT / "work" / "review32")
+             Path(r"C:\tr32"), ROOT / "work" / "review32", Path(r"C:\tw36"), ROOT / "work" / "w36", Path(r"C:\tr36"), ROOT / "work" / "review36")
     if not any(resolved != root.resolve() and _within(resolved, root) for root in roots):
         raise Refused("WRITE_OUTSIDE_AUTHORIZED_SCOPE")
     return resolved
@@ -446,21 +458,33 @@ def create(series: Path, problems: Iterable[str], conditions: Iterable[str], que
         raise Refused("UNSUPPORTED_AMENDMENT")
     if expected_occurrence is not None and not re.fullmatch(r"o[0-9]{3,}", expected_occurrence):
         raise Refused("INVALID_EXPECTED_OCCURRENCE")
+    if amendment == "R3-A3" and expected_occurrence != "o004":
+        raise Refused("R3_A3_EXPECTED_OCCURRENCE_O004_REQUIRED")
     if amendment in PROSE_AMENDMENTS and tokenizer_pins is None:
         tokenizer_pins = DEFAULT_PREFLIGHT
     if (amendment in PROSE_AMENDMENTS
             and read_json(Path(tokenizer_pins)).get("amendment") != "R3-A1"):
         if amendment == "R3-A1":
             raise Refused("R3_A1_INPUT_DESCRIPTOR_REQUIRED")
-        raise Refused("R3_A2_INHERITED_INPUT_DESCRIPTOR_REQUIRED")
+        if amendment == "R3-A2":
+            raise Refused("R3_A2_INHERITED_INPUT_DESCRIPTOR_REQUIRED")
+        raise Refused("R3_A3_INHERITED_INPUT_DESCRIPTOR_REQUIRED")
     if mode not in {"plan", "offline", "live"}:
         raise Refused("INVALID_MODE")
     if not question.strip() or "\n" in question or "\r" in question:
         raise Refused("ONE_LINE_OCCURRENCE_QUESTION_REQUIRED")
     problem_ids = normalize_problem_ids(problems)
     condition_ids = normalize_conditions(conditions)
-    if amendment in PROSE_AMENDMENTS and any(c not in R3_A1_CONDITIONS for c in condition_ids):
+    admitted_conditions = AMENDMENT_CONDITIONS.get(amendment)
+    if admitted_conditions is not None and any(c not in admitted_conditions for c in condition_ids):
+        if amendment == "R3-A3":
+            raise Refused("R3_A3_ONLY_LOOP_CROSS")
         raise Refused(amendment.replace("-", "_") + "_REUSES_NATIVE_FROM_O001")
+    if (amendment == "R3-A3" and mode != "offline"
+            and problem_ids != [f"O{number:02d}" for number in range(1, 9)]):
+        raise Refused("R3_A3_REQUIRES_O01_THROUGH_O08")
+    if amendment == "R3-A3" and mode == "live" and capability is None:
+        capability = R3_A3_DEFAULT_CAPABILITY
     if mode == "live":
         if not authorize_live:
             raise Refused("LIVE_DISPATCH_AUTHORIZATION_REQUIRED")
@@ -505,6 +529,17 @@ def create(series: Path, problems: Iterable[str], conditions: Iterable[str], que
                 amendment_record["resource_inheritance"] = (
                     "Exact R3-A1 input descriptor, routes and allowances; only prose-seat contracts change"
                 )
+            elif amendment == "R3-A3":
+                amendment_record.update({
+                    "resource_inheritance": (
+                        "Exact R3-A1 input descriptor, R3-A2 contracts, routes and allowances; "
+                        "only the cycle-1 EC01 objection-delivery route changes"
+                    ),
+                    "route_intervention": "EC01",
+                    "branches": ["RETURNED", "ARCHIVED"],
+                    "continuation_branch": "RETURNED",
+                    "archived_branch_end": "after_use",
+                })
             put(directory / "inputs" / "amendment.json", amendment_record)
         put(directory / "QUESTION.json", {"utc": utc(), "question": question,
             "state": "declared_before_dispatch", "parent": str(parent) if parent else None,
@@ -703,7 +738,7 @@ def main(argv: list[str] | None = None) -> int:
     new.add_argument("--series", type=Path, default=DEFAULT_SERIES)
     new.add_argument("--problems", nargs="+", default=[f"O{number:02d}" for number in range(1, 9)])
     new.add_argument("--conditions", nargs="+", choices=CONDITIONS)
-    new.add_argument("--amendment", choices=["R3-A2", "R3-A1", "occurrence-1"], default="R3-A1")
+    new.add_argument("--amendment", choices=["R3-A3", "R3-A2", "R3-A1", "occurrence-1"], default="R3-A1")
     new.add_argument("--expected-occurrence")
     new.add_argument("--question", required=True)
     new.add_argument("--mode", choices=["plan", "offline", "live"], default="plan")
@@ -721,7 +756,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "new":
             amendment = None if args.amendment == "occurrence-1" else args.amendment
-            conditions = args.conditions or (R3_A1_CONDITIONS if amendment in PROSE_AMENDMENTS else CONDITIONS)
+            conditions = args.conditions or AMENDMENT_CONDITIONS.get(amendment, CONDITIONS)
             directory = create(args.series, args.problems, conditions, args.question, args.mode,
                 env_file=args.env_file, tokenizer_pins=args.tokenizer_pins,
                 capability=args.capability, brief_manifest=args.brief_manifest,

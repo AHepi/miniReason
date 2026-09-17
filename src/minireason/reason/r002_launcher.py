@@ -209,11 +209,13 @@ def validate_run_root(repo: Path, value: Path) -> Path:
                Path(r"C:/tr32").resolve(), (repo / "work" / "review32").resolve(), Path(r"C:/tw20").resolve(),
                Path(r"C:/tr20").resolve(), Path(r"C:/tr21").resolve(),
                Path(r"C:/tw22").resolve(), Path(r"C:/tr22").resolve(),
-               Path(r"C:/tw24").resolve(), Path(r"C:/tr24").resolve())
+               Path(r"C:/tw24").resolve(), Path(r"C:/tr24").resolve(),
+               Path(r"C:/tw36").resolve(), (repo / "work" / "w36").resolve(),
+               Path(r"C:/tr36").resolve(), (repo / "work" / "review36").resolve())
     if not any(root != parent and within(root, parent) for parent in allowed):
         raise LauncherError(
             "R002 output must be below runs/, work/w20/, work/review20/, work/w28/, work/review28/, C:/tr28, C:/tw28, "
-            "C:/tw20, C:/tr20, C:/tr21, C:/tw22, C:/tr22, C:/tw24, C:/tr24, C:/tw32, work/w32, C:/tr32 or work/review32")
+            "C:/tw20, C:/tr20, C:/tr21, C:/tw22, C:/tr22, C:/tw24, C:/tr24, C:/tw32, work/w32, C:/tr32, work/review32, C:/tw36, work/w36, C:/tr36 or work/review36")
     if len(str(root)) >= 120:
         raise LauncherError("R002 run root is too long for durable nested evidence")
     return root
