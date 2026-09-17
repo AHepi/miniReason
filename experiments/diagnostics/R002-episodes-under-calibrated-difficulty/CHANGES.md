@@ -81,3 +81,37 @@ Old: Round9 shorthand accidentally associated contrast language with line661; or
 New: FW5 contrast language is at628/630; line661 is the limited-machine-check boundary. Current validation is the separately named VALIDATION-REVIEW16 supplement and MATERIAL_PINS-REVIEW16. Original W18 artifacts and both offline judge occurrences remain preserved. Live engine/sandbox qualification is NOT FOUND and not implied by draft approval.
 
 Evidence: docs/sources/FW5-explanatory-construction.md:628,630,661; work/review16 final verification. Status: applied to the prospective draft; no participant run.
+
+
+## W22 A1 registration - 2026-09-17T00:51:01.057733+00:00
+
+Appended PLAN Pre-registered amendment A1 and READING_TEMPLATE step supplement; added DECOMPOSED-A1.md. Frozen prior sections retained. Choice:13call one-step-per-cycle decomposition remedy; rejected16call dual-critic schedule. Declared byte-bound/template premise and empirical evidence distinction. No main provider call made. Implementation/source/test/descriptor changes and exact test observations will be listed in subsequent dated entries; all work/probes indexed at work/w22/INDEX.md.
+
+
+### W22 launcher/documentation additions - 2026-09-17T00:56:56.696307+00:00
+
+Appended LAUNCHER.md and docs/workflows/reason-cli.md for sixth default, exact admitted set, step terminal states, conservative-byte descriptor, C:/tw22 boundary, additive main budget and refreshed capability requirement. Extended src/minireason/reason/r002_custody.py role inventory without removing existing roles or seals. work/w22/RESOURCE-PROJECTION.json records actual arithmetic assumptions. The slow per-file baseline audit was replaced by one read-only cat-file batch; first doc append script had a delimiter error before execution, corrected here. No provider/model call, .env read, Git mutation or historical-observation edit.
+
+
+### W22 completed implementation and verification inventory - 2026-09-17T01:15:25.531705+00:00
+
+- src/minireason/reason/r002_preflight.py: new conservative-byte-bound-v1 descriptor validation;24published custody evidence rows; exact endpoint/mode wire shapes; actual transport-source and would-send hashes; bound count/cap; four additive schema pins and explicit decomposed_schedule capability declaration.
+- calibration/main-tokenizer-pins.json: new minireason.r002.tokenizers.v1 bound descriptor with real hashes,24usage/byte ratios and explicit provider-rendering premise; not a tokenizer or fabricated package pins.
+- recipes/r002-decomposed-v1.json and contracts/initial-decompose.schema.json,decomposed-step.schema.json,decomposed-return.schema.json,decomposed-use.schema.json: new bounded A1 route and contracts. Existing recipe/schema bytes unchanged.
+- src/minireason/reason/config.py,prompts.py,r002.py,r002_custody.py,r002_reports.py: exact recipe pin,six new roles,prompt custody,plan/dependency/return/use validation,three one-step cycles,strict partial/failure stops,synthesis,mechanical tail-edit evidence,objection-only episode bases/use supplements and separate step custody. Corrected unpublished draft that initially mislabeled empty-critic steps as episodes.
+- src/minireason/reason/r002_launcher.py: sixth default/recipe/good-terminal handling,C:/tw22 strict descendant boundary and additive/main-only budgets. tools/run_R002.py delegates to this implementation unchanged.
+- tests/reason/test_r002_byte_bound_w22.py,test_r002_decomposed.py,test_r002_launcher_w22.py: new bound,transport,three-step,negative-contract/failure,launcher/admission tests. test_r002_contracts.py adds role closure; test_r002_launcher.py updates only added-arm budgets/terminal set and honors test artifact environment.
+- Appended VALIDATION.md with actual101test success,24occurrence/104call offline-main output,13call full-step proof and preserved failures. Appended docs/STATUS.md,DECISION_LEDGER.md,AGENT_ACTIVITY.jsonl at real UTC. PLAN/READING/LAUNCHER/workflow additions and DECOMPOSED-A1.md are recorded above.
+- work/w22/engine-capability-A1.json regenerates actual schema/recipe digests while preserving review20 file; CAPABILITY-DELTA.json identifies additions. MAIN-LAUNCH.md/ps1 supply future detached allsix command and explicit72/232/280call scenarios. INDEX.md,notes,probes,errata,hash audits,CHANGES and exact filtered publication checklist are local handoff evidence; no Git mutation or provider call.
+
+No published observation or preregistered prefix was modified. Main model execution has not begun. The byte-bound implementation meets the requested mechanical cutoff under its declared premise; a universal server-rendering proof is not claimed from empirical24wire evidence, and that limitation remains for the judge.
+
+
+### W22 final handoff audit - 2026-09-17T01:20:51.952698+00:00
+
+Corrected the new DECOMPOSED-A1.md PLAN link to the stable document path. Final work index/checklist/audit,root review acknowledgement and logging-audit correction are under work/w22;28filtered publication paths,1137protected/study baseline paths checked,old prefixes preserved,HEAD/branch/index unchanged.101tests and corrected24occurrence/104wire plus13wire full-step fixture pass. No provider/model call,.env read,Git mutation or publication. Bound-proof premise remains explicit for the independent judge.
+
+
+## Review22 corrections - 2026-09-17T01:29:06.764286+00:00
+
+Conservative bound: zero template reserve on all routes -> explicit2048 reserve for every non-DeepSeek route; exact wire bytes remain distinct from upper-bound counted_tokens. Descriptor validates policy and cites primary ByteLevel/BPE and public template sources; no tokenizer hashes invented. Runtime supports strict C:/tr22 descendants for required offline judge launch. Existing five conditions' prompts/recipes and A1 scientific schedule are unchanged. Tests added in tests/reason/test_r002_review22.py. PLAN receives an append-only qualification/hidden-reasoning supplement; all old text and observations remain. Details and old->new evidence: work/review22/CORRECTIONS.md.

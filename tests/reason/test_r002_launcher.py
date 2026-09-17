@@ -45,7 +45,11 @@ class R002LauncherTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.root = REPO / "work" / "w20" / "l" / ("r2-" + uuid.uuid4().hex[:8])
+        work_root = Path(os.environ.get(
+            "MINIREASON_TEST_LAUNCHER_WORK", os.environ.get(
+                "MINIREASON_TEST_WORK", str(REPO / "work" / "w20" / "l"))))
+        cls.root = work_root / ("r2-" + uuid.uuid4().hex[:8])
+        cls.tmp = Path(os.environ.get("TMP", r"C:\tr20"))
         cls.env = os.environ.copy()
         cls.env.pop("DEEPSEEK_API_KEY", None)
         cls.env.pop("OLLAMA_API_KEY", None)
@@ -54,7 +58,7 @@ class R002LauncherTests(unittest.TestCase):
             "PYTHONUTF8": "1",
             "PYTHONIOENCODING": "utf-8",
             "PYTHONDONTWRITEBYTECODE": "1",
-            "TMP": r"C:\tr20",
+            "TMP": str(cls.tmp),
         })
 
     def invoke(self, *arguments: str) -> subprocess.CompletedProcess[str]:
@@ -63,8 +67,11 @@ class R002LauncherTests(unittest.TestCase):
                               encoding="utf-8", errors="strict", check=False)
 
     def test_budget_and_opaque_offline_env_path(self) -> None:
-        self.assertEqual(launcher.budget(8, 8)["maximum_attempts"], 480)
-        self.assertEqual(launcher.budget(8, 8)["completion_token_ceiling"], 11010048)
+        envelope = launcher.budget(8, 8)
+        self.assertEqual(envelope["maximum_attempts"], 584)
+        self.assertEqual(envelope["completion_token_ceiling"], 13369344)
+        self.assertEqual(envelope["decomposed_calls_per_case"], 13)
+        self.assertEqual(envelope["decomposed_completion_tokens_per_case"], 294912)
         command = launcher.child_argv(
             REPO, STUDY, "C01", "CAL-NATIVE", self.root / "opaque", "offline",
             env_file=self.root / "does-not-exist.env",
@@ -77,7 +84,7 @@ class R002LauncherTests(unittest.TestCase):
         self.assertEqual(matched[matched.index("--cycles") + 1], "2")
 
     def test_material_pins_allow_only_exact_review20_plan_launcher_append(self) -> None:
-        with tempfile.TemporaryDirectory(dir=r"C:\tr20") as temporary:
+        with tempfile.TemporaryDirectory(dir=self.tmp) as temporary:
             study = Path(temporary)
             original = {"PLAN.md": b"frozen plan\n", "LAUNCHER.md": b"frozen launcher\n"}
             for name, raw in original.items():
@@ -170,8 +177,10 @@ class R002LauncherTests(unittest.TestCase):
             for condition in launcher.DEFAULT_CONDITIONS:
                 occurrence = main_root / candidate_id / condition
                 state = read_json(occurrence / "state.json")
-                self.assertIn(state["stop_reason"],
-                              launcher.NATIVE_GOOD_STOPS if condition == "NATIVE" else launcher.LOOP_GOOD_STOPS)
+                expected_stops = (launcher.NATIVE_GOOD_STOPS if condition == "NATIVE" else
+                                  launcher.DECOMPOSED_GOOD_STOPS if condition == "LOOP-DECOMPOSED" else
+                                  launcher.LOOP_GOOD_STOPS)
+                self.assertIn(state["stop_reason"], expected_stops)
                 for counter in ("tail_edits", "stall_switches", "checker_runs", "cannot_decide_responses"):
                     self.assertIn(counter, state)
                 self.assertTrue((occurrence / "RUN.md").is_file())

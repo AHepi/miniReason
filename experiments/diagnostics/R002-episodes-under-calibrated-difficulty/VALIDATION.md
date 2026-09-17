@@ -626,3 +626,76 @@ COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X
 {"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C01"], "status": "COMPLETE"}
 VERIFY: {"active_source_version": 1, "archived_byte_equal": true, "archived_stop": "SCHEMA_FAILURE", "attempt_source_versions": [1, 1], "attempt_statuses": ["archived-failed", "complete"], "current_stop": "no_new_objections", "rerun_receipts": ["phase-receipt-rerun-001.json"], "source_pin_equal": true, "source_versions": 1}
 ```
+
+
+## W22 A1 engineering validation - 2026-09-17T01:15:25.531705+00:00
+
+REC-20260917-A. No provider/model call, .env read, Git mutation or main participant observation. Original validation text remains unchanged. Root's guarded full R002 regression suite passed **101 tests**, 0 failures/errors/skips; full transcript work/w22/focused-v2-tests.log. Actual summary:
+
+```json
+{
+  "utc": "2026-09-17T01:10:36.397544+00:00",
+  "tests": 101,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "successful": true,
+  "provider_calls": 0
+}
+```
+
+The new byte descriptor revalidates all24 published calibration request/response pairs and real wire/source hashes: prompt_tokens/wire_bytes min0.235968765,max0.266547406,min margin2954bytes. A synthetic33000-byte canonical wire fails PROMPT_TOKEN_CAP without truncation. Prepared/preflight/transport request hashes agree for DeepSeek native/off,Qwen off,GLM off. Missing/malformed evidence/descriptor, changed builder hashes and unsupported wire shapes refuse. The bound is conditional on the declared byteBPE/provider-rendering premise; these24DeepSeek observations alone do not prove unknown server templates or measure Qwen/GLM.
+
+Actual successful main command (environment PYTHONPATH=src;tests,PYTHONUTF8=1,PYTHONIOENCODING=utf-8,TMP=C:/tw22):
+
+```powershell
+& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:/tw22/main-six-v2 --occurrence 1 --admission-receipt experiments/diagnostics/R002-episodes-under-calibrated-difficulty/calibration/admission.json --tokenizer-pins experiments/diagnostics/R002-episodes-under-calibrated-difficulty/calibration/main-tokenizer-pins.json --capability work/w22/engine-capability-A1.json --problems C05 C06 C09 C12
+```
+
+Actual stdout, exit0, stderr empty:
+
+```text
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+```
+
+Root verification:24occurrences,104scripted calls, all104exact wire hashes/byte lengths match transport evidence (4195-13577bytes), allmanifested occurrence hashes match and final sources match. Four NATIVE fixtures complete; sixteen original loop fixtures stop no_new_objections after1cycle/6calls; four decomposed built-in fixtures stop initial_cannot_decide after1call. This is honest plumbing output, not a fabricated main answer/episode.
+
+Separate full A1 scripted fixture with the **same actual byte descriptor** completed3steps and synthesis:13calls,5native/8off,294912completion allowance,max6485wire bytes,3objection base records plus3separate use supplements. All13request hashes match. Negative cases cover plan9,derivation2001,duplicate/forward dependencies,missing/duplicate dispositions,wrong check ID,use disagreement,initial/critic/later-STEP CEILING_HIT,partial-step custody and unchanged strict LOOP-TESTED initial stop1call/0cycles. Empty critics create0episode records; step custody stays separate. Raw proof:work/w22/DECOMPOSED-BOUND-PROOF.json;12focused decomposition tests pass.
+
+Earlier verification failures are retained: root focused-v1 was100/101 because the first exact-wire shape gate omitted DeepSeek-off's missing reasoning_effort; corrected with a dedicated native/off transport proof. C:/tw22/main-six stopped on active-source change during that correction; no output was overwritten or relabeled. Corrected verification uses fresh main-six-v2. Remaining errata/probes and actual timestamps are under work/w22/ERRATA-AND-LESSONS.md. Offline fixtures establish neither task correctness nor a witnessed decomposition escape. Separate judge/publisher follow.
+
+
+## Independent review22 validation - 2026-09-17T01:40:14.147555+00:00
+
+2026-09-17T01:40:14.147555+00:00; REC-20260917-A. No provider/model calls or actual .env reads.
+
+Environment: PYTHONPATH=src;tests; PYTHONUTF8=1; PYTHONIOENCODING=utf-8; TMP=C:/tr22. Full suite uses repository-local dummy-env fixtures and a separate C:/tr22 launcher fixture root.
+
+```text
+C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe -m unittest discover -s tests/reason -t .
+...............................................................CONFIG_ERROR
+..............................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 253 tests in 89.019s
+
+OK
+
+C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe -m unittest tests.loop.test_docs_pins
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.019s
+
+OK
+
+```
+
+Full reason v1/v2 harness-path failures are retained in tests/; v3 is final253/253. Docs pins26/26. No skips. Three template-allowance regressions plus the root-boundary regression are in test_r002_review22.py; existing launcher integration tests validate the fixture-root routing correction.
+
+Actual launcher command and stdout (stderr empty, exit0):
+
+```text
+C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 tools/run_R002.py --phase main --mode offline --run-root C:/tr22/main-six --occurrence 1 --admission-receipt experiments/diagnostics/R002-episodes-under-calibrated-difficulty/calibration/admission.json --tokenizer-pins experiments/diagnostics/R002-episodes-under-calibrated-difficulty/calibration/main-tokenizer-pins.json --capability work/w22/engine-capability-A1.json --problems C05 C06 C09 C12
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+```
+
+24occurrences,104scripted calls, all104 exact transport/preflight hashes and byte lengths verified. Non-DeepSeek reserves2048 tokens; every summed bound<=32768. Actual built-in decomposed fixture ends initial_cannot_decide, honestly; the separate corrected-descriptor fixture completes13calls/3steps/3objection bases+3use supplements and synthesis. Input-overflow child exits2/PROMPT_TOKEN_CAP,0calls,no intent/no send. Detailed evidence in OFFLINE-MAIN-VERIFICATION.json, INPUT-OVERFLOW-PROOF.json and DECOMPOSED-BOUND-PROOF.json.

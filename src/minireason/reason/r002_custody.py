@@ -8,7 +8,9 @@ from .types import ReasonFailure
 from .r002_preflight import R002_SCHEMA_SHA256
 
 ROLES = ("answer", "prose_critic", "tested_critic", "prose_return", "tested_return",
-         "propagation_use", "blind_coding_solve", "native_match_note", "native_match_synthesis")
+         "propagation_use", "blind_coding_solve", "native_match_note", "native_match_synthesis",
+         "initial_decompose", "decomposed_step", "decomposed_critic",
+         "decomposed_return", "decomposed_use", "decomposed_synthesis")
 
 
 def _refuse(detail):

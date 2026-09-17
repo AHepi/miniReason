@@ -24,6 +24,12 @@ R002_STATE_SCHEMA = "minireason.reason.r002-state.v1"
 CLAIM = "OFFLINE FIXTURE records are structural evidence only; no model result or correctness finding is implied."
 ROLE_SCHEMAS = {
     "answer": "answer.schema.json",
+    "initial_decompose": "initial-decompose.schema.json",
+    "decomposed_step": "decomposed-step.schema.json",
+    "decomposed_critic": "tested-objection.schema.json",
+    "decomposed_return": "decomposed-return.schema.json",
+    "decomposed_use": "decomposed-use.schema.json",
+    "decomposed_synthesis": "answer.schema.json",
     "prose_critic": "prose-objection.schema.json",
     "tested_critic": "tested-objection.schema.json",
     "prose_return": "prose-return.schema.json",
@@ -321,22 +327,84 @@ def validate_recoding_solve(data: dict, relation: dict, coding_id: str) -> dict:
     return data
 
 
+def validate_initial_decompose(data: dict) -> dict:
+    if data["cannot_decide"] is not None:
+        return data
+    plan = data["plan"]
+    if [item["step"] for item in plan] != list(range(1, len(plan) + 1)):
+        raise ReasonFailure("SCHEMA_FAILURE", "Decomposition plan steps must be contiguous and start at 1")
+    for item in plan:
+        if any(parent >= item["step"] for parent in item["depends_on"]):
+            raise ReasonFailure("SCHEMA_FAILURE", "Decomposition dependencies must name earlier steps")
+    if data["first_step"]["step"] != plan[0]["step"]:
+        raise ReasonFailure("SCHEMA_FAILURE", "First decomposition result does not match plan step 1")
+    return data
+
+
+def validate_decomposed_step(data: dict, expected_step: dict,
+                             accepted_steps: list[dict]) -> dict:
+    if data["step"] != expected_step["step"]:
+        raise ReasonFailure("SCHEMA_FAILURE", "STEP response names the wrong plan step")
+    accepted = {item["step"] for item in accepted_steps}
+    missing = sorted(set(expected_step["depends_on"]) - accepted)
+    if missing:
+        raise ReasonFailure("SCHEMA_FAILURE", "STEP dependencies are not accepted: " + ",".join(map(str, missing)))
+    return data
+
+
+def validate_decomposed_return(data: dict, before: dict,
+                               objections: list[dict]) -> dict:
+    if data["step"] != before["step"]:
+        raise ReasonFailure("SCHEMA_FAILURE", "Decomposed return names the wrong step")
+    expected = [item["id"] for item in objections]
+    actual = [item["id"] for item in data["dispositions"]]
+    if len(actual) != len(set(actual)) or set(actual) != set(expected):
+        raise ReasonFailure("SCHEMA_FAILURE", "Decomposed return must dispose every current objection exactly once")
+    by_id = {item["id"]: item for item in objections}
+    for disposition in data["dispositions"]:
+        redo = disposition["redo"]
+        if redo["check_id"] != by_id[disposition["id"]]["check"]["check_id"]:
+            raise ReasonFailure("SCHEMA_FAILURE", "Decomposed return redo names the wrong check")
+        if disposition["status"] in {"taken-up", "rejected-with-reason"} and redo["status"] != "redone":
+            raise ReasonFailure("SCHEMA_FAILURE", "Substantive decomposed disposition requires a redone check")
+        if redo["status"] == "cannot_redo" and disposition["status"] != "unresolved":
+            raise ReasonFailure("SCHEMA_FAILURE", "A check that cannot be redone must remain unresolved")
+    return data
+
+
+def validate_decomposed_use(data: dict, expected_step: int) -> dict:
+    if data["step"] != expected_step:
+        raise ReasonFailure("SCHEMA_FAILURE", "Decomposed use names the wrong step")
+    return data
+
+
 def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dict,
                answer=None, before=None, objections=(), fork=None,
-               coding_id=None, checker_eligible=False) -> dict:
+               coding_id=None, checker_eligible=False, expected_step=None,
+               accepted_steps=()) -> dict:
     if role not in ROLE_SCHEMAS:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R002 parse role: " + role)
     data = contracts.validate(ROLE_SCHEMAS[role], _response_object(content))
     if role == "answer":
         return validate_answer(data, relation)
-    if role in {"prose_critic", "tested_critic"}:
-        return validate_objections(data, answer, fork, tested=role == "tested_critic")
+    if role == "initial_decompose":
+        return validate_initial_decompose(data)
+    if role == "decomposed_step":
+        return validate_decomposed_step(data, expected_step, list(accepted_steps))
+    if role in {"prose_critic", "tested_critic", "decomposed_critic"}:
+        return validate_objections(data, answer, fork, tested=role != "prose_critic")
     if role in {"prose_return", "tested_return"}:
         return validate_return(data, before, list(objections), relation,
                                tested=role == "tested_return")
     if role == "propagation_use":
         return validate_use(data, before, answer, relation, fork,
                             checker_eligible=checker_eligible)
+    if role == "decomposed_return":
+        return validate_decomposed_return(data, before, list(objections))
+    if role == "decomposed_use":
+        return validate_decomposed_use(data, expected_step["step"])
+    if role == "decomposed_synthesis":
+        return validate_answer(data, relation)
     if role == "blind_coding_solve":
         return validate_recoding_solve(data, relation, coding_id)
     return data
@@ -544,6 +612,8 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
             raise ReasonFailure("CONFIG_ERROR", "Condition does not match recipe")
         if cycles > recipe["cycles"]:
             raise ReasonFailure("CONFIG_ERROR", "Cycle request exceeds recipe")
+        if recipe["condition"] == "LOOP-DECOMPOSED" and cycles != 3:
+            raise ReasonFailure("CONFIG_ERROR", "LOOP-DECOMPOSED has exactly three one-step cycles")
     forks, forks_text, _forks_path = _load_object(fork_registry, "fork registry", optional=True)
     coding, coding_text, coding_path = _load_object(coding_manifest, "coding manifest", optional=True)
     if recipe is not None and forks is None:
@@ -659,7 +729,12 @@ def _offline(role, cycle, objections, context):
     if role == "answer":
         return {"decision": "cannot_decide", "answer": "", "missing_derivation": missing,
                 "claims": [], "derivation_steps": []}
-    if role in {"prose_critic", "tested_critic"}:
+    if role == "initial_decompose":
+        return {"plan": [], "first_step": None, "cannot_decide": {"missing": missing}}
+    if role == "decomposed_step":
+        return {"step": context["expected_step"]["step"], "derivation": "", "result": "",
+                "cannot_decide": {"missing": missing}}
+    if role in {"prose_critic", "tested_critic", "decomposed_critic"}:
         return {"decision": "cannot_decide", "missing_derivation": missing,
                 "working": "OFFLINE FIXTURE", "objections": []}
     if role in {"prose_return", "tested_return"}:
@@ -679,6 +754,16 @@ def _offline(role, cycle, objections, context):
                 "missing_derivation": missing, "claims": before.get("claims", []),
                 "dispositions": dispositions, "changes": [],
                 "derivation_steps": before.get("derivation_steps", [])}
+    if role == "decomposed_return":
+        dispositions = []
+        for objection in objections:
+            dispositions.append({"id": objection["id"], "status": "unresolved", "reason": missing,
+                                 "redo": {"check_id": objection["check"]["check_id"],
+                                          "status": "cannot_redo", "method": missing,
+                                          "result": None, "comparison": "inconclusive"}})
+        return {"decision": "cannot_decide", "missing_derivation": missing,
+                "step": context["before"]["step"], "derivation": "", "result": "",
+                "dispositions": dispositions}
     if role == "propagation_use":
         relation_id = context["relation"]["relations"][0]["relation_id"]
         return {"decision": "cannot_decide", "missing_derivation": missing,
@@ -688,10 +773,17 @@ def _offline(role, cycle, objections, context):
                 "dependency": {"relation_id": relation_id, "before_quote": "", "after_quote": "",
                                "result_depends_on_change": False, "explanation": missing},
                 "objections": [], "checker": None}
+    if role == "decomposed_use":
+        return {"decision": "cannot_decide", "missing_derivation": missing,
+                "step": context["expected_step"]["step"], "status": "inconclusive",
+                "method": "", "result": None}
     if role == "blind_coding_solve":
         return {"decision": "cannot_decide", "missing_derivation": missing,
                 "coding_id": context["coding_id"], "claims": [], "derivation": "",
                 "derivation_steps": []}
+    if role == "decomposed_synthesis":
+        return {"decision": "cannot_decide", "answer": "", "missing_derivation": missing,
+                "claims": [], "derivation_steps": []}
     return {"decision": "cannot_decide", "missing_derivation": missing, "answer": "", "derivation": ""}
 
 
@@ -820,6 +912,40 @@ def _coding_blocks(coded_problem, relation, fork, coding_entry, coding_id):
             ("PUBLIC FORK", _json(fork)), ("CODING DECLARATION", _json(public))]
 
 
+def _step_answer(step: dict, plan_step: dict) -> dict:
+    return {"decision": "answered", "answer": step["result"], "missing_derivation": "",
+            "claims": [], "derivation_steps": [{"step_index": step["step"],
+                "statement": step["derivation"], "depends_on": list(plan_step["depends_on"])}]}
+
+
+def _decomposed_step_blocks(problem: str, plan: list[dict], plan_step: dict,
+                            accepted_steps: list[dict]) -> list[tuple[str, str]]:
+    return [("PROBLEM", problem), ("DECOMPOSITION PLAN", _json(plan)),
+            ("CURRENT PLAN STEP", _json(plan_step)),
+            ("ACCEPTED PRIOR STEPS", _json(accepted_steps))]
+
+
+def _decomposed_critic_blocks(problem: str, plan_step: dict, current: dict,
+                              accepted_steps: list[dict], fork: dict) -> list[tuple[str, str]]:
+    return [("PROBLEM", problem), ("CURRENT PLAN STEP", _json(plan_step)),
+            ("ACCEPTED DEPENDENCIES", _json(accepted_steps)),
+            ("CURRENT STEP", _json(current)), ("PUBLIC FORK", _json(fork))]
+
+
+def _decomposed_return_blocks(problem: str, plan_step: dict, current: dict,
+                              accepted_steps: list[dict], objections: list[dict]) -> list[tuple[str, str]]:
+    return [("PROBLEM", problem), ("CURRENT PLAN STEP", _json(plan_step)),
+            ("ACCEPTED DEPENDENCIES", _json(accepted_steps)),
+            ("CURRENT STEP", _json(current)), ("TESTED OBJECTIONS", _json(objections))]
+
+
+def _decomposed_use_blocks(problem: str, plan_step: dict, returned: dict,
+                           accepted_steps: list[dict]) -> list[tuple[str, str]]:
+    return [("PROBLEM", problem), ("CURRENT PLAN STEP", _json(plan_step)),
+            ("ACCEPTED DEPENDENCIES", _json(accepted_steps)),
+            ("RETURNED STEP", _json({key: returned[key] for key in ("step", "derivation", "result")}))]
+
+
 def _apply_dispositions(all_objections, dispositions, cycle, phase=None):
     by_id = {item["id"]: item for item in dispositions}
     for objection in all_objections:
@@ -863,6 +989,122 @@ def _state(condition):
             "closing_return": "not-run", "objections": []}
 
 
+def _finish_decomposed(directory, cfg, state, answer, objections, events):
+    state["answer"], state["events"] = answer, events
+    _write_episode_records(directory, cfg, objections)
+    _reports(directory, cfg, state, answer, objections, events)
+    return state
+
+
+def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
+                        state, events, objections, call):
+    initial = call("initial_decompose", _seat("initial", recipe), "initial", 0,
+                   _answer_blocks(problem, relation))
+    state["decomposition_plan"] = initial["plan"]
+    state["accepted_steps"] = []
+    if initial["cannot_decide"] is not None:
+        state["cannot_decide_responses"] += 1
+        state["stop_reason"] = "initial_cannot_decide"
+        state["stop_detail"] = initial["cannot_decide"]["missing"]
+        return _finish_decomposed(directory, cfg, state, None, objections, events)
+
+    plan = initial["plan"]
+    accepted_steps = state["accepted_steps"]
+    current = initial["first_step"]
+    for cycle, plan_step in enumerate(plan[:cfg["cycles"]], 1):
+        if cycle > 1:
+            current = call("decomposed_step", _seat("step", recipe), f"c{cycle:04d}-step", cycle,
+                           _decomposed_step_blocks(problem, plan, plan_step, accepted_steps),
+                           expected_step=plan_step, accepted_steps=accepted_steps)
+            if current["cannot_decide"] is not None:
+                state["cannot_decide_responses"] += 1
+                state["stop_reason"] = "step_unresolved"
+                state["stop_detail"] = current["cannot_decide"]["missing"]
+                return _finish_decomposed(directory, cfg, state, None, objections, events)
+
+        current_answer = _step_answer(current, plan_step)
+        critic_slot = f"critic_cycle_{cycle}"
+        critic_id = f"c{cycle:04d}-critic"
+        critic = call("decomposed_critic", _seat(critic_slot, recipe), critic_id, cycle,
+                      _decomposed_critic_blocks(problem, plan_step, current, accepted_steps, fork),
+                      answer=current_answer, fork=fork, objections=[])
+        if critic["decision"] == "cannot_decide":
+            state["stop_reason"] = "step_unresolved"
+            state["stop_detail"] = critic["missing_derivation"]
+            return _finish_decomposed(directory, cfg, state, None, objections, events)
+
+        new_items = []
+        for item in critic["objections"]:
+            item = deepcopy(item)
+            item["_source_call"] = critic_id
+            item["_source_endpoint"] = _seat(critic_slot, recipe)["endpoint"]
+            new_items.append(item)
+        _check_unique_ids(objections, new_items)
+        minted = _mint(new_items, f"c{cycle:04d}-critic", cycle, "decomposed-critic")
+        objections.extend(minted)
+
+        returned = call("decomposed_return", _seat("return", recipe), f"c{cycle:04d}-return", cycle,
+                        _decomposed_return_blocks(problem, plan_step, current, accepted_steps, minted),
+                        before=current, objections=minted)
+        for item in minted:
+            item["return_call"] = f"c{cycle:04d}-return"
+        if (returned["decision"] == "answered" and returned["result"] != current["result"]
+                and returned["derivation"] == current["derivation"]):
+            state["tail_edits"] += 1
+            events.append({"event": "decomposed_step_tail_edit", "cycle": cycle,
+                           "step": plan_step["step"],
+                           "reason": "result changed while the bounded public derivation was unchanged",
+                           "semantic_reading": "mechanical flag only"})
+        _apply_dispositions(objections, returned["dispositions"], cycle)
+        for disposition in returned["dispositions"]:
+            obj = next(item for item in minted if item["id"] == disposition["id"])
+            obj["check_redone"] = (
+                "agrees" if disposition["redo"]["comparison"] == "supports_objection"
+                else "disagrees" if disposition["redo"]["comparison"] == "opposes_objection"
+                else "inconclusive") if disposition["redo"]["status"] == "redone" else "not-redone"
+        return_complete = (returned["decision"] == "answered" and
+                           all(item["status"] != "unresolved" and item["redo"]["status"] == "redone"
+                               for item in returned["dispositions"]))
+        if not return_complete:
+            state["stop_reason"] = "step_unresolved"
+            state["stop_detail"] = returned["missing_derivation"] or "A tested objection remains unresolved"
+            return _finish_decomposed(directory, cfg, state, None, objections, events)
+
+        use = call("decomposed_use", _seat("use", recipe), f"c{cycle:04d}-use", cycle,
+                   _decomposed_use_blocks(problem, plan_step, returned, accepted_steps),
+                   expected_step=plan_step, before=current, answer=returned, objections=[])
+        for item in minted:
+            item["use_call"] = f"c{cycle:04d}-use"
+        if use["decision"] != "answered" or use["status"] != "agrees":
+            state["stop_reason"] = "step_unresolved"
+            state["stop_detail"] = use["missing_derivation"] or (
+                "Use check " + use["status"] + " with the returned step result")
+            return _finish_decomposed(directory, cfg, state, None, objections, events)
+
+        accepted = {"step": plan_step["step"], "goal": plan_step["goal"],
+                    "depends_on": list(plan_step["depends_on"]),
+                    "derivation": returned["derivation"], "result": returned["result"]}
+        accepted_steps.append(accepted)
+        state["completed_cycles"] = cycle
+        events.append({"event": "decomposed_step_accepted", "cycle": cycle,
+                       "step": plan_step["step"], "critic": critic_id,
+                       "structural_only": True})
+
+    if len(accepted_steps) != len(plan):
+        state["stop_reason"] = "step_budget"
+        state["stop_detail"] = (f"Accepted {len(accepted_steps)} of {len(plan)} planned steps; "
+                                "three one-step cycles permit no synthesis")
+        return _finish_decomposed(directory, cfg, state, None, objections, events)
+
+    answer = call("decomposed_synthesis", _seat("synthesis", recipe), "synthesis",
+                  state["completed_cycles"],
+                  _answer_blocks(problem, relation) + [("DECOMPOSITION PLAN", _json(plan)),
+                                                       ("ACCEPTED STEPS", _json(accepted_steps))])
+    state["closing_return"] = "not-applicable"
+    state["stop_reason"] = "complete"
+    return _finish_decomposed(directory, cfg, state, answer, objections, events)
+
+
 def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None,
                  tokenizer_counter=None, before_call=None) -> dict:
     directory = Path(run_dir)
@@ -894,6 +1136,11 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
                 state.update(stop_reason="complete", answer=answer)
                 _reports(directory, cfg, state, answer, objections, events)
                 return state
+
+            if recipe["condition"] == "LOOP-DECOMPOSED":
+                answer = None
+                return _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
+                                           state, events, objections, call)
 
             answer = call("answer", _seat("initial", recipe), "initial", 0,
                           _answer_blocks(problem, relation))

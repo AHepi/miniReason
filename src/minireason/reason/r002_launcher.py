@@ -25,6 +25,7 @@ ALL_VERDICTS = ADMISSION_VERDICTS | {"correct", "unresolved"}
 PROVIDER_KEYS = ("DEEPSEEK_API_KEY", "OLLAMA_API_KEY")
 DEFAULT_CONDITIONS = (
     "NATIVE", "LOOP-CROSS", "LOOP-TESTED", "LOOP-RECODED", "LOOP-CHECKER",
+    "LOOP-DECOMPOSED",
 )
 OPTIONAL_CONDITIONS = ("LOOP-CROSS-MATCH", "LOOP-CARRIER", "NATIVE-MATCH")
 RECIPE_IDS = {
@@ -35,8 +36,12 @@ RECIPE_IDS = {
     "LOOP-CARRIER": "r002-carrier-v1",
     "NATIVE-MATCH": "r002-native-match-v1",
     "LOOP-CHECKER": "r002-checker-v1",
+    "LOOP-DECOMPOSED": "r002-decomposed-v1",
 }
 LOOP_GOOD_STOPS = {"cycle_budget", "no_new_objections"}
+DECOMPOSED_GOOD_STOPS = {
+    "complete", "step_budget", "step_unresolved", "initial_cannot_decide",
+}
 NATIVE_GOOD_STOPS = {"complete", "completed", "COMPLETE", "CEILING_HIT"}
 
 
@@ -194,9 +199,12 @@ def validate_run_root(repo: Path, value: Path) -> Path:
     root = (repo / value).resolve() if not value.is_absolute() else value.resolve()
     allowed = ((repo / "runs").resolve(), (repo / "work" / "w20").resolve(),
                (repo / "work" / "review20").resolve(), Path(r"C:/tw20").resolve(),
-               Path(r"C:/tr20").resolve(), Path(r"C:/tr21").resolve())
+               Path(r"C:/tr20").resolve(), Path(r"C:/tr21").resolve(),
+               Path(r"C:/tw22").resolve(), Path(r"C:/tr22").resolve())
     if not any(root != parent and within(root, parent) for parent in allowed):
-        raise LauncherError("R002 output must be below runs/, work/w20/, work/review20/, C:/tw20, C:/tr20 or C:/tr21")
+        raise LauncherError(
+            "R002 output must be below runs/, work/w20/, work/review20/, "
+            "C:/tw20, C:/tr20, C:/tr21, C:/tw22 or C:/tr22")
     if len(str(root)) >= 120:
         raise LauncherError("R002 run root is too long for durable nested evidence")
     return root
@@ -308,13 +316,26 @@ def budget(admitted_count: int, computable_count: int, optional_case_occurrences
         raise LauncherError("Invalid admitted or computable count")
     if not 0 <= optional_case_occurrences <= 3 * admitted_count:
         raise LauncherError("Invalid optional-arm count")
-    attempts = 24 + 43 * admitted_count + 14 * computable_count + 14 * optional_case_occurrences
-    completion = 786432 + 966656 * admitted_count + 311296 * computable_count + 311296 * optional_case_occurrences
+    main_attempts = 56 * admitted_count + 14 * computable_count + 14 * optional_case_occurrences
+    main_completion = (
+        1261568 * admitted_count
+        + 311296 * computable_count
+        + 311296 * optional_case_occurrences
+    )
+    attempts = 24 + main_attempts
+    completion = 786432 + main_completion
     return {
         "calibration_candidates": 24,
         "admitted": admitted_count,
         "computable_admitted": computable_count,
         "optional_case_occurrences": optional_case_occurrences,
+        "decomposed_calls_per_case": 13,
+        "decomposed_completion_tokens_per_case": 294912,
+        "main_phase_logical_calls": main_attempts,
+        "main_phase_maximum_attempts": main_attempts,
+        "main_phase_completion_token_ceiling": main_completion,
+        "main_phase_prompt_token_ceiling": main_attempts * 32768,
+        "main_phase_combined_token_ceiling": main_completion + main_attempts * 32768,
         "logical_calls": attempts,
         "maximum_attempts": attempts,
         "completion_token_ceiling": completion,
@@ -586,7 +607,11 @@ def child_argv(repo: Path, study: Path, candidate_id: str, condition: str, out: 
 
 
 def _good_stop(condition: str, stop: str) -> bool:
-    return stop in (NATIVE_GOOD_STOPS if condition in {"CAL-NATIVE", "NATIVE"} else LOOP_GOOD_STOPS)
+    if condition in {"CAL-NATIVE", "NATIVE"}:
+        return stop in NATIVE_GOOD_STOPS
+    if condition == "LOOP-DECOMPOSED":
+        return stop in DECOMPOSED_GOOD_STOPS
+    return stop in LOOP_GOOD_STOPS
 
 
 def _archive(directory: Path) -> Path:

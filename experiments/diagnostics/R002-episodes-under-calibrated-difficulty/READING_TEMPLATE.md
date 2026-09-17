@@ -65,3 +65,18 @@ DRAFT. Empty cells are unassessed, never negative findings. No quality score.
 - No hidden native reasoning text or key material retained:
 
 A no-objection interval is recorded as an opportunity row with its actual wrong claim and available slots, not invented as a complete episode. Preserve partial and harmful chains after later recovery.
+
+
+## Pre-registered amendment A1 step-episode supplement - 2026-09-17T00:51:01.057733+00:00
+
+- Plan/step ID, goal, dependencies and hashes; exact accepted-prior-step bytes on later requests:
+- Initial or STEP source/mode/ceiling; current-step fork quote and public branch correspondence:
+- Critic lineage and check; return redo/disposition; old/new current result and protected dependencies:
+- Use method/check/result; stated agreement versus substantively established validity; no host run inferred:
+- Mechanical step acceptance, unresolved boundary or step_budget; incomplete/harmful episodes retained:
+- Actual later STEP/SYNTHESIS use of this result and old/new same-premise contrast:
+- Final answer/proof all required facts; synthesis cannot_decide or absent is not full completion:
+- Decomposition escape: correct assembled final plus exact exhausted undecomposed source; calibration-only versus fresh main comparison:
+- Single-critic/off-STEP/context/schedule confounds and unmatched extra calls; no automatic correction witness:
+
+Use PLAN A1.5 alongside the unchanged full episode reading obligations above. Mechanical acceptance is not correctness, and bounded resource stops do not exhaust the inquiry.

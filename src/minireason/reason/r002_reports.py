@@ -37,6 +37,94 @@ def _calls(directory):
 def write_episode_records(directory, cfg, objections):
     directory = Path(directory)
     calls = _calls(directory)
+    if cfg["condition"] == "LOOP-DECOMPOSED":
+        initial = (calls.get("initial") or {}).get("parsed") or {}
+        plan = {item["step"]: item for item in initial.get("plan", [])}
+        for cycle in range(1, cfg["cycles"] + 1):
+            return_id = f"c{cycle:04d}-return"
+            returned = calls.get(return_id)
+            critic_id, use_id = f"c{cycle:04d}-critic", f"c{cycle:04d}-use"
+            step_id = "initial" if cycle == 1 else f"c{cycle:04d}-step"
+            started = [calls.get(name) for name in (step_id, critic_id, return_id, use_id)]
+            if not plan.get(cycle) or not any(started):
+                continue
+            step_number = cycle
+            use = calls.get(use_id)
+            parsed_return = returned.get("parsed") if returned else None
+            step_call, critic_call = calls.get(step_id), calls.get(critic_id)
+            parsed_step = ((step_call or {}).get("parsed") or {}).get("first_step") if cycle == 1 \
+                else (step_call or {}).get("parsed")
+            accepted = bool(parsed_return and parsed_return.get("decision") == "answered" and use
+                            and use.get("parsed", {}).get("decision") == "answered"
+                            and use.get("parsed", {}).get("status") == "agrees")
+            step_record = {"schema": "minireason.r002.decomposed-step-custody.v1",
+                "step_record_id": f"{cfg['problem_id']}/{cfg['condition']}/{cfg['run_id']}/step-{step_number}",
+                "problem_id": cfg["problem_id"],
+                "condition": cfg["condition"], "cycle": cycle, "step": step_number,
+                "plan_step": plan.get(step_number),
+                "step_request": (step_call or {}).get("request_ref"),
+                "step_response": (step_call or {}).get("response_ref"),
+                "critic_request": (critic_call or {}).get("request_ref"),
+                "critic_response": (critic_call or {}).get("response_ref"),
+                "return_request": returned.get("request_ref") if returned else None,
+                "return_response": returned.get("response_ref") if returned else None,
+                "step_status": (step_call or {}).get("response", {}).get("status"),
+                "critic_status": (critic_call or {}).get("response", {}).get("status"),
+                "return_status": (returned or {}).get("response", {}).get("status"),
+                "before_step": parsed_step,
+                "returned_step": ({key: parsed_return.get(key)
+                                   for key in ("decision", "missing_derivation", "derivation", "result")}
+                                  if parsed_return else None),
+                "status": "returned" if parsed_return else "incomplete",
+                "semantic_reading": "structural acceptance does not establish bearing, validity or correctness"}
+            step_folder = directory / "steps" / f"step-{step_number:04d}"
+            _immutable(step_folder / "record.json", step_record)
+            if use:
+                step_supplement = {"schema": "minireason.r002.decomposed-step-use.v1",
+                    "step_record": _ref(directory, step_folder / "record.json"),
+                    "use_request": use.get("request_ref"), "use_response": use.get("response_ref"),
+                    "use_status": use.get("response", {}).get("status"), "use": use.get("parsed"),
+                    "accepted_step": ({"step": step_number, "goal": plan[step_number]["goal"],
+                        "depends_on": plan[step_number]["depends_on"],
+                        "derivation": parsed_return["derivation"], "result": parsed_return["result"]}
+                        if accepted else None),
+                    "assembly_status": "step_chain_present" if accepted else "incomplete",
+                    "semantic_reading": step_record["semantic_reading"]}
+                _immutable(step_folder / "use.json", step_supplement)
+
+            dispositions = {item["id"]: item for item in (parsed_return or {}).get("dispositions", [])}
+            for objection in [item for item in objections
+                              if item.get("born_cycle") == cycle and item.get("source") == "decomposed-critic"]:
+                ident = objection["id"]
+                disposition = dispositions.get(ident)
+                record = {"schema": "minireason.r002.decomposed-episode.v1",
+                    "episode_id": f"{cfg['problem_id']}/{cfg['condition']}/{cfg['run_id']}/{ident}",
+                    "record_id": return_id, "problem_id": cfg["problem_id"],
+                    "condition": cfg["condition"], "cycle": cycle, "step": step_number,
+                    "objection_id": ident, "target_claim": objection["target_claim"],
+                    "fork": objection["fork"], "objection_text": objection["text"],
+                    "source": objection["source"], "source_call": objection.get("source_call"),
+                    "source_lineage": objection.get("source_lineage"), "check": objection.get("check"),
+                    "redo": disposition.get("redo") if disposition else None,
+                    "disposition": disposition, "before_step": parsed_step,
+                    "after_step": ({key: parsed_return.get(key) for key in ("step", "derivation", "result")}
+                                   if parsed_return else None),
+                    "return_request": returned.get("request_ref") if returned else None,
+                    "return_response": returned.get("response_ref") if returned else None,
+                    "assembly_status": "closed_without_use" if disposition else "incomplete",
+                    "semantic_reading": "artifact custody does not establish bearing, validity, uptake or correctness"}
+                folder = directory / "episodes" / ident
+                _immutable(folder / (return_id + ".json"), record)
+                if use:
+                    supplement = {"schema": "minireason.r002.decomposed-episode-use.v1",
+                        "episode_id": record["episode_id"],
+                        "disposition_record": _ref(directory, folder / (return_id + ".json")),
+                        "use_request": use.get("request_ref"), "use_response": use.get("response_ref"),
+                        "use": use.get("parsed"),
+                        "assembly_status": "step_chain_present" if accepted else "incomplete",
+                        "semantic_reading": record["semantic_reading"]}
+                    _immutable(folder / (return_id + "-use.json"), supplement)
+        return
     before = (calls.get("initial") or {}).get("parsed") or {}
     returns = sorted(name for name in calls if name.endswith("-return") and name != "closing-return")
     if "closing-return" in calls:
@@ -134,7 +222,11 @@ def reports(directory, cfg, state, answer, objections, events):
     state["episode_records"] = len(list((directory / "episodes").glob("*/*.json"))) if (directory / "episodes").exists() else 0
     put(directory / "state.json", state, replace=True)
     banner = "OFFLINE FIXTURE: no model contacted.\n\n" if cfg["mode"] == "offline" else ""
-    text = "# Working answer\n\n" + banner + ((answer or {}).get("answer") or "No public answer was completed.")
+    public_answer = (answer or {}).get("answer")
+    if not public_answer and cfg["condition"] == "LOOP-DECOMPOSED" and state.get("accepted_steps"):
+        public_answer = "Accepted partial steps (no synthesis):\n\n" + "\n".join(
+            f"{item['step']}. {item['result']}" for item in state["accepted_steps"])
+    text = "# Working answer\n\n" + banner + (public_answer or "No public answer was completed.")
     open_items = [obj for obj in objections if obj["status"] == "unresolved"]
     if open_items:
         text += "\n\nOpen objections:\n\n" + "\n".join("- " + obj["id"] + ": " + obj["text"] for obj in open_items)
@@ -156,9 +248,10 @@ def reports(directory, cfg, state, answer, objections, events):
     if not objections and not events:
         trace += "No objection or stall-switch event was recorded.\n"
     write(directory / "TRACE.md", trace, replace=True)
+    call_ceiling = 13 if cfg["condition"] == "LOOP-DECOMPOSED" else 14
     run = ("# R002 run\n\n" + banner + f"Run: `{cfg['run_id']}`. Condition: `{cfg['condition']}`.\n\n"
            f"Calls/attempts: {state['calls']}/{state['attempts']}. Strict policy: one attempt, zero repairs/fallbacks/retries.\n\n"
-           "Ceilings: native 32768; off 16384; prompt 32768; wall 300 seconds per call; at most 14 loop calls.\n\n"
+           f"Ceilings: native 32768; off 16384; prompt 32768; wall 300 seconds per call; at most {call_ceiling} loop calls.\n\n"
            f"Completed cycles: {state['completed_cycles']}. Closing return: {state['closing_return']}.\n\n"
            f"Tail edits: {state['tail_edits']}. Stall switches: {state['stall_switches']}. Checker runs: {state['checker_runs']}. "
            f"Cannot-decide responses: {state['cannot_decide_responses']}.\n\n"

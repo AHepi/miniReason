@@ -120,6 +120,12 @@ class R002ContractTests(unittest.TestCase):
     def test_role_schema_closures_resolve_every_local_reference(self):
         expected = {
             "answer": {"answer.schema.json"},
+            "initial_decompose": {"initial-decompose.schema.json"},
+            "decomposed_step": {"decomposed-step.schema.json"},
+            "decomposed_critic": {"tested-objection.schema.json"},
+            "decomposed_return": {"decomposed-return.schema.json"},
+            "decomposed_use": {"decomposed-use.schema.json"},
+            "decomposed_synthesis": {"answer.schema.json"},
             "prose_critic": {"prose-objection.schema.json"},
             "tested_critic": {"tested-objection.schema.json"},
             "prose_return": {"prose-return.schema.json", "answer.schema.json", "tested-return.schema.json"},
@@ -135,6 +141,9 @@ class R002ContractTests(unittest.TestCase):
                 self.assertEqual({name for name, _schema in closure}, names)
                 self.assertEqual(closure[0][0], next(name for name in names if name.startswith({
                     "answer": "answer", "prose_critic": "prose-objection", "tested_critic": "tested-objection",
+                    "initial_decompose": "initial-decompose", "decomposed_step": "decomposed-step",
+                    "decomposed_critic": "tested-objection", "decomposed_return": "decomposed-return",
+                    "decomposed_use": "decomposed-use", "decomposed_synthesis": "answer",
                     "prose_return": "prose-return", "tested_return": "tested-return",
                     "propagation_use": "propagation-use", "blind_coding_solve": "recoding-solve",
                     "native_match_note": "native-match-note", "native_match_synthesis": "native-match-note",
