@@ -1,0 +1,72 @@
+{
+  "schema_version": "minireason.reason.recipe.r003-open-v1",
+  "status": "PROSPECTIVE_REQUIRES_REVIEWED_CAPABILITY",
+  "name": "r003-cross-v2",
+  "study_profile": "r003-open-v1",
+  "condition": "LOOP-CROSS",
+  "contract_version": "r003-open-v1-r3-a1",
+  "cycles": 3,
+  "stop": "no_new_objections_when_no_open_else_max_three_cycles",
+  "closing_return": "once_after_last_completed_cycle",
+  "attempt_policy": {
+    "schema_repairs": 1,
+    "native_fallbacks": 0,
+    "transport_retries": 0
+  },
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": "per-route-context-window-minus-completion-minus-reserve",
+    "wall_seconds": 300,
+    "logical_calls": 14,
+    "base_attempts": 14,
+    "attempts": 28,
+    "base_completion_tokens_total": 409600,
+    "completion_tokens_total": 819200,
+    "critic_completion_tokens": 32768
+  },
+  "seats": {
+    "initial": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "conjecture",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/answer.schema.json"
+    },
+    "signal_a": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "critic",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/prose-objection.schema.json"
+    },
+    "signal_b": {
+      "endpoint": "ollama/kimi-k3.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "critic",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/prose-objection.schema.json"
+    },
+    "return": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "prose_return_with_forced_dispositions",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/prose-return.schema.json"
+    },
+    "use": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "propagation_use",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/propagation-use.schema.json",
+      "checker_mode": "disabled"
+    }
+  },
+  "stall_switch": {
+    "enabled": false,
+    "reason": "R3-A1 retains canonical-only custody; EC01/EC02 are deferred.",
+    "adds_calls": 0
+  },
+  "amendment": "R3-A1"
+}

@@ -203,7 +203,7 @@ def validate_run_root(repo: Path, value: Path) -> Path:
     allowed = ((repo / "runs").resolve(), (repo / "work" / "w20").resolve(),
                (repo / "work" / "review20").resolve(), (repo / "work" / "w28").resolve(),
                (repo / "work" / "review28").resolve(), Path(r"C:/tr28").resolve(),
-               Path(r"C:/tw28").resolve(), Path(r"C:/tw20").resolve(),
+               Path(r"C:/tw28").resolve(), Path(r"C:/tw30").resolve(), Path(r"C:/tr30").resolve(), (repo / "work" / "review30").resolve(), (repo / "work" / "w30").resolve(), Path(r"C:/tw20").resolve(),
                Path(r"C:/tr20").resolve(), Path(r"C:/tr21").resolve(),
                Path(r"C:/tw22").resolve(), Path(r"C:/tr22").resolve(),
                Path(r"C:/tw24").resolve(), Path(r"C:/tr24").resolve())

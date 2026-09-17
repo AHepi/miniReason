@@ -169,6 +169,10 @@ R003_RECIPE_SHA256 = {
     "r003-cross-v1.json": "c1c259b3ac2dd9604e54bf45dcda283921d6526e788fa44be6485d3e0a84b3ab",
     "r003-decomposed-v1.json": "78bd32b6e3c0f018e936b42e97279c49ad09068fd16878d562755c0f53af8e26",
 }
+R003_RECIPE_SHA256.update({
+    'r003-cross-v2.json': '800fabaafa1f4a82a476bcf85177359a2a004ac49f4fb64d9a17a7beb2d4aa00',
+    'r003-decomposed-v2.json': '208b3b34ac669b7a91642f6ffb33fadb8a21f70f7d87406ac5f6c67beb9451ab',
+})
 R003_SCHEMA_SHA256 = {
     "canonical-registry.schema.json": "b5c7f53888ba2bdbf9eb9f66240fe3ce68e066bdeb128eddf203c6b0e725d9e2",
     "decomposed-closing.schema.json": "8656aef5ee7f03c2333abb7bf5b08a72b2b74cbe640faf8931cdbc2e7f65a67b",
@@ -176,6 +180,15 @@ R003_SCHEMA_SHA256 = {
     "r003-relations.schema.json": "643777658c0bb2f2dca9966e59af8a947b6dae0b53d79ed5e7b7a584f5ae9e94",
 }
 
+
+R003_SCHEMA_SHA256.update({
+    'decomposed-closing-r3-a1.schema.json': 'e76806312961ceb9ed3af823e78d8ce1ab3001aad8b7e37e29b61276adb6aa4a',
+    'decomposed-return-r3-a1.schema.json': 'da244c23157a212402871c56b27008068fc62a9dfcf21bd608644e6cb513896c',
+    'decomposed-step-r3-a1.schema.json': '5c238e1b3863fee29bb094d40367deb3bb578aebdf8aef0ed4d50c92934a7d6c',
+    'decomposed-synthesis-r3-a1.schema.json': 'd894ed9a01661474eb5688d895bf561a240e80f3750df1c3d5e55a55070f1fe6',
+    'initial-decompose-r3-a1.schema.json': 'df27ab9a2e10dae983f253d8d939d1b6d779b49bf71380f7637c80b2e45500cd',
+    'r3-a1-commitment.schema.json': '40f5fcdf4c668e17f47abb8b9ed486e633c07bf62ad4c06d32ce48a292dce51b',
+})
 
 def validate_r002_recipe(data: dict[str, Any]) -> None:
     """Accept exactly a judged recipe, never silently adapt a historical one."""
@@ -200,7 +213,7 @@ def load_r002_recipe(name_or_path):
 
 
 def validate_r003_recipe(data: dict[str, Any]) -> None:
-    """Accept only the separately versioned R003 occurrence-1 recipes."""
+    """Accept only pinned R003 recipes, including the separately declared R3-A1 successor."""
     filename = str(data.get("name", "")) + ".json"
     if data.get("study_profile") != R003_PROFILE or filename not in R003_RECIPE_SHA256:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R003 recipe identity")

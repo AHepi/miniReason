@@ -248,3 +248,56 @@ This is the default cannot-decide fixture, not a substantive answer. Earlier o00
 Legacy-v1, public-working-v2 and all R002 prompt maps/render/repair probes match HEAD byte for byte. R003 continues to call shared r002._call for A2 repair and transport/preflight; it does not duplicate those mechanisms. EC01 is NOT FOUND by design: ENGINEERING-SPEC.md explicitly defers it to occurrence2.
 
 The existing seal metadata hash matches seal-001.json and the custodian's ledger record; all8problem hashes and brief file-presence/sizes match. The judge did not reopen actual brief bytes; the live gate will hash them before dispatch. Exposure and same-reader custody limitations remain declared. Capability and conservative tokenizer validation pass for all3conditions without provider initialization. All launch inputs now exist; .env presence/ignore status was checked without inspecting credentials. This establishes instrument readiness, not valid credentials, provider availability, independent-staffed custody or scientific success. Publication and actual dispatch remain separate and unperformed.
+
+
+## R3-A1 offline fix-up qualification - 2026-09-17T06:27:33.284246+00:00
+
+No provider/model calls. Exact Python `C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe`, `PYTHONPATH=src;tests`, UTF8/IOENCODING utf-8, `TMP=C:/tw30`. Full-suite dummy env-file fixtures are below ignored `work/w30/evidence`; actual .env and sealed brief contents remain unopened. Environment key variables are removed by name before root suite/launcher children. Tests may explicitly set dummy fixture values.
+
+Requested complete suites:
+
+```text
+python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+Ran 310 tests in 123.279s
+OK
+exit=0
+
+python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+Ran 26 tests in 0.018s
+OK
+exit=0
+```
+
+Full exact transcripts are `work/w30/reason-full.txt` and `work/w30/docs-pins.txt`. Intentional failed-cell fixtures print FAILED/config refusals inside passing negative tests; the test runner reports zero failures/errors. New coverage includes60000wirebytes at131072 context, over-window/no-truncation refusal, exact reserve boundary, unchanged legacy cap, all documented routes, o002 allocation and unchanged earlier sentinel, NATIVE replay refusal, commitment/three-step/decisive-claim checks, long-prose admission, complete three-cycle synthesis/closure after one exact-locator repair, unchanged legacy repair shape, and direct-live descriptor mismatch refusal before mkdir. Six focused contract tests and41combined legacy/contract tests also passed.
+
+Exact direct two-problem launcher transcript (four cells):
+
+```text
+COMMAND: C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 experiments/diagnostics/R003-open-problems-trial-series/run_R003.py new --series C:\tw30\offline-r3-a1 --amendment R3-A1 --expected-occurrence o002 --problems O01 O02 --conditions LOOP-CROSS LOOP-DECOMPOSED --question "Across O01-O08, does either loop yield a specific usable reframing absent from fresh native reasoning, and what losses accompany it?" --mode offline
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tw30\\offline-r3-a1\\o002", "result": {"status": "FINISHED", "rows": 4, "failed": 0}}
+
+exit=0
+fixture o001 unchanged=True
+```
+
+`C:/tw30/offline-r3-a1/o001` is a **numbering sentinel**, explicitly not a simulated occurrence1 or model result. The direct fixture exercises the new descriptor and recipe selection using canned cannot-decide outputs; it establishes CLI delivery/custody only. The answered commitment/synthesis/repair route is separately covered by the complete scripted DECOMPOSED fixture, not inferred from canned output. Real `runs/R003-open-v1/o001` remains byte-preserved and was only read.
+
+An early new closing-schema draft had a missing brace, corrected before required qualification; the agent's initial failed parse/test evidence remains under work/w30. Root review also caught and corrected unguarded legacy decisive-step prompt additions and the direct-CLI descriptor binding gap before full qualification. No production failure or live observation was overwritten. Subsequent final custody/pin audit is appended separately.
+
+
+Final custody/pin audit, 2026-09-17T06:30:01.680800+00:00: all1629real o001files SHA-256/size verified unchanged; R002 descriptor, occurrence1recipes and endpoint registry unchanged; no protected path appears among changes. Opening HEAD8aab9937fd62267178772fbd72eda53f845d6f11/branch unchanged and staged diff empty. Earlier PLAN/CHANGES/VALIDATION/COMMANDS byte prefixes preserved. Exact new capability and source pins match current implementation; direct four-cell terminal resume is byte-identical with projected longest path109<200. Credential-shaped-value and replacement-character scans on intended edits found no hits; git diff --check passed. Final audit and raw filtered28-line publication checklist are in work/w30. The3shared docs entries are concurrent-writer state; this worker wrote no docs tails. The candidate is engineering-qualified and remains UNREVIEWED for the separate judge, not a publication or live-launch approval.
+
+
+### Independent judge R3-A1 qualification, 2026-09-17T06:52:49.294012+00:00
+
+Actual required commands: Python311 -B -X utf8 -m unittest discover -s tests/reason -t . :315tests in123.166s, OK. Python311 -B -X utf8 -m unittest tests.loop.test_docs_pins :26tests in0.019s, OK. Full pastes: work/review30/reason-full-final.txt and docs-pins.txt. TMP/TEMP=C:/tr30; dummy env fixtures under work/review30/evidence. The earlier full run314tests failed12subtests/2errors because the judge placed env fixtures outside the repository; preserved reason-full.txt and ERRATA.md document this helper-only error and correction. No runtime containment was relaxed.
+
+Direct launcher O01/O02 CROSS+DECOMPOSED into C:/tr30/offline-r3-a1/o002:4/4 COMPLETE, failed0; repeated new returns OCCURRENCE_NUMBER_CHANGED with entire fixture tree unchanged. Pastes in work/review30/launcher-offline.txt. Default DECOMPOSED fixture stops initial_cannot_decide and is not full-path evidence. Separate full scripted O01/O02 matrix C:/tr30/scripted-r3-a1/o002:4/4 COMPLETE, each14logical/15attempts/3cycles; CROSS Qwen/Kimi32768 and one repair; DECOMPOSED three accepted steps, synthesis, closing, exact-source quote repair and no second repair. Proof/transcript are copied/indexed in work/review30. Socket and env-load guards prevented any provider call or real env read.
+
+Engine regressions now refuse definition-only initial/later responses without counting accepted steps, and refuse a four-step plan after one repair. A valid three-step plan reaches synthesis. Preflight tests admit60000bytes at131072window, refuse131073bytes, enforce96256boundary/2048reserve, preserve original R00232768bound. Independently reconstructed original80660/31604 repair wires now pass R3-A1 cap965184. Kimi seal-lineage tests cover creation and verify/resume without opening real briefs. Pure reviewed-capability/descriptor gates pass both loops.
+
+Reviewed candidate is R003-CAPABILITY.R3-A1.json, regenerated from exact final source with actual root-review30 judgment; SOURCE_PINS.R3-A1.json refreshed. Tracked launch-occurrence-2.cmd/COMMANDS.md and work/review30/OCC2-LAUNCH.md give the complete detached command/projection. Existing o001 public seal metadata identifies OpenAI/GPT reader, distinct from DeepSeek/Qwen/Kimi; actual sealed files remain unopened in this judgment and their existing exact-byte gate still runs at real dispatch. No real o002 was created, Git state changed or participant call made.

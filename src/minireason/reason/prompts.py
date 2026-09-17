@@ -98,6 +98,62 @@ R003_SUFFIXES["decomposed_closing"] = (
     "cannot_decide with the specific missing derivation, no claims or derivation_steps, and every "
     "remaining disposition unresolved. No later use follows. Schema: decomposed-closing.schema.json."
 )
+R003_A1_CONTRACT = "r003-open-v1-r3-a1"
+R003_A1_SYSTEM = R003_SYSTEM + (
+    " Under amendment R3-A1, an accepted decomposed step must end in an explicit public commitment "
+    "that a check or counterexample could contradict. The schema records the participant's proposed "
+    "value, relation, or decision and its stated falsifier; this mechanical shape does not establish "
+    "that the commitment is substantively refutable, true, explanatory, or adequate."
+)
+R003_A1_SUFFIXES = dict(R003_SUFFIXES)
+R003_A1_SUFFIXES["initial_decompose"] = (
+    "Decompose the quoted PROBLEM into one to three numbered steps and name decisive_step, which must "
+    "be one of those steps. The decisive step must occur within this three-step budget and carry the "
+    "claim needed to answer the problem. Derive step 1 now. Every answered step must include at least "
+    "one commitment whose kind is value, relation, or decision and whose check_or_counterexample states "
+    "what could contradict it. A definition, inventory, framing statement, or restatement alone is not "
+    "a commitment and must not consume a step. End result with the exact final line "
+    "`COMMITMENT: <claim>`, using the claim of the final commitments entry. If no such bounded plan and "
+    "first step can be supplied, return an empty plan, null decisive_step, null first_step, and "
+    "cannot_decide naming the missing derivation. Schema: initial-decompose-r3-a1.schema.json."
+)
+R003_A1_SUFFIXES["decomposed_step"] = (
+    "Derive exactly the quoted CURRENT PLAN STEP from the PROBLEM and ACCEPTED PRIOR STEPS. Do not redo "
+    "or synthesize other steps. An answered step must include at least one explicit commitment whose "
+    "kind is value, relation, or decision and whose check_or_counterexample states what could contradict "
+    "it. A definition, inventory, framing statement, or restatement alone is not a commitment and must "
+    "not consume a step. End result with the exact final line `COMMITMENT: <claim>`, using the claim of "
+    "the final commitments entry. If dependencies are insufficient or no such commitment is warranted, "
+    "leave derivation, result, and commitments empty and set cannot_decide to the missing derivation. "
+    "Schema: decomposed-step-r3-a1.schema.json."
+)
+R003_A1_SUFFIXES["decomposed_return"] = (
+    "Re-derive only the quoted CURRENT STEP in light of every supplied tested objection. Give exactly "
+    "one disposition for every objection and independently redo its check. A substantive disposition "
+    "requires a redone check; use unresolved when a check cannot be redone. An answered returned step "
+    "must include at least one explicit value, relation, or decision commitment with a stated "
+    "check_or_counterexample, and result must end with `COMMITMENT: <claim>` for the final commitments "
+    "entry. Definitions, inventories, framing statements, and restatements alone do not count. If the "
+    "step cannot be rederived with such a commitment, return cannot_decide, empty derivation, result, "
+    "and commitments, and keep every disposition unresolved. Schema: decomposed-return-r3-a1.schema.json."
+)
+R003_A1_SUFFIXES["decomposed_synthesis"] = (
+    "Assemble the final answer solely from the quoted ACCEPTED STEPS. The response must name the declared "
+    "decisive_step and quote exactly one decisive_claim from that accepted step's commitments; the same "
+    "claim must occur in the final answer. Do not add an unrecorded derivation or new decisive claim. "
+    "Give numbered public derivation_steps and the working_position claim. If the accepted steps do not "
+    "contain the declared decisive commitment or do not justify the required result, return "
+    "cannot_decide and name the missing derivation. Schema: decomposed-synthesis-r3-a1.schema.json."
+)
+R003_A1_SUFFIXES["decomposed_closing"] = (
+    "Produce one final response after the quoted decomposed semantic terminal. Preserve the exact "
+    "PROBLEM, PLAN, accepted steps, current answer, objection history, and stop reason. Name the plan's "
+    "decisive_step. If that step was accepted, copy one of its commitments exactly into decisive_claim; "
+    "an answered response must also include that claim in answer. If it was not accepted, return "
+    "cannot_decide with decisive_claim empty. Give exactly one disposition for every unresolved objection. "
+    "Do not alter an accepted or disputed step. No later use follows. "
+    "Schema: decomposed-closing-r3-a1.schema.json."
+)
 _V2_CONTRACTS = dict(_CONTRACTS)
 _V2_CONTRACTS["return"] = _CONTRACTS["return"].replace(
     "Include exactly one disposition for EVERY supplied objection.",
@@ -133,10 +189,14 @@ def r002_quote(label: str, text: str) -> str:
 
 
 def render_r002(role: str, blocks: list[tuple[str, str]], *,
-                study_profile: str | None = None) -> list[dict[str, str]]:
+                study_profile: str | None = None,
+                contract_version: str | None = None) -> list[dict[str, str]]:
     """Render only declared public R002 blocks; callers control information ports."""
-    suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES
-    system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM
+    if contract_version == R003_A1_CONTRACT:
+        suffixes, system = R003_A1_SUFFIXES, R003_A1_SYSTEM
+    else:
+        suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES
+        system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM
     if role not in suffixes:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R002 prompt role: " + role)
     if not isinstance(blocks, list) or not blocks:

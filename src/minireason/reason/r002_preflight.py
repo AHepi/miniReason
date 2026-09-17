@@ -139,7 +139,7 @@ def r003_capability_snapshot(review_receipt="UNREVIEWED"):
                 raise ReasonFailure("CAPABILITY_REFUSED", "Versioned R003 " + folder + " bytes changed")
     reason_dir = Path(__file__).resolve().parent
     runtime_names = ("adapter.py", "config.py", "engine.py", "prompts.py", "r002.py",
-                     "r002_custody.py", "r002_preflight.py", "r002_reports.py", "storage.py", "types.py")
+                     "r002_custody.py", "r002_preflight.py", "r003_preflight.py", "r002_reports.py", "storage.py", "types.py")
     from .r002_custody import prompt_snapshot
     prompt_text = json.dumps(prompt_snapshot(R003_PROFILE), ensure_ascii=False,
                              sort_keys=True, separators=(",", ":"), allow_nan=False)
@@ -159,6 +159,13 @@ def r003_capability_snapshot(review_receipt="UNREVIEWED"):
         "schema_sha256": dict(R003_SCHEMA_SHA256),
         "inherited_r002_schema_sha256": dict(R002_SCHEMA_SHA256),
         "recipe_sha256": dict(R003_RECIPE_SHA256),
+        "r3_a1": {"amendment": "R3-A1", "contract": "r003-open-v1-r3-a1",
+                   "input_caps": get(R003_DIR / "R003-input-preflight.json")["input_caps"],
+                   "critic_completion_tokens": 32768, "plan_steps_max": 3,
+                   "prompt_snapshot_sha256": hashlib.sha256(json.dumps(
+                       prompt_snapshot(R003_PROFILE, "r003-open-v1-r3-a1"), ensure_ascii=False,
+                       sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()},
+        "r3_a1_input_descriptor_sha256": hashlib.sha256((R003_DIR / "R003-input-preflight.json").read_bytes()).hexdigest(),
         "prompt_snapshot_sha256": hashlib.sha256(prompt_text.encode("utf-8")).hexdigest(),
         "runtime_sha256": {name: hashlib.sha256((reason_dir / name).read_bytes()).hexdigest()
                            for name in runtime_names},
@@ -216,10 +223,11 @@ def validate_capability(capability, condition, mode="live", study_profile=None):
 
 def validate_r003_launch_inputs(capability, tokenizer_pins, condition):
     """Pure launcher gate: validate reviewed files before any call intent or key load."""
-    return {
-        "capability": validate_capability(capability, condition, "live", R003_PROFILE),
-        "tokenizers": snapshot_tokenizers(tokenizer_pins, "live"),
-    }
+    cap = validate_capability(capability, condition, "live", R003_PROFILE)
+    data = snapshot_tokenizers(tokenizer_pins, "live")
+    if data.get("amendment") == "R3-A1" and data != get(R003_DIR / "R003-input-preflight.json"):
+        raise ReasonFailure("TOKENIZER_MISMATCH", "R3-A1 live descriptor differs from reviewed source")
+    return {"capability": cap, "tokenizers": data}
 
 
 def _conservative_evidence(data):
@@ -408,6 +416,9 @@ def snapshot_tokenizers(pins, mode="offline"):
             raise ReasonFailure("TOKENIZER_UNAVAILABLE", "Fixed calibration wire bound must cover C01-C24")
         return data
     if data.get("kind") == CONSERVATIVE_BYTE_BOUND_KIND:
+        if data.get("amendment") == "R3-A1":
+            from .r003_preflight import validate_descriptor
+            return validate_descriptor(data)
         return _validate_conservative_descriptor(data)
     if data.get("kind") != "huggingface-local-chat-template-v1" or not isinstance(data.get("endpoints"), dict):
         raise ReasonFailure("TOKENIZER_UNAVAILABLE", "Require pinned local tokenizer and chat template")
@@ -500,6 +511,11 @@ def token_preflight(messages, endpoint_name, pins=None, mode="offline", limit=32
         wire_bytes, wire_digest = _conservative_wire(messages, endpoint_name, wire_body_text, data)
         overhead = data["template_overhead_tokens"][endpoint_name]
         count = wire_bytes + overhead
+        if data.get("amendment") == "R3-A1":
+            from .r003_preflight import wire_budget
+            budget = wire_budget(data, endpoint_name, wire_body_text)
+            limit = budget["input_cap_tokens"]
+            count = wire_bytes
         identity = CONSERVATIVE_BYTE_BOUND_KIND + ":" + endpoint_name
     else:
         count, identity = _local_counter(messages, endpoint_name, data)
@@ -533,6 +549,10 @@ def token_preflight(messages, endpoint_name, pins=None, mode="offline", limit=32
                 "maximum_prompt_tokens_to_wire_bytes"],
             "review_receipt": data["review_receipt"],
         })
+    if data.get("amendment") == "R3-A1":
+        record.update(budget)
+        record["amendment"] = "R3-A1"
+        record["prompt_tokens_upper_bound_including_reserve"] = wire_bytes + overhead
     if count > limit:
         raise ReasonFailure("PROMPT_TOKEN_CAP", "Prompt exceeds frozen tokenizer cap; no intent or truncation", record)
     return record

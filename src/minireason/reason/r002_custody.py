@@ -140,10 +140,14 @@ def validate_r003_canonical(path, manifest, problem_id, problem):
     }
 
 
-def prompt_snapshot(study_profile=None):
-    from .prompts import R002_SYSTEM, R002_SUFFIXES, R003_SYSTEM, R003_SUFFIXES
-    system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM
-    suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES
+def prompt_snapshot(study_profile=None, contract_version=None):
+    from .prompts import (R002_SYSTEM, R002_SUFFIXES, R003_SYSTEM, R003_SUFFIXES,
+                          R003_A1_CONTRACT, R003_A1_SYSTEM, R003_A1_SUFFIXES)
+    if contract_version == R003_A1_CONTRACT:
+        system, suffixes = R003_A1_SYSTEM, R003_A1_SUFFIXES
+    else:
+        system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM
+        suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES
     roles = ROLES if study_profile == "r003-open-v1" else tuple(
         role for role in ROLES if role != "decomposed_closing")
     return {role: system + "\n" + suffixes[role] for role in roles}
@@ -152,7 +156,7 @@ def prompt_snapshot(study_profile=None):
 def freeze_inputs(directory, cfg):
     directory = Path(directory)
     study_profile = cfg.get("study_profile")
-    put(directory / "prompt-contract.json", prompt_snapshot(study_profile))
+    put(directory / "prompt-contract.json", prompt_snapshot(study_profile, cfg.get("prompt_contract")))
     cfg["frozen_inputs"] = {p.relative_to(directory).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                             for p in sorted(directory.rglob("*")) if p.is_file()}
     expected_pins = dict(R002_SCHEMA_SHA256)
@@ -184,7 +188,8 @@ def validate_frozen_inputs(directory):
             expected.update(R003_SCHEMA_SHA256)
         if {p.name for p in (directory / "contracts").glob("*.schema.json")} != expected:
             _refuse("Saved schema inventory changed")
-        if get(directory / "prompt-contract.json") != prompt_snapshot(cfg.get("study_profile")):
+        if get(directory / "prompt-contract.json") != prompt_snapshot(
+                cfg.get("study_profile"), cfg.get("prompt_contract")):
             _refuse("R002 prompt implementation changed; create a separately identified occurrence")
         return cfg
     except ReasonFailure:
