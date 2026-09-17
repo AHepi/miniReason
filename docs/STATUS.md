@@ -1126,3 +1126,6 @@ REC-20260917-B; root-review29: **APPROVED-AS-CORRECTED**. Reading/report/owner p
 
 
 2026-09-17T08:56:00.801112+00:00 | REC-20260917-B | root-publisher | R3-A2 published; occurrence 3 authorised. Verified34path commit 32273bd2074b07937b9c731770d763ed613513be tree 859b4314ea9d080f30157a4079ec02a3f83be6d6 on claude/project-state-direction-j5rbun. Both judge approvals accepted; reading publication follows this acknowledgement. No provider call, live dispatch or main merge.
+
+
+2026-09-17T08:58:20.597870+00:00 | REC-20260917-B | root-publisher | occurrences 1-2 reported; occurrence 3 authorised. Approved18path reading commit 336493993acde61f49b347149f57c8667260743b tree c6a6ac0f45e2c29ca5ce3207e2d939284ceb2d91 verified on claude/project-state-direction-j5rbun. R3-A2 and its acknowledgement also verified. Publisher now completes final acknowledgement verification only; any occurrence3 dispatch is a separate task. Concurrent pilot work and ignored work/runs stay unstaged; main untouched.
