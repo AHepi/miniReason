@@ -42,114 +42,1010 @@
           "subtasks": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "template_id": {
-                  "type": "string",
-                  "enum": [
-                    "direct_answer",
-                    "evidence_read",
-                    "engineer_patch",
-                    "critic_return",
-                    "decompose_synthesize"
-                  ]
-                },
-                "inputs": {
+              "oneOf": [
+                {
                   "type": "object",
                   "properties": {
-                    "task": {
-                      "type": "string"
+                    "template_id": {
+                      "type": "string",
+                      "enum": [
+                        "direct_answer",
+                        "evidence_read",
+                        "engineer_patch",
+                        "critic_return",
+                        "decompose_synthesize"
+                      ]
                     },
-                    "premises": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                    "inputs": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "task": {
+                              "type": "string"
+                            },
+                            "premises": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "documents": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "text": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "text"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "candidate": {
+                              "type": "string"
+                            },
+                            "allowed_files": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "answer_shape": {
+                              "type": "string"
+                            },
+                            "requested_claims": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "behavior_contract": {
+                              "type": "string"
+                            },
+                            "test_commands": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "objections": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "protected_obligations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "decisive_question": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "task",
+                            "premises",
+                            "documents",
+                            "candidate",
+                            "allowed_files",
+                            "answer_shape",
+                            "requested_claims",
+                            "behavior_contract",
+                            "test_commands",
+                            "objections",
+                            "protected_obligations",
+                            "decisive_question"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "unit_id",
+                                "start",
+                                "end",
+                                "encoding"
+                              ],
+                              "properties": {
+                                "unit_id": {
+                                  "type": "string",
+                                  "pattern": "^[0-9a-f]{64}$"
+                                },
+                                "start": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "end": {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                "encoding": {
+                                  "type": "string",
+                                  "enum": [
+                                    "json"
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "unit_id",
+                                "start",
+                                "end",
+                                "encoding",
+                                "overrides"
+                              ],
+                              "properties": {
+                                "unit_id": {
+                                  "type": "string",
+                                  "pattern": "^[0-9a-f]{64}$"
+                                },
+                                "start": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "end": {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                "encoding": {
+                                  "type": "string",
+                                  "enum": [
+                                    "json"
+                                  ]
+                                },
+                                "overrides": {
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {},
+                                      "required": []
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "objections"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "objections",
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "objections",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "premises",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections",
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "premises",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "objections",
+                                        "premises",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections",
+                                        "premises",
+                                        "task"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "template_id",
+                    "inputs"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "template_id": {
+                      "type": "string",
+                      "enum": [
+                        "direct_answer",
+                        "evidence_read",
+                        "engineer_patch",
+                        "critic_return",
+                        "decompose_synthesize"
+                      ]
                     },
-                    "documents": {
+                    "inputs": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "task": {
+                              "type": "string"
+                            },
+                            "premises": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "documents": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "text": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "text"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "candidate": {
+                              "type": "string"
+                            },
+                            "allowed_files": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "answer_shape": {
+                              "type": "string"
+                            },
+                            "requested_claims": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "behavior_contract": {
+                              "type": "string"
+                            },
+                            "test_commands": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "objections": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "protected_obligations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "decisive_question": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "task",
+                            "premises",
+                            "documents",
+                            "candidate",
+                            "allowed_files",
+                            "answer_shape",
+                            "requested_claims",
+                            "behavior_contract",
+                            "test_commands",
+                            "objections",
+                            "protected_obligations",
+                            "decisive_question"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "unit_id",
+                                "start",
+                                "end",
+                                "encoding"
+                              ],
+                              "properties": {
+                                "unit_id": {
+                                  "type": "string",
+                                  "pattern": "^[0-9a-f]{64}$"
+                                },
+                                "start": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "end": {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                "encoding": {
+                                  "type": "string",
+                                  "enum": [
+                                    "json"
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "unit_id",
+                                "start",
+                                "end",
+                                "encoding",
+                                "overrides"
+                              ],
+                              "properties": {
+                                "unit_id": {
+                                  "type": "string",
+                                  "pattern": "^[0-9a-f]{64}$"
+                                },
+                                "start": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "end": {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                "encoding": {
+                                  "type": "string",
+                                  "enum": [
+                                    "json"
+                                  ]
+                                },
+                                "overrides": {
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {},
+                                      "required": []
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "objections"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "objections",
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "objections",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "premises",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections",
+                                        "premises"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "premises",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "objections",
+                                        "premises",
+                                        "task"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "candidate": {
+                                          "type": "string"
+                                        },
+                                        "objections": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "premises": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "task": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "candidate",
+                                        "objections",
+                                        "premises",
+                                        "task"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "source_reads": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "id": {
+                          "unit_id": {
                             "type": "string"
                           },
-                          "text": {
-                            "type": "string"
+                          "start": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "end": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "limit": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 65536
                           }
                         },
                         "required": [
-                          "id",
-                          "text"
+                          "unit_id",
+                          "start",
+                          "end",
+                          "limit"
                         ],
                         "additionalProperties": false
                       }
-                    },
-                    "candidate": {
-                      "type": "string"
-                    },
-                    "allowed_files": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "answer_shape": {
-                      "type": "string"
-                    },
-                    "requested_claims": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "behavior_contract": {
-                      "type": "string"
-                    },
-                    "test_commands": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "objections": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "protected_obligations": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "decisive_question": {
-                      "type": "string"
                     }
                   },
                   "required": [
-                    "task",
-                    "premises",
-                    "documents",
-                    "candidate",
-                    "allowed_files",
-                    "answer_shape",
-                    "requested_claims",
-                    "behavior_contract",
-                    "test_commands",
-                    "objections",
-                    "protected_obligations",
-                    "decisive_question"
+                    "template_id",
+                    "inputs",
+                    "source_reads"
                   ],
                   "additionalProperties": false
                 }
-              },
-              "required": [
-                "template_id",
-                "inputs"
-              ],
-              "additionalProperties": false
+              ]
             }
           }
         },
@@ -189,6 +1085,42 @@
           "result_refs",
           "answer",
           "unresolved"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "read_source",
+      "description": "Read an exact bounded byte range from one task-pinned source unit; arbitrary paths are never accepted.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "unit_id": {
+            "type": "string"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65536
+          }
+        },
+        "required": [
+          "unit_id",
+          "start",
+          "end",
+          "limit"
         ],
         "additionalProperties": false
       }

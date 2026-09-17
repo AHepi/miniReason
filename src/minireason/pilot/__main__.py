@@ -14,6 +14,7 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     run = commands.add_parser("run")
     run.add_argument("--task", required=True, type=Path)
+    run.add_argument("--repo-root", type=Path, default=Path.cwd())
     run.add_argument("--env-file", type=Path)
     run.add_argument("--max-calls", type=int, default=None)
     run.add_argument("--mode", choices=["offline", "live"], default="offline")
@@ -42,7 +43,7 @@ def main(argv=None):
             spec.loader.exec_module(module)
             module.load_env_file(args.env_file)
         out = args.out or Path("work/w34/runs") / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid4().hex[:6])
-        result = Pilot(task, out, mode=args.mode, max_calls=args.max_calls, scripted=scripted, fanout=args.fanout).run()
+        result = Pilot(task, out, mode=args.mode, max_calls=args.max_calls, scripted=scripted, fanout=args.fanout, repo_root=args.repo_root).run()
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result["status"] == "complete" else 2
     except Exception as error:

@@ -29,7 +29,7 @@ class ManifestTests(unittest.TestCase):
 
         self.assertEqual(
             [tool["function"]["name"] for tool in TOOLS],
-            ["route", "spawn", "assemble", "verify", "continue_or_stop"],
+            ["route", "spawn", "assemble", "read_source", "verify", "continue_or_stop"],
         )
         for tool in TOOLS:
             self.assertEqual(tool["type"], "function")
@@ -48,6 +48,11 @@ class ManifestTests(unittest.TestCase):
 
         packet = normalize_inputs("answer this")
         validate_tool_args("spawn", {"subtasks": [{"template_id": "direct_answer", "inputs": packet}] * 24})
+        compact = {"unit_id": "a" * 64, "start": 0, "end": 17, "encoding": "json"}
+        source_read = {"unit_id": "b" * 64, "start": 0, "end": 19, "limit": 19}
+        validate_tool_args("spawn", {"subtasks": [{
+            "template_id": "evidence_read", "inputs": compact, "source_reads": [source_read],
+        }]})
         with self.assertRaises(ValueError):
             validate_tool_args("spawn", {"subtasks": [{"template_id": "direct_answer", "inputs": packet}] * 25})
 
@@ -67,8 +72,17 @@ class ManifestTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_tool_args("route", {"template_id": "direct_answer", "reason": ""})
 
-    def test_assemble_and_verify_contracts(self) -> None:
+    def test_assemble_read_source_and_verify_contracts(self) -> None:
         validate_tool_args("assemble", {"result_refs": ["sha256:abc"], "answer": "result", "unresolved": []})
+        read = {"unit_id": "b" * 64, "start": 0, "end": 19, "limit": 19}
+        self.assertEqual(validate_tool_args("read_source", read), read)
+        for invalid in (
+            {**read, "path": ".env"},
+            {**read, "limit": 65537},
+            {**read, "unit_id": "short"},
+        ):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                validate_tool_args("read_source", invalid)
         validate_tool_args("verify", {"artifact_ref": "sha256:def"})
         with self.assertRaises(ValueError):
             validate_tool_args("verify", {"artifact_ref": ""})

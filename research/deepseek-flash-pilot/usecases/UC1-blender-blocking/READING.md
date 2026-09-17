@@ -125,3 +125,22 @@ Current clean selected path `direct_answer`: **4 logical calls / 14,336 completi
 Offline qualification **PASS**: 8 logical calls / 8 attempts, two closed passes, CONTINUE then STOP, zero provider calls/usage, unchanged source and task hashes. [Pasted result and command](OFFLINE-VALIDATION.md). The semantic reading fields remain NOT RUN.
 
 Instrument erratum: the earlier CLI probe encountered initialization AttributeError during concurrent pilot changes, before a provider call. Preserve work/w37/validate-tasks-20260917T110951145635Z.log/.json and their C:/tw37 output paths. A source race is suspected, not proven; later successful source-pinned tests do not overwrite it.
+
+
+## Current P-A2 input/validation supplement - 2026-09-17
+
+P-A2 supersedes the earlier input-echo/no-source-read limitation. The active task
+now declares exact content-addressed input units; controls emit IDs/ranges and
+the host resolves pinned bytes before workers. `read_source`/child `source_reads`
+are restricted to that task's units, with offsets, byte limits and omission
+receipts. Full FW5, reader briefs, this READING file, derived-properties
+memoranda and env files are not in the pinned set. No sealed brief or existing
+MANIFEST file changed. UC4 retains its excerpt/projection scope.
+
+Current task SHA-256: `c675b63e8683b8b1fc61a71b71d01bde284d0715decd4603a2200e395fb53ac8`.
+[New offline validation](OFFLINE-VALIDATION-PA2.md): PASS, 2 passes,
+8 logical calls / 8 attempts, zero provider calls/usage.
+Every prepared call passes the declared route-specific byte bound; this is
+conditional host-wiring evidence, not live acceptance or a semantic result.
+P-A1 continuation, budget/spend, checker sandbox and lineage rules are unchanged.
+The earlier OFFLINE-VALIDATION records describe their original task/source pins.

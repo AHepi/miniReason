@@ -1,32 +1,34 @@
 {
   "task": "Analyze the eight sealed user inputs in document UC3-cases as an intent-reading and conformance task. For each C1-C8, quote the exact input; enumerate at least two materially distinct candidate meanings; for every candidate cite the exact words that support it and name the specific fact, answer, artifact, policy, or observation that would settle it; choose a provisional working reading with calibrated confidence; and give the exact conformance question or check required before acting. Distinguish observation from inference, do not invent context, and do not take consequential action. Treat a requested mechanism as a hypothesis when the underlying outcome may differ. Produce one human-inspectable Markdown analysis with headings ## C1 through ## C8 and, within every case, the labels INPUT_QUOTE, CANDIDATE_MEANINGS, WORKING_READING, CONFIDENCE_AND_ALTERNATIVES, CONFORMANCE_BEFORE_ACTION, and PROHIBITED_PRECONFIRMATION_ACTION. Each candidate meaning must contain EVIDENCE_LINES and WOULD_SETTLE. End with ## RUN_CONTROL containing CONTINUATION_DECISION and CONTINUATION_REASON. Resource policy: allow up to 300 logical calls and apply the owner-required default USD 6 per-task spend guard, overridable by the owner through `max_spend_usd` in the task file. Remaining calls and estimated dollars are delivered to every continuation decision. There is no loop-count cap. After every route/spawn/assemble/verify pass, the pilot must decide whether the result is good enough; if not, it may run another full pass. Record every continue or stop decision and its reason. Choose substantive STOP only when all eight analyses meet the stated fields and source-grounding obligations. Call/spend ceilings and missing usable priced usage can produce host resource stops; other instrument failures remain separately identified failures. Neither means task exhaustion. A resource stop is partial, not task exhaustion. Any continuation decision or RUN_CONTROL section within the generated artifact is a provisional self-check proposal made before host verification. The authoritative continuation decision must be made after actual verification through the pilot continue_or_stop control call, with that verification reference and a stated reason/stop rule. Let that control decide further passes as often as needed within the global 300-logical-call ceiling and owner-required spend guard; no task pass-count cap applies. Preserve and quote every actual control decision in the human reading.",
-  "inputs": {
-    "documents": [
-      {
-        "id": "UC3-cases",
-        "text": "# UC3 ambiguous user inputs\n\nTreat each line as the complete observed user input. Do not assume access to an earlier conversation, organization chart, private data, or unstated authority.\n\n## C1 - under-specified request\n\n> Can you make the launch page feel more trustworthy before tomorrow?\n\n## C2 - indirect complaint\n\n> I keep finding out about schedule changes from customers.\n\n## C3 - question hiding a constraint\n\n> Would this still work if Legal couldn't approve anything after Thursday?\n\n## C4 - literal action is likely wrong\n\n> Please make the refund button harder to find; support is drowning.\n\n## C5 - politeness masks priority\n\n> When you get a minute, could you check why payroll shows zero for the new starters?\n\n## C6 - ambiguous referent and tone\n\n> Use the same tone as the last one, but don't make it sound defensive.\n\n## C7 - proposed mechanism may not serve the outcome\n\n> Can we add another approval step so these mistakes stop happening?\n\n## C8 - sensitive source material\n\n> Pull a few examples from real customer chats for the workshop.\n"
-      }
-    ],
-    "requested_claims": [
-      "C1-C8 candidate meanings are grounded in exact input words.",
-      "Each candidate names specific evidence that would settle it.",
-      "Each case selects a provisional working reading and a pre-action conformance question or check.",
-      "The answer exposes uncertainty and does not invent context or execute the requested action.",
-      "The run-control section records the latest continuation or stop decision and reason."
-    ],
-    "answer_shape": "Markdown with eight case sections and a run-control section using the exact required labels.",
-    "premises": [
-      "The eight quoted lines are the complete observed inputs.",
-      "Ambiguity permits multiple reasonable readings; confidence must follow the available words.",
-      "The sealed expectation brief is unavailable to the pilot and is used only after the run.",
-      "Call ceiling: 300 logical calls; no loop-count cap; every post-verification continuation decision and reason must be recorded."
-    ]
-  },
   "check": {
     "source": "import json, sys\nx = json.load(sys.stdin)\na = x[\"artifact\"][\"answer\"]\nlabels = [\"INPUT_QUOTE\", \"CANDIDATE_MEANINGS\", \"EVIDENCE_LINES\", \"WOULD_SETTLE\", \"WORKING_READING\", \"CONFIDENCE_AND_ALTERNATIVES\", \"CONFORMANCE_BEFORE_ACTION\", \"PROHIBITED_PRECONFIRMATION_ACTION\"]\nsections = []\nfor i in range(1, 9):\n    start = a.find(\"## C\" + str(i))\n    end = a.find(\"## C\" + str(i + 1)) if i < 8 else a.find(\"## RUN_CONTROL\")\n    sections.append(a[start:end] if start >= 0 and end > start else \"\")\nvalue = all(section and all(label in section for label in labels) for section in sections) and \"## RUN_CONTROL\" in a and \"CONTINUATION_DECISION\" in a and \"CONTINUATION_REASON\" in a\nprint(json.dumps({\"relation_id\": \"pilot-result\", \"value\": value, \"derivation\": \"Check only the required eight-section and run-control field structure; semantic comparison remains sealed human review.\"}))\n",
     "expected": true,
     "scope": "The artifact contains all required per-case evidence, uncertainty, working-reading, and conformance fields plus a recorded continuation decision. This check does not decide whether an interpretation is substantively correct.",
     "fixtures": {}
   },
-  "max_calls": 300
+  "max_calls": 300,
+  "inputs": {
+    "unit_id": "4c5944b3b357037a974b2dc3693b7940c539ee64d01f2c11aab5c7480bbde3fe",
+    "start": 0,
+    "end": 2062,
+    "encoding": "json"
+  },
+  "input_units": [
+    {
+      "unit_id": "4c5944b3b357037a974b2dc3693b7940c539ee64d01f2c11aab5c7480bbde3fe",
+      "sha256": "4c5944b3b357037a974b2dc3693b7940c539ee64d01f2c11aab5c7480bbde3fe",
+      "byte_count": 2062,
+      "path": "research/deepseek-flash-pilot/usecases/UC3-reading-between-lines/inputs/task-inputs.json",
+      "media_type": "application/json",
+      "role": "task_input"
+    },
+    {
+      "unit_id": "ba7110abcd73b2b67da9741ed82ce97b6dfa66d3a58f660c31e375ad68b3a977",
+      "sha256": "ba7110abcd73b2b67da9741ed82ce97b6dfa66d3a58f660c31e375ad68b3a977",
+      "byte_count": 1062,
+      "path": "research/deepseek-flash-pilot/usecases/UC3-reading-between-lines/inputs/UC3-cases.txt",
+      "media_type": "text/plain",
+      "role": "public_source"
+    }
+  ]
 }

@@ -392,3 +392,23 @@ refusals. Read each `passes/pNNNN/` directory and `calls/` records before
 interpreting the latest `ANSWER.md`; a later pass never erases an earlier
 answer, failure, or verification. More loops do not establish correctness,
 creativity, reliability, or advantage over matched multi-call controls.
+
+
+### Pilot P-A2 content-addressed input contract - 2026-09-17
+
+The offline engineering amendment [P-A2](../../research/deepseek-flash-pilot/AMENDMENTS.md)
+registers exact task input units before routing. Task authors declare full SHA-256,
+byte count, role and repository-relative path in `input_units`, with a full JSON
+unit reference in `inputs`. The pilot CLI accepts `--repo-root`; controls carry
+IDs and ranges, and the host supplies the frozen resolved bytes to workers.
+`read_source` and child `source_reads` accept only pinned unit IDs, valid UTF-8
+byte ranges and bounded limits, with hash/range/omission receipts. Briefs, env
+files and derived-properties memoranda remain excluded.
+
+Each attempt, including repair, checks complete prepared UTF-8 wire bytes plus
+requested completion and the declared template reserve against that route's
+window before dispatch. Unknown windows and oversized requests retain a refusal
+reason. Source delivery and exact wire custody remain distinct recorded facts.
+No new provider call, checker authority, budget, continuation or lineage rule is
+introduced. See the [pilot README](../../research/deepseek-flash-pilot/README.md)
+for authoring and `work/w45/INDEX.md` for final-source offline qualification.

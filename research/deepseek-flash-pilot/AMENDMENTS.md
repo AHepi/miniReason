@@ -111,3 +111,64 @@ does not establish live acceptance or substantive benefit.
 Unaccepted child outputs remain inadmissible dependencies. If assembly is refused, the host records verification as unavailable with the preserved child results and still asks for a continuation decision; no checker success or accepted assembly is invented. Completed pass artifacts live under `passes/pNNNN/`.
 
 Offline qualification: 77/77 pilot,346/346 reason (child TMP=C:/tr36) and26/26docs pins passed. See work/w38/INDEX.md for full test evidence, lesson IDs, failures and handoff limits. No provider call or Git mutation occurred in this engineering task.
+
+
+## P-A2 - content-addressed inputs and scoped source reads (2026-09-17)
+
+Declared and implemented offline in W45 from the W44 staged DeepReason port.
+The owner's instruction is: "The parsing input machinery exists in DeepReason. Maybe just take it from there. It went through many cycles of iteration already".
+The standing instruction is: "lean on all the fail modes and lessons learned when building new configurations."
+
+Source: [AHepi/DeepReason](https://github.com/AHepi/DeepReason/tree/9607fba6f0a3066fbcab282c9ae0fad823e52e0c),
+commit `9607fba6f0a3066fbcab282c9ae0fad823e52e0c`, MIT, Copyright (c) 2026 Aaron Hepi.
+`inputs/canonical.py` and `frozen.py` retain the upstream bodies; `models.py`,
+`parse.py`, `citations.py` and `preflight.py` carry the planned adaptations.
+`adapters.py`, `service.py` and `__init__.py` are the scoped local bridge.
+Provenance headers and the upstream LICENSE are retained. Every adaptation,
+including the parser's UTF-8 boundary correction and disabled extraction
+plugins, is listed in `work/w45/ADAPTATIONS.md`.
+
+Task loading validates full SHA-256, byte length, strict UTF-8, role and exact
+repository-relative path for each declared unit, then freezes the admitted
+bytes. Legacy inline task inputs are registered as host-derived JSON units.
+Route/spawn/planner controls use unit IDs and half-open byte ranges instead of
+requiring the old 2,048-token normalized-input echo. Host resolution supplies
+the actual input data to workers before the existing scope validation.
+Mutable task/premise/candidate/objection overrides cannot replace sealed source
+or protected obligations. Spawn receipts also carry content references.
+
+`read_source` and each child's optional `source_reads` resolve only registered
+units from sealed memory: no model path, filesystem search, shell or network.
+Requested UTF-8 byte bounds must be valid. Model reads have a 65,536-byte limit;
+host task JSON resolution is bounded at 262,144 bytes. A capped read reports
+every omitted interval and its reason, without character replacement. Unpinned
+paths/IDs, reader briefs, `.env` variants, `FW5-DERIVED-PROPERTIES.md` and other
+derived-properties material are refused. Full FW5 and original episode files
+are not added implicitly. UC1 checker/reviewer implementations remain host-only.
+
+Every physical attempt, including the sole repair, preflights the exact
+prepared wire body before dispatch or physical-attempt reservation. The rule is
+`wire_utf8_bytes + completion_reserve + 8192 <= route_context_window`.
+The recorded 2026-09-17 documentation premises are decimal 1,000,000 for
+DeepSeek Flash and 256,000 for the explicitly declared hosted Qwen alias.
+Each rendered text token consuming at least one UTF-8 byte and hidden rendering
+fitting the reserve are assumptions, not measured tokenizer qualification.
+Unknown routes, changed endpoint identities and native attachments/tools fail
+closed. A refusal preserves prepared bytes, code and reason without dispatch.
+Exact prepared, preflight and sent-wire hashes must still agree.
+
+Per-attempt receipts distinguish literal source text/ranges from decoded JSON
+object delivery; IDs in a catalogue are not exposure. Repairs keep the original
+source and rejected public response. The byte-bound is not a spend guarantee.
+Budgets, completion caps, P-A1 continuation/stop rules, checker sandbox, custody,
+lineage, dependency and assembly rules retain their existing authority.
+
+Final offline suites and four actual-task CLI fixtures are reported in
+`work/w45/INDEX.md` and separately named `OFFLINE-VALIDATION-PA2` supplements.
+No provider/model call, live acceptance, semantic result or comparative advantage
+is established. Historical observations and sealed briefs remain unchanged.
+
+
+### P-A2 independent judge correction supplement - 2026-09-17T13:07:44.232113+00:00
+
+Pinned JSON task units now use the pilot strict duplicate-key parser and reject nonfinite values, including numeric overflow, before interpretation. All saved spawn-reference fields remain compact even for accepted legacy inline arguments. These corrections close the L10 parsing recurrence and the legacy spawn-record echo; original pinned bytes and provider observations remain unchanged. Root evidence, old-to-new custody and final offline qualification: `work/review45/INDEX.md`.

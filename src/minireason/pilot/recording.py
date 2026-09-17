@@ -16,6 +16,7 @@ from minireason.reason.adapter import Adapter
 from minireason.reason.types import ReasonFailure
 
 from .templates import validate
+from .inputs import preflight_for_endpoint
 from .budget import Budget, load_price_table
 from .util import digest, strict_loads, write
 
@@ -45,6 +46,7 @@ class RecordedCalls:
         adapter: Adapter | None = None,
         max_spend_usd: float = 6.0,
         prices=None,
+        task_inputs=None,
     ) -> None:
         if mode not in {"offline", "live"}:
             raise ValueError("mode must be offline or live")
@@ -62,6 +64,7 @@ class RecordedCalls:
         self.endpoint_snapshot = config.load_endpoint_snapshot()
         self.adapter = adapter or Adapter(mode, self.endpoint_snapshot)
         self._scripted = scripted
+        self.task_inputs = task_inputs
         self._script_queue = deque(scripted) if isinstance(scripted, list) else None
         self._logical_count = 0
         self._count = 0
@@ -184,14 +187,44 @@ class RecordedCalls:
         # JSON string contents are preserved; no observed record is rewritten.
         messages = json.loads(json.dumps(messages, ensure_ascii=False,
                                         sort_keys=True, allow_nan=False))
-        prepared = self.adapter.prepare(
-            seat=seat,
-            messages=messages,
-            max_tokens=max_tokens,
-            thinking=thinking,
-            role=role,
-            coordinate={"call_id": call_id, "attempt": attempt, "role": role, "pilot": True},
+        if self.task_inputs is not None:
+            self.task_inputs.freeze(self.root)
+        exposure_receipts = (
+            self.task_inputs.exposure_receipts(messages, f"{call_id}/a{attempt:02d}")
+            if self.task_inputs is not None else []
         )
+        try:
+            prepared = self.adapter.prepare(
+                seat=seat,
+                messages=messages,
+                max_tokens=max_tokens,
+                thinking=thinking,
+                role=role,
+                coordinate={"call_id": call_id, "attempt": attempt, "role": role, "pilot": True},
+            )
+            write(attempt_dir / "prepared-request.json", {
+                "schema_version": "minireason.pilot.prepared-request.v1",
+                "endpoint": deepcopy(prepared["endpoint"]),
+                "coordinate": deepcopy(prepared["kwargs"].get("coordinate", {})),
+                "payload": deepcopy(prepared["payload"]),
+                "wire_body_text": prepared["wire_body_text"],
+                "wire_body_sha256": prepared["wire_body_sha256"],
+            })
+            endpoint_metadata = self._endpoint_metadata(seat)
+            input_preflight = preflight_for_endpoint(prepared, max_tokens, endpoint_metadata)
+        except BaseException as error:
+            write(attempt_dir / "preflight-refusal.json", {
+                "schema_version": "minireason.pilot.input-preflight-refusal.v1",
+                "call_id": call_id,
+                "attempt": attempt,
+                "status": "not_dispatched",
+                "failure_code": getattr(error, "code", type(error).__name__),
+                "reason": str(error),
+                "input_preflight": deepcopy(getattr(error, "receipt", {})),
+                "source_reads": exposure_receipts,
+                "recorded_epoch": time.time(),
+            })
+            raise
         attempt_number = self._reserve_attempt()
         decision = {
             "schema_version": "minireason.pilot.call-decision.v1",
@@ -202,12 +235,14 @@ class RecordedCalls:
             "status": "pending",
             "reason": reason,
             "role": role,
-            "endpoint": self._endpoint_metadata(seat),
+            "endpoint": endpoint_metadata,
             "max_tokens": max_tokens,
             "thinking": thinking,
             "messages_sha256": digest(messages),
             "schema_sha256": digest(schema) if schema is not None else None,
             "prepared_wire_sha256": prepared["wire_body_sha256"],
+            "input_preflight": input_preflight,
+            "source_reads": exposure_receipts,
             "recorded_epoch": time.time(),
         }
         write(attempt_dir / "decision.json", decision)
@@ -253,6 +288,8 @@ class RecordedCalls:
                 "request_path": str(request_path),
                 "response_path": str(response_path),
                 "request_wire": custody,
+                "input_preflight": input_preflight,
+                "source_reads": exposure_receipts,
                 "provider_status": result.get("status"),
                 "started_epoch": custody.get("request_recorded_epoch", prepared["prepared_epoch"]),
                 "finished_epoch": result.get("finished_epoch"),

@@ -5,7 +5,9 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Mapping
 
-CATALOGUE_VERSION = "flash-pilot-v1/P-A1"
+from .inputs import INPUT_REF_SCHEMA
+
+CATALOGUE_VERSION = "flash-pilot-v1/P-A2"
 TEMPLATE_IDS = (
     "direct_answer",
     "evidence_read",
@@ -47,6 +49,10 @@ COMMON_INPUT_SCHEMA = {
     ],
     "additionalProperties": False,
 }
+SPAWN_INPUT_SCHEMA = {
+    "oneOf": [deepcopy(COMMON_INPUT_SCHEMA), deepcopy(INPUT_REF_SCHEMA)],
+}
+
 OUTPUT_SCHEMA = {
     "type": "object",
     "properties": {
@@ -138,6 +144,18 @@ DECOMPOSE_SCHEMA = _extended_output({
 
 def validate(value: Any, schema: Mapping[str, Any], path: str = "$") -> None:
     """Validate the JSON-Schema subset used by this package, raising ValueError."""
+    if "oneOf" in schema:
+        matches = 0
+        errors = []
+        for candidate in schema["oneOf"]:
+            try:
+                validate(value, candidate, path)
+                matches += 1
+            except ValueError as error:
+                errors.append(str(error))
+        if matches != 1:
+            raise ValueError(f"{path}: expected exactly one allowed input shape; matches={matches}; errors={errors!r}")
+        return
     if "enum" in schema and value not in schema["enum"]:
         raise ValueError(f"{path}: expected one of {schema['enum']!r}")
     expected = schema.get("type")

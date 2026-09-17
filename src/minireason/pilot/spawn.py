@@ -22,6 +22,8 @@ class SpawnHost:
         fanout: int = 24,
         max_depth: int = 3,
         executor: Callable[[str, dict[str, Any], int], dict[str, Any]] | None = None,
+        input_expander: Callable[[Any, str], dict[str, Any]] | None = None,
+        source_reader: Callable[..., dict[str, Any]] | None = None,
     ) -> None:
         if type(fanout) is not int or not 1 <= fanout <= 24:
             raise ValueError("fanout must be an integer from 1 through 24")
@@ -29,6 +31,10 @@ class SpawnHost:
             raise ValueError("max_depth must be from 1 through 3")
         if executor is not None and not callable(executor):
             raise TypeError("executor must be callable")
+        if input_expander is not None and not callable(input_expander):
+            raise TypeError("input_expander must be callable")
+        if source_reader is not None and not callable(source_reader):
+            raise TypeError("source_reader must be callable")
         if not hasattr(calls, "root"):
             raise TypeError("calls must expose its custody root")
         self.calls = calls
@@ -37,10 +43,25 @@ class SpawnHost:
         self.fanout = fanout
         self.max_depth = max_depth
         self.executor = executor
+        self.input_expander = input_expander
+        self.source_reader = source_reader
         self._next_result = 0
         self._results: dict[str, dict[str, Any]] = {}
         self._nested_receipts: set[str] = set()
         self._lock = threading.RLock()
+
+    def expand_subtasks(self, subtasks: list[dict[str, Any]], *, call_id: str) -> list[dict[str, Any]]:
+        """Resolve compact input references once, before batch validation or dispatch."""
+        if self.input_expander is None:
+            return deepcopy(subtasks)
+        expanded: list[dict[str, Any]] = []
+        for index, value in enumerate(subtasks, 1):
+            item = deepcopy(value)
+            if isinstance(item, dict) and "inputs" in item:
+                subtask_id = item.get("id", f"s{index}")
+                item["inputs"] = self.input_expander(item["inputs"], f"{call_id}/{subtask_id}")
+            expanded.append(item)
+        return expanded
 
     def _validate_batch(
         self, subtasks: list[dict[str, Any]], depth: int, receipt: dict[str, Any] | str
@@ -59,7 +80,7 @@ class SpawnHost:
         for index, value in enumerate(subtasks, 1):
             if not isinstance(value, dict):
                 raise ValueError(f"subtasks[{index - 1}] must be an object")
-            extra = sorted(set(value) - {"id", "template_id", "inputs", "depends_on"})
+            extra = sorted(set(value) - {"id", "template_id", "inputs", "depends_on", "source_reads"})
             if extra:
                 raise ValueError(f"subtasks[{index - 1}] has unexpected fields: {extra!r}")
             template_id = value.get("template_id")
@@ -72,6 +93,15 @@ class SpawnHost:
             subtask_id = value.get("id", f"s{index}")
             if not isinstance(subtask_id, str) or not subtask_id.strip() or subtask_id in earlier_ids:
                 raise ValueError("subtask ids must be nonempty and unique")
+            source_reads = value.get("source_reads", [])
+            if not isinstance(source_reads, list) or len(source_reads) > 8:
+                raise ValueError(f"{subtask_id}.source_reads must be an array of at most eight requests")
+            for request in source_reads:
+                if not isinstance(request, dict) or set(request) != {"unit_id", "start", "end", "limit"}:
+                    raise ValueError(f"{subtask_id}.source_reads has an invalid request")
+                if (not isinstance(request["unit_id"], str) or type(request["start"]) is not int or
+                        type(request["end"]) is not int or type(request["limit"]) is not int):
+                    raise ValueError(f"{subtask_id}.source_reads has invalid field types")
             depends_on = value.get("depends_on", [])
             if not isinstance(depends_on, list) or any(not isinstance(item, str) for item in depends_on):
                 raise ValueError(f"{subtask_id}.depends_on must be a list of strings")
@@ -85,6 +115,7 @@ class SpawnHost:
                 "template_id": template_id,
                 "inputs": deepcopy(inputs),
                 "depends_on": list(depends_on),
+                "source_reads": deepcopy(source_reads),
             })
             earlier_ids.add(subtask_id)
         receipt_key = digest(receipt)
@@ -98,6 +129,7 @@ class SpawnHost:
         inputs: dict[str, Any],
         depth: int,
         dependencies: list[dict[str, Any]],
+        resolved_source_reads: list[dict[str, Any]],
     ) -> dict[str, Any]:
         template = TEMPLATES[template_id]
         if len(template["seats"]) != 1 or template_id not in {"direct_answer", "evidence_read"}:
@@ -113,6 +145,8 @@ class SpawnHost:
         packet: dict[str, Any] = {"inputs": inputs}
         if dependencies:
             packet["accepted_dependencies"] = dependencies
+        if resolved_source_reads:
+            packet["resolved_source_reads"] = resolved_source_reads
         return self.calls.call(
             role=f"pilot-{seat['role']}",
             messages=[
@@ -144,9 +178,17 @@ class SpawnHost:
             ]
             if any(item["status"] != "accepted" for item in dependency_results):
                 raise ValueError(f"{task['id']} depends on an unaccepted result")
+            resolved_source_reads = []
+            for read_index, request in enumerate(task["source_reads"], 1):
+                if self.source_reader is None:
+                    raise ValueError("source_reads require the task-pinned source reader")
+                resolved_source_reads.append(self.source_reader(
+                    request["unit_id"], start=request["start"], end=request["end"], limit=request["limit"],
+                    call_id=f"spawn/{receipt_key}/{task['id']}/read-{read_index}",
+                ))
             if self.executor is None:
                 output = self._default_execute(
-                    task["template_id"], task["inputs"], depth, dependency_results
+                    task["template_id"], task["inputs"], depth, dependency_results, resolved_source_reads
                 )
             else:
                 executor_inputs = deepcopy(task["inputs"])
@@ -154,7 +196,10 @@ class SpawnHost:
                     json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
                     for item in dependency_results
                 )
-                output = self.executor(task["template_id"], executor_inputs, depth)
+                if resolved_source_reads:
+                    output = self.executor(task["template_id"], executor_inputs, depth, resolved_source_reads=resolved_source_reads)
+                else:
+                    output = self.executor(task["template_id"], executor_inputs, depth)
             schema: Mapping[str, Any] = TEMPLATES[task["template_id"]].get("output_schema", OUTPUT_SCHEMA)
             validate(output, schema)
             with self._lock:

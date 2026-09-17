@@ -46,6 +46,16 @@ def provider_fixture(public: dict, usage: dict) -> dict:
     return {"content": json.dumps(public, ensure_ascii=False), "usage": usage}
 
 
+def with_overrides(reference: dict, **overrides) -> dict:
+    """Return one compact input reference with only declared mutable overrides."""
+    value = copy.deepcopy(reference)
+    self_contained = {"unit_id", "start", "end", "encoding", "overrides"}
+    if "unit_id" not in value or set(value) - self_contained:
+        raise AssertionError("fixture expected a compact P-A2 input reference")
+    value["overrides"] = {**value.get("overrides", {}), **copy.deepcopy(overrides)}
+    return value
+
+
 SMALL_PRICED_USAGE = {
     "prompt_tokens": 1,
     "completion_tokens": 1,
@@ -78,7 +88,10 @@ class ContinuationTests(unittest.TestCase):
                 spawn_packets.append(copy.deepcopy(packet))
                 inputs = copy.deepcopy(packet["inputs"])
                 if packet["pass_number"] > 1:
-                    inputs["premises"].append(f"Pass {packet['pass_number']} checks a changed premise mix.")
+                    inputs = with_overrides(
+                        inputs,
+                        premises=[f"Pass {packet['pass_number']} checks a changed premise mix."],
+                    )
                 return {"subtasks": [{"template_id": "direct_answer", "inputs": inputs}]}
             if role == "direct_answer":
                 return envelope("42")
@@ -126,7 +139,17 @@ class ContinuationTests(unittest.TestCase):
                 "dispatch_allowed", "stop_reason",
             }.issubset(packet["budget"]))
         self.assertEqual([packet["pass_number"] for packet in spawn_packets], [1, 2, 3])
-        self.assertEqual(spawn_packets[0]["inputs"]["premises"], [])
+        first_ref = spawn_packets[0]["inputs"]
+        self.assertEqual(set(first_ref), {"unit_id", "start", "end", "encoding"})
+        self.assertEqual(len(first_ref["unit_id"]), 64)
+        self.assertNotIn("premises", first_ref)
+        self.assertNotIn("overrides", result["passes"][0]["spawned_refs"][0]["inputs"])
+        self.assertEqual(
+            pilot.task_inputs.expand_inputs(
+                result["passes"][1]["spawned_refs"][0]["inputs"], "test-recorded-pass"
+            )["premises"],
+            ["Pass 2 checks a changed premise mix."],
+        )
         for number, item in enumerate(result["passes"], 1):
             pass_path = pilot.root / "passes" / f"p{number:04d}" / "pass.json"
             self.assertTrue(pass_path.is_file())
@@ -372,9 +395,7 @@ class ContinuationTests(unittest.TestCase):
         task = copy.deepcopy(TASK)
         task["features"] = {"kind": "decompose"}
         task["critic_seats"] = ["ollama/qwen3.5-397b.native"]
-        outer_inputs = normalize_inputs(task["task"])
         nested_inputs = normalize_inputs("Compute a bounded intermediate result.")
-        leaf_inputs = normalize_inputs("Compute 6 times 7.")
         plan_count = 0
 
         def decomposition(answer: str) -> dict:
@@ -391,14 +412,18 @@ class ContinuationTests(unittest.TestCase):
             if role == "route":
                 return {"template_id": "decompose_synthesize", "reason": "Use nested bounded dependencies."}
             if role == "spawn":
-                return {"subtasks": [{"template_id": "decompose_synthesize", "inputs": outer_inputs}]}
+                packet = user_packet(context["messages"], "input_catalog")
+                return {"subtasks": [{"template_id": "decompose_synthesize", "inputs": packet["inputs"]}]}
             if role == "plan":
                 plan_count += 1
+                packet = user_packet(context["messages"], "input_catalog")
                 if plan_count == 1:
                     return {"steps": [{"id": "nested", "template_id": "decompose_synthesize",
-                                       "inputs": nested_inputs, "depends_on": []}]}
+                                       "inputs": with_overrides(packet["inputs"], task="Compute a bounded intermediate result."),
+                                       "depends_on": []}]}
                 return {"steps": [{"id": "leaf", "template_id": "direct_answer",
-                                   "inputs": leaf_inputs, "depends_on": []}]}
+                                   "inputs": with_overrides(packet["inputs"], task="Compute 6 times 7."),
+                                   "depends_on": []}]}
             if role == "direct_answer":
                 return envelope("42")
             if role == "decompose-critic":
@@ -430,8 +455,7 @@ class ContinuationTests(unittest.TestCase):
                 return {"template_id": "direct_answer", "reason": "Use two bounded checks."}
             if role == "spawn":
                 packet = user_packet(context["messages"], "pass_number")
-                second = copy.deepcopy(packet["inputs"])
-                second["premises"].append("Independent second calculation.")
+                second = with_overrides(packet["inputs"], premises=["Independent second calculation."])
                 return {"subtasks": [
                     {"template_id": "direct_answer", "inputs": packet["inputs"]},
                     {"template_id": "direct_answer", "inputs": second},

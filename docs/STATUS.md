@@ -1242,3 +1242,10 @@ Imported historical lessons author STATUS:
 
 
 2026-09-17T12:12:52.664976+00:00 | REC-20260917-F | root-publisher | Harness lessons register published:5-path delivery 4e3f9e607f321a9676b0e43a288b036f9cd3ffc1, tree 3b2c31ac7b9a72a78ee5825431b9fcc0d11e2899, verified by fetched origin/claude/project-state-direction-j5rbun, ls-remote and equal local/remote commit/tree. P-A1 delivery 3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 and acknowledgement 6502e15a444f46aaf64c5872c4f3cd8f69e1413a are already verified; P-A1 published; use cases authorised. Next: final F acknowledgement push and terminal verification only, then hand back to orchestrator.17provider-fallback paths remain outside this delivery; no provider call or main merge. Terminal acknowledgement identities are reported externally to avoid a self-referential receipt.
+
+
+2026-09-17T13:50:23.057073+00:00 | REC-20260917-D | root-publisher | Imported original judge STATUS at actual transfer time; original historical receipt follows.
+
+2026-09-17T13:18:25.612789+00:00 | REC-20260917-D | root-review45 | P-A2 APPROVED-AS-CORRECTED offline:125pilot/346reason/26docs and12checker attacks pass;4task fixtures pass on stable corrected source. Two runtime fixes and fixture compatibility change recorded in work/review45/REPORT.md. Next: separate publisher review explicit checklist and import deferred author/judge receipts after guards clear; no provider calls or git publication by review45.
+
+2026-09-17T13:50:23.057073+00:00 | REC-20260917-D | root-publisher | P-A2 approved offline delivery selected for61explicit paths on claude/project-state-direction-j5rbun; publication pending exact commit/tree verification. Author and judge records transferred in order; work/review45 evidence remains local under owner no-work-staging instruction. Next: delivery and acknowledgement publication only. No provider calls or main merge.

@@ -177,7 +177,18 @@ class PilotTests(unittest.TestCase):
         scripts = [{"template_id": "critic_return", "reason": "An existing candidate needs criticism and revision."},
                    {"subtasks": [{"template_id": "critic_return", "inputs": inputs}]}, judgment, judgment, returned,
                    envelope("42 divided by 7 is 6"), judgment]
-        result = Pilot(task, self.root / "return", scripted=self.with_stop_decision(scripts)).run()
+        # P-A2 deliberately has no production window declaration for GLM.
+        # This offline test concerns two-lineage orchestration, so declare an
+        # isolated synthetic window instead of granting that live route access.
+        from minireason.pilot.inputs.preflight import _ROUTE_WINDOWS
+        from minireason.reason.config import endpoint_for, load_endpoint_snapshot
+        endpoint = endpoint_for("ollama/glm-5.3.native", load_endpoint_snapshot()["data"])
+        fixture_window = {"model": endpoint.model, "family": endpoint.family,
+                          "base_url": endpoint.base_url, "context_window": 64000,
+                          "source_url": "offline-fixture-only:no-provider-qualification",
+                          "identity_scope": "synthetic offline window for lineage fixture only"}
+        with patch.dict(_ROUTE_WINDOWS, {"ollama/glm-5.3.native": fixture_window}):
+            result = Pilot(task, self.root / "return", scripted=self.with_stop_decision(scripts)).run()
         self.assertEqual((result["status"], result["calls"]), ("complete", 8))
 
     def test_engineer_proposal_is_partial_and_fake_tests_refused(self):

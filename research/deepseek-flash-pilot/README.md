@@ -224,3 +224,66 @@ unadmitted evidence-root override and failed; its full transcript is retained
 alongside the passing rerun. No launcher code or checker limits were changed.
 No real provider/model calls were made. These are offline host-wiring results,
 not live full-manifest acceptance or demonstrated owner-task reliability.
+
+
+## P-A2 input authoring and source reads - 2026-09-17
+
+[P-A2](AMENDMENTS.md) replaces the historical full-input spawn echo and adds
+scoped reads plus a complete-request preflight. The source-checkout implementation
+is qualified offline; see `work/w45/INDEX.md` for the final test evidence.
+
+A task author puts the former `inputs` object in a UTF-8 JSON file, hashes its
+exact bytes, and writes a descriptor and full-unit reference in `task.json`:
+
+```json
+{
+  "task": "Read the declared material and answer the question.",
+  "inputs": {"unit_id": "<64 lowercase SHA-256 hex characters>", "start": 0, "end": 123, "encoding": "json"},
+  "input_units": [{
+    "unit_id": "<same SHA-256>", "sha256": "<same SHA-256>", "byte_count": 123,
+    "path": "research/my-task/inputs/task-inputs.json",
+    "media_type": "application/json", "role": "task_input"
+  }]
+}
+```
+
+The example's digest and length are placeholders: compute both from the exact
+file bytes. Additional participant source files get descriptors with
+`role: "public_source"`. Only these explicitly pinned files are admitted;
+reader briefs, env files and derived-properties memoranda cannot be pinned.
+Keep READING.md, sealed answers, checkers and private implementation details
+outside the participant set. Paths are relative to `--repo-root` (default:
+current directory). A modified file requires new pins and a fresh run.
+Existing inline task files remain supported and get host-derived units at load.
+
+The host normalizes input JSON once and supplies a compact reference/catalogue
+to controls. A spawn response copies that reference, not the complete documents.
+Later passes may add `overrides` containing only `task`, `premises`, `candidate`
+or `objections`, while source/scope fields retain their sealed equality checks.
+Workers receive resolved data. Each child may select up to eight `source_reads`:
+`{"unit_id":"<pinned ID>","start":0,"end":123,"limit":123}`.
+The external `read_source` tool uses the same shape. Offsets are zero-based
+UTF-8 bytes, the end is exclusive, and the model limit is at most 65,536 bytes.
+Omissions carry exact ranges/reasons; split-codepoint and out-of-unit requests
+are refused. Reads use the frozen bytes, so a later path edit cannot change them.
+
+`input-units/` stores exact frozen text and hashed manifests. Spawn records hold
+references; worker and repair requests contain resolved content. Each attempt's
+`decision.json`/`outcome.json` records its input preflight and source hashes;
+`preflight-refusal.json` records a refused call before any physical attempt.
+Literal text exposure and canonical JSON delivery have distinct receipt schemas.
+The guard compares complete prepared wire bytes plus completion and template
+reserves with the declared route window; see P-A2 for the conditional premises.
+
+Use the existing offline CLI with `--repo-root C:/Dev/miniReason` when launching
+from elsewhere. The four use-case task files demonstrate exact pins, including
+UC4's FW5 excerpts by reference. `OFFLINE-VALIDATION-PA2` supplements report the
+new fixture runs; original OFFLINE-VALIDATION records remain historical.
+P-A1 continuation, budgets, checker sandbox and lineage rules continue to apply.
+The tool manifest now also includes `read_source`; full native provider acceptance
+of that manifest remains untested.
+
+
+### P-A2 judge corrections - 2026-09-17T13:07:44.232113+00:00
+
+JSON input units require unique member names at every nesting level and finite numbers. Malformed units fail before use. Legacy inline inputs remain supported; saved spawn records use resolved content references in every spawn field. See `work/review45/INDEX.md` for independent source diffs, corrections and final offline verification.
