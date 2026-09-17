@@ -1,0 +1,103 @@
+{
+  "schema_version": "minireason.reason.recipe.r002-proposed.v1",
+  "status": "DRAFT_NOT_INSTALLED",
+  "name": "r003-decomposed-closing-draft",
+  "condition": "LOOP-DECOMPOSED",
+  "contract_version": "r002-decomposed-v2",
+  "cycles": 3,
+  "stop": "all_planned_steps_accepted_then_synthesis_else_step_unresolved_or_three_step_budget",
+  "closing_return": "once_after_last_completed_cycle",
+  "attempt_policy": {
+    "schema_repairs": 1,
+    "native_fallbacks": 0,
+    "transport_retries": 0
+  },
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "critic_completion_tokens": 32768,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": 32768,
+    "wall_seconds": 300,
+    "logical_calls": 14,
+    "base_attempts": 14,
+    "attempts": 28,
+    "base_completion_tokens_total": 376832,
+    "completion_tokens_total": 753664
+  },
+  "seats": {
+    "initial": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "initial_decompose",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/initial-decompose.schema.json"
+    },
+    "step": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_step",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-step.schema.json"
+    },
+    "critic_cycle_1": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/tested-objection.schema.json"
+    },
+    "critic_cycle_2": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/tested-objection.schema.json"
+    },
+    "critic_cycle_3": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/tested-objection.schema.json"
+    },
+    "return": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_return",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-return.schema.json"
+    },
+    "use": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_use",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-use.schema.json"
+    },
+    "synthesis": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_synthesis",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/answer.schema.json"
+    }
+  },
+  "route": "DRAFT target: see PLAN and Instrument changes required; not executable under current exact recipe pins.",
+  "limitations": [
+    "DRAFT target configuration, not admitted by the installed exact R002 pins.",
+    "Published contracts are reused without changing source files. See PLAN Instrument changes required.",
+    "No pre-registered outcome prediction; each occurrence declares a one-sentence question."
+  ],
+  "step_contract": {
+    "plan_steps_max": 8,
+    "cycles_max": 3,
+    "steps_per_cycle": 1,
+    "goal_characters_max": 256,
+    "derivation_characters_max": 2000,
+    "result_characters_max": 512,
+    "acceptance": "critic answered; return answered with every objection disposed and every check redone; use answered and agrees",
+    "over_three_steps": "preserve three accepted steps and stop step_budget without synthesis"
+  },
+  "derived_from": "experiments/diagnostics/R002-episodes-under-calibrated-difficulty/recipes/r002-decomposed-v2.json",
+  "r003_delta": "Add one native closing return after the terminal step sequence/synthesis; preserve all accepted steps and their original evidence. No new use follows closing. Base A2 follows review24 prospective Qwen/Qwen/Qwen critic correction; A2 is absent at current HEAD and publication is pending."
+}
