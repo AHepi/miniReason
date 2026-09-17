@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/coding-manifest.schema.json",
+  "title": "R002 problems/RECODING_MAPS.json (PROPOSED; not shipped)",
+  "type": "object",
+  "required": ["schema_version", "construction", "candidates"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "construction": {"const": "deterministic; no seed"},
+    "candidates": {"type": "array", "minItems": 24, "items": {"$ref": "#/$defs/candidate"}}
+  },
+  "$defs": {
+    "hashes": {"type": "object", "minProperties": 5, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "orderMap": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "array", "items": {"type": "integer", "minimum": 0}, "minItems": 1, "uniqueItems": true},
+        {"type": "object", "minProperties": 1, "additionalProperties": {"type": ["string", "integer"]}}
+      ]
+    },
+    "candidate": {
+      "type": "object",
+      "required": ["candidate_id", "title", "oracle_kind", "long_chain", "checker_eligible", "problem_path", "recoded_problem_path", "carrier_problem_path", "answer_path", "oracle_path", "oracle_support_paths", "oracle_support_sha256", "trap_label", "hashes", "forward_notation_map", "inverse_output_map", "forward_order_map", "inverse_order_map", "presentation_transform", "semantic_invariants", "carrier_tag", "relation_ids"],
+      "properties": {
+        "candidate_id": {"type": "string", "pattern": "^C[0-9]{2}$"},
+        "title": {"type": "string", "minLength": 1},
+        "oracle_kind": {"enum": ["computable", "derivation-only"]},
+        "long_chain": {"type": "boolean"},
+        "checker_eligible": {"type": "boolean"},
+        "problem_path": {"type": "string", "pattern": "^problems/C[0-9]{2}\\.txt$"},
+        "recoded_problem_path": {"type": "string", "pattern": "^problems/recoded/C[0-9]{2}\\.txt$"},
+        "carrier_problem_path": {"type": "string", "pattern": "^problems/carrier/C[0-9]{2}\\.txt$"},
+        "answer_path": {"type": "string", "pattern": "^answers/C[0-9]{2}\\.md$"},
+        "oracle_path": {"type": "string", "pattern": "^oracle/C[0-9]{2}\\.py$"},
+        "oracle_support_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^oracle/[A-Za-z0-9_./-]+\\.py$"}
+        },
+        "oracle_support_sha256": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"pattern": "^oracle/[A-Za-z0-9_./-]+\\.py$"},
+          "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "trap_label": {"type": "string", "minLength": 1},
+        "hashes": {"$ref": "#/$defs/hashes"},
+        "forward_notation_map": {"type": "object"},
+        "inverse_output_map": {"type": "object", "required": ["type"], "properties": {"type": {"const": "identity"}}, "additionalProperties": false},
+        "forward_order_map": {"$ref": "#/$defs/orderMap"},
+        "inverse_order_map": {"$ref": "#/$defs/orderMap"},
+        "presentation_transform": {"type": "string", "minLength": 1},
+        "semantic_invariants": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+        "carrier_tag": {"type": "string", "minLength": 1},
+        "relation_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

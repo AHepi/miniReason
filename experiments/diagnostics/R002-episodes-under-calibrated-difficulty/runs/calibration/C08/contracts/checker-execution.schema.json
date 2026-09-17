@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/checker-execution.schema.json",
+  "title": "R002 immutable host checker execution record (PROPOSED; not shipped)",
+  "type": "object",
+  "required": ["schema", "proposal_sha256", "policy_sha256", "sandbox_backend", "runtime_identity", "runtime_sha256", "source_sha256", "stdin_sha256", "started_utc", "elapsed_ms", "status", "limit_breaches", "exit_code", "stdout_utf8", "stderr_utf8", "stdout_sha256", "parsed", "comparison"],
+  "properties": {
+    "schema": {"const": "minireason.r002.checker-execution.v1"},
+    "proposal_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sandbox_backend": {"type": "string", "minLength": 1},
+    "runtime_identity": {"type": "string", "minLength": 1},
+    "runtime_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stdin_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "started_utc": {"type": "string", "format": "date-time"},
+    "elapsed_ms": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["COMPLETE", "REFUSED_POLICY", "TIMEOUT", "NONZERO_EXIT", "OUTPUT_LIMIT", "OUTPUT_INVALID"]},
+    "limit_breaches": {"type": "array", "items": {"enum": ["wall_seconds", "memory_mib", "stdout_bytes", "stderr_bytes", "network", "filesystem", "nondeterministic_api", "source_policy"]}, "uniqueItems": true},
+    "exit_code": {"type": ["integer", "null"]},
+    "stdout_utf8": {"type": "string", "maxLength": 65536},
+    "stderr_utf8": {"type": "string", "maxLength": 65536},
+    "stdout_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "parsed": {
+      "type": ["object", "null"],
+      "properties": {
+        "relation_id": {"type": "string"},
+        "value": {"$ref": "#/$defs/jsonValue"},
+        "derivation": {"type": "string"}
+      },
+      "required": ["relation_id", "value", "derivation"],
+      "additionalProperties": false
+    },
+    "comparison": {"enum": ["agrees", "disagrees", "not_compared"]}
+  },
+  "$defs": {"jsonValue": {"type": ["string", "number", "integer", "boolean", "array", "object", "null"]}},
+  "additionalProperties": false
+}

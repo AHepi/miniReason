@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/propagation-use.schema.json",
+  "title": "R002 before/after propagation use response (PROPOSED; not shipped)",
+  "type": "object",
+  "required": [
+    "decision",
+    "missing_derivation",
+    "query_id",
+    "question",
+    "problem_derivation",
+    "before",
+    "after",
+    "dependency",
+    "objections",
+    "checker"
+  ],
+  "properties": {
+    "decision": {
+      "enum": [
+        "answered",
+        "cannot_decide"
+      ]
+    },
+    "missing_derivation": {
+      "type": "string"
+    },
+    "query_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "question": {
+      "type": "string"
+    },
+    "problem_derivation": {
+      "type": "string"
+    },
+    "before": {
+      "$ref": "#/$defs/evaluation"
+    },
+    "after": {
+      "$ref": "#/$defs/evaluation"
+    },
+    "dependency": {
+      "type": "object",
+      "required": [
+        "relation_id",
+        "before_quote",
+        "after_quote",
+        "result_depends_on_change",
+        "explanation"
+      ],
+      "properties": {
+        "relation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before_quote": {
+          "type": "string"
+        },
+        "after_quote": {
+          "type": "string"
+        },
+        "result_depends_on_change": {
+          "type": "boolean"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "objections": {
+      "type": "array",
+      "items": {
+        "$ref": "tested-objection.schema.json#/$defs/objection"
+      }
+    },
+    "checker": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "checker-proposal.schema.json"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "cannot_decide"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "missing_derivation": {
+            "minLength": 1
+          },
+          "objections": {
+            "maxItems": 0
+          },
+          "checker": {
+            "type": "null"
+          },
+          "dependency": {
+            "properties": {
+              "result_depends_on_change": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_derivation": {
+            "maxLength": 0
+          },
+          "question": {
+            "minLength": 1
+          },
+          "problem_derivation": {
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "evaluation": {
+      "type": "object",
+      "required": [
+        "answer_quote",
+        "derivation",
+        "conclusion"
+      ],
+      "properties": {
+        "answer_quote": {
+          "type": "string"
+        },
+        "derivation": {
+          "type": "string"
+        },
+        "conclusion": {
+          "type": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "array",
+            "object",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
