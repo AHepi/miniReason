@@ -1,0 +1,53 @@
+{
+  "before_step": {
+    "derivation": "Notation: an urn state is an ordered triple (r,b,g) of nonnegative integers. Initially r=3, b=2, g=1, so S0=(3,2,1). The total number of balls is T=r+b+g, and each draw is uniform over the current urn. Thus the conditional draw probabilities are P(R|r,b,g)=r/T, P(B|r,b,g)=b/T, and P(G|r,b,g)=g/T. The prose update rules are: if red is drawn, return it and add one blue ball, giving (r,b,g)->(r,b+1,g); if blue is drawn, remove it and add one green ball, giving (r,b,g)->(r,b-1,g+1); if green is drawn, return it and add one red ball, giving (r,b,g)->(r+1,b,g). These rules plus S0 define all one-step transitions. This step only fixes the state space and transition law; it does not compute six-round probabilities or the probability that the sixth draw is red.",
+    "result": "S0=(3,2,1); one-step transitions: R: (r,b,g)->(r,b+1,g) with prob r/(r+b+g); B: (r,b,g)->(r,b-1,g+1) with prob b/(r+b+g); G: (r,b,g)->(r+1,b,g) with prob g/(r+b+g).",
+    "step": 1
+  },
+  "condition": "LOOP-DECOMPOSED",
+  "critic_request": {
+    "path": "calls/c0001-critic/a00/request.json",
+    "sha256": "cbb594ca831093e7706cecd4d51565491919be3550bc901cdb53c9a735759c22"
+  },
+  "critic_response": {
+    "path": "calls/c0001-critic/a00/response.json",
+    "sha256": "096cf848d085b01efda684c1d3965209a127c9cca6d8d1ef8484ee526866f7c5"
+  },
+  "critic_status": "COMPLETE",
+  "cycle": 1,
+  "plan_step": {
+    "depends_on": [],
+    "goal": "Define state notation, initial urn S0=(3,2,1), and the one-step draw probabilities and update rules.",
+    "step": 1
+  },
+  "problem_id": "C12",
+  "return_request": {
+    "path": "calls/c0001-return/a00/request.json",
+    "sha256": "b732b08a7e4f394ede98d8817e7ff016973459a50ce8ada1df1df357586d930e"
+  },
+  "return_response": {
+    "path": "calls/c0001-return/a00/response.json",
+    "sha256": "3a0648f888291b1cdd9490c5daed7f6a77527bc81f6b71afd6084d4cd9395797"
+  },
+  "return_status": "COMPLETE",
+  "returned_step": {
+    "decision": "answered",
+    "derivation": "Represent an urn state as an ordered triple (r,b,g) of nonnegative integers, where r,b,g are the current numbers of red, blue, and green balls. The initial givens give r=3, b=2, g=1, so S0=(3,2,1). Let T=r+b+g be the total number of balls in a state; for any reachable state T>0. Because each round draws one ball uniformly from the current urn, the conditional one-step draw probabilities are P(R|r,b,g)=r/T, P(B|r,b,g)=b/T, and P(G|r,b,g)=g/T. Here P(B|...)=0 if b=0 and P(G|...)=0 if g=0, consistent with the uniform rule. The prose update rules apply after the draw and before the next draw: if red is drawn, the drawn red is returned and one blue is added, so (r,b,g)->(r,b+1,g); if blue is drawn, the drawn blue is removed and one green is added, so (r,b,g)->(r,b-1,g+1); if green is drawn, the drawn green is returned and one red is added, so (r,b,g)->(r+1,b,g). Thus the one-step transition law is fully specified from S0. This step fixes notation, the initial state, and the one-step probabilities/updates only; it does not yet sum over six rounds or compute the sixth-draw probability.",
+    "missing_derivation": "",
+    "result": "S0=(3,2,1); for state (r,b,g) with T=r+b+g: R draw with prob r/T gives (r,b+1,g); B draw with prob b/T gives (r,b-1,g+1); G draw with prob g/T gives (r+1,b,g)."
+  },
+  "schema": "minireason.r002.decomposed-step-custody.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "status": "returned",
+  "step": 1,
+  "step_record_id": "C12/LOOP-DECOMPOSED/20260917T041352Z-r002-71c1af/step-1",
+  "step_request": {
+    "path": "calls/initial/a00/request.json",
+    "sha256": "c314f48f67572ce66094fb6d4301eae8000604671936a9769e6b18a157ce2319"
+  },
+  "step_response": {
+    "path": "calls/initial/a00/response.json",
+    "sha256": "f6ac727e37ee99bc7ca0e6091f576b4adce304d1e5bdbe5c1e25147e2532dca9"
+  },
+  "step_status": "COMPLETE"
+}

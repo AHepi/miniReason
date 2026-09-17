@@ -1,0 +1,53 @@
+{
+  "before_step": {
+    "derivation": "Let a state after k rounds be S_k=(R_k,B_k,G_k), with nonnegative integer counts. Initially S_0=(3,2,1), so the total is N_0=3+2+1=6. For any state (r,b,g), put N=r+b+g. A uniform draw gives color probabilities proportional to the current counts: P(red | (r,b,g))=r/N, P(blue | (r,b,g))=b/N, and P(green | (r,b,g))=g/N. The update rules then determine the next state. If red is drawn, the red ball is returned and one blue ball is added, so (r,b,g) goes to (r,b+1,g). If blue is drawn, the blue ball is removed and one green ball is added, so (r,b,g) goes to (r,b-1,g+1). If green is drawn, the green ball is returned and one red ball is added, so (r,b,g) goes to (r+1,b,g). Thus one round has a state-dependent transition kernel. The total changes by +1 on red or green draws and stays the same on a blue draw, because blue is removed and green is added. This step only fixes notation and the transition rules; it does not evaluate any multi-round probability.",
+    "result": "State S=(r,b,g); initial state S0=(3,2,1). One-round transitions: red with prob r/(r+b+g) to (r,b+1,g); blue with prob b/(r+b+g) to (r,b-1,g+1); green with prob g/(r+b+g) to (r+1,b,g).",
+    "step": 1
+  },
+  "condition": "LOOP-DECOMPOSED",
+  "critic_request": {
+    "path": "calls/c0001-critic/a00/request.json",
+    "sha256": "4ed9caa3402eaca412a01d6e4b0a39c248a1b7b75b45bee02d2d063a8d17c867"
+  },
+  "critic_response": {
+    "path": "calls/c0001-critic/a00/response.json",
+    "sha256": "761be4af1335a44ac23729763c10df864d5db65be70a63cfab42841cd21433d9"
+  },
+  "critic_status": "COMPLETE",
+  "cycle": 1,
+  "plan_step": {
+    "depends_on": [],
+    "goal": "Define state (r,b,g), total n, draw probabilities r/n, b/n, g/n, and the one-round update maps; record the initial state (3,2,1).",
+    "step": 1
+  },
+  "problem_id": "C12",
+  "return_request": {
+    "path": "calls/c0001-return/a00/request.json",
+    "sha256": "2c3f379f888e2e164988c79c2d1c9fc1ecdaf17d04fb56c65e6c3b66b4668e9f"
+  },
+  "return_response": {
+    "path": "calls/c0001-return/a00/response.json",
+    "sha256": "466b4873db2e2d67e783eb8a5296aafefbea6454c9e3b4c7af3fcd2a7704e81d"
+  },
+  "return_status": "COMPLETE",
+  "returned_step": {
+    "decision": "answered",
+    "derivation": "Let S_k=(R_k,B_k,G_k) be the urn after k rounds. The initial state is S_0=(3,2,1), since the urn begins with 3 red, 2 blue, and 1 green ball; hence N_0=3+2+1=6. For any state S=(r,b,g) reached during the six rounds, let N=r+b+g. Since draws are uniform over the current urn, the conditional draw probabilities are P(red | S)=r/N, P(blue | S)=b/N, and P(green | S)=g/N. The update rule from a red draw returns the red ball and adds one blue ball, so r is unchanged, b increases by 1, and g is unchanged: (r,b,g)->(r,b+1,g). The update rule from a blue draw removes that blue ball and adds one green ball, so r is unchanged, b decreases by 1, and g increases by 1: (r,b,g)->(r,b-1,g+1), with this transition available only when b>0. The update rule from a green draw returns the green ball and adds one red ball, so r increases by 1, b is unchanged, and g is unchanged: (r,b,g)->(r+1,b,g). The total becomes N+1 after red or green, and remains N after blue, since blue is replaced by green. This step fixes notation and the one-round transition kernel; it does not evaluate six-round probabilities.",
+    "missing_derivation": "",
+    "result": "State S=(r,b,g); initial S0=(3,2,1). One-round transitions: red with probability r/(r+b+g) to (r,b+1,g); blue with probability b/(r+b+g) to (r,b-1,g+1); green with probability g/(r+b+g) to (r+1,b,g)."
+  },
+  "schema": "minireason.r002.decomposed-step-custody.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "status": "returned",
+  "step": 1,
+  "step_record_id": "C12/LOOP-DECOMPOSED/20260917T024826Z-r002-21734c/step-1",
+  "step_request": {
+    "path": "calls/initial/a00/request.json",
+    "sha256": "7b5e114015c44aea81aa124147a3b0c384ca01b2fdcd34e8618f601ce27d636b"
+  },
+  "step_response": {
+    "path": "calls/initial/a00/response.json",
+    "sha256": "adb794ae9c67fea99a2af52938f868f376c48a718a8e118789e727f8cd60658a"
+  },
+  "step_status": "COMPLETE"
+}

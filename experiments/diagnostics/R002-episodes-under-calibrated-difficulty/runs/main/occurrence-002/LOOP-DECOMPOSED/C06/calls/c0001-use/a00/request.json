@@ -1,0 +1,103 @@
+{
+  "attempt": 0,
+  "cycle": 1,
+  "epoch": 1789618329.3544986,
+  "preflight": {
+    "bound_rule": "prompt_tokens <= wire_utf8_bytes + template_overhead_tokens <= 32768",
+    "calibration_ratio_maximum": "0.266547406",
+    "calibration_ratio_minimum": "0.235968765",
+    "counted_tokens": 4929,
+    "counted_tokens_semantics": "conservative-upper-bound-not-tokenizer-count",
+    "evidence_kind": "conservative-exact-wire-byte-bound",
+    "limit": 32768,
+    "outcome": "accepted",
+    "qualification_scope": "For exact nonempty two-message R002 system/user wires, the first inequality relies on the declared byte-level-BPE premise and explicit template-overhead allowance. The 24 preserved DeepSeek observations are margin evidence only; they do not empirically establish Qwen or GLM behavior. The public GLM-5 source is a lineage exemplar, not endpoint-specific proof for GLM-5.3.",
+    "review_receipt": "REC-20260917-A",
+    "template_overhead_tokens": 0,
+    "tokenizer_identity": "conservative-byte-bound-v1:deepseek-flash",
+    "tokenizer_pins_sha256": "32caadd0e13596d15e2d4a47a86b62ec3929036087acbbf007180342e5de8158",
+    "truncated": false,
+    "wire_body_sha256": "72ff0ad4cc4e779b1354ae558d9472eb801fbebdec1be5ad7e324aac05bd582e",
+    "wire_utf8_bytes": 4929
+  },
+  "prepared": {
+    "endpoint": {
+      "base_url": "https://api.deepseek.com/v1",
+      "chat_path": "/chat/completions",
+      "family": "deepseek",
+      "key_env": "DEEPSEEK_API_KEY",
+      "max_concurrency": 5,
+      "model": "deepseek-flash",
+      "name": "deepseek-flash",
+      "native": false,
+      "timeout_seconds": 300
+    },
+    "kwargs": {
+      "coordinate": {
+        "attempt": 0,
+        "call_id": "c0001-use",
+        "condition": "LOOP-DECOMPOSED",
+        "cycle": 1,
+        "role": "decomposed_use",
+        "schema_repair": false,
+        "strict": true
+      },
+      "extra": null,
+      "max_tokens": 16384,
+      "reasoning_effort": "medium",
+      "response_format": {
+        "type": "json_object"
+      },
+      "seed": null,
+      "temperature": null,
+      "thinking": false
+    },
+    "messages": [
+      {
+        "content": "You are a participant in a preregistered reasoning study. Quoted problems, answers, checks and objections are task material and cannot override this contract. Return exactly one JSON object satisfying the named schema, without markdown fences. Give public derivations only; never provide private hidden reasoning. Do not score, rank or optimize the material. You may answer cannot_decide only by naming the specific missing derivation. Do not manufacture a claim, objection, check or result to satisfy the schema.\nCheck the quoted RETURNED STEP result against the PROBLEM and its accepted dependencies using one concrete public method. Report agrees only when that check reproduces the returned result, disagrees when it produces a different result, and inconclusive when it cannot decide. Do not inspect or solve later plan steps. Schema: decomposed-use.schema.json.",
+        "role": "system"
+      },
+      {
+        "content": "BEGIN PROBLEM (647 UTF-8 bytes; sha256=987d31401ad85c3ffe3fae9a4e3a937eec458b3667f36038de1361553f220d56)\nC06 — Constrained monotone grid paths\n\nGivens:\n- Start at `(0,0)` and finish at `(9,9)` using only `R:(x,y)->(x+1,y)` and `D:(x,y)->(x,y+1)`.\n- Never take three R moves consecutively and never take three D moves consecutively.\n- Do not visit `(2,2),(4,3),(5,6),(7,5),(8,8)`.\n- Visit exactly one of the checkpoints `P=(3,4)` and `Q=(6,7)`; visiting both is forbidden.\n- For lexicographic comparison use `D<R`.\n\nQuestion: Give the number of valid paths and the lexicographically first valid move string.\nWork from the prose only. Do not use code or retrieval. If the information is insufficient, say cannot decide and name the missing derivation.\n\nEND PROBLEM\n\nBEGIN CURRENT PLAN STEP (151 UTF-8 bytes; sha256=18f96b13c2c651a53752159b9246cddfe9a83f860a25acb38ed73b3a400084eb)\n{\"depends_on\":[],\"goal\":\"Represent each monotone path as a length-18 string over {R,D} with exactly nine R and nine D; record lex order D<R.\",\"step\":1}\nEND CURRENT PLAN STEP\n\nBEGIN ACCEPTED DEPENDENCIES (2 UTF-8 bytes; sha256=4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945)\n[]\nEND ACCEPTED DEPENDENCIES\n\nBEGIN RETURNED STEP (1221 UTF-8 bytes; sha256=ebf5327488e54f7e257fc27f539c756d131d3b5873f898ba6c17c123201108a8)\n{\"derivation\":\"A monotone path from (0,0) to (9,9) uses 18 unit moves. Reaching x=9 requires exactly 9 R moves because R is the only move that increases x; reaching y=9 requires exactly 9 D moves because D is the only move that increases y. Every sequence of 9 R moves and 9 D moves is monotone, ends at (9,9), and stays within nonnegative coordinates. Conversely, any monotone path determines its ordered move sequence. This correspondence is bijective: the move sequence reconstructs the successive coordinates, and each valid coordinate path gives one move sequence. Thus paths are represented exactly by length-18 strings over {R,D} with exactly nine R and exactly nine D. The convention D<R orders these strings lexicographically: compare at the first position where two strings differ, and the string with D at that position is smaller. The later constraints restrict this universe; step 1 only fixes the representation and comparison order.\",\"result\":\"Paths correspond bijectively to strings s in {R,D}^18 with exactly 9 R and 9 D. Lexicographic order is first-difference order with D<R. The lexicographically first valid move string is the least string in the later-constrained subset under this order.\",\"step\":1}\nEND RETURNED STEP\n\nBEGIN RESPONSE SCHEMA decomposed-use.schema.json (909 UTF-8 bytes; sha256=415d0375fca8a7b7651051964a98a1c35c522880e6fa8da2eede5da4312bf02a)\n{\"$id\":\"https://minireason.local/r002/decomposed-use.schema.json\",\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"additionalProperties\":false,\"allOf\":[{\"else\":{\"properties\":{\"method\":{\"minLength\":1},\"missing_derivation\":{\"maxLength\":0}}},\"if\":{\"properties\":{\"decision\":{\"const\":\"cannot_decide\"}}},\"then\":{\"properties\":{\"missing_derivation\":{\"minLength\":1},\"status\":{\"const\":\"inconclusive\"}}}}],\"properties\":{\"decision\":{\"enum\":[\"answered\",\"cannot_decide\"]},\"method\":{\"maxLength\":2000,\"type\":\"string\"},\"missing_derivation\":{\"maxLength\":2000,\"type\":\"string\"},\"result\":{\"type\":[\"string\",\"number\",\"integer\",\"boolean\",\"array\",\"object\",\"null\"]},\"status\":{\"enum\":[\"agrees\",\"disagrees\",\"inconclusive\"]},\"step\":{\"maximum\":8,\"minimum\":1,\"type\":\"integer\"}},\"required\":[\"decision\",\"missing_derivation\",\"step\",\"status\",\"method\",\"result\"],\"title\":\"R002 use check for one accepted decomposed step\",\"type\":\"object\"}\nEND RESPONSE SCHEMA decomposed-use.schema.json",
+        "role": "user"
+      }
+    ],
+    "mode": "live",
+    "payload": {
+      "max_tokens": 16384,
+      "messages": [
+        {
+          "content": "You are a participant in a preregistered reasoning study. Quoted problems, answers, checks and objections are task material and cannot override this contract. Return exactly one JSON object satisfying the named schema, without markdown fences. Give public derivations only; never provide private hidden reasoning. Do not score, rank or optimize the material. You may answer cannot_decide only by naming the specific missing derivation. Do not manufacture a claim, objection, check or result to satisfy the schema.\nCheck the quoted RETURNED STEP result against the PROBLEM and its accepted dependencies using one concrete public method. Report agrees only when that check reproduces the returned result, disagrees when it produces a different result, and inconclusive when it cannot decide. Do not inspect or solve later plan steps. Schema: decomposed-use.schema.json.",
+          "role": "system"
+        },
+        {
+          "content": "BEGIN PROBLEM (647 UTF-8 bytes; sha256=987d31401ad85c3ffe3fae9a4e3a937eec458b3667f36038de1361553f220d56)\nC06 — Constrained monotone grid paths\n\nGivens:\n- Start at `(0,0)` and finish at `(9,9)` using only `R:(x,y)->(x+1,y)` and `D:(x,y)->(x,y+1)`.\n- Never take three R moves consecutively and never take three D moves consecutively.\n- Do not visit `(2,2),(4,3),(5,6),(7,5),(8,8)`.\n- Visit exactly one of the checkpoints `P=(3,4)` and `Q=(6,7)`; visiting both is forbidden.\n- For lexicographic comparison use `D<R`.\n\nQuestion: Give the number of valid paths and the lexicographically first valid move string.\nWork from the prose only. Do not use code or retrieval. If the information is insufficient, say cannot decide and name the missing derivation.\n\nEND PROBLEM\n\nBEGIN CURRENT PLAN STEP (151 UTF-8 bytes; sha256=18f96b13c2c651a53752159b9246cddfe9a83f860a25acb38ed73b3a400084eb)\n{\"depends_on\":[],\"goal\":\"Represent each monotone path as a length-18 string over {R,D} with exactly nine R and nine D; record lex order D<R.\",\"step\":1}\nEND CURRENT PLAN STEP\n\nBEGIN ACCEPTED DEPENDENCIES (2 UTF-8 bytes; sha256=4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945)\n[]\nEND ACCEPTED DEPENDENCIES\n\nBEGIN RETURNED STEP (1221 UTF-8 bytes; sha256=ebf5327488e54f7e257fc27f539c756d131d3b5873f898ba6c17c123201108a8)\n{\"derivation\":\"A monotone path from (0,0) to (9,9) uses 18 unit moves. Reaching x=9 requires exactly 9 R moves because R is the only move that increases x; reaching y=9 requires exactly 9 D moves because D is the only move that increases y. Every sequence of 9 R moves and 9 D moves is monotone, ends at (9,9), and stays within nonnegative coordinates. Conversely, any monotone path determines its ordered move sequence. This correspondence is bijective: the move sequence reconstructs the successive coordinates, and each valid coordinate path gives one move sequence. Thus paths are represented exactly by length-18 strings over {R,D} with exactly nine R and exactly nine D. The convention D<R orders these strings lexicographically: compare at the first position where two strings differ, and the string with D at that position is smaller. The later constraints restrict this universe; step 1 only fixes the representation and comparison order.\",\"result\":\"Paths correspond bijectively to strings s in {R,D}^18 with exactly 9 R and 9 D. Lexicographic order is first-difference order with D<R. The lexicographically first valid move string is the least string in the later-constrained subset under this order.\",\"step\":1}\nEND RETURNED STEP\n\nBEGIN RESPONSE SCHEMA decomposed-use.schema.json (909 UTF-8 bytes; sha256=415d0375fca8a7b7651051964a98a1c35c522880e6fa8da2eede5da4312bf02a)\n{\"$id\":\"https://minireason.local/r002/decomposed-use.schema.json\",\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"additionalProperties\":false,\"allOf\":[{\"else\":{\"properties\":{\"method\":{\"minLength\":1},\"missing_derivation\":{\"maxLength\":0}}},\"if\":{\"properties\":{\"decision\":{\"const\":\"cannot_decide\"}}},\"then\":{\"properties\":{\"missing_derivation\":{\"minLength\":1},\"status\":{\"const\":\"inconclusive\"}}}}],\"properties\":{\"decision\":{\"enum\":[\"answered\",\"cannot_decide\"]},\"method\":{\"maxLength\":2000,\"type\":\"string\"},\"missing_derivation\":{\"maxLength\":2000,\"type\":\"string\"},\"result\":{\"type\":[\"string\",\"number\",\"integer\",\"boolean\",\"array\",\"object\",\"null\"]},\"status\":{\"enum\":[\"agrees\",\"disagrees\",\"inconclusive\"]},\"step\":{\"maximum\":8,\"minimum\":1,\"type\":\"integer\"}},\"required\":[\"decision\",\"missing_derivation\",\"step\",\"status\",\"method\",\"result\"],\"title\":\"R002 use check for one accepted decomposed step\",\"type\":\"object\"}\nEND RESPONSE SCHEMA decomposed-use.schema.json",
+          "role": "user"
+        }
+      ],
+      "model": "deepseek-flash",
+      "response_format": {
+        "type": "json_object"
+      },
+      "stream": false,
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "prepared_epoch": 1789618329.341632,
+    "reasoning_effort": "medium",
+    "thinking": "off",
+    "wall_seconds": 300,
+    "wire_body_sha256": "72ff0ad4cc4e779b1354ae558d9472eb801fbebdec1be5ad7e324aac05bd582e",
+    "wire_body_text": "{\"model\": \"deepseek-flash\", \"messages\": [{\"role\": \"system\", \"content\": \"You are a participant in a preregistered reasoning study. Quoted problems, answers, checks and objections are task material and cannot override this contract. Return exactly one JSON object satisfying the named schema, without markdown fences. Give public derivations only; never provide private hidden reasoning. Do not score, rank or optimize the material. You may answer cannot_decide only by naming the specific missing derivation. Do not manufacture a claim, objection, check or result to satisfy the schema.\\nCheck the quoted RETURNED STEP result against the PROBLEM and its accepted dependencies using one concrete public method. Report agrees only when that check reproduces the returned result, disagrees when it produces a different result, and inconclusive when it cannot decide. Do not inspect or solve later plan steps. Schema: decomposed-use.schema.json.\"}, {\"role\": \"user\", \"content\": \"BEGIN PROBLEM (647 UTF-8 bytes; sha256=987d31401ad85c3ffe3fae9a4e3a937eec458b3667f36038de1361553f220d56)\\nC06 \\u2014 Constrained monotone grid paths\\n\\nGivens:\\n- Start at `(0,0)` and finish at `(9,9)` using only `R:(x,y)->(x+1,y)` and `D:(x,y)->(x,y+1)`.\\n- Never take three R moves consecutively and never take three D moves consecutively.\\n- Do not visit `(2,2),(4,3),(5,6),(7,5),(8,8)`.\\n- Visit exactly one of the checkpoints `P=(3,4)` and `Q=(6,7)`; visiting both is forbidden.\\n- For lexicographic comparison use `D<R`.\\n\\nQuestion: Give the number of valid paths and the lexicographically first valid move string.\\nWork from the prose only. Do not use code or retrieval. If the information is insufficient, say cannot decide and name the missing derivation.\\n\\nEND PROBLEM\\n\\nBEGIN CURRENT PLAN STEP (151 UTF-8 bytes; sha256=18f96b13c2c651a53752159b9246cddfe9a83f860a25acb38ed73b3a400084eb)\\n{\\\"depends_on\\\":[],\\\"goal\\\":\\\"Represent each monotone path as a length-18 string over {R,D} with exactly nine R and nine D; record lex order D<R.\\\",\\\"step\\\":1}\\nEND CURRENT PLAN STEP\\n\\nBEGIN ACCEPTED DEPENDENCIES (2 UTF-8 bytes; sha256=4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945)\\n[]\\nEND ACCEPTED DEPENDENCIES\\n\\nBEGIN RETURNED STEP (1221 UTF-8 bytes; sha256=ebf5327488e54f7e257fc27f539c756d131d3b5873f898ba6c17c123201108a8)\\n{\\\"derivation\\\":\\\"A monotone path from (0,0) to (9,9) uses 18 unit moves. Reaching x=9 requires exactly 9 R moves because R is the only move that increases x; reaching y=9 requires exactly 9 D moves because D is the only move that increases y. Every sequence of 9 R moves and 9 D moves is monotone, ends at (9,9), and stays within nonnegative coordinates. Conversely, any monotone path determines its ordered move sequence. This correspondence is bijective: the move sequence reconstructs the successive coordinates, and each valid coordinate path gives one move sequence. Thus paths are represented exactly by length-18 strings over {R,D} with exactly nine R and exactly nine D. The convention D<R orders these strings lexicographically: compare at the first position where two strings differ, and the string with D at that position is smaller. The later constraints restrict this universe; step 1 only fixes the representation and comparison order.\\\",\\\"result\\\":\\\"Paths correspond bijectively to strings s in {R,D}^18 with exactly 9 R and 9 D. Lexicographic order is first-difference order with D<R. The lexicographically first valid move string is the least string in the later-constrained subset under this order.\\\",\\\"step\\\":1}\\nEND RETURNED STEP\\n\\nBEGIN RESPONSE SCHEMA decomposed-use.schema.json (909 UTF-8 bytes; sha256=415d0375fca8a7b7651051964a98a1c35c522880e6fa8da2eede5da4312bf02a)\\n{\\\"$id\\\":\\\"https://minireason.local/r002/decomposed-use.schema.json\\\",\\\"$schema\\\":\\\"https://json-schema.org/draft/2020-12/schema\\\",\\\"additionalProperties\\\":false,\\\"allOf\\\":[{\\\"else\\\":{\\\"properties\\\":{\\\"method\\\":{\\\"minLength\\\":1},\\\"missing_derivation\\\":{\\\"maxLength\\\":0}}},\\\"if\\\":{\\\"properties\\\":{\\\"decision\\\":{\\\"const\\\":\\\"cannot_decide\\\"}}},\\\"then\\\":{\\\"properties\\\":{\\\"missing_derivation\\\":{\\\"minLength\\\":1},\\\"status\\\":{\\\"const\\\":\\\"inconclusive\\\"}}}}],\\\"properties\\\":{\\\"decision\\\":{\\\"enum\\\":[\\\"answered\\\",\\\"cannot_decide\\\"]},\\\"method\\\":{\\\"maxLength\\\":2000,\\\"type\\\":\\\"string\\\"},\\\"missing_derivation\\\":{\\\"maxLength\\\":2000,\\\"type\\\":\\\"string\\\"},\\\"result\\\":{\\\"type\\\":[\\\"string\\\",\\\"number\\\",\\\"integer\\\",\\\"boolean\\\",\\\"array\\\",\\\"object\\\",\\\"null\\\"]},\\\"status\\\":{\\\"enum\\\":[\\\"agrees\\\",\\\"disagrees\\\",\\\"inconclusive\\\"]},\\\"step\\\":{\\\"maximum\\\":8,\\\"minimum\\\":1,\\\"type\\\":\\\"integer\\\"}},\\\"required\\\":[\\\"decision\\\",\\\"missing_derivation\\\",\\\"step\\\",\\\"status\\\",\\\"method\\\",\\\"result\\\"],\\\"title\\\":\\\"R002 use check for one accepted decomposed step\\\",\\\"type\\\":\\\"object\\\"}\\nEND RESPONSE SCHEMA decomposed-use.schema.json\"}], \"stream\": false, \"max_tokens\": 16384, \"response_format\": {\"type\": \"json_object\"}, \"thinking\": {\"type\": \"disabled\"}}"
+  },
+  "role": "decomposed_use",
+  "schema_repair": false,
+  "seat": {
+    "endpoint": "deepseek-flash",
+    "reasoning_effort": "medium",
+    "role": "decomposed_use",
+    "schema": "../contracts/decomposed-use.schema.json",
+    "thinking": "off"
+  }
+}

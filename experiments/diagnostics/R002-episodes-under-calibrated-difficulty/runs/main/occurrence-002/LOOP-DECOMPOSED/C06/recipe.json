@@ -1,0 +1,109 @@
+{
+  "schema_version": "minireason.reason.recipe.r002-proposed.v1",
+  "status": "PRE_REGISTERED_AMENDMENT_A2",
+  "name": "r002-decomposed-v2",
+  "condition": "LOOP-DECOMPOSED",
+  "contract_version": "r002-decomposed-v2",
+  "cycles": 3,
+  "stop": "all_planned_steps_accepted_then_synthesis_else_step_unresolved_or_three_step_budget",
+  "closing_return": false,
+  "attempt_policy": {
+    "schema_repairs": 1,
+    "native_fallbacks": 0,
+    "transport_retries": 0
+  },
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "critic_completion_tokens": 32768,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": 32768,
+    "wall_seconds": 300,
+    "logical_calls": 13,
+    "base_attempts": 13,
+    "attempts": 26,
+    "base_completion_tokens_total": 344064,
+    "completion_tokens_total": 688128
+  },
+  "seats": {
+    "initial": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "initial_decompose",
+      "schema": "../contracts/initial-decompose.schema.json"
+    },
+    "step": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_step",
+      "schema": "../contracts/decomposed-step.schema.json"
+    },
+    "critic_cycle_1": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection.schema.json"
+    },
+    "critic_cycle_2": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection.schema.json"
+    },
+    "critic_cycle_3": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection.schema.json"
+    },
+    "return": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_return",
+      "schema": "../contracts/decomposed-return.schema.json"
+    },
+    "use": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_use",
+      "schema": "../contracts/decomposed-use.schema.json"
+    },
+    "synthesis": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_synthesis",
+      "schema": "../contracts/answer.schema.json"
+    }
+  },
+  "route": "INITIAL-DECOMPOSE returns a bounded plan and step 1. Each of at most three cycles tests exactly one step with Qwen as its fixed critic, a distinct lineage from the DeepSeek proposer/return, at 32768 completion tokens, native rederivation, and off-mode use. STEP derives steps 2 and 3 separately. SYNTHESIS runs only when the entire plan is accepted. A schema-invalid response receives exactly one recorded repair attempt on the same seat, thinking setting and completion ceiling, shown its own full invalid output and the same schema contract; a second schema failure stops. CEILING_HIT stops without repair or fallback.",
+  "manipulated_link": "Decomposition tests whether bounded separately criticized steps let the native seat escape the undecomposed initial-answer exhaustion observed in calibration.",
+  "prediction": "With Qwen replacing the sole GLM step-2 critic, the already-wired provider JSON enforcement and A2 one schema repair allowance, LOOP-DECOMPOSED occurrence-002 reaches its step cycles on the admitted set; reading must distinguish calls reached by repair from calls reached without repair.",
+  "falsifier": "A decomposed occurrence still stops before its planned step cycles after its one repair, stops on a strict CEILING_HIT, or reaches cycles only through repairs whose substantive preservation cannot be established.",
+  "limitations": [
+    "A2 was registered after occurrence-001 dispatch and applies only to separately identified occurrence-002.",
+    "One critic per step changes critic multiplicity relative to prior loop arms.",
+    "Judge correction before occurrence-002 replaces only critic_cycle_2 GLM with Qwen after zero usable GLM critic responses in seven occurrence-001 attempts versus seven of seven Qwen completions. Qwen is distinct from DeepSeek; three Qwen calls are not three independent lineages.",
+    "Critic calls retain thinking off but receive 32768 completion tokens after occurrence-001 C09 exhausted 16384; this is a changed resource condition.",
+    "Steps 2 and 3 use DeepSeek thinking off, so decomposition and step-mode effects are not isolated.",
+    "A repaired call must be read separately from a call that satisfied the schema on its initial attempt.",
+    "Schema-valid acceptance does not establish semantic correctness.",
+    "A full-output repair remains subject to the unchanged prompt cap; occurrence-001-sized C05 and C06 prose repairs are refused before intent rather than truncated."
+  ],
+  "step_contract": {
+    "plan_steps_max": 8,
+    "cycles_max": 3,
+    "steps_per_cycle": 1,
+    "goal_characters_max": 256,
+    "derivation_characters_max": 2000,
+    "result_characters_max": 512,
+    "acceptance": "critic answered; return answered with every objection disposed and every check redone; use answered and agrees",
+    "over_three_steps": "preserve three accepted steps and stop step_budget without synthesis"
+  }
+}

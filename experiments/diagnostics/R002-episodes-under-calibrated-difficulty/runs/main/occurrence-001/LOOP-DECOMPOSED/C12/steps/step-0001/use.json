@@ -1,0 +1,33 @@
+{
+  "accepted_step": {
+    "depends_on": [],
+    "derivation": "Let S_k=(R_k,B_k,G_k) be the urn after k rounds. The initial state is S_0=(3,2,1), since the urn begins with 3 red, 2 blue, and 1 green ball; hence N_0=3+2+1=6. For any state S=(r,b,g) reached during the six rounds, let N=r+b+g. Since draws are uniform over the current urn, the conditional draw probabilities are P(red | S)=r/N, P(blue | S)=b/N, and P(green | S)=g/N. The update rule from a red draw returns the red ball and adds one blue ball, so r is unchanged, b increases by 1, and g is unchanged: (r,b,g)->(r,b+1,g). The update rule from a blue draw removes that blue ball and adds one green ball, so r is unchanged, b decreases by 1, and g increases by 1: (r,b,g)->(r,b-1,g+1), with this transition available only when b>0. The update rule from a green draw returns the green ball and adds one red ball, so r increases by 1, b is unchanged, and g is unchanged: (r,b,g)->(r+1,b,g). The total becomes N+1 after red or green, and remains N after blue, since blue is replaced by green. This step fixes notation and the one-round transition kernel; it does not evaluate six-round probabilities.",
+    "goal": "Define state (r,b,g), total n, draw probabilities r/n, b/n, g/n, and the one-round update maps; record the initial state (3,2,1).",
+    "result": "State S=(r,b,g); initial S0=(3,2,1). One-round transitions: red with probability r/(r+b+g) to (r,b+1,g); blue with probability b/(r+b+g) to (r,b-1,g+1); green with probability g/(r+b+g) to (r+1,b,g).",
+    "step": 1
+  },
+  "assembly_status": "step_chain_present",
+  "schema": "minireason.r002.decomposed-step-use.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "step_record": {
+    "path": "steps/step-0001/record.json",
+    "sha256": "8d2ece6d8e3c9967a85e57f7c180edf09e67a080e29842963afc09333f40468f"
+  },
+  "use": {
+    "decision": "answered",
+    "method": "Public check against the prose. Initial urn: 3 red + 2 blue + 1 green = 6 balls, so S0=(3,2,1), N0=6. For state (r,b,g) with N=r+b+g, uniform draw gives P(red)=r/N, P(blue)=b/N, P(green)=g/N. Applying the prose updates: red is returned and one blue added -> (r,b+1,g); blue is removed and one green added -> (r,b-1,g+1), requiring b>0; green is returned and one red added -> (r+1,b,g). Totals: N+1 after red/green, N after blue. This reproduces the returned notation, initial state, transitions, and probabilities exactly.",
+    "missing_derivation": "",
+    "result": "State S=(r,b,g); initial S0=(3,2,1). One-round transitions: red with probability r/(r+b+g) to (r,b+1,g); blue with probability b/(r+b+g) to (r,b-1,g+1); green with probability g/(r+b+g) to (r+1,b,g).",
+    "status": "agrees",
+    "step": 1
+  },
+  "use_request": {
+    "path": "calls/c0001-use/a00/request.json",
+    "sha256": "2ab93797d8c4d236880c4e21b2a2e686af9d4fa5739d61cc10411f459b66295f"
+  },
+  "use_response": {
+    "path": "calls/c0001-use/a00/response.json",
+    "sha256": "0f5fdb7b9e61a9589a5da2890d9577f64683d4e719475f419ce315e45eb1c031"
+  },
+  "use_status": "COMPLETE"
+}

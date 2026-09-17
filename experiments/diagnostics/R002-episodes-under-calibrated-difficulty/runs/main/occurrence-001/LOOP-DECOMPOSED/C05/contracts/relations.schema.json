@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/relations.schema.json",
+  "title": "R002 public problems/RELATIONS.json (PROPOSED; not shipped)",
+  "type": "object",
+  "required": ["schema_version", "visibility", "candidates"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "visibility": {"const": "public; no expected values or trap descriptions"},
+    "candidates": {
+      "type": "array",
+      "minItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "relations"],
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^C[0-9]{2}$"},
+          "relations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["relation_id", "type", "description"],
+              "properties": {
+                "relation_id": {"type": "string", "minLength": 1},
+                "type": {"type": "string", "minLength": 1},
+                "description": {"type": "string", "minLength": 1}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

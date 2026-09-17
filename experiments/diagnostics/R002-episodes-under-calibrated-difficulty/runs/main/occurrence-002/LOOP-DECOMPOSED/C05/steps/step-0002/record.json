@@ -1,0 +1,56 @@
+{
+  "before_step": {
+    "cannot_decide": null,
+    "derivation": "Given step 1: initial setup s0(J)=idx(J) mod 3; transition setup s(I,J)=abs(idx(I)-idx(J)) mod 3 for distinct consecutive jobs I,J. Fix a sequence J1,...,Jn (a permutation of A-H). Machine is nonpreemptive and single; setup for a job may begin only after that job's release r(J) and after the prior job completes. Let C0=0. For k=1: the machine is idle until setup can begin at t=max(C0, r(J1))=r(J1) (since r>=0); setup runs s0(J1); then processing p(J1) runs. So setup start SS1=r(J1), processing start PS1=SS1+s0(J1), completion C1=PS1+p(J1). For k>=2: setup for Jk begins only after Jk's release and after prior completion C(k-1), i.e. SSk=max(C(k-1), r(Jk)); PSk=SSk+s(I,Jk) where I=J(k-1); Ck=PSk+p(Jk). This is well defined for any sequence; no objective or comparison is introduced here. Note releases are given per job, and setup/processing are sequential with no overlap.",
+    "result": "For sequence J1..Jn: SS1=r(J1), PS1=r(J1)+s0(J1), C1=PS1+p(J1). For k>=2: SSk=max(C(k-1), r(Jk)), PSk=SSk+s(J(k-1),Jk), Ck=PSk+p(Jk). Well defined for any fixed sequence.",
+    "step": 2
+  },
+  "condition": "LOOP-DECOMPOSED",
+  "critic_request": {
+    "path": "calls/c0002-critic/a00/request.json",
+    "sha256": "52ea33738c582c81e5164c2b81aa47bb6f57feccd4eb37a9b6616679cc88663d"
+  },
+  "critic_response": {
+    "path": "calls/c0002-critic/a00/response.json",
+    "sha256": "a3b36e663f3b9e879ef84a96e5806581aa95986e997c34a843067014f69c7ff4"
+  },
+  "critic_status": "COMPLETE",
+  "cycle": 2,
+  "plan_step": {
+    "depends_on": [
+      1
+    ],
+    "goal": "For a fixed sequence, define setup start, processing start, and completion using release dates, setup times, and nonpreemptive machine constraints.",
+    "step": 2
+  },
+  "problem_id": "C05",
+  "return_request": {
+    "path": "calls/c0002-return/a00/request.json",
+    "sha256": "43adfa8d9ab68b2d859716044f4eb661949314d014b426f77ccacabd5497f829"
+  },
+  "return_response": {
+    "path": "calls/c0002-return/a00/response.json",
+    "sha256": "696d0082056c09033b25ead1b630ac9cf0e81e460077d0366928ad275f679fb6"
+  },
+  "return_status": "COMPLETE",
+  "returned_step": {
+    "decision": "answered",
+    "derivation": "Fix any permutation J1,...,Jn of the eight jobs. Let C0=0 denote machine availability before the first job. Setup cannot begin before the job's release nor before the prior job has completed, and processing cannot overlap setup or another job. For k=1, SS1=max(C0,r(J1))=r(J1), since every release is nonnegative. The initial setup then runs for s0(J1), so PS1=SS1+s0(J1), and processing runs for p(J1), so C1=PS1+p(J1). For k>=2, let I=J(k-1). Setup for Jk begins only after both the previous completion and Jk's release, hence SSk=max(C(k-1),r(Jk)). Then PSk=SSk+s(I,Jk), where s(I,Jk)=abs(idx(I)-idx(Jk)) mod 3 is the between-job setup from step 1. Completion is Ck=PSk+p(Jk). Because SSk>=C(k-1), this setup-plus-processing interval starts after the prior job completes and, once started, is nonpreemptive: setup immediately precedes processing with no interruption. This recursively defines all setup starts, processing starts, and completions for any fixed sequence; no objective or optimization is introduced. No tested objections were supplied, so there are no objection dispositions to redo.",
+    "missing_derivation": "",
+    "result": "For fixed J1..Jn: SS1=r(J1), PS1=r(J1)+s0(J1), C1=PS1+p(J1). For k>=2: SSk=max(C(k-1),r(Jk)), PSk=SSk+s(J(k-1),Jk), Ck=PSk+p(Jk). This respects releases and nonpreemptive sequential setup/processing; it is well defined for any fixed sequence."
+  },
+  "schema": "minireason.r002.decomposed-step-custody.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "status": "returned",
+  "step": 2,
+  "step_record_id": "C05/LOOP-DECOMPOSED/20260917T041033Z-r002-b07fad/step-2",
+  "step_request": {
+    "path": "calls/c0002-step/a00/request.json",
+    "sha256": "bb1d7a006d707ba2803f0c9a81976cd9673c673fa0884994aac39acfeb02fef7"
+  },
+  "step_response": {
+    "path": "calls/c0002-step/a00/response.json",
+    "sha256": "1499a758c2f99f7f560be9abce87fa9d2357f49064271a0d28319399ca284270"
+  },
+  "step_status": "COMPLETE"
+}

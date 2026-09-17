@@ -1,0 +1,33 @@
+{
+  "accepted_step": {
+    "depends_on": [],
+    "derivation": "Represent an urn state as an ordered triple (r,b,g) of nonnegative integers, where r,b,g are the current numbers of red, blue, and green balls. The initial givens give r=3, b=2, g=1, so S0=(3,2,1). Let T=r+b+g be the total number of balls in a state; for any reachable state T>0. Because each round draws one ball uniformly from the current urn, the conditional one-step draw probabilities are P(R|r,b,g)=r/T, P(B|r,b,g)=b/T, and P(G|r,b,g)=g/T. Here P(B|...)=0 if b=0 and P(G|...)=0 if g=0, consistent with the uniform rule. The prose update rules apply after the draw and before the next draw: if red is drawn, the drawn red is returned and one blue is added, so (r,b,g)->(r,b+1,g); if blue is drawn, the drawn blue is removed and one green is added, so (r,b,g)->(r,b-1,g+1); if green is drawn, the drawn green is returned and one red is added, so (r,b,g)->(r+1,b,g). Thus the one-step transition law is fully specified from S0. This step fixes notation, the initial state, and the one-step probabilities/updates only; it does not yet sum over six rounds or compute the sixth-draw probability.",
+    "goal": "Define state notation, initial urn S0=(3,2,1), and the one-step draw probabilities and update rules.",
+    "result": "S0=(3,2,1); for state (r,b,g) with T=r+b+g: R draw with prob r/T gives (r,b+1,g); B draw with prob b/T gives (r,b-1,g+1); G draw with prob g/T gives (r+1,b,g).",
+    "step": 1
+  },
+  "assembly_status": "step_chain_present",
+  "schema": "minireason.r002.decomposed-step-use.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "step_record": {
+    "path": "steps/step-0001/record.json",
+    "sha256": "1dd4061882314a0c6729ec6af799a85456c6b48370aa2f368656306f9588e73b"
+  },
+  "use": {
+    "decision": "answered",
+    "method": "Check the returned step against the prose by instantiating at S0=(3,2,1), T=6. Uniform draw gives P(R)=3/6, P(B)=2/6, P(G)=1/6. Prose updates: red returned plus one blue: (3,2,1)->(3,3,1); blue removed plus one green: (3,2,1)->(3,1,2); green returned plus one red: (3,2,1)->(4,2,1). This matches the returned probabilities r/T,b/T,g/T and transitions (r,b+1,g),(r,b-1,g+1),(r+1,b,g); zero-count edge cases are consistent with the uniform rule.",
+    "missing_derivation": "",
+    "result": "Verified: S0=(3,2,1); R with prob r/T -> (r,b+1,g), B with prob b/T -> (r,b-1,g+1), G with prob g/T -> (r+1,b,g).",
+    "status": "agrees",
+    "step": 1
+  },
+  "use_request": {
+    "path": "calls/c0001-use/a00/request.json",
+    "sha256": "3e7084e4cbfef81ba5ff5ac4ae7dbcd2bc1e8f123ef4abe0f490abcedb985909"
+  },
+  "use_response": {
+    "path": "calls/c0001-use/a00/response.json",
+    "sha256": "b158237fba88f191bf35615f77de9d1d669df82ae8b5b37fd06ec71c80bf206b"
+  },
+  "use_status": "COMPLETE"
+}

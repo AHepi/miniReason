@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/decomposed-use.schema.json",
+  "title": "R002 use check for one accepted decomposed step",
+  "type": "object",
+  "required": ["decision", "missing_derivation", "step", "status", "method", "result"],
+  "properties": {
+    "decision": {"enum": ["answered", "cannot_decide"]},
+    "missing_derivation": {"type": "string", "maxLength": 2000},
+    "step": {"type": "integer", "minimum": 1, "maximum": 8},
+    "status": {"enum": ["agrees", "disagrees", "inconclusive"]},
+    "method": {"type": "string", "maxLength": 2000},
+    "result": {"type": ["string", "number", "integer", "boolean", "array", "object", "null"]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"const": "cannot_decide"}}},
+      "then": {
+        "properties": {
+          "missing_derivation": {"minLength": 1},
+          "status": {"const": "inconclusive"}
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_derivation": {"maxLength": 0},
+          "method": {"minLength": 1}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/answer.schema.json",
+  "title": "R002 answer or explicit inability to decide (PROPOSED; not shipped)",
+  "type": "object",
+  "required": [
+    "decision",
+    "answer",
+    "missing_derivation",
+    "claims",
+    "derivation_steps"
+  ],
+  "properties": {
+    "decision": {
+      "enum": [
+        "answered",
+        "cannot_decide"
+      ]
+    },
+    "answer": {
+      "type": "string"
+    },
+    "missing_derivation": {
+      "type": "string"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "derivation_steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "cannot_decide"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "missing_derivation": {
+            "minLength": 1
+          },
+          "claims": {
+            "maxItems": 0
+          },
+          "derivation_steps": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_derivation": {
+            "maxLength": 0
+          },
+          "answer": {
+            "minLength": 1
+          },
+          "claims": {
+            "minItems": 1
+          },
+          "derivation_steps": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "relation_id",
+        "value",
+        "quote"
+      ],
+      "properties": {
+        "relation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "array",
+            "object",
+            "null"
+          ]
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "step": {
+      "type": "object",
+      "required": [
+        "step_index",
+        "statement",
+        "depends_on"
+      ],
+      "properties": {
+        "step_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

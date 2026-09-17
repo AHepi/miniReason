@@ -1,0 +1,33 @@
+{
+  "accepted_step": {
+    "depends_on": [],
+    "derivation": "Redo of step 1 from the prose. The state space is Z4 x Z3, with coordinates s mod 4 and t mod 3. The initial state is (1,0). For input 0, the prose says (s,t) becomes (s+t, t+1), with the first coordinate reduced mod 4 and the second reduced mod 3. Thus F0(s,t)=((s+t) mod 4, (t+1) mod 3). For input 1, the prose says (s,t) becomes (2s+t+1, s+t), again reducing the first coordinate mod 4 and the second mod 3. Thus F1(s,t)=((2s+t+1) mod 4, (s+t) mod 3). The final sentence says both right-hand sides use the pre-input state, so the two coordinates are updated simultaneously from the same old (s,t), not sequentially. Therefore each input bit b in {0,1} gives exactly one deterministic next state from each state in Z4 x Z3. This step does not use probabilities or count any strings.",
+    "goal": "Define the deterministic transition function on Z4 x Z3 for input 0 and input 1, using the pre-input state for both right-hand sides.",
+    "result": "F_0(s,t)=((s+t) mod 4,(t+1) mod 3); F_1(s,t)=((2s+t+1) mod 4,(s+t) mod 3); initial state (1,0).",
+    "step": 1
+  },
+  "assembly_status": "step_chain_present",
+  "schema": "minireason.r002.decomposed-step-use.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "step_record": {
+    "path": "steps/step-0001/record.json",
+    "sha256": "1454fa92d7e4e890d3593b4a418e4fc462b2b082b0cedee1ff2ed16579d17d5f"
+  },
+  "use": {
+    "decision": "answered",
+    "method": "Check the transition formulas by direct substitution into the prose rules, using the simultaneous pre-input state and modular arithmetic. For input 0: rule says (s,t)->(s+t,t+1); with s mod4 and t mod3 this is F0(s,t)=((s+t) mod 4,(t+1) mod 3). For input 1: rule says (s,t)->(2s+t+1,s+t); reducing each coordinate gives F1(s,t)=((2s+t+1) mod 4,(s+t) mod 3). The prose also states both right-hand sides use the pre-input state, so both coordinates update simultaneously from the same old (s,t). This matches the returned step exactly.",
+    "missing_derivation": "",
+    "result": "F_0(s,t)=((s+t) mod 4,(t+1) mod 3); F_1(s,t)=((2s+t+1) mod 4,(s+t) mod 3); initial state (1,0).",
+    "status": "agrees",
+    "step": 1
+  },
+  "use_request": {
+    "path": "calls/c0001-use/a00/request.json",
+    "sha256": "3be20daa2150f6e8ce2a9715c1d6900db20beb873d9e3e80147780d966c7999c"
+  },
+  "use_response": {
+    "path": "calls/c0001-use/a00/response.json",
+    "sha256": "eeabb8b3b266c9a51c8efec5bec0bc2d94e97d8ceae7ef75ea512a4290910139"
+  },
+  "use_status": "COMPLETE"
+}

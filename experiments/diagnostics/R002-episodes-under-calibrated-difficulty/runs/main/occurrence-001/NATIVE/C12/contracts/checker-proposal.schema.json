@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/checker-proposal.schema.json",
+  "title": "R002 use-proposed deterministic checker (PROPOSED; not shipped)",
+  "type": "object",
+  "required": ["query_id", "question", "relation_id", "working_claim_quote", "working_value", "language", "source", "stdin_json", "expected_output_schema"],
+  "properties": {
+    "query_id": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "relation_id": {"type": "string", "minLength": 1},
+    "working_claim_quote": {"type": "string", "minLength": 1},
+    "working_value": {"$ref": "#/$defs/jsonValue"},
+    "language": {"const": "python-3.11-restricted"},
+    "source": {"type": "string", "minLength": 1, "maxLength": 32768},
+    "stdin_json": {"$ref": "#/$defs/jsonValue"},
+    "expected_output_schema": {
+      "const": {"relation_id": "string", "value": "json", "derivation": "string"}
+    }
+  },
+  "$defs": {"jsonValue": {"type": ["string", "number", "integer", "boolean", "array", "object", "null"]}},
+  "additionalProperties": false
+}

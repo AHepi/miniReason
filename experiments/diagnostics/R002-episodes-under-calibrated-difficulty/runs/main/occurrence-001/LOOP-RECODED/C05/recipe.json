@@ -1,0 +1,104 @@
+{
+  "schema_version": "minireason.reason.recipe.r002-proposed.v1",
+  "status": "PROPOSED_NOT_SHIPPED",
+  "name": "r002-recoded-v1",
+  "condition": "LOOP-RECODED",
+  "contract_version": "r002-episodes-v2",
+  "cycles": 3,
+  "stop": "no_new_objections_when_no_open_else_max_three_cycles",
+  "closing_return": "once_after_last_completed_cycle",
+  "attempt_policy": {
+    "schema_repairs": 0,
+    "native_fallbacks": 0,
+    "transport_retries": 0
+  },
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": 32768,
+    "wall_seconds": 300,
+    "logical_calls": 14,
+    "attempts": 14,
+    "completion_tokens_total": 311296
+  },
+  "seats": {
+    "initial": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "conjecture",
+      "schema": "../contracts/answer.schema.json"
+    },
+    "signal_a": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "blind_canonical_solve",
+      "schema": "../contracts/recoding-solve.schema.json"
+    },
+    "signal_b": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "blind_recoded_solve",
+      "schema": "../contracts/recoding-solve.schema.json"
+    },
+    "return": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "tested_return",
+      "schema": "../contracts/tested-return.schema.json"
+    },
+    "use": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "propagation_use",
+      "schema": "../contracts/propagation-use.schema.json",
+      "checker_mode": "propose_if_computable_archive_only"
+    }
+  },
+  "transform": {
+    "kind": "content_preserving_recoding",
+    "manifest_schema": "../contracts/coding-manifest.schema.json",
+    "host_compare": "canonical JSON equality after checked inverse map"
+  },
+  "route": "Initial; up to three cycles of two signal calls, return and use; no-new/no-open stop; gate before cycle 3 replaces signal slots on stall; one closing return after last completed cycle. Fatal failure ends occurrence; no padding, repair, fallback or retry.",
+  "manipulated_link": "Independence by changing content-preserving input coding inside one lineage.",
+  "limitations": [
+    "The blind solvers receive no working answer, objections, dispositions or loop history.",
+    "A recoding disagreement is an error signal; it does not by itself decide which coding is correct."
+  ],
+  "stall_switch": {
+    "trigger": "after cycle 2: canonical decisive claim values equal after cycles 0,1,2 AND an objection remains open",
+    "equality": "canonical JSON by required relation ID, missing/unparseable equals unknown; no semantic score",
+    "select_open": "lowest fork step_index, then immutable objection ID; no oracle lookup",
+    "replacement_cycle": 3,
+    "replacement_slots": [
+      "signal_a",
+      "signal_b"
+    ],
+    "strategy": "hand the same lowest-index open objection and public working derivation to Qwen signal_a and GLM signal_b, retaining tested fork/check contracts",
+    "lineage": [
+      "ollama/qwen3.5-397b.native",
+      "ollama/glm-5.3.native"
+    ],
+    "event": "stall switch",
+    "adds_calls": 0,
+    "limit": 1,
+    "no_new_objections_precedence": "stop only if no new objection AND no open objection; an open objection forbids the no-new stop"
+  },
+  "fork_contract": {
+    "critic": "earliest public derivation step with exact quote and reason",
+    "return": "full public rederivation from challenged step for uptake; tail edit is non-uptake",
+    "rivals": "named public branch point and alternative method only; no generic alternatives",
+    "registry": "../problems/FORKS.json"
+  },
+  "optional_receipt_required": false,
+  "output_contract": {
+    "working_max_characters": 6000,
+    "max_objections": 3,
+    "qualification": "every critic must complete a contract-shaped offline fixture; live missing/length output is censored and bars lineage/blindness attribution"
+  }
+}

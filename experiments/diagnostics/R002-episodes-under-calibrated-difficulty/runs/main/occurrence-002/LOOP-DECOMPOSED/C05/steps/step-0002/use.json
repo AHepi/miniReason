@@ -1,0 +1,35 @@
+{
+  "accepted_step": {
+    "depends_on": [
+      1
+    ],
+    "derivation": "Fix any permutation J1,...,Jn of the eight jobs. Let C0=0 denote machine availability before the first job. Setup cannot begin before the job's release nor before the prior job has completed, and processing cannot overlap setup or another job. For k=1, SS1=max(C0,r(J1))=r(J1), since every release is nonnegative. The initial setup then runs for s0(J1), so PS1=SS1+s0(J1), and processing runs for p(J1), so C1=PS1+p(J1). For k>=2, let I=J(k-1). Setup for Jk begins only after both the previous completion and Jk's release, hence SSk=max(C(k-1),r(Jk)). Then PSk=SSk+s(I,Jk), where s(I,Jk)=abs(idx(I)-idx(Jk)) mod 3 is the between-job setup from step 1. Completion is Ck=PSk+p(Jk). Because SSk>=C(k-1), this setup-plus-processing interval starts after the prior job completes and, once started, is nonpreemptive: setup immediately precedes processing with no interruption. This recursively defines all setup starts, processing starts, and completions for any fixed sequence; no objective or optimization is introduced. No tested objections were supplied, so there are no objection dispositions to redo.",
+    "goal": "For a fixed sequence, define setup start, processing start, and completion using release dates, setup times, and nonpreemptive machine constraints.",
+    "result": "For fixed J1..Jn: SS1=r(J1), PS1=r(J1)+s0(J1), C1=PS1+p(J1). For k>=2: SSk=max(C(k-1),r(Jk)), PSk=SSk+s(J(k-1),Jk), Ck=PSk+p(Jk). This respects releases and nonpreemptive sequential setup/processing; it is well defined for any fixed sequence.",
+    "step": 2
+  },
+  "assembly_status": "step_chain_present",
+  "schema": "minireason.r002.decomposed-step-use.v1",
+  "semantic_reading": "structural acceptance does not establish bearing, validity or correctness",
+  "step_record": {
+    "path": "steps/step-0002/record.json",
+    "sha256": "7900267f609e086294f5782075d25710f34079c5ba3a59b2469fd93e9798630b"
+  },
+  "use": {
+    "decision": "answered",
+    "method": "Public recurrence check on one fixed sequence J1,J2,J3 = A,C,E using accepted dependency step 1 setup values (s0(A)=1, s(C,A)=abs(3-1) mod 3=2, s(E,C)=abs(5-3) mod 3=2; p(A)=4, p(C)=5, p(E)=1; r(A)=0, r(C)=2, r(E)=7). Returned step 2 recurrence: SS1=r(J1)=0; PS1=SS1+s0(J1)=0+1=1; C1=PS1+p(J1)=1+4=5. SS2=max(C1,r(C))=max(5,2)=5; PS2=SS2+s(C,A)=5+2=7; C2=PS2+p(C)=7+5=12. SS3=max(C2,r(E))=max(12,7)=12; PS3=SS3+s(E,C)=12+2=14; C3=PS3+p(E)=14+1=15. These match direct timeline reasoning from the prose: A setup 0-1 and processing 1-5; C setup 5-7 and processing 7-12; E setup 12-14 and processing 14-15. All SSk are at least the job release and at least the prior completion, and each setup immediately precedes processing, reproducing the returned step’s formulas and result.",
+    "missing_derivation": "",
+    "result": "Check reproduces returned step 2: SS1=r(J1), PS1=r(J1)+s0(J1), C1=PS1+p(J1); for k>=2, SSk=max(C(k-1),r(Jk)), PSk=SSk+s(J(k-1),Jk), Ck=PSk+p(Jk). Example A,C,E gives (SS,PS,C) = (0,1,5), (5,7,12), (12,14,15), consistent with releases and nonpreemptive setup-before-processing.",
+    "status": "agrees",
+    "step": 2
+  },
+  "use_request": {
+    "path": "calls/c0002-use/a00/request.json",
+    "sha256": "a28876fb1710fd6bfd92b8a5bbc56dcd2a5f2e6482257463def974654c57d42b"
+  },
+  "use_response": {
+    "path": "calls/c0002-use/a00/response.json",
+    "sha256": "fc415e95a7ad43f64ad5ce30f56b0de46da713d6f9d03734e31d10ff3b6cf1fc"
+  },
+  "use_status": "COMPLETE"
+}

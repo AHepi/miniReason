@@ -1,0 +1,101 @@
+{
+  "schema_version": "minireason.reason.recipe.r002-proposed.v1",
+  "status": "PRE_REGISTERED_AMENDMENT_A1",
+  "name": "r002-decomposed-v1",
+  "condition": "LOOP-DECOMPOSED",
+  "contract_version": "r002-decomposed-v1",
+  "cycles": 3,
+  "stop": "all_planned_steps_accepted_then_synthesis_else_step_unresolved_or_three_step_budget",
+  "closing_return": false,
+  "attempt_policy": {
+    "schema_repairs": 0,
+    "native_fallbacks": 0,
+    "transport_retries": 0
+  },
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": 32768,
+    "wall_seconds": 300,
+    "logical_calls": 13,
+    "attempts": 13,
+    "completion_tokens_total": 294912
+  },
+  "seats": {
+    "initial": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "initial_decompose",
+      "schema": "../contracts/initial-decompose.schema.json"
+    },
+    "step": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_step",
+      "schema": "../contracts/decomposed-step.schema.json"
+    },
+    "critic_cycle_1": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection.schema.json"
+    },
+    "critic_cycle_2": {
+      "endpoint": "ollama/glm-5.3.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection.schema.json"
+    },
+    "critic_cycle_3": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection.schema.json"
+    },
+    "return": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_return",
+      "schema": "../contracts/decomposed-return.schema.json"
+    },
+    "use": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_use",
+      "schema": "../contracts/decomposed-use.schema.json"
+    },
+    "synthesis": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_synthesis",
+      "schema": "../contracts/answer.schema.json"
+    }
+  },
+  "route": "INITIAL-DECOMPOSE returns a bounded plan and step 1. Each of at most three cycles tests exactly one step with one fixed cross-lineage critic, native rederivation, and off-mode use. STEP derives steps 2 and 3 separately. SYNTHESIS runs only when the entire plan is accepted. A strict call failure or ceiling ends the occurrence without fallback.",
+  "manipulated_link": "Decomposition tests whether bounded separately criticized steps let the native seat escape the undecomposed initial-answer exhaustion observed in calibration.",
+  "prediction": "At least one admitted problem receives a correct synthesized final answer from accepted steps after its undecomposed native initial exhausted.",
+  "falsifier": "No admitted problem yields a correct synthesis from accepted steps, or decomposition itself repeatedly exhausts or stops unresolved before synthesis.",
+  "limitations": [
+    "One critic per step changes critic multiplicity relative to prior loop arms.",
+    "Steps 2 and 3 use DeepSeek thinking off, so decomposition and step-mode effects are not isolated.",
+    "Schema-valid acceptance does not establish semantic correctness."
+  ],
+  "step_contract": {
+    "plan_steps_max": 8,
+    "cycles_max": 3,
+    "steps_per_cycle": 1,
+    "goal_characters_max": 256,
+    "derivation_characters_max": 2000,
+    "result_characters_max": 512,
+    "acceptance": "critic answered; return answered with every objection disposed and every check redone; use answered and agrees",
+    "over_three_steps": "preserve three accepted steps and stop step_budget without synthesis"
+  }
+}

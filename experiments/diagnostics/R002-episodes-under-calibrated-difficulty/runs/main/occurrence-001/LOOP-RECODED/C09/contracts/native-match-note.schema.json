@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/native-match-note.schema.json",
+  "title": "R002 same-lineage multi-call neutral note (PROPOSED; not shipped)",
+  "type": "object",
+  "required": ["decision", "missing_derivation", "answer", "derivation"],
+  "properties": {
+    "decision": {"enum": ["answered", "cannot_decide"]},
+    "missing_derivation": {"type": "string"},
+    "answer": {"type": "string"},
+    "derivation": {"type": "string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"const": "cannot_decide"}}},
+      "then": {"properties": {"missing_derivation": {"minLength": 1}, "answer": {"maxLength": 0}, "derivation": {"maxLength": 0}}},
+      "else": {"properties": {"missing_derivation": {"maxLength": 0}, "answer": {"minLength": 1}, "derivation": {"minLength": 1}}}
+    }
+  ],
+  "additionalProperties": false
+}
