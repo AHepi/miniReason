@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r003/r003-relations.schema.json",
+  "title": "R003 public open-problem relations",
+  "type": "object",
+  "required": ["schema_version", "visibility", "candidates"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "visibility": {"const": "public; no expected values or trap descriptions"},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "relations"],
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^O0[1-8]$"},
+          "relations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["relation_id", "type", "description"],
+              "properties": {
+                "relation_id": {"const": "working_position"},
+                "type": {"const": "string"},
+                "description": {"type": "string", "minLength": 1}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

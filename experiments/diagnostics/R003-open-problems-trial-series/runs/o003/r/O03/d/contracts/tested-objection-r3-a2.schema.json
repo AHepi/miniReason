@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r003/tested-objection-r3-a2.schema.json",
+  "title": "R003 R3-A2 tested critic response",
+  "type": "object",
+  "required": ["decision", "missing_derivation", "working", "objections"],
+  "properties": {
+    "decision": {"enum": ["answered", "cannot_decide"]},
+    "missing_derivation": {"type": "string"},
+    "working": {"type": "string", "maxLength": 6000},
+    "objections": {"type": "array", "items": {"$ref": "#/$defs/objection"}, "maxItems": 3}
+  },
+  "allOf": [{
+    "if": {"properties": {"decision": {"const": "cannot_decide"}}},
+    "then": {"properties": {"missing_derivation": {"minLength": 1}, "objections": {"maxItems": 0}}},
+    "else": {"properties": {"missing_derivation": {"maxLength": 0}}}
+  }],
+  "$defs": {
+    "jsonValue": {"type": ["string", "number", "integer", "boolean", "array", "object", "null"]},
+    "namedInput": {
+      "type": "object",
+      "required": ["name", "value", "source"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "value": {"$ref": "#/$defs/jsonValue"},
+        "source": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "check": {
+      "type": "object",
+      "required": ["check_id", "kind", "inputs", "procedure", "claimed_result", "falsifies_when"],
+      "properties": {
+        "check_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]+$"},
+        "kind": {"enum": ["instance", "value", "derivation_step"]},
+        "inputs": {"type": "array", "items": {"$ref": "#/$defs/namedInput"}},
+        "procedure": {"type": "string", "minLength": 1},
+        "claimed_result": {"$ref": "#/$defs/jsonValue"},
+        "falsifies_when": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "objection": {
+      "type": "object",
+      "required": ["target_claim", "text", "defeats", "check", "fork"],
+      "properties": {
+        "target_claim": {"type": "string", "minLength": 1},
+        "text": {"type": "string", "minLength": 1, "maxLength": 1200},
+        "defeats": {"type": "string", "minLength": 1},
+        "check": {"$ref": "#/$defs/check"},
+        "fork": {"$ref": "https://minireason.local/r003/fork-locator-r3-a2.schema.json"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

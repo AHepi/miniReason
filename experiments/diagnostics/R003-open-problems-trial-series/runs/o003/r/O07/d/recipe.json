@@ -1,0 +1,105 @@
+{
+  "schema_version": "minireason.reason.recipe.r003-open-v1",
+  "status": "PROSPECTIVE_REQUIRES_REVIEWED_CAPABILITY",
+  "name": "r003-decomposed-v3",
+  "study_profile": "r003-open-v1",
+  "condition": "LOOP-DECOMPOSED",
+  "contract_version": "r003-open-v1-r3-a2",
+  "cycles": 3,
+  "stop": "all_planned_steps_accepted_then_synthesis_else_step_unresolved_or_three_step_budget",
+  "closing_return": "once_after_synthesis_or_semantic_terminal_with_completed_cycle",
+  "attempt_policy": {
+    "schema_repairs": 1,
+    "native_fallbacks": 0,
+    "transport_retries": 0
+  },
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "critic_completion_tokens": 32768,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": "per-route-context-window-minus-completion-minus-reserve",
+    "wall_seconds": 300,
+    "logical_calls": 14,
+    "base_attempts": 14,
+    "attempts": 28,
+    "base_completion_tokens_total": 376832,
+    "completion_tokens_total": 753664
+  },
+  "seats": {
+    "initial": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "initial_decompose",
+      "schema": "../contracts/initial-decompose-r3-a2.schema.json"
+    },
+    "step": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_step",
+      "schema": "../contracts/decomposed-step-r3-a2.schema.json"
+    },
+    "critic_cycle_1": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection-r3-a2.schema.json"
+    },
+    "critic_cycle_2": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection-r3-a2.schema.json"
+    },
+    "critic_cycle_3": {
+      "endpoint": "ollama/qwen3.5-397b.native",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_critic",
+      "schema": "../contracts/tested-objection-r3-a2.schema.json"
+    },
+    "return": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_return",
+      "schema": "../contracts/decomposed-return-r3-a2.schema.json"
+    },
+    "use": {
+      "endpoint": "deepseek-flash",
+      "thinking": "off",
+      "reasoning_effort": "medium",
+      "role": "decomposed_use",
+      "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-use.schema.json"
+    },
+    "synthesis": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_synthesis",
+      "schema": "../contracts/decomposed-synthesis-r3-a2.schema.json"
+    },
+    "closing": {
+      "endpoint": "deepseek-flash",
+      "thinking": "native",
+      "reasoning_effort": "medium",
+      "role": "decomposed_closing",
+      "schema": "../contracts/decomposed-closing-r3-a2.schema.json"
+    }
+  },
+  "step_contract": {
+    "plan_steps_max": 3,
+    "cycles_max": 3,
+    "steps_per_cycle": 1,
+    "goal_characters_max": 256,
+    "derivation_characters_max": null,
+    "result_characters_max": null,
+    "commitments_required": true,
+    "decisive_step_required": true,
+    "commitment_kinds": ["value", "relation", "decision"]
+  },
+  "amendment": "R3-A2"
+}

@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/recoding-solve.schema.json",
+  "title": "R002 blind solve under one declared coding (PROPOSED; not shipped)",
+  "type": "object",
+  "required": [
+    "decision",
+    "missing_derivation",
+    "coding_id",
+    "claims",
+    "derivation",
+    "derivation_steps"
+  ],
+  "properties": {
+    "decision": {
+      "enum": [
+        "answered",
+        "cannot_decide"
+      ]
+    },
+    "missing_derivation": {
+      "type": "string"
+    },
+    "coding_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "derivation": {
+      "type": "string"
+    },
+    "derivation_steps": {
+      "type": "array",
+      "items": {
+        "$ref": "answer.schema.json#/$defs/step"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "cannot_decide"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "missing_derivation": {
+            "minLength": 1
+          },
+          "claims": {
+            "maxItems": 0
+          },
+          "derivation_steps": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_derivation": {
+            "maxLength": 0
+          },
+          "claims": {
+            "minItems": 1
+          },
+          "derivation": {
+            "minLength": 1
+          },
+          "derivation_steps": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "relation_id",
+        "value",
+        "support"
+      ],
+      "properties": {
+        "relation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "array",
+            "object",
+            "null"
+          ]
+        },
+        "support": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

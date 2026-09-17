@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r003/decomposed-return-r3-a1.schema.json",
+  "title": "R003 R3-A1 tested return for one decomposed step",
+  "type": "object",
+  "required": ["decision", "missing_derivation", "step", "derivation", "result", "commitments", "dispositions"],
+  "properties": {
+    "decision": {"enum": ["answered", "cannot_decide"]},
+    "missing_derivation": {"type": "string", "maxLength": 2000},
+    "step": {"type": "integer", "minimum": 1, "maximum": 3},
+    "derivation": {"type": "string"},
+    "result": {"type": "string"},
+    "commitments": {
+      "type": "array",
+      "items": {"$ref": "https://minireason.local/r003/r3-a1-commitment.schema.json"}
+    },
+    "dispositions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/disposition"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"const": "cannot_decide"}}},
+      "then": {
+        "properties": {
+          "missing_derivation": {"minLength": 1},
+          "derivation": {"maxLength": 0},
+          "result": {"maxLength": 0},
+          "commitments": {"maxItems": 0},
+          "dispositions": {"items": {"properties": {"status": {"const": "unresolved"}}}}
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_derivation": {"maxLength": 0},
+          "derivation": {"minLength": 1},
+          "result": {"minLength": 1},
+          "commitments": {"minItems": 1}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "jsonValue": {"type": ["string", "number", "integer", "boolean", "array", "object", "null"]},
+    "redo": {
+      "type": "object",
+      "required": ["check_id", "status", "method", "result", "comparison"],
+      "properties": {
+        "check_id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["redone", "cannot_redo"]},
+        "method": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "result": {"$ref": "#/$defs/jsonValue"},
+        "comparison": {"enum": ["supports_objection", "opposes_objection", "inconclusive"]}
+      },
+      "additionalProperties": false
+    },
+    "disposition": {
+      "type": "object",
+      "required": ["id", "status", "reason", "redo"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["taken-up", "rejected-with-reason", "unresolved"]},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 1200},
+        "redo": {"$ref": "#/$defs/redo"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

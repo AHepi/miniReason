@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r003/decomposed-step-r3-a1.schema.json",
+  "title": "R003 R3-A1 later decomposition step response",
+  "type": "object",
+  "required": ["step", "derivation", "result", "commitments", "cannot_decide"],
+  "properties": {
+    "step": {"type": "integer", "minimum": 2, "maximum": 3},
+    "derivation": {"type": "string"},
+    "result": {"type": "string"},
+    "commitments": {
+      "type": "array",
+      "items": {"$ref": "https://minireason.local/r003/r3-a1-commitment.schema.json"}
+    },
+    "cannot_decide": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["missing"],
+          "properties": {"missing": {"type": "string", "minLength": 1, "maxLength": 2000}},
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"cannot_decide": {"type": "null"}}},
+      "then": {
+        "properties": {
+          "derivation": {"minLength": 1},
+          "result": {"minLength": 1},
+          "commitments": {"minItems": 1}
+        }
+      },
+      "else": {
+        "properties": {
+          "derivation": {"maxLength": 0},
+          "result": {"maxLength": 0},
+          "commitments": {"maxItems": 0}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

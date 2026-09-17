@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r003/decomposed-synthesis-r3-a1.schema.json",
+  "title": "R003 R3-A1 synthesis with decisive commitment custody",
+  "type": "object",
+  "required": ["decision", "answer", "missing_derivation", "claims", "derivation_steps", "decisive_step", "decisive_claim"],
+  "properties": {
+    "decision": {"enum": ["answered", "cannot_decide"]},
+    "answer": {"type": "string"},
+    "missing_derivation": {"type": "string"},
+    "claims": {
+      "type": "array",
+      "items": {"$ref": "https://minireason.local/r002/answer.schema.json#/$defs/claim"}
+    },
+    "derivation_steps": {
+      "type": "array",
+      "items": {"$ref": "https://minireason.local/r002/answer.schema.json#/$defs/step"}
+    },
+    "decisive_step": {"type": "integer", "minimum": 1, "maximum": 3},
+    "decisive_claim": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"const": "cannot_decide"}}},
+      "then": {
+        "properties": {
+          "missing_derivation": {"minLength": 1},
+          "claims": {"maxItems": 0},
+          "derivation_steps": {"maxItems": 0}
+        }
+      },
+      "else": {
+        "properties": {
+          "answer": {"minLength": 1},
+          "missing_derivation": {"maxLength": 0},
+          "claims": {"minItems": 1},
+          "derivation_steps": {"minItems": 1}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

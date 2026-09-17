@@ -1208,3 +1208,8 @@ The concurrent R3-A3 declaration predates this report and is kept separate from 
 
 
 2026-09-17T10:57:04.981380+00:00 | REC-20260917-C | root-publisher | Paper delivery published and verified on claude/project-state-direction-j5rbun: commit 3b1ea0e310cd322593ac845c5ac90c50a39f5729, tree b4c5e9b9f160b30710ec3902f6e14c74a797e739, 4 paths; ls-remote, fetched commit and tree equal local. Next: publish this acknowledgement and verify final branch/status; bounded publication task complete after verification. Deferred allowlist repair remains separately authorized after live occurrence 4. No provider calls or main merge.
+
+
+### 2026-09-17 UTC - Occurrence-3 reading independently approved as corrected
+
+2026-09-17T10:57:08.158797+00:00 | REC-20260917-B | root-review35 | APPROVED-AS-CORRECTED. Verified 24 outcomes; CROSS USE 9/11 and DECOMPOSED 6/6, each in 6/8 cells. O04 is local repair of a loop-created reserve omission, not an established specific improvement over NATIVE. Public O06/O07 rejected returns still supply complete local semantic replies; accepted propagation remains absent. All custody hashes, claim ceiling and owner fields verified. This supersedes the earlier reader's comparative specification-gain wording without rewriting that receipt. Next task: separate publisher reviews work/review35/PUBLISH-CHECKLIST.md and publishes/verifies only its explicit paths. No Git mutation, provider call, runs write or o004 intervention by this judge; o004 is separately live per orchestrator. Full evidence/corrections: work/review35/INDEX.md and REPORT.md.

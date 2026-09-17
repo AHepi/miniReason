@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r003/prose-objection-r3-a2.schema.json",
+  "title": "R003 R3-A2 prose critic response",
+  "type": "object",
+  "required": ["decision", "missing_derivation", "working", "objections"],
+  "properties": {
+    "decision": {"enum": ["answered", "cannot_decide"]},
+    "missing_derivation": {"type": "string"},
+    "working": {"type": "string", "maxLength": 6000},
+    "objections": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["target_claim", "text", "defeats", "fork"],
+        "properties": {
+          "target_claim": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1, "maxLength": 1200},
+          "defeats": {"type": "string", "minLength": 1},
+          "fork": {"$ref": "https://minireason.local/r003/fork-locator-r3-a2.schema.json"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "allOf": [{
+    "if": {"properties": {"decision": {"const": "cannot_decide"}}},
+    "then": {"properties": {"missing_derivation": {"minLength": 1}, "objections": {"maxItems": 0}}},
+    "else": {"properties": {"missing_derivation": {"maxLength": 0}}}
+  }],
+  "additionalProperties": false
+}

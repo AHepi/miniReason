@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://minireason.local/r002/prose-objection.schema.json",
+  "title": "R002 matched prose critic response (PROPOSED; not shipped)",
+  "type": "object",
+  "required": [
+    "decision",
+    "missing_derivation",
+    "working",
+    "objections"
+  ],
+  "properties": {
+    "decision": {
+      "enum": [
+        "answered",
+        "cannot_decide"
+      ]
+    },
+    "missing_derivation": {
+      "type": "string"
+    },
+    "working": {
+      "type": "string",
+      "maxLength": 6000
+    },
+    "objections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "target_claim",
+          "text",
+          "defeats",
+          "fork"
+        ],
+        "properties": {
+          "target_claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "defeats": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fork": {
+            "type": "object",
+            "required": [
+              "step_index",
+              "step_quote",
+              "branch_point_id",
+              "earliest_reason"
+            ],
+            "properties": {
+              "step_index": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "step_quote": {
+                "type": "string",
+                "minLength": 1
+              },
+              "branch_point_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "earliest_reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "maxItems": 3
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "cannot_decide"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "missing_derivation": {
+            "minLength": 1
+          },
+          "objections": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_derivation": {
+            "maxLength": 0
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
