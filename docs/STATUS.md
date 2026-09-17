@@ -1289,3 +1289,6 @@ Deliverables: research/deepseek-flash-pilot/REPORT-usecases.md, readings/pilot-u
 
 
 2026-09-17T16:53:32.645279+00:00 | REC-20260917-D | root-publisher | Published and verified177Dpaths at 7fffb64edd526c8d062f77ab6b0f5f7ef4beeffa, tree ca634a3a516806c658c9c04f29bf82a3414b4c85, to claude/project-state-direction-j5rbun. Four use-case reading and P-A3/P-A4/P-A5 delivery complete. Next authorized task: this acknowledgement, then separate F L54-L56 delivery and acknowledgement;17foreign provider-fallback paths remain unstaged.
+
+
+2026-09-17T16:54:12.597825+00:00 | REC-20260917-F | root-publisher | D delivery and acknowledgement are published and verified. L54-L56 lessons are judge-approved with exact prior prefix and final hash preserved; publishing separate four-path F delivery next, followed by its acknowledgement. No provider calls or main merge.

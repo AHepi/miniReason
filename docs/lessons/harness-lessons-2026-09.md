@@ -617,3 +617,36 @@ A new configuration brief must answer each question with a path to its evidence,
 - **Preservation:** Do failures, partial reports and uncertain intents remain unchanged, with separately named successors and qualified final-source tests? (L38, L40)
 - **Reading:** Are no-answer, wrong answer, missing visibility, reviewer exposure and harmful uptake distinguished with quotes and protected successes? (L44-L45, L47-L48)
 - **Pilot:** Which typed/tool routes are actually qualified, and how do global budgets, finite spawn, validate-before-expose and explicit stopping constrain continuation? (L49-L53)
+
+
+## Judge43 operational supplements - 2026-09-17 UTC
+
+### L54. A judge's append wait must exclude its own active log
+
+**Fail mode:** A literal any-log guard can make a judge wait for its own exit marker, which cannot exist until the judge returns.
+
+**Where it bit:** Review45 polled 46 times at 60-second intervals for 2700.39 seconds; its own `review-45.log` was the only unmatched marker. Shared records were deferred despite completed verification. [Review45 records](../../work/review45/RECORDS.md), entries at 2026-09-17T12:58:56.930025+00:00 and 13:46:14.790630+00:00; REC-20260917-D/F.
+
+**Rule now:** Identify the current invocation explicitly and exclude only its own log from the judge's docs-append guard. Keep every other matching review/publisher log subject to the required exit check, 60-second polling and 45-minute limit. Recheck immediately before shared appends; retain actual-UTC deferred records if another invocation remains active. Never treat elapsed time as approval.
+
+**Check:** Does the pending set name another invocation, or only the judge that must finish before its own exit file can be written?
+
+### L55. Scripted fixtures do not qualify a live delivery path
+
+**Fail mode:** Passing offline scripts can miss the source, quote, schema and later-pass reference shapes a live model actually returns.
+
+**Where it bit:** After 125 passing pilot tests, all four first live tasks stopped at host checks after 2-3 logical calls. Attempt 2 exposed a planner output ceiling and exact quotes with false authored offsets; attempt 3 exposed source/task namespace confusion, a non-admitted planner template, and assembly refusal of a meaningful partial child. The cost included three separately recorded repair amendments, not learned model improvement. Preserved records: `runs/pilot/UCn-attempt1-20260917T1356Z`, `UCn-attempt2-20260917T1424Z`, `UCn-attempt3-20260917T1502Z` (n=1..4); [P-A3 diagnosis](../../work/w46/DIAGNOSIS.md), [P-A4 diagnosis](../../work/w47/DIAGNOSIS.md), [P-A5 diagnosis](../../work/w48/DIAGNOSIS.md), [amendments](../../research/deepseek-flash-pilot/AMENDMENTS.md). REC-20260917-D/F.
+
+**Rule now:** Before any authorized live rerun, replay the recorded live public bytes through the corrected host path, including repair, admission, accounting, assembly and continuation. Preserve originals and assert both the corrected outcome and refusal of nonresolving quotations or undeclared inputs. Add changed-return fixtures without relabeling earlier tests as live qualification. Successful replay covers those returns; unseen live behavior remains unqualified.
+
+**Check:** Which exact failed request/response hashes traverse the real corrected path, and do negative custody cases still refuse before a successor dispatch?
+
+### L56. A chain waiter must inspect run status before starting a reader
+
+**Fail mode:** Waiting only for exit-file existence launches a reader on failed runs without checking what evidence the reading contract requires.
+
+**Where it bit:** On 2026-09-17 the UC1-UC4 attempt-1 waiter started work43 after all exit files appeared; all four runs had failed at host checks. The reader was killed and its aborted log retained. The orchestrator state log records the exit-only chain at line 258 and this incident at line 261; line 263 adds a `result.json` status gate. [Exact-source spot-check and SHA-256](../../work/review43/ORCHESTRATOR-SPOTCHECK.txt). The later attempt-4 mandate explicitly permits reading failed/partial outcomes for what they reached (lines 267/269); that is a changed reading contract, not evidence that exit alone establishes completion. REC-20260917-D/F.
+
+**Rule now:** After an exit marker, inspect the actual terminal `result.json` status and available artifact/decision records against the next reader's declared contract. A successful process exit is not whole-task completion; a readable partial can qualify when explicitly allowed. If failed outcomes are intentionally to be read, pass their true statuses and reached evidence to the reader. Otherwise stop the chain with its reason; do not start and then kill a reader based only on marker existence.
+
+**Check:** What terminal status and evidence made this particular run eligible for this particular reading, and where is that eligibility decision recorded?
