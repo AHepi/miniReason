@@ -1205,3 +1205,6 @@ The concurrent R3-A3 declaration predates this report and is kept separate from 
 
 
 2026-09-17T10:56:05.561835+00:00 | REC-20260917-C | root-publisher | Deferred author and judge ledger/STATUS/activity imports are complete in the required order. The approved findings paper is unchanged; four-path delivery and remote commit/tree verification are next. Historical pending-append language is retained as originally judged; this actual-time receipt resolves the deferred record custody.
+
+
+2026-09-17T10:57:04.981380+00:00 | REC-20260917-C | root-publisher | Paper delivery published and verified on claude/project-state-direction-j5rbun: commit 3b1ea0e310cd322593ac845c5ac90c50a39f5729, tree b4c5e9b9f160b30710ec3902f6e14c74a797e739, 4 paths; ls-remote, fetched commit and tree equal local. Next: publish this acknowledgement and verify final branch/status; bounded publication task complete after verification. Deferred allowlist repair remains separately authorized after live occurrence 4. No provider calls or main merge.
