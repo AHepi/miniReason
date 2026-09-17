@@ -1074,3 +1074,6 @@ REC-20260917-B | 2026-09-17T05:16:06.012159+00:00 | root-review28: R003 instrume
 
 
 2026-09-17T05:55:25.096652+00:00 | REC-20260917-A | root-publisher | APPROVED-AS-CORRECTED R002 main report/readings ready for exact feature-branch publication;1582paths including1572nested evidence files. Visible scope reconciled, credentials scan clear, shared prefixes preserved, local/fetched remote2985ef1718e87660d514cec766e0b7c41c855d8c equal. Publication and separate verification receipt pending; no provider call or main merge.
+
+
+2026-09-17T05:58:58.070153+00:00 | REC-20260917-A | root-publisher | R002 main phase read and reported; judge APPROVED-AS-CORRECTED; delivery 9e0bceed2ef624c6a8bba3cec5517300f7e0727e tree f98097a867eb042a12e877ea0ce513fcf05ad74e verified at 2026-09-17T05:57:44Z on origin/claude/project-state-direction-j5rbun,1582paths. No owner advance. Requested acknowledgement publication/final verification next; no further experiment or provider action authorized by this publisher task. Existing R003 occurrence under ignored top-level runs remains outside publication scope.
