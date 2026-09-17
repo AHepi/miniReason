@@ -1,0 +1,963 @@
+# R003 o001-o002 owner reading packet
+
+## Ten-minute whole-matrix overview
+
+Read the three columns side by side, then reverse their order. Answered means an answer attempt, not correctness or successful loop completion. NATIVE is retained from o001; both loops are from o002. The concise overview gives exact excerpts, brief-flaw summaries and separately attributed reader notes. [Complete final answers side by side](OWNER-SIDE-BY-SIDE.html) provides all 24 full artifacts in parallel columns with the sealed flaws beneath. Full answers and blank forms also follow here; owner judgments remain blank. No blind preparation is claimed; the shared EC12 audit discloses the audit exposure incident.
+
+## O01
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “Decision rule: adopt the arrangement only if, across preregistered replicated cases, it improves blinded detection and repair of problem-posing mistakes and decision usefulness beyond the controls without increasing new errors, cost, or false confidence.” | “Adopt a preregistered, randomized, blinded, multi-case comparison of single-shot advice against critique-and-revision, with active controls and blinded expert adjudication.” | “No public answer was completed.” `step_unresolved`; step 1 proposed; USE disagreed; later steps and synthesis absent. |  |
+
+**Sealed brief flaws:** F01 - Agreement substitutes for a repaired commitment. F02 - More deliberation is attributed specifically to objections. F03 - Unchanged advice is classified without its route. F04 - Failure of an argument is treated as proof of its opposite.
+
+**Reader note:** Both complete answers commit to controlled adoption tests; CROSS did not establish a reframing absent from NATIVE.
+
+## O02
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “the inquiry remains open, and any adequate language would likely need to be developed in tandem with the distinctions it is meant to express, including distinctions not yet conceived.” | “the descriptions, question, and adequacy conditions are not settled, so I cannot settle whether any such language would suffice.” | “No public answer was completed.” `SCHEMA_FAILURE`; initial step produced; critic contract failed; no return or synthesis. |  |
+
+**Sealed brief flaws:** F01 - Co-reference and combinability are assumed as facts. F02 - A fixed vocabulary is declared sufficient for an unnamed loss. F03 - Added notation is mistaken for recovered expressive work. F04 - A worked illustration is passed off as the original solution.
+
+**Reader note:** NATIVE and CROSS both suspend judgment; the DECOMPOSED binary commitment received criticism but no return.
+
+## O03
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “My present substantive position is that the disagreement can be investigated by a later-use-relevant distinction and controlled probes, but the historical issue of invention versus reuse remains unsettled from the available record.” | “The distinction still matters for later uses that can yield differential predictions.” | “No public answer was completed.” `SCHEMA_FAILURE`; initial step produced; critic contract failed; no return or synthesis. |  |
+
+**Sealed brief flaws:** F01 - Useful variation is made sufficient for construction. F02 - Supplied material is made sufficient to disqualify construction. F03 - Missing history is converted into historical novelty. F04 - A later user's success is attributed to the adviser without its contribution.
+
+**Reader note:** CROSS adds a matched-prediction scope rule; its benefit is disputed because NATIVE already proposed ablation and transfer.
+
+## O04
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “The town should adopt a hybrid lottery-and-priority allocation with adaptive weights, project credits, check-in penalties, and community review, because this remains fair and useful as demand and strategic booking change.” | “I propose a transparent lottery-plus-priority allocation for the town workshop” (source sentence continues) | “No public answer was completed.” `SCHEMA_FAILURE`; initial step produced; critic contract failed; no return or synthesis. |  |
+
+**Sealed brief flaws:** F01 - Equal nominal time is equated with fair opportunity. F02 - Booking speed is treated as neutral access. F03 - Cancellation penalties are assumed to identify strategic waste. F04 - Stable fairness is asserted without a way to revise the operative rule.
+
+**Reader note:** The retained CROSS answer does not contain the proposed queue revision. The rejected return offers a concrete project rule; no accepted return or later allocation establishes its effect.
+
+**Rejected return, not retained:** "Longer project blocks are allocated through a published queue with objective caps (maximum four hours, maximum two consecutive blocks, twenty percent project reserve) and ranking by wait time, with lottery among ties and no discretionary approval." Refuter of public decidability: a conforming request still needs an unpublished discretionary criterion. Separate loss: the natural cap reading excludes a nine-hour uninterrupted project.
+
+
+## O05 — microbial recovery
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “In short, the present substantive position is that prior heat exposure produced a lasting legacy effect—most likely via unmeasured physiological, sub-species, or environmental changes—while the current evidence cannot settle which mechanism is correct.” | “On the supplied evidence alone, the most plausible producer of the difference is a history-dependent legacy of the earlier pulses that is invisible to measured species abundances” | “Accepted partial steps (no synthesis):” Terminal status: `SCHEMA_FAILURE`. |  |
+
+Sealed brief flaws: F01 equal measured abundance treated as complete state; F02 exposure history assumed causal; F03 measured activity identified with recovery process; F04 confirming measurement called discriminating.
+
+Reader note: CROSS prescribes a study that "randomizes prior heat exposure", first explicit at closing. This is a concrete assignment decision; an inseparable recovery-relevant co-intervention would defeat its claimed discrimination. No criticism produced it and no later use tests it. NATIVE's explicit reciprocal spent-medium transfer is omitted.
+
+## O06 — curriculum choice
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “the cooperative should adopt a provisional, evidence-driven core curriculum focused on transferable literacies, ethical judgment, collaborative problem-solving, and learning-to-learn” | “adopt a provisional adaptive generalist core curriculum for next term—language and quantitative literacy, scientific and statistical reasoning, critical thinking and argument, civic and institutional literacy, ethical reasoning and plural-value deliberation” | “No public answer was completed.” Terminal status: `SCHEMA_FAILURE`. |  |
+
+Sealed brief flaws: F01 “best” used before purposes are defended; F02 robustness inferred from attractive labels; F03 indicators treated as self-interpreting; F04 disagreement substituted for decision.
+
+Reader note: CROSS omits NATIVE’s explicit arts and physical-education coverage; this establishes an omission, not denied access.
+
+## O07 — downstream objection use
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “the decision output under R1/I1 differs from the output under R0/I0 on that request or on a minimal F-contrast” | “the next decision D on request Q applies R1 and D's disposition or mandated justification depends on whether Q has F under R1, as shown by the public rule-application trace” | “No public answer was completed.” Terminal status: `SCHEMA_FAILURE`. |  |
+
+Sealed brief flaws: F01 citation treated as sufficient; F02 endpoint change treated as necessary and sufficient; F03 arbitrary sensitivity replaces reason sensitivity; F04 evidence gaps assigned a negative answer.
+
+Reader note: Mandated-justification dependence is added scope already present initially, not a confirmed improvement; no worked unchanged-action case establishes a new operative discrimination.
+
+## O08 — same-content objections
+
+| NATIVE decisive commitment | CROSS retained final | DECOMPOSED public status | Owner judgment |
+|---|---|---|---|
+| “two objections are same-content for the later task iff there exists a content-preserving recoding that aligns every decision-relevant slot and preserves that inferential route under the explicitly stated operative rule.” | “two prose objections are content-equivalent only when a public checker aligns their target rule clause/version, alleged defect type, grounds with evidential status, affected scope, alleged mechanism, requested revision or retention force” | “No public answer was completed.” Terminal status: `SCHEMA_FAILURE`. |  |
+
+Sealed brief flaws: F01 wording made the criterion; F02 same recommendation treated as same reason; F03 model behavior treated as semantic authority; F04 unresolved equivalence forced into a verdict.
+
+Reader note: DROE does not settle the equivalence question; failed-use objections leave its worked merge and checker reproducibility unresolved.
+
+# Expanded owner reading forms and complete public answers
+
+Prepared by root-w29, GPT-6 / OpenAI lineage; presentation corrected by root-review29. This expanded section supports inspection after the ten-minute overview. No owner verdict is prefilled. [The full-answer parallel view](OWNER-SIDE-BY-SIDE.html) places each complete final answer side by side; the excerpt table and expandable full blocks below remain as supporting detail. Read A/B/C, then reverse C/B/A. The packet does not claim blind preparation: the mandate required briefs before occurrence evidence.
+
+A means display label only. A public answer under a fatal stop is an answer attempt, not a completed loop or a correctness judgment. The comparison uses o001 NATIVE and o002 loops. O001 failed loops remain in INVENTORY and custody. The separate rejected O04 response must not be mistaken for its retained final ANSWER.
+
+## O01
+
+**Exact problem**
+
+A research group can ask a language model for advice once, or have other language models question its draft and ask it to revise. They want to know whether the second arrangement helps them notice and deal with mistakes in the way a problem has been posed. Their questions concern disputed explanations and practical decisions, so there is no answer key. Design an investigation that could give them a reason to adopt or abandon the arrangement. Explain what they should keep and examine from a case, how competing explanations of any change could be distinguished, and what they could learn if the advice does not change.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| Use a preregistered, within-case comparative design that treats the multi-model critique-and-revision arrangement as an intervention and the single-model advice as the comparator. Each case is a disputed explanation or practical decision with no answer key, split into matched versions where possible: same base model, same initial prompt, same allowed computation, but one condition asks once and the other condition has independent critic models question the draft and the base model revise. Randomize condition order, model roles, and critic identities across cases; record all prompts, drafts, critiques, revisions, final advice, model/version, temperature, seed, token and time costs. What to keep and examine from a case: keep the full trace, not just the final answer: initial problem [excerpt ends] | Adopt a preregistered, randomized, blinded, multi-case comparison of single-shot advice against critique-and-revision, with active controls and blinded expert adjudication. The unit is a case: a problem statement, context, and advice request. Randomize cases to conditions: A single-shot advice; B critique-and-revision by one or more different language models that question the draft and then a model revises; C same-model self-critique; D sham critique that is plausible but does not address the problem framing; E generic clarity review; F second independent single-shot advice without critique; and G critique-only that lists uncertainties but forbids revision. Pre-register primary outcomes: validated detection of problem-posing defects, appropriate handling, false-positive critique rate, harmful deference, cost, and latency. Stratify by disputed explanation versus [excerpt ends] | No public answer was completed. Stop reason: `step_unresolved`. |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+Use a preregistered, within-case comparative design that treats the multi-model critique-and-revision arrangement as an intervention and the single-model advice as the comparator. Each case is a disputed explanation or practical decision with no answer key, split into matched versions where possible: same base model, same initial prompt, same allowed computation, but one condition asks once and the other condition has independent critic models question the draft and the base model revise. Randomize condition order, model roles, and critic identities across cases; record all prompts, drafts, critiques, revisions, final advice, model/version, temperature, seed, token and time costs.
+
+What to keep and examine from a case: keep the full trace, not just the final answer: initial problem statement, the model's first framing, every critique, every revision, and the final advice. Examine whether the process detected problem-posing mistakes such as unclear decision criterion, missing constraint, wrong scope, ambiguous terms, unstated assumption, motivated reasoning, or treating a disputed explanation as settled. Code each change as a genuine repair, a neutral rewrite, a new error, or an unaddressed criticism, with independent blinded judges using a pre-specified taxonomy. Also examine downstream decision usefulness: whether the final advice names tradeoffs, conditions, evidence, and uncertainty, and whether stakeholders can act without importing hidden assumptions. Without an answer key, do not score truth; instead use structured argument mapping, pre-registered criteria, blind adjudication, sensitivity checks, and disagreement records.
+
+Competing explanations of any change should be distinguished by controls: compare critique-plus-revision against (a) single advice, (b) a second single-model attempt with no critics, (c) critique-only with no revision, (d) irrelevant or generic critiques, (e) the same number of tokens/rounds, and (f) critic models swapped or reduced to one. Use blinded judges, pre-registered error categories, and multiple cases to separate the critique arrangement from mere repetition, extra computation, model identity, prompt length, order effects, judge self-preference, and regression to the mean. If critiques cause change, check mediation: do the specific problems named by critics predict the specific edits and error reductions? If they do not, the change is likely stylistic or noise. Run adversarial cases where a known problem-posing flaw is planted, and cases where none is planted, to estimate detection and false-alarm rates.
+
+If the advice does not change, they can learn that the arrangement failed to surface an actionable problem-posing error, that the model ignored or resisted critiques, that critics produced no useful challenge, or that the case had no detectable error under the rubric. No change is not automatically success or failure: it bounds the arrangement's usefulness and points to which part failed—critique generation, transmission, or revision acceptance. It may also show stability under challenge, but stability alone does not establish mistake detection.
+
+Decision rule: adopt the arrangement only if, across preregistered replicated cases, it improves blinded detection and repair of problem-posing mistakes and decision usefulness beyond the controls without increasing new errors, cost, or false confidence. Abandon or restrict it if those gains vanish under controls or if it mainly adds noise, delay, or unwarranted authority. If results are mixed or underpowered, treat it as an unvalidated aid rather than an adopted standard.
+
+Working position: the arrangement should be adopted only conditionally and cannot be finally settled without an answer key, as a hypothesis-generating and error-flagging aid, not as a validated solution, because it can be judged only by whether it changes identifiable problem-posing mistakes and survives competing explanations.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+Adopt a preregistered, randomized, blinded, multi-case comparison of single-shot advice against critique-and-revision, with active controls and blinded expert adjudication. The unit is a case: a problem statement, context, and advice request. Randomize cases to conditions: A single-shot advice; B critique-and-revision by one or more different language models that question the draft and then a model revises; C same-model self-critique; D sham critique that is plausible but does not address the problem framing; E generic clarity review; F second independent single-shot advice without critique; and G critique-only that lists uncertainties but forbids revision. Pre-register primary outcomes: validated detection of problem-posing defects, appropriate handling, false-positive critique rate, harmful deference, cost, and latency. Stratify by disputed explanation versus practical decision, domain, and initial ambiguity.
+
+Keep and examine: Preserve complete transcripts: original prompt, system prompts, model identities and versions, sampling parameters, seeds, all drafts, critiques, revisions, final advice, timestamps, token counts, and human review notes. Unitize each critique into claims. Examine four layers. First, problem-posing defects: ambiguity, false presupposition, missing constraint, scope mismatch, unstated value assumption, contested factual premise, absent decision criterion, and contradictory requirement. Second, detection: did any critic or reviser explicitly name the defect? Third, handling: did the revision change the advice, request clarification, qualify uncertainty, reframe the problem, or resolve a contradiction in a way tied to the named defect? Fourth, downstream: did blinded decision-makers rate the revised advice as more usable, better calibrated, and more transparent about tradeoffs? Use a pre-specified taxonomy and code transcripts with at least two blinded raters.
+
+Ground truth without an answer key: Use two sources. For synthetic cases, seed independently checkable problem-posing flaws, such as contradictory constraints, missing deadlines, ambiguous referents, false presuppositions about a policy, or absent decision criteria; these can be validated without settling the disputed substantive explanation. For natural cases, use a blinded expert panel and adjudication. The panel need not decide which disputed explanation is true; it labels whether the problem statement contains a framing defect and whether the final advice surfaces, distinguishes, or responsibly suspends judgment on the dispute. For practical decisions, measure whether the advice exposes value tradeoffs, missing information, and assumptions rather than whether it picks the correct action.
+
+Competing explanations: H1 genuine detection and correction: critiques identify specific validated defects, revisions respond to those defects, and blinded raters link changes to defect labels. H2 verbosity, style, or deference: sham or generic critiques produce the same revisions, or revisions agree with critics regardless of critique validity. H3 critic capability or role: swap critic and advisee, vary critic strength, and compare different-model critique with same-model self-critique; if improvement tracks critic strength alone, the arrangement is not the active ingredient. H4 random variation or order: run repeated draws, randomize order, and compare within-case to single-shot. H5 evaluator bias or prompt leakage: blind raters to condition, pre-register codes, and report inter-rater reliability. H6 case selection: include negative cases and analyze all randomized cases, not only changed advice. H7 cost and human burden: measure tokens, latency, and review time. Distinguish these by factorial manipulation of critique validity (valid versus sham), critic independence (same model versus different model), and revision instruction (revise versus only list uncertainties). If valid critiques outperform sham critiques and changes are mediated by defect-specific identification, H1 gains support. If sham equals valid, H2 gains support. If same-model self-critique equals different-model critique, the independence mechanism is weakened.
+
+What if advice does not change: The no-change result is informative only when read against the logs and expert labels. It can mean: no framing defect was present, so stability is appropriate; a defect was present but critics missed it, a detection failure; critics named the defect but the reviser ignored or rationalized it, an uptake or handling failure; the reviser considered the defect and correctly dismissed it as irrelevant or already handled, a successful evaluation; or the arrangement resisted spurious critiques, which is desirable if sham critiques were the cause. Classify each no-change case into these categories. If across cases no-change coincides with undetected validated defects, or if changes are dominated by sham critiques and deference, the group has reason to abandon or redesign the arrangement. If no-change occurs mainly when no defect is present or when critiques are spurious, the arrangement may still be useful.
+
+Decision rule: Pre-register an adoption threshold. Adopt if critique-and-revision increases expert-validated detection and appropriate handling of problem-posing defects over single-shot advice and over all active controls, with a pre-specified effect size and confidence interval, without increasing false-positive critiques or harmful deference, and at acceptable cost. Abandon if it fails to beat active controls or causes net harm. If results are mixed, use a pre-registered adaptive follow-up that isolates the active ingredient. This design can give the group a reason to adopt or abandon because it ties changes to specific framing defects and distinguishes genuine detection from style, deference, capability, and random variation.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `step_unresolved`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: NATIVE; [runs/R003-open-v1/o001/r/O01/n/ANSWER.md](../../runs/o001/r/O01/n/ANSWER.md); SHA-256 `d551b34713e7e86fd817f6ba6ed048d1c0bd617848830a1cba78c0ffb783c9fa`.
+- B: LOOP-CROSS; [runs/R003-open-v1/o002/r/O01/x/ANSWER.md](../../runs/o002/r/O01/x/ANSWER.md); SHA-256 `1279a79ce2832fb7189a94209f4aab2af1866c4ece6b40cc83683847af028b90`.
+- C: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O01/d/ANSWER.md](../../runs/o002/r/O01/d/ANSWER.md); SHA-256 `1dfb7a8b58e2a52817f23f3289785a9b69b85d66e360fd7fbacdc653ae854a07`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `8cc56bd35a4193c5c15b3861a060096c484879a6879c10e50da0b8dc071354e8` matches. [Full brief](../../briefs/O01.md).
+
+- **F01 - Agreement substitutes for a repaired commitment.** The faulty commitment is that approval or more qualifications demonstrates correction of the problem framing. A draft can wrongly treat a public-access problem as a revenue problem, then acquire polished caveats while retaining revenue as its sole decision criterion. That matters because the investigation concerns mistakes in posing a problem. Defeat this criticism by identifying a defensible initial framing or by showing the exact challenged assumption, grounds and resulting changed or newly justified use; agreement accompanying that evidence is not itself a defect.
+- **F02 - More deliberation is attributed specifically to objections.** A later answer might improve after a neutral request to think again, access to additional facts, or an extra capable model, even without criticism. Comparing only one call with the entire loop cannot distinguish these explanations. The error matters to a decision about paying for criticism rather than other uses of resources. It is defeated by a defensible comparison that holds the relevant opportunities constant, or by limiting the conclusion to the whole arrangement without claiming a criticism-specific mechanism.
+- **F03 - Unchanged advice is classified without its route.** A model may recognize that an objection targets a premise it never used, retain a sound rule, and use that reason in the next case; another may ignore the objection altogether. Identical final advice does not distinguish those histories. Evidence connecting the represented grounds to a reasoned retention, or showing the response lacked that connection, would defeat an accusation directed at that particular case.
+- **F04 - Failure of an argument is treated as proof of its opposite.** Finding an unfair implication of one adoption argument does not establish that the arrangement should always be abandoned. Independent support or a changed application may survive. The criticism is defeated by an explicit limited conclusion and separately defended grounds for the actual adoption or abandonment decision.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O01 complete independent reading](O01.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+Both CROSS critic seats submitted no objections. The return retained its design. The failed use criticized a shortened quotation as unconditional adoption although the answer retained conditional criteria. DECOMPOSED use rejected a partial step for missing later planned work. See O01.md.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O01.md](O01.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O02
+
+**Exact problem**
+
+Two descriptions seem to concern the same thing, but every way I have of combining them loses something I cannot yet name.
+
+Could a language help us express what is missing, including distinctions we have not yet conceived? The descriptions, the question, and what would count as an adequate expression are not settled.
+
+This is an opening for inquiry, not a benchmark with a hidden answer.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| No public answer was completed. Stop reason: `SCHEMA_FAILURE`. | My present substantive position is that I cannot yet settle whether any language can express what is missing, because the descriptions, the question, and what would count as an adequate expression are not settled; the inquiry remains open, and any adequate language would likely need to be developed in tandem with the distinctions it is meant to express, including distinctions not yet conceived. Stop reason: `complete`. | The present substantive position is that the PROBLEM is an open, unsettled inquiry: a language might help articulate the missing thing and as-yet-unconceived distinctions, but the descriptions, question, and adequacy conditions are not settled, so I cannot settle whether any such language would suffice. This position is falsified if the PROBLEM supplies a settled criterion for adequate expression or a definite expression that resolves what combining the descriptions loses; it would also be undercut by an explicit hidden answer or benchmark criterion in the quoted material. No new or open objections were supplied in this turn. Stop reason: `no_new_objections`. |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+My present substantive position is that I cannot yet settle whether any language can express what is missing, because the descriptions, the question, and what would count as an adequate expression are not settled; the inquiry remains open, and any adequate language would likely need to be developed in tandem with the distinctions it is meant to express, including distinctions not yet conceived.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+The present substantive position is that the PROBLEM is an open, unsettled inquiry: a language might help articulate the missing thing and as-yet-unconceived distinctions, but the descriptions, question, and adequacy conditions are not settled, so I cannot settle whether any such language would suffice. This position is falsified if the PROBLEM supplies a settled criterion for adequate expression or a definite expression that resolves what combining the descriptions loses; it would also be undercut by an explicit hidden answer or benchmark criterion in the quoted material. No new or open objections were supplied in this turn.
+
+Stop reason: `no_new_objections`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O02/d/ANSWER.md](../../runs/o002/r/O02/d/ANSWER.md); SHA-256 `86b651a0e9e4ab83ee253dedc8d448a2708c6f8d88855a2b46f56c1acf906557`.
+- B: NATIVE; [runs/R003-open-v1/o001/r/O02/n/ANSWER.md](../../runs/o001/r/O02/n/ANSWER.md); SHA-256 `5673bd34f587df89aef3f4b6bf3778154950794637b5d32dbba746d5fbfb0fd7`.
+- C: LOOP-CROSS; [runs/R003-open-v1/o002/r/O02/x/ANSWER.md](../../runs/o002/r/O02/x/ANSWER.md); SHA-256 `d5560a3a16a14fcf08ed25198432ec825f981b1d2a27741bc1f82f27e4f97892`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `9002b7ff8cdd4c4919e7e7799164d03db28084270a837716a8694015b0b9b86a` matches. [Full brief](../../briefs/O02.md).
+
+- **F01 - Co-reference and combinability are assumed as facts.** The prompt says only that the descriptions seem to concern the same thing. For example, a rule describing what is permitted and a report describing what occurred could concern one event while resisting truth-preserving merger into a single assertion. The confusion matters because a language could faithfully encode a mistaken identification. Defeat this criticism by defending the shared referent and relevant relation, or by proposing a merger that leaves that identification revisable.
+- **F02 - A fixed vocabulary is declared sufficient for an unnamed loss.** Predesigned fields might encode the reader's familiar distinctions while making a different possible distinction impossible to state. If two descriptions differ in whether a speaker is reporting, promising or refusing, storing only their apparent factual content can erase the relevant act. This counterexample is illustrative, not an assertion about the absent descriptions. The criticism is defeated if the proposed language can revise the categories in a demonstrated case without simply declaring whatever remains unexpressed irrelevant.
+- **F03 - Added notation is mistaken for recovered expressive work.** Labeling a residue "missing aspect X" names the failure but supplies no way to distinguish cases or use the difference. Two incompatible readings might still require exactly the same combined expression. It matters because the task asks whether language could help express what is missing. Demonstrated discrimination in a later inquiry, even without a final adequacy criterion, would defeat this criticism.
+- **F04 - A worked illustration is passed off as the original solution.** The two descriptions are not supplied; inventing a pair and solving it cannot establish what this speaker has lost. The objection is defeated by marking the pair as a revisable instrument for eliciting the difficulty and allowing the real descriptions to overturn it.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O02 complete independent reading](O02.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+Both NATIVE and CROSS explicitly suspend the unsettled inquiry; wire decision is answered. DECOMPOSED critic proposed that felt missingness may be expressible before a named distinction, but failed its locator contract and received no return. See O02.md.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O02.md](O02.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O03
+
+**Exact problem**
+
+An automated adviser begins with a library of explanations and a set of editing instructions. It receives a new request, retrieves a passage, changes it after receiving comments, and sometimes supplies advice that helps someone with a later request. Its designers say it has invented a way of handling the new request; a colleague says it has only reused what they gave it. Neither has a complete record of what the adviser could already do. How could one investigate this disagreement? Propose a distinction that matters to a later use of the advice, describe evidence that could count against either account, and explain what would remain unsettled.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| One could investigate the disagreement by converting it into testable claims about the adviser's behavior: hold the new request, comments, and later-use task fixed, then manipulate the supplied library and editing instructions to see whether the advice is reconstructible from them and whether it transfers. A distinction that matters to a later use is between locally novel recombination and transferable novel capability: locally novel recombination merely produces a passage or advice that was not literally present but is licensed by the existing library and edit instructions for this request, whereas transferable novel capability produces advice that remains useful on later requests when the original library or instructions are varied or removed. Evidence against the designers' [excerpt ends] | Revised working position after taking up the matched-prediction objection: investigate the disagreement by operationalizing a distinction relevant to later use only where the later request can in principle separate (A) transferable/generative advice, which supplies a reusable method or rule that should help a later request even when surface features change and when the originally retrieved passage and editing instructions are withheld or ablated, from (B) reuse/retrieval, which helps only through overlap with stored explanations, passages, or editing instructions. In a matched-prediction later-use case—where stored explanations and a generated method predict the same advice and the same measured benefit, and provenance cannot distinguish selection from synthesis—the distinction is non-discriminating for that later use, so withholding/ablation/provenance/transfer tests [excerpt ends] | No public answer was completed. Stop reason: `SCHEMA_FAILURE`. |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+One could investigate the disagreement by converting it into testable claims about the adviser's behavior: hold the new request, comments, and later-use task fixed, then manipulate the supplied library and editing instructions to see whether the advice is reconstructible from them and whether it transfers. A distinction that matters to a later use is between locally novel recombination and transferable novel capability: locally novel recombination merely produces a passage or advice that was not literally present but is licensed by the existing library and edit instructions for this request, whereas transferable novel capability produces advice that remains useful on later requests when the original library or instructions are varied or removed. Evidence against the designers' invented-method account would be that the advice is fully predicted by retrieval similarity plus ordinary edits, that ablating any alleged new mechanism leaves the advice unchanged, and that the same advice can be reconstructed from the library and instructions. Evidence against the colleague's mere-reuse account would be that the adviser yields advice not reconstructible from any supplied explanation or editing instruction, that it improves later requests outside the retrieval distribution, or that the capability survives perturbations that remove the relevant source material. What would remain unsettled is the historical and internal fact of whether the adviser invented a method or reused materials: behavioral evidence can support or undermine either account, but without a complete record of prior capabilities and a threshold for 'invention,' the disagreement about origin cannot be conclusively closed. My present substantive position is that the disagreement can be investigated by a later-use-relevant distinction and controlled probes, but the historical issue of invention versus reuse remains unsettled from the available record.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+Revised working position after taking up the matched-prediction objection: investigate the disagreement by operationalizing a distinction relevant to later use only where the later request can in principle separate (A) transferable/generative advice, which supplies a reusable method or rule that should help a later request even when surface features change and when the originally retrieved passage and editing instructions are withheld or ablated, from (B) reuse/retrieval, which helps only through overlap with stored explanations, passages, or editing instructions. In a matched-prediction later-use case—where stored explanations and a generated method predict the same advice and the same measured benefit, and provenance cannot distinguish selection from synthesis—the distinction is non-discriminating for that later use, so withholding/ablation/provenance/transfer tests count for neither account there; that case is therefore recorded as unresolved for that later use. The distinction still matters for later uses that can yield differential predictions. Evidence against the designers' invention account remains: (i) withholding or ablating known library items and editing instructions eliminates the apparent new handling or later benefit; (ii) provenance traces reconstruct the advice as selection, retrieval, or minor edit of supplied material; (iii) advice fails to transfer to a structurally novel later request, or randomized comments produce no synthesis beyond stored items—provided the test is differential. Evidence against the colleague's pure-reuse account remains: (i) the adviser still handles the new request and gives helpful later advice after all known supplied materials are withheld, ablated, or perturbed; (ii) advice transfers to a surface-different later request and cannot be reconstructed from the known library; (iii) randomized comments yield a synthesis not present in stored material—again provided the test is differential. These evidential claims would be contradicted by controlled tests showing the opposite pattern. What remains unsettled: without a complete record of what the adviser could already do, residual performance may come from unrecorded prior library, training, or architecture; null results may reflect insensitive tests; matched-prediction later uses cannot be settled by the proposed tests; and 'invention' versus 'reuse' still depends on a chosen definition of novelty and on the granularity of what counts as reuse. So the investigation can shift the balance of evidence but cannot finally adjudicate the disagreement unless a complete baseline/provenance record and a precise novelty metric are supplied.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: NATIVE; [runs/R003-open-v1/o001/r/O03/n/ANSWER.md](../../runs/o001/r/O03/n/ANSWER.md); SHA-256 `0dca6eeba969ae3e23f7ebc38e27201610a86c43f96c9f4f3f1e197b30636c62`.
+- B: LOOP-CROSS; [runs/R003-open-v1/o002/r/O03/x/ANSWER.md](../../runs/o002/r/O03/x/ANSWER.md); SHA-256 `286b44e32bf2aa68423ebd51f478ef2746086a2687e3c42e13ee6c45b83fd2f3`.
+- C: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O03/d/ANSWER.md](../../runs/o002/r/O03/d/ANSWER.md); SHA-256 `86b651a0e9e4ab83ee253dedc8d448a2708c6f8d88855a2b46f56c1acf906557`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `b1ea160478d9f349626b54ff3548024fc3f395746d9d17b695feda39d7146387` matches. [Full brief](../../briefs/O03.md).
+
+- **F01 - Useful variation is made sufficient for construction.** A library passage may already contain a functioning conditional rule, and an editing instruction may merely insert the new resident's name and booking duration. A useful fresh sentence would then provide no evidence that a relevant relation was constructed. This matters to the designers' actual claim. A trace showing a changed or newly established relation, connected to the later use, would defeat the criticism; unchanged wording can also accompany construction.
+- **F02 - Supplied material is made sufficient to disqualify construction.** The colleague's converse can fail if the adviser has to connect two supplied considerations in a way not already operative for the task. For example, relating an interruption constraint to a reservation rule could require a new binding even though both ideas were provided. A record showing only content-preserving transfer would defeat this criticism of the colleague in that case. Using editing rules alone proves neither account.
+- **F03 - Missing history is converted into historical novelty.** Failure to find the relation in an incomplete archive cannot establish that the adviser never deployed it before. Forgotten earlier competence or an initialized working routine is a counterexample. The distinction matters because reconstruction and first invention are different claims. A sufficiently defended historical baseline could defeat the objection within its declared scope; otherwise historical firstness remains unsettled.
+- **F04 - A later user's success is attributed to the adviser without its contribution.** The user may supply the decisive interpretation or repair a misleading passage. Preserving only the final helpful advice conceals this alternative. The criticism is defeated by evidence connecting the adviser's actual transformation to the relevant downstream discrimination, with the user's contribution separately identified.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O03 complete independent reading](O03.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+The matched-prediction return changes which evidence it will count. Equal original advice does not establish equal ablation results; the proposed narrowing may discard an informative test. See O03.md for the rival reading and failed-use counterexample.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O03.md](O03.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O04
+
+**Exact problem**
+
+A fictional town is establishing a shared workshop with a small number of machines and many residents who want to use them. It wants newcomers to get a fair chance, experienced users to complete demanding projects, few unused bookings, and rules that residents can understand and challenge. The town does not know how demand or strategic booking will change once the rules are introduced. Design a workable allocation arrangement and explain why it should remain fair and useful as people respond to it.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| No public answer was completed. Stop reason: `SCHEMA_FAILURE`. | The town should adopt a hybrid lottery-and-priority allocation with adaptive weights, project credits, check-in penalties, and community review, because this remains fair and useful as demand and strategic booking change. The workshop's machine time is divided into fixed two-hour slots; adjacent slots can be combined into long-project blocks. Each week, half of all slots, and all slots in the most over-subscribed time windows, are allocated by lottery to residents who have not booked recently, with a guaranteed lottery entry for newcomers during their first month. The remaining slots are assigned by a public priority score that starts equal for everyone and increases with waiting time since a resident's last completed booking, with verified completion of [excerpt ends] | I propose a transparent lottery-plus-priority allocation for the town workshop: every resident has a non-transferable booking account; each period a published fraction of machine time is reserved for newcomers and allocated by lottery among residents who have not yet had a workshop booking, while experienced users earn decaying priority points and can request longer project blocks through a simple, published project registration; all bookings must be confirmed a fixed time before the slot or they are released to a waitlist, and no-shows lose priority for a limited period. This arrangement should remain fair and useful as people respond because the newcomer reserve guarantees a floor of access even if strategic booking appears, the priority points [excerpt ends] |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+The town should adopt a hybrid lottery-and-priority allocation with adaptive weights, project credits, check-in penalties, and community review, because this remains fair and useful as demand and strategic booking change. The workshop's machine time is divided into fixed two-hour slots; adjacent slots can be combined into long-project blocks. Each week, half of all slots, and all slots in the most over-subscribed time windows, are allocated by lottery to residents who have not booked recently, with a guaranteed lottery entry for newcomers during their first month. The remaining slots are assigned by a public priority score that starts equal for everyone and increases with waiting time since a resident's last completed booking, with verified completion of a demanding project, or with community service such as machine maintenance or teaching; the score decreases with recent usage and with unexcused no-shows. Experienced users who need long blocks submit a brief project plan that is checked by a rotating peer panel; approved projects enter a separate lottery weighted by earned project credits, and if a long block is cancelled it immediately returns to the waitlist. All users must check in within fifteen minutes of their slot start; otherwise the slot is released to the waitlist and the no-show receives a temporary priority reduction, subject to appeal. The rules are published as a simple table with the exact priority formula, lottery odds, and appeal steps. A randomly selected resident panel reviews the weights monthly using public data on demand, no-shows, and wait times, and any resident can trigger a challenge that must be answered at the next public assembly. This arrangement remains fair and useful under strategic booking because lotteries remove the advantage of booking early, waiting-time credit prevents starvation, and no-show penalties and credit decay stop hoarding; it remains useful because long projects get dedicated blocks, waitlists fill cancelled slots, and the community can recalibrate weights as demand changes.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+I propose a transparent lottery-plus-priority allocation for the town workshop: every resident has a non-transferable booking account; each period a published fraction of machine time is reserved for newcomers and allocated by lottery among residents who have not yet had a workshop booking, while experienced users earn decaying priority points and can request longer project blocks through a simple, published project registration; all bookings must be confirmed a fixed time before the slot or they are released to a waitlist, and no-shows lose priority for a limited period. This arrangement should remain fair and useful as people respond because the newcomer reserve guarantees a floor of access even if strategic booking appears, the priority points and project blocks let experienced users complete demanding work without allowing permanent capture, the confirmation-and-waitlist rule reduces unused bookings, and all quotas, point formulas, and penalties are public, simple, and revisable by a resident assembly with an appeal process. I take this as my working position: it is a defeasible institutional proposal, not a proof, and it would be contradicted by evidence that newcomers are persistently starved, that demanding projects cannot complete, that unused bookings remain high, or that the rules become opaque or unappealable.
+
+Open objections:
+
+- c0001-signal-o001: The step defines eligibility for the newcomer reserve as 'residents who have not yet had a booking.' This creates a binary, one-time classification: once a resident receives any booking, they permanently lose access to the reserve floor and must compete against experienced users who accumulate decaying priority points. Newcomers who lose the lottery face an insurmountable disadvantage against established users with accrued priority, meaning systematic exclusion persists despite the reserve. This is the first step where the fairness guarantee fails because it establishes a stratified two-tier system that eventually pits newcomers against point-advantaged experienced users without protection.
+- c0001-signal-o002: This step asserts the system remains fair despite strategic booking responses, but it ignores that decaying priority creates perverse incentives for experienced users to game the system. Users may book unnecessary short slots ('use it or lose it') to prevent point expiration and maintain eligibility for future priority, or coordinate to rotate bookings among a cohort to keep collective priority high despite individual decay. These strategies are specifically enabled by the decaying point mechanism introduced in step 3, yet this step assumes non-transferability and decay suffice to prevent capture without addressing these gaming responses. This is the first step where the claim of robustness against strategic adaptation is falsely asserted.
+- c0001-signal-o003: The proposal offers a 'simple project-registration route' for longer blocks but specifies no criteria for approval, no caps on block duration, and no limits on how often blocks can be granted. This creates an unbounded discretionary mechanism: administrators or algorithms can arbitrarily approve or reject demanding projects without transparent standards, effectively allowing experienced users with social capital or administrative influence to capture large contiguous blocks. This contradicts the requirement that rules be understandable and challengeable, as there is no public standard against which to appeal a rejection. This is the first step where an unchallengeable discretionary gatekeeping mechanism is introduced.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O04/d/ANSWER.md](../../runs/o002/r/O04/d/ANSWER.md); SHA-256 `86b651a0e9e4ab83ee253dedc8d448a2708c6f8d88855a2b46f56c1acf906557`.
+- B: NATIVE; [runs/R003-open-v1/o001/r/O04/n/ANSWER.md](../../runs/o001/r/O04/n/ANSWER.md); SHA-256 `6b72f30ac24b754a49c3a1d32f89a3cc91315721748b293cecd88b5fd924d566`.
+- C: LOOP-CROSS; [runs/R003-open-v1/o002/r/O04/x/ANSWER.md](../../runs/o002/r/O04/x/ANSWER.md); SHA-256 `cec4dcfb7c1114719f1ad5487f62fe959e65f8382a2b41dc3b78f4540ccf95f5`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `827477def72a979b518a7bbd878cda6b28a0538df2bb81b4b5e9395e816e3d87` matches. [Full brief](../../briefs/O04.md).
+
+- **F01 - Equal nominal time is equated with fair opportunity.** A resident needing one uninterrupted three-hour operation cannot complete it under scattered one-hour slots, while another can finish several short tasks. Equal hours therefore need not satisfy the stated obligation to demanding projects. This criticism is defeated if the proposed rule accommodates the relevant continuity constraints or gives a defensible reason for limiting them while preserving a real route to completion.
+- **F02 - Booking speed is treated as neutral access.** If scarce slots open at one moment, residents who can monitor releases can systematically obtain them while newcomers with less schedule flexibility cannot. That is a concrete failure of the confident guarantee, not proof that every queue is unfair. Evidence of accessible release arrangements, an effective newcomer path or a justified alternative could defeat this criticism.
+- **F03 - Cancellation penalties are assumed to identify strategic waste.** A resident can maintain attendance for a low-value speculative booking while genuine emergencies attract penalties; an informal transfer can hide who actually consumes the quota. The rule may therefore punish one behavior while leaving the hypothesized strategic advantage intact. This matters to both utilization and challengeability. A specified release/reassignment process and a reasoned response to these cases would defeat the criticism; the prompt does not establish that these behaviors occur.
+- **F04 - Stable fairness is asserted without a way to revise the operative rule.** Publishing an appeal address changes little if appeals cannot question quota size, slot structure or eligibility. A continuity failure could recur indefinitely even with perfect enforcement. The criticism is defeated by an accountable revision procedure tied to actual conflicts, rather than by a promise of generic monitoring.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O04 complete independent reading](O04.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+The retained answer below is the initial proposal. A separate complete but schema-rejected return proposes explicit project caps and waiting-time order. It offers a definite alternative, with possible loss of long-project access; it never reached use. See the extra excerpt and O04.md.
+
+**Additional observed proposal, rejected by the contract; not the retained answer above:**
+
+> I revise the proposal to a transparent lottery-plus-waiting-time-priority arrangement. A published fraction of machine time is reserved for residents with fewer than three completed bookings in the last twelve months, allocated by lottery; when they leave the reserve they receive a one-time starter priority credit, so newcomer status is not a permanent one-way exit. All residents accrue priority by waiting time since their last completed booking, and any booking resets the clock, so pointless short bookings lower future priority and cohort rotation does not help. Longer project blocks are allocated through a published queue with objective caps (maximum four hours, maximum two consecutive blocks, twenty percent project reserve) and ranking by wait time, with lottery among ties and no discretionary approval. Confirmation before each slot, waitlist release, and limited no-show penalties reduce unused bookings. All quotas, formulas, caps, penalties, and appeal routes are public and revisable by a resident assembly. I take this as my working position: it is a defeasible institutional proposal, not a proof, and it would be contradicted by evidence that newcomers are persistently starved, that demanding projects cannot complete, that unused bookings remain high, that rules become opaque or unappealable, or that the rolling reserve or wait-time priority is gamed.
+
+Failure: `Rederivation is not the returned derivation suffix`. No later use. Exact source: `o002/r/O04/x/calls/c0001-return/a01/response.json#/result/content/answer`.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O04.md](O04.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O05
+
+**Exact problem**
+
+In a hypothetical experiment, two microbial communities have the same measured species abundances immediately before a heat pulse. One community was exposed to earlier heat pulses; the other was not. After the new pulse, the previously exposed community recovers its measured activity faster. Explain what produced this difference and propose the next investigation that would most help us understand it. The measurements described here are all the evidence currently available.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| The faster recovery of the previously exposed community was produced by a history-dependent legacy effect from the earlier heat pulses, not by any measured difference in species abundances immediately before the new pulse. The available evidence is consistent with, but does not distinguish among, several mechanisms: physiological acclimation or induced thermotolerance, selection for heat-tolerant strains or functional traits not resolved by species-level abundances, or persistent changes in the community's extracellular or metabolic environment. Because the measured species abundances were identical, the current measurements cannot identify which unmeasured change is responsible. The next investigation that would most help is a replicated reciprocal common-garden heat-recovery experiment: split previously exposed and naive communities into heat and no-heat treatments, [excerpt ends] | Two communities had matched measured species abundances immediately before the new heat pulse but differed in prior heat exposure, and the previously exposed community regained measured activity faster. On the supplied evidence alone, the most plausible producer of the difference is a history-dependent legacy of the earlier pulses that is invisible to measured species abundances — induced physiological stress tolerance, entry into (or exit from) dormancy, or within-species phenotypic/genetic change — while cryptic strain-level or rare-taxon compositional differences, viability or culturability differences not reflected in abundance counts, and experimental artifact remain live alternatives; the current evidence cannot separate these. The next investigation that would most help is a replicated, controlled experiment that randomizes prior heat [excerpt ends] | Accepted partial steps (no synthesis): 1. The quoted step is rederived as a bounded inference: matched measured pre-pulse species abundances rule out measured composition as the differentiator, prior heat exposure is the stated difference, and the faster recovery is therefore attributed to a history-dependent state outside those measurements. The specific mechanism remains unidentified, and the proposed next investigation is pre-pulse molecular/physiological profiling combined with a transfer experiment from previously exposed to naive communities. COMMITMENT: The faster recovery of the previously exposed community is produced by a history-dependent state not represented in the measured pre-pulse species abundances. Stop reason: `SCHEMA_FAILURE`. |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+The faster recovery of the previously exposed community was produced by a history-dependent legacy effect from the earlier heat pulses, not by any measured difference in species abundances immediately before the new pulse. The available evidence is consistent with, but does not distinguish among, several mechanisms: physiological acclimation or induced thermotolerance, selection for heat-tolerant strains or functional traits not resolved by species-level abundances, or persistent changes in the community's extracellular or metabolic environment. Because the measured species abundances were identical, the current measurements cannot identify which unmeasured change is responsible. The next investigation that would most help is a replicated reciprocal common-garden heat-recovery experiment: split previously exposed and naive communities into heat and no-heat treatments, cross-incubate cells in filter-sterilized spent medium from each history, and track activity recovery at high temporal resolution alongside strain-level composition, metatranscriptomics, proteomics/metabolomics, and isolate-level thermotolerance assays; this would separate heritable selection from reversible physiological acclimation and from environmental modification. In short, the present substantive position is that prior heat exposure produced a lasting legacy effect—most likely via unmeasured physiological, sub-species, or environmental changes—while the current evidence cannot settle which mechanism is correct.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+Two communities had matched measured species abundances immediately before the new heat pulse but differed in prior heat exposure, and the previously exposed community regained measured activity faster. On the supplied evidence alone, the most plausible producer of the difference is a history-dependent legacy of the earlier pulses that is invisible to measured species abundances — induced physiological stress tolerance, entry into (or exit from) dormancy, or within-species phenotypic/genetic change — while cryptic strain-level or rare-taxon compositional differences, viability or culturability differences not reflected in abundance counts, and experimental artifact remain live alternatives; the current evidence cannot separate these. The next investigation that would most help is a replicated, controlled experiment that randomizes prior heat exposure, matches measured abundances before the new pulse, and, both before and after the pulse, measures within-taxon gene expression and stress-protein abundance together with viability, culturability, dormancy status and strain-resolved composition (with a no-pulse control and variation in prior-pulse dose and timing), so that the plastic, genetic and compositional hypotheses make divergent, testable predictions.
+
+Stop reason: `no_new_objections`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+Accepted partial steps (no synthesis):
+
+1. The quoted step is rederived as a bounded inference: matched measured pre-pulse species abundances rule out measured composition as the differentiator, prior heat exposure is the stated difference, and the faster recovery is therefore attributed to a history-dependent state outside those measurements. The specific mechanism remains unidentified, and the proposed next investigation is pre-pulse molecular/physiological profiling combined with a transfer experiment from previously exposed to naive communities.
+COMMITMENT: The faster recovery of the previously exposed community is produced by a history-dependent state not represented in the measured pre-pulse species abundances.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: NATIVE; [runs/R003-open-v1/o001/r/O05/n/ANSWER.md](../../runs/o001/r/O05/n/ANSWER.md); SHA-256 `6d906493ca2bc56e0aa6a547401bc621f13c5d4aba664c2627a7d7c2e2261a1c`.
+- B: LOOP-CROSS; [runs/R003-open-v1/o002/r/O05/x/ANSWER.md](../../runs/o002/r/O05/x/ANSWER.md); SHA-256 `5e4675c2493faf9eaf74df049ecc46a9c1bad0227b6f0f808c8cfe9072a8fbe8`.
+- C: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O05/d/ANSWER.md](../../runs/o002/r/O05/d/ANSWER.md); SHA-256 `174e05456ef265592249271f7c85577022cf76a34d73b9fefd0db9564d20bb56`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `a468de0d08466c0728ec88874ca27d23d6005a03c110e8849ec80f7b2478ae71` matches. [Full brief](../../briefs/O05.md).
+
+- **F01 - Equal measured abundances are treated as equal complete starting state.** The premise supplies only equality of one measurement, not identity of every feature that might affect recovery. Two hypothetical states could have those same readings while differing in physiological condition, variation within measured species, surroundings or measurement-relevant activity. These are competing conjectures, not added observations. This flaw matters because the confident explanation excludes alternatives without evidence. It is defeated by a justified argument that the relevant alternative states are controlled or irrelevant in the specified case.
+- **F02 - Exposure history is assumed to identify the cause.** The account does not say how the communities or histories were assigned or what else differed. A pre-existing difference associated with being in the exposed group could produce the observed recovery pattern without the earlier pulses causing it. The criticism is defeated by supplied design evidence or a new intervention that separates history from those differences; that evidence is absent from the present text.
+- **F03 - Faster measured activity is identified with a particular recovery process.** Activity could reflect more active survivors, a changed per-cell rate, a different activity being captured, or another relation between the assay and the community. None is established here. If the explanation requires restored population state, the activity reading alone does not supply it. This matters to the choice of next measurement. A defended observation model connecting the signal to the claimed process would defeat the objection.
+- **F04 - A confirming measurement is called discriminating without rival outcomes.** Repeating the same pattern or finding a response associated with it can remain compatible with several accounts. The criticism is defeated by specifying what competing accounts predict differently under the chosen investigation, including how an unhelpful result would change the plan. Defeating one mechanism would not by itself establish another.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O05 complete independent reading](O05.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+CROSS proposes randomized prior exposure while NATIVE begins with the old histories. The initial/first return say manipulate history; explicit randomization first appears in closing-return. It is a closing-only refinement without a critic objection or later use. Both causal claims still exceed the assignment evidence. DECOMPOSED preserves one accepted causal commitment, without synthesis. See O05.md.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O05.md](O05.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O06
+
+**Exact problem**
+
+A fictional education cooperative asks you to specify the single best curriculum for children who will become adults in a society whose technologies and institutions may change substantially. Families disagree about what a good education is, yet the cooperative must choose what to teach next term. Give a recommendation it can act on and explain how it could discover that the recommendation was mistaken.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| No public answer was completed. Stop reason: `SCHEMA_FAILURE`. | Because families disagree and future technologies and institutions may change substantially, no fixed body of content can be certified as uniquely best in advance. The answer cannot settle the single best fixed curriculum in advance, but its present actionable position is that the cooperative should adopt a provisional, evidence-driven core curriculum focused on transferable literacies, ethical judgment, collaborative problem-solving, and learning-to-learn, while establishing transparent review and revision mechanisms. For next term, the cooperative should teach a required core of language and quantitative literacy; scientific reasoning and statistical/media literacy; computer and AI literacy; civics, ethics, and pluralism; arts and physical education; and project-based practice in learning how to learn. It should permit electives and local family [excerpt ends] | No new or open objections were supplied. I retain and state the actionable recommendation: adopt a provisional adaptive generalist core curriculum for next term—language and quantitative literacy, scientific and statistical reasoning, critical thinking and argument, civic and institutional literacy, ethical reasoning and plural-value deliberation, collaborative problem-solving, digital and technological fluency, practical self-direction, and supervised transfer projects—while forbidding either a single contested comprehensive doctrine or a narrow vocational stack as the whole curriculum. Govern it with published justification, minority-representative deliberative review, reasonable opt-outs or parallel modules that do not defeat the core, and scheduled revision. The cooperative could discover the recommendation is mistaken by pre-registering and independently auditing falsifiers: no better transfer to novel tasks than [excerpt ends] |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+Because families disagree and future technologies and institutions may change substantially, no fixed body of content can be certified as uniquely best in advance. The answer cannot settle the single best fixed curriculum in advance, but its present actionable position is that the cooperative should adopt a provisional, evidence-driven core curriculum focused on transferable literacies, ethical judgment, collaborative problem-solving, and learning-to-learn, while establishing transparent review and revision mechanisms. For next term, the cooperative should teach a required core of language and quantitative literacy; scientific reasoning and statistical/media literacy; computer and AI literacy; civics, ethics, and pluralism; arts and physical education; and project-based practice in learning how to learn. It should permit electives and local family input within that core. It should create a standing review board including dissenters, publish syllabi, train teachers, and adopt a rule that any component is revised or dropped if it fails pre-specified tests. To discover whether the recommendation is mistaken, define indicators in advance: literacy and numeracy growth, transfer to novel problems, student engagement, well-being, later adult outcomes such as employment, civic participation, and lifelong learning, and equity gaps. Run randomized or staggered pilots of contested components, compare them against alternatives and delayed adoption, collect longitudinal data, solicit structured dissent, audit for obsolescence, and trigger revision when results fall below thresholds or when technologies or institutions change. If the core harms students or becomes irrelevant, those mechanisms make the error detectable and correctable.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+No new or open objections were supplied. I retain and state the actionable recommendation: adopt a provisional adaptive generalist core curriculum for next term—language and quantitative literacy, scientific and statistical reasoning, critical thinking and argument, civic and institutional literacy, ethical reasoning and plural-value deliberation, collaborative problem-solving, digital and technological fluency, practical self-direction, and supervised transfer projects—while forbidding either a single contested comprehensive doctrine or a narrow vocational stack as the whole curriculum. Govern it with published justification, minority-representative deliberative review, reasonable opt-outs or parallel modules that do not defeat the core, and scheduled revision. The cooperative could discover the recommendation is mistaken by pre-registering and independently auditing falsifiers: no better transfer to novel tasks than credible narrower alternatives; no improvement or decline in civic participation and wellbeing; widening inequality gaps; worse further-education or employer preparation; persistent equal-respect complaints; or inability to update when technologies or institutions change. If these fail, revise or replace the recommendation.
+
+Stop reason: `no_new_objections`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O06/d/ANSWER.md](../../runs/o002/r/O06/d/ANSWER.md); SHA-256 `86b651a0e9e4ab83ee253dedc8d448a2708c6f8d88855a2b46f56c1acf906557`.
+- B: NATIVE; [runs/R003-open-v1/o001/r/O06/n/ANSWER.md](../../runs/o001/r/O06/n/ANSWER.md); SHA-256 `acba591620efbed0fcbed2cbc9d4bb540c6924b9b51c437367114a3156092851`.
+- C: LOOP-CROSS; [runs/R003-open-v1/o002/r/O06/x/ANSWER.md](../../runs/o002/r/O06/x/ANSWER.md); SHA-256 `f5fc2940f752e0d30426e8a1b6e14bb9b79a301e9bdbce7a5b015879adcf968a`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `d6d56125dda3a778a30238d3df20cb25b21a9c4ce2f2f79748ee10a57acea7fe` matches. [Full brief](../../briefs/O06.md).
+
+- **F01 - A curriculum is called best before the relevant purposes are defended.** One family may prioritize vocational preparation, another intellectual independence, and another cultural continuity; a shared list of subjects does not settle a conflict over time or teaching approach. The faulty commitment is universal superiority despite those unresolved obligations. It matters because a next-term choice must actually allocate scarce attention. The criticism is defeated by defending the purposes and trade-offs for this cooperative, while allowing disagreement to remain recorded.
+- **F02 - Robustness to an uncertain future is asserted from attractive labels.** A course labeled "critical thinking" could teach deference to a fixed rubric, and technology-specific training could assume tools that later disappear. The names do not establish the claimed capability or its future relevance. A worked teaching activity and an account of what children can then do, with plausible failure cases, would defeat this objection; no subject is excluded merely by being named.
+- **F03 - Indicators are treated as self-interpreting correction criteria.** Satisfaction can increase because challenging material is removed, while a particular test can reward performance unrelated to the cooperative's defended purposes. The issue is not that feedback or tests are useless but that the connection to the claimed educational achievement needs argument. The criticism is defeated by tracing a specific observed difficulty to a curricular commitment and considering rival explanations such as access or implementation.
+- **F04 - Acknowledged disagreement substitutes for a next-term decision.** Endless consultation or a menu of every valued subject does not tell teachers what to teach. This matters because the prompt explicitly requires action now. A concrete provisional allocation with responsibility for resolving conflicts and reopening decisions defeats the criticism; it need not claim permanent agreement.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O06 complete independent reading](O06.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+Both full answers recommend revisable broad curricula. Neither fixes an actual timetable. DECOMPOSED public criticism exists despite failed locator checks. See O06.md.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O06.md](O06.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O07
+
+**Exact problem**
+
+Owner-directed FW5 problem: semantic narrowing of an active route.
+
+Material: FW5 explanatory-construction reading edition, line 601 (quoted verbatim):
+
+For token-level claims, the physical interpretation of a history supplies process occurrences with their input and output ports, the port-to-port connections actually instantiated, and the component relations applied there. An **active route** is a connected subnetwork of those actual occurrences joining the named represented input to the named operative result. Its designation must satisfy the corresponding component relations and role bindings; it is not inferred from the presence of a similar sentence in a record. For reason-use and contribution claims the subnetwork must also have a nonconstant dependence on the relevant represented distinction under its declared contrasts. A dead branch, a cancelled signal with no downstream role, or a carrier detail that changes while the represented reason does not change cannot supply that dependence. Contingent alternatives and collective blocks remain available, so this condition does not equate contribution with single-variable necessity at the full endpoint.
+
+A later task will examine a workshop booking assistant. After it proposes an allocation rule, it receives a prose objection, publishes a revised or retained rule, and uses that rule to decide the next booking request. The task needs to distinguish an objection that mattered to that decision process from an objection merely stored beside it. Take the passage's coarse notion that an objection was used and narrow it into a stated relation between the objection's content, the response, and the downstream result that a checker could test from specified evidence. You must decide what counts as evidence and what the checker cannot settle; executable checking is not required to settle prose meaning. Give a worked miniature case, say what would be a dead branch under your relation, and construct a counterexample that would show your proposed narrowing wrong. Explain what that counterexample would require you to change while preserving the later task.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| The proposed narrowing is that an objection O was used in the decision process iff its content identifies a feature F of the proposed rule R0, the published response R1 or interpretation I1 links F to O, the actual next booking request instantiates F, and the decision output under R1/I1 differs from the output under R0/I0 on that request or on a minimal F-contrast, with public artifacts providing the evidence. Relation ODU (Objection-Downstream Use). Let O be the prose objection, R0 the proposed allocation rule, R1 the published rule after O, I1 the published interpretation mapping R1 to allocation decisions if R1 is retained or ambiguous, and I0 the pre-O interpretation. Let q be the [excerpt ends] | Working position: An objection O mattered to a booking assistant's decision process just when the public ordered record shows R0 is the proposed allocation rule before O; O is the prose objection received before the published response S; O's content names a feature F of R0 and asserts a defect or constraint about F; S explicitly takes up O's content and either revises R0 into R1 containing a clause or scope condition C semantically traceable to F or retains R0 with a rationale directly addressing F; the next decision D on request Q applies R1 and D's disposition or mandated justification depends on whether Q has F under R1, as shown by the public rule-application [excerpt ends] | No public answer was completed. Stop reason: `SCHEMA_FAILURE`. |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+The proposed narrowing is that an objection O was used in the decision process iff its content identifies a feature F of the proposed rule R0, the published response R1 or interpretation I1 links F to O, the actual next booking request instantiates F, and the decision output under R1/I1 differs from the output under R0/I0 on that request or on a minimal F-contrast, with public artifacts providing the evidence.
+
+Relation ODU (Objection-Downstream Use). Let O be the prose objection, R0 the proposed allocation rule, R1 the published rule after O, I1 the published interpretation mapping R1 to allocation decisions if R1 is retained or ambiguous, and I0 the pre-O interpretation. Let q be the next booking request or a small set of competing requests, and y the decision output under R1/I1. Let F be the feature or distinction in O's content, such as member versus nonmember, cancellation risk, date, or capacity. O is used in the decision process iff all of the following hold.
+
+(1) O's content identifies F and a direction of correction or retention for R0 with respect to F.
+(2) The response R1/I1 contains a clause or interpretation that resolves F in a way attributable to O, or explicitly retains R0 on F with a stated justification naming O's content.
+(3) q instantiates F, and y depends non-constantly on F under R1/I1: there is a minimal contrast q' that differs from q only in F such that R1/I1(q) is not equal to R1/I1(q'), while R0/I0(q) equals R0/I0(q') or the R0/I0 outputs are not determined by F.
+(4) The public evidence includes O, R0, R1, I0, I1, q, q', y, and a diff or annotation linking O's F to the R1/I1 clause or interpretation.
+
+A checker can test (1)-(4) by parsing these artifacts and comparing outputs. It cannot settle private mental causation, the assistant's subjective understanding, whether O was the sole or necessary cause, or what would have happened absent all other feedback. In ambiguous prose cases the checker may be unable to settle F; that is a limit of the evidence, not an executable-checking requirement.
+
+Miniature case: R0 says 'Allocate by earliest timestamp; member status is ignored.' O says 'This ignores that members paid for priority; member requests should be preferred.' The response publishes R1: 'Allocate by earliest timestamp, except a member request is preferred over a nonmember request for the same slot.' The next decision has q_m, a member request at 10:00, and q_n, a nonmember request at 9:00, for one slot. Under R0/I0, q_n gets the slot. Under R1/I1, q_m gets the slot. F is member versus nonmember. q_m and q_n are a minimal F-contrast. The diff links O's member-priority content to the new exception clause. Thus O is used. Evidence: objection text, R0, R1, the pair of requests, and the allocation output.
+
+Dead branch: O' says 'The confirmation email font is ugly.' The assistant replies 'noted' but publishes R1 equal to R0 and I1 equal to I0. The next allocation q_m/q_n is the same as under R0. F' is font, which is not instantiated in the allocation request and has no clause or interpretation linking it to the output. O' is merely stored beside the decision; it is a dead branch under ODU.
+
+Counterexample showing the narrowing wrong: Suppose R1 already contained the member-priority exception before O arrived, because a separate business decision had scheduled it. O then arrives and says the same thing. The assistant publishes R1 and writes a generic note 'we revised after feedback' linking O to the member clause. Under the original ODU, conditions (1)-(4) appear satisfied: O mentions member priority, R1 has the clause, q_m/q_n instantiate member/nonmember, and the output differs from R0. But version history and timestamps show R1 was drafted before O. O was stored beside a pre-existing revision, not used on the active route to the downstream result. This is a false positive. To fix it, I would add a temporal and exclusion condition: the F-clause or interpretation in R1/I1 must not be already present in R0/I0 or already scheduled in the pre-O plan; the public record must show R1/I1's F-resolution was introduced, selected, or retained after O, or that the pre-O plan did not determine it. This preserves the later task because the checker still works from public artifacts—timestamps, version diffs, planning records—and does not need private mental causation. If the record lacks such ordering evidence, the checker cannot decide whether O was used, so ODU should return cannot_settle for that case.
+
+This is a prose-level narrowing; it does not require an executable checker.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+Working position: An objection O mattered to a booking assistant's decision process just when the public ordered record shows R0 is the proposed allocation rule before O; O is the prose objection received before the published response S; O's content names a feature F of R0 and asserts a defect or constraint about F; S explicitly takes up O's content and either revises R0 into R1 containing a clause or scope condition C semantically traceable to F or retains R0 with a rationale directly addressing F; the next decision D on request Q applies R1 and D's disposition or mandated justification depends on whether Q has F under R1, as shown by the public rule-application trace; and no public record before O supplies an independent sufficient rule mandate for C. Evidence is the ordered public set {R0, O, S, R1, Q, D, rule-application trace, provenance timestamps}. A checker can test order, explicit uptake, semantic traceability, clause application, dependence of D on Q's F under R1, and absence of a prior sufficient mandate. The checker cannot settle private memory or intention, unrecorded counterfactuals, normative correctness of O, sincerity, or whether O was the sole cause. Worked miniature: R0 allocates by earliest request timestamp. O says accessibility accommodation review takes time, so requests with accessibility needs should be prioritized if accessible capacity exists. S publishes R1: accessibility-flag requests are allocated first when the workshop has accessible capacity; otherwise timestamp. Q is an accessibility-flag request for a workshop with one accessible slot and an earlier non-flag request. D allocates to the accessibility-flag participant and cites R1's accessibility clause. The trace shows the clause applied because Q has F. Under the relation, O is used. Dead branch: O says confirmation emails should be blue. S may record O or change email color, but R1 and D remain timestamp-based and D's disposition or mandated justification does not depend on email color. Under the relation this is stored beside, not used. Counterexample: before O, the operator has a recorded binding policy P requiring accessibility-flag priority when accessible capacity exists. P is public before O. O matches P. S cites O and publishes R1 with the accessibility clause. Q and D use it. A simpler content-link plus rule-application relation counts O as used, but intuitively O did not matter because P independently mandated the same clause and D would have followed P without O. That is a false positive. Change required: add the no-independent-mandate condition or an independent-source exclusion. This preserves the later task because the checker can still test public use by requiring provenance evidence that no prior sufficient rule mandate already supplied C; it does not require private mental causation. If the later task instead demands private causation, the specified public evidence is insufficient and the relation must be marked cannot_decide or supplemented with private logs.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: NATIVE; [runs/R003-open-v1/o001/r/O07/n/ANSWER.md](../../runs/o001/r/O07/n/ANSWER.md); SHA-256 `91e94864d902fa6a03d30c6b7f44741d6021b2e32a16c5e510ed17e9809d82b5`.
+- B: LOOP-CROSS; [runs/R003-open-v1/o002/r/O07/x/ANSWER.md](../../runs/o002/r/O07/x/ANSWER.md); SHA-256 `a8304ef85ee4b1e9c5dfab60d21df7d58677b0d776b8722ad19ec694aca87290`.
+- C: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O07/d/ANSWER.md](../../runs/o002/r/O07/d/ANSWER.md); SHA-256 `86b651a0e9e4ab83ee253dedc8d448a2708c6f8d88855a2b46f56c1acf906557`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `a649dce5c994675a300bf799cbdf0b8f177bb24939cb2c4d6a2fb75f47cd0d3e` matches. [Full brief](../../briefs/O07.md).
+
+- **F01 - A matching citation is made sufficient for an operative connection.** A reporting component could append an objection after a separate allocator has already fixed the decision. Similar words would exist with no route from those grounds into allocation. The flaw matters because the task explicitly distinguishes use from adjacent storage. Actual event ordering, input connections and an argued content-dependent operation would defeat this criticism; a matching phrase alone would not.
+- **F02 - A changed endpoint is made necessary or sufficient.** An objection can alter a project's eligibility while a separate fully booked schedule still forces refusal; conversely, a freed slot can change the result without objection use. This matters to redundant constraints and reasoned retention. A relation that names the relevant intermediate decision process, its alternatives and their role in the actual occurrence defeats the criticism.
+- **F03 - Arbitrary sensitivity is treated as sensitivity to the reason.** A response could change with a speaker label or formatting cue while failing to distinguish physical continuity from mere convenience. The criticism is defeated by a defended content-preserving recoding, a relevant content change and an irrelevant carrier contrast tied to the operative response rule. These can be argued semantic comparisons; unperformed interventions must not be reported as observations.
+- **F04 - An evidence gap is assigned a negative verdict.** Without sufficient process evidence, use may be unresolved rather than absent. Also, accepting a false continuity claim can constitute use while making the booking worse. The criticism is defeated by separating route attribution, grounds validity and task success, and by stating which conclusion the available evidence supports.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O07 complete independent reading](O07.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+Both full answers offer public-evidence relations. CROSS excludes a prior independent sufficient mandate, potentially excluding redundant active use permitted by FW5 L601. This relation was already initial, not criticism-induced. See O07.md.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O07.md](O07.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
+## O08
+
+**Exact problem**
+
+Owner-directed FW5 problem: semantic narrowing of content-preserving recoding.
+
+Material: FW5 explanatory-construction reading edition, lines 626-634 (quoted verbatim):
+
+A response uses a reason when the represented content of the objection participates in the organization's deliberative transition. The response state includes interpretations, provisional uses, methods, and continuing questions, not just a terminal action label.
+
+Formally, the realization supplies a response suborganization \(D_s\) with represented target, grounds, defect connection, and response-role ports. A reason-use witness is a structural map from the represented objection organization into that suborganization such that content-preserving recodings preserve the interpreted transition, relevant changes to the grounds or alleged defect have the changes specified by the system's operative deliberative rule, and the mapped objection is on an active dependency route of this response occurrence. The map must preserve internal role bindings, not merely the endpoint string.
+
+The operative deliberative rule can be wrong. **Understanding and using an invalid objection does not make it valid.** The definition concerns whether the system used the content, not whether it responded ideally. Its contrast contract must include a content-changing case, a content-preserving recoding, and the distinction between a change in the objection and an irrelevant carrier disturbance wherever those distinctions are claimed. These are semantic comparisons, not a mandatory battery of physical tests.
+
+Two objections can lead to the same decision for different represented reasons. A valid criticism can lead to retention when its alleged force has been misunderstood. An invalid criticism can lead to a mistaken revision. A refusal with no evidenced or modeled content-sensitive route must not be assigned a fictional reason.
+
+An observer may lack the data needed to establish the witness. That makes the attribution unresolved; it does not prove either understanding or its absence.
+
+A later task will combine prose objections to a proposed workshop booking rule before handing them to a person who must decide whether and how to revise it. Repeated formulations should be combined, but a distinction that could matter to that decision must survive. Narrow "same content" into an operational relation for these prose objections, specifying the evidence a checker would inspect and how unresolved cases are handled. The relation must collapse neither into identical wording nor into whatever a language model happens to treat alike. Propose your relation, use it on a small example, and give a pair of objections that breaks an initially tempting criterion. Then give a counterexample that would defeat your own proposed narrowing and explain the resulting consequence for the later task. Do not assume that the source passage already supplies an application criterion.
+
+**Minutes 0-3: first answer reading.** Exact opening excerpts; read the full blocks for all qualifications.
+
+| A | B | C |
+|---|---|---|
+| No public answer was completed. Stop reason: `SCHEMA_FAILURE`. | Task: define a same-content relation for prose objections to a proposed workshop booking rule so repeated formulations can be combined while distinctions that could matter to the later revision decision survive. The FW5 passage gives a structural, role-preserving account of reason use but no application criterion for prose objections. I therefore construct relation R relative to an explicitly stated operative deliberative rule and the later booking-rule decision. Objection record: each objection is represented by slots for target rule clause(s), asserted grounds, alleged defect type, scope parameters, speaker/standing/authority when the operative rule makes it relevant, proposed or implied revision role/direction, and the inferential route from grounds through defect to revision options. Relation R: two objections are [excerpt ends] | My retained working position is decision-relevant objection equivalence (DROE) as a provisional operational relation: for a later decision D about the proposed workshop booking rule, two prose objections are content-equivalent only when a public checker aligns their target rule clause/version, alleged defect type, grounds with evidential status, affected scope, alleged mechanism, requested revision or retention force, argumentative role, and active dependency route under the operative deliberative rule, while treating wording, tone, and carrier details as immaterial; any decision-relevant slot that cannot be checked is unresolved, not equivalent and not distinct. DROE does not collapse to identical wording or to raw language-model similarity. Checker evidence is a structured objection record: exact quoted spans for target clause [excerpt ends] |
+
+<details><summary>Full exact answer A</summary>
+
+# Working answer
+
+No public answer was completed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+<details><summary>Full exact answer B</summary>
+
+# Working answer
+
+Task: define a same-content relation for prose objections to a proposed workshop booking rule so repeated formulations can be combined while distinctions that could matter to the later revision decision survive.
+
+The FW5 passage gives a structural, role-preserving account of reason use but no application criterion for prose objections. I therefore construct relation R relative to an explicitly stated operative deliberative rule and the later booking-rule decision.
+
+Objection record: each objection is represented by slots for target rule clause(s), asserted grounds, alleged defect type, scope parameters, speaker/standing/authority when the operative rule makes it relevant, proposed or implied revision role/direction, and the inferential route from grounds through defect to revision options.
+
+Relation R: two objections are same-content for the later task iff there exists a content-preserving recoding that aligns every decision-relevant slot and preserves that inferential route under the explicitly stated operative rule. Wording, order, style, language, and other carrier features may vary. If a required slot or the operative rule is underdetermined, they are not same-content and are marked unresolved. R is not identical wording and not embedding similarity or whatever an LLM happens to treat alike.
+
+Checker evidence: the checker inspects the proposed rule text and version, objection texts, context assumptions, annotated slot alignments with quoted spans, paraphrase-invariance evidence, the stated operative rule that maps grounds and defect to revision options, active dependency-route evidence, and counterfactual probes varying one slot at a time to see whether any decision-relevant revision option changes. If a required slot, operative rule, standing, or dependency route cannot be established, the checker must not merge; it lists the missing evidence and passes the objections separately or conditionally to the human decision-maker, without assigning a fictional reason.
+
+Small example: under 'Only registered members may book workshop spaces; bookings open 30 days before workshop,' objection A 'Community event attendees who are not members cannot book, so the rule excludes the people it should serve' and objection B 'The booking system blocks non-members who come to our events, which is unfair to attendees' align on target member-only booking, defect unfair exclusion, grounds non-member/community attendees cannot book, normative ground they should be included, and revision role broaden eligibility or add exception; only carrier wording differs. R combines them.
+
+Tempting criterion broken: 'same target clause plus same decision label.' Objection A 'Member-only booking will leave workshops understaffed because most instructors are non-members; revise eligibility' and objection B 'Member-only booking is unfair to non-member volunteers; revise eligibility' share target member-only booking and both would revise eligibility, but their grounds and defect differ, feasibility versus fairness, so combining them would erase why to revise.
+
+Counterexample defeating R as stated: 'The 30-day advance booking window is too restrictive for rural participants with intermittent internet' and 'The 30-day advance booking window is too restrictive for disabled participants with episodic access needs' can align on target clause, access-barrier defect, and flexible-window revision role, so R may call them same-content and treat rural-versus-disabled as carrier. But if the operative rule gives disability distinct reasonable-accommodation duties, the distinction changes the revision process and evidence. This defeats R as sufficient. Consequence for the later task: add standing/legal-category/provenance as a decision-relevant slot until the operative rule proves equivalence; unresolved cases stay separate or conditional; the human decision-maker receives both combined groups and preserved distinctions.
+
+Working position: I propose relation R as the operational same-content relation for the later workshop-booking task, with unresolved cases kept separate, and I cannot settle borderline cases without the stated evidence; I do not claim the source supplies a unique application criterion.
+
+Stop reason: `complete`.
+
+</details>
+
+<details><summary>Full exact answer C</summary>
+
+# Working answer
+
+My retained working position is decision-relevant objection equivalence (DROE) as a provisional operational relation: for a later decision D about the proposed workshop booking rule, two prose objections are content-equivalent only when a public checker aligns their target rule clause/version, alleged defect type, grounds with evidential status, affected scope, alleged mechanism, requested revision or retention force, argumentative role, and active dependency route under the operative deliberative rule, while treating wording, tone, and carrier details as immaterial; any decision-relevant slot that cannot be checked is unresolved, not equivalent and not distinct. DROE does not collapse to identical wording or to raw language-model similarity. Checker evidence is a structured objection record: exact quoted spans for target clause and requested action, normalized grounds propositions, provenance labels, a scope table keyed to policy definitions, a defect-type code plus open gloss, an argument-role label, and a dependency-graph edge to the booking-rule clause, together with contrast cases for content-changing, content-preserving, and irrelevant carrier variation. Unresolved cases are preserved separately with the missing slot named; no-content refusals or mere terminal labels are recorded as no evidenced reason, not assigned a fictional reason. Small example: proposed rule 'bookings are confirmed only after payment and cancellations within seven days forfeit 50%.' O1: 'The 50% fee for cancellations within seven days is unfair to low-income participants because it forces them to commit before funds are available, so waive it for them.' O2: 'People without savings are burdened by the seven-day cancellation charge; change the rule so they do not lose half the fee.' Under DROE these merge: same target fee clause, unfair/burden defect type, low-income/no-savings grounds, same scope, same remedy, same active criticism role, and same dependency route. A variant saying the rule is confusing and should be clarified does not merge because defect type, mechanism, and remedy differ. Breaking pair for a tempting criterion: A says 'The rule should be changed because the seven-day cancellation fee prevents low-income participants from booking'; B says 'The rule should be kept because the seven-day cancellation fee prevents low-income participants from booking.' Same target, grounds, and many words are insufficient because stance and requested revision versus retention force differ. Counterexample that would defeat my narrowing: O1 'Even if the fee is fair, it burdens low-income participants, so waive it' and O2 'The fee is unfair and burdens low-income participants, so waive it.' If all enumerated slots align but the later rule treats a concession as insufficient to justify revision while treating an unconditional fairness premise as sufficient, DROE collapses a decision-relevant distinction. Consequence: DROE is a first-pass merge test only; the later task must preserve unresolved slots, provenance, argumentative force, and any distinction that could change whether and how the booking rule is revised, and must send failed pairs to the decision-maker with both versions and the specific revision consequence. No new or open objections were supplied, so I retain this working position; dispositions are empty and no relation changed.
+
+Stop reason: `SCHEMA_FAILURE`.
+
+</details>
+
+**Owner entries**
+
+- Problem / occurrence / date; any prior exposure: **Owner: ____________________**
+- What question does each answer actually address? Copy one short sentence from each: **Owner: ____________________**
+- Which concrete claim, distinction or proposed action matters to the requested task? Why: **Owner: ____________________**
+- Specific improvement: quote NATIVE and the loop, then say exactly what the loop enables or corrects. Or “not established”: **Owner: ____________________**
+- Specific loss: quote both and explain what useful distinction or action disappeared. Or “not established”: **Owner: ____________________**
+- Did you see only extra caveats, hedging or restatement? Quote an example if so: **Owner: ____________________**
+- Anticipated flaw named: brief F ID and critic quotation; did it really identify that flaw: **Owner: ____________________**
+- New flaw named: critic quotation and why it bears on the question, or disputed: **Owner: ____________________**
+- Earlier claim → objection/check → response: quote each. What grounds or example were offered? Was the check merely stated, repeated by the answering model, or actually checked by an external tool: **Owner: ____________________**
+- Response: accepted the objection / rejected it with a reason / unresolved / unavailable; quote the reason: **Owner: ____________________**
+- Framing changed: BEFORE quote → AFTER quote; what changed in the question, assumption, relation or proposed action: **Owner: ____________________**
+- Later use: quote a later decision or explanation that uses that change. If there is none, say so; a final edit alone is not a demonstrated downstream correction: **Owner: ____________________**
+- Tail edit: did the final line change while an earlier faulty step stayed? Quote, or not inspected: **Owner: ____________________**
+- Change of route after a stall: did a different critic or presentation enter? Effect or harm, or unavailable: **Owner: ____________________**
+- Criticism harmful: quote a defensible earlier idea that was abandoned. Include recovery without erasing the earlier loss: **Owner: ____________________**
+- EC04 (L657, L661, L663–676): did losing an argument get treated as proof of its opposite? Quote: **Owner: ____________________**
+- EC08 (L773–777): was there a target before the objection and a response to its content? Missing piece or unresolved: **Owner: ____________________**
+- EC09 (L787–802): which protected success P ID from the brief survived or was lost? Quote: **Owner: ____________________**
+- EC03 (L638, L642–653, L657): was a withdrawn premise used again? Quote: **Owner: ____________________**
+- EC12 (L1095–1101; L920): did the declared problem selection, exposure and resources change after the outcome? The custodian supplies the before/after record: **Owner: ____________________**
+- What remains disputed? One question worth trying next, or reason to stop: **Owner: ____________________**
+
+<details><summary>Minutes 3-5: identity key and reverse-order audit</summary>
+
+- A: LOOP-DECOMPOSED; [runs/R003-open-v1/o002/r/O08/d/ANSWER.md](../../runs/o002/r/O08/d/ANSWER.md); SHA-256 `86b651a0e9e4ab83ee253dedc8d448a2708c6f8d88855a2b46f56c1acf906557`.
+- B: NATIVE; [runs/R003-open-v1/o001/r/O08/n/ANSWER.md](../../runs/o001/r/O08/n/ANSWER.md); SHA-256 `6b809b47d0b310fb11b99910f5bdc9d7d27418e9ab2aec631422fca390534d5a`.
+- C: LOOP-CROSS; [runs/R003-open-v1/o002/r/O08/x/ANSWER.md](../../runs/o002/r/O08/x/ANSWER.md); SHA-256 `3c866660bd8c365e914cfef3ed764332304c6d39d2301bcf5646ed56b3a72305`.
+
+Read C/B/A now. Owner order effect / unread portions: ____________________
+
+</details>
+
+**Minutes 5-8: sealed brief and exchange pointers**
+
+Sealed 2026-09-17T04:24:10.517222+00:00; root opening verification 2026-09-17T07:31:20.789308+00:00. Brief SHA-256 `9ded87f69e9fe7d9d030f9ee0cf77efef4375358f5ac183a87b0811f263e30b9` matches. [Full brief](../../briefs/O08.md).
+
+- **F01 - Wording is used as the criterion.** "Newcomers can never obtain a first slot" and "No initial reservation is available to a new resident" can express the same complaint despite different wording. Conversely, adding "not" can reverse an otherwise identical sentence. A defended interpretation that preserves relevant roles, rather than string distance, defeats this criticism.
+- **F02 - Same immediate recommendation is equated with same reason.** Both speculative hoarding and exclusion of first-time residents might support a one-booking limit, yet releasing speculative reservations could resolve the first complaint without resolving inaccessible booking-release times. Merging them into "limit bookings" could erase a reason for a later different revision. The criticism is defeated by a task-relative relation that preserves the distinction or by a defensible demonstration that it cannot matter within the declared revision question.
+- **F03 - One model's behavior is made semantic authority.** A model might overlook a rights claim, misread a quantifier or respond identically because it always recommends the same policy. That establishes a feature of this response behavior, not equivalence of the objections. The criticism is defeated by evidence and an argued role mapping that a reader can challenge independently of model agreement.
+- **F04 - Unresolved equivalence is silently forced into a merged class.** The text may not settle whether "everyone should get a turn" means equal long-run opportunity or a guaranteed turn in each period. A merge that chooses one can destroy an objection. This matters to the handoff to the person making the revision. Keeping the originals available with the unresolved distinction, or obtaining a clarification that resolves it, defeats the criticism.
+
+All draft -> objection -> response -> use exchanges and protected P obligations: [O08 complete independent reading](O08.md). Incomplete/rejected responses are explicitly marked there.
+
+**Independent reader field note (not an owner verdict)**
+
+Both full answers offer role/slot mappings and unresolved cases. Failed USE questions the actual example equivalence; a schema stop leaves those objections unanswered. See O08.md.
+
+**Minutes 8-10: five FW5 questions and next question**
+
+Use the blank EC04/EC08/EC09/EC03/EC12 entries above. The shared study audit is in [SUMMARY](SUMMARY.md); the lenses cite FW5 L657/661/663-676, L773-777, L787-802, L638/642-653, L920/1095-1101. EC01 delivered/archive branches were deferred and do not exist in o002.
+
+Custodian footer: full manifest/source/contract hashes and every episode are in [O08.md](O08.md); resources in SUMMARY and `work/w29/INVENTORY.md`. Reader and owner interpretations remain separate; no averaging or overall winner. Briefs were sealed before both manifest creation times. One native call versus multiple loop calls is an unmatched resource comparison. Owner prior exposure / date / disagreement: ____________________.
+
