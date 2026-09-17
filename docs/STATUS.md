@@ -1065,3 +1065,6 @@ REC-20260917-B | 2026-09-17T05:16:06.012159+00:00 | root-review28: R003 instrume
 
 
 2026-09-17T05:25:18Z | REC-20260917-B | root-publisher | instruments published; occurrence 1 authorised. Delivery 9f9b5788473e0b406fa6d7da4d327801dfc51b3b, tree bc3b2f213cd5d4a6cafe585457e04d907dfdf728, 30 paths verified on origin/claude/project-state-direction-j5rbun. No provider call or main merge. Next: publish sealed brief delivery and acknowledgement.
+
+
+2026-09-17T05:26:22Z | REC-20260917-B | root-publisher | briefs sealed and published; occurrence 1 authorised. Delivery 651746112cbeec40e8b39a062d244e1a9e3932fa, tree 2004577cadf74905942c692abec37a05a028ee20, 12 paths verified on origin/claude/project-state-direction-j5rbun. No provider call or main merge. Next authorized project task: separately executed occurrence 1 under its reviewed gates; this publisher makes no dispatch. Unjudged R002 report/readings remain unstaged for the following judge.
