@@ -27,7 +27,10 @@ class ManifestTests(unittest.TestCase):
                     for item in value:
                         walk(item)
 
-        self.assertEqual([tool["function"]["name"] for tool in TOOLS], ["route", "spawn", "assemble", "verify"])
+        self.assertEqual(
+            [tool["function"]["name"] for tool in TOOLS],
+            ["route", "spawn", "assemble", "verify", "continue_or_stop"],
+        )
         for tool in TOOLS:
             self.assertEqual(tool["type"], "function")
             self.assertTrue(tool["function"]["strict"])
@@ -44,9 +47,9 @@ class ManifestTests(unittest.TestCase):
             get_tool("shell")
 
         packet = normalize_inputs("answer this")
-        validate_tool_args("spawn", {"subtasks": [{"template_id": "direct_answer", "inputs": packet}] * 8})
+        validate_tool_args("spawn", {"subtasks": [{"template_id": "direct_answer", "inputs": packet}] * 24})
         with self.assertRaises(ValueError):
-            validate_tool_args("spawn", {"subtasks": [{"template_id": "direct_answer", "inputs": packet}] * 9})
+            validate_tool_args("spawn", {"subtasks": [{"template_id": "direct_answer", "inputs": packet}] * 25})
 
     def test_beta_wire_subset_keeps_stronger_host_bounds(self) -> None:
         def walk(value):
@@ -69,6 +72,27 @@ class ManifestTests(unittest.TestCase):
         validate_tool_args("verify", {"artifact_ref": "sha256:def"})
         with self.assertRaises(ValueError):
             validate_tool_args("verify", {"artifact_ref": ""})
+
+    def test_continue_or_stop_contract(self) -> None:
+        stop = {
+            "decision": "stop",
+            "reason": "The cited verification resolves the fixture.",
+            "what_changes_next": "",
+            "stop_rule": "Stop when the answer is verified.",
+        }
+        validate_tool_args("continue_or_stop", stop)
+        validate_tool_args("continue_or_stop", {
+            **stop,
+            "decision": "continue",
+            "what_changes_next": "Use evidence_read on the unresolved source claim.",
+        })
+        for invalid in (
+            {**stop, "decision": "again"},
+            {**stop, "reason": ""},
+            {**stop, "stop_rule": ""},
+        ):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                validate_tool_args("continue_or_stop", invalid)
 
 
 if __name__ == "__main__":

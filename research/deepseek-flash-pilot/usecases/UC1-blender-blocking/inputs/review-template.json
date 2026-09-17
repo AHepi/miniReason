@@ -1,0 +1,85 @@
+{
+  "inputs": [
+    "shot_spec_json",
+    "blender_script",
+    "static_verifier_report"
+  ],
+  "instruction": "Review the public artifacts against every shot constraint. Quote the exact spec field or script line targeted by each issue. Do not claim Blender ran. A passing static report is evidence only for its declared scope. Decide whether another route/spawn/assemble/verify pass is needed.",
+  "max_completion_tokens": 8192,
+  "output_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "commitments_checked": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "continuation": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "enum": [
+              "continue",
+              "stop"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "issues": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "grounds": {
+              "type": "string"
+            },
+            "severity": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "severity",
+            "target",
+            "grounds"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "verdict": {
+        "enum": [
+          "supported",
+          "needs_revision",
+          "cannot_decide"
+        ]
+      }
+    },
+    "required": [
+      "verdict",
+      "commitments_checked",
+      "issues",
+      "continuation"
+    ],
+    "type": "object"
+  },
+  "role": "blocking-scene-review",
+  "schema_version": "uc1.review-call.v1",
+  "stop_rule": "Stop only when the standalone verifier passed, there are no unresolved high-severity issues, all required artifacts are present, and the pilot states why another pass is unlikely to improve conformance. Otherwise continue, subject only to the 300-logical-call ceiling.",
+  "thinking": "off",
+  "trigger": "Run only after the standalone spec/AST verifier result is available."
+}

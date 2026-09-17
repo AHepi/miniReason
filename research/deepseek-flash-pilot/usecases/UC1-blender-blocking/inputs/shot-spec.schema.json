@@ -1,0 +1,232 @@
+{
+  "$defs": {
+    "motion": {
+      "additionalProperties": false,
+      "properties": {
+        "data_path": {
+          "enum": [
+            "location",
+            "rotation_euler"
+          ]
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "frame_end": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "frame_start": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "subject": {
+          "enum": [
+            "courier",
+            "crate",
+            "drone"
+          ]
+        },
+        "value_end": {
+          "$ref": "#/$defs/vec3"
+        },
+        "value_start": {
+          "$ref": "#/$defs/vec3"
+        }
+      },
+      "required": [
+        "subject",
+        "data_path",
+        "frame_start",
+        "value_start",
+        "frame_end",
+        "value_end",
+        "description"
+      ],
+      "type": "object"
+    },
+    "vec3": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "type": "array"
+    }
+  },
+  "$id": "uc1.blender-blocking.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "api_target": {
+      "const": "Blender 5.2 Python API"
+    },
+    "fps": {
+      "const": 24,
+      "type": "integer"
+    },
+    "resolution": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "const": 1080
+        },
+        "percentage": {
+          "const": 100
+        },
+        "width": {
+          "const": 1920
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "percentage"
+      ],
+      "type": "object"
+    },
+    "scene": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "uc1.blender-blocking.v1"
+    },
+    "shots": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "camera": {
+            "additionalProperties": false,
+            "properties": {
+              "framing": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "lens_mm": {
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              "location": {
+                "$ref": "#/$defs/vec3"
+              },
+              "target": {
+                "$ref": "#/$defs/vec3"
+              }
+            },
+            "required": [
+              "location",
+              "target",
+              "lens_mm",
+              "framing"
+            ],
+            "type": "object"
+          },
+          "constraints": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "duration_seconds": {
+            "exclusiveMinimum": 0,
+            "type": "number"
+          },
+          "frame_end": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "frame_start": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "id": {
+            "type": "string"
+          },
+          "motion": {
+            "items": {
+              "$ref": "#/$defs/motion"
+            },
+            "type": "array"
+          },
+          "subjects": {
+            "items": {
+              "enum": [
+                "courier",
+                "crate",
+                "drone"
+              ]
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "frame_start",
+          "frame_end",
+          "duration_seconds",
+          "subjects",
+          "camera",
+          "motion",
+          "constraints"
+        ],
+        "type": "object"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "type": "array"
+    },
+    "subjects": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "dimensions": {
+            "$ref": "#/$defs/vec3"
+          },
+          "id": {
+            "enum": [
+              "courier",
+              "crate",
+              "drone"
+            ]
+          },
+          "initial_location": {
+            "$ref": "#/$defs/vec3"
+          },
+          "primitive": {
+            "const": "cube"
+          },
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "primitive",
+          "dimensions",
+          "initial_location",
+          "role"
+        ],
+        "type": "object"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "api_target",
+    "fps",
+    "resolution",
+    "scene",
+    "subjects",
+    "shots"
+  ],
+  "type": "object"
+}

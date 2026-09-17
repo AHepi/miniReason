@@ -15,11 +15,11 @@ def main(argv=None):
     run = commands.add_parser("run")
     run.add_argument("--task", required=True, type=Path)
     run.add_argument("--env-file", type=Path)
-    run.add_argument("--max-calls", type=int, default=24)
+    run.add_argument("--max-calls", type=int, default=None)
     run.add_argument("--mode", choices=["offline", "live"], default="offline")
     run.add_argument("--scripted", type=Path)
     run.add_argument("--out", type=Path)
-    run.add_argument("--fanout", type=int, default=3)
+    run.add_argument("--fanout", type=int, default=24)
     args = parser.parse_args(argv)
     try:
         with args.task.open(encoding="utf-8", newline="") as handle:

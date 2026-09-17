@@ -1,0 +1,34 @@
+{
+  "task": "Analyze the supplied public-domain story to determine which parts must be hard to vary for the story to work. Treat hard-to-vary as an explanatory relation, not as mere textual sameness. Produce one inspectable Markdown answer with these exact headings in order: ## Information needed; ## Problem space; ## Candidate answers; ## Tests against the text; ## Final commitments; ## Continuation decision. First state what information the analysis needs to seek in the text. Then define the problem space and distinguish causal or interpretive roles from replaceable props and wording. Generate competing candidate accounts. Test each candidate against exact quotations and at least one preserving variation and one breaking variation. End with four or more numbered commitments marked [HTV-1] and so on; for every commitment include its causal reason, exact evidence, legitimate substitutions, what breaks if varied, and a separately marked [REFUTER-n]. Do not merely retell the plot or name a moral. After verification on every route/spawn/assemble/verify pass, record pass number, checks applied, unresolved weaknesses, and either CONTINUE or STOP with a reason under ## Continuation decision. Continue with another full pass whenever quotations, alternatives, refuters, or causal links remain weak. There is no loop-count cap: the pilot decides how many passes are needed, subject only to a ceiling of 300 logical calls. Never continue merely to seek a favourable answer. The declared completion-token envelope is up to 2,457,600 tokens for 300 logical calls at the pilot worker ceiling of 8,192 each; schema-repair attempts are additional physical attempts and must be reported separately. Stop only when the public answer meets the stated structure and no material weakness found by its own verification remains, or when the call ceiling is reached. Record every continuation decision and reason.",
+  "inputs": {
+    "premises": [
+      "Source custody: Aesop, The Fox and the Grapes, translated by George Fyler Townsend, Project Gutenberg eBook 21, https://www.gutenberg.org/files/21/21-h/21-h.htm.",
+      "Use only the supplied story as evidence for events and motives; distinguish quotation, inference, and theoretical label.",
+      "Changing a noun or prop is not enough to show explanatory variation: test whether the same causal and interpretive work survives.",
+      "The requested ceiling is 300 logical calls with no per-task loop-count cap; every additional pass requires a recorded reason."
+    ],
+    "documents": [
+      {
+        "id": "story",
+        "text": "The Fox and the Grapes\n\nA FAMISHED FOX saw some clusters of ripe black grapes hanging from a trellised vine. She resorted to all her tricks to get at them, but wearied herself in vain, for she could not reach them. At last she turned away, hiding her disappointment and saying: “The Grapes are sour, and not ripe as I thought.”"
+      }
+    ],
+    "answer_shape": "Markdown with the six required headings, text-grounded candidates and tests, at least four [HTV-n] commitments each paired with [REFUTER-n], and a final recorded CONTINUE or STOP decision.",
+    "requested_claims": [
+      "What information must be sought before deciding which parts are hard to vary?",
+      "Which causal, motivational, temporal, and interpretive relations are candidate load-bearing parts?",
+      "Which substitutions preserve the story's work and which variations break it?",
+      "What exact text supports or defeats each candidate?",
+      "Which final commitments survive the tests, and what would refute each?"
+    ],
+    "behavior_contract": "Quote exact source substrings. Label inference as inference. Test alternatives before final commitments. Record the verification result and a reasoned CONTINUE or STOP decision after each pass; when CONTINUE is chosen, perform another full route/spawn/assemble/verify pass if the host permits it.",
+    "decisive_question": "Which relations in this story are hard to vary while preserving its explanatory point, why is each load-bearing, and what concrete variation would break each one?"
+  },
+  "check": {
+    "source": "import json, sys\nx = json.load(sys.stdin)\na = x[\"artifact\"][\"answer\"]\nheadings = [\"## Information needed\", \"## Problem space\", \"## Candidate answers\", \"## Tests against the text\", \"## Final commitments\", \"## Continuation decision\"]\nordered = all(a.find(h) >= 0 for h in headings) and [a.find(h) for h in headings] == sorted(a.find(h) for h in headings)\nmarkers = all((f\"[HTV-{i}]\" in a and f\"[REFUTER-{i}]\" in a) for i in range(1, 5))\nquotes = all(q in a for q in [\"ripe black grapes\", \"wearied herself in vain\", \"hiding her disappointment\", \"The Grapes are sour\"])\ndecision = (\"CONTINUE\" in a or \"STOP\" in a) and \"reason\" in a.casefold()\nvalue = ordered and markers and quotes and decision\nprint(json.dumps({\"relation_id\": \"pilot-result\", \"value\": value, \"derivation\": \"Check required stage order, four commitment/refuter pairs, four exact textual anchors, and a reasoned continuation decision. This checks conformance only, not explanatory correctness.\"}))\n",
+    "expected": true,
+    "scope": "The public answer has the six required stages in order, at least four paired hard-to-vary commitments and refuters, four exact story anchors, and a reasoned continuation decision. This does not certify the substantive reading.",
+    "fixtures": {}
+  },
+  "max_calls": 300
+}

@@ -5,7 +5,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Mapping
 
-CATALOGUE_VERSION = "flash-pilot-v1"
+CATALOGUE_VERSION = "flash-pilot-v1/P-A1"
 TEMPLATE_IDS = (
     "direct_answer",
     "evidence_read",
@@ -280,21 +280,21 @@ TEMPLATES: dict[str, dict[str, Any]] = {
     "decompose_synthesize": {
         "id": "decompose_synthesize",
         "version": CATALOGUE_VERSION,
-        "purpose": "Resolve separable dependencies in at most three executable steps and synthesize accepted results.",
+        "purpose": "Resolve separable dependencies in at most 24 executable steps per decomposition level and synthesize accepted results.",
         "required_inputs": ["task", "decisive_question"],
         "input_schema": deepcopy(COMMON_INPUT_SCHEMA),
         "output_schema": deepcopy(DECOMPOSE_SCHEMA),
         "seats": [
             {"role": "plan", "model": "deepseek-flash", "lineage": "deepseek", "thinking": "off", "max_completion_tokens": 4096},
-            {"role": "step", "model": "deepseek-flash", "lineage": "deepseek", "thinking": "off", "max_completion_tokens": 8192, "maximum_occurrences": 3},
+            {"role": "step", "model": "deepseek-flash", "lineage": "deepseek", "thinking": "off", "max_completion_tokens": 8192, "maximum_occurrences": 24},
             {"role": "critic", "model": "host-selected", "lineage": "different-from-proposer", "thinking": "off", "max_completion_tokens": 8192},
             {"role": "synthesis", "model": "deepseek-flash", "lineage": "deepseek", "thinking": "off", "max_completion_tokens": 8192},
         ],
-        "ceilings": {"max_attempts": 12, "max_children": 3, "max_depth": 2},
+        "ceilings": {"max_attempts": 1302, "max_children": 24, "max_depth": 3, "global_budget_applies": True},
         "thinking": "off",
         "repair_rule": "Reject an infeasible DAG before calls; one schema repair per seat, and a failed step prevents full synthesis.",
-        "failure_rules": ["Definitions alone are not completed steps", "Require decisive work inside the three-step budget", "Never synthesize across a missing dependency"],
-        "cost_envelope": {"flash_attempt_units_max": 10, "other_lineage_attempts_max": 2, "conditional_on": "provider-specific current prices and certified input count", "price_promise_without_bound": False},
+        "failure_rules": ["Definitions alone are not completed steps", "Require decisive work inside the remaining global logical-call and spend budget", "Never synthesize across a missing dependency"],
+        "cost_envelope": {"flash_attempt_units_max": 1252, "other_lineage_attempts_max": 50, "conditional_on": "provider-specific current prices and certified input count", "price_promise_without_bound": False},
         "evidence_refs": ["R002 eight plans", "R003 sixteen plans", "Requested-record synthesis evidence NOT FOUND", "ROUTER-DESIGN.md#router-data"],
     },
 }

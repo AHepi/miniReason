@@ -334,3 +334,61 @@ of substantive correctness, engineering success or autonomous reliability.
 
 Use `--amendment R3-A3 --expected-occurrence o004 --conditions LOOP-CROSS` with all O01-O08 and reviewed `R003-CAPABILITY.R3-A3.json`; source identity is `SOURCE_PINS.R3-A3.json`. NATIVE is reused from o001 only in the later reading. The complete detached command/projection is in work/review36/OCC4-LAUNCH.md. Review qualification is recorded in VALIDATION. Exact publication and remote/local tree verification precede any separately authorized dispatch; this judge made no provider call or Git mutation.
 
+
+
+## DeepSeek Flash pilot P-A1: self-continuation
+
+P-A1 is a separate host-controlled pilot path under
+`src/minireason/pilot/`. It does not change numbered reason-CLI occurrence
+rules or historical runs. One pilot pass attempts `route`, `spawn`,
+`assemble`, and `verify`; refused dependencies produce an explicit unavailable
+verification record. Only after verification exists does the pilot call
+`continue_or_stop` and decide whether to begin another complete numbered pass.
+
+The decision body has exactly `decision`, `reason`, `what_changes_next`, and
+`stop_rule`. `decision` is `continue` or `stop`. The reason must name the exact
+verification ref supplied to the call and discuss the checker result,
+cross-lineage objections, or unavailable status. A continuing decision must
+identify a changed template or subtask mix. The first decision saves the stop
+rule. Later decisions return it exactly or append ` OR ` plus a new nonempty
+earlier-stop condition; no other mutation is accepted.
+
+Before dispatching workers, compute the pass identity from its template mix
+and canonical normalized subtask-input hashes. Refuse an identity already
+accepted in this run, record the reason, and return control for another
+decision. Permit at most two redecisions after identical-pass refusals; another
+identical proposal stops the run. Never delete or overwrite the refused
+proposal or any earlier pass.
+
+The default task ceiling is 300 logical calls. A task may set a higher positive
+`max_calls`. One schema repair is another physical attempt for the same logical
+call; preserve and count both attempts, and charge both attempts' recorded
+usage to spend. The default `max_spend_usd` is 6.00 and a task may override it.
+Supply remaining logical calls and estimated dollars, cumulative attempts and
+usage, the saved stop rule, and exact verification input to every continuation
+decision. No decision can raise a ceiling.
+
+Estimate dollars only from provider-recorded usage and the dated official
+route entries in `research/deepseek-flash-pilot/PRICES.json`. Preserve prompt,
+completion, and reasoning counts and follow the table's overlap rule rather
+than double-counting reasoning included in completion. An unmapped route stays
+token-accounted with dollars unknown. Missing required usage after dispatch on
+a price-known route stops as unknown spend; unknown is not zero. Since actual
+usage arrives after a response, the last in-flight response can take the
+estimate above the ceiling. Admit no later call. Report every dollar figure as
+an estimate from published prices, not a bill.
+
+Per pass, outer spawn accepts 1 through 24 subtasks and depth at most 3. At
+least one outer subtask matches the routed primary template. Deeper recursion
+is refused; a later pass must propose materially changed work. Checker source,
+sandbox, allowlist, wall and output limits are unchanged. Keys remain
+environment-only. No transport retry, uncertain-delivery replay,
+self-modification, shell/filesystem authority, or automatic ceiling increase is
+introduced.
+
+Read `RUN.md` for pass and cumulative budgets, attempts, usage and estimated
+spend. Read `TRACE.md` for the verbatim continuation decisions and host
+refusals. Read each `passes/pNNNN/` directory and `calls/` records before
+interpreting the latest `ANSWER.md`; a later pass never erases an earlier
+answer, failure, or verification. More loops do not establish correctness,
+creativity, reliability, or advantage over matched multi-call controls.

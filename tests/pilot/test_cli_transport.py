@@ -15,7 +15,7 @@ from unittest import mock
 from minireason import provider_openai_compat as provider
 from minireason.pilot import __main__ as pilot_cli
 
-from ._transport_fixture import DUMMY_VALUE, install_transport_double, write_synthetic_env, write_text
+from ._transport_fixture import DUMMY_VALUE, install_transport_double, write_text
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -44,7 +44,7 @@ def read_json(path: Path):
 class LiveCliTransportBoundaryTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.work_parent = ROOT / "work" / "test-pilot-transport"
+        cls.work_parent = ROOT / "work" / "w38" / "test-pilot-transport"
         cls.work_parent.mkdir(parents=True, exist_ok=True)
         check = subprocess.run(
             ["git", "-C", str(ROOT), "check-ignore", "--no-index", "--quiet", "--", str(cls.work_parent)],
@@ -53,26 +53,21 @@ class LiveCliTransportBoundaryTests(unittest.TestCase):
         if check.returncode != 0:
             raise RuntimeError("pilot transport test work directory must be ignored")
 
-    def run_live(self, force_repair: bool) -> dict:
-        tmp_parent = Path(os.environ.get("TMP", r"C:\tr34"))
+    def run_live(self, force_repair: bool, pass_limit: int = 1) -> dict:
+        tmp_parent = Path(os.environ["TMP"])
         tmp_parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=self.work_parent) as work_name, tempfile.TemporaryDirectory(dir=tmp_parent) as run_name:
             work = Path(work_name)
             run_root = Path(run_name) / "run"
-            env_file = work / "synthetic.env"
             task_file = work / "task.json"
             transport = work / "transport"
-            write_synthetic_env(env_file)
             write_text(task_file, json.dumps(TASK, ensure_ascii=False, indent=2) + "\n")
             install_transport_double(transport)
-            ignored = subprocess.run(
-                ["git", "-C", str(ROOT), "check-ignore", "--no-index", "--quiet", "--", str(env_file)],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False,
-            )
-            self.assertEqual(ignored.returncode, 0)
             fixture_env = {
                 "PYTHONPATH": str(transport) + os.pathsep + str(ROOT / "src") + os.pathsep + str(ROOT / "tests"),
                 "MINIREASON_PILOT_TEST_FORCE_ROUTE_REPAIR": "1" if force_repair else "0",
+                "MINIREASON_PILOT_TEST_PASS_LIMIT": str(pass_limit),
+                "DEEPSEEK_API_KEY": DUMMY_VALUE,
             }
             captured = io.StringIO()
             with mock.patch.dict(os.environ, fixture_env), redirect_stdout(captured), mock.patch.object(
@@ -80,7 +75,7 @@ class LiveCliTransportBoundaryTests(unittest.TestCase):
             ):
                 code = pilot_cli.main([
                     "run", "--task", str(task_file), "--mode", "live",
-                    "--env-file", str(env_file), "--out", str(run_root), "--max-calls", "24",
+                    "--out", str(run_root), "--max-calls", "24",
                 ])
             stdout = captured.getvalue()
             self.assertNotIn(DUMMY_VALUE, stdout)
@@ -113,15 +108,23 @@ class LiveCliTransportBoundaryTests(unittest.TestCase):
         result = self.run_live(False)
         self.assertEqual(result["code"], 0)
         self.assertEqual(result["public"]["status"], "complete")
-        self.assertEqual(result["statuses"], ["accepted", "accepted", "accepted"])
-        self.assertEqual(result["attempts"], 3)
+        self.assertEqual(result["statuses"], ["accepted", "accepted", "accepted", "accepted"])
+        self.assertEqual(result["attempts"], 4)
 
     def test_live_cli_schema_repair_preserves_wire_custody(self):
         result = self.run_live(True)
         self.assertEqual(result["code"], 0)
         self.assertEqual(result["public"]["status"], "complete")
-        self.assertEqual(result["statuses"], ["contract_rejected", "accepted", "accepted", "accepted"])
-        self.assertEqual(result["attempts"], 4)
+        self.assertEqual(result["statuses"], ["contract_rejected", "accepted", "accepted", "accepted", "accepted"])
+        self.assertEqual(result["attempts"], 5)
+
+    def test_live_cli_transport_completes_two_full_passes(self):
+        result = self.run_live(False, pass_limit=2)
+        self.assertEqual(result["code"], 0)
+        self.assertEqual(result["public"]["status"], "complete")
+        self.assertEqual(result["public"]["logical_calls"], 8)
+        self.assertEqual(result["statuses"], ["accepted"] * 8)
+        self.assertEqual(result["attempts"], 8)
 
 
 if __name__ == "__main__":

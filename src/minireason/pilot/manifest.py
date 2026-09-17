@@ -25,7 +25,7 @@ SPAWN_PARAMETERS = {
         "subtasks": {
             "type": "array",
             "minItems": 1,
-            "maxItems": 8,
+            "maxItems": 24,
             "items": {
                 "type": "object",
                 "properties": {
@@ -58,11 +58,24 @@ VERIFY_PARAMETERS = {
 }
 
 
+CONTINUE_PARAMETERS = {
+    "type": "object", "additionalProperties": False,
+    "required": ["decision", "reason", "what_changes_next", "stop_rule"],
+    "properties": {
+        "decision": {"type": "string", "enum": ["continue", "stop"]},
+        "reason": {"type": "string", "minLength": 1},
+        "what_changes_next": {"type": "string"},
+        "stop_rule": {"type": "string", "minLength": 1},
+    },
+}
+
+
 LOCAL_PARAMETERS = {
     "route": ROUTE_PARAMETERS,
     "spawn": SPAWN_PARAMETERS,
     "assemble": ASSEMBLE_PARAMETERS,
     "verify": VERIFY_PARAMETERS,
+    "continue_or_stop": CONTINUE_PARAMETERS,
 }
 
 
@@ -99,6 +112,7 @@ TOOLS = [
     _tool("spawn", "Propose bounded child calls; the host mints IDs and enforces fan-out, depth, custody, and budget.", SPAWN_PARAMETERS),
     _tool("assemble", "Propose an answer from immutable accepted result references while exposing unresolved items.", ASSEMBLE_PARAMETERS),
     _tool("verify", "Request verification of one recorded artifact reference under the host checker policy.", VERIFY_PARAMETERS),
+    _tool("continue_or_stop", "After verification, decide whether to stop or change the next full pass, citing verification and carrying forward the stop rule under remaining calls and estimated dollars.", CONTINUE_PARAMETERS),
 ]
 TOOL_BY_NAME = {item["function"]["name"]: item for item in TOOLS}
 

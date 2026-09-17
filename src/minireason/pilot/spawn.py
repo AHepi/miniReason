@@ -19,14 +19,14 @@ class SpawnHost:
     def __init__(
         self,
         calls: RecordedCalls,
-        fanout: int = 3,
-        max_depth: int = 2,
+        fanout: int = 24,
+        max_depth: int = 3,
         executor: Callable[[str, dict[str, Any], int], dict[str, Any]] | None = None,
     ) -> None:
-        if type(fanout) is not int or not 1 <= fanout <= 8:
-            raise ValueError("fanout must be an integer from 1 through 8")
-        if type(max_depth) is not int or not 1 <= max_depth <= 2:
-            raise ValueError("max_depth must be 1 or 2")
+        if type(fanout) is not int or not 1 <= fanout <= 24:
+            raise ValueError("fanout must be an integer from 1 through 24")
+        if type(max_depth) is not int or not 1 <= max_depth <= 3:
+            raise ValueError("max_depth must be from 1 through 3")
         if executor is not None and not callable(executor):
             raise TypeError("executor must be callable")
         if not hasattr(calls, "root"):
@@ -51,7 +51,7 @@ class SpawnHost:
             raise ValueError("spawn requires a nonempty host decision receipt")
         if not isinstance(subtasks, list) or not subtasks:
             raise ValueError("subtasks must be a nonempty list")
-        if len(subtasks) > self.fanout or len(subtasks) > 8:
+        if len(subtasks) > self.fanout or len(subtasks) > 24:
             raise ValueError("subtask batch exceeds the fanout bound")
         normalized: list[dict[str, Any]] = []
         earlier_ids: set[str] = set()

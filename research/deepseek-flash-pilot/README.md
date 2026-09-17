@@ -1,187 +1,163 @@
-# DeepSeek Flash self-piloting study
+# DeepSeek Flash self-piloting pilot
 
-This directory contains the capability reading, twelve live interface probes,
-their immutable public records, and a minimum viable host-controlled pilot.
-The probes passed 12/12 declared criteria: all five obvious routes were
-selected coherently, three emitted function calls satisfied their schemas,
-the tool follow-ups stopped voluntarily, spawn returned a valid three-node
-DAG, and both 4,096-token thinking fixtures completed. See
-[`PROBE-RESULTS.md`](PROBE-RESULTS.md) for the per-call evidence and limits.
+The owner calls this endpoint V4 flash; the repository route is `deepseek-flash`.
+[P-A1](AMENDMENTS.md), declared 2026-09-17, lets the pilot decide to run more
+full passes after inspecting verification. The priority is: "the token spend isn't as important as the capability. And the ability for V4 flash to decide to keep running a loop or two." Then: "More loops."
 
-The implementation is in `src/minireason/pilot/`. It provides the five
-catalogue templates, deterministic route correction, bounded spawning,
-assembly, checker-or-critic verification, immutable call custody, run reports,
-an offline/live CLI, and an OpenAI-compatible function manifest. It is a host
-orchestrator. It does not grant the model filesystem, shell, network, or
-self-modification powers.
+One pass is `route -> spawn -> assemble -> verify`, followed by a recorded
+`continue_or_stop` tool call. There is no fixed pass count. By the owner's
+decision, spending is bounded by the task ceilings, not a target number of
+loops: **300 logical calls and estimated USD 6.00 by default**. Both are
+positive task-file overrides (`max_calls`, `max_spend_usd`); `max_calls` may
+exceed 300. CLI `--max-calls` overrides the task value. Calls include all
+control, worker and critic roles. One schema repair is another physical
+attempt within the same logical call, charged to usage and spend.
 
-## First offline run
+## Continuation decision
 
-From `C:\Dev\miniReason`:
+Exactly these four fields are required; additional fields are refused:
 
-```powershell
-$env:PYTHONPATH='src;tests'
-$env:PYTHONUTF8='1'
-$env:PYTHONIOENCODING='utf-8'
-$env:TMP='C:\tw34'
-New-Item -ItemType Directory -Force -Path 'C:\tw34' | Out-Null
-& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 -m minireason.pilot run `
-  --task research/deepseek-flash-pilot/examples/direct.task.json `
-  --mode offline `
-  --scripted research/deepseek-flash-pilot/examples/direct.scripted.json `
-  --out C:\tw34\pilot-direct `
-  --max-calls 24
+```json
+{
+  "decision": "continue",
+  "reason": "sha256:<supplied verification_ref>: the checker failure needs a boundary-case investigation",
+  "what_changes_next": "Switch to decompose_synthesize and separate the boundary analysis from the counterexample search because verification exposed that gap.",
+  "stop_rule": "Stop when verification supports the answer or no supported next change remains."
+}
 ```
 
-`--mode offline` is the default, but it is explicit above. Offline mode
-requires `--scripted <JSON-list>`; it does not fabricate answers. An
-`--env-file` argument is ignored and left unopened offline. The output path
-must be a fresh, short directory. The direct fixture consumes three scripted
-provider-shaped responses: route, spawn, and answer. Its local checker adds no
-provider call.
+`decision` is `continue` or `stop`. The reason must cite the exact supplied
+verification reference and explain its outcome. `what_changes_next` must be
+nonempty on `continue` and may be empty on `stop`. The host supplies the full
+checker result, cross-lineage objections, or unavailable result, along with
+remaining logical calls and estimated dollars, cumulative usage and attempts.
+The first decision saves `stop_rule`. Later decisions must preserve it exactly
+or append ` OR ` plus another early-stop condition; replacement is refused.
+This preserves the stated condition mechanically; its substantive application
+remains the pilot's fallible judgment. Malformed decisions get one recorded
+repair with the original input, public response and precise error.
 
-Read these outputs in order:
+A continued pass must change its template mix or subtask inputs. Before workers
+run, the host hashes canonical inputs and compares the template/input multiset
+with prior passes. Identical work is refused with a recorded reason. The pilot
+gets at most two redecisions; a third identical proposal stops the run. Resource
+stops and other terminal failures are recorded separately from the pilot's
+choice, and never mean the inquiry is exhausted.
 
-1. `ANSWER.md` for the working answer and terminal status.
-2. `RUN.md` for limits, attempt receipts, modes, and stop detail.
-3. `TRACE.md` for state transitions and tool decisions.
-4. `verification/result.json` for exactly what the checker or critic tested.
-5. `calls/` for per-attempt decision, request, response, usage, latency, and
-   custody evidence.
+## Bounds and source authority
 
-`task.json`, `catalogue.json`, `tools.json`, `endpoints.json`, and
-`config.json` freeze the run inputs and implementation identities. Original
-attempts remain separate from the Markdown views.
+Spawn permits up to **24** children per batch, with depth at most **3** inside
+each pass. At least one outer child implements the routed template. Decomposition
+can nest at depths 1 and 2, with leaves at 3. Dependencies remain ordered and
+sub-calls retain their own immutable records. Changed tasks and premises are
+fallible work requests; original documents, allowed files, test commands,
+behavior contract and protected obligations remain sealed. The built-in
+scheduler is sequential. Stateful external tools must be serialized, with at
+most five active provider requests under the existing operating limit.
 
-## Owner-controlled live run
+The checker sandbox, its allowlist, wall and output limits are unchanged.
+`engineer_patch` still proposes changes; it neither edits files nor runs claimed
+tests. A refused partial dependency cannot become an accepted assembly: the
+host instead delivers an unavailable-verification record to the decision.
+Controls and workers remain thinking-off. Keys remain in the environment;
+hidden reasoning and credentials are never stored. There is no transport retry,
+uncertain-delivery replay, self-modification or automatic ceiling increase.
 
-Start with the checked-in direct task below, then create your own task JSON and
-choose a new output directory. This command needs only the DeepSeek key; its
-sealed arithmetic checker makes no additional provider call. Supply provider
-keys through existing environment names, or opt into the existing restricted
-reason CLI loader with `--env-file`. Never place a key in the task, scripted
-responses, command output, or run directory.
+## Spend guard
 
-```powershell
-$env:PYTHONPATH='src;tests'
-$env:PYTHONUTF8='1'
-$env:PYTHONIOENCODING='utf-8'
-$env:TMP='C:\tw34'
-New-Item -ItemType Directory -Force -Path 'C:\tw34' | Out-Null
-& 'C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe' -B -X utf8 -m minireason.pilot run `
-  --task research/deepseek-flash-pilot/examples/direct.task.json `
-  --mode live `
-  --env-file .env `
-  --out C:\tw34\pilot-live-001 `
-  --max-calls 24
-```
+[PRICES.json](PRICES.json) freezes the official provider URLs and 2026-09-17
+reading date. It uses published peak prices where applicable and cache prices
+when the recorded usage identifies cache hits. Every attempt contributes prompt
+and completion tokens; reasoning tokens are reported as part of completion and
+are not charged twice. The table is copied exactly into each run as `prices.json`.
+An unmapped route remains token-accounted with unknown dollars. Missing required
+usage on a priced dispatched call stops further dispatch as `SPEND_UNKNOWN`.
+`CALL_BUDGET` or `SPEND_CEILING` records a reached resource boundary.
 
-The env-file loader accepts only its declared provider key names and does not
-log values. Live mode is opt-in. The integrated pilot was not exercised with
-a provider during this build, so inspect every public result and custody
-record rather than treating a completed state as an accuracy certificate.
+`RUN.md` labels per-pass and total spend **an estimate from published prices,
+not a bill**. Actual usage arrives after a response, so the last response may
+carry the estimate over the ceiling; no later call is admitted. Unknown costs
+are shown explicitly. The ceiling guards runaway loops and is not a target.
 
-The task file is one JSON object. `task` is required. Optional top-level
-fields are `features`, `inputs`, `check`, and `critic_seats`. `features.kind`
-may be `direct`, `evidence`, `engineer`, `critic`, or `decompose`; the host
-corrects an invalid or unsuitable model route deterministically. Omitted input
-fields receive empty defaults, but fields required by the selected template
-must be nonempty. See the checked-in [task and scripted response examples](examples/)
-for complete starter shapes. The env file must be ignored and untracked inside this checkout.
+## Offline fixture
 
-## External function-calling harness
-
-`src/minireason/pilot/tools.json` is the generated manifest for `route`,
-`spawn`, `assemble`, and `verify`. It carries `strict:true` for the beta strict
-tool endpoint whose small probe passed; the full manifest has only offline
-validation so far. Unsupported string/array length keywords are omitted from
-the wire schema and enforced by the stronger host schemas. When using an ordinary endpoint, remove
-the `strict` member from each function definition. Keep every control turn at
-thinking disabled.
-
-Instantiate the stateful host with:
+Use the specified Python with `PYTHONPATH=src;tests`, `PYTHONUTF8=1`,
+`PYTHONIOENCODING=utf-8` and a short fresh output directory. This callable fixture
+makes four scripted logical calls, including an explicit stop based on the
+runtime checker receipt. It makes no provider call:
 
 ```python
+import json
+from pathlib import Path
 from minireason.pilot.pilot import Pilot
 
-total_budget, control_budget = 24, 8
-# The harness enforces at most eight control attempts, including repairs/final answer.
-pilot = Pilot(task, out, mode="live", max_calls=total_budget-control_budget, scripted=None)
+examples = Path("research/deepseek-flash-pilot/examples")
+task = json.loads((examples / "direct.task.json").read_text(encoding="utf-8"))
+responses = iter(json.loads((examples / "direct.scripted.json").read_text(encoding="utf-8")))
+
+def scripted(**context):
+    if context["role"] == "continue_or_stop":
+        packet = json.loads(context["messages"][1]["content"])
+        return {"decision": "stop",
+                "reason": packet["verification"]["verification_ref"] + " checker agrees; task answered",
+                "what_changes_next": "", "stop_rule": "Stop when the checker agrees."}
+    return next(responses)
+
+result = Pilot(task, Path("C:/tw38/pilot-new-001"), scripted=scripted).run()
+print(result["status"])
 ```
 
-Each model tool call must arrive in the ordinary OpenAI shape:
+The CLI remains `python -B -m minireason.pilot run --task TASK.json --mode offline
+--scripted RESPONSES.json --out FRESH_DIRECTORY`. Offline mode never opens an
+env file. The JSON list must include explicit continuation responses; historical
+three-response examples above are used as the first three turns, not a complete
+P-A1 transcript. `--mode live` is owner opt-in and reads provider keys at call
+time. No real provider or owner task was run for this amendment.
 
-```json
-{
-  "id": "call_001",
-  "type": "function",
-  "function": {
-    "name": "route",
-    "arguments": "{\"template_id\":\"direct_answer\",\"reason\":\"A short closed task.\"}"
-  }
-}
-```
+The task object requires `task`; optional fields are `inputs`, `features`,
+`check`, `critic_seats`, `max_calls` and `max_spend_usd`. Initial routing retains
+the published deterministic correction policy; later passes may select another
+registered template with valid inputs to implement the declared change.
 
-Call `pilot.dispatch(tool_call)`. It validates order and arguments, records the
-host action, and returns a message shaped as:
+## Reading a run
 
-```json
-{
-  "role": "tool",
-  "tool_call_id": "call_001",
-  "content": "{...public host result...}"
-}
-```
+1. `ANSWER.md`: latest available working answer and terminal status.
+2. `RUN.md`: per-pass and cumulative calls, attempts, tokens, estimated dollars
+   and stop detail.
+3. `TRACE.md`: numbered state transitions, verbatim decision fields and refusals.
+4. `passes/pNNNN/pass.json`: routed and spawned work, nested subcalls, assembly,
+   verification, decisions and budgets; adjacent assembly/verification files
+   retain original evidence.
+5. `calls/cNNNN/aNN/`: each attempt's request, response, usage and wire custody.
 
-Append both the assistant tool-call message and the returned tool message to
-the control conversation, then request the next action. Serialize these
-stateful actions in the order `route`, `spawn`, `assemble`, `verify`. Reusing a
-tool-call ID with identical arguments returns the recorded result; reusing it
-with different arguments refuses. Call `pilot.finish(detail)` once the host
-has reached a terminal state so `result.json`, `ANSWER.md`, `RUN.md`, and
-`TRACE.md` are written.
+Root assembly/verification are views of the latest available records. Earlier
+passes and rejected responses remain immutable. `task.json`, `catalogue.json`,
+`tools.json`, `endpoints.json`, `prices.json` and `config.json` seal the inputs
+and implementation identities. A completed state does not establish accuracy
+or creativity; an advantage from more calls needs matched multi-call controls.
 
-The external harness owns the control-model HTTP exchange. It must preserve
-the exact wire request and public response, returned model, tool-call IDs and
-arguments, epoch and latency, usage, finish reason, and reasoning-presence
-flag. It must not persist hidden reasoning. Count control calls and their
-repairs in the same global run budget as worker calls. Reserve a control allowance
-C before construction, give the Pilot at most N-C worker attempts, and enforce
-at most C control attempts in the harness. The example reserves 8 of 24. Stop
-when either reservation is reached; do not silently transfer or raise limits.
-Keep control request/response receipts beside the run and bind their tool-call
-IDs to the host action receipts. The manifest alone does not provide that HTTP
-recording or control-budget enforcement. The current built-in
-CLI uses the probed JSON control envelopes because the existing reason
-`Adapter` does not retain and round-trip tool calls.
+## External tool harness
 
-## Bounds and interpretation
+The generated manifest is `src/minireason/pilot/tools.json`: `route`, `spawn`,
+`assemble`, `verify`, `continue_or_stop`. Host validation retains stronger
+bounds than the exported beta strict-schema subset. The entire new manifest
+has offline qualification only. `Pilot.dispatch(tool_call)` accepts the ordinary
+OpenAI function-call shape and returns a tool message. Reused action IDs return
+the existing result only for identical arguments; uncertain actions cannot replay.
+For multiple outer children, assembly must reference a recorded synthesis.
 
-- Default fan-out is 3; the hard host bound is 8. Maximum depth is 2, and a
-  decomposition already at depth 2 cannot decompose again. A nested spawn
-  needs a new host receipt.
-- `--max-calls` is at most 24 and includes recorded schema-repair attempts.
-  The built-in host dispatches children sequentially. Any external scheduler
-  must serialize stateful tools and keep active provider requests at or below
-  five.
-- Each schema-invalid public worker answer gets at most one repair. There is
-  no transport retry, overwrite, automatic resume, or replay of an uncertain
-  delivery. A new occurrence needs a new directory and decision.
-- Thinking is disabled for control and current worker calls. Hidden reasoning
-  is never a required custody input and is not persisted.
-- The engineering template produces a patch proposal only. It does not change
-  files or execute claimed tests, and it remains partial until the owner does
-  that work and records it separately.
-- Critic-dependent work requires an owner-supplied, thinking-off-capable
-  endpoint from a different model lineage. If it is unavailable, the result
-  is partial or cannot-decide rather than an invented independent check.
-- A local checker establishes only its sealed proposition. A critic verdict
-  is fallible. Contract-valid JSON, agreement, and terminal `complete` do not
-  establish general correctness or creativity.
-- There is no price guarantee. Input counts, current provider prices, control
-  calls, worker calls, and repairs must be budgeted by the owner. The pilot
-  does not self-modify or raise its ceilings.
+The built-in runner records continuation as a host tool action from the JSON
+control response because the inherited text Adapter does not retain native
+function-call responses. An external native-tool harness must preserve its own
+wire/tool-call evidence, account its control calls and spend in the same total
+allowance, reserve that allowance before constructing the worker Pilot, and
+feed verification plus remaining budgets to every decision. The manifest alone
+is not an external HTTP recorder or external-budget enforcement layer.
 
+## Historical qualification records
+
+The observations below describe their original source versions. P-A1 changes
+are declared separately and do not rewrite these earlier records.
 
 ## Offline qualification
 
@@ -234,3 +210,17 @@ is **REJECT** because the required reason suite still has seven fixture-root
 failures under mandated `TMP=C:\tr34`; concurrent reason changes are outside
 this qualification. No real provider/owner-task reliability is established.
 See `work/review34/REPORT.md` for evidence and reopening conditions.
+
+
+## P-A1 offline qualification - 2026-09-17
+
+Final source passes 77 pilot tests, including a scripted three-pass run stopped
+by the pilot's own rule, identical-pass refusal, schema repair, logical-call
+and spend ceilings, budget inputs, unavailable/critic verification, fan-out24,
+depth3 and an actual child transport double with two complete passes. The exact
+reason suite passes346tests under child `TMP=C:/tr36`; docs pins pass26tests.
+Source and test evidence: `work/w38/INDEX.md`. A first reason run used an
+unadmitted evidence-root override and failed; its full transcript is retained
+alongside the passing rerun. No launcher code or checker limits were changed.
+No real provider/model calls were made. These are offline host-wiring results,
+not live full-manifest acceptance or demonstrated owner-task reliability.

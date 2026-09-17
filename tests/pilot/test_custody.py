@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -25,7 +26,7 @@ def complete(answer: str = "42") -> dict:
 
 class RecordedCallsTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.temporary = tempfile.TemporaryDirectory(dir=r"C:\tw34")
+        self.temporary = tempfile.TemporaryDirectory(dir=os.environ["TMP"])
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         patcher = mock.patch.object(provider, "_open", side_effect=AssertionError("network forbidden"))
@@ -107,12 +108,19 @@ class RecordedCallsTests(unittest.TestCase):
         self.assertEqual(calls.count, 2)
         self.assertFalse((self.root / "twice" / "calls" / "c0001" / "a02").exists())
 
-    def test_repair_never_exceeds_global_call_budget(self) -> None:
-        calls = RecordedCalls(self.root / "budget", max_calls=1, scripted=[{"content": "{}"}])
+    def test_repair_is_the_same_logical_call_but_a_second_attempt(self) -> None:
+        calls = RecordedCalls(
+            self.root / "budget",
+            max_calls=1,
+            scripted=[{"content": "{}"}, {"content": json.dumps(complete("repaired"))}],
+        )
+        self.assertEqual(calls.call("answer", self.messages, schema=OUTPUT_SCHEMA)["answer"], "repaired")
+        self.assertEqual(calls.logical_count, 1)
+        self.assertEqual(calls.count, 2)
         with self.assertRaises(ReasonFailure) as caught:
             calls.call("answer", self.messages, schema=OUTPUT_SCHEMA)
         self.assertEqual(caught.exception.code, "CALL_BUDGET")
-        self.assertEqual(calls.count, 1)
+        self.assertEqual(calls.count, 2)
 
     def test_fixture_failure_records_no_dispatch_without_exception_text(self) -> None:
         def stopped(**_context):

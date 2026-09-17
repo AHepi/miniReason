@@ -55,7 +55,19 @@ def _fake_open(request, *, timeout):
         else:
             public = {"template_id": "direct_answer", "reason": "Short closed fixture."}
     elif "template_id" in user and "inputs" in user:
-        public = {"subtasks": [{"template_id": user["template_id"], "inputs": user["inputs"]}]}
+        inputs = json.loads(json.dumps(user["inputs"]))
+        if user.get("pass_number", 1) > 1:
+            inputs["premises"].append("Transport fixture changed the later-pass premise mix.")
+        public = {"subtasks": [{"template_id": user["template_id"], "inputs": inputs}]}
+    elif "pass_number" in user and "verification" in user:
+        verification_ref = user["verification"]["verification_ref"]
+        continuing = user["pass_number"] < int(os.environ.get("MINIREASON_PILOT_TEST_PASS_LIMIT", "1"))
+        public = {
+            "decision": "continue" if continuing else "stop",
+            "reason": "The verification at " + verification_ref + (" supports a changed pass." if continuing else " supports stopping."),
+            "what_changes_next": "Change the later-pass premise mix." if continuing else "",
+            "stop_rule": user.get("stop_rule") or "Stop after the fixture answer is verified.",
+        }
     else:
         public = {"status": "complete", "answer": "42", "source_refs": [], "unresolved": [], "verification_refs": []}
     body = {
@@ -80,7 +92,3 @@ def install_transport_double(directory: Path) -> Path:
     path = directory / "sitecustomize.py"
     write_text(path, SITECUSTOMIZE)
     return path
-
-
-def write_synthetic_env(path: Path) -> None:
-    write_text(path, "DEEPSEEK_API_KEY=" + DUMMY_VALUE + "\n")

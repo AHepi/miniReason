@@ -16,6 +16,7 @@ from minireason.reason.adapter import Adapter
 from minireason.reason.types import ReasonFailure
 
 from .templates import validate
+from .budget import Budget, load_price_table
 from .util import digest, strict_loads, write
 
 
@@ -38,15 +39,17 @@ class RecordedCalls:
         self,
         root: Path,
         mode: str = "offline",
-        max_calls: int = 24,
+        max_calls: int = 300,
         scripted: Callable[..., Any] | list[Any] | None = None,
         *,
         adapter: Adapter | None = None,
+        max_spend_usd: float = 6.0,
+        prices=None,
     ) -> None:
         if mode not in {"offline", "live"}:
             raise ValueError("mode must be offline or live")
-        if type(max_calls) is not int or not 1 <= max_calls <= 24:
-            raise ValueError("max_calls must be an integer from 1 through 24")
+        if type(max_calls) is not int or max_calls < 1:
+            raise ValueError("max_calls must be a positive integer")
         self.root = Path(root)
         self.calls_root = self.root / "calls"
         self.calls_root.mkdir(parents=True, exist_ok=True)
@@ -54,6 +57,8 @@ class RecordedCalls:
             raise ReasonFailure("RECORD_EXISTS", "Pilot calls directory is not empty")
         self.mode = mode
         self.max_calls = max_calls
+        self.budget = Budget(max_spend_usd, prices=prices or load_price_table())
+        self.pass_number = 1
         self.endpoint_snapshot = config.load_endpoint_snapshot()
         self.adapter = adapter or Adapter(mode, self.endpoint_snapshot)
         self._scripted = scripted
@@ -73,10 +78,23 @@ class RecordedCalls:
         with self._lock:
             return deepcopy(self._receipts)
 
+    @property
+    def logical_count(self) -> int:
+        return self._logical_count
+
+    def budget_snapshot(self):
+        return {**self.budget.snapshot(self.receipts).to_dict(), "max_calls": self.max_calls,
+                "logical_calls": self.logical_count, "remaining_calls": max(0, self.max_calls-self.logical_count),
+                "attempts": self.count}
+
+    def _check_spend(self):
+        snapshot = self.budget.snapshot(self.receipts)
+        if not snapshot.dispatch_allowed:
+            raise ReasonFailure(snapshot.stop_reason, "Spend guard stopped further dispatch; inspect recorded budget")
+
     def _reserve_attempt(self) -> int:
         with self._lock:
-            if self._count >= self.max_calls:
-                raise ReasonFailure("CALL_BUDGET", "Pilot call budget is exhausted")
+            self._check_spend()
             attempt_number = self._count
             self._count += 1
             return attempt_number
@@ -155,7 +173,9 @@ class RecordedCalls:
         thinking: str,
         schema: Mapping[str, Any] | None,
         reason: str,
+        validator=None,
     ) -> tuple[dict[str, Any] | None, str | None, dict[str, Any]]:
+        self._check_spend()
         attempt_dir = self.calls_root / call_id / f"a{attempt:02d}"
         provider_dir = attempt_dir / "provider"
         # The existing live Adapter persists worker input with sorted mapping
@@ -176,6 +196,7 @@ class RecordedCalls:
         decision = {
             "schema_version": "minireason.pilot.call-decision.v1",
             "call_id": call_id,
+            "pass_number": self.pass_number,
             "attempt": attempt,
             "dispatch_number": attempt_number + 1,
             "status": "pending",
@@ -218,6 +239,8 @@ class RecordedCalls:
                 parsed = self._parsed(public_content)
                 if schema is not None:
                     validate(parsed, schema)
+                if validator is not None:
+                    validator(parsed)
             except (TypeError, ValueError) as error:
                 validation_error = str(error)
             provider_record = result.get("record", {})
@@ -235,6 +258,9 @@ class RecordedCalls:
                 "finished_epoch": result.get("finished_epoch"),
                 "elapsed_ms": provider_record.get("elapsed_ms"),
                 "usage": deepcopy(result.get("usage", {})),
+                "endpoint": self._endpoint_metadata(seat),
+                "pass_number": self.pass_number,
+                "role": role,
                 "returned_model": provider_record.get("returned_model"),
                 "reasoning_content_present": provider_record.get("reasoning_content_present", False),
                 "hidden_reasoning_persisted": provider_record.get("reasoning_content_persisted", False),
@@ -258,6 +284,9 @@ class RecordedCalls:
                 "dispatch_number": attempt_number + 1,
                 "status": "failed" if dispatched else "not_dispatched",
                 "failure_code": getattr(error, "code", "HOST_ERROR"),
+                "endpoint": self._endpoint_metadata(seat),
+                "pass_number": self.pass_number,
+                "role": role,
                 "detail": (
                     "Call stopped after request evidence was created; inspect immutable provider records."
                     if dispatched
@@ -265,6 +294,11 @@ class RecordedCalls:
                 ),
                 "recorded_epoch": time.time(),
             }
+            provider_response = provider_dir / "call-0001.response.json"
+            if provider_response.exists():
+                response = _read_json(provider_response)
+                failure["usage"] = deepcopy(response.get("usage", {}))
+                failure["returned_model"] = response.get("returned_model")
             outcome_path = attempt_dir / "outcome.json"
             if not outcome_path.exists():
                 write(outcome_path, failure)
@@ -280,6 +314,7 @@ class RecordedCalls:
         max_tokens: int = 8192,
         thinking: str = "off",
         schema: Mapping[str, Any] | None = None,
+        validator=None,
     ) -> dict[str, Any]:
         if not isinstance(role, str) or not role.strip():
             raise ValueError("role must be a nonempty string")
@@ -291,6 +326,9 @@ class RecordedCalls:
             raise ValueError("the MVP supports thinking='off' only")
         original = deepcopy(messages)
         with self._lock:
+            self._check_spend()
+            if self._logical_count >= self.max_calls:
+                raise ReasonFailure("CALL_BUDGET", "Logical call ceiling reached")
             self._logical_count += 1
             call_id = f"c{self._logical_count:04d}"
         parsed, error, _receipt = self._attempt(
@@ -303,12 +341,12 @@ class RecordedCalls:
             thinking=thinking,
             schema=schema,
             reason="initial bounded call",
+            validator=validator,
         )
         if error is None:
             assert parsed is not None
             return parsed
-        if self.count >= self.max_calls:
-            raise ReasonFailure("CALL_BUDGET", "No call budget remains for the sole schema repair")
+        self._check_spend()
         rejected_path = self.calls_root / call_id / "a00" / "provider" / "call-0001.response.json"
         rejected = _read_json(rejected_path).get("content", "")
         repaired_messages = original + [
@@ -325,6 +363,7 @@ class RecordedCalls:
             thinking=thinking,
             schema=schema,
             reason="sole schema repair preserving the rejected public answer and exact checker error",
+            validator=validator,
         )
         if second_error is not None:
             raise ReasonFailure("SCHEMA_REJECTED", "Public result failed its schema after one repair", receipt)

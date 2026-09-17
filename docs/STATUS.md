@@ -1215,3 +1215,21 @@ The concurrent R3-A3 declaration predates this report and is kept separate from 
 2026-09-17T10:57:08.158797+00:00 | REC-20260917-B | root-review35 | APPROVED-AS-CORRECTED. Verified 24 outcomes; CROSS USE 9/11 and DECOMPOSED 6/6, each in 6/8 cells. O04 is local repair of a loop-created reserve omission, not an established specific improvement over NATIVE. Public O06/O07 rejected returns still supply complete local semantic replies; accepted propagation remains absent. All custody hashes, claim ceiling and owner fields verified. This supersedes the earlier reader's comparative specification-gain wording without rewriting that receipt. Next task: separate publisher reviews work/review35/PUBLISH-CHECKLIST.md and publishes/verifies only its explicit paths. No Git mutation, provider call, runs write or o004 intervention by this judge; o004 is separately live per orchestrator. Full evidence/corrections: work/review35/INDEX.md and REPORT.md.
 
 2026-09-17T11:09:29.992836+00:00 | REC-20260917-B | root-publisher | Occurrence 3 reported: approved corrected reading/report and complete1606-file study custody directory published on claude/project-state-direction-j5rbun at a4bc50228c5d5605e1f9ecdd88ba0c4eba9c32f7, tree cd7bb5c648b2b8448d289fae88361377a40bcf87,1623 paths; fetched ref, ls-remote, commit and tree verified equal. Occurrence4 pending for this publisher; its separately running work is untouched. Next: publish and verify this acknowledgement, then bounded handoff complete. No provider call or main merge.
+
+
+### Review38 author/judge handoff at 2026-09-17T11:53:20.959120+00:00
+
+Imported historical engineer STATUS draft:
+
+STATUS DRAFT - 2026-09-17 | REC-20260917-D | P-A1 engineering complete, judge/publisher pending. Self-continuation,300logical-call/USD6estimated-spend defaults (task overrides), fanout24/depth3, repeat refusal, verify/budget decision inputs and per-pass evidence implemented. Final77pilot/346reason/26docs-pin tests pass; reason child TMP=C:/tr36. Checker unchanged; zero provider calls and no Git mutation by engineer. Next authorized task: independent judge reviews work/w38/INDEX.md and its21-path PUBLISH-CHECKLIST.md, then separate publisher imports these receipts and verifies publication. No live capability claim.
+
+2026-09-17T11:53:20.959120+00:00 | REC-20260917-D | root-review38 | P-A1 and four usecases APPROVED-AS-CORRECTED for offline delivery;77pilot/346reason/26docs-pin suites and independent boundaries pass. Final usecase CLI fixtures pass two loops each; original briefs preserved. DefaultUSD6owner guard reconciled in task/reading/contract prose with before snapshots and supplements. Live2048spawn-input fit and UC1 verification conjunction remain disclosed/unqualified. Next: separate publisher stages only work/review38/PUBLISH-CHECKLIST.md D and usecase sections and verifies publication; no Git action by judge.
+
+Imported historical lessons author STATUS:
+
+2026-09-17T11:05:01.637682+00:00 | REC-20260917-F | W41 completed the 53-entry harness lessons register and before-you-build checklist, plus exactly one lessons-index line. Document checks pass; no provider/model calls, .env reads, Git mutations or other-worker edits. Next: designated review/publisher uses work/w41/INDEX.md and the exact two-path PUBLISH-CHECKLIST.md, importing this draft at actual transfer UTC if authorized. No publication is claimed.
+
+2026-09-17T11:53:20.959120+00:00 | REC-20260917-F | root-review38 |53entry lessons register APPROVED-AS-CORRECTED; L19/L25/L51/L53 current-source/citation corrections applied,12record spot checks and all structural/quote checks pass. Next: separate lessons delivery from review38 checklist F section. No publication claimed.
+
+
+2026-09-17T12:08:39.079425+00:00 | REC-20260917-D | root-publisher | Review38 APPROVED-AS-CORRECTED bytes revalidated:21engineering+98usecase files with3shared receipts; separate2lessons files await F delivery. No owner advance at fetched H0=2bbb4cc2526ea90516a2b31438845da0f406a8f2. D delivery is being committed and pushed to claude/project-state-direction-j5rbun; publication remains pending actual remote commit/tree verification. No provider calls or main merge.

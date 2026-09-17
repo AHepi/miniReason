@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -32,17 +33,32 @@ def task(name: str, **extra) -> dict:
 
 class SpawnHostTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.temporary = tempfile.TemporaryDirectory(dir=r"C:\tw34")
+        self.temporary = tempfile.TemporaryDirectory(dir=os.environ["TMP"])
         self.addCleanup(self.temporary.cleanup)
         self.calls = type("CallsStub", (), {"root": Path(self.temporary.name)})()
 
     def test_constructor_enforces_host_bounds(self) -> None:
-        for fanout in (0, 9, True):
+        for fanout in (0, 25, True):
             with self.subTest(fanout=fanout), self.assertRaises(ValueError):
                 SpawnHost(object(), fanout=fanout)
-        for depth in (0, 3, True):
+        for depth in (0, 4, True):
             with self.subTest(depth=depth), self.assertRaises(ValueError):
                 SpawnHost(object(), max_depth=depth)
+
+    def test_fanout_24_and_depth_3_are_admitted(self) -> None:
+        executed: list[tuple[str, int]] = []
+
+        def executor(template_id, inputs, depth):
+            executed.append((inputs["task"], depth))
+            return output(answer=inputs["task"])
+
+        host = SpawnHost(self.calls, fanout=24, max_depth=3, executor=executor)
+        results = host.spawn([task(f"leaf-{index}") for index in range(24)], receipt="fanout-24")
+        self.assertEqual(len(results), 24)
+        self.assertEqual(len(executed), 24)
+        nested = host.spawn([task("depth-three")], depth=3, receipt="depth-3")
+        self.assertEqual(nested[0]["status"], "accepted")
+        self.assertEqual(executed[-1][1], 3)
 
     def test_invalid_later_task_causes_no_partial_dispatch(self) -> None:
         executed: list[str] = []
@@ -98,14 +114,14 @@ class SpawnHostTests(unittest.TestCase):
 
     def test_nested_spawn_requires_a_new_receipt(self) -> None:
         host = SpawnHost(self.calls, executor=lambda *_: output())
-        host.spawn([task("one")], depth=2, receipt={"id": "nested-1"})
+        host.spawn([task("one")], depth=3, receipt={"id": "nested-1"})
         with self.assertRaisesRegex(ValueError, "new decision receipt"):
-            host.spawn([task("two")], depth=2, receipt={"id": "nested-1"})
-        result = host.spawn([task("three")], depth=2, receipt={"id": "nested-2"})
+            host.spawn([task("two")], depth=3, receipt={"id": "nested-1"})
+        result = host.spawn([task("three")], depth=3, receipt={"id": "nested-2"})
         self.assertEqual(result[0]["result_ref"], "c0002")
 
     def test_default_leaf_runs_one_recorded_call(self) -> None:
-        with tempfile.TemporaryDirectory(dir=r"C:\tw34") as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ["TMP"]) as temporary:
             calls = RecordedCalls(
                 Path(temporary) / "run",
                 scripted=[{"content": json.dumps(output(answer="leaf"))}],
@@ -126,7 +142,7 @@ class SpawnHostTests(unittest.TestCase):
                 host.spawn(invalid, receipt="invalid")
 
     def test_default_executor_refuses_compound_template(self) -> None:
-        with tempfile.TemporaryDirectory(dir=r"C:\tw34") as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ["TMP"]) as temporary:
             calls = RecordedCalls(Path(temporary) / "compound", scripted=[])
             host = SpawnHost(calls)
             inputs = normalize_inputs(
