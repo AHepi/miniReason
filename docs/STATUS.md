@@ -1194,3 +1194,14 @@ The concurrent R3-A3 declaration predates this report and is kept separate from 
 
 
 2026-09-17T10:54:37.890526+00:00 | REC-20260917-D | root-publisher | Pilot delivery published and verified on claude/project-state-direction-j5rbun: commit ca0d179c39ea1ffe8fa70b51c0b039cfe1a4a5a3, tree 7bc8f11b901055256f01dedf13f3eb57a39a97e6, 65 paths; ls-remote, fetched commit and tree equal local. Next: acknowledge this receipt, then import and publish the approved findings paper. No provider calls or main merge.
+
+
+### REC-20260917-C deferred records appended by publisher at 2026-09-17T10:56:05.369511+00:00
+
+2026-09-17T09:20:06.588107+00:00 | REC-20260917-C | Findings paper, September 2026: root-w31 completed docs/reports/findings-2026-09.md (2889 raw whitespace words; 150-word abstract) with all required source-bound findings, explicit C09/P08/R003 qualifications, FW5 properties/gaps and next wiring distinctions. Root semantic review and corrected mechanical verification pass; exact paper SHA256 d671d7d06643cff2863c1eb21ad0fe9afb33e42bd7b8e3d7754a5adfb72e748f. No provider calls, .env read, source mutation, Git mutation or publication occurred in this writing task. Shared docs tails from concurrent mirror workers were preserved; this task's ledger/STATUS/activity receipts remain under work/w31 for judge append. Next authorized task: independent judge checks the paper and deferred records, then the designated publisher handles the four-path checklist. This is completed reporting, not inquiry exhaustion.
+
+
+2026-09-17T10:12:18.364534+00:00 | REC-20260917-C | root-review31 | Findings paper APPROVED-AS-CORRECTED and installed at docs/reports/findings-2026-09.md, 2918 words; abstract 150 words. Exact source quotations, FW5 ranges, numerical table rows, permitted citations, claim ceiling and vocabulary/encoding checks pass. SHA256 fb5a3eecdae7df762d6ae6d39429869327eec9a5fe439b0126a4c058cd292ad9. Audit and old -> new corrections: work/review31/INDEX.md. Author and judge shared-doc appends are DEFERRED in work/review31/RECORDS.md because review-34.exit was NOT FOUND after the bounded wait. The corrected paper states that receipt status honestly. No provider calls, .env reads, Git mutations or publication. Published source prefixes remain intact despite concurrent PLAN/workflow additions. Next authorized handoff: after the append gate clears, import author OPENING/COMPLETION/STATUS and activity first, then judge records/activity, and let the designated publisher handle the four-path checklist. No research exhaustion claimed.
+
+
+2026-09-17T10:56:05.561835+00:00 | REC-20260917-C | root-publisher | Deferred author and judge ledger/STATUS/activity imports are complete in the required order. The approved findings paper is unchanged; four-path delivery and remote commit/tree verification are next. Historical pending-append language is retained as originally judged; this actual-time receipt resolves the deferred record custody.
