@@ -1009,3 +1009,6 @@ REC-20260917-A root-review22 - 2026-09-17T01:40:14.147555+00:00: Independent W22
 
 
 REC-20260917-A root-review22 - 2026-09-17T01:46:00.406466+00:00: Closing audit completed with1137frozen paths,HEAD/branch/raw index/prefix/whitespace/credential checks passing. One ledger cadence miss during report drafting is now explicitly recorded:351.669622seconds,51.669622overdue; no backdating. Both audit observations and report supplement retained. Publication YES/main readiness YES judgment unchanged; no provider call or Git mutation.
+
+
+REC-20260917-A root-publisher - 2026-09-17T01:54:18.236062+00:00: Amendment A1 published and verified to origin/claude/project-state-direction-j5rbun: commitc87e9bfe8611c3ff1353ac858175c7b7e9b8ffa0, tree4c45360790a7683129c989f5322c6704476fec7e,29approved paths. Independent review22 APPROVED-AS-CORRECTED; conservative byte-bound input preflight including2048 non-DeepSeek reserve and LOOP-DECOMPOSED arm are durable. State: amendment A1 published; main phase authorised to launch. Main remains unlaunched; scientific outcome unobserved. Next authorized task: main execution using work/review22/MAIN-LAUNCH.md and its independent reviewed capability in the durable checkout. Current publisher makes no provider call and completes only the separate acknowledgement publication; work/runs/.env remain unstaged.
