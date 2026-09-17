@@ -13,6 +13,7 @@ from minireason.pilot.pilot import Pilot
 from minireason.pilot.recording import RecordedCalls
 from minireason.pilot.spawn import SpawnHost
 from minireason.pilot.templates import OUTPUT_SCHEMA, normalize_inputs
+from minireason.reason.types import ReasonFailure
 
 
 ACTIVE_ROOT = Path(__file__).resolve().parents[2]
@@ -252,9 +253,19 @@ class InputPortIntegrationTests(unittest.TestCase):
                                            resolved_source_reads=[delivered])
         self.assertEqual(output["source_refs"], [delivered["receipt"]["source_ref"]])
         refused, delivered = run_case("outside", "quote-refused")
-        with self.assertRaisesRegex(ValueError, "QUOTE_CUSTODY_FAILURE"):
+        with self.assertRaises(ReasonFailure) as caught:
             refused.execute_template("evidence_read", refused.inputs, 1,
                                      resolved_source_reads=[delivered])
+        self.assertEqual(caught.exception.code, "SCHEMA_REJECTED")
+        self.assertEqual(refused.calls.count, 4)
+        outcomes = [read_json(refused.root / "calls" / "c0001" / attempt / "outcome.json")
+                    for attempt in ("a00", "a01", "a02", "a03")]
+        self.assertEqual([item["status"] for item in outcomes],
+                         ["contract_rejected"] * 4)
+        self.assertTrue(all("QUOTE_CUSTODY_FAILURE: quotes[0]" in item["validation_error"]
+                            for item in outcomes))
+        self.assertTrue(all("quote does not resolve to exact UTF-8 bytes" in item["validation_error"]
+                            for item in outcomes))
 
     def test_nested_plan_uses_refs_and_propagates_source_to_leaf_and_critic(self):
         raw_inputs = b"{}"

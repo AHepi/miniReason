@@ -60,9 +60,20 @@ class PilotTests(unittest.TestCase):
         task, scripted = self.fixture("evidence")
         self.assertEqual(Pilot(task, self.root / "good", scripted=self.with_stop_decision(scripted)).run()["status"], "complete")
         scripted[-1]["quotes"][0]["quote"] = "timeout to 99 seconds"
-        result = Pilot(task, self.root / "bad", scripted=self.with_stop_decision(scripted)).run()
-        self.assertEqual(result["status"], "failed")
-        self.assertEqual(result["calls"], 3)
+        scripted.extend([copy.deepcopy(scripted[-1])] * 3)
+        pilot = Pilot(task, self.root / "bad", scripted=self.with_stop_decision(scripted))
+        result = pilot.run()
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual((result["logical_calls"], result["calls"]), (4, 7))
+        self.assertEqual(result["verification"]["failure_code"], "SCHEMA_REJECTED")
+        outcomes = [json.loads((pilot.root / "calls" / "c0003" / attempt / "outcome.json").read_text(encoding="utf-8"))
+                    for attempt in ("a00", "a01", "a02", "a03")]
+        self.assertEqual([item["status"] for item in outcomes],
+                         ["contract_rejected"] * 4)
+        self.assertTrue(all("QUOTE_CUSTODY_FAILURE: quotes[0]" in item["validation_error"]
+                            for item in outcomes))
+        self.assertTrue(all("quote does not resolve to exact UTF-8 bytes" in item["validation_error"]
+                            for item in outcomes))
 
     def test_budget_partial(self):
         task, scripted = self.fixture()
@@ -158,13 +169,13 @@ class PilotTests(unittest.TestCase):
         self.assertGreaterEqual(sum("nested-spawn" in p.read_text(encoding="utf-8") for p in events), 2)
 
 
-    def test_route_two_invalid_attempts_use_deterministic_fallback(self):
+    def test_route_four_invalid_attempts_use_deterministic_fallback(self):
         task, scripted = self.fixture()
         invalid = {"template_id": "invented", "reason": "Invalid choice."}
-        scripts = [invalid, invalid, scripted[1], scripted[2]]
+        scripts = [invalid] * 4 + [scripted[1], scripted[2]]
         pilot = Pilot(task, self.root / "fallback", scripted=self.with_stop_decision(scripts))
         result = pilot.run()
-        self.assertEqual((result["status"], result["calls"]), ("complete", 5))
+        self.assertEqual((result["status"], result["calls"]), ("complete", 7))
         self.assertTrue(pilot.route["fallback"])
 
     def test_critic_return_two_lineages_and_use(self):
@@ -187,7 +198,8 @@ class PilotTests(unittest.TestCase):
                           "base_url": endpoint.base_url, "context_window": 64000,
                           "source_url": "offline-fixture-only:no-provider-qualification",
                           "identity_scope": "synthetic offline window for lineage fixture only"}
-        with patch.dict(_ROUTE_WINDOWS, {"ollama/glm-5.3.native": fixture_window}):
+        from minireason.pilot.delivery import ROUTE_LIMITS
+        with patch.dict(_ROUTE_WINDOWS, {"ollama/glm-5.3.native": fixture_window}), patch.dict(ROUTE_LIMITS, {"ollama/glm-5.3.native": {"maximum": 32768, "source": "offline-fixture", "scope": "synthetic output limit"}}):
             result = Pilot(task, self.root / "return", scripted=self.with_stop_decision(scripts)).run()
         self.assertEqual((result["status"], result["calls"]), ("complete", 8))
 
@@ -201,9 +213,9 @@ class PilotTests(unittest.TestCase):
         route = {"template_id": "engineer_patch", "reason": "This is a bounded code change."}
         spawn = {"subtasks": [{"template_id": "engineer_patch", "inputs": inputs}]}
         judgment = {"verdict": "supported", "reason": "The proposal meets the requested behavior.", "objections": []}
-        scripts = [route, spawn, proposal, judgment, {**proposal, "dispositions": []}]
+        scripts = [route, spawn, proposal, judgment, {**proposal, "dispositions": []}, judgment]
         result = Pilot(task, self.root / "engineer", scripted=self.with_stop_decision(scripts)).run()
-        self.assertEqual((result["status"], result["calls"]), ("partial", 6))
+        self.assertEqual((result["status"], result["calls"]), ("partial", 7))
         self.assertFalse((self.root / "engineer" / "parser.py").exists())
         proposal = copy.deepcopy(proposal); proposal["test_claims"] = ["All tests passed"]
         result = Pilot(task, self.root / "fake-tests", scripted=self.with_stop_decision([route, spawn, proposal])).run()

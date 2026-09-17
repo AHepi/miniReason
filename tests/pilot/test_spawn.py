@@ -101,16 +101,18 @@ class SpawnHostTests(unittest.TestCase):
         self.assertTrue((Path(self.temporary.name) / "children" / "c0001.json").is_file())
         self.assertTrue((Path(self.temporary.name) / "children" / "c0002.json").is_file())
 
-    def test_partial_output_is_never_accepted_or_used_as_dependency(self) -> None:
+    def test_partial_output_is_carried_without_acceptance(self) -> None:
         def executor(template_id, inputs, depth):
             return output("partial") if inputs["task"].endswith("first.") else output()
 
         host = SpawnHost(self.calls, executor=executor)
-        with self.assertRaisesRegex(ValueError, "unaccepted"):
-            host.spawn(
-                [task("first"), task("second", depends_on=["first"])],
-                receipt="decision-partial",
-            )
+        results = host.spawn(
+            [task("first"), task("second", depends_on=["first"])],
+            receipt="decision-partial",
+        )
+        self.assertEqual([r["status"] for r in results], ["unaccepted", "unaccepted"])
+        self.assertEqual([r["output_status"] for r in results], ["partial", "partial"])
+        self.assertTrue(results[1]["output"]["unresolved"])
 
     def test_nested_spawn_requires_a_new_receipt(self) -> None:
         host = SpawnHost(self.calls, executor=lambda *_: output())

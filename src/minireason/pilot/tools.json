@@ -19,7 +19,23 @@
             ]
           },
           "reason": {
-            "type": "string"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            ]
           }
         },
         "required": [
@@ -34,7 +50,7 @@
     "type": "function",
     "function": {
       "name": "spawn",
-      "description": "Propose bounded child calls; the host mints IDs and enforces fan-out, depth, custody, and budget.",
+      "description": "Propose bounded child calls. Copy the provided inputs {unit_id,start:0,end:<complete JSON byte count>,encoding:json} reference exactly for a first-pass single child; do not reconstruct sources. Optional source_reads belongs inside each subtask, never at top level; each read has unit_id,start,end,limit using pinned hashes and zero-based end-exclusive UTF-8 byte ranges. The host enforces fan-out, depth, custody and budget, and up to three repairs include each rejected response and precise failure.",
       "strict": true,
       "parameters": {
         "type": "object",
@@ -213,9 +229,9 @@
                                   "oneOf": [
                                     {
                                       "type": "object",
-                                      "additionalProperties": false,
                                       "properties": {},
-                                      "required": []
+                                      "required": [],
+                                      "additionalProperties": false
                                     },
                                     {
                                       "type": "object",
@@ -698,9 +714,9 @@
                                   "oneOf": [
                                     {
                                       "type": "object",
-                                      "additionalProperties": false,
                                       "properties": {},
-                                      "required": []
+                                      "required": [],
+                                      "additionalProperties": false
                                     },
                                     {
                                       "type": "object",
@@ -1063,30 +1079,114 @@
       "description": "Propose an answer from immutable accepted result references while exposing unresolved items.",
       "strict": true,
       "parameters": {
-        "type": "object",
-        "properties": {
-          "result_refs": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "result_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "answer": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "result_refs",
+              "answer"
+            ],
+            "additionalProperties": false
           },
-          "answer": {
-            "type": "string"
-          },
-          "unresolved": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          {
+            "type": "object",
+            "properties": {
+              "result_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "answer": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "unresolved": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {},
+                          "required": [],
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "result_refs",
+              "answer",
+              "unresolved"
+            ],
+            "additionalProperties": false
           }
-        },
-        "required": [
-          "result_refs",
-          "answer",
-          "unresolved"
-        ],
-        "additionalProperties": false
+        ]
       }
     }
   },
@@ -1094,7 +1194,7 @@
     "type": "function",
     "function": {
       "name": "read_source",
-      "description": "Read an exact bounded byte range from one task-pinned source unit; arbitrary paths are never accepted.",
+      "description": "Read a task-pinned unit with {unit_id:<64-character catalogue hash>,start:0,end:<exclusive byte offset>,limit:65536}. Offsets are UTF-8 bytes within byte_count; do not split a character. Quote returned content exactly, preserving Unicode, whitespace and newlines; cite receipt.source_ref, never a filename or an unpinned id. Arbitrary paths are never accepted.",
       "strict": true,
       "parameters": {
         "type": "object",
@@ -1153,32 +1253,140 @@
       "description": "After verification, decide whether to stop or change the next full pass, citing verification and carrying forward the stop rule under remaining calls and estimated dollars.",
       "strict": true,
       "parameters": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "decision",
-          "reason",
-          "what_changes_next",
-          "stop_rule"
-        ],
-        "properties": {
-          "decision": {
-            "type": "string",
-            "enum": [
-              "continue",
-              "stop"
-            ]
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "decision",
+              "reason",
+              "stop_rule"
+            ],
+            "properties": {
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "stop"
+                ]
+              },
+              "reason": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "stop_rule": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
           },
-          "reason": {
-            "type": "string"
-          },
-          "what_changes_next": {
-            "type": "string"
-          },
-          "stop_rule": {
-            "type": "string"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "decision",
+              "reason",
+              "stop_rule",
+              "what_changes_next"
+            ],
+            "properties": {
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "stop"
+                ]
+              },
+              "reason": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "stop_rule": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "what_changes_next": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
           }
-        }
+        ]
       }
     }
   }

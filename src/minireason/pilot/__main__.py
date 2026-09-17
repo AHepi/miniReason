@@ -35,17 +35,12 @@ def main(argv=None):
                 raise ValueError("SCRIPTED_MUST_BE_ARRAY")
         elif args.scripted is not None:
             raise ValueError("SCRIPTED_FOR_OFFLINE_ONLY")
-        if args.mode == "live" and args.env_file is not None:
-            # Reuse the explicit, ignored/untracked provider-key loader. No value is logged.
-            loader = Path(__file__).resolve().parents[3] / "tools" / "reason.py"
-            spec = importlib.util.spec_from_file_location("pilot_reason_env", loader)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            module.load_env_file(args.env_file)
+        if args.env_file is not None:
+            raise ValueError("ENV_FILE_REFUSED: keys are process-environment only")
         out = args.out or Path("work/w34/runs") / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid4().hex[:6])
         result = Pilot(task, out, mode=args.mode, max_calls=args.max_calls, scripted=scripted, fanout=args.fanout, repo_root=args.repo_root).run()
         print(json.dumps(result, ensure_ascii=False))
-        return 0 if result["status"] == "complete" else 2
+        return 0 if result["status"] == "complete" or result.get("readable_outcome", False) else 2
     except Exception as error:
         # Never interpolate raw exception content from a secret-bearing input file.
         print(json.dumps({"status": "refused", "code": getattr(error, "code", type(error).__name__)}))

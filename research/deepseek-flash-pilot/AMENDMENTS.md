@@ -172,3 +172,278 @@ is established. Historical observations and sealed briefs remain unchanged.
 ### P-A2 independent judge correction supplement - 2026-09-17T13:07:44.232113+00:00
 
 Pinned JSON task units now use the pilot strict duplicate-key parser and reject nonfinite values, including numeric overflow, before interpretation. All saved spawn-reference fields remain compact even for accepted legacy inline arguments. These corrections close the L10 parsing recurrence and the legacy spawn-record echo; original pinned bytes and provider observations remain unchanged. Root evidence, old-to-new custody and final offline qualification: `work/review45/INDEX.md`.
+
+
+## P-A3 - live delivery repairs (2026-09-17 UTC)
+
+Declared after the four preserved first live attempts at 2026-09-17T13:56Z,
+under REC-20260917-D. The owner prioritizes capability and "More loops."
+This amendment repairs delivery to the continuation path; it does not relax
+custody to force a successful run. The four failures remain preserved in
+`runs/pilot/UC*-attempt1-20260917T1356Z`; the owner reported combined spend under USD 0.03. The preserved
+result estimates sum USD 0.031695504, slightly higher; per-task amounts
+and this correction are in W46 DIAGNOSIS.
+
+UC1 and UC3 reconstructed materially different input objects and first misplaced
+`source_reads` at top level. Their sole schema repair removed that field but
+left invented input text, triggering `OUTER_INPUTS_MUST_MATCH_SEALED_TASK`.
+UC2's sealed task already has nonempty `documents`; its response supplied
+`documents: []`, triggering `evidence_read requires nonempty inputs`.
+These are class (b) prompt/delivery faults. No class (a) task-file correction
+or class (c) normalization is justified: all four task/input pins stay unchanged.
+UC4 is class (d): quote[4] inserts ellipses and cannot resolve to exact FW5
+bytes; it also cites an unexposed source path. That refusal remains required.
+Its missing exact-copy instructions and absent semantic repair were contributing
+class (b) delivery defects.
+
+The spawn prompt now includes an exact, copyable reference example for the
+current task, explicit first-pass rules, and a per-child source-read example.
+It distinguishes pinned hashes from paths, full JSON-unit bounds from excerpt
+bounds, UTF-8 bytes from characters, and nested `source_reads` from top-level
+fields. Tool descriptions state the same contract. The existing selected-template,
+whole-input equality, source/scope, fan-out, dependency, depth and budget guards
+remain enforced. No fabricated or undeclared input is admitted.
+
+Outer spawn admission and evidence quote/reference checks now run within the
+existing sole same-seat repair callback. Parseable schema and semantic errors
+are collected together, including all detected quote and reference defects,
+so one known error does not hide another until after the repair is spent.
+The repair retains the original messages and exact rejected public response,
+reports the precise failed fields/quote index and reason, and permits only a
+bounded delivery correction. An unrepaired response is still refused after
+one repair. There is no additional call retry or hidden-reasoning storage.
+
+Evidence workers receive explicit source IDs, exact-copy examples and byte
+locator rules. Every nonempty quote must resolve to exact UTF-8 bytes in its
+named delivered source. `bytes:start:end` locators are checked against that
+slice; historical prose locators remain hints and still require an exact
+substring in the same source. No case, whitespace, punctuation or Unicode
+normalization is used. Ellipsis-joined passages must become separate quotes;
+paraphrase and uncertain attribution belong in the answer/unresolved fields.
+Unauthorized `source_refs` and model-created verification refs remain refused.
+
+Exact recorded public response bodies, custody hashes, wire evidence and replay
+regressions are in `tests/pilot/fixtures/live-20260917/` and `work/w46/INDEX.md`.
+Each task has separate `OFFLINE-VALIDATION-PA3` and `RUN-CONTRACT-PA3` successors;
+earlier observations, validations, sealed briefs and manifests are unchanged.
+Required suite transcripts and current source hashes are recorded in W46.
+Offline replay and callable fixtures establish instrument behavior only; the
+orchestrator owns any fresh live qualification. P-A1 continuation/stop rules,
+spend/call ceilings, checker authority and lineage conditions remain in force.
+
+
+## P-A4 - worker delivery under live returns (2026-09-17 UTC)
+
+Declared after the four preserved second live attempts at
+`runs/pilot/UC*-attempt2-20260917T1424Z`, under REC-20260917-D. P-A4 builds on
+P-A3; it does not rewrite either live occurrence or relax sealed-input, source,
+quote, budget, checker, sandbox, key-handling, or wire-custody authority.
+
+The second attempt reached `ROUTE_VALIDATED` in all four tasks. UC1 then stopped
+at logical call 7, pass 2: the nested `plan` worker received the complete
+7,650-byte input range, was asked for as many as 24 structured steps under a
+4,096-token cap, used exactly 4,096 completion tokens, and returned a 13,209-byte
+prefix with `finish_reason=length`. UC2, UC3 and UC4 reached their
+`evidence_read` workers and completed public JSON under the old 8,192-token cap,
+but the host exhausted one repair and reported `SCHEMA_REJECTED`. Across those
+six responses, all 45 quote strings resolve exactly once to their named exposed
+source. All 29 authored numeric byte locators are false. The model also placed
+nonempty prose in schema-permitted `verification_refs` on UC2 a00 and UC3 a00;
+those model claims are not host verification receipts and remain refused.
+Attempt-2 estimated spend is USD 0.058530000; with attempt 1 it is USD
+0.090225504. Exact bodies, wires, ranges and per-run classifications are in
+`tests/pilot/fixtures/live-20260917/ATTEMPT2-CUSTODY.json` and
+`work/w47/DIAGNOSIS.md`.
+
+### Delivery-tolerant response form
+
+Every call receives its exact JSON Schema plus a filled `response_example`
+built from that call's own task inputs, source IDs and input references. The
+example demonstrates delivery form, not a solved answer. Declared prose fields
+may arrive as a string, a list, or a nested prose object and are normalized to
+the schema's canonical host shape before validation. Fields with declared
+defaults may be omitted. The original provider bytes remain immutable beside
+the normalized host value.
+
+This tolerance does not apply to authority-bearing values. Exact identifiers,
+source IDs, quote bytes, file paths, ranges, enums and unknown fields are never
+normalized into validity. A model-created verification reference remains
+unauthorized. Sealed task equality, source exposure, template input checks,
+dependency order and assembly checks remain exact.
+
+For evidence output, `source_id` and nonempty `quote` remain custody fields. The
+quote must resolve as exact UTF-8 bytes in that exposed source, with no case,
+space, punctuation, Unicode, or ellipsis normalization. `locator` is optional
+prose and is an untrusted model hint. After exact resolution, the host records
+all matching spans, preserves the authored locator in a
+`quote-locations-resolved` event, and supplies a canonical
+`bytes:<start>:<end>` downstream. A false authored numeric range is therefore
+not relabelled true. Zero-match text, an unexposed source ID, an empty required
+quote, or a model-authored verification reference still fails the contract.
+
+### Output ceiling policy
+
+Control roles `route`, `spawn` and `continue_or_stop` use 4,096 completion
+tokens. Worker roles, including nested `plan`, default to 16,384. For each worker
+the host records:
+
+```text
+needed output bound = routed range bytes + other work-product bytes + 4096 framing/prose bytes
+```
+
+The bound relies on the declared conservative premise `tokens <= UTF-8 bytes`;
+it is an output envelope, not a prediction that arbitrary semantic work will
+fit. If `needed <= 16384`, the worker uses 16,384. If it is larger, the host
+raises the request to that route's reviewed maximum. If `needed` exceeds even
+that maximum, `OUTPUT_RANGE_TOO_LARGE` refuses before dispatch and records the
+policy and reason.
+
+For `deepseek-flash`, the reviewed route maximum is 384,000, using the official
+[DeepSeek 384K output statement](https://api-docs.deepseek.com/quick_start/pricing/)
+with a conservative decimal interpretation. For
+`ollama/qwen3.5-397b.native`, 65,536 is a P-A4 host-declared output maximum within
+the [documented 256K total context](https://ollama.com/library/qwen3.5:397b-cloud);
+it is not represented as an official Qwen
+output limit. The complete serialized request must also pass the existing input
+context preflight. Endpoint identity, documentation URL, scope and 2026-09-17
+check date are written into each output policy receipt.
+
+### Ceiling recovery and pass continuation
+
+A worker `CEILING_HIT` records the call, exact public prefix, usage, finish
+reason, range and policy. The prefix is never admitted as a complete worker
+result. If the request was below the route maximum, the host sends the same
+packet and range at the reviewed maximum as a new logical call. If a first
+failure occurs at the maximum on one divisible unit range, the host creates two
+nonempty UTF-8-safe half-ranges, records their exact read receipts, runs bounded
+range workers, and synthesizes their accepted outputs under the original
+schema. For multiple units the largest declared range is divided, with other
+ranges recorded as deferred until synthesis. Public critic/assembly packets
+without a unit are pinned as derived units first. Only an unsplittable UTF-8
+range may be sent once more to establish repeated failure. Partial range
+contributions remain partial; `WORKER_RANGE_INCOMPLETE` refuses an executable
+plan synthesized from incomplete range work. `WORKER_CEILING_REPEATED` stops the pass after a
+second failure of the same declared packet/range and records the reason.
+
+`SCHEMA_REJECTED`, `CEILING_HIT`, `WORKER_CEILING_REPEATED`, and
+`OUTPUT_RANGE_TOO_LARGE` no longer end the run merely because they stop one
+pass. The host creates an unavailable verification result with its exact
+failure reference and preserved children, then gives that result to the normal
+`continue_or_stop` decision. The pilot may stop or select a materially changed
+next pass under the P-A1 call, spend, duplicate-pass and stop-rule guards.
+
+### Three repairs within one logical call
+
+A logical call has initial attempt a00 and at most three schema/custody repairs,
+a01 through a03. Every repair is separately recorded and charged. It retains
+the original source/context and filled example, appends the immediately failing
+public response bytes, and states the exact current validator reason and repair
+number. It corrects delivery only; it is not a transport retry, task rewrite,
+source invention, budget increase, or fresh solution authority. All four
+physical attempts remain one logical call under P-A1 accounting.
+
+If a03 still fails, the host raises `SCHEMA_REJECTED` with the last exact reason
+and stops that pass. The failure becomes verification input for the bounded
+continuation decision, which may route differently on the next pass. The run
+still stops on its owner-set call or spend guard, an explicit pilot stop,
+failure of the continuation control itself, or another concrete recorded
+refusal. Repeated same-range worker failure ends its pass, not the run.
+
+Keys remain environment-only. Hidden reasoning is not persisted. The checker
+sandbox, allowlist, wall/output limits and P-A1 global budgets are unchanged.
+P-A4 is prospective host behavior and offline qualification; it is not evidence
+that a new live attempt succeeds, that more loops are useful, or that this arm
+outperforms a matched multi-call control.
+
+
+## P-A5 - multi-pass references and partial carry-forward (2026-09-17 UTC)
+
+**Status:** prospective offline engineering amendment, resumed after the earlier
+worker was interrupted by provider capacity. P-A3 and P-A4 remain in force.
+Attempt 3 is preserved unchanged: UC1 reached 3 passes/10 logical calls then
+`INPUT_REFERENCE_INVALID`; UC2 stopped after 1 pass/4 calls on an assembly
+host-refusal; UC3 reached 2 passes/10 calls then `PLAN_NEEDS_BOUNDED_LEAF`;
+UC4 reached 2 passes/7 calls then `INPUT_REFERENCE_INVALID`. The 31 logical
+calls used 36 physical attempts and an estimated USD 0.136009704, not a bill.
+The owner's capability and "More loops" priority motivates this change.
+
+### Exact host reference menus and repairs
+
+Before every delivered control/worker call the host generates and persists a
+`reference_menu` at `passes/pNNNN/reference-menus/mNNNN.json`. It lists pinned
+input units, recorded children, assemblies and verification results, with exact
+IDs, byte counts, zero-based end-exclusive ranges, pass numbers, status and
+ready-to-copy `source_read` objects. Prior-pass entries remain available. The
+immutable host-artifact JSON envelope records its kind, original reference,
+status and value; its content hash is the byte-read unit ID.
+
+The namespaces are distinct. Compact `inputs` must select an entire JSON unit
+whose role is `task_input` or `task_derived`; a public-source hash or raw source
+slice is not task JSON. Source reads can select UTF-8-safe ranges of any exposed
+unit, including recorded child/assembly/verification envelopes. Child `cNNNN`
+references are dependency IDs; they are not byte-unit hashes. Nested plans may
+name earlier steps or recorded child results as dependencies. The unchanged
+outer-spawn schema exposes historical records through `source_reads`; it does
+not acquire nested-plan-only `id` or `depends_on` fields.
+
+Spawn/plan reference admission runs inside P-A4's recorded delivery validator.
+An invalid ID, namespace, range, UTF-8 boundary or dependency receives the exact
+failed response and predicate plus the valid-ID menu in a01-a03, within the
+same logical call. No reference is silently aliased or invented. Synthesis and
+worker output references likewise repair against their narrower allowed IDs;
+being listed in the menu alone does not authorize a worker to cite unseen
+bytes or to claim a host verification. Continuation repair names the required
+actual verification ID. Failed repairs retain their original bytes and usage;
+`SCHEMA_REJECTED` becomes pass-failure verification for the next decision.
+
+### Bounded plan repair and recorded host splitting
+
+The planner receives `bounded_leaf_contract`: at most 24 steps (or the lower
+configured fan-out), maximum depth 3, allowed leaf templates `direct_answer`
+and `evidence_read`, optional `decompose_synthesize` only below depth 2, a
+strictly narrower task request per step, and the available unit sizes. A source
+range alone does not make an unchanged parent task narrower. Attempt 3 UC3's
+step16 used `critic_return` outside this template set; its 1,062-byte case source
+was not proven too large. That original failure is not reclassified as a
+measured size overflow.
+
+`PLAN_NEEDS_BOUNDED_LEAF` now gets all three repairs with that explicit bound
+and size list. If the last repair still fails this predicate, the host records
+`host-plan-split`, selects the largest relevant input deterministically (size,
+then unit ID), and partitions its exact bytes into contiguous UTF-8-safe ranges
+of at most 4,096 bytes. Each `direct_answer` leaf receives its exact range read
+and a narrower range-specific task. Sealed context remains available to
+interpret a fragment; the work range does not claim smaller total context.
+The host action records the parent, ranges, compact leaf inputs, failed call
+and failure receipt. Global call/spend, fan-out and depth bounds remain active;
+`PLAN_SPLIT_BOUND` or `CALL_BUDGET` can refuse an undispatchable split. There is
+no random mutation or enlarged budget. Criticism and synthesis remain fallible.
+
+### Partial carry, verification and readable outcomes
+
+A coherent child with host `status=unaccepted`, `output_status=partial` and
+nested `output.status=partial` can be carried. Its refusal reason, answer,
+unresolved work and dependency digest are retained; the child is never
+relabeled accepted or complete. Assembly produces a partial artifact. Nested
+dependents and synthesis inherit partial status and unresolved refusal reasons.
+Failed, cannot-decide or internally contradictory child records remain refused.
+
+The normal checker or configured different-lineage critic runs on that partial
+artifact. `continue_or_stop` receives the artifact and actual verification,
+allowing the model to re-spawn work or change templates while preserving its
+stop rule and declared source authority. It may still choose STOP; extra
+passes are possible, not forced. A run with `status=partial` and at least one
+recorded continuation decision is a readable outcome. `result.json` records
+`readable_outcome`, the CLI exits successfully for that outcome, and `RUN.md`
+explains that readable partial is not whole-task completion. Failed runs and
+partial runs without a recorded decision remain unsuccessful CLI outcomes.
+
+Credentials stay process-environment-only; `--env-file` is refused without
+loading it. The checker sandbox, checker source and limits, global budgets,
+P-A4 output ceilings/three repairs, sealed task authority and recorded usage
+are unchanged. Task JSON and earlier offline companions remain unchanged; new
+`OFFLINE-VALIDATION-PA5` and `RUN-CONTRACT-PA5` companions bind the qualified
+source. Tests replay exact attempt-3 response bodies, execute real host paths
+without provider calls, and exercise historical-artifact reads and repaired
+synthesis. Offline scripted continuation does not establish attempt-4 success,
+semantic merit or an advantage over matched multi-call controls.

@@ -97,16 +97,17 @@ class RecordedCallsTests(unittest.TestCase):
         self.assertTrue((self.root / "repair" / "calls" / "c0001" / "a01" / "decision.json").is_file())
         self.assertFalse((self.root / "repair" / "calls" / "c0001" / "a02").exists())
 
-    def test_second_contract_failure_stops_without_a_third_attempt(self) -> None:
+    def test_fourth_contract_failure_stops_without_a_fifth_attempt(self) -> None:
         calls = RecordedCalls(
             self.root / "twice",
-            scripted=[{"content": "{}"}, {"content": "{}"}],
+            scripted=[{"content": "{}"}] * 4,
         )
         with self.assertRaises(ReasonFailure) as caught:
             calls.call("answer", self.messages, schema=OUTPUT_SCHEMA)
         self.assertEqual(caught.exception.code, "SCHEMA_REJECTED")
-        self.assertEqual(calls.count, 2)
-        self.assertFalse((self.root / "twice" / "calls" / "c0001" / "a02").exists())
+        self.assertEqual(calls.count, 4)
+        self.assertEqual(calls.logical_count, 1)
+        self.assertFalse((self.root / "twice" / "calls" / "c0001" / "a04").exists())
 
     def test_repair_is_the_same_logical_call_but_a_second_attempt(self) -> None:
         calls = RecordedCalls(
@@ -138,7 +139,7 @@ class RecordedCallsTests(unittest.TestCase):
 
     def test_mvp_rejects_native_thinking_and_larger_ceiling_before_attempt(self) -> None:
         calls = RecordedCalls(self.root / "controls", scripted=[])
-        for kwargs in ({"thinking": "native"}, {"max_tokens": 8193}):
+        for kwargs in ({"thinking": "native"}, {"max_tokens": 384001}):
             with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
                 calls.call("answer", self.messages, schema=OUTPUT_SCHEMA, **kwargs)
         self.assertEqual(calls.count, 0)

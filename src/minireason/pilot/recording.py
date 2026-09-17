@@ -15,7 +15,7 @@ from minireason.reason import config
 from minireason.reason.adapter import Adapter
 from minireason.reason.types import ReasonFailure
 
-from .templates import validate
+from .templates import validate, normalize_delivery
 from .inputs import preflight_for_endpoint
 from .budget import Budget, load_price_table
 from .util import digest, strict_loads, write
@@ -32,8 +32,8 @@ def _read_json(path: Path) -> dict[str, Any]:
 class RecordedCalls:
     """Run calls through :class:`Adapter` and bind their public evidence.
 
-    ``count`` counts provider attempts, including the sole schema-repair
-    attempt.  ``receipts`` contains one terminal public receipt per attempt.
+    ``count`` counts provider attempts, including up to three schema-repair
+    attempts.  ``receipts`` contains one terminal public receipt per attempt.
     """
 
     def __init__(
@@ -273,9 +273,23 @@ class RecordedCalls:
             try:
                 parsed = self._parsed(public_content)
                 if schema is not None:
-                    validate(parsed, schema)
+                    parsed = normalize_delivery(parsed, schema)
+                errors = []
+                if schema is not None:
+                    try:
+                        validate(parsed, schema)
+                    except (TypeError, ValueError) as error:
+                        errors.append(str(error))
                 if validator is not None:
-                    validator(parsed)
+                    try:
+                        validator(parsed)
+                    except (TypeError, ValueError, KeyError, IndexError) as error:
+                        # A malformed object can prevent semantic inspection. Its
+                        # schema error remains authoritative; no failed check is accepted.
+                        if not errors or isinstance(error, (TypeError, ValueError)):
+                            errors.append(str(error))
+                if errors:
+                    raise ValueError("; ".join(errors))
             except (TypeError, ValueError) as error:
                 validation_error = str(error)
             provider_record = result.get("record", {})
@@ -336,6 +350,12 @@ class RecordedCalls:
                 response = _read_json(provider_response)
                 failure["usage"] = deepcopy(response.get("usage", {}))
                 failure["returned_model"] = response.get("returned_model")
+                failure["response_path"] = str(provider_response)
+                failure["public_content_sha256"] = hashlib.sha256(response.get("content", "").encode("utf-8")).hexdigest()
+                failure["finish_reason"] = response.get("finish_reason")
+                failure["request_wire"] = self._check_custody(prepared, provider_request)
+                failure["request_path"] = str(provider_request)
+                failure["max_tokens"] = max_tokens
             outcome_path = attempt_dir / "outcome.json"
             if not outcome_path.exists():
                 write(outcome_path, failure)
@@ -348,7 +368,7 @@ class RecordedCalls:
         role: str,
         messages: list[dict[str, Any]],
         seat: str | dict[str, Any] = "deepseek-flash",
-        max_tokens: int = 8192,
+        max_tokens: int = 16384,
         thinking: str = "off",
         schema: Mapping[str, Any] | None = None,
         validator=None,
@@ -357,8 +377,10 @@ class RecordedCalls:
             raise ValueError("role must be a nonempty string")
         if not isinstance(messages, list) or not messages:
             raise ValueError("messages must be a nonempty list")
-        if type(max_tokens) is not int or not 1 <= max_tokens <= 8192:
-            raise ValueError("the MVP max_tokens bound is 1 through 8192")
+        from .delivery import route_maximum
+        maximum = route_maximum(self._endpoint_metadata(seat)["name"])
+        if type(max_tokens) is not int or not 1 <= max_tokens <= maximum:
+            raise ValueError(f"the declared route max_tokens bound is 1 through {maximum}")
         if thinking != "off":
             raise ValueError("the MVP supports thinking='off' only")
         original = deepcopy(messages)
@@ -383,29 +405,28 @@ class RecordedCalls:
         if error is None:
             assert parsed is not None
             return parsed
-        self._check_spend()
-        rejected_path = self.calls_root / call_id / "a00" / "provider" / "call-0001.response.json"
-        rejected = _read_json(rejected_path).get("content", "")
-        repaired_messages = original + [
-            {"role": "assistant", "content": rejected},
-            {"role": "user", "content": f"Your public JSON failed the declared schema: {error}. Return one corrected JSON object only."},
-        ]
-        parsed, second_error, receipt = self._attempt(
-            call_id=call_id,
-            attempt=1,
-            role=role,
-            messages=repaired_messages,
-            seat=seat,
-            max_tokens=max_tokens,
-            thinking=thinking,
-            schema=schema,
-            reason="sole schema repair preserving the rejected public answer and exact checker error",
-            validator=validator,
-        )
-        if second_error is not None:
-            raise ReasonFailure("SCHEMA_REJECTED", "Public result failed its schema after one repair", receipt)
-        assert parsed is not None
-        return parsed
+        for attempt in range(1, 4):
+            self._check_spend()
+            rejected_path = self.calls_root / call_id / f"a{attempt-1:02d}" / "provider" / "call-0001.response.json"
+            rejected = _read_json(rejected_path).get("content", "")
+            # Keep original source context plus the immediately failing exact
+            # public response. Earlier failures remain in immutable attempts.
+            repaired_messages = original + [
+                {"role": "assistant", "content": rejected},
+                {"role": "user", "content": f"Your public JSON failed the declared host contract: {error}. This is schema repair {attempt} of 3. Use the original source/context and filled examples above; correct only failed delivery or custody fields, never invent source text. Source quotations must be copied exactly; use a prose locator if you cannot count UTF-8 bytes. Return one corrected JSON object only."},
+            ]
+            parsed, error, receipt = self._attempt(
+                call_id=call_id, attempt=attempt, role=role,
+                messages=repaired_messages, seat=seat, max_tokens=max_tokens,
+                thinking=thinking, schema=schema,
+                reason=f"schema repair {attempt} of 3 preserving failing public bytes and exact validator reason",
+                validator=validator,
+            )
+            if error is None:
+                assert parsed is not None
+                return parsed
+        raise ReasonFailure("SCHEMA_REJECTED", "Public result failed its contract after three repairs: " + str(error), receipt)
+
 
 
 __all__ = ["RecordedCalls"]

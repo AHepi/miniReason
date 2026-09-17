@@ -8,8 +8,9 @@ from pathlib import Path
 import threading
 from typing import Any, Callable, Mapping
 
+from .assemble import carryable_result
 from .recording import RecordedCalls
-from .templates import OUTPUT_SCHEMA, TEMPLATES, validate, validate_inputs
+from .templates import OUTPUT_SCHEMA, TEMPLATES, validate, validate_inputs, response_example
 from .util import digest, write
 
 
@@ -143,18 +144,26 @@ class SpawnHost:
             + json.dumps(template["output_schema"], ensure_ascii=False, sort_keys=True)
         )
         packet: dict[str, Any] = {"inputs": inputs}
-        if dependencies:
-            packet["accepted_dependencies"] = dependencies
+        accepted_dependencies = [item for item in dependencies if item.get("status") == "accepted"]
+        partial_dependencies = [item for item in dependencies if item.get("status") == "unaccepted"]
+        if accepted_dependencies:
+            packet["accepted_dependencies"] = accepted_dependencies
+        if partial_dependencies:
+            packet["partial_dependencies"] = partial_dependencies
         if resolved_source_reads:
             packet["resolved_source_reads"] = resolved_source_reads
+        from .delivery import output_policy
+        role = f"pilot-{seat['role']}"
+        policy = output_policy(role, packet, seat=seat["model"], task_inputs=self.calls.task_inputs)
+        packet["response_example"] = response_example(template["output_schema"], packet)
         return self.calls.call(
-            role=f"pilot-{seat['role']}",
+            role=role,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": json.dumps(packet, ensure_ascii=False, sort_keys=True)},
             ],
             seat=seat["model"],
-            max_tokens=seat["max_completion_tokens"],
+            max_tokens=policy["max_tokens"],
             thinking=seat["thinking"],
             schema=template["output_schema"],
         )
@@ -176,7 +185,7 @@ class SpawnHost:
                 by_id[item] if item in by_id else self._results[item]
                 for item in task["depends_on"]
             ]
-            if any(item["status"] != "accepted" for item in dependency_results):
+            if any(not carryable_result(item) for item in dependency_results):
                 raise ValueError(f"{task['id']} depends on an unaccepted result")
             resolved_source_reads = []
             for read_index, request in enumerate(task["source_reads"], 1):
@@ -202,6 +211,22 @@ class SpawnHost:
                     output = self.executor(task["template_id"], executor_inputs, depth)
             schema: Mapping[str, Any] = TEMPLATES[task["template_id"]].get("output_schema", OUTPUT_SCHEMA)
             validate(output, schema)
+            output = deepcopy(output)
+            partial_dependencies = [
+                item for item in dependency_results
+                if item.get("status") == "unaccepted" and item.get("output_status") == "partial"
+            ]
+            if partial_dependencies and output.get("status") in {"complete", "partial"}:
+                output["status"] = "partial"
+                for item in partial_dependencies:
+                    reason = item.get("refusal_reason")
+                    if not isinstance(reason, str) or not reason.strip():
+                        reason = "PARTIAL_CHILD_NOT_ACCEPTED: output_status 'partial' is carried without acceptance"
+                    output["unresolved"].append(
+                        f"Partial dependency {item['result_ref']}: {reason.strip()}"
+                    )
+                output["unresolved"] = list(dict.fromkeys(output["unresolved"]))
+                validate(output, schema)
             with self._lock:
                 self._next_result += 1
                 result_ref = f"c{self._next_result:04d}"
@@ -214,6 +239,10 @@ class SpawnHost:
                 "depends_on": list(task["depends_on"]),
                 "output": deepcopy(output),
             }
+            if output_status == "partial":
+                result["refusal_reason"] = (
+                    "PARTIAL_CHILD_NOT_ACCEPTED: output_status 'partial' is carried without acceptance"
+                )
             with self._lock:
                 write(self.children_root / f"{result_ref}.json", result)
                 self._results[result_ref] = deepcopy(result)

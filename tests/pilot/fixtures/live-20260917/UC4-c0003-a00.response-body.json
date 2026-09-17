@@ -1,0 +1,133 @@
+{
+  "status": "partial",
+  "answer": "## Question and respect declared before outcomes\n\n**Question contract.** For each of four notions named in the task — (1) active route, (2) contrast contract, (3) elimination without a truth machine, (4) critical episode — what is the best available mapping onto the *actual fields present in the pilot-offline-episode record*, judged under FW5's own definitions as supplied in FW5-excerpts?\n\n**Respect κ.** The requested respect is *dependent-representation and criticism mapping*: whether the record's own fields instantiate, fail to instantiate, or leave unresolved the structural conditions FW5 states. It is *not* 'did the pilot arrive at the right answer.' A correct answer can occur without any mapped item; a wrong answer could occur with one.\n\n**Boundary.** Semantic source material accessible here = the pinned FW5-excerpts L33–L1372 and the offline episode projection `pilot-offline-episode`. Nothing else. No unread FW5 sections are inferred; the full path `docs/sources/FW5-explanatory-construction.md` is named only as edition identifier, not as accessible text.\n\n**Grain.** Coarse (per-field) rather than fine (per-token history). The episode supplies host metadata labels and a child output; it does not supply port-to-port connections, component relations, recodings, or counterfactual variation.\n\n**Role bindings declared in advance.** Fields used: `events[].choice`, `events[].state`, `child.output.*`, `child.template_id`, `child.status`, `assembly.*`, `terminal.*`, `omissions`. FW5 role bindings to test: actual-occurrence subnetwork ports (L601), declared Σ, κ, 𝒞 (L123), contrast content-changing vs content-preserving case (L630), reasoned episode parts (L773), use-task declarations (L696), reason-use witness as structural map (L628).\n\n**Obligations / contrasts declared before outcomes.** Obligation O1: cite exact FW5 text for each notion. O2: attack each mapping with one concrete counterexample or missing definition. O3: name reversal evidence. Contrasts required by FW5 L630 for any reason-use claim are *content-changing objection*, *content-preserving recoding*, *carrier disturbance* — none is recorded here.\n\n## Mapping plan / selection\n\nCandidate mappings considered: (M1) active route ↔ `events` transitions + `assembly.dependencies`; (M2) contrast contract ↔ `terminal.verification_scope` alone; (M3) elimination without a truth machine ↔ `verify` event + `verification_status`; (M4) critical episode ↔ `omissions` note + `child.status`. Selection: explore M1 and M4 (least hopeless, worth adversarial attack); downgrade M2 and M3 to *unsupported-as-formulated* but worth attacking because they are common misreadings.\n\nPredicted discriminating outcomes: M1 would need port-level subnetwork with a nonconstant dependence; if only SHA refs and choice labels appear, M1 predicts *no active route is recorded*. M4 would need a recognized difficulty, a prior target, a conjectural objection, and a content-sensitive response; if `omissions` explicitly denies these, M4 predicts *no critical episode is recorded*. M2 would need Σ, (1,b₀), κ, 𝒞; if only a scope string exists, M2 predicts *no contrast contract is recorded*. M3 would need ¬O from a test whose schema is T∧B∧I ⇒ O; if only a verification_status string exists, M3 predicts *no test-elimination inference is recorded*.\n\n## Mappings with predictions\n\n| id | notion | mapped record field(s) | prediction if mapping holds |\n|----|--------|------------------------|-----------------------------|\n| M1 | active route | `events` a0001–a0005, `child.depends_on`, `assembly.dependencies[c0001]`, `child.result_ref=c0001` | A connected occurrence subnetwork joining represented input (task) to operative result (answer 42), with nonconstant dependence under declared contrasts. |\n| M2 | contrast contract | `terminal.verification_scope` (\"The answer is the decimal representation of 6 times 7.\") | Should contain Σ ⊆ A×B, distinguished baseline (1,b₀), respect κ, 𝒞 with role/edit specifications. |\n| M3 | elimination without a truth machine | `events.a0005` (verify) + `terminal.verification_status=\"verified\"` | Should be an established ¬O that rules out at least one (T∧B∧I) branch without a truth oracle. |\n| M4 | critical episode | `omissions` note; `child.status=\"accepted\"`; `terminal.status=\"complete\"` | Should contain recognized difficulty, pre-existing target, conjectural objection, content-sensitive response with resulting situation. |\n\n## Targeted attacks\n\n**Attack A1 (M1).** FW5 L601 requires an active route to be \"a connected subnetwork of those actual occurrences joining the named represented input to the named operative result,\" with \"port-to-port connections actually instantiated,\" and adds the dependence clause: \"the subnetwork must also have a nonconstant dependence on the relevant represented distinction under its declared contrasts.\" The record exposes five `events` with `choice` and `state` labels, one child result ref, and one assembly dependency digest. It exposes **no ports, no component relations, no represented distinction, and no declared contrasts**. Missing definition: the record has no representation of \"nonconstant dependence\" to inspect. **Counterexample to M1 as formulated:** any linear transcript with a dependency digest is a connected DAG, so if M1 accepted those, every scripted transcript would trivially contain an active route — which contradicts the L601 clause excluding \"a carrier detail that changes while the represented reason does not change.\" **Revision M1′:** the record contains a *candidate structural skeleton* (a connected host-metadata chain) but **does not record an active route in FW5's sense**, because no represented distinction and no dependence value are exposed. Preserve M1 as rejected-as-formulated; M1′ as the corrected claim. **Reversal evidence:** a record field stating port-to-port connections and a contrast-indexed change in the represented transition would reverse M1′.\n\n**Attack A2 (M2).** FW5 L123 requires Σ, distinguished baseline (1,b₀), κ, and 𝒞 with \"associated role and edit specifications\" fixing \"input changes, component changes, and distinctions material to that question\"; L140 says the question contract \"is not immune\" and changes to it must be recorded. `terminal.verification_scope` is a one-sentence scope string. Missing definition: no κ is named, no 𝒞 is enumerated, no baseline is distinguished. **Counterexample to M2 as formulated:** any verifier-supplied scope string would count, so M2 would make the notion vacuous and contradict L140 (contracts are criticizable and must be recorded when changed). **Revision M2′:** `verification_scope` is an *uninterpreted scope declaration*, not a contrast contract; the record does not contain a contrast contract. **Reversal evidence:** a field enumerating 𝒞 and κ with role/edit specs.\n\n**Attack A3 (M3).** FW5 L661: \"A machine check can establish a limited proposition such as equality with source bytes or validity of a derivation relative to formal premises.\" FW5 L665–L676 give schema T∧B∧I ⇒ O; established ¬O yields ¬(T∧B∧I) and **not** ¬T without further premises. `terminal.verification_status=\"verified\"` asserts a positive check, not an observed ¬O. Missing definition: the record does not state T, B, I, O, nor any observed contradiction. **Counterexample to M3 as formulated:** the pilot's verify event is a *positive* check, and M3 names \"elimination.\" A positive check cannot be elimination of a hypothesis in the K3 sense; treating it as such contradicts L676. **Revision M3′:** the record contains a *bounded machine verification* (L661) of the arithmetic claim. It does **not** record an elimination-without-a-truth-machine inference in the K3 sense. **Reversal evidence:** a recorded ¬O observation together with stated T∧B∧I, or a L1364-style \"fully specified candidate satisfying (E) with true target anchoring... which nevertheless provides no explanatory account.\"\n\n**Attack A4 (M4).** FW5 L773 defines a complete critical episode as \"a recognized difficulty, a represented target available before the criticism of it, a conjectural objection, and a content-sensitive response with a resulting situation.\" L609 requires defect δ, grounds g, and a proposed connection from g to δ relative to a question. L628 requires \"a structural map from the represented objection organization into that suborganization\" preserving role bindings. The record's own `omissions` field states: \"No live hidden organization, no critical objection/return/use episode, no recoding intervention or historical repertoire is recorded here.\" Missing definition: none of the four episode parts is present as a represented organization. **Counterexample to M4 as formulated:** if M4 accepted `child.status=\"accepted\"` as a critical response, then every accepted output would be a critical episode, contradicting L773's conjunctive definition and L777 (\"Closing an episode is an engagement decision... It does not prove that the problem is solved\"). **Revision M4′:** the record contains only a *task-completion event sequence*, and its own `omissions` field **denies** the presence of a critical episode. Preserve M4 as rejected-as-formulated; M4′ as the corrected claim. **Reversal evidence:** a recorded objection with grounds, defect connection, and a response-role suborganization preserving a role binding.\n\n## Source-clause vs missing-criterion vs unsupported-mapping vs instrument-failure\n\n- **Source-clause challenge** (FW5 internal): none raised here. L33, L123, L140, L154, L601, L609, L628, L630, L653, L661, L665–L676, L696, L754, L773, L777, L785, L937, L1052, L1101, L1364, L1368, L1372 are consistent with each other in the excerpts supplied. No contradiction among the pinned clauses is asserted.\n- **Missing application criterion:** for every one of M1–M4, the record lacks the criterion the FW5 clause requires (ports/dependence; Σ,κ,𝒞/baseline; T∧B∧I and ¬O; episode parts). This is *record-side*, not FW5-side.\n- **Unsupported mapping:** M1, M2, M3, M4 as originally formulated are all *unsupported*; corrected versions M1′, M2′, M3′, M4′ are *supported as negative mappings* (the record does not instantiate the notion).\n- **Instrument failure:** none observed. The only instruments touched here are the pinned source texts and the offline projection, both supplied.\n\n## Human-inspectable map / attack / revision table\n\n| notion | field | FW5 clause | attack | corrected claim | preserve | reversal evidence |\n|--------|-------|-----------|--------|-----------------|----------|-------------------|\n| active route | `events` a0001–a0005, `assembly.dependencies` | L601 | no ports, no dependence value | skeleton only; not an active route | M1 rejected | ports + contrast-indexed dependence |\n| contrast contract | `terminal.verification_scope` | L123, L140 | scope string ≠ Σ,κ,𝒞 | uninterpreted scope, not a contract | M2 rejected | Σ,κ,𝒞 with role/edit specs |\n| elimination without truth machine | a0005 verify + `verification_status` | L661, L665–L676 | positive check ≠ ¬O in K3 | bounded machine check only | M3 rejected | ¬O under stated T,B,I; or L1364 counterexample |\n| critical episode | `omissions`, child.status | L609, L628, L773, L777 | missing all four parts; record denies | completion sequence only; no episode | M4 rejected | objection + grounds + response suborganization |\n\n## Next investigation (actionable)\n\n1. **Check for an application criterion.** If the host will accept a continuation, request one *content-changing* variant of the task (e.g., 'What is 6 times 8?') and one *content-preserving recoding* (e.g., 'What is the product of six and seven?') run through the same route, recording contradictions with the original. This is the minimal test of L630's contrast requirement.\n2. **Check for a reason-use witness.** Request a run in which the child output reports an objection with grounds g, defect δ, and a response-role port, then test L628's structural-map preservation.\n3. **Check for elimination.** Request a run with an explicit T∧B∧I schema and an observed ¬O, then test K3's claim at L672.\n4. **Source boundary.** Confirm whether the P-A2 read_source tool exposes any byte range outside FW5-excerpts; the task states it does not. Do not infer unread FW5 content.\n5. **Edition integrity.** The premise records SHA256 `8105925b07db4a17f15c38cbad79aaca16653d94b0503de79756b5ece33ee63a` for the reading edition; the excerpts are supplied as material, not as authority.\n\n## Continuation decisions (provisional self-check proposal only)\n\nPer the task's rule, the RUN_CONTROL below is a **pre-verification proposal**; the authoritative decision must be made by the pilot `continue_or_stop` control after actual verification.\n\n- Pass id: pass-1 (this answer). Artifact ref: to be assigned on assembly. Verification ref/result: not yet produced by an actual verification call; **do not claim a second pass occurred.**\n- Remaining calls: cannot be estimated here; the host must supply remaining logical calls and estimated USD to the continuation decision, per the task's rule.\n- Provisional decision: **CONTINUE**, contingent on a verification ref being returned, because the next investigation steps (1–3) are the only way to move M1′–M4′ from 'record does not instantiate' to 'tested against an intervention,' and none of M1′–M4′ can be reversed by re-reading the same offline projection.\n- Stated reason/stop rule: STOP substantively if the next pass either (a) reverses one of M1′–M4′ with recorded reversal evidence, or (b) hits a concrete tool/evidence blocker (e.g., no `read_source` byte range exists outside FW5-excerpts, or no intervention can be spawned).\n- Unresolved commitments: O1 (done above), O2 (done above), O3 (done above); plus outstanding tests 1–3.\n- Intended next route: request one content-changing and one content-preserving variant through the same direct-answer route; then re-run this mapping against the two new artifacts.\n\n**Distinguish stop types.** A *substantive STOP* would be chosen here only if test (a) or (b) is met or the stated rule is satisfied. A *host resource stop* would be a call/spend ceiling event (max-calls=300 logical, USD 6 default) or missing usable priced usage — this is not a substantive STOP. Any other instrument failure remains a separately identified failure. **No unavailable second pass is claimed above.**",
+  "source_refs": [
+    "FW5-excerpts",
+    "pilot-offline-episode",
+    "docs/sources/FW5-explanatory-construction.md"
+  ],
+  "unresolved": [
+    "No actual verification call has been executed in this response; the verification reference/result is absent.",
+    "Remaining logical calls and estimated USD cannot be computed here; must be delivered by the host to the continuation decision.",
+    "Whether a content-changing or content-preserving variant run is spawnable on this pilot is unknown.",
+    "Whether `read_source` exposes any byte range outside FW5-excerpts is unknown from the supplied material.",
+    "No T∧B∧I schema or observed ¬O is recorded, so K3 elimination cannot be exercised.",
+    "No port-to-port connections or contrast-indexed dependence value are recorded."
+  ],
+  "verification_refs": [],
+  "quotes": [
+    {
+      "claim": "FW5 defines an active route as a connected subnetwork of actual occurrences with port-to-port connections and a nonconstant dependence under declared contrasts.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L601",
+      "quote": "An **active route** is a connected subnetwork of those actual occurrences joining the named represented input to the named operative result. Its designation must satisfy the corresponding component relations and role bindings; it is not inferred from the presence of a similar sentence in a record. For reason-use and contribution claims the subnetwork must also have a nonconstant dependence on the relevant represented distinction under its declared contrasts. A dead branch, a cancelled signal with no downstream role, or a carrier detail that changes while the represented reason does not change cannot supply that dependence."
+    },
+    {
+      "claim": "FW5 defines the scope, distinguished baseline, respect, and contrast contract with role and edit specifications.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L123",
+      "quote": "The target is \\(D\\). The scope \\(\\Sigma\\subseteq A\\times B\\) fixes which edits and boundary conditions are in the claim. The distinguished baseline is \\((1,b_0)\\in\\Sigma\\). The respect \\(\\kappa\\) fixes what is asked: for example, production, inferential identification, impossibility, rule-governed status, achievement of an aim, or aesthetic value. The contrast contract \\(\\mathcal C\\subseteq A\\times B\\), with its associated role and edit specifications, fixes the input changes, component changes, and distinctions material to that question. It includes the baseline and is not identified with a collection of performed experiments."
+    },
+    {
+      "claim": "FW5 requires that the question contract's changes be recorded when it is criticized or replaced.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L140",
+      "quote": "The question contract is not immune. It can be criticized and replaced. What is prohibited is changing it during an assessment without recording the resulting change in what is claimed."
+    },
+    {
+      "claim": "FW5 says a machine check establishes only a limited proposition.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L661",
+      "quote": "A machine check can establish a limited proposition such as equality with source bytes or validity of a derivation relative to formal premises. Its interpretation can have real consequences. A passing execution cannot make the program's specification, the model of the experiment, or the claimed relevance immune to prose criticism."
+    },
+    {
+      "claim": "FW5 gives the K3 schema: an established ¬O yields only ¬(T∧B∧I), not ¬T.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L665-L676",
+      "quote": "For a test whose reasoning is ... \\(T\\land B\\land I\\ \\Longrightarrow\\ O,\\) ... an established \\(\\neg O\\) yields ... \\(\\neg(T\\land B\\land I).\\) ... It does not yield \\(\\neg T\\) without additional premises about \\(B\\) and \\(I\\). Here \\(B\\) can include auxiliaries and \\(I\\) the observation interpretation."
+    },
+    {
+      "claim": "FW5 defines a complete critical episode as four parts.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L773",
+      "quote": "A complete critical episode contains a recognized difficulty, a represented target available before the criticism of it, a conjectural objection, and a content-sensitive response with a resulting situation. The objection need not have actual bearing, and the response need not improve the situation. An incomplete engagement is represented without being called complete."
+    },
+    {
+      "claim": "FW5 defines a criticism as target, defect, grounds, and a proposed connection relative to a question.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L609",
+      "quote": "A criticism has a represented target \\(z\\), an alleged defect \\(\\delta\\), grounds \\(g\\), and a proposed connection from \\(g\\) to \\(\\delta\\) relative to a question."
+    },
+    {
+      "claim": "FW5 defines reason-use witness as a structural map preserving internal role bindings.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L628",
+      "quote": "A reason-use witness is a structural map from the represented objection organization into that suborganization such that content-preserving recodings preserve the interpreted transition, relevant changes to the grounds or alleged defect have the changes specified by the system's operative deliberative rule, and the mapped objection is on an active dependency route of this response occurrence. The map must preserve internal role bindings, not merely the endpoint string."
+    },
+    {
+      "claim": "FW5 requires any reason-use contrast contract to include a content-changing case, a content-preserving recoding, and a carrier-disturbance distinction wherever claimed.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L630",
+      "quote": "Its contrast contract must include a content-changing case, a content-preserving recoding, and the distinction between a change in the objection and an irrelevant carrier disturbance wherever those distinctions are claimed."
+    },
+    {
+      "claim": "FW5 says an observer may lack the data to establish the witness and that makes the attribution unresolved.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L634",
+      "quote": "An observer may lack the data needed to establish the witness. That makes the attribution unresolved; it does not prove either understanding or its absence."
+    },
+    {
+      "claim": "FW5 distinguishes delivery and invitation facts from semantic attributions of actual use, understanding, and criticism.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L640",
+      "quote": "A source's appearance in a prompt is a delivery fact. A named field asking for a criticism is an invitation fact. Actual use of the source as a premise, actual understanding, and actual criticism are semantic attributions."
+    },
+    {
+      "claim": "FW5 requires that an enabling condition identify resources and contributions independently of the success claim.",
+      "source_id": "FW5-excerpts",
+      "locator": "FW5 L1101",
+      "quote": "An enabling condition is inadmissible if its only description is “the conditions under which the system succeeds.” It must identify physically and semantically meaningful resources and contributions independently of that success claim."
+    },
+    {
+      "claim": "The offline projection records only host metadata choices and states, and its own omissions field denies a critical episode.",
+      "source_id": "pilot-offline-episode",
+      "locator": "omissions",
+      "quote": "No live hidden organization, no critical objection/return/use episode, no recoding intervention or historical repertoire is recorded here. JSON field names are host metadata."
+    },
+    {
+      "claim": "The projection's provenance identifies it as a scripted fixture, not a provider observation.",
+      "source_id": "pilot-offline-episode",
+      "locator": "provenance",
+      "quote": "Actual minireason.pilot offline scripted fixture generated by preparer, NOT a provider observation; only this projection is participant-visible."
+    },
+    {
+      "claim": "The terminal record reports a verification status and scope string only.",
+      "source_id": "pilot-offline-episode",
+      "locator": "terminal",
+      "quote": "{\"status\":\"complete\",\"calls\":3,\"mode\":\"offline\",\"verification_status\":\"verified\",\"verification_scope\":\"The answer is the decimal representation of 6 times 7.\"}"
+    },
+    {
+      "claim": "The child output is a direct_answer template with answer 42 and empty source_refs, unresolved, verification_refs.",
+      "source_id": "pilot-offline-episode",
+      "locator": "child.output",
+      "quote": "{\"answer\":\"42\",\"source_refs\":[],\"status\":\"complete\",\"unresolved\":[],\"verification_refs\":[]}"
+    }
+  ],
+  "contradictions": [
+    "M1 as formulated (events chain = active route) contradicts FW5 L601's requirement of port-to-port connections and nonconstant dependence on a represented distinction under declared contrasts.",
+    "M2 as formulated (verification_scope = contrast contract) contradicts FW5 L123's requirement of Σ, (1,b₀), κ, and 𝒞 with role/edit specifications.",
+    "M3 as formulated (verified status = elimination without truth machine) contradicts FW5 L665–L676: a positive check is not an established ¬O and does not yield ¬T.",
+    "M4 as formulated (accepted child output = critical episode) contradicts FW5 L773's conjunctive definition and FW5 L777's remark that closing is an engagement decision, not proof of solution.",
+    "Any claim that a second pass occurred would contradict the explicit task rule and the absence of a verification ref."
+  ],
+  "not_found": [
+    "Port-to-port connections, component relations, or represented input/output ports in the record.",
+    "Any declared contrast Σ, distinguished baseline (1,b₀), respect κ, or contrast contract 𝒞 in the record.",
+    "Any T∧B∧I schema, observed ¬O, or K3 elimination inference in the record.",
+    "Any recognized difficulty, pre-existing represented target, conjectural objection with grounds g and defect δ, or response-role suborganization preserving internal role bindings in the record.",
+    "Any content-changing case, content-preserving recoding, or carrier-disturbance distinction (required by FW5 L630).",
+    "Any recorded §L628 structural map (reason-use witness).",
+    "Any byte range access to FW5 sections outside the pinned excerpts.",
+    "Any actual verification reference or result for this response."
+  ]
+}

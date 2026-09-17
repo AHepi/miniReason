@@ -1252,3 +1252,37 @@ Imported historical lessons author STATUS:
 
 
 2026-09-17T13:54:30.316430+00:00 | REC-20260917-D | root-publisher | P-A2 published:61paths in d09597042709c8e97c56fff4d5431bc629e63d87, tree 303387f000935ed628f3fcb83fc52f7b0be073f6, fetched branch and ls-remote verified. Independent APPROVED-AS-CORRECTED product hashes unchanged; P-A1 published; use cases authorised. Review45 local evidence remains under work by explicit owner exclusion. Next: final P-A2 acknowledgement verification and handoff to orchestrator; no provider execution in this task.17provider-fallback files remain unstaged.
+
+
+### Review43 independent pilot judge - 2026-09-17T16:38:34.078299+00:00
+
+REC-20260917-D: APPROVED-AS-CORRECTED for the uncommitted reading of live attempt 4 and combined P-A3/P-A4/P-A5. Artifact calls retained: UC1 partly (usable shot specification, unusable supplied script); UC2 usable as a fallible draft with a disputed necessity; UC3 partly; UC4 partly as preliminary mapping, no FW5 source challenge. Verification-linked self-piloting is demonstrated only partly; completed later-pass artifact self-correction is NOT FOUND. Current pass/call counts are UC1 4/13 (12 dispatched), UC2 1/4, UC3 1/4, UC4 3/12; 44 physical attempts, 1,400,888 tokens, USD 0.382239564 estimated. Prior attempts remain preserved.
+
+Required independent suites pass: pilot171, reason346 (child TMP/TEMP=C:/tr36), docs pins26; custody/negative repair probes pass. All1,303run hashes and33copy entries match; no key values or persisted hidden reasoning found by bounded scans. Corrected quote coverage and L21/L53 failure-mode attribution; the judge's separate static UC1 checker rejects setattr. No runtime edit, provider call, .env read, Git mutation or runs edit. Review evidence and exact old-to-new corrections: work/review43/INDEX.md and REPORT.md.
+
+REC-20260917-F: L54-L56 appended to docs/lessons/harness-lessons-2026-09.md with unchanged prior prefix: exclude own judge log, replay recorded live bytes before authorized rerun, inspect status before launching a chained reader. Separate F publication section is in work/review43/PUBLISH-CHECKLIST.md. No shared-record wait blocker remained (own review43log excluded); actual-UTC receipts are retained in work/review43/RECORDS.md and the shared ledger/activity.
+
+Next authorized task: separate publisher reviews the exact44reading paths plus3shared docs,130amendment paths, and the separate F lesson commit; excludes all17provider-fallback files and foreign experiments. Import still-deferred author/reader drafts deliberately at actual transfer UTC if needed; do not claim they were previously appended. No new live run is authorized by this judge. Reopen for concrete quote/custody/contract defects or a separately authorized successor; this is bounded task completion, not inquiry exhaustion.
+
+
+REC-20260917-D: appended by publisher at 2026-09-17T16:47:12.959225+00:00; source work/w45/RECORDS.md; original timestamps preserved. Deferred exact paragraph follows.
+
+2026-09-17T12:55:40.932258+00:00 | REC-20260917-D | root-w45 | STATUS LINE DRAFT: P-A2 engineering candidate applied in durable checkout; required pilot/reason/docs suites and4actual-task offline validations pass; exact P-A1-preserved source and explicit changed paths at work/w45/INDEX.md. Independent judge then publisher pending. No provider calls or Git changes; wheel LICENSE package-data outside this mandate remains disclosed.
+
+
+REC-20260917-D: appended by publisher at 2026-09-17T16:47:12.959225+00:00; source work/review45/RECORDS.md; original timestamps preserved. Exact paragraph already present; no duplicate appended.
+
+
+
+REC-20260917-D: appended by publisher at 2026-09-17T16:47:12.959225+00:00; source work/w43/STATUS.md; original timestamps preserved. Deferred exact paragraph follows.
+
+2026-09-17T16:12:32.870924+00:00 | REC-20260917-D | root-w43 | Use-case reading complete; awaiting independent judge and publisher.
+
+Read all four attempt4 outcomes and twelve preserved predecessors without a provider/model call, .env read, Git mutation or run write. Current outcomes: UC1 failed after4 passes/13 logical reservations/18 attempts with INPUT_WINDOW_EXCEEDED (c0013 undispatched); UC2 and UC3 readable partial after1 pass/4 calls/4 attempts each, own STOP; UC4 readable partial after3 passes/12 calls/18 attempts, own STOP with a disputed evidence-blocker premise. Current total33 logical reservations,32 dispatched logical calls,44 physical attempts,1,400,888 tokens, estimatedUSD0.382239564; all16 attempts89 reservations/110 attempts/2,052,686 tokens, estimatedUSD0.608474772. Estimates are not bills.
+
+Owner-use reading: Blender partly usable as shot spec, defective script; story usable with an overstrong HTV-3 caveat; intent partly usable; FW5 partly usable preliminary mapping. All8 current decisions reference verification; no completed later-pass artifact self-correction. Host overrides all first routes and orchestrates assembly/verification. One proposed change: host-validated executable repair-action menu; question whether a verify-identified defect then yields an accepted revised artifact with valid inputs/source bindings. No full-Astra replacement, loop advantage or FW5 refutation established.
+
+Deliverables: research/deepseek-flash-pilot/REPORT-usecases.md, readings/pilot-uc/{UC1,UC2,UC3,UC4,SUMMARY,OWNER-READING}.md and evidence/uc/. Original1,303 files/116,651,073 bytes unchanged;33 small copied artifacts/decisions/extractions total147,088 bytes; no detected secret values. Final verification and explicit44-path handoff are under work/w43. Next authorized task: judge these readings and the exact evidence scope, then separate publisher imports the deferred REC-20260917-D/STATUS receipts at real transfer UTC and publishes only approved paths. No publication acknowledgement is claimed. Reopen for a concrete evidence/custody error or a separately authorized successor, not because a resource boundary means exhaustion.
+
+
+2026-09-17T16:49:17.415355+00:00 | REC-20260917-D | root-publisher | Review43 APPROVED-AS-CORRECTED: four live attempt4 use-case readings and P-A3/P-A4/P-A5 are ready for the requested177-path branch delivery. Deferred W43 and missing W45 STATUS text transferred exactly; already-published P-A2 author/judge/activity records verified without duplicate import. Current next task: complete normal D delivery and acknowledgement, then separate F L54-L56 delivery/acknowledgement. No provider call; final publication verification pending. Earlier imported pending-judge language remains historical.
