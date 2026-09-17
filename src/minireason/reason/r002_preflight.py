@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 import re
 from decimal import Decimal, ROUND_HALF_UP
-from .config import R002_DIR, R002_RECIPE_SHA256
+from .config import (R002_DIR, R002_RECIPE_SHA256, R003_DIR, R003_PROFILE,
+                     R003_RECIPE_SHA256, R003_SCHEMA_SHA256)
 from .storage import get, sha
 from .types import ReasonFailure
 
@@ -130,7 +131,68 @@ def capability_snapshot(review_receipt="UNREVIEWED", *, checker_backend_qualifie
             "review_receipt": review_receipt}
 
 
-def validate_capability(capability, condition, mode="live"):
+def r003_capability_snapshot(review_receipt="UNREVIEWED"):
+    """Describe the exact additive R003 profile without weakening R002 pins."""
+    for folder, pins in (("contracts", R003_SCHEMA_SHA256), ("recipes", R003_RECIPE_SHA256)):
+        for name, digest in pins.items():
+            if hashlib.sha256((R003_DIR / folder / name).read_bytes()).hexdigest() != digest:
+                raise ReasonFailure("CAPABILITY_REFUSED", "Versioned R003 " + folder + " bytes changed")
+    reason_dir = Path(__file__).resolve().parent
+    runtime_names = ("adapter.py", "config.py", "engine.py", "prompts.py", "r002.py",
+                     "r002_custody.py", "r002_preflight.py", "r002_reports.py", "storage.py", "types.py")
+    from .r002_custody import prompt_snapshot
+    prompt_text = json.dumps(prompt_snapshot(R003_PROFILE), ensure_ascii=False,
+                             sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return {
+        "schema": "minireason.reason.engine-capability.v1",
+        "capability": R003_PROFILE,
+        "prompt_contract": R003_PROFILE,
+        "strict_attempt_policy": True,
+        "maximum_cycles": 3,
+        "canonical_only_custody": True,
+        "checker_execution": False,
+        "stall_switch": False,
+        "schema_repairs_per_loop_logical_call": 1,
+        "native_schema_repairs": 0,
+        "decomposed_closing": True,
+        "prompt_token_cap": 32768,
+        "schema_sha256": dict(R003_SCHEMA_SHA256),
+        "inherited_r002_schema_sha256": dict(R002_SCHEMA_SHA256),
+        "recipe_sha256": dict(R003_RECIPE_SHA256),
+        "prompt_snapshot_sha256": hashlib.sha256(prompt_text.encode("utf-8")).hexdigest(),
+        "runtime_sha256": {name: hashlib.sha256((reason_dir / name).read_bytes()).hexdigest()
+                           for name in runtime_names},
+        "cli_sha256": hashlib.sha256((REPO_ROOT / "tools" / "reason.py").read_bytes()).hexdigest(),
+        "launcher_sha256": hashlib.sha256((R003_DIR / "run_R003.py").read_bytes()).hexdigest(),
+        "provider_sha256": {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                            for path in sorted(reason_dir.parent.glob("provider*.py"))},
+        "endpoints_sha256": hashlib.sha256(
+            (reason_dir.parents[0] / "data" / "endpoints.json").read_bytes()).hexdigest(),
+        "review_receipt": review_receipt,
+    }
+
+
+def validate_capability(capability, condition, mode="live", study_profile=None):
+    if study_profile == R003_PROFILE:
+        if condition not in {"NATIVE", "LOOP-CROSS", "LOOP-DECOMPOSED"}:
+            raise ReasonFailure("CAPABILITY_REFUSED", "Condition is outside R003 occurrence 1")
+        if capability is None and mode == "offline":
+            return r003_capability_snapshot("OFFLINE FIXTURE: unreviewed engineering")
+        data = _object(capability)
+        expected = r003_capability_snapshot()
+        if not isinstance(data, dict) or set(data) != set(expected):
+            raise ReasonFailure("CAPABILITY_REFUSED", "Missing or extra R003 capability fields")
+        for key, value in expected.items():
+            if key == "review_receipt":
+                continue
+            if json.dumps(data[key], sort_keys=True) != json.dumps(value, sort_keys=True):
+                raise ReasonFailure("CAPABILITY_REFUSED", "R003 capability or source pin mismatch: " + key)
+        receipt = data["review_receipt"]
+        if (not isinstance(receipt, str) or not receipt.strip()
+                or mode == "live" and any(word in receipt.upper() for word in
+                                           ("UNREVIEWED", "OFFLINE", "PLACEHOLDER", "PENDING"))):
+            raise ReasonFailure("CAPABILITY_REFUSED", "R003 reviewed capability receipt absent")
+        return data
     if capability is None and mode == "offline":
         return capability_snapshot("OFFLINE FIXTURE: unreviewed engineering")
     data = _object(capability)
@@ -150,6 +212,14 @@ def validate_capability(capability, condition, mode="live"):
     if mode == "live" and condition == "LOOP-CHECKER" and not data["checker_backend_qualified"]:
         raise ReasonFailure("CHECKER_UNQUALIFIED", "Live checker requires the reviewed host backend")
     return data
+
+
+def validate_r003_launch_inputs(capability, tokenizer_pins, condition):
+    """Pure launcher gate: validate reviewed files before any call intent or key load."""
+    return {
+        "capability": validate_capability(capability, condition, "live", R003_PROFILE),
+        "tokenizers": snapshot_tokenizers(tokenizer_pins, "live"),
+    }
 
 
 def _conservative_evidence(data):

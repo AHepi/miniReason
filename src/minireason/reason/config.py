@@ -84,6 +84,9 @@ def lineage(seat: str | dict, endpoints_data: dict | None = None) -> str:
     return endpoint_for(seat, endpoints_data).family.rsplit("/", 1)[-1]
 
 def validate_recipe(data: dict[str, Any]) -> None:
+    if isinstance(data, dict) and data.get("schema_version") == "minireason.reason.recipe.r003-open-v1":
+        validate_r003_recipe(data)
+        return
     if isinstance(data, dict) and data.get("schema_version") == "minireason.reason.recipe.r002-proposed.v1":
         validate_r002_recipe(data)
         return
@@ -160,6 +163,19 @@ def load_recipe(name_or_path: str | Path) -> dict[str, Any]:
 R002_DIR = Path(__file__).resolve().parents[3] / "experiments" / "diagnostics" / "R002-episodes-under-calibrated-difficulty"
 R002_RECIPE_SHA256 = {'r002-carrier-v1.json': '56529db41ba2ae8bd16bc0440bbabd39450bd3c584a15b7be603b2b909a3af92', 'r002-checker-v1.json': 'dc89e15b9643ec7962da2906fb2f82e830a56b510400ac846f849289121c78f4', 'r002-cross-match-v1.json': '38616a0aaf40ce2f58cb117266fc8dbe08b7d5b5551a52c1efae5d86acb26c91', 'r002-cross-v2.json': '87c0eae4fdc72af755f9532d1dfe2e857a854e1e8589feb3a7c5c239f0e4361f', 'r002-decomposed-v1.json': '30826917e8c80958098c2b5773c3a0cbe229ef02fc1e0cf53c83664ffa54ed8c', 'r002-decomposed-v2.json': '0ea36902417fa00bbf85ac98b10a0b4bd0b94319a3807235b924e14fa654bf01', 'r002-native-match-v1.json': '3a75c0a3560ed09e3321c61f5c28f6b34cf215dbdcc4eb65ace885ab02136b8e', 'r002-recoded-v1.json': 'ddae570a2b68373c6cf5e6f30d17f9c97ed874577c066be3b3155bc3e215f3fd', 'r002-tested-cross-v1.json': 'dc1fc3c1f0bfe28ec320c9ad40f038bc7565f1d27f2d97c30454863b03441fec'}
 
+R003_PROFILE = "r003-open-v1"
+R003_DIR = Path(__file__).resolve().parents[3] / "experiments" / "diagnostics" / "R003-open-problems-trial-series"
+R003_RECIPE_SHA256 = {
+    "r003-cross-v1.json": "c1c259b3ac2dd9604e54bf45dcda283921d6526e788fa44be6485d3e0a84b3ab",
+    "r003-decomposed-v1.json": "78bd32b6e3c0f018e936b42e97279c49ad09068fd16878d562755c0f53af8e26",
+}
+R003_SCHEMA_SHA256 = {
+    "canonical-registry.schema.json": "b5c7f53888ba2bdbf9eb9f66240fe3ce68e066bdeb128eddf203c6b0e725d9e2",
+    "decomposed-closing.schema.json": "8656aef5ee7f03c2333abb7bf5b08a72b2b74cbe640faf8931cdbc2e7f65a67b",
+    "forks.schema.json": "add7e5f12e6cd314ede05d0b0cd8924d3f5e7a35e0ede6470d136c7f08f3eed0",
+    "r003-relations.schema.json": "643777658c0bb2f2dca9966e59af8a947b6dae0b53d79ed5e7b7a584f5ae9e94",
+}
+
 
 def validate_r002_recipe(data: dict[str, Any]) -> None:
     """Accept exactly a judged recipe, never silently adapt a historical one."""
@@ -180,4 +196,28 @@ def validate_r002_recipe(data: dict[str, Any]) -> None:
 def load_r002_recipe(name_or_path):
     snapshot = load_recipe(name_or_path)
     validate_r002_recipe(snapshot["data"])
+    return snapshot
+
+
+def validate_r003_recipe(data: dict[str, Any]) -> None:
+    """Accept only the separately versioned R003 occurrence-1 recipes."""
+    filename = str(data.get("name", "")) + ".json"
+    if data.get("study_profile") != R003_PROFILE or filename not in R003_RECIPE_SHA256:
+        raise ReasonFailure("CONFIG_ERROR", "Unknown R003 recipe identity")
+    path = R003_DIR / "recipes" / filename
+    if hashlib.sha256(path.read_bytes()).hexdigest() != R003_RECIPE_SHA256[filename]:
+        raise ReasonFailure("CONFIG_ERROR", "Versioned R003 recipe bytes changed")
+    if data != json.loads(_read(path)):
+        raise ReasonFailure("CONFIG_ERROR", "R003 recipe differs from the versioned condition")
+    if data.get("condition") not in {"LOOP-CROSS", "LOOP-DECOMPOSED"}:
+        raise ReasonFailure("CONFIG_ERROR", "R003 occurrence 1 admits only CROSS and DECOMPOSED loops")
+    for seat in data["seats"].values():
+        endpoint_for(seat)
+        thinking_for(seat)
+        reasoning_effort_for(seat)
+
+
+def load_r003_recipe(name_or_path):
+    snapshot = load_recipe(name_or_path)
+    validate_r003_recipe(snapshot["data"])
     return snapshot

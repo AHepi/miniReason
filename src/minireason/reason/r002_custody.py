@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
+import re
 from .storage import read, put, get, sha
 from .types import ReasonFailure
 from .r002_preflight import R002_SCHEMA_SHA256
@@ -10,7 +11,7 @@ from .r002_preflight import R002_SCHEMA_SHA256
 ROLES = ("answer", "prose_critic", "tested_critic", "prose_return", "tested_return",
          "propagation_use", "blind_coding_solve", "native_match_note", "native_match_synthesis",
          "initial_decompose", "decomposed_step", "decomposed_critic",
-         "decomposed_return", "decomposed_use", "decomposed_synthesis")
+         "decomposed_return", "decomposed_use", "decomposed_synthesis", "decomposed_closing")
 
 
 def _refuse(detail):
@@ -89,20 +90,79 @@ def validate_coding(path, manifest, problem_id, problem, relation, fork):
     return texts
 
 
-def prompt_snapshot():
-    from .prompts import R002_SYSTEM, R002_SUFFIXES
-    return {role: R002_SYSTEM + "\n" + R002_SUFFIXES[role] for role in ROLES}
+def validate_r003_canonical(path, manifest, problem_id, problem):
+    """Bind an occurrence-local canonical problem copy without opening coded material."""
+    if path is None or manifest is None:
+        raise ReasonFailure("CONFIG_ERROR", "R003 requires a file-backed canonical registry")
+    expected_keys = {"schema_version", "study_profile", "candidates"}
+    if (not isinstance(manifest, dict) or set(manifest) != expected_keys
+            or manifest.get("schema_version") != "minireason.reason.r003-canonical-registry.v1"
+            or manifest.get("study_profile") != "r003-open-v1"):
+        _refuse("R003 canonical registry header is invalid")
+    candidates = manifest.get("candidates")
+    if not isinstance(candidates, list) or not 1 <= len(candidates) <= 8:
+        _refuse("R003 canonical registry must contain one to eight candidates")
+    ids = [row.get("candidate_id") for row in candidates if isinstance(row, dict)]
+    if (len(ids) != len(candidates) or len(ids) != len(set(ids))
+            or any(not re.fullmatch(r"O0[1-8]", value or "") for value in ids)):
+        _refuse("R003 canonical candidate IDs are invalid or duplicated")
+    base = Path(path).resolve().parent
+    for row in candidates:
+        if set(row) != {"candidate_id", "canonical_problem", "problem_sha256"}:
+            _refuse("R003 canonical candidate fields are incomplete or unexpected")
+        row_id = row["candidate_id"]
+        row_path = f"p/{row_id}.txt"
+        digest = row.get("problem_sha256")
+        if row.get("canonical_problem") != row_path:
+            _refuse("R003 canonical problem path is not occurrence-local")
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            _refuse("R003 canonical problem hash is invalid")
+        if hashlib.sha256(_scoped(base, row_path).read_bytes()).hexdigest() != digest:
+            _refuse("R003 canonical problem hash mismatch: " + row_id)
+    matches = [row for row in candidates if row["candidate_id"] == problem_id]
+    if len(matches) != 1:
+        _refuse("R003 canonical registry candidate is absent or duplicated")
+    entry = matches[0]
+    expected_path = f"p/{problem_id}.txt"
+    digest = entry.get("problem_sha256")
+    source = _scoped(base, expected_path)
+    if read(source) != problem:
+        _refuse("Working problem differs from the occurrence canonical copy")
+    return dict(entry), {
+        "schema": "minireason.reason.r003-canonical-custody.v1",
+        "study_profile": "r003-open-v1",
+        "candidate_id": problem_id,
+        "source_registry_sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest(),
+        "source_problem_path": expected_path,
+        "source_problem_sha256": digest,
+        "run_problem_path": "problem.txt",
+        "run_problem_sha256": digest,
+    }
+
+
+def prompt_snapshot(study_profile=None):
+    from .prompts import R002_SYSTEM, R002_SUFFIXES, R003_SYSTEM, R003_SUFFIXES
+    system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM
+    suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES
+    roles = ROLES if study_profile == "r003-open-v1" else tuple(
+        role for role in ROLES if role != "decomposed_closing")
+    return {role: system + "\n" + suffixes[role] for role in roles}
 
 
 def freeze_inputs(directory, cfg):
     directory = Path(directory)
-    put(directory / "prompt-contract.json", prompt_snapshot())
+    study_profile = cfg.get("study_profile")
+    put(directory / "prompt-contract.json", prompt_snapshot(study_profile))
     cfg["frozen_inputs"] = {p.relative_to(directory).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                             for p in sorted(directory.rglob("*")) if p.is_file()}
-    expected = {"contracts/" + name for name in R002_SCHEMA_SHA256}
+    expected_pins = dict(R002_SCHEMA_SHA256)
+    if study_profile == "r003-open-v1":
+        from .config import R003_SCHEMA_SHA256
+        expected_pins.update(R003_SCHEMA_SHA256)
+    expected = {"contracts/" + name for name in expected_pins}
     if {name for name in cfg["frozen_inputs"] if name.startswith("contracts/")} != expected:
         _refuse("Frozen schemas are missing or unexpected")
-    for name, digest in R002_SCHEMA_SHA256.items():
+    for name, digest in expected_pins.items():
         if cfg["frozen_inputs"]["contracts/" + name] != digest:
             _refuse("Copied schema bytes differ from the published contract")
     put(directory / "config.json", cfg)
@@ -119,9 +179,12 @@ def validate_frozen_inputs(directory):
             if hashlib.sha256(_scoped(directory, name).read_bytes()).hexdigest() != digest:
                 _refuse("Saved R002 input changed: " + name)
         expected = set(R002_SCHEMA_SHA256)
+        if cfg.get("study_profile") == "r003-open-v1":
+            from .config import R003_SCHEMA_SHA256
+            expected.update(R003_SCHEMA_SHA256)
         if {p.name for p in (directory / "contracts").glob("*.schema.json")} != expected:
             _refuse("Saved schema inventory changed")
-        if get(directory / "prompt-contract.json") != prompt_snapshot():
+        if get(directory / "prompt-contract.json") != prompt_snapshot(cfg.get("study_profile")):
             _refuse("R002 prompt implementation changed; create a separately identified occurrence")
         return cfg
     except ReasonFailure:

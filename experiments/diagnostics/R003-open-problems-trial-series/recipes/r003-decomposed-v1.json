@@ -1,0 +1,36 @@
+{
+  "schema_version": "minireason.reason.recipe.r003-open-v1",
+  "status": "PROSPECTIVE_REQUIRES_REVIEWED_CAPABILITY",
+  "name": "r003-decomposed-v1",
+  "study_profile": "r003-open-v1",
+  "condition": "LOOP-DECOMPOSED",
+  "contract_version": "r003-open-v1",
+  "cycles": 3,
+  "stop": "all_planned_steps_accepted_then_synthesis_else_step_unresolved_or_three_step_budget",
+  "closing_return": "once_after_synthesis_or_semantic_terminal_with_completed_cycle",
+  "attempt_policy": {"schema_repairs": 1, "native_fallbacks": 0, "transport_retries": 0},
+  "ceilings": {
+    "off_completion_tokens": 16384,
+    "critic_completion_tokens": 32768,
+    "native_completion_tokens": 32768,
+    "prompt_tokens": 32768,
+    "wall_seconds": 300,
+    "logical_calls": 14,
+    "base_attempts": 14,
+    "attempts": 28,
+    "base_completion_tokens_total": 376832,
+    "completion_tokens_total": 753664
+  },
+  "seats": {
+    "initial": {"endpoint": "deepseek-flash", "thinking": "native", "reasoning_effort": "medium", "role": "initial_decompose", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/initial-decompose.schema.json"},
+    "step": {"endpoint": "deepseek-flash", "thinking": "off", "reasoning_effort": "medium", "role": "decomposed_step", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-step.schema.json"},
+    "critic_cycle_1": {"endpoint": "ollama/qwen3.5-397b.native", "thinking": "off", "reasoning_effort": "medium", "role": "decomposed_critic", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/tested-objection.schema.json"},
+    "critic_cycle_2": {"endpoint": "ollama/qwen3.5-397b.native", "thinking": "off", "reasoning_effort": "medium", "role": "decomposed_critic", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/tested-objection.schema.json"},
+    "critic_cycle_3": {"endpoint": "ollama/qwen3.5-397b.native", "thinking": "off", "reasoning_effort": "medium", "role": "decomposed_critic", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/tested-objection.schema.json"},
+    "return": {"endpoint": "deepseek-flash", "thinking": "native", "reasoning_effort": "medium", "role": "decomposed_return", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-return.schema.json"},
+    "use": {"endpoint": "deepseek-flash", "thinking": "off", "reasoning_effort": "medium", "role": "decomposed_use", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/decomposed-use.schema.json"},
+    "synthesis": {"endpoint": "deepseek-flash", "thinking": "native", "reasoning_effort": "medium", "role": "decomposed_synthesis", "schema": "../../R002-episodes-under-calibrated-difficulty/contracts/answer.schema.json"},
+    "closing": {"endpoint": "deepseek-flash", "thinking": "native", "reasoning_effort": "medium", "role": "decomposed_closing", "schema": "../contracts/decomposed-closing.schema.json"}
+  },
+  "step_contract": {"plan_steps_max": 8, "cycles_max": 3, "steps_per_cycle": 1, "goal_characters_max": 256, "derivation_characters_max": 2000, "result_characters_max": 512}
+}

@@ -138,3 +138,113 @@ No provider/model call was made. No .env content was read. No real network/prohi
 ```
 
 Current verdict is draft-publication approval only, subject to REPORT.md in work/review25. ENGINEERING-SPEC.md names absent support; briefs and valid seals remain NOT FOUND. No participant occurrence is minted by these isolated offline verification fixtures.
+
+
+## W28 occurrence-1 instrument qualification - 2026-09-17T04:49:36.484823+00:00
+
+REC-20260917-B. This separately dated supplement preserves every earlier validation byte. It reports offline engineering observations only, not participant findings or semantic improvement. HEAD found and retained: `40e2ff3c729e9961db88c8112a851ec1ca7f968e`, branch `claude/project-state-direction-j5rbun`. No provider/model API call, actual `.env` read, Git mutation, `runs/` write or actual brief access occurred. Existing docs were left to the concurrent reader; the requested workflow append and ledger/STATUS text are staged under `work/w28` for the judge.
+
+Implemented the additive `r003-open-v1` profile using shared strict R002 calls/storage/preflight and the published A2 one-repair mechanism. New independently pinned recipes are `r003-cross-v1.json` and `r003-decomposed-v1.json`; the earlier draft recipes/plans/source pins remain unchanged. Canonical-only O01-O08 registry custody uses exact occurrence-local `p/ONN.txt` hashes, with participant step/quote labels, prose check contents, no oracle/admission/recoding/checker route and no string-equality semantic gate. Native has no repair; both loops have at most14 logical calls/28 attempts. Decomposition has a distinct closing response after completed-cycle semantic terminals, preserves accepted steps, and never closes after zero-cycle or fatal delivery/resource failure. Its partial/suspended stop reasons remain visible and are not classified as failed delivery.
+
+Actual scripted launcher-to-CLI-to-engine integration ran O01 and O02 across NATIVE, LOOP-CROSS and LOOP-DECOMPOSED. Each native delivered1call/1attempt; each CROSS delivered14calls/15attempts including one prose critic repaired once on the same seat/ceiling; each decomposition delivered14calls/14attempts with3accepted steps and separate synthesis/closing. Total58logical calls/60offline attempts. Criticism contents remain fallible prose; passing schema/custody never adjudicates them. The fixture also proves zero-repair native failure, preserved failed-cell evidence and separately numbered successor, exact resume skipping, semantic partial/zero-cycle terminal handling, and no network/env-file access through these integrated paths. Additional focused tests cover second schema failure, fatal/no-close paths, canonical path/hash drift, capability gates, missing/malformed/future seals using fixture files only, source/input/argv/output drift and indeterminate-intent refusal. The projected longest actual evidence path under the default `C:/Dev/miniReason/runs/R003-open-v1/o001` is106characters, strictly below200.
+
+Final requested qualification: **290/290 reason tests pass;26/26 docs-pin tests pass**. Final focused changed-surface suite passes20/20 (included in the290); a subsequent selected-row canonical hardening passed its6/6 engine tests and is included in the290. The `FAILED rc=2` and `CONFIG_ERROR` messages below are deliberate negative fixtures inside passing tests. Earlier preparatory interface/path/seal fixture failures were corrected and retained in `work/w28/ERRATA-AND-LESSONS.md` and linked agent transcripts. Nothing failing is omitted or relabelled as a live observation.
+
+Exact requested command/output transcript:
+
+```text
+2026-09-17T04:43:49.383913+00:00
+C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+...............................................................CONFIG_ERROR
+...................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 290 tests in 116.326s
+
+OK
+Run directory: C:\Dev\miniReason\work\w28\evidence\cli\a9652ebd
+{"run_id": "20260917T044412Z-r002-e8f414", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260917T044412Z-r002-e8f414", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+O01-n: COMPLETE rc=0
+O01-x: FAILED rc=2
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: FAILED rc=2
+O02-d: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O01-n: FAILED rc=2
+O01-n: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+
+EXIT_CODE=0
+
+2026-09-17T04:24:23.803522+00:00
+C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.023s
+
+OK
+
+EXIT_CODE=0
+```
+
+Separate read-only internal engineering acceptance found no remaining actionable issue; it is not the following user's judge or a live dispatch approval. Exact source/test/problem/public-registry pins are in `SOURCE_PINS.instrument-v1.json`; `work/w28/R003-CAPABILITY-CANDIDATE.json` matches those current runtime bytes and is deliberately live-refused pending independent review. The actual brief seal was not opened or qualified. The complete detached eight-problem/three-condition command, required judged files and budget projection are in `work/w28/OCC1-LAUNCH.md`; no live command was executed. EC01 remains deferred. Protected-byte audit and full handoff index: `work/w28/INDEX.md`.
+
+
+## Independent instrument judge, REC-20260917-B - 2026-09-17T05:13:12.468879+00:00
+
+APPROVED-AS-CORRECTED for publication and occurrence-1 engineering launch readiness. No live provider/model call, actual .env content read, actual sealed ONN.md brief open, Git mutation or runs write occurred. Frozen PLAN, historical validation prefix, R001/R002 recipes and published R002 evidence remain unchanged. The R002 launcher changes only by additive fixture roots/error text; existing experimental behavior is preserved.
+
+Corrections: admit the requested judge fixture paths and preserve TMP; accept the existing immutable custodian seal schema without a hand-made replacement; carry the latest delivered disputed step into partial decomposed closure with explicit acceptance status; bind the R003 launcher/provider sources in the reviewed capability; apply the staged engineer workflow and replace stale refused-target command documentation. Detailed path:line findings, exact old -> new patches and all probes: work/review28/INDEX.md and REPORT.md. The original engineering source pins remain untouched; SOURCE_PINS.instrument-v2.json and R003-CAPABILITY.json describe the final judged bytes. launch-occurrence-1.ps1 is complete and parsed without execution.
+
+Required suites (Python3.11, PYTHONPATH=src;tests, UTF8, TMP=C:/tr28, MINIREASON_TEST_WORK=work/review28/evidence):
+
+```text
+-m unittest discover -s tests/reason -t .
+Ran 295 tests in 109.887s
+OK (exit 0)
+
+-m unittest tests.loop.test_docs_pins -v
+Ran 26 tests in 0.018s
+OK (exit 0)
+```
+
+Full transcripts: work/review28/reason-full-final.txt and docs-pins.txt. Five new judge regressions are included in295. Negative fixtures intentionally record failed cells inside passing no-replay tests. One earlier full-suite run failed12assertions and2errors because the judge incorrectly placed legacy dummy env-file fixtures outside the repository; production correctly refused that path. Correcting the test environment, not weakening credential admission, yielded the passing suite. The earlier transcript and all pre-fix probes remain preserved.
+
+Exact final direct launcher invocation:
+
+```powershell
+$env:PYTHONPATH='src;tests'
+$env:PYTHONUTF8='1'
+$env:PYTHONIOENCODING='utf-8'
+$env:TMP='C:/tr28'
+& 'C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe' -B -X utf8 experiments/diagnostics/R003-open-problems-trial-series/run_R003.py new --series C:/tr28/direct-offline --problems O01 O02 --conditions NATIVE LOOP-CROSS LOOP-DECOMPOSED --question 'Do the exact six offline CLI cells terminate with preserved manifests and no key access?' --mode offline --env-file .env
+```
+
+```text
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+occurrence=C:/tr28/direct-offline/o002; FINISHED; rows=6; failed=0
+status and terminal resume: exit0; entire occurrence byte-identical
+```
+
+This is the default cannot-decide fixture, not a substantive answer. Earlier o001 is retained under its earlier source identity. Full scripted launcher/CLI/shared-engine qualification separately created C:/tr28/scripted-final/o001: each native1logical/1attempt, each CROSS14/15 with one same-seat prose-critic repair, each decomposed14/14 with three accepted steps, synthesis and closing. Total58logical/60attempts, zero checker/stall, all6cells complete, terminal resume byte-identical, maximum projected default-run path106characters. Full transcript and hashes: work/review28/scripted-matrix-final-qualified.txt and SCRIPTED-MATRIX.json.
+
+Legacy-v1, public-working-v2 and all R002 prompt maps/render/repair probes match HEAD byte for byte. R003 continues to call shared r002._call for A2 repair and transport/preflight; it does not duplicate those mechanisms. EC01 is NOT FOUND by design: ENGINEERING-SPEC.md explicitly defers it to occurrence2.
+
+The existing seal metadata hash matches seal-001.json and the custodian's ledger record; all8problem hashes and brief file-presence/sizes match. The judge did not reopen actual brief bytes; the live gate will hash them before dispatch. Exposure and same-reader custody limitations remain declared. Capability and conservative tokenizer validation pass for all3conditions without provider initialization. All launch inputs now exist; .env presence/ignore status was checked without inspecting credentials. This establishes instrument readiness, not valid credentials, provider availability, independent-staffed custody or scientific success. Publication and actual dispatch remain separate and unperformed.

@@ -30,6 +30,7 @@ ROLE_SCHEMAS = {
     "decomposed_return": "decomposed-return.schema.json",
     "decomposed_use": "decomposed-use.schema.json",
     "decomposed_synthesis": "answer.schema.json",
+    "decomposed_closing": "decomposed-closing.schema.json",
     "prose_critic": "prose-objection.schema.json",
     "tested_critic": "tested-objection.schema.json",
     "prose_return": "prose-return.schema.json",
@@ -203,7 +204,7 @@ def _claim_map(claims: list[dict]) -> dict[str, Any]:
     return result
 
 
-def validate_answer(data: dict, relation: dict) -> dict:
+def validate_answer(data: dict, relation: dict, *, study_profile=None) -> dict:
     _validate_steps(data["derivation_steps"])
     claims = _claim_map(data["claims"])
     expected = {item["relation_id"] for item in relation["relations"]}
@@ -212,18 +213,37 @@ def validate_answer(data: dict, relation: dict) -> dict:
     for claim in data["claims"]:
         if claim["quote"] not in data["answer"]:
             raise ReasonFailure("SCHEMA_FAILURE", "Claim quote is absent from answer")
+        if (study_profile == config.R003_PROFILE
+                and claim["relation_id"] == "working_position"
+                and not isinstance(claim["value"], str)):
+            raise ReasonFailure("SCHEMA_FAILURE", "R003 working_position must be a prose string")
     return data
 
 
-def validate_objections(data: dict, answer: dict, fork: dict, *, tested: bool) -> dict:
+def validate_objections(data: dict, answer: dict, fork: dict, *, tested: bool,
+                        study_profile=None, prior_objections=()) -> dict:
     steps = {step["step_index"]: step for step in answer.get("derivation_steps", [])}
     check_ids = []
+    participant_labels = {}
+    if study_profile == config.R003_PROFILE:
+        for prior in prior_objections:
+            locator = prior.get("fork", {})
+            label = locator.get("branch_point_id")
+            if isinstance(label, str):
+                participant_labels[label] = (locator.get("step_index"), locator.get("step_quote"))
     for objection in data["objections"]:
         locator = objection["fork"]
         step = steps.get(locator["step_index"])
         if step is None or locator["step_quote"] != step["statement"]:
             raise ReasonFailure("SCHEMA_FAILURE", "Fork locator does not quote the named derivation step exactly")
-        if locator["branch_point_id"] != fork["branch_point_id"]:
+        if study_profile == config.R003_PROFILE:
+            label = locator["branch_point_id"]
+            bound = participant_labels.get(label)
+            current = (locator["step_index"], locator["step_quote"])
+            if bound is not None and bound != current:
+                raise ReasonFailure("SCHEMA_FAILURE", "Participant branch label has inconsistent locators")
+            participant_labels[label] = current
+        elif locator["branch_point_id"] != fork["branch_point_id"]:
             raise ReasonFailure("SCHEMA_FAILURE", "Fork locator names the wrong public branch")
         if tested:
             check_ids.append(objection["check"]["check_id"])
@@ -233,8 +253,8 @@ def validate_objections(data: dict, answer: dict, fork: dict, *, tested: bool) -
 
 
 def validate_return(data: dict, before: dict, objections: list[dict], relation: dict,
-                    *, tested: bool) -> dict:
-    validate_answer(data, relation)
+                    *, tested: bool, study_profile=None) -> dict:
+    validate_answer(data, relation, study_profile=study_profile)
     expected = [obj["id"] for obj in objections if obj.get("status") == "unresolved"]
     known = [obj["id"] for obj in objections]
     actual = [item["id"] for item in data["dispositions"]]
@@ -277,7 +297,7 @@ def validate_return(data: dict, before: dict, objections: list[dict], relation: 
 
 
 def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: dict,
-                 *, checker_eligible: bool) -> dict:
+                 *, checker_eligible: bool, study_profile=None, prior_objections=()) -> dict:
     dependency = data["dependency"]
     known = {item["relation_id"] for item in relation["relations"]}
     if dependency["relation_id"] not in known:
@@ -290,16 +310,20 @@ def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: di
     changed = {relation_id for relation_id in set(before_claims) & set(after_claims)
                if type(before_claims[relation_id]) is not type(after_claims[relation_id])
                or _json(before_claims[relation_id]) != _json(after_claims[relation_id])}
-    if changed and dependency["relation_id"] not in changed:
+    if (study_profile != config.R003_PROFILE and changed
+            and dependency["relation_id"] not in changed):
         raise ReasonFailure("SCHEMA_FAILURE", "Use must bind a changed relation when one exists")
     same_conclusion = (type(data["before"]["conclusion"]) is type(data["after"]["conclusion"])
                        and _json(data["before"]["conclusion"]) == _json(data["after"]["conclusion"]))
-    if dependency["result_depends_on_change"] and (same_conclusion or not changed):
+    if (study_profile != config.R003_PROFILE and dependency["result_depends_on_change"]
+            and (same_conclusion or not changed)):
         raise ReasonFailure("SCHEMA_FAILURE", "Unchanged evaluations cannot claim dependence on change")
     if data["decision"] != "cannot_decide" and checker_eligible != (data["checker"] is not None):
         expected = "proposal" if checker_eligible else "null"
         raise ReasonFailure("SCHEMA_FAILURE", "Checker field must be " + expected)
     if data["checker"] is not None:
+        if study_profile == config.R003_PROFILE:
+            raise ReasonFailure("SCHEMA_FAILURE", "R003 disables checker proposals and execution")
         proposal = data["checker"]
         if proposal["query_id"] != data["query_id"] or proposal["question"] != data["question"]:
             raise ReasonFailure("SCHEMA_FAILURE", "Checker proposal changes the use query")
@@ -312,7 +336,8 @@ def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: di
                 or _json(proposal["working_value"]) != _json(after_claims[dependency["relation_id"]])):
             raise ReasonFailure("SCHEMA_FAILURE", "Checker working_value does not bind the returned claim")
     if data["objections"]:
-        validate_objections({"objections": data["objections"]}, after, fork, tested=True)
+        validate_objections({"objections": data["objections"]}, after, fork, tested=True,
+                            study_profile=study_profile, prior_objections=prior_objections)
     return data
 
 
@@ -378,33 +403,51 @@ def validate_decomposed_use(data: dict, expected_step: int) -> dict:
     return data
 
 
+def validate_decomposed_closing(data: dict, relation: dict,
+                                objections: list[dict]) -> dict:
+    validate_answer({key: data[key] for key in
+                    ("decision", "answer", "missing_derivation", "claims", "derivation_steps")},
+                    relation, study_profile=config.R003_PROFILE)
+    expected = [item["id"] for item in objections if item.get("status") == "unresolved"]
+    actual = [item["id"] for item in data["dispositions"]]
+    if len(actual) != len(set(actual)) or set(actual) != set(expected):
+        raise ReasonFailure("SCHEMA_FAILURE",
+                            "Decomposed closing must dispose every remaining objection exactly once")
+    return data
+
+
 def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dict,
                answer=None, before=None, objections=(), fork=None,
                coding_id=None, checker_eligible=False, expected_step=None,
-               accepted_steps=()) -> dict:
+               accepted_steps=(), study_profile=None, prior_objections=()) -> dict:
     if role not in ROLE_SCHEMAS:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R002 parse role: " + role)
     data = contracts.validate(ROLE_SCHEMAS[role], _response_object(content))
     if role == "answer":
-        return validate_answer(data, relation)
+        return validate_answer(data, relation, study_profile=study_profile)
     if role == "initial_decompose":
         return validate_initial_decompose(data)
     if role == "decomposed_step":
         return validate_decomposed_step(data, expected_step, list(accepted_steps))
     if role in {"prose_critic", "tested_critic", "decomposed_critic"}:
-        return validate_objections(data, answer, fork, tested=role != "prose_critic")
+        return validate_objections(data, answer, fork, tested=role != "prose_critic",
+                                   study_profile=study_profile,
+                                   prior_objections=prior_objections or objections)
     if role in {"prose_return", "tested_return"}:
         return validate_return(data, before, list(objections), relation,
-                               tested=role == "tested_return")
+                               tested=role == "tested_return", study_profile=study_profile)
     if role == "propagation_use":
         return validate_use(data, before, answer, relation, fork,
-                            checker_eligible=checker_eligible)
+                            checker_eligible=checker_eligible, study_profile=study_profile,
+                            prior_objections=prior_objections)
     if role == "decomposed_return":
         return validate_decomposed_return(data, before, list(objections))
     if role == "decomposed_use":
         return validate_decomposed_use(data, expected_step["step"])
     if role == "decomposed_synthesis":
-        return validate_answer(data, relation)
+        return validate_answer(data, relation, study_profile=study_profile)
+    if role == "decomposed_closing":
+        return validate_decomposed_closing(data, relation, list(objections))
     if role == "blind_coding_solve":
         return validate_recoding_solve(data, relation, coding_id)
     return data
@@ -583,7 +626,8 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
             relation_registry, recipe_path=None, cycles=3, attempt_policy="strict",
             prompt_token_cap=32768, tokenizer_pins=None, fork_registry=None,
             coding_manifest=None, checker_policy=None, capability=None,
-            schema_path=None, completion_tokens=32768):
+            schema_path=None, completion_tokens=32768, study_profile=None,
+            canonical_registry=None):
     if not isinstance(problem, str) or not problem.strip():
         raise ValueError("PROBLEM_EMPTY")
     if type(completion_tokens) is not int or completion_tokens != 32768:
@@ -592,11 +636,23 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
         raise ReasonFailure("CONFIG_ERROR", "R002 requires offline/live mode and strict attempts")
     if type(cycles) is not int or not 1 <= cycles <= 3 or prompt_token_cap != 32768:
         raise ReasonFailure("CONFIG_ERROR", "R002 permits one to three cycles and a 32768 prompt cap")
+    if study_profile not in {None, config.R003_PROFILE}:
+        raise ReasonFailure("CONFIG_ERROR", "Unknown strict study profile")
+    if study_profile is None and canonical_registry is not None:
+        raise ReasonFailure("CONFIG_ERROR", "Canonical registry is specific to r003-open-v1")
+    if study_profile == config.R003_PROFILE:
+        if condition not in {"NATIVE", "LOOP-CROSS", "LOOP-DECOMPOSED"}:
+            raise ReasonFailure("CONFIG_ERROR", "Condition is outside R003 occurrence 1")
+        if coding_manifest is not None or checker_policy is not None:
+            raise ReasonFailure("CONFIG_ERROR", "R003 occurrence 1 disables recoding and checker execution")
     relations, relations_text, _relations_path = _load_object(relation_registry, "relation registry")
     problem_id = _infer_problem_id(problem_id, problem, relations)
     relation = _relation_entry(relations, problem_id)
-    ContractSet(config.R002_DIR / "contracts").validate("relations.schema.json", relations)
-    cap = validate_capability(capability, condition, mode)
+    if study_profile == config.R003_PROFILE:
+        ContractSet(config.R003_DIR / "contracts").validate("r003-relations.schema.json", relations)
+    else:
+        ContractSet(config.R002_DIR / "contracts").validate("relations.schema.json", relations)
+    cap = validate_capability(capability, condition, mode, study_profile)
     if condition == "LOOP-CHECKER" and mode == "live":
         from .checker import host_qualified
         if not host_qualified():
@@ -605,7 +661,8 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
     endpoints = config.load_endpoint_snapshot()
     recipe = recipe_text = recipe_source = None
     if recipe_path is not None:
-        loaded = config.load_r002_recipe(recipe_path)
+        loaded = (config.load_r003_recipe(recipe_path) if study_profile == config.R003_PROFILE
+                  else config.load_r002_recipe(recipe_path))
         recipe, recipe_text = loaded["data"], loaded["text"]
         recipe_source = Path(loaded["source"])
         if recipe["condition"] != condition:
@@ -620,7 +677,18 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
         raise ReasonFailure("CONFIG_ERROR", "Loop conditions require the public fork registry")
     fork = _candidate(forks, problem_id, "fork registry") if forks else None
     coding_entry = _candidate(coding, problem_id, "coding manifest") if coding else None
-    if recipe is not None:
+    canonical = canonical_text = canonical_path = canonical_entry = canonical_custody = None
+    if study_profile == config.R003_PROFILE:
+        canonical, canonical_text, canonical_path = _load_object(
+            canonical_registry, "canonical registry")
+        ContractSet(config.R003_DIR / "contracts").validate(
+            "canonical-registry.schema.json", canonical)
+        if forks is not None:
+            ContractSet(config.R003_DIR / "contracts").validate("forks.schema.json", forks)
+        from .r002_custody import validate_r003_canonical
+        canonical_entry, canonical_custody = validate_r003_canonical(
+            canonical_path, canonical, problem_id, problem)
+    if recipe is not None and study_profile != config.R003_PROFILE:
         ContractSet(config.R002_DIR / "contracts").validate("coding-manifest.schema.json", coding)
         coded = _problem_paths(coding_path, coding, problem_id, problem, relation, fork)
     else:
@@ -636,6 +704,9 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
         raise ReasonFailure("CONFIG_ERROR", "Native schema differs from the published answer contract")
     for path in sorted(contract_source.glob("*.schema.json")):
         write(directory / "contracts" / path.name, read(path))
+    if study_profile == config.R003_PROFILE:
+        for path in sorted((config.R003_DIR / "contracts").glob("*.schema.json")):
+            write(directory / "contracts" / path.name, read(path))
     write(directory / "problem.txt", problem)
     write(directory / "relations.json", relations_text)
     write(directory / "endpoints.json", endpoints["text"])
@@ -645,6 +716,9 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
         write(directory / "forks.json", forks_text)
     if coding_text:
         write(directory / "coding-manifest.json", coding_text)
+    if canonical_text:
+        write(directory / "canonical-registry.json", canonical_text)
+        put(directory / "canonical-custody.json", canonical_custody)
     for key, text in coded.items():
         write(directory / "coded" / (key + ".txt"), text)
     if condition == "LOOP-CHECKER" and checker_policy is None:
@@ -660,15 +734,23 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
     cfg = {"schema": R002_SCHEMA, "run_id": run_id, "created_epoch": time.time(),
            "mode": mode, "condition": condition, "problem_id": problem_id, "cycles": cycles,
            "attempt_policy": "strict", "prompt_token_cap": prompt_token_cap,
-           "prompt_contract": prompts.R002_CONTRACT, "completion_tokens": completion_tokens,
+           "prompt_contract": (config.R003_PROFILE if study_profile == config.R003_PROFILE
+                               else prompts.R002_CONTRACT),
+           "completion_tokens": completion_tokens,
            "problem_sha256": sha(problem), "relations_sha256": sha(relations_text),
            "endpoints_sha256": endpoints["sha256"], "tokenizers": tokenizers,
            "capability": cap, "claim_ceiling": CLAIM,
            "checker_policy_sha256": sha(read(directory / "checker-policy.json"))
                if (directory / "checker-policy.json").exists() else None,
-           "inputs": {"recipe": sha(recipe_text) if recipe_text else None,
-                      "forks": sha(forks_text) if forks_text else None,
-                      "coding": sha(coding_text) if coding_text else None}}
+            "inputs": {"recipe": sha(recipe_text) if recipe_text else None,
+                       "forks": sha(forks_text) if forks_text else None,
+                       "coding": sha(coding_text) if coding_text else None}}
+    if study_profile == config.R003_PROFILE:
+        cfg["study_profile"] = study_profile
+        cfg["inputs"].update({
+            "canonical_registry": sha(canonical_text),
+            "canonical_custody": sha(read(directory / "canonical-custody.json")),
+        })
     from .r002_custody import freeze_inputs
     freeze_inputs(directory, cfg)
     return directory
@@ -677,28 +759,32 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
 def create_r002_run(problem: str, recipe_path, out, *, mode="offline", cycles=3,
                     attempt_policy="strict", prompt_token_cap=32768, tokenizer_pins=None,
                     relation_registry=None, fork_registry=None, coding_manifest=None,
-                    checker_policy=None, capability=None, problem_id=None) -> Path:
-    loaded = config.load_r002_recipe(recipe_path)
+                    checker_policy=None, capability=None, problem_id=None,
+                    study_profile=None, canonical_registry=None) -> Path:
+    loaded = (config.load_r003_recipe(recipe_path) if study_profile == config.R003_PROFILE
+              else config.load_r002_recipe(recipe_path))
     return _create(problem, out, mode=mode, condition=loaded["data"]["condition"],
                    problem_id=problem_id, relation_registry=relation_registry,
                    recipe_path=recipe_path, cycles=cycles, attempt_policy=attempt_policy,
                    prompt_token_cap=prompt_token_cap, tokenizer_pins=tokenizer_pins,
                    fork_registry=fork_registry, coding_manifest=coding_manifest,
-                   checker_policy=checker_policy, capability=capability)
+                   checker_policy=checker_policy, capability=capability,
+                   study_profile=study_profile, canonical_registry=canonical_registry)
 
 
 def create_r002_native_run(problem: str, out, *, mode="offline", condition="NATIVE",
                            schema_path=None, completion_tokens=32768,
                            attempt_policy="strict", prompt_token_cap=32768,
                            tokenizer_pins=None, relation_registry=None, capability=None,
-                           problem_id=None) -> Path:
+                           problem_id=None, study_profile=None, canonical_registry=None) -> Path:
     if condition not in {"NATIVE", "CAL-NATIVE"}:
         raise ReasonFailure("CONFIG_ERROR", "Native condition must be NATIVE or CAL-NATIVE")
     return _create(problem, out, mode=mode, condition=condition, problem_id=problem_id,
                    relation_registry=relation_registry, schema_path=schema_path,
                    cycles=1, attempt_policy=attempt_policy, prompt_token_cap=prompt_token_cap,
                    tokenizer_pins=tokenizer_pins, capability=capability,
-                   completion_tokens=completion_tokens)
+                    completion_tokens=completion_tokens, study_profile=study_profile,
+                    canonical_registry=canonical_registry)
 
 
 def _validate_run(directory: Path):
@@ -711,7 +797,8 @@ def _validate_run(directory: Path):
     for name, digest in cfg["inputs"].items():
         if digest is not None:
             actual_name = {"recipe": "recipe.json", "forks": "forks.json",
-                           "coding": "coding-manifest.json"}[name]
+                           "coding": "coding-manifest.json", "canonical_registry": "canonical-registry.json",
+                           "canonical_custody": "canonical-custody.json"}[name]
             if sha(read(directory / actual_name)) != digest:
                 raise ReasonFailure("RUN_INTEGRITY_ERROR", "Saved R002 input changed: " + actual_name)
     recipe = get(directory / "recipe.json") if (directory / "recipe.json").exists() else None
@@ -784,6 +871,11 @@ def _offline(role, cycle, objections, context):
     if role == "decomposed_synthesis":
         return {"decision": "cannot_decide", "answer": "", "missing_derivation": missing,
                 "claims": [], "derivation_steps": []}
+    if role == "decomposed_closing":
+        return {"decision": "cannot_decide", "answer": "", "missing_derivation": missing,
+                "claims": [], "derivation_steps": [],
+                "dispositions": [{"id": item["id"], "status": "unresolved", "reason": missing}
+                                 for item in objections if item.get("status") == "unresolved"]}
     return {"decision": "cannot_decide", "missing_derivation": missing, "answer": "", "derivation": ""}
 
 
@@ -797,7 +889,8 @@ def _scripted_reply(scripted, role, cycle, objections, coordinate, context):
         return scripted(role, cycle, deepcopy(objections))
 
 
-def _repair_messages(role: str, contracts: ContractSet, content: str, detail: str) -> list[dict[str, str]]:
+def _repair_messages(role: str, contracts: ContractSet, content: str, detail: str, *,
+                     study_profile=None) -> list[dict[str, str]]:
     """Render one bounded repair from the seat's own complete output and contract."""
     instruction = (
         "The preceding public response did not satisfy the response schema. Repair only its JSON "
@@ -811,14 +904,15 @@ def _repair_messages(role: str, contracts: ContractSet, content: str, detail: st
         ("RECORDED SCHEMA FAILURE", detail),
         ("SCHEMA REPAIR INSTRUCTION", instruction),
         *contracts.prompt_blocks(role),
-    ])
+    ], study_profile=study_profile)
 
 
 def _call(directory: Path, adapter: Adapter, cfg: dict, contracts: ContractSet,
           *, role: str, seat: dict, call_id: str, cycle: int, blocks: list[tuple[str, str]],
           parse_context: dict, scripted, after_call, before_call, tokenizer_counter,
           max_tokens: int, schema_repair_budget: int = 0):
-    messages = prompts.render_r002(role, [*blocks, *contracts.prompt_blocks(role)])
+    messages = prompts.render_r002(role, [*blocks, *contracts.prompt_blocks(role)],
+                                   study_profile=cfg.get("study_profile"))
     attempt = 0
     while True:
         coordinate = {"call_id": call_id, "cycle": cycle, "attempt": attempt,
@@ -901,7 +995,8 @@ def _call(directory: Path, adapter: Adapter, cfg: dict, contracts: ContractSet,
         if (saved["status"] == "SCHEMA_FAILURE" and attempt < schema_repair_budget
                 and isinstance(saved.get("result", {}).get("content"), str)):
             messages = _repair_messages(role, contracts, saved["result"]["content"],
-                                        saved.get("detail", "SCHEMA_FAILURE"))
+                                        saved.get("detail", "SCHEMA_FAILURE"),
+                                        study_profile=cfg.get("study_profile"))
             attempt += 1
             continue
         raise ReasonFailure(saved["status"], saved.get("detail", "Strict R002 call failed"))
@@ -977,7 +1072,17 @@ def _decomposed_use_blocks(problem: str, plan_step: dict, returned: dict,
                            accepted_steps: list[dict]) -> list[tuple[str, str]]:
     return [("PROBLEM", problem), ("CURRENT PLAN STEP", _json(plan_step)),
             ("ACCEPTED DEPENDENCIES", _json(accepted_steps)),
-            ("RETURNED STEP", _json({key: returned[key] for key in ("step", "derivation", "result")}))]
+             ("RETURNED STEP", _json({key: returned[key] for key in ("step", "derivation", "result")}))]
+
+
+def _decomposed_closing_blocks(problem: str, plan: list[dict], accepted_steps: list[dict],
+                               answer: dict | None, objections: list[dict],
+                               stop_reason: str, stop_detail: str) -> list[tuple[str, str]]:
+    return [("PROBLEM", problem), ("DECOMPOSITION PLAN", _json(plan)),
+            ("IMMUTABLE ACCEPTED STEPS", _json(accepted_steps)),
+            ("CURRENT ANSWER", _json(answer)),
+            ("FULL OBJECTION AND DISPOSITION HISTORY", _json(objections)),
+            ("SEMANTIC STOP REASON", _json({"reason": stop_reason, "detail": stop_detail}))]
 
 
 def _apply_dispositions(all_objections, dispositions, cycle, phase=None):
@@ -1045,27 +1150,48 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
     plan = initial["plan"]
     accepted_steps = state["accepted_steps"]
     current = initial["first_step"]
+    latest_step = deepcopy(current)
+
+    def semantic_finish(stop_reason, stop_detail, answer=None):
+        state["stop_reason"], state["stop_detail"] = stop_reason, stop_detail
+        if cfg.get("study_profile") == config.R003_PROFILE and state["completed_cycles"] > 0:
+            closing_answer = answer if answer is not None else {
+                "kind": "latest_decomposed_step",
+                "accepted": any(item["step"] == latest_step["step"] for item in accepted_steps),
+                "value": deepcopy(latest_step),
+            }
+            closing = call(
+                "decomposed_closing", _seat("closing", recipe), "closing-return",
+                state["completed_cycles"],
+                _decomposed_closing_blocks(problem, plan, accepted_steps, closing_answer, objections,
+                                           stop_reason, stop_detail),
+                answer=closing_answer, objections=list(objections), accepted_steps=list(accepted_steps))
+            _apply_dispositions(objections, closing["dispositions"],
+                                state["completed_cycles"], "decomposed_closing")
+            state["closing_return"] = "complete"
+            answer = closing
+            _write_episode_records(directory, cfg, objections)
+        return _finish_decomposed(directory, cfg, state, answer, objections, events)
+
     for cycle, plan_step in enumerate(plan[:cfg["cycles"]], 1):
         if cycle > 1:
             current = call("decomposed_step", _seat("step", recipe), f"c{cycle:04d}-step", cycle,
                            _decomposed_step_blocks(problem, plan, plan_step, accepted_steps),
                            expected_step=plan_step, accepted_steps=accepted_steps)
+            latest_step = deepcopy(current)
             if current["cannot_decide"] is not None:
                 state["cannot_decide_responses"] += 1
-                state["stop_reason"] = "step_unresolved"
-                state["stop_detail"] = current["cannot_decide"]["missing"]
-                return _finish_decomposed(directory, cfg, state, None, objections, events)
+                return semantic_finish("step_unresolved", current["cannot_decide"]["missing"])
 
         current_answer = _step_answer(current, plan_step)
         critic_slot = f"critic_cycle_{cycle}"
         critic_id = f"c{cycle:04d}-critic"
         critic = call("decomposed_critic", _seat(critic_slot, recipe), critic_id, cycle,
                       _decomposed_critic_blocks(problem, plan_step, current, accepted_steps, fork),
-                      answer=current_answer, fork=fork, objections=[])
+                      answer=current_answer, fork=fork, objections=[],
+                      prior_objections=list(objections))
         if critic["decision"] == "cannot_decide":
-            state["stop_reason"] = "step_unresolved"
-            state["stop_detail"] = critic["missing_derivation"]
-            return _finish_decomposed(directory, cfg, state, None, objections, events)
+            return semantic_finish("step_unresolved", critic["missing_derivation"])
 
         new_items = []
         for item in critic["objections"]:
@@ -1080,6 +1206,7 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
         returned = call("decomposed_return", _seat("return", recipe), f"c{cycle:04d}-return", cycle,
                         _decomposed_return_blocks(problem, plan_step, current, accepted_steps, minted),
                         before=current, objections=minted)
+        latest_step = deepcopy(returned)
         for item in minted:
             item["return_call"] = f"c{cycle:04d}-return"
         if (returned["decision"] == "answered" and returned["result"] != current["result"]
@@ -1100,9 +1227,9 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
                            all(item["status"] != "unresolved" and item["redo"]["status"] == "redone"
                                for item in returned["dispositions"]))
         if not return_complete:
-            state["stop_reason"] = "step_unresolved"
-            state["stop_detail"] = returned["missing_derivation"] or "A tested objection remains unresolved"
-            return _finish_decomposed(directory, cfg, state, None, objections, events)
+            return semantic_finish("step_unresolved",
+                                   returned["missing_derivation"] or
+                                   "A tested objection remains unresolved")
 
         use = call("decomposed_use", _seat("use", recipe), f"c{cycle:04d}-use", cycle,
                    _decomposed_use_blocks(problem, plan_step, returned, accepted_steps),
@@ -1110,10 +1237,8 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
         for item in minted:
             item["use_call"] = f"c{cycle:04d}-use"
         if use["decision"] != "answered" or use["status"] != "agrees":
-            state["stop_reason"] = "step_unresolved"
-            state["stop_detail"] = use["missing_derivation"] or (
-                "Use check " + use["status"] + " with the returned step result")
-            return _finish_decomposed(directory, cfg, state, None, objections, events)
+            return semantic_finish("step_unresolved", use["missing_derivation"] or (
+                "Use check " + use["status"] + " with the returned step result"))
 
         accepted = {"step": plan_step["step"], "goal": plan_step["goal"],
                     "depends_on": list(plan_step["depends_on"]),
@@ -1125,15 +1250,16 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
                        "structural_only": True})
 
     if len(accepted_steps) != len(plan):
-        state["stop_reason"] = "step_budget"
-        state["stop_detail"] = (f"Accepted {len(accepted_steps)} of {len(plan)} planned steps; "
-                                "three one-step cycles permit no synthesis")
-        return _finish_decomposed(directory, cfg, state, None, objections, events)
+        return semantic_finish(
+            "step_budget", f"Accepted {len(accepted_steps)} of {len(plan)} planned steps; "
+            "three one-step cycles permit no synthesis")
 
     answer = call("decomposed_synthesis", _seat("synthesis", recipe), "synthesis",
                   state["completed_cycles"],
                   _answer_blocks(problem, relation) + [("DECOMPOSITION PLAN", _json(plan)),
                                                        ("ACCEPTED STEPS", _json(accepted_steps))])
+    if cfg.get("study_profile") == config.R003_PROFILE:
+        return semantic_finish("complete", "All planned steps were accepted and synthesized", answer)
     state["closing_return"] = "not-applicable"
     state["stop_reason"] = "complete"
     return _finish_decomposed(directory, cfg, state, answer, objections, events)
@@ -1159,11 +1285,15 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
                 max_tokens = (recipe.get("ceilings", {}).get("critic_completion_tokens", default_ceiling)
                               if recipe is not None and role == "decomposed_critic" else default_ceiling)
                 repair_budget = (recipe.get("attempt_policy", {}).get("schema_repairs", 0)
-                                 if recipe is not None and recipe.get("condition") == "LOOP-DECOMPOSED" else 0)
+                                 if recipe is not None and (
+                                     recipe.get("condition") == "LOOP-DECOMPOSED"
+                                     or cfg.get("study_profile") == config.R003_PROFILE) else 0)
                 parsed = _call(directory, adapter, cfg, contracts, role=role, seat=seat,
                                call_id=call_id, cycle=cycle, blocks=blocks,
-                               parse_context={"relation": relation, **context}, scripted=scripted,
-                               after_call=after_call, before_call=before_call,
+                                parse_context={"relation": relation,
+                                               "study_profile": cfg.get("study_profile"), **context},
+                                scripted=scripted,
+                                after_call=after_call, before_call=before_call,
                                tokenizer_counter=tokenizer_counter, max_tokens=max_tokens,
                                schema_repair_budget=repair_budget)
                 if parsed.get("decision") == "cannot_decide":
@@ -1190,7 +1320,8 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
             for cycle in range(1, cfg["cycles"] + 1):
                 open_before = [obj for obj in objections if obj["status"] == "unresolved"]
                 switch = False
-                if cycle == 3 and len(prior_answers) >= 3:
+                if (cfg.get("study_profile") != config.R003_PROFILE
+                        and cycle == 3 and len(prior_answers) >= 3):
                     stall = stall_switch_due(prior_answers[0], prior_answers[1], prior_answers[2],
                                              open_before, relation_ids)
                     switch = stall is True
@@ -1296,9 +1427,9 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
                                ("PUBLIC TASK MODE", _json({"candidate_id": cfg["problem_id"],
                                   "checker_eligible": bool(coding and coding.get("checker_eligible")),
                                   "oracle_kind": coding.get("oracle_kind") if coding else "unknown"}))],
-                               before=before_answer, answer=answer,
-                               objections=[], checker_eligible=bool(coding and coding.get("checker_eligible")),
-                               fork=fork)
+                                before=before_answer, answer=answer,
+                                objections=[], checker_eligible=bool(coding and coding.get("checker_eligible")),
+                                fork=fork, prior_objections=list(objections))
                     for item in use["objections"]:
                         item["_source_call"] = f"c{cycle:04d}-use"
                         item["_source_endpoint"] = _seat("use", recipe)["endpoint"]

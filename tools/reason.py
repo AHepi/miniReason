@@ -101,11 +101,13 @@ def parser():
         command.add_argument("--prompt-token-cap", type=int, default=32768)
         command.add_argument("--retry-transport", type=int, default=0)
         command.add_argument("--env-file", type=Path, help="Opaque in offline mode; live load only at the call boundary")
+        command.add_argument("--study-profile", choices=["r003-open-v1"])
+        command.add_argument("--canonical-registry", type=Path)
         if name == "run-r002":
             command.add_argument("--recipe", required=True)
             command.add_argument("--cycles", type=int, default=3)
             command.add_argument("--fork-registry", type=Path, required=True)
-            command.add_argument("--coding-manifest", type=Path, required=True)
+            command.add_argument("--coding-manifest", type=Path)
             command.add_argument("--checker-policy", type=Path)
         else:
             command.add_argument("--condition", choices=["CAL-NATIVE", "NATIVE"], default="NATIVE")
@@ -125,20 +127,29 @@ def main(argv=None):
     args = parser().parse_args(argv)
     try:
         r002_resume = False
+        r003_resume = False
+        resume_config = None
         if args.command == "resume":
             config_path = args.run / "config.json"
             if config_path.is_file():
-                r002_resume = json.loads(read(config_path)).get("prompt_contract") == "r002-episodes-v2"
+                resume_config = json.loads(read(config_path))
+                r003_resume = (resume_config.get("study_profile") == "r003-open-v1" or
+                               resume_config.get("prompt_contract") == "r003-open-v1")
+                r002_resume = (resume_config.get("prompt_contract") == "r002-episodes-v2" or
+                               r003_resume)
         if args.command == "run" or (args.command == "resume" and not r002_resume):
             load_env_file(args.env_file)
         if args.command in {"run-r002", "run-r002-native"}:
             from minireason.reason.engine import create_r002_run, create_r002_native_run, execute_r002
             if args.retry_transport != 0:
                 raise ReasonFailure("CONFIG_ERROR", "R002 permits no retry")
+            if args.study_profile == "r003-open-v1" and args.mode == "live" and args.env_file is None:
+                raise ReasonFailure("CONFIG_ERROR", "R003 live mode requires --env-file")
             common = dict(mode=args.mode, attempt_policy=args.attempt_policy,
                           prompt_token_cap=args.prompt_token_cap, tokenizer_pins=args.tokenizer_pins,
                           relation_registry=args.relations, capability=args.capability,
-                          problem_id=args.problem.stem)
+                          problem_id=args.problem.stem, study_profile=args.study_profile,
+                          canonical_registry=args.canonical_registry)
             if args.command == "run-r002-native":
                 directory = create_r002_native_run(read(args.problem), args.out,
                     condition=args.condition, schema_path=args.schema,
@@ -152,6 +163,9 @@ def main(argv=None):
             def before_call(*_args, **_kwargs):
                 nonlocal loaded
                 if args.mode == "live" and not loaded:
+                    if args.study_profile == "r003-open-v1":
+                        for name in ENV_KEYS:
+                            os.environ.pop(name, None)
                     load_env_file(args.env_file)
                     loaded = True
             result = execute_r002(directory, before_call=before_call)
@@ -163,11 +177,16 @@ def main(argv=None):
         elif args.command == "resume":
             if r002_resume:
                 from minireason.reason.engine import execute_r002
-                cfg = json.loads(read(args.run / "config.json"))
+                cfg = resume_config
+                if r003_resume and cfg["mode"] == "live" and args.env_file is None:
+                    raise ReasonFailure("CONFIG_ERROR", "R003 live mode requires --env-file")
                 loaded = False
                 def before_resume_call(*_args, **_kwargs):
                     nonlocal loaded
                     if cfg["mode"] == "live" and not loaded:
+                        if r003_resume:
+                            for name in ENV_KEYS:
+                                os.environ.pop(name, None)
                         load_env_file(args.env_file)
                         loaded = True
                 result = execute_r002(args.run, before_call=before_resume_call)
@@ -177,7 +196,10 @@ def main(argv=None):
             result = status(args.run)
         print(json.dumps({key: result[key] for key in
                          ("run_id", "stop_reason", "completed_cycles", "calls", "stop_detail") if key in result}, ensure_ascii=False))
-        return 0 if args.command == "status" or result["stop_reason"] in GOOD_STOPS or (
+        r003_active = r003_resume or getattr(args, "study_profile", None) == "r003-open-v1"
+        semantic_terminal = r003_active and result["stop_reason"] in {
+            "step_budget", "step_unresolved", "initial_cannot_decide"}
+        return 0 if args.command == "status" or result["stop_reason"] in GOOD_STOPS or semantic_terminal or (
             (args.command.startswith("run-r002") or r002_resume) and result["stop_reason"] == "complete") else 2
     except ReasonFailure as exc:
         print(str(exc) if exc.code == "SCHEMA_FAILURE" else exc.code, file=sys.stderr)

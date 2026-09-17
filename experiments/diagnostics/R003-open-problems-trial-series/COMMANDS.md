@@ -1,62 +1,59 @@
-# Exact R003 command surface and its current limits
+# R003 occurrence-1 commands
 
-DRAFT, no live execution authorized. Start in C:/Dev/miniReason. Forward-slash Windows paths below are accepted by PowerShell/Python.
+Current instrument instructions, REC-20260917-B, independent judge correction. These supersede the draft's unsupported-target commands (preserved in Git and work/review28/original). No live command was executed by the engineer or judge. Publish the reviewed delivery before the separately authorized live launch.
 
 ```powershell
+Set-Location -LiteralPath 'C:/Dev/miniReason'
 $env:PYTHONPATH='src;tests'
 $env:PYTHONUTF8='1'
 $env:PYTHONIOENCODING='utf-8'
 $env:PYTHONDONTWRITEBYTECODE='1'
 $env:GIT_OPTIONAL_LOCKS='0'
-$env:TMP='C:/tr25'
+$env:TMP='C:/tr28'
 $py='C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe'
 $r003='experiments/diagnostics/R003-open-problems-trial-series'
-& $py -B -X utf8 -c "from pathlib import Path; Path('C:/tr25').mkdir(exist_ok=True)"
+& $py -B -X utf8 -c "from pathlib import Path; Path('C:/tr28').mkdir(exist_ok=True)"
 ```
 
-## Staging, resume and separate failed-cell selection
+## Offline qualification and staging
+
+This exact two-problem matrix was run offline with zero failed cells. If repeated, numbering creates a new occurrence; it does not overwrite the recorded one.
 
 ```powershell
-& $py -B -X utf8 "$r003/run_R003.py" new --mode plan --problems O01 --question 'On O01, does criticism produce a usable reframing missing from fresh native reasoning?'
-& $py -B -X utf8 "$r003/run_R003.py" status --occurrence work/review25/series/o001
-& $py -B -X utf8 "$r003/run_R003.py" resume --occurrence work/review25/series/o001
+& $py -B -X utf8 "$r003/run_R003.py" new --series C:/tr28/direct-offline --problems O01 O02 --conditions NATIVE LOOP-CROSS LOOP-DECOMPOSED --question 'Do the exact six offline CLI cells terminate with preserved manifests and no key access?' --mode offline --env-file .env
+& $py -B -X utf8 "$r003/run_R003.py" status --occurrence C:/tr28/direct-offline/o002
+& $py -B -X utf8 "$r003/run_R003.py" resume --occurrence C:/tr28/direct-offline/o002
 ```
 
-Omit --problems O01 to stage all eight. The printed directory is authoritative; numbering increments and existing directories are never reused. A plan-mode resume remains a plan and sends nothing. MANIFEST.json freezes exact per-cell argv, input/source hashes, question and order; QUESTION.json precedes manifest/dispatch. CLI argv contains the literal .env filename, never its contents. This launcher does not read .env. Brief contents never enter an occurrence or command.
+The printed occurrence path is authoritative. `.env` is an opaque argument in offline mode and is never read. Default canned fixtures return explicit inability to decide; full three-cycle routes, one same-seat prose repair, synthesis and closure are exercised separately by `tests.reason.test_r003_occurrence`. Neither fixture proves substantive reasoning success. Exact transcripts and limits are in VALIDATION.md and work/review28.
+
+`new` defaults to `--mode plan` and all O01-O08/all three conditions. Use `--series C:/tr28/planned` for a reviewable plan without touching runs. Plan resume remains a plan and sends nothing. The obsolete `smoke` subcommand is no longer part of this launcher; use the explicit offline command above.
+
+## Complete detached occurrence 1
+
+Every required non-secret file is supplied with the reviewed delivery. No hand-written canonical registry, seal conversion or capability edit remains:
 
 ```powershell
-& $py -B -X utf8 "$r003/run_R003.py" new --mode offline --problems O01 --question 'On O01, do the installed guards truthfully refuse the unsupported target conditions?'
-& $py -B -X utf8 "$r003/run_R003.py" rerun-failed --occurrence work/review25/series/o002 --mode plan --question 'Which installed instrument defect would this successor address?' --reason 'Stage a separate successor for known refused cells; no retry is dispatched.'
+& 'C:/Dev/miniReason/experiments/diagnostics/R003-open-problems-trial-series/launch-occurrence-1.ps1'
 ```
 
-Substitute the actual printed offline directory for o002. Offline target failures are expected and cause exit2; they are not successful R003 runs. Resume verifies source/input/output bytes and skips terminal cells, successful or failed. An intent without a result refuses automatic replay. Rerun-failed selects only known terminal failures, creates a new numbered matrix with parent/reason, and preserves successful cells and prior evidence. Changed source needs a new occurrence/design receipt rather than same-source resume. There is no automatic retry or plan-to-live conversion.
+The script declares all eight problems, NATIVE, LOOP-CROSS and LOOP-DECOMPOSED, one occurrence question, `--mode live --env-file .env --authorize-live`, the existing R002 conservative tokenizer descriptor, `R003-CAPABILITY.json`, and the custodian's existing `briefs/MANIFEST.json`. It uses a hidden detached process and new UTC-labelled stdout/stderr paths, refuses an existing `runs/R003-open-v1/o001`, and prints the process identity. The complete command and exact file-presence/pin audit are also in work/review28/OCC1-LAUNCH.md. The ignored `.env` must supply the declared keys at the qualified call boundary; the judge checks only its existence/ignore status, never its contents.
 
-## Exact direct target commands (currently refused, not launch-ready)
+The launcher creates numbered immutable matrix manifests, exact p/ONN.txt copies and CANONICAL.json automatically. Each cell delegates to the shared strict `tools/reason.py run-r002-native` or `run-r002` with `--study-profile r003-open-v1 --canonical-registry <occurrence>/CANONICAL.json`. Only the exact versioned `r003-cross-v1.json` and `r003-decomposed-v1.json` are admitted. No R002 admission, oracle, coding map or brief content enters the participant request. EC01 is deferred to the separately declared occurrence-2 engineering change.
 
-These intended tools/reason.py subcommands reuse its dispatch interface directly. tools/run_R002.py hardcodes the old study/admission. The manifest resolves absolute argv and uses short output aliases n/x/d. work/review25/direct-O01 must be a fresh destination.
+The reviewed capability binds the profile, runtime/CLI, schemas, prompts, recipes, endpoints, R003 launcher and provider source bytes. The existing seal format is adapted in memory; author/lineage/exposure/UTC and exact problem/brief hashes are validated before dispatch, and source/input/argv/evidence drift refuses continuation. The seal discloses full PLAN exposure and a same-reader custodial process; neither the gate nor this qualification claims full blindness or independent staffing.
+
+NATIVE has one native DeepSeek call at32768 completion and no repair. CROSS has native DeepSeek initial/return/closing32768, Qwen/GLM off critics16384 and DeepSeek off use16384. DECOMPOSED has Qwen/Qwen/Qwen off critics32768, native DeepSeek initial/return/synthesis/closing32768, and DeepSeek off STEP/use16384. Both loops permit one recorded same-seat schema repair per logical call, at most three cycles and14logical/28attempts. Second schema failure, input overflow, ceiling or transport failure stops without fallback/truncation. Partial semantic terminals are delivered with their exact stop reasons; fatal failures and zero completed cycles receive no closing call. The partial closing receives the latest delivered step without changing acceptance. No later use follows closure.
+
+All eight:232logical calls,456maximum attempts,11272192completion and14942208input tokens; combined26214400. Without repairs:232attempts,5767168completion and7602176input. This is an allowance, not predicted spend. Attempt timeout is300seconds; no shorter whole-cell launcher timeout is imposed. Cells run sequentially.
+
+## Recovery
 
 ```powershell
-& $py -B -X utf8 tools/reason.py run-r002-native --problem "$r003/problems/O01.txt" --out work/review25/direct-O01/n --mode live --relations "$r003/public/RELATIONS.json" --condition NATIVE --thinking native --reasoning-effort medium --completion-tokens 32768 --attempt-policy strict --prompt-token-cap 32768 --retry-transport 0 --env-file .env
-
-& $py -B -X utf8 tools/reason.py run-r002 --problem "$r003/problems/O01.txt" --out work/review25/direct-O01/x --mode live --relations "$r003/public/RELATIONS.json" --recipe "$r003/recipes/r003-cross-a2-draft.json" --cycles 3 --fork-registry "$r003/public/FORKS.json" --coding-manifest "$r003/public/CODINGS.json" --attempt-policy strict --prompt-token-cap 32768 --retry-transport 0 --env-file .env
-
-& $py -B -X utf8 tools/reason.py run-r002 --problem "$r003/problems/O01.txt" --out work/review25/direct-O01/d --mode live --relations "$r003/public/RELATIONS.json" --recipe "$r003/recipes/r003-decomposed-closing-draft.json" --cycles 3 --fork-registry "$r003/public/FORKS.json" --coding-manifest "$r003/public/CODINGS.json" --attempt-policy strict --prompt-token-cap 32768 --retry-transport 0 --env-file .env
+& $py -B -X utf8 "$r003/run_R003.py" status --occurrence runs/R003-open-v1/o001
+& $py -B -X utf8 "$r003/run_R003.py" resume --occurrence runs/R003-open-v1/o001
 ```
 
-**Do not run these live commands now.** Current native refuses O-ID/registry admission; both loops refuse unknown pinned recipe identities. There is no valid current command implementing all requested conditions. Once PLAN section8 is engineered and qualified, append --study-profile r003-open-v1 --tokenizer-pins ACTUAL_REVIEWED_FILE --capability ACTUAL_REVIEWED_FILE to each command, freeze their true paths/hashes, and verify the sealed-brief manifest before dispatch. The proposed --study-profile flag is NOT FOUND in the current CLI and must be implemented as specified in ENGINEERING-SPEC.md. Those qualification files cannot truthfully be invented here. Editing JSON or deleting the wrapper's live hold does not supply missing instrument support. A separately reviewed successor must enforce these gates before loading credentials.
+Resume revalidates frozen source/input/argv/output and live seal/capability, skips every successful or failed terminal cell, and refuses an intent or output without a result. It cannot change mode or convert a plan to live. An indeterminate provider attempt requires reconciliation, never blind replay.
 
-The future published individual recovery interface is tools/reason.py resume --run ACTUAL_SAVED_CELL_DIRECTORY --env-file .env. The outer manifest must first verify sources/inputs and reconcile indeterminate intents. Direct resume is not permission to resend a timed-out request. This R003 wrapper never starts live mode, including on resume.
-
-## Tested published-instrument smoke
-
-```powershell
-& $py -B -X utf8 "$r003/run_R003.py" smoke --out work/review25/smoke
-```
-
-That destination already exists from validation; any deliberate repeat needs a new named directory and receipt. Exact subprocess exercised:
-
-```powershell
-& $py -B -X utf8 tools/reason.py run --problem "$r003/problems/O01.txt" --cycles 3 --recipe cross-family --mode offline --out work/review25/smoke
-```
-
-This is the published legacy prose fixture, not the requested R003 conditions. Legacy run loads a supplied env-file even offline, so smoke omits --env-file. Strict run-r002/run-r002-native defer env loading until a live call boundary, making the literal offline .env argument opaque. Offline fixture text is not a model observation. VALIDATION.md pastes actual results and their limits.
+`rerun-failed --occurrence <printed-path> --question '<new one-line question>' --reason '<prospective reason>' --mode plan|offline|live` creates a separately numbered successor containing only known failed cells and a parent link. Live successors repeat all five live gates (`--env-file`, `--tokenizer-pins`, `--capability`, `--brief-manifest`, `--authorize-live`). Source changes require `new`. No automatic successor or retry is authorized.

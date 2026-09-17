@@ -201,13 +201,15 @@ def within(path: Path, parent: Path) -> bool:
 def validate_run_root(repo: Path, value: Path) -> Path:
     root = (repo / value).resolve() if not value.is_absolute() else value.resolve()
     allowed = ((repo / "runs").resolve(), (repo / "work" / "w20").resolve(),
-               (repo / "work" / "review20").resolve(), Path(r"C:/tw20").resolve(),
+               (repo / "work" / "review20").resolve(), (repo / "work" / "w28").resolve(),
+               (repo / "work" / "review28").resolve(), Path(r"C:/tr28").resolve(),
+               Path(r"C:/tw28").resolve(), Path(r"C:/tw20").resolve(),
                Path(r"C:/tr20").resolve(), Path(r"C:/tr21").resolve(),
                Path(r"C:/tw22").resolve(), Path(r"C:/tr22").resolve(),
                Path(r"C:/tw24").resolve(), Path(r"C:/tr24").resolve())
     if not any(root != parent and within(root, parent) for parent in allowed):
         raise LauncherError(
-            "R002 output must be below runs/, work/w20/, work/review20/, "
+            "R002 output must be below runs/, work/w20/, work/review20/, work/w28/, work/review28/, C:/tr28, C:/tw28, "
             "C:/tw20, C:/tr20, C:/tr21, C:/tw22, C:/tr22, C:/tw24 or C:/tr24")
     if len(str(root)) >= 120:
         raise LauncherError("R002 run root is too long for durable nested evidence")

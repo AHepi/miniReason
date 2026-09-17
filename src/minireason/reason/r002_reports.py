@@ -241,7 +241,8 @@ def reports(directory, cfg, state, answer, objections, events):
     if open_items:
         text += "\n\nOpen objections:\n\n" + "\n".join("- " + obj["id"] + ": " + obj["text"] for obj in open_items)
     write(directory / "ANSWER.md", text + f"\n\nStop reason: `{state['stop_reason']}`.\n", replace=True)
-    trace = "# R002 objection trace\n\n" + banner
+    study_label = "R003" if cfg.get("study_profile") == "r003-open-v1" else "R002"
+    trace = f"# {study_label} objection trace\n\n" + banner
     for obj in objections:
         fork = obj["fork"]
         trace += (f"## {obj['id']}\n\nTarget step: {fork['step_index']} - {fork['step_quote']}\n\n"
@@ -283,7 +284,7 @@ def reports(directory, cfg, state, answer, objections, events):
     policy = ("one initial attempt plus at most one schema repair per logical call; zero fallbacks/transport retries; "
               "CEILING_HIT receives no repair" if recipe.get("attempt_policy", {}).get("schema_repairs") == 1
               else "one attempt, zero repairs/fallbacks/retries")
-    run = ("# R002 run\n\n" + banner + f"Run: `{cfg['run_id']}`. Condition: `{cfg['condition']}`.\n\n"
+    run = (f"# {study_label} run\n\n" + banner + f"Run: `{cfg['run_id']}`. Condition: `{cfg['condition']}`.\n\n"
            f"Calls/attempts: {state['calls']}/{state['attempts']}. Schema repairs: {repairs}. Strict policy: {policy}.\n\n"
            f"Ceilings: {ceiling_text}; prompt 32768; wall 300 seconds per attempt; "
            f"at most {call_ceiling} logical calls and {attempt_ceiling} attempts. "

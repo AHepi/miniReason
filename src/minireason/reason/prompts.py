@@ -59,6 +59,45 @@ R002_SUFFIXES = {
     "native_match_note": "Solve the quoted PROBLEM independently. You are blind to the current working answer and every other note. Return a direct answer and public derivation, or cannot_decide with the missing derivation. Do not formulate objections, dispositions or checker requests. Schema: native-match-note.schema.json.",
     "native_match_synthesis": "Produce the best direct answer to the PROBLEM using the supplied independent solution notes and, when present, the prior answer. You are not in a criticism protocol: do not assign objection IDs or dispositions. Preserve disagreement rather than inventing consensus. Return a direct answer and public derivation, or cannot_decide with the missing derivation. Schema: native-match-note.schema.json.",
 }
+
+R003_SYSTEM = R002_SYSTEM + (
+    " This is the r003-open-v1 profile. The working_position relation is public bookkeeping, "
+    "not an oracle, score, correctness test, or semantic stopping rule. Critic fork branch_point_id "
+    "values are participant labels for an exact quoted answer step, not investigator answers."
+)
+R003_SUFFIXES = dict(R002_SUFFIXES)
+R003_SUFFIXES["prose_critic"] = R002_SUFFIXES["prose_critic"].replace(
+    "bind its fork index and public branch ID",
+    "bind its fork index and assign a stable nonempty participant branch label")
+R003_SUFFIXES["decomposed_critic"] = R002_SUFFIXES["decomposed_critic"].replace(
+    "bind the supplied public branch ID",
+    "assign a stable nonempty participant branch label bound to that exact step locator") + (
+        " A prose counterexample or argued distinction is valid content for a derivation_step check; "
+        "it need not be host executable. Schema and locator validity establish only public shape and "
+        "custody, never whether the criticism bears substantively on the step."
+    )
+R003_SUFFIXES["propagation_use"] = (
+    "Choose one concrete task-dependent question whose answer uses the operative working_position. "
+    "Evaluate exactly that same question three ways: from the PROBLEM alone, from BEFORE ANSWER, and "
+    "from AFTER ANSWER. Quote the exact before and after claims used. State whether the later result "
+    "depends on a substantive reason supplied by the return and explain that dependence. Exact equality "
+    "or difference of the working_position bookkeeping strings neither establishes nor rules out "
+    "substantive dependence; preserve the public derivations for later reading. If an answer cannot "
+    "decide the question, say so rather than adding premises. Raise a check-bearing objection when a "
+    "derivation disagrees with the problem derivation or cannot decide. A prose counterexample or argued "
+    "distinction is valid content for a derivation_step check and need not be host executable. Host "
+    "checker execution and recoding are disabled in this profile; set checker to null. Schema: "
+    "propagation-use.schema.json."
+)
+R003_SUFFIXES["decomposed_closing"] = (
+    "Produce one final response after the quoted decomposed semantic terminal. Use the exact PROBLEM, "
+    "PLAN, immutable ACCEPTED STEPS, CURRENT ANSWER when present, full OBJECTION HISTORY, and SEMANTIC "
+    "STOP REASON. Do not alter or claim retroactive acceptance of an accepted or disputed step. Give "
+    "exactly one disposition for every supplied currently unresolved objection. Return either a revised "
+    "answered final answer with the working_position string claim and public derivation_steps, or "
+    "cannot_decide with the specific missing derivation, no claims or derivation_steps, and every "
+    "remaining disposition unresolved. No later use follows. Schema: decomposed-closing.schema.json."
+)
 _V2_CONTRACTS = dict(_CONTRACTS)
 _V2_CONTRACTS["return"] = _CONTRACTS["return"].replace(
     "Include exactly one disposition for EVERY supplied objection.",
@@ -93,14 +132,17 @@ def r002_quote(label: str, text: str) -> str:
             + text + f"\nEND {label}")
 
 
-def render_r002(role: str, blocks: list[tuple[str, str]]) -> list[dict[str, str]]:
+def render_r002(role: str, blocks: list[tuple[str, str]], *,
+                study_profile: str | None = None) -> list[dict[str, str]]:
     """Render only declared public R002 blocks; callers control information ports."""
-    if role not in R002_SUFFIXES:
+    suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES
+    system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM
+    if role not in suffixes:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R002 prompt role: " + role)
     if not isinstance(blocks, list) or not blocks:
         raise ReasonFailure("CONFIG_ERROR", "R002 prompt requires quoted blocks")
     body = "\n\n".join(r002_quote(label, text) for label, text in blocks)
-    return [{"role": "system", "content": R002_SYSTEM + "\n" + R002_SUFFIXES[role]},
+    return [{"role": "system", "content": system + "\n" + suffixes[role]},
             {"role": "user", "content": body}]
 
 def render(role: str, problem: str, *, answer: str = "", objections=(), rival: str = "", history=(),
