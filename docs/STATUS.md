@@ -1286,3 +1286,6 @@ Deliverables: research/deepseek-flash-pilot/REPORT-usecases.md, readings/pilot-u
 
 
 2026-09-17T16:49:17.415355+00:00 | REC-20260917-D | root-publisher | Review43 APPROVED-AS-CORRECTED: four live attempt4 use-case readings and P-A3/P-A4/P-A5 are ready for the requested177-path branch delivery. Deferred W43 and missing W45 STATUS text transferred exactly; already-published P-A2 author/judge/activity records verified without duplicate import. Current next task: complete normal D delivery and acknowledgement, then separate F L54-L56 delivery/acknowledgement. No provider call; final publication verification pending. Earlier imported pending-judge language remains historical.
+
+
+2026-09-17T16:53:32.645279+00:00 | REC-20260917-D | root-publisher | Published and verified177Dpaths at 7fffb64edd526c8d062f77ab6b0f5f7ef4beeffa, tree ca634a3a516806c658c9c04f29bf82a3414b4c85, to claude/project-state-direction-j5rbun. Four use-case reading and P-A3/P-A4/P-A5 delivery complete. Next authorized task: this acknowledgement, then separate F L54-L56 delivery and acknowledgement;17foreign provider-fallback paths remain unstaged.
