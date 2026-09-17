@@ -1,0 +1,23 @@
+{
+  "task": "Quote the saved release note that states the timeout.",
+  "features": {
+    "exact_source": true
+  },
+  "inputs": {
+    "documents": [
+      {
+        "id": "release-note",
+        "text": "Version 1 sets the timeout to 30 seconds."
+      }
+    ],
+    "requested_claims": [
+      "timeout"
+    ]
+  },
+  "check": {
+    "source": "import json, sys\nx = json.load(sys.stdin)\nvalue = \"30 seconds\" in x[\"artifact\"][\"answer\"]\nprint(json.dumps({\"relation_id\": \"pilot-result\", \"value\": value, \"derivation\": \"Check the stated timeout against the sealed note.\"}))\n",
+    "expected": true,
+    "scope": "The answer states the saved 30-second timeout; quote bytes are separately source-checked.",
+    "fixtures": {}
+  }
+}

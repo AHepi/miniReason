@@ -1,0 +1,217 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "route",
+      "description": "Propose one registered template and a concise reason; the host validates suitability before dispatch.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "template_id": {
+            "type": "string",
+            "enum": [
+              "direct_answer",
+              "evidence_read",
+              "engineer_patch",
+              "critic_return",
+              "decompose_synthesize"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "spawn",
+      "description": "Propose bounded child calls; the host mints IDs and enforces fan-out, depth, custody, and budget.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subtasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "template_id": {
+                  "type": "string",
+                  "enum": [
+                    "direct_answer",
+                    "evidence_read",
+                    "engineer_patch",
+                    "critic_return",
+                    "decompose_synthesize"
+                  ]
+                },
+                "inputs": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "type": "string"
+                    },
+                    "premises": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "text"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "candidate": {
+                      "type": "string"
+                    },
+                    "allowed_files": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "answer_shape": {
+                      "type": "string"
+                    },
+                    "requested_claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "behavior_contract": {
+                      "type": "string"
+                    },
+                    "test_commands": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "objections": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "protected_obligations": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "decisive_question": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "task",
+                    "premises",
+                    "documents",
+                    "candidate",
+                    "allowed_files",
+                    "answer_shape",
+                    "requested_claims",
+                    "behavior_contract",
+                    "test_commands",
+                    "objections",
+                    "protected_obligations",
+                    "decisive_question"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "template_id",
+                "inputs"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "subtasks"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "assemble",
+      "description": "Propose an answer from immutable accepted result references while exposing unresolved items.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "result_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "answer": {
+            "type": "string"
+          },
+          "unresolved": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "result_refs",
+          "answer",
+          "unresolved"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "verify",
+      "description": "Request verification of one recorded artifact reference under the host checker policy.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "artifact_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_ref"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+]

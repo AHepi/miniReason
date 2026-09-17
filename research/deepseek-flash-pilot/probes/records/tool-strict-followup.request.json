@@ -1,0 +1,178 @@
+{
+  "custody_identity": {
+    "assessor": {
+      "contract_version": "deepseek-flash-pilot.assessors.v1",
+      "qualified_name": "__main__._tool_followup_assessor"
+    },
+    "endpoint_registry": {
+      "bytes": 7652,
+      "path": "src/minireason/data/endpoints.json",
+      "sha256": "03eff16b8f575c113871a1266439874b2622a75d200ecb84a1b79464aa98aee7"
+    },
+    "runner": {
+      "bytes": 55861,
+      "path": "research/deepseek-flash-pilot/probes/run_probes.py",
+      "sha256": "21d5132004d6a7ef34b3862758888a4632386e76b0d390849e3c1650fe4eeea0"
+    },
+    "transport_source": {
+      "bytes": 51750,
+      "path": "src/minireason/provider_openai_compat.py",
+      "sha256": "cdc4b5711263eae2eebf9eadda3a52ad7b9c1f2320a780adc955bcb3cdaee5db"
+    }
+  },
+  "endpoint": {
+    "base_url": "https://api.deepseek.com/beta",
+    "family": "deepseek",
+    "model": "deepseek-flash",
+    "name": "deepseek-flash"
+  },
+  "method": "POST",
+  "probe": "tool-strict-followup",
+  "request": {
+    "max_tokens": 1024,
+    "messages": [
+      {
+        "content": "Use the supplied tools exactly as requested. Do not invent arguments.",
+        "role": "system"
+      },
+      {
+        "content": "For task_id tool-fixture, inspect candidate-1, which is the JSON object {\"template_id\":\"evidence_read\",\"inputs\":{\"paths\":[\"a.json\"]}}. Call choose_template with evidence_read and a short task_summary. Call only choose_template in this turn.",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"task_id\": \"tool-fixture\", \"task_summary\": \"Inspect candidate-1 fixture and select the evidence_read template.\", \"template_id\": \"evidence_read\"}",
+              "name": "choose_template"
+            },
+            "id": "call_00_VfHgiaa09WHV1GGDBI6b4108",
+            "index": 0,
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "{\"accepted\":true,\"task_summary_sha256\":\"7c10c27ec0d337b0d26854d75ce9d2c297c078491e42bdf4e581b0fb75b0c7d7\",\"template_id\":\"evidence_read\"}",
+        "role": "tool",
+        "tool_call_id": "call_00_VfHgiaa09WHV1GGDBI6b4108"
+      },
+      {
+        "content": "Using the local tool results, give one sentence and stop without another tool call.",
+        "role": "user"
+      }
+    ],
+    "model": "deepseek-flash",
+    "stream": false,
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "function": {
+          "description": "Choose exactly one named working template for a bounded task.",
+          "name": "choose_template",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "task_id": {
+                "enum": [
+                  "tool-fixture"
+                ],
+                "type": "string"
+              },
+              "task_summary": {
+                "type": "string"
+              },
+              "template_id": {
+                "enum": [
+                  "direct_answer",
+                  "evidence_read",
+                  "engineer_patch",
+                  "critic_return",
+                  "decompose_synthesize"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "task_id",
+              "template_id",
+              "task_summary"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        },
+        "type": "function"
+      },
+      {
+        "function": {
+          "description": "Report whether a supplied fixture satisfies its declared contract.",
+          "name": "verify_contract",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "candidate_id": {
+                "enum": [
+                  "candidate-1"
+                ],
+                "type": "string"
+              },
+              "issue": {
+                "enum": [
+                  "none",
+                  "missing_field",
+                  "wrong_type",
+                  "out_of_enum"
+                ],
+                "type": "string"
+              },
+              "valid": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "candidate_id",
+              "valid",
+              "issue"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        },
+        "type": "function"
+      }
+    ]
+  },
+  "request_bytes": 2128,
+  "request_bytes_sha256": "1366feee0f8ed513f16cb7372c9a64498aacd5c74d45c7168414ea4145b3afff",
+  "request_header_names": [
+    "Accept",
+    "Authorization",
+    "Content-Type"
+  ],
+  "request_serialization": "utf-8 JSON, ensure_ascii=false, sort_keys=true, compact separators",
+  "request_sha256": "1366feee0f8ed513f16cb7372c9a64498aacd5c74d45c7168414ea4145b3afff",
+  "schema_version": "minireason.deepseek_pilot_probe.v1",
+  "settings": {
+    "hidden_reasoning_persisted": false,
+    "max_tokens": 1024,
+    "reasoning_effort": null,
+    "response_format": null,
+    "retries": 0,
+    "stream": false,
+    "strict_tools": true,
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "tool_choice": "auto"
+  },
+  "started_at_epoch": 1789634879.123533,
+  "url": "https://api.deepseek.com/beta/chat/completions"
+}

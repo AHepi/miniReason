@@ -1,0 +1,81 @@
+{
+  "custody_identity": {
+    "assessor": {
+      "contract_version": "deepseek-flash-pilot.assessors.v1",
+      "qualified_name": "__main__._spawn_assessor"
+    },
+    "endpoint_registry": {
+      "bytes": 7652,
+      "path": "src/minireason/data/endpoints.json",
+      "sha256": "03eff16b8f575c113871a1266439874b2622a75d200ecb84a1b79464aa98aee7"
+    },
+    "runner": {
+      "bytes": 55861,
+      "path": "research/deepseek-flash-pilot/probes/run_probes.py",
+      "sha256": "21d5132004d6a7ef34b3862758888a4632386e76b0d390849e3c1650fe4eeea0"
+    },
+    "transport_source": {
+      "bytes": 51750,
+      "path": "src/minireason/provider_openai_compat.py",
+      "sha256": "cdc4b5711263eae2eebf9eadda3a52ad7b9c1f2320a780adc955bcb3cdaee5db"
+    }
+  },
+  "endpoint": {
+    "base_url": "https://api.deepseek.com/v1",
+    "family": "deepseek",
+    "model": "deepseek-flash",
+    "name": "deepseek-flash"
+  },
+  "method": "POST",
+  "probe": "spawn",
+  "request": {
+    "max_tokens": 2048,
+    "messages": [
+      {
+        "content": "You are a bounded task decomposer. Return JSON with exactly one key, subtasks. subtasks must contain 2 to 4 objects with exactly id, template_id, input, depends_on. template_id must be one of: direct_answer, evidence_read, engineer_patch, critic_return, decompose_synthesize. depends_on is a list of earlier ids only. Example: {\"subtasks\":[{\"id\":\"s1\",\"template_id\":\"evidence_read\",\"input\":\"read A\",\"depends_on\":[]},{\"id\":\"s2\",\"template_id\":\"decompose_synthesize\",\"input\":\"synthesize\",\"depends_on\":[\"s1\"]}]}",
+        "role": "system"
+      },
+      {
+        "content": "Plan a comparison of two saved agent runs: independently read evidence and assess contract compliance, then synthesize a verdict. Emit JSON only; do not perform the work.",
+        "role": "user"
+      }
+    ],
+    "model": "deepseek-flash",
+    "response_format": {
+      "type": "json_object"
+    },
+    "stream": false,
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "request_bytes": 928,
+  "request_bytes_sha256": "ec25e7ad1d9b5b623cc63c1fa29c7168b3eef891351c507aa0f7925a87f84c9b",
+  "request_header_names": [
+    "Accept",
+    "Authorization",
+    "Content-Type"
+  ],
+  "request_serialization": "utf-8 JSON, ensure_ascii=false, sort_keys=true, compact separators",
+  "request_sha256": "ec25e7ad1d9b5b623cc63c1fa29c7168b3eef891351c507aa0f7925a87f84c9b",
+  "schema_version": "minireason.deepseek_pilot_probe.v1",
+  "settings": {
+    "hidden_reasoning_persisted": false,
+    "max_tokens": 2048,
+    "reasoning_effort": null,
+    "response_format": {
+      "type": "json_object"
+    },
+    "retries": 0,
+    "stream": false,
+    "strict_tools": false,
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "tool_choice": null
+  },
+  "started_at_epoch": 1789634885.9078913,
+  "url": "https://api.deepseek.com/v1/chat/completions"
+}
