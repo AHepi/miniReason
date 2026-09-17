@@ -4336,3 +4336,6 @@ OK
 
 
 VERIFIED 3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 TREE ba53b2964b67ecd301a62b6f3a12b1b05768728b at 2026-09-17T12:09:50Z local=3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 remote=3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 ref=origin/claude/project-state-direction-j5rbun paths=122 (REC-20260917-D: pilot amendment P-A1; state P-A1 published; use cases authorised)
+
+
+2026-09-17T12:10:51.320031+00:00 | REC-20260917-F | root-publisher | DELIVERY CHOICE: publish the two independently approved lessons paths as a separate F commit with supporting ledger/STATUS/activity receipts. Reason: owner addendum2requires a distinct delivery; contribution: durable53entry construction lessons and index while preserving judge-corrected bytes. D acknowledgement 6502e15a444f46aaf64c5872c4f3cd8f69e1413a tree 0e643059ff104412c47c9de484813df087018236 is verified by fetch, ls-remote and equal commit/tree. Both lessons files still match review38 frozen SHA256; other17worker paths remain unstaged. F publication and its verification receipt are pending; no tests, provider calls or main merge.

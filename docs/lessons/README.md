@@ -10,3 +10,4 @@ Lessons name the evidence that supports them and the circumstances in which they
 | [operations.md](operations.md) | Transport, reproducibility and publication |
 
 [Expression and interpretation](expressibility.md) records scoped observations about copying, modality, stage-specific evidence, language priming and fallible criticism.
+[Harness lessons register: September 2026](harness-lessons-2026-09.md) is required reading before building a configuration, recipe, contract, seat, launcher or study.

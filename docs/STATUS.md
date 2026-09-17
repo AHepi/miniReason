@@ -1236,3 +1236,6 @@ Imported historical lessons author STATUS:
 
 
 2026-09-17T12:09:50.446154+00:00 | REC-20260917-D | root-publisher | P-A1 published; use cases authorised.122-path delivery 3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30, tree ba53b2964b67ecd301a62b6f3a12b1b05768728b, verified against fetched origin/claude/project-state-direction-j5rbun and ls-remote. All121static review38 hashes matched before D publication; lessons remain reserved for separate F delivery. No provider call or main merge. Next: publish this acknowledgement, then the two approved lessons files with supporting receipts as REC-20260917-F.
+
+
+2026-09-17T12:10:51.320031+00:00 | REC-20260917-F | root-publisher | Separate lessons delivery selected after verified D acknowledgement 6502e15a444f46aaf64c5872c4f3cd8f69e1413a. The53entry register and lessons README match review38 APPROVED-AS-CORRECTED hashes. Next: publish5paths including supporting receipts, verify remote commit/tree, then publish its acknowledgement.17provider-fallback files excluded; no provider calls or main merge.
