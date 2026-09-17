@@ -1191,3 +1191,6 @@ The concurrent R3-A3 declaration predates this report and is kept separate from 
 
 
 2026-09-17T10:49:49.996517+00:00 | REC-20260917-D | root-publisher | Pilot publication approved on the explicit orchestrator decision: w39 identifies the environmental allowlist rejection; review36 records 346 reason tests OK at C:/tr36; corrected pilot 50/50. Historical REJECT and fix-up hold remain preserved with this later disposition. Pilot delivery and verification pending; no launcher edit or provider call. The allowlist instrument defect is reserved for a separately receipted change accepting the process TMP root after live occurrence 4 finishes. Next: explicit pilot delivery and acknowledgement, then approved findings-paper publication.
+
+
+2026-09-17T10:54:37.890526+00:00 | REC-20260917-D | root-publisher | Pilot delivery published and verified on claude/project-state-direction-j5rbun: commit ca0d179c39ea1ffe8fa70b51c0b039cfe1a4a5a3, tree 7bc8f11b901055256f01dedf13f3eb57a39a97e6, 65 paths; ls-remote, fetched commit and tree equal local. Next: acknowledge this receipt, then import and publish the approved findings paper. No provider calls or main merge.
