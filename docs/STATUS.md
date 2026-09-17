@@ -1239,3 +1239,6 @@ Imported historical lessons author STATUS:
 
 
 2026-09-17T12:10:51.320031+00:00 | REC-20260917-F | root-publisher | Separate lessons delivery selected after verified D acknowledgement 6502e15a444f46aaf64c5872c4f3cd8f69e1413a. The53entry register and lessons README match review38 APPROVED-AS-CORRECTED hashes. Next: publish5paths including supporting receipts, verify remote commit/tree, then publish its acknowledgement.17provider-fallback files excluded; no provider calls or main merge.
+
+
+2026-09-17T12:12:52.664976+00:00 | REC-20260917-F | root-publisher | Harness lessons register published:5-path delivery 4e3f9e607f321a9676b0e43a288b036f9cd3ffc1, tree 3b2c31ac7b9a72a78ee5825431b9fcc0d11e2899, verified by fetched origin/claude/project-state-direction-j5rbun, ls-remote and equal local/remote commit/tree. P-A1 delivery 3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 and acknowledgement 6502e15a444f46aaf64c5872c4f3cd8f69e1413a are already verified; P-A1 published; use cases authorised. Next: final F acknowledgement push and terminal verification only, then hand back to orchestrator.17provider-fallback paths remain outside this delivery; no provider call or main merge. Terminal acknowledgement identities are reported externally to avoid a self-referential receipt.
