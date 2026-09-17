@@ -1233,3 +1233,6 @@ Imported historical lessons author STATUS:
 
 
 2026-09-17T12:08:39.079425+00:00 | REC-20260917-D | root-publisher | Review38 APPROVED-AS-CORRECTED bytes revalidated:21engineering+98usecase files with3shared receipts; separate2lessons files await F delivery. No owner advance at fetched H0=2bbb4cc2526ea90516a2b31438845da0f406a8f2. D delivery is being committed and pushed to claude/project-state-direction-j5rbun; publication remains pending actual remote commit/tree verification. No provider calls or main merge.
+
+
+2026-09-17T12:09:50.446154+00:00 | REC-20260917-D | root-publisher | P-A1 published; use cases authorised.122-path delivery 3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30, tree ba53b2964b67ecd301a62b6f3a12b1b05768728b, verified against fetched origin/claude/project-state-direction-j5rbun and ls-remote. All121static review38 hashes matched before D publication; lessons remain reserved for separate F delivery. No provider call or main merge. Next: publish this acknowledgement, then the two approved lessons files with supporting receipts as REC-20260917-F.

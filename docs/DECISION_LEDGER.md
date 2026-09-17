@@ -4333,3 +4333,6 @@ OK
 
 
 2026-09-17T12:07:37.167822+00:00 | REC-20260917-D | root-publisher | GATE CLEARED / DELIVERY DECISION: publisher21/22/23/24 exits verified in exact orchestrator scratchpad reports directory; active25log matches this session unique transcript markers and is the current publisher. Fetch succeeded; local H0=2bbb4cc2526ea90516a2b31438845da0f406a8f2; fetched origin/claude/project-state-direction-j5rbun=2bbb4cc2526ea90516a2b31438845da0f406a8f2; owner range=none. All121static files match judge hashes;124file UTF8/credential-shape and whitespace checks pass;17provider-fallback files excluded. Choice: stage exactly119D engineering/usecase files plus3shared receipts and publish requested D delivery now, then its verified acknowledgement; F remains separate. No provider call or main merge.
+
+
+VERIFIED 3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 TREE ba53b2964b67ecd301a62b6f3a12b1b05768728b at 2026-09-17T12:09:50Z local=3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 remote=3b2f0f660e94fe6b10970665c6bbeccd2f9c4d30 ref=origin/claude/project-state-direction-j5rbun paths=122 (REC-20260917-D: pilot amendment P-A1; state P-A1 published; use cases authorised)
