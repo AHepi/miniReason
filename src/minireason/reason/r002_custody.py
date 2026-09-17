@@ -142,8 +142,11 @@ def validate_r003_canonical(path, manifest, problem_id, problem):
 
 def prompt_snapshot(study_profile=None, contract_version=None):
     from .prompts import (R002_SYSTEM, R002_SUFFIXES, R003_SYSTEM, R003_SUFFIXES,
-                          R003_A1_CONTRACT, R003_A1_SYSTEM, R003_A1_SUFFIXES)
-    if contract_version == R003_A1_CONTRACT:
+                          R003_A1_CONTRACT, R003_A1_SYSTEM, R003_A1_SUFFIXES,
+                          R003_A2_CONTRACT, R003_A2_SYSTEM, R003_A2_SUFFIXES)
+    if contract_version == R003_A2_CONTRACT:
+        system, suffixes = R003_A2_SYSTEM, R003_A2_SUFFIXES
+    elif contract_version == R003_A1_CONTRACT:
         system, suffixes = R003_A1_SYSTEM, R003_A1_SUFFIXES
     else:
         system = R003_SYSTEM if study_profile == "r003-open-v1" else R002_SYSTEM

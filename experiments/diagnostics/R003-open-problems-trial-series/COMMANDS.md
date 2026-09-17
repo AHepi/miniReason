@@ -125,3 +125,69 @@ R3-A1 CROSS uses Qwen `ollama/qwen3.5-397b.native` as `signal_a` and Kimi `ollam
 Combined maximum is 374,478,848 tokens. The sequential 448-attempt, 300-second envelope is 134,400 seconds (37h20m). These are loose authorization ceilings, not a spend or duration prediction. A schema repair consumes the same seat's ceiling; no transport retry, model fallback or ceiling retry is authorized.
 
 The tracked executable `experiments/diagnostics/R003-open-problems-trial-series/launch-occurrence-2.cmd` exactly matches the command above and the review copy. Final source/capability verification is recorded in `FINAL-AUDIT.json`; `launch/SOURCE-PIN-REFRESH.md` retains the audit procedure. The required two-problem offline command and repeat-refusal proof are in `launch/READINESS.md`.
+
+## R3-A2 occurrence-3 command (2026-09-17)
+
+R3-A2 selects `r003-open-v1-r3-a2` and the versioned v3 CROSS and DECOMPOSED
+recipes. It reuses occurrence-1 NATIVE answers and inherits the exact R3-A1
+input descriptor, routes and allowances. It does not rewrite occurrence 1 or 2.
+The candidate capability and source-pin identities are
+`R003-CAPABILITY.R3-A2.json` and `SOURCE_PINS.R3-A2.json`; the judge must create
+and review them from the final source snapshot before dispatch.
+
+From `cmd.exe`, detach the complete command file:
+
+```cmd
+start "" /b cmd.exe /d /c "C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\launch-occurrence-3.cmd"
+```
+
+The command guards the presence of `o001` and `o002`, refuses any existing
+`o003`, and passes `--expected-occurrence o003`. Its exact contents and resource
+projection are recorded in `work/w32/OCC3-LAUNCH.md`. No command in this section
+was executed live during the fix-up.
+
+
+### Independent judge complete occurrence-3 command (2026-09-17T08:20:08.604931+00:00)
+
+The following supersedes the engineer scratch paths and pending-capability wording above. Reviewed capability/source pins are exact; publish and verify the exact tree before live dispatch.
+
+# Complete occurrence-3 command and projection
+
+From cmd.exe, detached:
+
+```cmd
+start "" /b cmd.exe /d /c "C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\launch-occurrence-3.cmd"
+```
+
+Complete command file (exact tracked candidate content):
+
+```cmd
+@echo off
+cd /d C:\Dev\miniReason
+if not exist "C:\Dev\miniReason\work\review32" mkdir "C:\Dev\miniReason\work\review32"
+if not exist C:\tr32 mkdir C:\tr32
+set PYTHONUTF8=1
+set PYTHONIOENCODING=utf-8
+set PYTHONDONTWRITEBYTECODE=1
+set PYTHONPATH=src;tests
+set GIT_OPTIONAL_LOCKS=0
+set TMP=C:\tr32
+set TEMP=C:\tr32
+if not exist C:\tr32 ( echo exit=refused-tmp-unavailable > "C:\Dev\miniReason\work\review32\r003-occ3.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o001\MANIFEST.json ( echo exit=refused-missing-o001 > "C:\Dev\miniReason\work\review32\r003-occ3.exit" & exit /b 3 )
+if not exist C:\Dev\miniReason\runs\R003-open-v1\o002\MANIFEST.json ( echo exit=refused-missing-o002 > "C:\Dev\miniReason\work\review32\r003-occ3.exit" & exit /b 3 )
+if exist C:\Dev\miniReason\runs\R003-open-v1\o003 ( echo exit=refused-o003-exists > "C:\Dev\miniReason\work\review32\r003-occ3.exit" & exit /b 3 )
+"C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe" -B -X utf8 experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\Dev\miniReason\runs\R003-open-v1 --amendment R3-A2 --expected-occurrence o003 --problems O01 O02 O03 O04 O05 O06 O07 O08 --conditions LOOP-CROSS LOOP-DECOMPOSED --question "Across O01-O08, does either loop yield a specific usable reframing absent from fresh native reasoning, and what losses accompany it?" --mode live --env-file C:\Dev\miniReason\.env --tokenizer-pins C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\R003-input-preflight.json --capability C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\R003-CAPABILITY.R3-A2.json --brief-manifest C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\briefs\MANIFEST.json --authorize-live > "C:\Dev\miniReason\work\review32\r003-occ3.log" 2>&1
+echo exit=%ERRORLEVEL% > "C:\Dev\miniReason\work\review32\r003-occ3.exit"
+```
+
+| Projection | CROSS/problem | DECOMPOSED/problem | Eight-problem occurrence |
+|---|---:|---:|---:|
+| Logical/base attempts | 14 | 14 | 224 |
+| Maximum attempts with one repair each | 28 | 28 | 448 |
+| Base completion allowance | 409,600 | 376,832 | 6,291,456 |
+| Maximum completion allowance | 819,200 | 753,664 | 12,582,912 |
+| Base prompt allowance including reserve | 11,309,248 | 11,309,248 | 180,947,968 |
+| Maximum prompt allowance | 22,618,496 | 22,618,496 | 361,895,936 |
+
+Combined maximum: 374,478,848 tokens. Sequential attempt envelope: 448 x 300 seconds = 134,400 seconds (37h20m). These are loose authorization ceilings, not predicted cost/duration. No transport retry, fallback or ceiling retry. Same eight problems/question; o001 NATIVE reused only by the reader. No live run was performed by this judge. Publication and exact remote/local tree verification must precede launch.

@@ -154,6 +154,66 @@ R003_A1_SUFFIXES["decomposed_closing"] = (
     "Do not alter an accepted or disputed step. No later use follows. "
     "Schema: decomposed-closing-r3-a1.schema.json."
 )
+R003_A2_CONTRACT = "r003-open-v1-r3-a2"
+R003_A2_SYSTEM = R003_A1_SYSTEM.replace(
+    "participant labels for an exact quoted answer step",
+    "participant labels for a real answer step located under R3-A2") + (
+    " Amendment R3-A2 treats an open-problem prose paragraph as a public derivation step. A fork may "
+    "locate that real step either by its explicit step_index with an empty step_quote, or by a "
+    "normalized quotation of at least 40 characters from the named step. Normalization folds case, "
+    "whitespace, and straight or curly quotation marks; it does not license invented text."
+)
+R003_A2_SUFFIXES = {
+    role: suffix.replace("-r3-a1.schema.json", "-r3-a2.schema.json")
+    for role, suffix in R003_A1_SUFFIXES.items()
+}
+R003_A2_SUFFIXES["prose_critic"] = R003_A2_SUFFIXES["prose_critic"].replace(
+    "locate and quote the EARLIEST public derivation step",
+    "locate the EARLIEST public derivation step").replace(
+        "prose-objection.schema.json", "prose-objection-r3-a2.schema.json")
+R003_A2_SUFFIXES["tested_critic"] = R003_A2_SUFFIXES["tested_critic"].replace(
+    "locate and quote the EARLIEST defective derivation step",
+    "locate the EARLIEST defective derivation step").replace(
+        "tested-objection.schema.json", "tested-objection-r3-a2.schema.json")
+R003_A2_SUFFIXES["decomposed_critic"] = R003_A2_SUFFIXES["decomposed_critic"].replace(
+    "must quote that current step derivation as its fork step",
+    "must locate that current step derivation as its fork step").replace(
+        "tested-objection.schema.json", "tested-objection-r3-a2.schema.json")
+R003_A2_SUFFIXES["propagation_use"] = R003_A2_SUFFIXES["propagation_use"].replace(
+    "propagation-use.schema.json", "propagation-use-r3-a2.schema.json")
+_R3_A2_LOCATOR = (
+    " For each fork, either set step_quote to the empty string and give the exact step_index, or quote "
+    "at least 40 characters from that step. Reflowed whitespace, case, and straight/curly quote forms "
+    "are accepted after normalization. A nonempty fabricated or paraphrased quote is invalid even when "
+    "step_index is valid."
+)
+for _role in ("prose_critic", "tested_critic", "decomposed_critic", "propagation_use"):
+    R003_A2_SUFFIXES[_role] += _R3_A2_LOCATOR
+R003_A2_SUFFIXES["decomposed_critic"] += (
+    " Judge only the CURRENT PLAN STEP against the problem and already accepted dependencies. Do not "
+    "criticize it merely because later planned steps, controls, or whole-problem synthesis have not yet "
+    "been performed."
+)
+R003_A2_SUFFIXES["initial_decompose"] += (
+    " On an open prose problem, a refutable relation or decision with a stated counterexample or "
+    "contradicting observation satisfies the commitment shape; no numeric value is required. A "
+    "definition, inventory, framing statement, or restatement without that refuter does not."
+)
+R003_A2_SUFFIXES["decomposed_step"] += (
+    " A prose result may commit to a relation or decision with a stated refuter; it need not produce a "
+    "number. Definitions and restatements without a refuter remain insufficient."
+)
+R003_A2_SUFFIXES["decomposed_return"] += (
+    " A prose result may commit to a relation or decision with a stated refuter; it need not produce a "
+    "number. Definitions and restatements without a refuter remain insufficient."
+)
+R003_A2_SUFFIXES["decomposed_use"] += (
+    " Judge only the quoted CURRENT PLAN STEP's declared commitment against the PROBLEM and its already "
+    "accepted dependencies. Reproduce or refute that value, relation, or decision and its stated "
+    "counterexample condition. Do not mark it disagrees merely because later planned steps, controls, "
+    "or the whole-problem synthesis have not yet been performed. The agrees/disagrees judgment remains "
+    "a public participant judgment, not a correctness certificate."
+)
 _V2_CONTRACTS = dict(_CONTRACTS)
 _V2_CONTRACTS["return"] = _CONTRACTS["return"].replace(
     "Include exactly one disposition for EVERY supplied objection.",
@@ -192,7 +252,9 @@ def render_r002(role: str, blocks: list[tuple[str, str]], *,
                 study_profile: str | None = None,
                 contract_version: str | None = None) -> list[dict[str, str]]:
     """Render only declared public R002 blocks; callers control information ports."""
-    if contract_version == R003_A1_CONTRACT:
+    if contract_version == R003_A2_CONTRACT:
+        suffixes, system = R003_A2_SUFFIXES, R003_A2_SYSTEM
+    elif contract_version == R003_A1_CONTRACT:
         suffixes, system = R003_A1_SUFFIXES, R003_A1_SYSTEM
     else:
         suffixes = R003_SUFFIXES if study_profile == "r003-open-v1" else R002_SUFFIXES

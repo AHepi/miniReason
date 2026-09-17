@@ -301,3 +301,314 @@ Direct launcher O01/O02 CROSS+DECOMPOSED into C:/tr30/offline-r3-a1/o002:4/4 COM
 Engine regressions now refuse definition-only initial/later responses without counting accepted steps, and refuse a four-step plan after one repair. A valid three-step plan reaches synthesis. Preflight tests admit60000bytes at131072window, refuse131073bytes, enforce96256boundary/2048reserve, preserve original R00232768bound. Independently reconstructed original80660/31604 repair wires now pass R3-A1 cap965184. Kimi seal-lineage tests cover creation and verify/resume without opening real briefs. Pure reviewed-capability/descriptor gates pass both loops.
 
 Reviewed candidate is R003-CAPABILITY.R3-A1.json, regenerated from exact final source with actual root-review30 judgment; SOURCE_PINS.R3-A1.json refreshed. Tracked launch-occurrence-2.cmd/COMMANDS.md and work/review30/OCC2-LAUNCH.md give the complete detached command/projection. Existing o001 public seal metadata identifies OpenAI/GPT reader, distinct from DeepSeek/Qwen/Kimi; actual sealed files remain unopened in this judgment and their existing exact-byte gate still runs at real dispatch. No real o002 was created, Git state changed or participant call made.
+
+
+## R3-A2 occurrence-3 offline qualification (2026-09-17T07:49:31.360937+00:00)
+
+Python C:/Users/darre/AppData/Local/Programs/Python/Python311/python.exe; PYTHONPATH=src;tests; PYTHONUTF8=1; PYTHONIOENCODING=utf-8; TMP/TEMP=C:/tw32. All executions use offline fixtures. Actual .env and sealed briefs were not read; no provider/model calls or Git state changes. Final required suites have zero failing tests. Focused intermediate assertion/path mistakes are retained in work/w32/CONTRACTS-TESTS.txt and LAUNCHER.md; they were corrected before qualification and are not omitted.
+
+Focused regressions cover whitespace/curly quotes/case, valid empty-quote indexes, wrong/missing indexes, fabricated or whitespace-only quotes, meaningful superscript distinctions, duplicate identical/conflicting values, candidate AFTER text in use repair, prose decision/relation commitments, definition-only rejection before acceptance, A1 behavior, full three-step synthesis, and descriptor mismatch refusal before output creation. Four launcher selection tests verify o003 numbering, v3 recipes, loops only, native reuse, prior sentinels and inherited resources.
+
+### Requested full reason discovery
+
+```text
+START 2026-09-17T07:46:14.383199+00:00
+END 2026-09-17T07:48:16.042468+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+EXIT 0
+...............................................................CONFIG_ERROR
+..............................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 333 tests in 121.179s
+
+OK
+Run directory: C:\Dev\miniReason\work\w32\evidence\cli\2c7dbd8d
+{"run_id": "20260917T074635Z-r002-86c685", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260917T074635Z-r002-86c685", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+O01-n: COMPLETE rc=0
+O01-x: FAILED rc=2
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: FAILED rc=2
+O02-d: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O01-n: FAILED rc=2
+O01-n: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tw32\\a1-12ljq9dg\\o002", "result": {"failed": 0}}
+{"occurrence": "C:\\tw32\\a2-oarmprhp\\o003", "result": {"failed": 0}}
+O01-d: COMPLETE rc=0
+```
+
+### Requested docs pins
+
+```text
+START 2026-09-17T07:48:16.042468+00:00
+END 2026-09-17T07:48:16.596647+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+EXIT 0
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.019s
+
+OK
+```
+
+### Direct two-problem offline launcher and expected repeat refusal
+
+```text
+UTC 2026-09-17T07:46:18.566280+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\tw32\offline-r3-a2 --amendment R3-A2 --expected-occurrence o003 --problems O01 O02 --conditions LOOP-CROSS LOOP-DECOMPOSED --question "Across O01-O08, does either loop yield a specific usable reframing absent from fresh native reasoning, and what losses accompany it?" --mode offline
+EXIT 0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tw32\\offline-r3-a2\\o003", "result": {"status": "FINISHED", "rows": 4, "failed": 0}}
+
+REPEATED CREATE EXIT 2
+R003_REFUSED: OCCURRENCE_NUMBER_CHANGED
+```
+
+The live occurrence3 command/projection in work/w32/OCC3-LAUNCH.md was not executed. Candidate capability remains UNREVIEWED and correctly refuses live admission. Offline results establish contract/selection mechanics only.
+
+
+### R3-A2 qualification transcript interpretation and final preservation
+
+Dated UTC 2026-09-17T07:50:38.498703+00:00. The full-suite `CONFIG_ERROR` and `FAILED rc=2` stdout lines above are deliberately injected negative fixtures, including `test_two_problem_matrix_resume_rerun_and_manifests` and `test_native_failure_has_no_repair_and_only_failed_successor_is_new`. They are not failed unittest cases or failures in the separate four-cell R3-A2 launcher run. Both requested unittest processes exit 0 with OK.
+
+Final checks: 2,790/2,790 historical o001/o002 files unchanged; 31 prior R003 contracts/recipes/problems/resource artifacts unchanged; all three published document prefixes preserved; branch, HEAD and index unchanged; 68/68 candidate source pins and capability equality verified; scoped git diff --check passes. The filtered publication set has 28 paths, with concurrent docs tails separately listed in work/w32/PUBLISH-CHECKLIST.md. No provider/model calls or publication.
+
+
+### R3-A2 final completion after refuter-port correction (2026-09-17T07:58:03.421588+00:00)
+
+The final A2 use context includes the returned step commitments and their stated check_or_counterexample; legacy/A1 context is unchanged. This completes the declared prose-seat contract adaptation. A real first-use request regression proves delivery of a refuter absent from derivation/result. No new information source or allowance is introduced. Earlier pre-correction qualification remains preserved and is superseded for delivery by the following final-source results.
+
+Final results: 334 reason tests PASS in 113.574s; 26 docs-pin tests PASS in 0.018s;15focusedA2and4selectiontests PASS;4/4directO01/O02offlinecells PASS in C:/tw32/offline-r3-a2-final/o003, expected repeat refusal and unchanged fixture tree. All tests are offline. Candidate R003-CAPABILITY.R3-A2.json and SOURCE_PINS.R3-A2.json now identify the final source with68pins; earlier candidate copies are preserved under work/w32/pre-port-correction/. Capability remains UNREVIEWED for judge.
+
+A separate offline probe of unchanged observed locators admits O02DECOMPOSED critic a01 and O07CROSS USEa01 under the A2 rule, while still rejecting O01CROSS USEa01 against indexed AFTER step2. Historical results are not reclassified. Complete mechanical output: work/w32/OBSERVED-LOCATOR-PROBE.json.
+
+#### reason-full-final.txt
+
+```text
+START 2026-09-17T07:55:21.270944+00:00
+END 2026-09-17T07:57:15.317429+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+EXIT 0
+...............................................................CONFIG_ERROR
+...............................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 334 tests in 113.574s
+
+OK
+Run directory: C:\Dev\miniReason\work\w32\evidence\cli\dfd7d98f
+{"run_id": "20260917T075542Z-r002-ed52ca", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260917T075542Z-r002-ed52ca", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+O01-n: COMPLETE rc=0
+O01-x: FAILED rc=2
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: FAILED rc=2
+O02-d: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O01-n: FAILED rc=2
+O01-n: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tw32\\a1-bdr65r2f\\o002", "result": {"failed": 0}}
+{"occurrence": "C:\\tw32\\a2-dl69fxk1\\o003", "result": {"failed": 0}}
+O01-d: COMPLETE rc=0
+```
+
+#### docs-pins-final.txt
+
+```text
+START 2026-09-17T07:57:15.317429+00:00
+END 2026-09-17T07:57:15.884531+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+EXIT 0
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.018s
+
+OK
+```
+
+#### launcher-offline-final.txt
+
+```text
+UTC 2026-09-17T07:55:25.244570+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\tw32\offline-r3-a2-final --amendment R3-A2 --expected-occurrence o003 --problems O01 O02 --conditions LOOP-CROSS LOOP-DECOMPOSED --question "Across O01-O08, does either loop yield a specific usable reframing absent from fresh native reasoning, and what losses accompany it?" --mode offline
+EXIT 0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tw32\\offline-r3-a2-final\\o003", "result": {"status": "FINISHED", "rows": 4, "failed": 0}}
+
+REPEATED CREATE EXIT 2
+R003_REFUSED: OCCURRENCE_NUMBER_CHANGED
+```
+
+Deliberate negative-fixture CONFIG_ERROR/FAILED child stdout is expected; both unittest processes exit0withOK. No provider/model call, actual.env/brief read, real runs edit or Git state change occurred.
+
+
+### Independent R3-A2 judgment (2026-09-17T08:20:08.573521+00:00)
+
+APPROVED-AS-CORRECTED for publication: YES. Occurrence-3 engineering launch readiness: YES, with exact source/capability publication and equal-tree remote verification required before actual dispatch. Root independently reproduced all82saved o002 A1 parser outcomes; all55prior COMPLETE attempts remain COMPLETE under A2, and three failed attempts newly pass (O02 DECOMPOSED critic a00/a01; O07 CROSS USEa01). All six DECOMPOSED terminal critic checks use the new locator rule and pass synthetic index-only repairs; the other five original quotes still correctly fail because they name another field/representation or a composite. Nonempty fabricated quotes remain invalid. CROSS before/after dependency quotes and RETURN full-suffix custody are separate strict checks; O03/O08 absent paraphrases/ellipses and O04 differing suffix step6 remain errors. In the earlier notation derivation_steps[step_index], lookup means the declared step ID, not a zero-based array offset. No observation is rewritten.
+
+Final judge qualification:334/334reason tests in122.059s and26/26docs pins in0.019s PASS;4/4directofflineO01/O02cells in C:/tr32/offline-r3-a2/o003 PASS, repeated create refused with unchanged fixture tree. The first reason suite had one PATH_TOO_LONG fixture failure; shortening only MINIREASON_TEST_LAUNCHER_WORK to C:/tr32/l corrected it, and its original transcript/tree are preserved. C01 adds the required C:/tr32 and work/review32 fixture roots; C03 uses those scratch/log destinations in the complete detached command. The semantic contract, route and resource selection is unchanged by these judge corrections.
+
+R003-CAPABILITY.R3-A2.json now carries the actual root-review32 review receipt;68source pins and regenerated capability match exactly, and both pure live-input gates pass. All2841o001/o002files match the independent custody manifest (the engineer narrower manifest covered2790);31historical artifacts,190protected tracked files and frozen prefixes remain unchanged. HEAD/branch/index unchanged. No provider/model call, actual.env/sealed problem-brief read, runs write or Git mutation occurred. Full path:line judgment, old-to-new corrections,82-output replay, failure/success logs, filtered checklist and detached command/projection: work/review32/INDEX.md. This judges engineering readiness, not scientific improvement or publication completion.
+
+#### reason-discover.txt
+
+```text
+START 2026-09-17T08:09:42.188925+00:00
+END 2026-09-17T08:11:27.105107+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+EXIT 1
+...............................................................CONFIG_ERROR
+......................................................F........................................................................................................................................................................................................................
+======================================================================
+FAIL: test_two_candidate_calibration_main_resume_and_rerun (tests.reason.test_r002_launcher.R002LauncherTests.test_two_candidate_calibration_main_resume_and_rerun)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Dev\miniReason\tests\reason\test_r002_launcher.py", line 138, in test_two_candidate_calibration_main_resume_and_rerun
+    self.assertEqual(calibration.returncode, 0, calibration.stdout + calibration.stderr)
+AssertionError: 2 != 0 : R002_LAUNCHER_REFUSED: Reason child refused before durable state: C01 CAL-NATIVE
+
+
+----------------------------------------------------------------------
+Ran 334 tests in 104.479s
+
+FAILED (failures=1)
+Run directory: C:\Dev\miniReason\work\review32\evidence\cli\80201020
+{"run_id": "20260917T081003Z-r002-1b713d", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260917T081003Z-r002-1b713d", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+O01-n: COMPLETE rc=0
+O01-x: FAILED rc=2
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: FAILED rc=2
+O02-d: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O01-n: FAILED rc=2
+O01-n: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tr32\\a1-m07ksz22\\o002", "result": {"failed": 0}}
+{"occurrence": "C:\\tr32\\a2-lbnv59dx\\o003", "result": {"failed": 0}}
+O01-d: COMPLETE rc=0
+
+```
+
+#### reason-discover-final.txt
+
+```text
+START 2026-09-17T08:14:03.902576+00:00
+END 2026-09-17T08:16:06.408679+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest discover -s tests/reason -t .
+EXIT 0
+...............................................................CONFIG_ERROR
+...............................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 334 tests in 122.059s
+
+OK
+Run directory: C:\Dev\miniReason\work\review32\evidence\cli\baff86f6
+{"run_id": "20260917T081424Z-r002-89aa61", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"run_id": "20260917T081424Z-r002-89aa61", "stop_reason": "complete", "completed_cycles": 0, "calls": 1}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+{"mode": "offline", "phase": "main", "schema": "minireason.r002.launcher.v2", "scientific_evidence": false, "selected_candidates": ["C05", "C06", "C09", "C12"], "status": "COMPLETE"}
+O01-n: COMPLETE rc=0
+O01-x: FAILED rc=2
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: FAILED rc=2
+O02-d: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O01-n: FAILED rc=2
+O01-n: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O01-n: COMPLETE rc=0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-n: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tr32\\a1-vyd1u1wf\\o002", "result": {"failed": 0}}
+{"occurrence": "C:\\tr32\\a2-cmwabzn1\\o003", "result": {"failed": 0}}
+O01-d: COMPLETE rc=0
+
+```
+
+#### docs-pins-final.txt
+
+```text
+START 2026-09-17T08:16:06.408679+00:00
+END 2026-09-17T08:16:06.990509+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 -m unittest tests.loop.test_docs_pins
+EXIT 0
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.019s
+
+OK
+
+```
+
+#### offline-launcher-final.txt
+
+```text
+START 2026-09-17T08:16:06.997406+00:00
+END 2026-09-17T08:16:10.763412+00:00
+COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\tr32\offline-r3-a2 --amendment R3-A2 --expected-occurrence o003 --problems O01 O02 --conditions LOOP-CROSS LOOP-DECOMPOSED --question "Across O01-O08, does either loop yield a specific usable reframing absent from fresh native reasoning, and what losses accompany it?" --mode offline
+EXIT 0
+O01-x: COMPLETE rc=0
+O01-d: COMPLETE rc=0
+O02-x: COMPLETE rc=0
+O02-d: COMPLETE rc=0
+{"occurrence": "C:\\tr32\\offline-r3-a2\\o003", "result": {"status": "FINISHED", "rows": 4, "failed": 0}}
+
+REPEATED CREATE COMMAND C:\Users\darre\AppData\Local\Programs\Python\Python311\python.exe -B -X utf8 C:\Dev\miniReason\experiments\diagnostics\R003-open-problems-trial-series\run_R003.py new --series C:\tr32\offline-r3-a2 --amendment R3-A2 --expected-occurrence o003 --problems O01 O02 --conditions LOOP-CROSS LOOP-DECOMPOSED --question "Across O01-O08, does either loop yield a specific usable reframing absent from fresh native reasoning, and what losses accompany it?" --mode offline
+REPEATED CREATE EXIT 2
+R003_REFUSED: OCCURRENCE_NUMBER_CHANGED
+
+```
+
+The first discovery transcript is a preserved failure; final required suites exit0/OK. Deliberate negative fixtures can print FAILED/refusal text while the suite succeeds. Direct offline cells are fixtures, not participant/model evidence.

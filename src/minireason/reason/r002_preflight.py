@@ -143,6 +143,10 @@ def r003_capability_snapshot(review_receipt="UNREVIEWED"):
     from .r002_custody import prompt_snapshot
     prompt_text = json.dumps(prompt_snapshot(R003_PROFILE), ensure_ascii=False,
                              sort_keys=True, separators=(",", ":"), allow_nan=False)
+    descriptor = get(R003_DIR / "R003-input-preflight.json")
+    descriptor_sha256 = hashlib.sha256(
+        (R003_DIR / "R003-input-preflight.json").read_bytes()
+    ).hexdigest()
     return {
         "schema": "minireason.reason.engine-capability.v1",
         "capability": R003_PROFILE,
@@ -160,12 +164,20 @@ def r003_capability_snapshot(review_receipt="UNREVIEWED"):
         "inherited_r002_schema_sha256": dict(R002_SCHEMA_SHA256),
         "recipe_sha256": dict(R003_RECIPE_SHA256),
         "r3_a1": {"amendment": "R3-A1", "contract": "r003-open-v1-r3-a1",
-                   "input_caps": get(R003_DIR / "R003-input-preflight.json")["input_caps"],
+                   "input_caps": descriptor["input_caps"],
                    "critic_completion_tokens": 32768, "plan_steps_max": 3,
                    "prompt_snapshot_sha256": hashlib.sha256(json.dumps(
-                       prompt_snapshot(R003_PROFILE, "r003-open-v1-r3-a1"), ensure_ascii=False,
-                       sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()},
-        "r3_a1_input_descriptor_sha256": hashlib.sha256((R003_DIR / "R003-input-preflight.json").read_bytes()).hexdigest(),
+                        prompt_snapshot(R003_PROFILE, "r003-open-v1-r3-a1"), ensure_ascii=False,
+                        sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()},
+        "r3_a2": {"amendment": "R3-A2", "contract": "r003-open-v1-r3-a2",
+                   "resource_inheritance": "Exact R3-A1 descriptor, routes and allowances",
+                   "input_caps": descriptor["input_caps"],
+                   "critic_completion_tokens": 32768, "plan_steps_max": 3,
+                   "prompt_snapshot_sha256": hashlib.sha256(json.dumps(
+                        prompt_snapshot(R003_PROFILE, "r003-open-v1-r3-a2"), ensure_ascii=False,
+                        sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()},
+        "r3_a1_input_descriptor_sha256": descriptor_sha256,
+        "r3_a2_inherited_input_descriptor_sha256": descriptor_sha256,
         "prompt_snapshot_sha256": hashlib.sha256(prompt_text.encode("utf-8")).hexdigest(),
         "runtime_sha256": {name: hashlib.sha256((reason_dir / name).read_bytes()).hexdigest()
                            for name in runtime_names},

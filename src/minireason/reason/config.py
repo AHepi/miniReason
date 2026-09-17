@@ -172,6 +172,8 @@ R003_RECIPE_SHA256 = {
 R003_RECIPE_SHA256.update({
     'r003-cross-v2.json': '800fabaafa1f4a82a476bcf85177359a2a004ac49f4fb64d9a17a7beb2d4aa00',
     'r003-decomposed-v2.json': '208b3b34ac669b7a91642f6ffb33fadb8a21f70f7d87406ac5f6c67beb9451ab',
+    'r003-cross-v3.json': 'e9b08a83301b527d83ef639765892f7d84b807cf7da1c8f5af4a3c1e3c13c753',
+    'r003-decomposed-v3.json': '574bb12200266c2b9eabbf0e3f237fdaef3941b0506495d197be2f434423dcb8',
 })
 R003_SCHEMA_SHA256 = {
     "canonical-registry.schema.json": "b5c7f53888ba2bdbf9eb9f66240fe3ce68e066bdeb128eddf203c6b0e725d9e2",
@@ -188,6 +190,16 @@ R003_SCHEMA_SHA256.update({
     'decomposed-synthesis-r3-a1.schema.json': 'd894ed9a01661474eb5688d895bf561a240e80f3750df1c3d5e55a55070f1fe6',
     'initial-decompose-r3-a1.schema.json': 'df27ab9a2e10dae983f253d8d939d1b6d779b49bf71380f7637c80b2e45500cd',
     'r3-a1-commitment.schema.json': '40f5fcdf4c668e17f47abb8b9ed486e633c07bf62ad4c06d32ce48a292dce51b',
+    'decomposed-closing-r3-a2.schema.json': '7f536457b7d4f6a2f5606348b5ef581a89ee164311912da90a36c7e7962abe96',
+    'decomposed-return-r3-a2.schema.json': '593a0922a58cacb6d069f1f6bd38837216826a312912e9219aaf48138877637f',
+    'decomposed-step-r3-a2.schema.json': 'f51f59eb17b650bb8936c06736addc200441254bcfdc71ef3a1ecb405cc8271a',
+    'decomposed-synthesis-r3-a2.schema.json': 'ec4a73a1cf70e94cb303e6cbba33d9f6222ab2488a867c647b9e384e0d085908',
+    'fork-locator-r3-a2.schema.json': '0cd2095b7f2a1e33acc63cda76adc731807f67ca3373c5cc894f98ef7b49472b',
+    'initial-decompose-r3-a2.schema.json': 'c31c8d045e0f877cf37ddee447af9d40e73a724943c076eb99d6532d92ff16d4',
+    'propagation-use-r3-a2.schema.json': '41878678060c130a9442e3d7f28c5e4add26e017c6ea27c6e5476263e1901f06',
+    'prose-objection-r3-a2.schema.json': 'ed24ca64f76ab3d926ffba49f2003e336e5e2dd61520ad250d4e21006c18d9bb',
+    'r3-a2-commitment.schema.json': '098aa14cd71864cda1deb9f053602f267362eb9c211a594c96d0abbd5aa389d2',
+    'tested-objection-r3-a2.schema.json': '271af561c15ad14d8e9cb6c1c848dcaaab2966da1e9689da017faa21696b2295',
 })
 
 def validate_r002_recipe(data: dict[str, Any]) -> None:
@@ -213,7 +225,7 @@ def load_r002_recipe(name_or_path):
 
 
 def validate_r003_recipe(data: dict[str, Any]) -> None:
-    """Accept only pinned R003 recipes, including the separately declared R3-A1 successor."""
+    """Accept only pinned R003 recipes, including separately declared successors."""
     filename = str(data.get("name", "")) + ".json"
     if data.get("study_profile") != R003_PROFILE or filename not in R003_RECIPE_SHA256:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R003 recipe identity")

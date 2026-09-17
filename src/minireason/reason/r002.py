@@ -5,6 +5,7 @@ from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
+import re
 import time
 import uuid
 from typing import Any
@@ -48,10 +49,28 @@ R3_A1_ROLE_SCHEMAS = {
     "decomposed_synthesis": "decomposed-synthesis-r3-a1.schema.json",
     "decomposed_closing": "decomposed-closing-r3-a1.schema.json",
 }
+R3_A2_ROLE_SCHEMAS = {
+    **R3_A1_ROLE_SCHEMAS,
+    "prose_critic": "prose-objection-r3-a2.schema.json",
+    "tested_critic": "tested-objection-r3-a2.schema.json",
+    "decomposed_critic": "tested-objection-r3-a2.schema.json",
+    "propagation_use": "propagation-use-r3-a2.schema.json",
+    "initial_decompose": "initial-decompose-r3-a2.schema.json",
+    "decomposed_step": "decomposed-step-r3-a2.schema.json",
+    "decomposed_return": "decomposed-return-r3-a2.schema.json",
+    "decomposed_synthesis": "decomposed-synthesis-r3-a2.schema.json",
+    "decomposed_closing": "decomposed-closing-r3-a2.schema.json",
+}
+
+
+def _r3_commitment_contract(contract_version: str | None) -> bool:
+    return contract_version in {prompts.R003_A1_CONTRACT, prompts.R003_A2_CONTRACT}
 
 
 def _role_schema(role: str, contract_version: str | None = None) -> str | None:
-    schemas = R3_A1_ROLE_SCHEMAS if contract_version == prompts.R003_A1_CONTRACT else ROLE_SCHEMAS
+    schemas = (R3_A2_ROLE_SCHEMAS if contract_version == prompts.R003_A2_CONTRACT else
+               R3_A1_ROLE_SCHEMAS if contract_version == prompts.R003_A1_CONTRACT else
+               ROLE_SCHEMAS)
     return schemas.get(role)
 
 
@@ -171,14 +190,18 @@ class ContractSet:
         return blocks
 
 
-def _response_object(content: str) -> dict:
+def _response_object(content: str, *, contract_version: str | None = None) -> dict:
     if not isinstance(content, str):
         raise ReasonFailure("SCHEMA_FAILURE", "Public response must be text")
     def pairs(items):
         result = {}
         for key, value in items:
             if key in result:
-                raise ReasonFailure("SCHEMA_FAILURE", "Duplicate JSON key: " + key)
+                detail = "Duplicate JSON key: " + key
+                if contract_version == prompts.R003_A2_CONTRACT:
+                    detail += (". Keep exactly one occurrence of this key, using the intended value, "
+                               "and remove every duplicate before returning the repaired object")
+                raise ReasonFailure("SCHEMA_FAILURE", detail)
             result[key] = value
         return result
     def constant(value):
@@ -233,8 +256,42 @@ def validate_answer(data: dict, relation: dict, *, study_profile=None) -> dict:
     return data
 
 
+_QUOTE_FOLD = str.maketrans({
+    "\u2018": "'", "\u2019": "'", "\u201a": "'", "\u201b": "'",
+    "\u201c": '"', "\u201d": '"', "\u201e": '"', "\u201f": '"',
+})
+
+
+def _normalized_locator_text(value: str) -> str:
+    folded = value.translate(_QUOTE_FOLD).casefold()
+    return re.sub(r"\s+", " ", folded).strip()
+
+
+def _validate_r3_a2_locator(locator: dict, steps: dict[int, dict]) -> tuple[int, str]:
+    index = locator["step_index"]
+    step = steps.get(index)
+    if step is None:
+        raise ReasonFailure(
+            "SCHEMA_FAILURE",
+            f"R3-A2 fork locator check failed: step_index {index} does not name a real working-answer "
+            "derivation step; candidate targeted step text: <missing>")
+    target = step["statement"]
+    quote = locator["step_quote"]
+    if quote == "":
+        return index, target
+    normalized_quote = _normalized_locator_text(quote)
+    normalized_target = _normalized_locator_text(target)
+    if len(normalized_quote) < 40 or normalized_quote not in normalized_target:
+        raise ReasonFailure(
+            "SCHEMA_FAILURE",
+            "R3-A2 fork locator check failed: nonempty step_quote must normalize to an exact "
+            f"substring of at least 40 characters in step_index {index}; candidate targeted step "
+            f"text: {target}")
+    return index, target
+
+
 def validate_objections(data: dict, answer: dict, fork: dict, *, tested: bool,
-                        study_profile=None, prior_objections=()) -> dict:
+                        study_profile=None, prior_objections=(), contract_version=None) -> dict:
     steps = {step["step_index"]: step for step in answer.get("derivation_steps", [])}
     check_ids = []
     participant_labels = {}
@@ -243,16 +300,23 @@ def validate_objections(data: dict, answer: dict, fork: dict, *, tested: bool,
             locator = prior.get("fork", {})
             label = locator.get("branch_point_id")
             if isinstance(label, str):
-                participant_labels[label] = (locator.get("step_index"), locator.get("step_quote"))
+                index = locator.get("step_index")
+                step = steps.get(index)
+                participant_labels[label] = ((index, step["statement"]) if
+                                             contract_version == prompts.R003_A2_CONTRACT and step else
+                                             (index, locator.get("step_quote")))
     for objection in data["objections"]:
         locator = objection["fork"]
         step = steps.get(locator["step_index"])
-        if step is None or locator["step_quote"] != step["statement"]:
+        if contract_version == prompts.R003_A2_CONTRACT:
+            index, target = _validate_r3_a2_locator(locator, steps)
+        elif step is None or locator["step_quote"] != step["statement"]:
             raise ReasonFailure("SCHEMA_FAILURE", "Fork locator does not quote the named derivation step exactly")
         if study_profile == config.R003_PROFILE:
             label = locator["branch_point_id"]
             bound = participant_labels.get(label)
-            current = (locator["step_index"], locator["step_quote"])
+            current = ((index, target) if contract_version == prompts.R003_A2_CONTRACT else
+                       (locator["step_index"], locator["step_quote"]))
             if bound is not None and bound != current:
                 raise ReasonFailure("SCHEMA_FAILURE", "Participant branch label has inconsistent locators")
             participant_labels[label] = current
@@ -310,7 +374,8 @@ def validate_return(data: dict, before: dict, objections: list[dict], relation: 
 
 
 def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: dict,
-                 *, checker_eligible: bool, study_profile=None, prior_objections=()) -> dict:
+                 *, checker_eligible: bool, study_profile=None, prior_objections=(),
+                 contract_version=None) -> dict:
     dependency = data["dependency"]
     known = {item["relation_id"] for item in relation["relations"]}
     if dependency["relation_id"] not in known:
@@ -350,7 +415,8 @@ def validate_use(data: dict, before: dict, after: dict, relation: dict, fork: di
             raise ReasonFailure("SCHEMA_FAILURE", "Checker working_value does not bind the returned claim")
     if data["objections"]:
         validate_objections({"objections": data["objections"]}, after, fork, tested=True,
-                            study_profile=study_profile, prior_objections=prior_objections)
+                            study_profile=study_profile, prior_objections=prior_objections,
+                            contract_version=contract_version)
     return data
 
 
@@ -365,18 +431,25 @@ def validate_recoding_solve(data: dict, relation: dict, coding_id: str) -> dict:
     return data
 
 
-def _validate_r3_a1_commitment_step(data: dict) -> dict:
+def _r3_contract_label(contract_version: str | None) -> str:
+    return "R3-A2" if contract_version == prompts.R003_A2_CONTRACT else "R3-A1"
+
+
+def _validate_r3_commitment_step(data: dict, contract_version: str) -> dict:
     """Check commitment custody only; substantive refutability remains a reader judgment."""
     if data.get("cannot_decide") is not None or data.get("decision") == "cannot_decide":
         return data
     commitments = data.get("commitments", [])
     if not commitments:
-        raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 answered step requires a declared commitment")
+        raise ReasonFailure(
+            "SCHEMA_FAILURE",
+            f"{_r3_contract_label(contract_version)} answered step requires a declared commitment")
     ending = "COMMITMENT: " + commitments[-1]["claim"]
     if not data.get("result", "").rstrip().endswith(ending):
         raise ReasonFailure(
             "SCHEMA_FAILURE",
-            "R3-A1 step result must end with the exact final commitment as 'COMMITMENT: <claim>'")
+            f"{_r3_contract_label(contract_version)} step result must end with the exact final "
+            "commitment as 'COMMITMENT: <claim>'")
     return data
 
 
@@ -391,10 +464,12 @@ def validate_initial_decompose(data: dict, *, contract_version=None) -> dict:
             raise ReasonFailure("SCHEMA_FAILURE", "Decomposition dependencies must name earlier steps")
     if data["first_step"]["step"] != plan[0]["step"]:
         raise ReasonFailure("SCHEMA_FAILURE", "First decomposition result does not match plan step 1")
-    if contract_version == prompts.R003_A1_CONTRACT:
+    if _r3_commitment_contract(contract_version):
         if data["decisive_step"] not in {item["step"] for item in plan}:
-            raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 decisive_step must name a planned step")
-        _validate_r3_a1_commitment_step(data["first_step"])
+            raise ReasonFailure(
+                "SCHEMA_FAILURE",
+                f"{_r3_contract_label(contract_version)} decisive_step must name a planned step")
+        _validate_r3_commitment_step(data["first_step"], contract_version)
     return data
 
 
@@ -406,8 +481,8 @@ def validate_decomposed_step(data: dict, expected_step: dict,
     missing = sorted(set(expected_step["depends_on"]) - accepted)
     if missing:
         raise ReasonFailure("SCHEMA_FAILURE", "STEP dependencies are not accepted: " + ",".join(map(str, missing)))
-    if contract_version == prompts.R003_A1_CONTRACT:
-        _validate_r3_a1_commitment_step(data)
+    if _r3_commitment_contract(contract_version):
+        _validate_r3_commitment_step(data, contract_version)
     return data
 
 
@@ -428,8 +503,8 @@ def validate_decomposed_return(data: dict, before: dict,
             raise ReasonFailure("SCHEMA_FAILURE", "Substantive decomposed disposition requires a redone check")
         if redo["status"] == "cannot_redo" and disposition["status"] != "unresolved":
             raise ReasonFailure("SCHEMA_FAILURE", "A check that cannot be redone must remain unresolved")
-    if contract_version == prompts.R003_A1_CONTRACT:
-        _validate_r3_a1_commitment_step(data)
+    if _r3_commitment_contract(contract_version):
+        _validate_r3_commitment_step(data, contract_version)
     return data
 
 
@@ -449,18 +524,25 @@ def _decisive_commitments(accepted_steps: list[dict], decisive_step: int) -> lis
 def validate_decomposed_synthesis(data: dict, relation: dict, *, study_profile=None,
                                   contract_version=None, decisive_step=None,
                                   accepted_steps=()) -> dict:
-    if contract_version != prompts.R003_A1_CONTRACT:
+    if not _r3_commitment_contract(contract_version):
         return validate_answer(data, relation, study_profile=study_profile)
     validate_answer({key: data[key] for key in
                     ("decision", "answer", "missing_derivation", "claims", "derivation_steps")},
                     relation, study_profile=study_profile)
     if data["decisive_step"] != decisive_step:
-        raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 synthesis names the wrong decisive step")
+        raise ReasonFailure(
+            "SCHEMA_FAILURE",
+            f"{_r3_contract_label(contract_version)} synthesis names the wrong decisive step")
     commitments = _decisive_commitments(list(accepted_steps), decisive_step)
     if data["decisive_claim"] not in commitments:
-        raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 synthesis must copy an accepted decisive commitment exactly")
+        raise ReasonFailure(
+            "SCHEMA_FAILURE",
+            f"{_r3_contract_label(contract_version)} synthesis must copy an accepted decisive "
+            "commitment exactly")
     if data["decision"] == "answered" and data["decisive_claim"] not in data["answer"]:
-        raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 answer does not contain its decisive claim")
+        raise ReasonFailure(
+            "SCHEMA_FAILURE",
+            f"{_r3_contract_label(contract_version)} answer does not contain its decisive claim")
     return data
 
 
@@ -475,17 +557,27 @@ def validate_decomposed_closing(data: dict, relation: dict,
     if len(actual) != len(set(actual)) or set(actual) != set(expected):
         raise ReasonFailure("SCHEMA_FAILURE",
                             "Decomposed closing must dispose every remaining objection exactly once")
-    if contract_version == prompts.R003_A1_CONTRACT:
+    if _r3_commitment_contract(contract_version):
         if data["decisive_step"] != decisive_step:
-            raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 closing names the wrong decisive step")
+            raise ReasonFailure(
+                "SCHEMA_FAILURE",
+                f"{_r3_contract_label(contract_version)} closing names the wrong decisive step")
         commitments = _decisive_commitments(list(accepted_steps), decisive_step)
         if commitments:
             if data["decisive_claim"] not in commitments:
-                raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 closing must copy an accepted decisive commitment exactly")
+                raise ReasonFailure(
+                    "SCHEMA_FAILURE",
+                    f"{_r3_contract_label(contract_version)} closing must copy an accepted decisive "
+                    "commitment exactly")
             if data["decision"] == "answered" and data["decisive_claim"] not in data["answer"]:
-                raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 closing answer omits its decisive claim")
+                raise ReasonFailure(
+                    "SCHEMA_FAILURE",
+                    f"{_r3_contract_label(contract_version)} closing answer omits its decisive claim")
         elif data["decision"] != "cannot_decide" or data["decisive_claim"]:
-            raise ReasonFailure("SCHEMA_FAILURE", "R3-A1 closing cannot answer before the decisive step is accepted")
+            raise ReasonFailure(
+                "SCHEMA_FAILURE",
+                f"{_r3_contract_label(contract_version)} closing cannot answer before the decisive "
+                "step is accepted")
     return data
 
 
@@ -497,7 +589,7 @@ def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dic
     schema_name = _role_schema(role, contract_version)
     if schema_name is None:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R002 parse role: " + role)
-    data = contracts.validate(schema_name, _response_object(content))
+    data = contracts.validate(schema_name, _response_object(content, contract_version=contract_version))
     if role == "answer":
         return validate_answer(data, relation, study_profile=study_profile)
     if role == "initial_decompose":
@@ -508,14 +600,16 @@ def parse_r002(role: str, content: str, contracts: ContractSet, *, relation: dic
     if role in {"prose_critic", "tested_critic", "decomposed_critic"}:
         return validate_objections(data, answer, fork, tested=role != "prose_critic",
                                    study_profile=study_profile,
-                                   prior_objections=prior_objections or objections)
+                                   prior_objections=prior_objections or objections,
+                                   contract_version=contract_version)
     if role in {"prose_return", "tested_return"}:
         return validate_return(data, before, list(objections), relation,
                                tested=role == "tested_return", study_profile=study_profile)
     if role == "propagation_use":
         return validate_use(data, before, answer, relation, fork,
                             checker_eligible=checker_eligible, study_profile=study_profile,
-                            prior_objections=prior_objections)
+                            prior_objections=prior_objections,
+                            contract_version=contract_version)
     if role == "decomposed_return":
         return validate_decomposed_return(data, before, list(objections),
                                           contract_version=contract_version)
@@ -753,16 +847,16 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
         if recipe["condition"] == "LOOP-DECOMPOSED" and cycles != 3:
             raise ReasonFailure("CONFIG_ERROR", "LOOP-DECOMPOSED has exactly three one-step cycles")
     amendment = recipe.get("amendment") if recipe is not None else None
-    if amendment not in {None, "R3-A1"}:
+    if amendment not in {None, "R3-A1", "R3-A2"}:
         raise ReasonFailure("CONFIG_ERROR", "Unknown R003 amendment")
-    if amendment == "R3-A1" and study_profile != config.R003_PROFILE:
-        raise ReasonFailure("CONFIG_ERROR", "R3-A1 is specific to r003-open-v1")
-    if amendment == "R3-A1" and mode == "live":
+    if amendment in {"R3-A1", "R3-A2"} and study_profile != config.R003_PROFILE:
+        raise ReasonFailure("CONFIG_ERROR", f"{amendment} is specific to r003-open-v1")
+    if amendment in {"R3-A1", "R3-A2"} and mode == "live":
         expected_preflight = get(config.R003_DIR / "R003-input-preflight.json")
         if tokenizers != expected_preflight:
             raise ReasonFailure(
                 "TOKENIZER_MISMATCH",
-                "R3-A1 live runs require the exact registered R003 input-preflight descriptor")
+                f"{amendment} live runs require the exact registered R003 input-preflight descriptor")
     forks, forks_text, _forks_path = _load_object(fork_registry, "fork registry", optional=True)
     coding, coding_text, coding_path = _load_object(coding_manifest, "coding manifest", optional=True)
     if recipe is not None and forks is None:
@@ -826,9 +920,10 @@ def _create(problem: str, out, *, mode: str, condition: str, problem_id,
     cfg = {"schema": R002_SCHEMA, "run_id": run_id, "created_epoch": time.time(),
            "mode": mode, "condition": condition, "problem_id": problem_id, "cycles": cycles,
            "attempt_policy": "strict", "prompt_token_cap": prompt_token_cap,
-           "prompt_contract": (prompts.R003_A1_CONTRACT if amendment == "R3-A1" else
-                               config.R003_PROFILE if study_profile == config.R003_PROFILE else
-                               prompts.R002_CONTRACT),
+           "prompt_contract": (prompts.R003_A2_CONTRACT if amendment == "R3-A2" else
+                                prompts.R003_A1_CONTRACT if amendment == "R3-A1" else
+                                config.R003_PROFILE if study_profile == config.R003_PROFILE else
+                                prompts.R002_CONTRACT),
            "completion_tokens": completion_tokens,
            "problem_sha256": sha(problem), "relations_sha256": sha(relations_text),
            "endpoints_sha256": endpoints["sha256"], "tokenizers": tokenizers,
@@ -912,13 +1007,13 @@ def _offline(role, cycle, objections, context):
                 "claims": [], "derivation_steps": []}
     if role == "initial_decompose":
         result = {"plan": [], "first_step": None, "cannot_decide": {"missing": missing}}
-        if context.get("contract_version") == prompts.R003_A1_CONTRACT:
+        if _r3_commitment_contract(context.get("contract_version")):
             result["decisive_step"] = None
         return result
     if role == "decomposed_step":
         result = {"step": context["expected_step"]["step"], "derivation": "", "result": "",
                   "cannot_decide": {"missing": missing}}
-        if context.get("contract_version") == prompts.R003_A1_CONTRACT:
+        if _r3_commitment_contract(context.get("contract_version")):
             result["commitments"] = []
         return result
     if role in {"prose_critic", "tested_critic", "decomposed_critic"}:
@@ -951,7 +1046,7 @@ def _offline(role, cycle, objections, context):
         result = {"decision": "cannot_decide", "missing_derivation": missing,
                   "step": context["before"]["step"], "derivation": "", "result": "",
                   "dispositions": dispositions}
-        if context.get("contract_version") == prompts.R003_A1_CONTRACT:
+        if _r3_commitment_contract(context.get("contract_version")):
             result["commitments"] = []
         return result
     if role == "propagation_use":
@@ -974,7 +1069,7 @@ def _offline(role, cycle, objections, context):
     if role == "decomposed_synthesis":
         result = {"decision": "cannot_decide", "answer": "", "missing_derivation": missing,
                   "claims": [], "derivation_steps": []}
-        if context.get("contract_version") == prompts.R003_A1_CONTRACT:
+        if _r3_commitment_contract(context.get("contract_version")):
             commitments = _decisive_commitments(
                 context.get("accepted_steps", []), context["decisive_step"])
             result.update(decisive_step=context["decisive_step"],
@@ -985,7 +1080,7 @@ def _offline(role, cycle, objections, context):
                   "claims": [], "derivation_steps": [],
                   "dispositions": [{"id": item["id"], "status": "unresolved", "reason": missing}
                                    for item in objections if item.get("status") == "unresolved"]}
-        if context.get("contract_version") == prompts.R003_A1_CONTRACT:
+        if _r3_commitment_contract(context.get("contract_version")):
             commitments = _decisive_commitments(
                 context.get("accepted_steps", []), context["decisive_step"])
             result.update(decisive_step=context["decisive_step"],
@@ -1016,14 +1111,22 @@ def _repair_messages(role: str, contracts: ContractSet, content: str, detail: st
         "markdown fences."
     )
     blocks = []
-    if contract_version == prompts.R003_A1_CONTRACT:
+    if _r3_commitment_contract(contract_version):
         if not isinstance(original_user_content, str) or not original_user_content:
-            raise ReasonFailure("CONFIG_ERROR", "R3-A1 repair requires the original public task context")
+            raise ReasonFailure("CONFIG_ERROR", "R3 amendment repair requires the original public task context")
         blocks.append(("ORIGINAL PUBLIC TASK CONTEXT", original_user_content))
-        instruction += (
-            " The original public task context above remains authoritative. For an exact-quote failure, "
-            "copy the required locator text exactly from that context; do not paraphrase it."
-        )
+        if contract_version == prompts.R003_A2_CONTRACT:
+            instruction += (
+                " The original public task context and candidate targeted step text in the recorded "
+                "failure remain authoritative. For a fork-locator failure, either use the real "
+                "step_index with an empty step_quote, or copy at least 40 characters from that step; "
+                "do not fabricate or paraphrase locator text."
+            )
+        else:
+            instruction += (
+                " The original public task context above remains authoritative. For an exact-quote failure, "
+                "copy the required locator text exactly from that context; do not paraphrase it."
+            )
     blocks.extend([
         ("YOUR OWN PRECEDING PUBLIC OUTPUT", content),
         ("RECORDED SCHEMA FAILURE", detail),
@@ -1203,10 +1306,14 @@ def _decomposed_return_blocks(problem: str, plan_step: dict, current: dict,
 
 
 def _decomposed_use_blocks(problem: str, plan_step: dict, returned: dict,
-                           accepted_steps: list[dict]) -> list[tuple[str, str]]:
+                           accepted_steps: list[dict], *,
+                           contract_version: str | None = None) -> list[tuple[str, str]]:
+    returned_keys = ["step", "derivation", "result"]
+    if contract_version == prompts.R003_A2_CONTRACT:
+        returned_keys.append("commitments")
     return [("PROBLEM", problem), ("CURRENT PLAN STEP", _json(plan_step)),
             ("ACCEPTED DEPENDENCIES", _json(accepted_steps)),
-             ("RETURNED STEP", _json({key: returned[key] for key in ("step", "derivation", "result")}))]
+             ("RETURNED STEP", _json({key: returned[key] for key in returned_keys}))]
 
 
 def _decomposed_closing_blocks(problem: str, plan: list[dict], accepted_steps: list[dict],
@@ -1289,8 +1396,8 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
 
     plan = initial["plan"]
     decisive_step = initial.get("decisive_step")
-    r3_a1 = cfg.get("prompt_contract") == prompts.R003_A1_CONTRACT
-    if r3_a1:
+    r3_commitment = _r3_commitment_contract(cfg.get("prompt_contract"))
+    if r3_commitment:
         state["decisive_step"] = decisive_step
     accepted_steps = state["accepted_steps"]
     current = initial["first_step"]
@@ -1308,7 +1415,7 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
                 "decomposed_closing", _seat("closing", recipe), "closing-return",
                 state["completed_cycles"],
                 _decomposed_closing_blocks(problem, plan, accepted_steps, closing_answer, objections,
-                                           stop_reason, stop_detail, decisive_step, r3_a1),
+                                           stop_reason, stop_detail, decisive_step, r3_commitment),
                 answer=closing_answer, objections=list(objections), accepted_steps=list(accepted_steps),
                 decisive_step=decisive_step)
             _apply_dispositions(objections, closing["dispositions"],
@@ -1377,7 +1484,9 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
                                    "A tested objection remains unresolved")
 
         use = call("decomposed_use", _seat("use", recipe), f"c{cycle:04d}-use", cycle,
-                   _decomposed_use_blocks(problem, plan_step, returned, accepted_steps),
+                   _decomposed_use_blocks(
+                       problem, plan_step, returned, accepted_steps,
+                       contract_version=cfg.get("prompt_contract")),
                    expected_step=plan_step, before=current, answer=returned, objections=[])
         for item in minted:
             item["use_call"] = f"c{cycle:04d}-use"
@@ -1388,7 +1497,7 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
         accepted = {"step": plan_step["step"], "goal": plan_step["goal"],
                     "depends_on": list(plan_step["depends_on"]),
                     "derivation": returned["derivation"], "result": returned["result"]}
-        if r3_a1:
+        if r3_commitment:
             accepted["commitments"] = deepcopy(returned["commitments"])
         accepted_steps.append(accepted)
         state["completed_cycles"] = cycle
@@ -1403,7 +1512,7 @@ def _execute_decomposed(directory, cfg, recipe, problem, relation, fork,
 
     synthesis_blocks = _answer_blocks(problem, relation) + [
         ("DECOMPOSITION PLAN", _json(plan))]
-    if r3_a1:
+    if r3_commitment:
         synthesis_blocks.append(("DECLARED DECISIVE STEP", _json(decisive_step)))
     synthesis_blocks.append(("ACCEPTED STEPS", _json(accepted_steps)))
     answer = call("decomposed_synthesis", _seat("synthesis", recipe), "synthesis",
@@ -1434,7 +1543,7 @@ def execute_r002(run_dir, *, scripted=None, after_call=None, checker_runner=None
             def call(role, seat, call_id, cycle, blocks, **context):
                 default_ceiling = 32768 if seat["thinking"] == "native" else 16384
                 critic_ceiling = (role == "decomposed_critic" or (
-                    recipe is not None and recipe.get("amendment") == "R3-A1"
+                    recipe is not None and recipe.get("amendment") in {"R3-A1", "R3-A2"}
                     and role in {"prose_critic", "tested_critic"}))
                 max_tokens = (recipe.get("ceilings", {}).get("critic_completion_tokens", default_ceiling)
                               if recipe is not None and critic_ceiling else default_ceiling)

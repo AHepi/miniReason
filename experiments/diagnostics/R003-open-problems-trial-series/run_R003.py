@@ -37,8 +37,12 @@ RECIPES = {
     "LOOP-DECOMPOSED": "r003-decomposed-v1.json",
 }
 R3_A1_RECIPES = {key: value.replace("-v1.json", "-v2.json") for key, value in RECIPES.items()}
+R3_A2_RECIPES = {key: value.replace("-v1.json", "-v3.json") for key, value in RECIPES.items()}
+AMENDMENT_RECIPES = {"R3-A1": R3_A1_RECIPES, "R3-A2": R3_A2_RECIPES}
 DEFAULT_PREFLIGHT = STUDY / "R003-input-preflight.json"
 R3_A1_CONDITIONS = ("LOOP-CROSS", "LOOP-DECOMPOSED")
+R3_A2_CONDITIONS = R3_A1_CONDITIONS
+PROSE_AMENDMENTS = frozenset(AMENDMENT_RECIPES)
 
 PROVIDER_KEY_NAMES = frozenset({"DEEPSEEK_API_KEY", "OLLAMA_API_KEY", "API_KEY",
                                 "OPENAI_ACCESS_TOKEN"})
@@ -89,7 +93,9 @@ def _within(path: Path, parent: Path) -> bool:
 def allowed_write(path: Path) -> Path:
     resolved = Path(path).resolve()
     roots = (ROOT / "runs", ROOT / "work" / "w28", ROOT / "work" / "review28",
-             Path(r"C:\tw28"), Path(r"C:\tr28"), Path(r"C:\tw30"), ROOT / "work" / "w30", Path(r"C:\tr30"), ROOT / "work" / "review30")
+             Path(r"C:\tw28"), Path(r"C:\tr28"), Path(r"C:\tw30"), ROOT / "work" / "w30",
+             Path(r"C:\tr30"), ROOT / "work" / "review30", Path(r"C:\tw32"), ROOT / "work" / "w32",
+             Path(r"C:\tr32"), ROOT / "work" / "review32")
     if not any(resolved != root.resolve() and _within(resolved, root) for root in roots):
         raise Refused("WRITE_OUTSIDE_AUTHORIZED_SCOPE")
     return resolved
@@ -254,7 +260,8 @@ def _write_inputs(directory: Path, problem_ids: list[str], *, capability: Path |
         "study_profile": PROFILE,
         "candidates": canonical,
     })
-    for name in sorted(set((R3_A1_RECIPES if amendment == "R3-A1" else RECIPES).values())):
+    recipes = AMENDMENT_RECIPES.get(amendment, RECIPES)
+    for name in sorted(set(recipes.values())):
         source = STUDY / "recipes" / name
         if not source.is_file():
             raise Refused("R003_RECIPE_NOT_INSTALLED")
@@ -323,7 +330,7 @@ def validate_sealed_briefs(manifest_path: Path, problem_ids: list[str],
                            amendment: str | None = None) -> dict[str, Any]:
     """Verify exact problem/brief bytes without decoding or returning brief content."""
     participant_lineages = (R3_A1_PARTICIPANT_LINEAGES
-                            if amendment == "R3-A1" else PARTICIPANT_LINEAGES)
+                            if amendment in PROSE_AMENDMENTS else PARTICIPANT_LINEAGES)
     manifest = Path(manifest_path).resolve()
     value = read_json(manifest)
     rows, custodian_metadata = _seal_records(value, manifest)
@@ -402,7 +409,8 @@ def argv_for(directory: Path, problem_id: str, condition: str, mode: str,
         "--retry-transport", "0",
     ]
     amendment_file = _child_file(directory, "amendment.json")
-    recipes = R3_A1_RECIPES if amendment_file and read_json(amendment_file)["amendment"] == "R3-A1" else RECIPES
+    amendment = read_json(amendment_file)["amendment"] if amendment_file else None
+    recipes = AMENDMENT_RECIPES.get(amendment, RECIPES)
     tokenizers = _child_file(directory, "tokenizer-pins.json")
     capability = _child_file(directory, "capability.json")
     if tokenizers is not None:
@@ -434,22 +442,25 @@ def create(series: Path, problems: Iterable[str], conditions: Iterable[str], que
            parent: Path | None = None, reason: str | None = None,
            cells: list[tuple[str, str]] | None = None,
            amendment: str | None = None, expected_occurrence: str | None = None) -> Path:
-    if amendment not in {None, "R3-A1"}:
+    if amendment not in {None, *PROSE_AMENDMENTS}:
         raise Refused("UNSUPPORTED_AMENDMENT")
     if expected_occurrence is not None and not re.fullmatch(r"o[0-9]{3,}", expected_occurrence):
         raise Refused("INVALID_EXPECTED_OCCURRENCE")
-    if amendment == "R3-A1" and tokenizer_pins is None:
+    if amendment in PROSE_AMENDMENTS and tokenizer_pins is None:
         tokenizer_pins = DEFAULT_PREFLIGHT
-    if amendment == "R3-A1" and read_json(Path(tokenizer_pins)).get("amendment") != "R3-A1":
-        raise Refused("R3_A1_INPUT_DESCRIPTOR_REQUIRED")
+    if (amendment in PROSE_AMENDMENTS
+            and read_json(Path(tokenizer_pins)).get("amendment") != "R3-A1"):
+        if amendment == "R3-A1":
+            raise Refused("R3_A1_INPUT_DESCRIPTOR_REQUIRED")
+        raise Refused("R3_A2_INHERITED_INPUT_DESCRIPTOR_REQUIRED")
     if mode not in {"plan", "offline", "live"}:
         raise Refused("INVALID_MODE")
     if not question.strip() or "\n" in question or "\r" in question:
         raise Refused("ONE_LINE_OCCURRENCE_QUESTION_REQUIRED")
     problem_ids = normalize_problem_ids(problems)
     condition_ids = normalize_conditions(conditions)
-    if amendment == "R3-A1" and any(c not in R3_A1_CONDITIONS for c in condition_ids):
-        raise Refused("R3_A1_REUSES_NATIVE_FROM_O001")
+    if amendment in PROSE_AMENDMENTS and any(c not in R3_A1_CONDITIONS for c in condition_ids):
+        raise Refused(amendment.replace("-", "_") + "_REUSES_NATIVE_FROM_O001")
     if mode == "live":
         if not authorize_live:
             raise Refused("LIVE_DISPATCH_AUTHORIZATION_REQUIRED")
@@ -472,7 +483,7 @@ def create(series: Path, problems: Iterable[str], conditions: Iterable[str], que
         source = STUDY / "problems" / f"{problem_id}.txt"
         if not source.is_file() or not source.read_bytes().strip():
             raise Refused("PROBLEM_MISSING_OR_EMPTY")
-    for name in set((R3_A1_RECIPES if amendment == "R3-A1" else RECIPES).values()):
+    for name in set(AMENDMENT_RECIPES.get(amendment, RECIPES).values()):
         if not (STUDY / "recipes" / name).is_file():
             raise Refused("R003_RECIPE_NOT_INSTALLED")
     seal = validate_sealed_briefs(Path(brief_manifest), problem_ids, amendment) if brief_manifest else None
@@ -488,8 +499,13 @@ def create(series: Path, problems: Iterable[str], conditions: Iterable[str], que
             raise Refused("OCCURRENCE_NUMBER_CHANGED")
         directory.mkdir()
         if amendment is not None:
-            put(directory / "inputs" / "amendment.json", {"amendment": amendment,
-                "native_reuse": "Reader reuses o001 NATIVE answers; no new NATIVE dispatch"})
+            amendment_record = {"amendment": amendment,
+                "native_reuse": "Reader reuses o001 NATIVE answers; no new NATIVE dispatch"}
+            if amendment == "R3-A2":
+                amendment_record["resource_inheritance"] = (
+                    "Exact R3-A1 input descriptor, routes and allowances; only prose-seat contracts change"
+                )
+            put(directory / "inputs" / "amendment.json", amendment_record)
         put(directory / "QUESTION.json", {"utc": utc(), "question": question,
             "state": "declared_before_dispatch", "parent": str(parent) if parent else None,
             "reason": reason})
@@ -687,7 +703,7 @@ def main(argv: list[str] | None = None) -> int:
     new.add_argument("--series", type=Path, default=DEFAULT_SERIES)
     new.add_argument("--problems", nargs="+", default=[f"O{number:02d}" for number in range(1, 9)])
     new.add_argument("--conditions", nargs="+", choices=CONDITIONS)
-    new.add_argument("--amendment", choices=["R3-A1", "occurrence-1"], default="R3-A1")
+    new.add_argument("--amendment", choices=["R3-A2", "R3-A1", "occurrence-1"], default="R3-A1")
     new.add_argument("--expected-occurrence")
     new.add_argument("--question", required=True)
     new.add_argument("--mode", choices=["plan", "offline", "live"], default="plan")
@@ -705,7 +721,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "new":
             amendment = None if args.amendment == "occurrence-1" else args.amendment
-            conditions = args.conditions or (R3_A1_CONDITIONS if amendment else CONDITIONS)
+            conditions = args.conditions or (R3_A1_CONDITIONS if amendment in PROSE_AMENDMENTS else CONDITIONS)
             directory = create(args.series, args.problems, conditions, args.question, args.mode,
                 env_file=args.env_file, tokenizer_pins=args.tokenizer_pins,
                 capability=args.capability, brief_manifest=args.brief_manifest,
