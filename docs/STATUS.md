@@ -991,3 +991,8 @@ Review21 final audit acknowledgement - 2026-09-17T00:29:19.432628+00:00:751 orig
 ### REC-20260917-A calibration publication prepared - 2026-09-17T00:36:26.951022+00:00
 
 Publisher accepts only the independent judge calibration/admission/custody pass under the owner split-verdict clarification. Publication scope is31 checklist paths plus703 immutable study custody files (734 total). Calibration24 calls:20 correct,0 incorrect,4 not answered; admission C05,C06,C09,C12 unchanged. Main phase remains unlaunched and blocked pending preflight bound and decomposition arm (REC-20260917-A continuation). Judge documentary records are retained in these appended records; work/review21 originals remain local and unstaged as directed. No provider calls or main merge. Next authorized publisher step: commit, non-forced branch push, exact remote verification and separate acknowledgement; substantive main work needs its own continuation receipt.
+
+
+### REC-20260917-A calibration and admission published - 2026-09-17T00:39:00Z
+
+Published734 reviewed paths to claude/project-state-direction-j5rbun at 59952c7ca9aa8af753b5d613a52bccc2a2487491, tree 769235e5cfe7c56a619e2bafcd5e8b654312c083. Successful non-forced push, fresh fetch, ls-remote and exact commit/tree equality verified. State: calibration and admission published; main phase blocked pending preflight bound and decomposition arm (REC-20260917-A continuation). Judge admission/custody pass retained; main readiness remains rejected. This separate acknowledgement awaits its own commit/push/verification, reported in the publisher handoff. No provider calls or main merge.
