@@ -1062,3 +1062,6 @@ REC-20260917-B | 2026-09-17T05:16:06.012159+00:00 | root-review28: R003 instrume
 
 
 2026-09-17T05:24:19Z | REC-20260917-B | root-publisher | Approved R003 instruments queued for immediate publication to origin/claude/project-state-direction-j5rbun; 30 explicit paths, followed separately by 12 hash-verified sealed brief paths. R002 report and six reading artifacts remain unjudged and unstaged. Next: verify each delivery and publish its acknowledgement; no live dispatch in this task.
+
+
+2026-09-17T05:25:18Z | REC-20260917-B | root-publisher | instruments published; occurrence 1 authorised. Delivery 9f9b5788473e0b406fa6d7da4d327801dfc51b3b, tree bc3b2f213cd5d4a6cafe585457e04d907dfdf728, 30 paths verified on origin/claude/project-state-direction-j5rbun. No provider call or main merge. Next: publish sealed brief delivery and acknowledgement.
