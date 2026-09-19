@@ -1,0 +1,459 @@
+====================================================================================================
+R4_contract_adequacy | rev_deepseek | sample 0 | finish stop | 17004 chars | error None
+====================================================================================================
+1. **Part 0 is contradicted by the revision.**  
+**Quote:** Part 0: “An **account at a contract** is a candidate whose components and assembled organization are faithful to their anchors under every change the contract admits, that answers the question asked, that does not restate the answer, and whose contract is stated.”  
+**Claim attacked:** Account at a contract is defined without contract adequacy.  
+**Why it fails:** Part V now makes contract adequacy a conjunct of `Account`. A candidate can now fail “account at a contract” for a cross-contract scope condition that Part 0 says is not part of that grade. This is an internal inconsistency in the definition of the first grade.  
+**Severity:** serious/fatal.  
+**Fix:** Either add contract adequacy to Part 0’s definition, or remove it from `Account`.
+
+2. **The two-index objectivity treatment in Grievance 4 is collapsed.**  
+**Quote:** Grievance 4: “Two claims, two indices. ‘Faithful on C’ is a fact within C. ‘C is not protective’ is a fact about C against the physically admitted changes… An objectivity claim is the conjunction, and the second conjunct is a condition in this semantics (Part V), not a hope about future criticism.”  
+**Claim attacked:** Objectivity is the conjunction of within-`C` fidelity and cross-`C` non-protection.  
+**Why it fails:** The revision makes “`C` is not protective” a conjunct of `Account` itself. `Account` is therefore no longer the within-`C` grade; it is already the objectivity claim. The two indices are not two indices anymore. Part 0’s “first grade is what can be assessed within a question” becomes false.  
+**Severity:** fatal for the stated architecture.  
+**Fix:** Keep `Account` as the within-`C` predicate, and define a separate `ObjectiveAccount` or make adequacy a condition on claims, not on `Account`.
+
+3. **The question tuple does not contain `C_adm`, so `Account(E,p)` is not evaluable from `p`.**  
+**Quote:** Part III: “A question is \(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\).” Part V adequacy ranges over “\(C_{\mathrm{adm}}\setminus C\).”  
+**Claim attacked:** `Account(E,p)` is a predicate of an organization and a question.  
+**Why it fails:** `C_adm` is not part of `p`. For a physical organization, `C_adm` depends on the module in force. So `Account(E,p)` cannot be evaluated from `p` alone; it silently depends on extra data. Derivation 7’s “fixed \((C,\mathcal Q)\)” assessment also omits `C_adm`.  
+**Severity:** serious.  
+**Fix:** Include `C_adm` or the relevant module in the question tuple, or make adequacy explicitly relative to an externally supplied module.
+
+4. **“Baseline value” is undefined and confounds boundary changes with edit changes.**  
+**Quote:** Part V: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”  
+**Claim attacked:** The adequacy condition compares an excluded pair to a baseline.  
+**Why it fails:** It does not say which baseline. Is it \(\operatorname{Ans}_p(1,b_0)\)? If \(b\neq b_0\), then the target may differ from \((1,b_0)\) merely because the boundary changed, not because the edit \(a\) changed anything. The candidate’s baseline is equally ambiguous. The condition can produce false positives and false negatives.  
+**Severity:** serious.  
+**Fix:** Compare at fixed boundary: \(\operatorname{Ans}_p(a,b)\) against \(\operatorname{Ans}_p(1,b)\), and \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) against \(\operatorname{Ans}_E(1,\sigma(b))\). Or restrict adequacy to \(b=b_0\).
+
+5. **\(\operatorname{Ans}_p\) need not be defined outside `C`.**  
+**Quote:** Part III: “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other’s complements as stated.”  
+**Claim attacked:** Adequacy evaluates \(\operatorname{Ans}_p(a,b)\) for \((a,b)\in C_{\mathrm{adm}}\setminus C\).  
+**Why it fails:** Coherent posing only requires \(\mathcal Q\) to be defined on \(C\). It may be undefined on admitted pairs outside `C`. Then “\(\operatorname{Ans}_p\) differs from its baseline value” is not a proposition. The adequacy conjunct is ill-defined.  
+**Severity:** serious.  
+**Fix:** Require \(\mathcal Q\) to be defined on all of \(C_{\mathrm{adm}}\), or specify how an undefined \(\operatorname{Ans}_p\) outside `C` is to be treated.
+
+6. **The candidate translation may be undefined at the excluded pair.**  
+**Quote:** Part V: “\(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not”. Part IV: \(\tau:A_D\to A_E\) translates edits; Part VII admits: “τ is undefined and (F2) fails at that pair.”  
+**Claim attacked:** The adequacy condition can evaluate the candidate at any admitted pair outside `C`.  
+**Why it fails:** \(\tau\) or \(\sigma\) may be defined only on the stated scope, not on all of \(C_{\mathrm{adm}}\setminus C\). Then \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) is undefined. It neither “differs” nor “does not differ” from baseline. If undefined is treated as “does not differ,” partial transports automatically fail; if treated as “differs,” they automatically pass; if treated as neither, the condition is not well-formed.  
+**Severity:** serious.  
+**Fix:** Require \(\tau,\sigma\) total on \(C_{\mathrm{adm}}\) for adequacy, or define a distinguished undefined value and state exactly how it interacts with the adequacy test.
+
+7. **\(\operatorname{Ans}_E\) is never defined.**  
+**Quote:** Part V: “\(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\).”  
+**Claim attacked:** Adequacy and question fidelity use \(\operatorname{Ans}_E\).  
+**Why it fails:** Part III defines \(\operatorname{Ans}_p=\mathcal Q(D,a,b)\). It never defines the answer profile for the candidate organization \(E\). The same \(\mathcal Q\) may or may not be applicable to \(E\), and the document does not say.  
+**Severity:** serious.  
+**Fix:** Define \(\operatorname{Ans}_E\) explicitly, e.g. as the same query applied to \(E\), or as a specified query \(\mathcal Q_E\).
+
+8. **The admitted boundary set is not specified.**  
+**Quote:** Part III: “\(C_{\mathrm{adm}}\subseteq A\times B\) is the set of pairs the module in force admits: for a physical organization, the physically admitted edits \(A_\Theta\).” Part XII lists \(A_\Theta(o)\) but not an admitted boundary set.  
+**Claim attacked:** \(C_{\mathrm{adm}}\) is a set of edit–boundary pairs.  
+**Why it fails:** The physical module supplies admitted edits, not admitted boundaries. It is unclear whether every \(b\in B\) is in \(C_{\mathrm{adm}}\), or only some. Adequacy can therefore be vacuous or overstrong for boundary changes.  
+**Severity:** serious.  
+**Fix:** Define \(B_\Theta\) or state explicitly that \(C_{\mathrm{adm}}=A_\Theta\times B_\Theta\), or otherwise specify which boundary pairs are admitted.
+
+9. **Too weak: both answers can move differently and still pass.**  
+**Quote:** Part V: “there is no admitted pair … at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”  
+**Claim attacked:** This catches a scope drawn to exclude an embarrassing change.  
+**Why it fails:** Suppose at an excluded pair the target moves from baseline \(0\) to \(1\), and the candidate moves from baseline \(0\) to \(2\). Both differ from baseline. The condition finds no “while … does not, or the reverse.” The candidate is wrong at the excluded pair, but adequacy passes. So a scope can exclude exactly a target–candidate divergence, provided both answers move.  
+**Severity:** serious.  
+**Fix:** Compare the candidate to the target at the excluded pair, not just each to its own baseline. But note that this collapses adequacy toward full fidelity on \(C_{\mathrm{adm}}\); if that is not wanted, specify what kind of divergence is allowed.
+
+10. **Too weak: off-contract tinkering satisfies adequacy.**  
+**Quote:** Part V: (F1) and (F2) are required “on \(C\),” and (A) is “For every \((a,b)\in C\).”  
+**Claim attacked:** Adequacy constrains the candidate’s behavior outside `C`.  
+**Why it fails:** Because F1/F2/A only constrain \(E\) on \(C\), one can alter \(E\)’s component relations off \(C\) to make \(\operatorname{Ans}_E\) move whenever the target moves, and not move when the target does not, while remaining wrong in value. Adequacy checks a movement pattern, not correctness.  
+**Severity:** serious.  
+**Fix:** Require the off-`C` behavior to be fixed by the same components and relations, and compare values to the target; or make adequacy a condition on the stated reasons for exclusions, not on the candidate’s off-`C` behavior.
+
+11. **Too weak for mathematical/modelled organizations: `C_adm` is declared with the question.**  
+**Quote:** Part III: “for a mathematical or modelled organization, a **declared admission relation** stated with the question.” Part VII: “Adequacy is relative to the declared admission relation.”  
+**Claim attacked:** Contract adequacy provides an independent anti-protection check.  
+**Why it fails:** For non-physical organizations, the same agent declares both \(C_{\mathrm{adm}}\) and \(S\). They can shrink \(C_{\mathrm{adm}}\) to exclude the separating edit, making “\(C\) is not protective” trivially true. The condition has no independent purchase.  
+**Severity:** fatal for the mathematical/modelled cases.  
+**Fix:** Require the admission relation to be fixed independently of the candidate and the scope, or require a justification for exclusions relative to a broader, independently specified admission relation.
+
+12. **Too strong: the reversed calculation example is contradicted.**  
+**Quote:** Part V: “Under the identification contract it is an account at that contract; it is not anchored as a production account.”  
+**Claim attacked:** The reversed calculation is an `Account` at the identification contract.  
+**Why it fails:** If production edits are in \(C_{\mathrm{adm}}\setminus C\) and change the target’s identification answer while the reversed calculation does not, the adequacy conjunct fails. Then it is not an `Account` at the identification contract. The document does not show that the identification query is invariant under production edits. The revision therefore contradicts the document’s own example.  
+**Severity:** serious/fatal internal contradiction.  
+**Fix:** Either show the identification query is insensitive to production edits, or remove adequacy from `Account`, or change the example.
+
+13. **Too strong: any proper scope fails whenever the target has an out-of-scope dependence and the candidate lacks matching sensitivity.**  
+**Quote:** Part V adequacy again: no admitted pair outside `C` where target moves and candidate does not, or reverse.  
+**Claim attacked:** A candidate can be an account at a restricted contract.  
+**Why it fails:** A candidate built only for `C` will generally not have the target’s sensitivity pattern on all of \(C_{\mathrm{adm}}\setminus C\). Adequacy forces it either to move exactly when the target moves (and not move when the target does not) on every admitted excluded pair. That is a coarse form of full-contract tracking, collapsing the distinction between account at `C` and anchored account.  
+**Severity:** serious.  
+**Fix:** Keep adequacy as a separate objectivity condition, or restrict it to exclusions that the question’s query makes irrelevant by a stated, question-independent criterion.
+
+14. **Collision with `K`: admitted pairs can be laundered as counterfactual.**  
+**Quote:** Part III: “\(C=(C_{\mathrm{adm}}\cap S)\cup K\)” and “\(K\) is a declared set of **counterfactual edits** — pairs the module does not admit”. Part V adequacy ranges over \(C_{\mathrm{adm}}\setminus C\).  
+**Claim attacked:** `K` cannot hide an admitted separating change from adequacy.  
+**Why it fails:** If a pair in `K` is also in \(C_{\mathrm{adm}}\), then it is in \(C\), so it is removed from \(C_{\mathrm{adm}}\setminus C\). The document does not explicitly require \(K\cap C_{\mathrm{adm}}=\varnothing\). A modeller can put an admitted separating edit into `K` and thereby remove it from adequacy’s range.  
+**Severity:** serious.  
+**Fix:** Explicitly require \(K\cap C_{\mathrm{adm}}=\varnothing\) and enforce it in the coherence condition.
+
+15. **Collision with Derivation 7’s frozen assessment.**  
+**Quote:** Part III: “An assessment is an event at a fixed \((C,\mathcal Q)\); any change to either ends that assessment and begins another.” Derivation 7: “The claim ‘\(E\) is an account on \(C\)’ and the claim ‘\(E\) is not an account on \(C''\)’ are claims at different indices and may both be true.”  
+**Claim attacked:** An assessment is frozen by \((C,\mathcal Q)\).  
+**Why it fails:** Adequacy depends on \(C_{\mathrm{adm}}\), which is not in \((C,\mathcal Q)\). If \(C_{\mathrm{adm}}\) changes while \(C\) and \(\mathcal Q\) are fixed — e.g. a new admitted edit is discovered, or a mathematical admission relation is altered — `Account(E,p)` can change truth value within the same assessment. Derivation 7’s frozen assessment is therefore false under the revision.  
+**Severity:** serious.  
+**Fix:** Include \(C_{\mathrm{adm}}\) and the module in the assessment index, or remove adequacy from `Account`.
+
+16. **Collision with the two-index treatment in Grievance 4.**  
+**Quote:** Grievance 4: “Two claims, two indices. ‘Faithful on C’ is a fact within C. ‘C is not protective’ is a fact about C against the physically admitted changes… An objectivity claim is the conjunction, and the second conjunct is a condition in this semantics (Part V), not a hope about future criticism.”  
+**Claim attacked:** Objectivity is the conjunction of two separately indexed claims.  
+**Why it fails:** The revision makes the second conjunct a conjunct of `Account` itself. `Account` is no longer the first index; it is the conjunction. The two-index treatment is eliminated, not preserved.  
+**Severity:** serious.  
+**Fix:** Keep `Account` as the within-`C` predicate and define a separate objectivity predicate as the conjunction.
+
+17. **Existential transport makes adequacy unstable.**  
+**Quote:** Part V: “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified: \(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\).”  
+**Claim attacked:** Adequacy is a condition on the candidate organization.  
+**Why it fails:** Adequacy is relative to the witness \(t\) via \(\tau\) and \(\operatorname{Ans}_E\). The same \(E,p\) can have one witness transport satisfying adequacy and another failing it. Then `Account(E,p)` can be true via a witness that is not the intended transport.  
+**Severity:** serious.  
+**Fix:** Make \(t\) explicit in `Account`, or require all faithful transports on `C` to satisfy adequacy, or define adequacy for the intended transport.
+
+18. **Grievance 4’s “alter” and Part V’s “differs from baseline” are not equivalent.**  
+**Quote:** Grievance 4: “some physically admitted change it excludes would alter the target’s answer and not the candidate’s, or the reverse.” Part V: “differs from its baseline value”.  
+**Claim attacked:** The two definitions of protective are the same.  
+**Why it fails:** “Alter the target’s answer” naturally means change relative to what the answer would be at the same pair without the edit. “Differs from its baseline value” compares to a global baseline. These are different, especially when boundaries vary. The formal condition does not match the prose definition.  
+**Severity:** minor/serious.  
+**Fix:** Unify the two definitions, preferably by using same-boundary counterfactual comparison.
+
+19. **The baseline may be in `K`, not `C_adm`.**  
+**Quote:** Part III: “\(C\) … contains the baseline \((1,b_0)\)” and “\(K\) is … pairs the module does not admit.”  
+**Claim attacked:** Adequacy compares admitted excluded pairs to an admitted baseline.  
+**Why it fails:** `C` contains the baseline, but that only guarantees \((1,b_0)\in C\), not \((1,b_0)\in C_{\mathrm{adm}}\). It could be in `K`. Then adequacy compares admitted pairs to a non-admitted baseline, which is at best an odd reference for a physical adequacy claim.  
+**Severity:** minor/serious.  
+**Fix:** Require the baseline to be in \(C_{\mathrm{adm}}\), or specify how a counterfactual baseline is to be used.
+
+20. **The count of conditions is wrong.**  
+**Quote:** Part V: “holds exactly when the following **five** conditions hold”.  
+**Claim attacked:** The condition list is accurately stated.  
+**Why it fails:** The stated conjuncts are (F1), (F2), (A), NonCircular, NonVacuous, Adequate — six conjuncts, even if grouped as five bullets. This is cosmetic, but it shows the revision was not checked.  
+**Severity:** cosmetic.  
+**Fix:** Correct the count or state that “Component fidelity” contains two equations.
+====================================================================================================
+R4_contract_adequacy | rev_deepseek | sample 1 | finish stop | 18128 chars | error None
+====================================================================================================
+**1. \(\operatorname{Ans}_p\) is not guaranteed defined on \(C_{\mathrm{adm}}\setminus C\), but the adequacy condition evaluates it there.**
+- Attacked: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value…” (Part V), together with Part III: “\(\mathcal Q\) is defined on every pair in \(C\).”
+- Why it fails: The question is only required to be coherently posed if \(\mathcal Q\) is defined on \(C\), not on \(C_{\mathrm{adm}}\). The adequacy condition quantifies over \(C_{\mathrm{adm}}\setminus C\) and asks whether \(\operatorname{Ans}_p\) differs from baseline there. If \(\mathcal Q\) is undefined outside \(C\), the condition has no truth value.
+- Severity: fatal.
+- Fix: require \(\mathcal Q\) to be defined on all of \(C_{\mathrm{adm}}\), or explicitly extend the answer profile with a distinguished “undefined” value and state how undefined enters the protective condition.
+
+**2. \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) can be undefined for \((a,b)\notin C\), and the text gives no rule.**
+- Attacked: “\(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not” (Part V), with Part IV: “\(\tau:A_D\to A_E\) translates edits, \(\sigma\) translates boundaries,” and Part VII: “so \(\tau\) is undefined and (F2) fails at that pair.”
+- Why it fails: Part IV writes \(\tau\) as if total; Part VII admits \(\tau\) can be undefined. Adequacy evaluates \(\tau(a)\) and \(\sigma(b)\) outside \(C\), where neither (F1) nor (F2) constrains them. If \(\tau(a)\) or \(\sigma(b)\) is undefined, the candidate answer is undefined, but the protective condition does not say whether undefined counts as “does not differ,” “differs,” or neither.
+- Severity: fatal.
+- Fix: define \(\tau,\sigma\) as partial maps with explicit domains; require them to be defined on \(C_{\mathrm{adm}}\) for adequacy, or add a separate well-definedness condition and a rule for undefined values.
+
+**3. The baseline value is ambiguous.**
+- Attacked: “\(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not” (Part V).
+- Why it fails: “Its baseline value” could mean the global baseline at \((1,b_0)\), or the boundary-matched baseline at \((1,b)\) for the excluded pair \((a,b)\). If \(b\neq b_0\), comparing to the global baseline confounds a boundary change with an edit change. For the candidate, it is not stated whether the baseline is \(\operatorname{Ans}_E(1,\sigma(b_0))\), \(\operatorname{Ans}_E(1,\sigma(b))\), or some independently designated \(b_0^E\).
+- Severity: serious.
+- Fix: define baseline per boundary: compare \(\operatorname{Ans}_p(a,b)\) to \(\operatorname{Ans}_p(1,b)\), and \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) to \(\operatorname{Ans}_E(1,\sigma(b))\), or restrict the condition to a single boundary.
+
+**4. “Or the reverse” is elliptical and formally ambiguous.**
+- Attacked: “while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse” (Part V).
+- Why it fails: “Does not” is not completed. It could mean “does not differ from its baseline value,” or “does not differ from the target’s answer.” The reverse could mean “candidate differs from baseline while target does not,” or “candidate does not differ from target while target does.” These give different conditions.
+- Severity: serious.
+- Fix: write both clauses explicitly, each with its own baseline reference.
+
+**5. The existential transport quantifier lets a candidate satisfy adequacy by choosing a convenient \(\tau\) off \(C\).**
+- Attacked: “\(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)” (Part V), with adequacy using \(\tau\).
+- Why it fails: Since \(t\) is existentially quantified and adequacy only constrains \(\tau\) outside \(C\), one can often choose a transport that maps every excluded target-moving edit to some edit that moves \(E\)’s answer. (F1) and (A) constrain \(t\) only on \(C\). Adequacy then passes without any genuine correspondence off \(C\).
+- Severity: fatal.
+- Fix: fix \(\tau\) to the transport that satisfies fidelity on the full admitted contract, or require adequacy for every admissible transport, or evaluate adequacy under a canonical translation rather than an existentially chosen one.
+
+**6. \(K\) is in \(C\), so fidelity must range over \(K\), but \(\tau\) is typed only on admitted edits.**
+- Attacked: Part III: “\(K\) is a declared set of counterfactual edits — pairs the module does not admit,” and “Fidelity conditions range over all of \(C\);” Part IV: “\(\tau:A_D\to A_E\) translates edits.”
+- Why it fails: \(C=(C_{\mathrm{adm}}\cap S)\cup K\). If \(K\not\subseteq A_D\), then \(\tau\) cannot translate \(K\) pairs by type, yet (F1), (F2), and (A) are said to range over all of \(C\). Part VII says the account is “faithful on it in the same sense,” but the formalism does not supply \(\tau\) on \(K\).
+- Severity: serious to fatal.
+- Fix: extend \(\tau,\sigma\) to \(K\) with stated meanings, or treat \(K\) pairs in a separate fidelity clause with explicitly primitive translations.
+
+**7. Contract adequacy ignores \(K\) entirely.**
+- Attacked: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\)” (Part V), and Part III: “a pair in \(K\) enters non-vacuity only through its stated meaning.”
+- Why it fails: Because \(K\) is non-admitted, \(K\cap(C_{\mathrm{adm}}\setminus C)=\varnothing\). Adequacy therefore says nothing about counterfactual separations. If the question’s point is a counterfactual structure, non-protection is silent about whether the scope is protecting the candidate there. Also, non-vacuity is \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), which has nothing to do with \(K\).
+- Severity: serious.
+- Fix: state explicitly that adequacy is only for admitted exclusions, and add a separate condition for \(K\) if counterfactual protection is to be caught. Correct “non-vacuity” to “fidelity” or “adequacy” as intended.
+
+**8. The condition is too weak: both answers can move differently and the contract still passes.**
+- Attacked: “at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse” (Part V).
+- Why it fails: Suppose target baseline is \(0\), target at excluded pair is \(1\), candidate baseline is \(0\), candidate at translated pair is \(2\). Both differ from baseline. The condition is not triggered, even though the excluded pair separates candidate from target. This is exactly a scope excluding the separating change.
+- Severity: fatal.
+- Fix: define protective as any admitted pair outside \(C\) where \(\operatorname{Ans}_p(a,b)\neq \operatorname{Ans}_E(\tau(a),\sigma(b))\), or at least any difference in answer profile, not merely differential movement from baseline.
+
+**9. The prose overclaims relative to the formula.**
+- Attacked: “An account whose contract excludes an admitted change that would tell it apart from the target fails adequacy” (Part V).
+- Why it fails: “Tell it apart” means any difference between candidate and target. The formula only catches cases where one moves from baseline and the other does not. If both move differently, the change tells them apart but does not fail adequacy.
+- Severity: serious.
+- Fix: align the formula with the prose, or weaken the prose to match the movement-only condition.
+
+**10. Undefined translation creates a loophole or a contradiction.**
+- Attacked: Part VII: “so \(\tau\) is undefined and (F2) fails at that pair.”
+- Why it fails: If undefined translations are ignored by adequacy, a candidate can avoid adequacy by leaving \(\tau\) undefined outside \(C\). If undefined counts as “candidate does not move,” then the reversed calculation at the identification contract fails contract adequacy, contradicting Part VII’s claim that it “is an account at that contract.”
+- Severity: fatal.
+- Fix: state explicitly whether undefined is a failure, a pass, or a third value, and make the rest of Part VII consistent with that choice.
+
+**11. For mathematical or modelled organizations, declared admission relations let adequacy be gamed.**
+- Attacked: Part III: “for a mathematical or modelled organization, a **declared admission relation** stated with the question,” with Part V adequacy ranging over \(C_{\mathrm{adm}}\).
+- Why it fails: If \(C_{\mathrm{adm}}\) is declared, the scope can exclude a separating edit by declaring it not admitted. Adequacy then cannot catch it. Grievance 4 speaks of “physically admitted changes,” but Part V applies to any \(C_{\mathrm{adm}}\), including declared ones.
+- Severity: serious.
+- Fix: distinguish physical admission from declared admission. For declared admission, require a justification of the declaration and state that adequacy is only as strong as that declaration.
+
+**12. The condition is too strong: any out-of-scope target dependence forces the candidate to co-move.**
+- Attacked: the adequacy condition as a conjunct of Account.
+- Why it fails: If \(C\) is a restricted contract and the target has any admitted dependence outside \(C\), then at some \((a,b)\in C_{\mathrm{adm}}\setminus C\), \(\operatorname{Ans}_p\) moves. If the candidate does not mirror that dependence, \(C\) is protective and the candidate is not an account at \(C\). This makes scoped or submechanism accounts fail whenever the target has an out-of-scope dependence.
+- Severity: serious.
+- Fix: either make adequacy a condition on the question’s target rather than on the candidate, or allow declared exclusions with independent justification, or restrict the condition to pairs relevant to the query \(\mathcal Q\).
+
+**13. Contract adequacy collapses the two-grade architecture.**
+- Attacked: Part 0: “The first grade is what can be assessed within a question. The second is what ‘the explanation is about the actual mechanism’ means,” and Part V: (E) includes “Adequate” over \(C_{\mathrm{adm}}\setminus C\).
+- Why it fails: Account at \(C\) now depends on changes outside \(C\) and on \(C_{\mathrm{adm}}\). It is therefore not assessable within the question. The first grade is already world-facing. The anchoring grade then adds component-level world-kind on \(C_{\mathrm{adm}}\), but the first grade is no longer purely contract-internal.
+- Severity: fatal for the stated architecture.
+- Fix: move adequacy out of \(\operatorname{Account}\) into a separate objectivity predicate, or redefine Account at \(C\) as purely within \(C\) and make objectivity the conjunction.
+
+**14. The revised adequacy condition contradicts the reversed-calculation example.**
+- Attacked: Part VII: “The reversed calculation is faithful under the identification contract… it is an account at that contract,” and Part V adequacy.
+- Why it fails: The production edits are admitted and outside the identification contract. At those edits, the target’s answer moves while the reversed calculation does not (or \(\tau\) is undefined). So the identification contract is protective, and the reversed calculation should fail Account at that contract. Part VII says it is an account at that contract.
+- Severity: fatal.
+- Fix: either remove adequacy from Account, or revise Part VII to say the reversed calculation is not an account at the identification contract under the revised condition.
+
+**15. Grievance 4’s two-index treatment is not preserved.**
+- Attacked: Grievance 4: “Faithful on \(C\) is a fact within \(C\). ‘\(C\) is not protective’ is a fact about \(C\) against the physically admitted changes… An objectivity claim is the conjunction.”
+- Why it fails: The revision makes “\(C\) is not protective” a conjunct of Account itself, not merely a second conjunct of an objectivity claim. The two indices are no longer kept separate. Also, Grievance 4 says “physically admitted,” while Part V uses \(C_{\mathrm{adm}}\), which can be declared for mathematical organizations.
+- Severity: serious.
+- Fix: keep objectivity as a separate conjunction, or explicitly redefine Account and update Grievance 4 to say that Account now includes the second index.
+
+**16. Derivation 7’s frozen assessment is not frozen if adequacy depends on \(C_{\mathrm{adm}}\).**
+- Attacked: Derivation 7: “An assessment event with contract \(C\)…” and “An assessment is an event with a frozen contract; any change to the contract ends that assessment and begins another.”
+- Why it fails: Adequacy depends on \(C_{\mathrm{adm}}\setminus C\). If \(C_{\mathrm{adm}}\) changes while \(C\) as a set is fixed, the truth value of “\(E\) is an account on \(C\)” can change without a change to \(C\). Derivation 7 indexes only to \(C\).
+- Severity: serious.
+- Fix: index assessments to \((C,C_{\mathrm{adm}})\) and state that changes to either end the assessment, or make adequacy a separate claim.
+
+**17. The revised condition collides with the historical-index claim in Part VIII and (EK).**
+- Attacked: Part VIII: “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change.” Part XI: “A later narrowing of the contract to rescue adequacy is a new claim at a new index.”
+- Why it fails: If \(C_{\mathrm{adm}}\) expands later, an old Account can become false without any change to the contract as a set. An (EK) claim fixed at \(e_c\) could be retroactively falsified by a later expansion of \(C_{\mathrm{adm}}\).
+- Severity: serious.
+- Fix: include \(C_{\mathrm{adm}}\) in the index of Account and (EK), or make adequacy a separate claim whose index includes \(C_{\mathrm{adm}}\).
+
+**18. Part 0’s description of “account at a contract” omits the new conjunct.**
+- Attacked: Part 0: “An **account at a contract** is a candidate whose components and assembled organization are faithful to their anchors under every change the contract admits, that answers the question asked, that does not restate the answer, and whose contract is stated.”
+- Why it fails: This list does not mention contract adequacy, which is now a conjunct of Account in Part V. Either Part 0 is inaccurate, or “whose contract is stated” is being stretched to include the whole adequacy condition, which it plainly does not.
+- Severity: serious expositional inconsistency.
+- Fix: update Part 0 to include adequacy, or state explicitly that adequacy is part of “contract stated” and define it there.
+
+**19. “Five conditions” and the displayed (E) do not match.**
+- Attacked: Part V: “holds exactly when the following **five** conditions hold,” and (E): “\(\text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}\).”
+- Why it fails: There are six conjuncts if F1 and F2 are counted separately. If Component fidelity is one condition containing F1 and F2, the text should say so; otherwise the count is wrong.
+- Severity: minor.
+- Fix: say “five conditions, the first with two clauses F1 and F2,” or list six conditions.
+
+**20. Contract adequacy only checks answer profiles, so it can miss a component-level protective scope.**
+- Attacked: “there is no admitted pair… at which \(\operatorname{Ans}_p\) differs… while \(\operatorname{Ans}_E\) does not” (Part V).
+- Why it fails: A scope can exclude an admitted edit that would reveal a wrong component relation but leaves the answer profile invariant. Adequacy passes, even though the scope protects a wrong decomposition. The anchored grade may catch this, but Account at \(C\) does not.
+- Severity: serious.
+- Fix: include component fidelity on excluded pairs, or make adequacy check the full candidate \(\mathcal E\), not just the answer profile.
+
+**21. Even when both move, the candidate may move for the wrong reason.**
+- Attacked: the movement-only formulation of adequacy.
+- Why it fails: Adequacy only requires that the candidate’s answer move when the target’s moves. It does not require the movement to be through the anchored component, through the same translated edit, or to the same value. A different component in \(E\) can move the answer and satisfy adequacy.
+- Severity: serious.
+- Fix: require full answer equality on excluded admitted pairs, or require the movement to be via the anchored subnetwork.
+
+**22. The candidate’s baseline boundary is not fixed by the transport data.**
+- Attacked: Part V adequacy, with F2’s “\(\tau(1)=1\)” but no corresponding condition on \(\sigma(b_0)\).
+- Why it fails: The target baseline is at \((1,b_0)\). The candidate’s baseline is presumably at \((1,\sigma(b_0))\), but the document never states that \(\sigma(b_0)\) is the candidate’s baseline boundary, nor that the candidate has no independent baseline. “Its baseline value” is therefore underspecified.
+- Severity: serious.
+- Fix: state explicitly that the candidate baseline is \(\operatorname{Ans}_E(1,\sigma(b_0))\), or define a boundary-matched baseline and require \(\sigma(b_0)\) to be the baseline boundary.
+
+**23. The condition does not require \(\tau\) to be a homomorphism outside \(C\).**
+- Attacked: adequacy’s use of \(\tau(a)\) for \((a,b)\in C_{\mathrm{adm}}\setminus C\), while F2’s composition condition is stated only in the context of the contract.
+- Why it fails: If \(\tau(a_2a_1)\neq \tau(a_2)\tau(a_1)\) outside \(C\), the candidate’s translated edit is not a faithful translation of the target edit. Adequacy then tests an arbitrary edit of \(E\), not the counterpart of the target change.
+- Severity: serious.
+- Fix: require \(\tau\) to be a partial homomorphism on \(C_{\mathrm{adm}}\), or at least on the domain used by adequacy.
+
+**24. The condition can be vacuous when \(C=C_{\mathrm{adm}}\cap S\) with \(S=C_{\mathrm{adm}}\).**
+- Attacked: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\)” (Part V).
+- Why it fails: If the scope includes every admitted pair, the set is empty and adequacy is vacuously true. That is not itself wrong, but it means adequacy does no work precisely where the contract is full; it only constrains restricted scopes. The document should say this explicitly.
+- Severity: minor.
+- Fix: state that adequacy is vacuous for \(C\) containing all admitted pairs, and that its work is only on proper scopes.
+====================================================================================================
+R4_contract_adequacy | rev_deepseek | sample 2 | finish stop | 13287 chars | error None
+====================================================================================================
+## Findings
+
+**1. The adequacy condition is not well-defined when \(\tau\) or \(\sigma\) is undefined outside \(C\).**
+
+> “**Contract adequacy.** \(C\) is not **protective** for \(\mathcal E\): there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”
+
+The document elsewhere explicitly allows \(\tau\) to be undefined. In Part VII:
+
+> “here \(\tau\) sends the intervention on \(H\) to the edit that replaces the calculation’s component assigning \(H\), which the reversed organization has none of, so \(\tau\) is undefined and (F2) fails at that pair.”
+
+Adequacy quantifies over \(C_{\mathrm{adm}}\setminus C\), i.e. outside the contract \(C\) on which the transport was specified. If \(\tau(a)\) or \(\sigma(b)\) is undefined at such a pair, the expression \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) has no value, so “does not differ” has no truth value. The predicate is therefore undefined exactly where it is supposed to do its protective work.
+
+**Seriousness:** serious to fatal.  
+**Fix:** Require \(\tau,\sigma\) to be total on \(C_{\mathrm{adm}}\), or explicitly define undefined as failure of adequacy, or restrict adequacy to pairs where \(\tau,\sigma\) and both answer profiles are defined and state that restriction.
+
+---
+
+**2. The “baseline value” for the candidate is not defined, and \(\sigma(b_0)=b_0\) is not required.**
+
+> “while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not [differ from its baseline value], or the reverse.”
+
+The target’s baseline is clearly \(\operatorname{Ans}_p(1,b_0)\). The candidate’s baseline is apparently \(\operatorname{Ans}_E(\tau(1),\sigma(b_0))\). But (F2) only requires \(\tau(1)=1\), not \(\sigma(b_0)=b_0\). If \(\sigma(b_0)\neq b_0\), then the candidate’s baseline pair is \((1,\sigma(b_0))\), not \((1,b_0)\). Although (A) on \(C\) equates the values at \((1,b_0)\), the phrase “its baseline value” for the candidate is ambiguous. The condition compares target movement from one baseline with candidate movement from another baseline boundary.
+
+**Seriousness:** serious.  
+**Fix:** State explicitly that the candidate’s baseline is \(\operatorname{Ans}_E(\tau(1),\sigma(b_0))\), and either require \(\sigma(b_0)=b_0\) or make the baseline index explicit in the condition.
+
+---
+
+**3. The condition is too weak: it checks asymmetry of movement from baseline, not equality of target and candidate at the excluded pair.**
+
+> “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”
+
+Suppose at an excluded admitted pair the target’s answer moves from baseline \(0\) to \(1\), and the candidate’s answer moves from baseline \(0\) to \(2\). Both differ from baseline, so the first disjunct is false. The reverse is also false because the target moved. The condition passes, even though the candidate is unfaithful at that admitted pair. A scope can therefore exclude exactly a separating change and still satisfy adequacy, provided the candidate moves at all — even to the wrong value.
+
+**Seriousness:** fatal for the stated purpose of catching protective scopes.  
+**Fix:** Compare \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) directly to \(\operatorname{Ans}_p(a,b)\), not each separately to its baseline. Or define \(C\) as protective when adding the excluded pair to \(C\) would break (A), (F1), or (F2).
+
+---
+
+**4. The condition is too strong: it forces out-of-scope sensitivity on the candidate.**
+
+> “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”
+
+The candidate is only required by (F1), (F2), and (A) to be faithful on \(C\). Outside \(C\), it may be constant, undefined, or simply not built for those edits. If the target has any admitted out-of-scope dependence — any \((a,b)\in C_{\mathrm{adm}}\setminus C\) where \(\operatorname{Ans}_p(a,b)\neq \operatorname{Ans}_p(1,b_0)\) — and the candidate does not move there, adequacy fails. Thus any restricted contract fails unless the candidate happens to mimic the target’s baseline-sensitivity pattern on every admitted pair outside the contract.
+
+This contradicts the stated architecture in Part 0:
+
+> “An **account at a contract** is … faithful to their anchors under every change the contract admits … The first grade is what can be assessed within a question.”
+
+If adequacy uses \(C_{\mathrm{adm}}\setminus C\), the first grade is not assessable within the question; it already requires the full admitted contract.
+
+**Seriousness:** fatal for the distinction between “account at \(C\)” and “anchored account.”  
+**Fix:** Move adequacy out of \(\operatorname{Account}\) and into the anchored grade, or define it as a condition on the stated scope’s recorded reasons rather than on global candidate behaviour.
+
+---
+
+**5. The adequacy condition contradicts Part VII’s claim that the reversed calculation is an account at the identification contract.**
+
+In Part VII:
+
+> “The reversed calculation is faithful under the identification contract, whose edits alter the observed \(L\): it is an account at that contract, and not anchored as a production account, because on the production edits — admitted, and outside the identification contract — its one component is not of one forward kind with the assignment of \(L\).”
+
+But production edits are admitted and outside the identification contract. Under a production edit, the target’s answer moves. The reversed calculation has no component assigning \(H\), so its answer does not move (or \(\tau\) is undefined). By the adequacy condition in Part V, the identification contract is protective, so the reversed calculation is **not** an account at that contract. The document cannot both say it is an account at the identification contract and make adequacy a conjunct of \(\operatorname{Account}\).
+
+**Seriousness:** fatal internal inconsistency.  
+**Fix:** Either remove adequacy from \(\operatorname{Account}\), or withdraw the Part VII claim that the reversed calculation is an account at the identification contract.
+
+---
+
+**6. The existential quantifier over \(t\) lets a candidate satisfy adequacy by choosing a convenient translation outside \(C\).**
+
+> “\(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)”
+
+Adequacy is evaluated for a particular \(t\), using \(\tau\). Since \(t\) is existentially quantified and only constrained on \(C\), a modeller can choose \(\tau\) on excluded pairs so that \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) differs from baseline — even if the candidate’s relation at that translated edit has nothing to do with the target. Because the condition only requires movement, not correctness, this is enough to defeat adequacy. The candidate need not be faithful on the excluded pair; it need only be sensitive somewhere.
+
+**Seriousness:** serious to fatal.  
+**Fix:** Make adequacy independent of the existential \(t\), or require the chosen \(t\) to be answer-faithful on \(C_{\mathrm{adm}}\), not merely on \(C\).
+
+---
+
+**7. Collision with \(K\): Part III says \(K\) enters non-vacuity only, but fidelity is said to range over all of \(C\), and \(K\subseteq C\).**
+
+Part III:
+
+> “Fidelity conditions range over all of \(C\); the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\); a pair in \(K\) enters non-vacuity only through its stated meaning.”
+
+But \(C=(C_{\mathrm{adm}}\cap S)\cup K\). So \(K\subseteq C\). If fidelity conditions range over all of \(C\), then pairs in \(K\) enter (F1), (F2), and (A), not only non-vacuity. The sentence “a pair in \(K\) enters non-vacuity only” is therefore false as written.
+
+**Seriousness:** serious consistency bug.  
+**Fix:** Clarify whether fidelity ranges over \(C\setminus K\), or whether \(K\) is included in fidelity. If \(K\subseteq C\), then \(K\) cannot enter only non-vacuity.
+
+---
+
+**8. Collision with Grievance 4’s two-index treatment of objectivity.**
+
+Grievance 4 says:
+
+> “Two claims, two indices. ‘Faithful on \(C\)’ is a fact within \(C\). ‘\(C\) is not protective’ is a fact about \(C\) against the physically admitted changes… An objectivity claim is the conjunction, and the second conjunct is a condition in this semantics (Part V), not a hope about future criticism.”
+
+But Part V now makes “\(C\) is not protective” a conjunct of \(\operatorname{Account}\) itself:
+
+> “Thus \(\operatorname{Account}(E,p,t,\Gamma)\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}.\)”
+
+So \(\operatorname{Account}\) is already the conjunction. The first grade, “account at a contract,” is no longer a fact within \(C\); it already includes the second index against \(C_{\mathrm{adm}}\). The two-index distinction collapses.
+
+**Seriousness:** serious architectural inconsistency.  
+**Fix:** Remove adequacy from \(\operatorname{Account}\), or redefine the two grades so that “account at \(C\)” is explicitly not the first grade.
+
+---
+
+**9. Collision with Part VIII’s historical index: adequacy makes the truth value of a claim at a fixed contract depend on the current physical module.**
+
+Part VIII:
+
+> “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change, and a claim at a new index is a new claim.”
+
+Adequacy quantifies over \(C_{\mathrm{adm}}\), which is supplied by the physical module in force. If a later theory changes the physical module, then \(C_{\mathrm{adm}}\) changes. The set \(C_{\mathrm{adm}}\setminus C\) changes. So a claim “\(E\) is an account on \(C\)” can flip truth value at the same contract \(C\) when the module changes, unless \(C_{\mathrm{adm}}\) is made part of the claim’s index. The text does not say that.
+
+**Seriousness:** serious index collision.  
+**Fix:** Include \(C_{\mathrm{adm}}\) explicitly in the index of any adequacy-containing claim, or state that adequacy is evaluated relative to the module in force when the claim is formed.
+
+---
+
+**10. \(\mathcal Q\) need not be defined outside \(C\), so \(\operatorname{Ans}_p\) may be undefined at the very pairs adequacy quantifies over.**
+
+Part III’s coherence condition:
+
+> “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other’s complements as stated.”
+
+This only requires \(\mathcal Q\) to be defined on \(C\). Adequacy quantifies over \(C_{\mathrm{adm}}\setminus C\). At such pairs, \(\operatorname{Ans}_p(a,b)\) may be undefined, so “\(\operatorname{Ans}_p\) differs from its baseline value” has no truth value.
+
+**Seriousness:** serious well-definedness bug.  
+**Fix:** Require \(\mathcal Q\) to be defined on all of \(C_{\mathrm{adm}}\), or restrict adequacy to pairs where \(\operatorname{Ans}_p\) is defined, or define undefined as a difference/failure.
+
+---
+
+**11. “Or the reverse” is not defined precisely enough to adjudicate cases where both or neither answer is defined.**
+
+> “or the reverse.”
+
+The phrase does not specify whether “the reverse” is (i) candidate’s answer differs from baseline while target’s does not, (ii) target’s answer does not differ while candidate’s does, or (iii) the negation of the entire first clause. The distinction matters when one or both answers are undefined at the excluded pair. Without an explicit definition, the condition is ambiguous.
+
+**Seriousness:** minor to serious, depending on how undefined is handled.  
+**Fix:** Write the two disjuncts explicitly and specify the truth value when either answer is undefined.
+
+---
+
+**12. Part V says “five” conditions but the displayed equivalence has six conjuncts.**
+
+> “holds exactly when the following **five** conditions hold”
+
+and then
+
+> “\(\operatorname{Account}(E,p,t,\Gamma)\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}.\)”
+
+(F1) and (F2) are listed as separate conjuncts, making six.
+
+**Seriousness:** cosmetic.  
+**Fix:** Say “six conditions,” or group (F1) and (F2) as one “component fidelity” condition.
+
+---
+
+**13. The condition ignores component-level infidelity outside \(C\).**
+
+Adequacy mentions only \(\operatorname{Ans}_p\) and \(\operatorname{Ans}_E\). A candidate could have the correct answer movement at an excluded pair but a wrong decomposition or wrong component relations at that same pair. If the “embarrassing change” is one that separates component structure rather than answer profile, adequacy will not catch it. The condition is therefore not a full contract-protection test for the account’s component fidelity.
+
+**Seriousness:** minor, if the intended condition is only about answer profiles; serious if “separating change” is meant to include component-level separation.  
+**Fix:** State whether contract adequacy is only about answer profiles. If it is meant to protect against component-level embarrassment, extend it to (F1)/(F2) outside \(C\).

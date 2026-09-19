@@ -1,0 +1,797 @@
+====================================================================================================
+R1_hidden_primitives | rev_deepseek | sample 0 | finish stop | 24320 chars | error None
+====================================================================================================
+The central claim in Part XIV and Derivation 6 — that every predicate in Parts II–XIII is defined from the two primitive packages plus the declared parameters — is false. I attack it finding by finding.
+
+**1. `Sel`/`Con` use “representation” and create a cycle with `(R)`.**  
+- Quote: “no itemised representation of the defect — a record pairing the state at which fidelity failed with what would have held — lies on the route from the defect to the variation” and “a construction witness contains both.”  
+- Claim attacked: provenance is defined without `(R)`, so `(R)` can depend on `Sel`/`Con`.  
+- Why it fails: if “representation” means the formal `Rep` of `(R)`, then `Sel` and `Con` use `(R)`, while `(R)` requires `Sel∨Con`. That is a direct cycle. If “representation” is not the formal `Rep`, it is an undefined judgement word.  
+- Severity: fatal.  
+- Fix: replace “itemised representation of the defect” by a structural record defined without `Rep`, e.g. a pair of an edit and a state-transition in the physical process order, and use that record in `Sel` and `Con`.
+
+**2. `Ownership` and `Can` are mutually defined.**  
+- Quote: “every process occurrence in it is an execution of a capability `s` possesses in the sense of Part XII (`Can`)”; Part XII: “`Can` … requires an owned retained realization or an owned, physically admitted, finite construction of one.”  
+- Claim attacked: the dependence order is well-founded.  
+- Why it fails: `Ownership` depends on `Can`; `Can` depends on `owned`. This cycle is not addressed in Derivation 6.  
+- Severity: fatal to the claimed dependence order.  
+- Fix: define `Can` from `RetReal`/`Exec` without `owned`, or take owned capability as primitive/declared.
+
+**3. `Ans_E` is used but never defined.**  
+- Quote: “`Ans_E(τ(a),σ(b))=Ans_p(a,b)`.”  
+- Claim attacked: `(A)` is a defined condition.  
+- Why it fails: Part III defines `Ans_p(a,b)=Q(D,a,b)` only on the target `D`. No definition is given for `Ans_E` on the candidate organization `E`, nor for the query applied to `E`.  
+- Severity: fatal to `(A)`, hence to `(E)`, `Build`, and `EK`.  
+- Fix: define a transported query `Q_E` or define `Ans_E` explicitly from `E` and the question.
+
+**4. `Sel` smuggles causal responsibility.**  
+- Quote: “with the environment’s filtering causally responsible for `t`’s presence and not merely consistent with it.”  
+- Claim attacked: the document never asks whether a component “is” a cause and defines all predicates from the listed primitives/parameters.  
+- Why it fails: “causally responsible” is a causal predicate. It is not in the two primitive packages, not in the declared parameters, and not defined from `≺`, `Inst`, or `Exec`.  
+- Severity: serious.  
+- Fix: define causal responsibility via counterfactual dependence under `A_Θ`, or list it as primitive.
+
+**5. `Build` uses undefined “explanatory use.”**  
+- Quote: “prepares an organization that some occurrence of `s` instantiates for explanatory use of `c`.”  
+- Claim attacked: construction is defined from histories, ownership, bindings and `(E)`.  
+- Why it fails: “explanatory use” is not defined. If it is meant to be `Account` or `Deploy`, that must be said; if it is meant to be `Deploy`, it introduces a cycle through `R`.  
+- Severity: serious.  
+- Fix: replace with a formal condition, e.g. `∃p Account(E,p)` plus use task `U`, or explicitly define explanatory use.
+
+**6. `Attempt` uses “relevant,” “actually used,” “address,” and misuses `Inst`.**  
+- Quote: “the relation that `c` is actually used, on an active route, to address `p` — where `p` is a coherently posed question that `s` instantiates before `e`, and for which the relevant difficulty is that some obligation in `O_p` fails…”  
+- Claim attacked: `Attempt` is a defined predicate in the dependence order.  
+- Why it fails: “actually used,” “address,” and “relevant” are undefined. Also `Inst_ℓ(o,D)` is occurrence-instantiates-organization; it does not let a system `s` instantiate a question `p`. Derivation 5 does construct `D_p`, but `Attempt` does not say `s` instantiates `D_p`.  
+- Severity: serious.  
+- Fix: define use/address via `Deploy` or active-route conditions; replace “relevant” by a formal condition; write `s` instantiates `D_p`.
+
+**7. `Deploy` uses undefined “problem-directed activity.”**  
+- Quote: “integrated into problem-directed activity and supporting the declared use task `U` as a retained capability.”  
+- Claim attacked: `Deploy` is derived from `(R)` and `(CT1)`.  
+- Why it fails: “problem-directed activity” and “supporting” are not defined from `(R)`, `Can`, or the task `U`.  
+- Severity: serious.  
+- Fix: define as a condition on `Can`/`RetReal` with respect to `U`, e.g. execution of `U` on an active route through the representation.
+
+**8. `Active route` uses `Rep` and other undefined terms; anchoring depends on it.**  
+- Quote: “joining a represented input to an operative result … nonconstant dependence on the represented distinction under the declared contrasts.”  
+- Claim attacked: anchoring depends only on `(E)`, `(K)`, `C_adm`, and histories.  
+- Why it fails: active route uses “represented input” and “represented distinction,” i.e. `(R)`, and uses “operative result” and “declared contrasts,” which are undefined. Part V’s anchoring condition 4 imports active route, so anchoring depends on `(R)`.  
+- Severity: serious.  
+- Fix: define active route without `Rep`, or explicitly add `(R)` to the dependence order of anchoring.
+
+**9. The derived role “observation” uses “reporting.”**  
+- Quote: “an edit that alters the relation reporting the port without altering what it reports.”  
+- Claim attacked: roles are derived from admitted edits without representation.  
+- Why it fails: “reporting” and “what it reports” are representational notions. This smuggles representation into Part II before `(R)`.  
+- Severity: serious.  
+- Fix: define an observation edit structurally, e.g. an edit that changes a component relation on a port while leaving all components not touching that port invariant, without using “report.”
+
+**10. Historical kinds use provenance witnesses defined for transports, not components.**  
+- Quote: “A historical kind is a predicate on the history that produced an occurrence of a component — selected, constructed, descended from, copied from — with the witness that Part IV requires for provenance.”  
+- Claim attacked: historical kinds are defined from provenance witnesses.  
+- Why it fails: `Sel` and `Con` are predicates on transports, not components. “Descended from” and “copied from” are not defined anywhere.  
+- Severity: serious.  
+- Fix: define component-level provenance witnesses, or restrict historical kinds to transports.
+
+**11. “Content” is used in incompatible ways.**  
+- Quote: “A content is an organization together with its contract-relative commitments.” Part X: “The content `c` may be an organization, a transport, or a question.”  
+- Claim attacked: `(R)`, `New`, `Origin`, `Build`, `Deploy` all operate on contents.  
+- Why it fails: `(R)` requires `c`’s contract and a transport `t:c→D`. A transport or question is not an organization with a contract in the Part IV sense.  
+- Severity: serious.  
+- Fix: define one uniform notion of content, or restrict each predicate to the appropriate type.
+
+**12. `A_Θ` is occurrence-relative in Part XII but used as organization-global elsewhere.**  
+- Quote: “the admitted edit set `A_Θ(o)` — which alterations of the occurrence’s state the module permits.” Part III: “for a physical organization, the physically admitted edits `A_Θ`.”  
+- Claim attacked: physical contracts and world-kind claims are well-defined.  
+- Why it fails: if several occurrences instantiate the same organization `D`, `A_Θ(o)` may differ by occurrence. Then `C_adm` for `D` is ambiguous.  
+- Severity: serious.  
+- Fix: define `A_Θ(o,D)` and require consistency for organization-level contracts.
+
+**13. `Inst` is used for question-instantiation and active-route representation.**  
+- Quote: “`p` is a coherently posed question that `s` instantiates before `e`.”  
+- Claim attacked: `Inst` supplies only occurrence-instantiates-organization at a grain.  
+- Why it fails: `Inst_ℓ(o,D)` does not apply to systems instantiating questions. Derivation 5 constructs `D_p`, but `Attempt` does not use it. Elsewhere active routes require “represented input,” which is `Rep`, not `Inst`.  
+- Severity: serious.  
+- Fix: restrict `Inst` to occurrences and organizations; define question-instantiation via `D_p`.
+
+**14. Non-circular dependence is ill-defined and contradicts the one-component claim.**  
+- Quote: “A boundary condition `b` is independent of the answer when no faithful transport carries the answer ports into the boundary ports.” And: “there exists an edit `τ(a)` on `E` … that removes or replaces a nonempty proper sub-block `B⊊Γ`…”  
+- Claim attacked: non-circular dependence is a defined condition on `E`, `p`, `t`, `Γ`.  
+- Why it fails: “faithful transport carries the answer ports into the boundary ports” has no defined domain/codomain; “answer ports” are undefined. More seriously, if `Γ` is singleton, no nonempty proper `B⊊Γ` exists, so the condition cannot be witnessed.  
+- Severity: fatal to the claim that the one-component candidate satisfies `(E)`.  
+- Fix: define independence formally and repair the witness condition for singleton `Γ`, or retract the one-component claim.
+
+**15. The one-component candidate is self-contradictory.**  
+- Quote: “The one-component candidate whose single relation is `Sol_D` satisfies `(E)` on every contract and fails conditions 1 and 3.”  
+- Claim attacked: `(E)` alone admits the one-component repackaging.  
+- Why it fails: with one active component, `Γ` is singleton, so non-circular dependence’s proper-sub-block witness cannot exist, as in Finding 14. Therefore it does not satisfy `(E)` as written.  
+- Severity: fatal to the stated division between `(E)` and anchoring.  
+- Fix: either change non-circular dependence or change the claim.
+
+**16. Derivation 5 does not construct “exactly the coherently posed questions.”**  
+- Quote: “Its solutions are exactly the coherently posed questions on `D`.”  
+- Claim attacked: question-finding is representable by `D_p`.  
+- Why it fails: the construction omits `C_adm`, omits `ρ_p`, does not enforce that `Q` is defined on every pair in `C`, does not enforce `S∩K=∅`, and does not enforce `Sol_D(1,b_0)≠∅`.  
+- Severity: serious.  
+- Fix: add ports/constraints for these conditions, or weaken the claim to “encodes a question tuple.”
+
+**17. Derivation 6 is false.**  
+- Quote: “No residual predicate is left undefined.”  
+- Claim attacked: every predicate in Parts II–XIII is defined from the two packages and declared parameters.  
+- Why it fails: Findings 1–15 list undefined or smuggled predicates and cycles. The proof also only addresses one potential cycle and ignores `Ownership↔Can` and the `Sel`/`Con` representation cycle.  
+- Severity: fatal.  
+- Fix: retract the claim or supply the missing definitions and redo the dependence order.
+
+**18. Derivation 7 overclaims that adequacy catches goalpost-moving.**  
+- Quote: “the adequacy condition of Part V is what catches a change made to protect a candidate, whether or not it is recorded.”  
+- Claim attacked: adequacy catches protective contract changes across episodes.  
+- Why it fails: adequacy only checks `C_adm\C` at a fixed `C`. A move from `C` to `C'` begins a new assessment; adequacy of `C'` does not compare to the old `C`.  
+- Severity: serious.  
+- Fix: define a cross-episode condition, or retract the claim.
+
+**19. Derivation 8 does not preserve all semantic data.**  
+- Quote: “Transporting all data along `φ` preserves `(E)`, anchoring, `(G)`, `(P)`, `(EK)`.”  
+- Claim attacked: equivariance under recoding is complete.  
+- Why it fails: `φ` is not required to preserve `Q`, `O_p`, use tasks `U`, `U_c`, or the distinction between answer ports and boundary ports, all of which are used by `(A)`, non-circular dependence, `Deploy`, and `EK`.  
+- Severity: serious.  
+- Fix: add these to the list of transported/preserved data.
+
+**20. Part IV and Part X disagree about what a construction witness contains.**  
+- Quote Part IV: “a construction witness contains both” — an itemised representation of a defect and a target instantiated before variation. Part X: “A construction witness identifies the controlled processes, the incoming carriers, the bindings constructed, and the resulting organization.”  
+- Claim attacked: `Con` and `Build` use the same construction witness.  
+- Why it fails: Part X’s witness omits the defect representation and target-instantiated condition that Part IV says distinguishes construction from selection.  
+- Severity: serious.  
+- Fix: give one definition of construction witness and use it in both places.
+
+**21. The reversed-calculation example is wrong.**  
+- Quote: “the edit that replaces the calculation’s component assigning `H`, which the reversed organization has none of.”  
+- Claim attacked: the reversed calculation fails because `τ` is undefined.  
+- Why it fails: the reversed calculation is `H=L tan θ`, which does have a component assigning `H`. So `τ` need not be undefined. The failure is rather that intervening on `H` in the target changes `L`, while in the reversed organization the edit replaces the component assigning `H` and leaves `L` unchanged.  
+- Severity: serious, because this is the worked example of direction.  
+- Fix: correct the described failure; do not say the reversed organization has no component assigning `H`.
+
+**22. “Understanding” is listed as derived but never defined.**  
+- Quote: “Understanding, construction, newness, origin, repair, knowledge, capability, recursion, universality — from those…”  
+- Claim attacked: understanding is a derived predicate.  
+- Why it fails: no predicate `Understanding` is defined anywhere. Part X’s heading mentions understanding, but the formal predicates are `Deploy`, `Build`, `New`, `Origin`.  
+- Severity: serious.  
+- Fix: define `Understanding` or remove it from the derived list.
+
+**23. `CreativeCriticalEpisode` is used but not defined.**  
+- Quote: “`CreateEK(s,Δ,h,e) ⇔ CreativeCriticalEpisode(s,Δ,h,e) ∧ …`”  
+- Claim attacked: `EK` is a defined predicate.  
+- Why it fails: Part X only gives prose: “A creative critical episode contains an instance of `(G)` connected to its inquiry.” No formal predicate is supplied.  
+- Severity: serious.  
+- Fix: define `CreativeCriticalEpisode` formally.
+
+**24. `EK` uses `Account(c,p_c)` with the wrong type.**  
+- Quote: “`Account(c,p_c) ∧ …`” followed by “Here `c` is a content whose organization is the `E` of `Account(E,p_c)`.”  
+- Claim attacked: `EK` is well-typed.  
+- Why it fails: `Account` is a predicate on an organization and a question, not on a content. The text itself admits the organization is `E`.  
+- Severity: serious.  
+- Fix: write `Account(E,p_c)` with `E` the organization of `c`.
+
+**25. `E|W` is not well-defined for `Account`.**  
+- Quote: “The restriction `E|W` … is the organization obtained by deleting every component in `Γ\W` … Define `S_{E,p}={W⊆Γ:Account(E|W,p)}`.”  
+- Claim attacked: Part VI’s support theory is defined in terms of `(E)`.  
+- Why it fails: `Account` requires a transport `t`, an anchor map `λ`, and an identified set `Γ`. Deleting components of `E` leaves `t`, `λ`, and `Γ` undefined for `E|W`.  
+- Severity: serious.  
+- Fix: define the restriction of `t`, `λ`, and `Γ` along with `E|W`.
+
+**26. Part IX uses undefined argument-theoretic predicates.**  
+- Quote: “alleged defect `δ`, grounds `g`, and a connection”; “preserves role bindings … operative deliberative rule”; “the form of `u` … essential premises `Prem(u)`.”  
+- Claim attacked: bearing, reason use, and standing are defined from declared data.  
+- Why it fails: “alleged defect,” “connection,” “role bindings,” “operative deliberative rule,” “form of `u`,” and “essential premises” are neither primitive nor declared nor defined.  
+- Severity: serious.  
+- Fix: define these formally or add them to the declared parameters.
+
+**27. Part XII uses undefined `achievement predicate`, `continuing organization`, `Admit`, and `Poss`.**  
+- Quote: “every maximal execution completes with a history satisfying the achievement predicate and a continuing organization in `C_I`”; “`Cap^{q,r}_Ω(ξ)⊆Admit^{q,r}_Θ`; … `⊆Poss_Θ`.”  
+- Claim attacked: capability grades are defined.  
+- Why it fails: none of these predicates is defined from `Exec`, `RetReal`, or the declared parameters.  
+- Severity: serious.  
+- Fix: define the achievement predicate, continuing organization, `Admit`, and `Poss`.
+
+**28. `Enable`’s “question-begging” uses `Deploy` as a component of an organization.**  
+- Quote: “when `χ` contains, as a component at the declared grain, a deployment of `c` or an organization held to `c` by a faithful transport.”  
+- Claim attacked: question-begging is a structural condition on `χ`.  
+- Why it fails: `Deploy` is a predicate on `s,c,ξ;U`, not an organization component. “Use of content `c`” is also undefined. The sentence then adds a judgement: “the capability is then supplied, not enabled.”  
+- Severity: serious.  
+- Fix: formalize as a condition on the state set `χ` and the organization instantiated there.
+
+**29. The declared-parameter list is incomplete.**  
+- Quote: “Every claim is relative to them: … the use tasks `U` and enabling conditions `χ`.”  
+- Claim attacked: all nonderived, nonprimitive inputs are declared parameters.  
+- Why it fails: the list omits reasons for scope exclusions, `K` meanings in any formal sense, argument forms, essential premises, role bindings, operative deliberative rules, achievement predicates, `Admit`, `Poss`, and the many other undefined items above.  
+- Severity: serious.  
+- Fix: expand the list or define the missing items.
+
+**30. Anchoring condition 4 compares a component with a subnetwork using a kind relation defined only for components.**  
+- Quote: “Each active component of `E` is of one forward kind, on `(ℓ,C_adm)`, with its anchor.”  
+- Claim attacked: anchoring is stated in the same vocabulary as `(K)`.  
+- Why it fails: `(K)` defines “two components are of one forward kind.” An anchor is a subnetwork, not a component. Derivation 1 likewise says a component is of one forward kind with its anchor subnetwork, but the relation was not defined for that case.  
+- Severity: serious.  
+- Fix: define forward kind for component-subnetwork pairs, or state the condition as signature equality.
+
+**31. “Discrimination requirement of Part IV” is undefined.**  
+- Quote: “A selected question is the surviving member of a population of questions under a variation-and-survival history satisfying the discrimination requirement of Part IV.”  
+- Claim attacked: selected questions are defined by Part IV.  
+- Why it fails: Part IV never names or defines a “discrimination requirement.” Selection is defined for transports, not questions.  
+- Severity: serious.  
+- Fix: define the requirement explicitly and define selection for questions, or remove the phrase.
+
+**32. Non-triviality says an event can be a faithful transport.**  
+- Quote: “no event in the selection process is itself a faithful transport to `t`, to `H`, or to the survival condition.”  
+- Claim attacked: non-triviality is a coherent condition on events.  
+- Why it fails: events are not transports. Transports are maps between organizations. This is a category error.  
+- Severity: serious.  
+- Fix: recast as a condition on records or processes, not on events as transports.
+
+**33. `Ans_S` is used without definition.**  
+- Quote: “the expectation is `Ans_S(τ(a),σ(b))`.”  
+- Claim attacked: expectation is defined.  
+- Why it fails: `Ans_p` is defined for a question `p` on `D`, but `Ans_S` for the simulation layer `S` is never defined.  
+- Severity: serious.  
+- Fix: define `Ans_S` or replace by `Ans_E` with the appropriate candidate organization.
+
+**34. Admissible grains use undefined “realizes” and “touch.”**  
+- Quote: “every component of that organization has a signature that some physically admitted edit realizes: a coarsening that creates a component no admitted change can touch.”  
+- Claim attacked: admissibility is a defined constraint on grains.  
+- Why it fails: “realizes a signature” and “touch a component” are undefined.  
+- Severity: minor to serious.  
+- Fix: define realization of a signature by an edit and define “touch” as change of the component relation or solution projection.
+
+**35. `K`’s “stated meaning” is load-bearing but unformalized.**  
+- Quote: “each with a stated meaning”; “a pair in `K` enters non-vacuity only through its stated meaning.”  
+- Claim attacked: `K` is a declared parameter whose role is well-defined.  
+- Why it fails: the semantics gives no formal account of what a meaning is or how it constrains non-vacuity. This is not in the two primitive packages, and it is not merely a declared syntactic parameter.  
+- Severity: serious.  
+- Fix: define meaning as a condition on answers or declare it primitive.
+
+**36. Derivation 6’s cycle analysis is incomplete.**  
+- Quote: “the only cycle that could arise — construction requiring a represented target while representation requires construction — is broken by Part IV.”  
+- Claim attacked: the dependence order is well-founded.  
+- Why it fails: there is also `Ownership↔Can` (Finding 2), and the `Sel`/`Con` “representation” cycle with `(R)` (Finding 1). Derivation 6 ignores both.  
+- Severity: fatal to the claimed proof.  
+- Fix: redo the dependence order after fixing Findings 1–2.
+
+**37. “Explanatory jobs” in Part VI are undefined.**  
+- Quote: “For explanatory jobs `F⊆F'`, `Pres(F')⊆Pres(F)`.”  
+- Claim attacked: Part VI’s hard-to-vary condition is formal.  
+- Why it fails: “explanatory jobs” is not defined as a predicate, and `E_v` is not defined.  
+- Severity: serious.  
+- Fix: define jobs as questions or `Account` targets, and define `E_v`.
+
+**38. The declared parameters list “contract provenance” in the wrong place.**  
+- Quote: “the contract `C` … with its provenance.”  
+- Claim attacked: provenance attaches to the whole question, as Part III says.  
+- Why it fails: Part III says `ρ_p` attaches to the whole tuple `p`, not to its contract alone. Part XIV then lists provenance as a property of `C`.  
+- Severity: minor.  
+- Fix: say the question’s provenance, not the contract’s.
+
+**39. `Sel` requires a history `H⊆C` without specifying whose contract `C` is.**  
+- Quote: “a finite history `H⊆C` of edit–boundary pairs actually encountered.”  
+- Claim attacked: selection is well-defined over a population of transports.  
+- Why it fails: each member of `T` may have its own contract; `C` is not indexed.  
+- Severity: serious.  
+- Fix: specify a common contract or index `H` to each transport.
+
+**40. `Inst` is asked to supply full decomposition, then used as if it were a mere predicate elsewhere.**  
+- Quote: “What the module must be able to return is a full organization — ports, domains, components with footprints, boundaries, the admitted edits `A_Θ` restricted to the occurrence, and every component relation.”  
+- Claim attacked: `Inst` is just the primitive relation supplied by the physical module.  
+- Why it fails: this makes `Inst` a decomposition oracle, which is acknowledged, but other uses rely on it for more than decomposition: admissibility of grains, target availability in `Con`, active routes in anchoring, and question instantiation in `Attempt`. These are different jobs.  
+- Severity: serious.  
+- Fix: separate the decomposition oracle from the uses; state exactly which predicates are licensed by `Inst` and which need additional module data.
+
+**41. `Build` says a binding is “required for the use” by breaking `(A)`, but `(A)` is about a question, not a content.**  
+- Quote: “it is required for the use when deleting the binding breaks `(F1)` or `(A)` for `c` on its contract.”  
+- Claim attacked: binding-requiredness is well-defined for any content `c`.  
+- Why it fails: `(F1)` and `(A)` are conditions in `Account(E,p)`. If `c` is a transport or question, `(A)` for `c` is not defined.  
+- Severity: serious.  
+- Fix: restrict `Build` to contents that are organizations for a question, or define `(A)` for the relevant content type.
+====================================================================================================
+R1_hidden_primitives | rev_deepseek | sample 1 | finish stop | 25381 chars | error None
+====================================================================================================
+Findings.
+
+**1. Fatal cycle through (R), Con, Build, Deploy.**
+Claim attacked: “\(\operatorname{Rep}_\ell(o,c)\iff\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))].\)”
+Why it fails: (R) needs Con. Con says “there is an episode (Part X) whose construction witness prepares \(t\)”. The construction witness is the witness for Build, which says “a binding construction is **nontrivial** when the binding is neither a relabelling of a binding already in the repertoire nor obtainable from the incoming carriers by \(\equiv_\ell\)”. The repertoire is “the set of contents deployable in some nontrivial use respect”, and Deploy “holds when \(s\) at \(\xi\) holds a representation of \(c\) — by (R)”. So (R) → Con → construction witness/Build → repertoire → Deploy → (R).
+Severity: fatal.
+Fix: stratify. Define repertoire without Deploy, or define Con without Build/repertoire, or make Deploy’s representation condition independent of Con. The dependence-order claim that provenance witnesses do not use (R) must be rewritten.
+
+**2. Fatal cycle between Ownership and Can.**
+Claim attacked: “A subhistory is **owned** by \(s\) when every process occurrence in it is an execution of a capability \(s\) possesses in the sense of Part XII (\(\operatorname{Can}\))”.
+Why it fails: Part XII says “\(\operatorname{Can}_{\Omega,\beta}(\xi,T;\chi)\) requires an owned retained realization or an owned, physically admitted, finite construction of one”. Ownership depends on Can; Can depends on owned.
+Severity: fatal.
+Fix: make ownership primitive or define Can without “owned”; or stratify owned capabilities into levels.
+
+**3. Derivation 6’s cycle-breaking claim is false.**
+Claim attacked: “(R) is not used inside any provenance witness”.
+Why it fails: Con uses a construction witness; construction witness is Build; Build uses repertoire; repertoire uses Deploy; Deploy uses (R). Also Sel uses “itemised representation of the defect” unless that phrase is non-formal, in which case it is smuggled judgement.
+Severity: fatal for Derivation 6’s proof; serious for Part XIV’s “two primitive packages” claim.
+Fix: restate the actual dependence order, or remove (R) from Deploy/Build/Con, or replace all provenance-witness uses of representation with a lower-level non-representational predicate.
+
+**4. Sel uses causal/judgement vocabulary not in the primitive list.**
+Claim attacked: Sel holds when “the environment's filtering causally responsible for \(t\)'s presence and not merely consistent with it”; “A process is **blind** with respect to a defect when no itemised representation of the defect … lies on the route from the defect to the variation”.
+Why it fails: “causally responsible”, “not merely consistent”, “blind”, “defect”, and “itemised representation” are not defined from Θ, N, or declared parameters. If “representation” means (R), Sel enters the cycle in Finding 1. If it means ordinary representation, it is smuggled.
+Severity: serious.
+Fix: define causal responsibility through \(\prec\), Exec, or the physical module’s process order; define “defect representation” as an organization with (R) but stratify it, or remove the clause.
+
+**5. Sel has a type error: faithful transport to non-organizations.**
+Claim attacked: “no event in the selection process is itself a faithful transport to \(t\), to \(H\), or to the survival condition.”
+Why it fails: \(\operatorname{Faithful}_C\) is defined for a transport between organizations. \(t\) is already a transport, \(H\) is a set of edit–boundary pairs, and the survival condition is a predicate. None is an organization.
+Severity: serious.
+Fix: define an organization representing the event/defect/history/survival condition, and quantify over transports into that organization.
+
+**6. Con applied to (R) targets a content, not an organization, and requires it instantiated before construction.**
+Claim attacked: Con “holds when there is an episode (Part X) whose construction witness prepares \(t\), and in which the organization \(t\) targets is instantiated by an occurrence in the episode's history before \(e\)”.
+Why it fails: (R) uses \(t:c\to D\), so \(t\) targets the content \(c\). But a content is “an organization together with its contract-relative commitments”, not an organization in the sense of Part II. Worse, requiring the content to be instantiated before the construction episode makes novel content representation look like copying an already instantiated target.
+Severity: serious, possibly fatal for (R).
+Fix: distinguish content from its organization; define Con for content-to-carrier transports so that the target instantiated is the target of the content, not the content itself; or drop the target-instantiated condition for representation transports.
+
+**7. Con’s “construction witness prepares \(t\)” does not match Build’s witness.**
+Claim attacked: Con requires “construction witness prepares \(t\)”.
+Why it fails: Build defines a witness that “prepares an organization that some occurrence of \(s\) instantiates for explanatory use of \(c\)”. There is no predicate in the document for a construction witness preparing a transport.
+Severity: serious.
+Fix: define construction-witness-for-transports explicitly, or reduce Con to Build on the organization component of \(t\).
+
+**8. Part XIV’s declared parameters omit central data.**
+Claim attacked: “**Declared parameters.** Neither derived nor primitive; supplied with each use … the organization interpretation …; the indices …; the contract …; the query …; the obligation sets …; an appraiser's license set …; the restriction operation's named background and the edit family …; the use tasks \(U\) and enabling conditions \(\chi\).”
+Why it fails: the list omits transports \(t=(\pi,\tau,\sigma,\lambda)\), anchor maps \(\lambda\), active commitments \(\Gamma\), content contracts \(C_c\), \(O_{\mathrm{ep}}\), \(J_p\), \(C_I\), aesthetic carriers \(\mathcal R,G\), and other objects used by the definitions.
+Severity: fatal for the “two primitive packages plus declared parameters” claim.
+Fix: list every non-derived object, or derive the missing objects explicitly.
+
+**9. (A) uses \(\operatorname{Ans}_E\) but no query for \(E\) is defined.**
+Claim attacked: “\(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b).\)”
+Why it fails: \(\mathcal Q\) is “a specified set-theoretic operation on \(D\), its solutions, and its component structure”. No definition says \(\mathcal Q\) applies to \(E\), nor is there a separate query for \(E\). \(\operatorname{Ans}_E\) is therefore undefined.
+Severity: serious.
+Fix: define \(\operatorname{Ans}_E\) through a declared query for \(E\), or require \(\mathcal Q\) to be applicable to both \(D\) and \(E\).
+
+**10. The dependence order for (EK) is incomplete.**
+Claim attacked: “(P), (EK) depend on (G), (E), Deploy, ProducedBy.”
+Why it fails: (EK) also uses CreativeCriticalEpisode, Result(Δ), \(O_{\mathrm{ep}}\), Origin, Account, and the use task \(U_c\). None appears in that clause.
+Severity: serious.
+Fix: expand the dependence clause or remove (EK) from the “no residual predicate” claim.
+
+**11. “Active commitments” and “active components” are undefined.**
+Claim attacked: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda):D\to E\), and an identified set \(\Gamma\) of active commitments in \(E\).” Also “(F1) For every active component \(k\) of \(E\) …”
+Why it fails: “active” is a judgement word. \(\Gamma\) is not in the primitive packages or the declared-parameters list. No derived predicate defines active component or active commitment.
+Severity: fatal for the “No predicate … left undefined” claim.
+Fix: define active component/commitment structurally, or add them as declared parameters.
+
+**12. Non-circular dependence uses undefined objects.**
+Claim attacked: “A boundary condition \(b\) is **independent** of the answer when no faithful transport carries the answer ports into the boundary ports”; “removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\)”.
+Why it fails: “answer ports” is undefined; \(\Gamma\) is a set, not a structured object with sub-blocks; “ceases to be determined in the claimed way” is not defined.
+Severity: serious.
+Fix: define answer ports, define a block structure on \(\Gamma\), and define “determined” via the organization’s solution operator.
+
+**13. Anchoring condition 3 uses an undefined semantic judgement.**
+Claim attacked: “No active component's relation is, on \(C\), definable as \(\operatorname{Sol}_D(a,b)\) or a projection of it”.
+Why it fails: “definable” is not a formal condition. It depends on an unstated language of definitions. The gloss “the explanandum repackaged as a law” is a judgement, not a derived predicate.
+Severity: serious.
+Fix: replace with a structural criterion, e.g. equality of the component relation to \(\operatorname{Sol}_D\) or a projection under the transport, or relativize “definable” to a declared syntax.
+
+**14. The active-route condition uses representation and other undefined terms.**
+Claim attacked: “An **active route** is a connected subnetwork of actual occurrences joining a represented input to an operative result, whose components satisfy the applicable relations and which has nonconstant dependence on the represented distinction under the declared contrasts.”
+Why it fails: “represented input”, “operative result”, “applicable relations”, and “nonconstant dependence” are undefined. If “represented” means (R), then anchoring condition 4 depends on (R); if not, it is smuggled.
+Severity: serious.
+Fix: define active route without representation, or explicitly via (R) with a clean stratification; define operative result and dependence.
+
+**15. Attempt uses judgement words and overreaches Inst.**
+Claim attacked: “\(\operatorname{Attempt}(s,c,p,h,e)\) the relation that \(c\) is actually used, on an active route, to address \(p\) — where \(p\) is a coherently posed question that \(s\) instantiates before \(e\), and for which the relevant difficulty is that some obligation in \(O_p\) fails at the state before \(e\)”.
+Why it fails: “actually used” and “address” are undefined; “relevant difficulty” is a judgement word; and “\(s\) instantiates” a question overreaches \(\operatorname{Inst}_\ell(o,D)\), which is occurrence-instantiates-organization.
+Severity: serious; fatal for Origin if Attempt is load-bearing.
+Fix: define “use to address”; replace “instantiates \(p\)” with “instantiates the question-organization \(D_p\)” from Derivation 5; delete “relevant” or define it as the stated obligation failure.
+
+**16. The merit condition uses an undefined counterfactual “would repair”.**
+Claim attacked: “the found question \(p'\) counts as found, rather than re-parameterised, only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P)”.
+Why it fails: Repair is defined for an actual transition \(\xi\to\xi'\) by an episode Δ and for obligations as truth-valued functions. “Would repair” is a counterfactual not defined from the primitives.
+Severity: serious.
+Fix: define counterfactual repair via an admissible continuation, or replace with an actual episode condition.
+
+**17. “Complete critical episode” is undefined.**
+Claim attacked: “A complete critical episode contains a recognized difficulty, a target available before its criticism, a conjectural objection, and a content-sensitive response.”
+Why it fails: “recognized”, “available”, “conjectural”, and “content-sensitive” are not derived. CreativeCriticalEpisode is used in (EK).
+Severity: serious.
+Fix: define the episode predicates structurally, or declare them as parameters.
+
+**18. Deploy uses undefined and judgement terms.**
+Claim attacked: Deploy “holds when \(s\) at \(\xi\) holds a representation of \(c\) — by (R) … — integrated into problem-directed activity and supporting the declared use task \(U\) as a retained capability”; “The repertoire \(R_{\beta,\ell}(s,\xi)\) is the set of contents deployable in some nontrivial use respect.”
+Why it fails: “problem-directed activity”, “supporting”, “nontrivial use respect”, and “deployable” are not defined from primitives or declared parameters. This also feeds the cycle in Finding 1.
+Severity: serious.
+Fix: define problem-directed activity and support through use task \(U\); define “nontrivial use respect”; avoid using the repertoire in Build unless it is independently defined.
+
+**19. Build uses undefined and judgement terms.**
+Claim attacked: Build “holds when an owned subhistory of \(h\), delimited at \(e\), prepares an organization … contains a **nontrivial binding construction required for that use**”; “A construction witness identifies the controlled processes, the incoming carriers, the bindings constructed, and the resulting organization.”
+Why it fails: “prepares”, “explanatory use”, “controlled processes”, “incoming carriers”, “relabelling”, and “obtainable from” are undefined. “Required for the use” is glossed by F1/A, but \(c\) is a content, not an \(E\) with a question \(p\).
+Severity: serious.
+Fix: define these terms, or add them as declared parameters; specify how F1/A apply to content \(c\).
+
+**20. Repair treats obligations as truth-valued functions, but obligations are only declared sets.**
+Claim attacked: “\(\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\iff\exists o\in O[\neg o(\xi)\land o(\xi')]\land\forall r\in P[r(\xi)\Rightarrow r(\xi')]\land\operatorname{ProducedBy}(\Delta,\xi,\xi';O).\)”
+Why it fails: \(O\) and \(P\) are declared obligation sets, but Repair writes \(o(\xi)\), \(r(\xi)\), i.e. obligations as predicates on states. No such typing is supplied.
+Severity: serious.
+Fix: define obligations as functions from states to truth values, or add their evaluation map to the declared parameters.
+
+**21. (EK) uses undeclared \(O_{\mathrm{ep}}\) and undefined “correct account”/“correction of a use”.**
+Claim attacked: “With \(O_{\mathrm{ep}}\subseteq O\) the epistemic obligations”; “An epistemic obligation requires a correct account, or the correction of a use through one, to be deployable.”
+Why it fails: \(O_{\mathrm{ep}}\) is not in Part XIV’s declared parameters; “correct account” is not defined as Account; “correction of a use” is undefined.
+Severity: serious.
+Fix: declare \(O_{\mathrm{ep}}\), define “correct account” as Account on the relevant contract, and define correction.
+
+**22. Artistic predicates use undefined carriers.**
+Claim attacked: “An effect organization \(\mathcal R\subseteq A\times K\times F\); a purpose \(G\subseteq K\times F\); achievement \(\mathcal R[a,k]\neq\varnothing\land\mathcal R[a,k]\subseteq G[k]\) (AR); a normative relation \(\mathcal N\subseteq A\times K\times\mathcal Rsn\times\mathcal V_A\) declared …”
+Why it fails: \(A,K,F,\mathcal Rsn,\mathcal V_A\) are not defined, and \(\mathcal R,G\) are not in the primitive/declared list. Part XIV lists only \(\mathcal N\) as primitive “when invoked”.
+Severity: serious.
+Fix: declare all the carriers and their types, or reduce the artistic section to \(\mathcal N\) plus explicitly declared data.
+
+**23. Bearing ignores the target, grounds, and connection it claims to assess.**
+Claim attacked: “A criticism \(c\) has target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection. … \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta).\)”
+Why it fails: \(z\), \(g\), and the connection do not appear on the right-hand side. A criticism with a correct account of an unrelated \(p_\delta\) bears on any \(z\). “Alleged” is also a judgement word.
+Severity: serious.
+Fix: include target, grounds, and connection in Bearing, or define Bearing as a relation that explicitly ties \(p_\delta\) to \(z\) and \(g\).
+
+**24. “Reason use” uses undefined role and deliberative terms.**
+Claim attacked: “A response uses a reason when a structural map from the represented objection into the response suborganization preserves role bindings, sends content-preserving recodings … and lands on an active route.”
+Why it fails: “represented objection”, “role bindings”, “operative deliberative rule”, and “lands on an active route” are undefined. The deliberative rule is not in the primitive or declared list.
+Severity: serious.
+Fix: define role bindings and the deliberative rule, or declare them; define “lands on”.
+
+**25. Standing uses undefined proof-theoretic terms.**
+Claim attacked: “a license set \(\mathcal L_j\) of argument forms it admits”; “\(\operatorname{Live}_j(d;u)\): premise \(d\) has not been withdrawn in \(j\)'s log before \(u\).”
+Why it fails: “argument application \(u\)”, “form of \(u\)”, “essential premises”, and “\(u\) ranges over” are not defined, despite the claim “These three are typed components of declared data, not judgements.”
+Severity: serious.
+Fix: define argument forms, application, premises, and range, or add them to the declared parameters.
+
+**26. Receipts use undefined evidential terms.**
+Claim attacked: “An evidence leaf is a reference to an event with an interpreted claim. A receipt is a derivation tree over leaves. For \(\phi\), \(P_j(\phi)\) and \(N_j(\phi)\) are the usable receipts for and against.”
+Why it fails: “evidence leaf”, “interpreted claim”, and “usable” are not defined from primitives or declared parameters.
+Severity: serious.
+Fix: define evidence leaf and usability, or declare them.
+
+**27. Part XIII’s recursion/universality predicates use many undefined terms.**
+Claim attacked: “An aspect \(d\) of a system's practice is scrutinizable at \(\xi\) when there is an owned, admitted continuation in which a description of \(d\) becomes a target instantiated by the system, criticism can be directed at it, and the result can affect its operative use.”
+Also “admitted target chains of length \(n\)”, “enabling continuation”, “independently characterized domain”, “capability required”, “explanatory contents”, “advanceable”, and “specified independently … in the same sense”.
+Why it fails: “practice”, “description”, “target instantiated”, “criticism can be directed”, “operative use”, “admitted target chains”, “enabling continuation”, “independently characterized”, “required”, “unavailable”, “explanatory”, “advanceable”, and “same sense” are all undefined. The phrase “a description of \(d\) becomes a target instantiated by the system” also overreaches Inst, which instantiates organizations, not descriptions.
+Severity: serious.
+Fix: define each term structurally or add it to the declared parameters; replace “description” with an organization \(D_d\) and use Inst for that.
+
+**28. CanAdv and the capability grades use undeclared data.**
+Claim attacked: “\(\operatorname{CanAdv}(\xi,p;\chi,J_p,C_I)\): for each starting configuration in the independently specified \(J_p\) … every maximal execution completes with a history satisfying the achievement predicate and a continuing organization in \(C_I\).”
+Also “\(\mathsf{Cap}^{q,r}_\Omega(\xi)\subseteq\mathsf{Admit}^{q,r}_\Theta\); \(\mathsf{Cap}^\infty=\bigcap_{q,r}\mathsf{Cap}^{q,r}\subseteq\mathsf{Poss}_\Theta\).”
+Why it fails: \(J_p\), \(C_I\), “achievement predicate”, “maximal execution”, “continuing organization”, \(\mathsf{Admit}\), and \(\mathsf{Poss}\) are not in the primitive/declared list and have no definitions.
+Severity: serious.
+Fix: declare or define \(J_p,C_I\), the achievement predicate, maximal execution, continuing organization, \(\mathsf{Admit}\), and \(\mathsf{Poss}\).
+
+**29. \(C_{\mathrm{adm}}\) has a type mismatch for physical organizations.**
+Claim attacked: “\(C_{\mathrm{adm}}\subseteq A\times B\) is the set of pairs the module in force admits: for a physical organization, the physically admitted edits \(A_\Theta\) (Part XII)”.
+Why it fails: \(A_\Theta\) is a set of edits, not a set of edit–boundary pairs; \(C_{\mathrm{adm}}\) is typed as a subset of \(A\times B\).
+Severity: serious.
+Fix: define \(C_{\mathrm{adm}}=A_\Theta\times B\) or have the module supply admitted edit–boundary pairs directly.
+
+**30. \(A_\Theta\) is a set, but Part II requires partial composition and identity.**
+Claim attacked: Part XII says the module supplies “the **admitted edit set** \(A_\Theta(o)\) … stated as a set”; Part II says “\(A\) is a set of admitted edits, closed under a partial associative composition with identity \(1\).”
+Why it fails: the physical module must supply composition, identity, and closure if \(A_\Theta\) is to instantiate Part II’s \(A\). Part XII does not list them.
+Severity: serious.
+Fix: state that \(A_\Theta(o)\) is a partial monoid or that the module supplies the composition and identity; add this to the primitive package.
+
+**31. “Intervention” is used in Part II without being tied to the intervention repertoire.**
+Claim attacked: “a **causal assignment** has a signature that changes under intervention on its output port”; Part XII supplies “an **intervention repertoire** \(\mathcal I\subseteq A_\Theta\)”.
+Why it fails: Part II’s role definitions and cause/measurement/rule signatures use “intervention” as if it were already defined. Only Part XII introduces \(\mathcal I\), and the connection is not stated.
+Severity: serious.
+Fix: define intervention as an edit in \(\mathcal I\), or relativize all signature definitions to \(\mathcal I\).
+
+**32. Inst is overreached for questions and descriptions.**
+Claim attacked: Attempt requires “\(p\) is a coherently posed question that \(s\) instantiates before \(e\)”; Scrutinizability requires “a description of \(d\) becomes a target instantiated by the system”.
+Why it fails: \(\operatorname{Inst}_\ell(o,D)\) is “occurrence \(o\) instantiates organization \(D\) at grain \(\ell\)”. Questions and descriptions are not organizations in the Part II sense.
+Severity: serious.
+Fix: replace with instantiating the question-organization \(D_p\) or the description-organization \(D_d\).
+
+**33. The claim that (R) takes only Inst from outside is false.**
+Claim attacked: “What (R) takes from outside is \(\operatorname{Inst}_\ell\).”
+Why it fails: (R) also uses \(C_c\), \(\operatorname{Faithful}_{C_c}\), Sel/Con, and the content \(c\). These are not supplied by Inst alone.
+Severity: serious.
+Fix: state the full external inputs of (R), or derive the missing items.
+
+**34. Derivation 1 assumes an unstated visibility condition.**
+Claim attacked: Derivation 1 says “the visible ports of the anchor being those \(\lambda\) translates to \(V_k\)”.
+Why it fails: (F1) equates \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]\) with \(L_k(\tau(a),\sigma(b))\). The subnetwork signature uses \(\operatorname{proj}_{V_U^{\mathrm{vis}}}\operatorname{Sol}_U(a,b)\), where \(V_U^{\mathrm{vis}}\) is a declared subset. Derivation 1 assumes without statement that the anchor’s visible ports are exactly the translated \(V_k\).
+Severity: serious.
+Fix: add this as an explicit condition in anchoring or in (F1).
+
+**35. Derivation 5’s question-organization omits parts of the question tuple.**
+Claim attacked: “Its solutions are exactly the coherently posed questions on \(D\).”
+Why it fails: the construction lists ports for edit pairs, \(\mathcal Q\), \(S\), and \(K\), but a question is \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\). It omits \(O_p\) and \(\rho_p\), and “meanings” for \(K\) are not formal objects.
+Severity: serious.
+Fix: add ports/components for obligations and provenance; define the domain of meanings or remove the claim that solutions are exactly questions.
+
+**36. Part V says “five conditions” but (E) lists six conjuncts.**
+Claim attacked: “holds exactly when the following **five** conditions hold”; “\(\operatorname{Account}(E,p,t,\Gamma)\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}.\)”
+Why it fails: the formula has six conjuncts if (F1) and (F2) are counted separately.
+Severity: cosmetic.
+Fix: say six, or explicitly group (F1)∧(F2) as one condition.
+
+**37. “No predicate … left undefined” is false.**
+Claim attacked: “No predicate in Parts II–XIII is left undefined apart from the two packages and the declared parameters”.
+Why it fails: the document uses active components/commitments, transports, anchor maps, content contracts, explanatory use, problem-directed activity, nontrivial use respect, construction witnesses for transports, role bindings, operative deliberative rules, evidence leaves, usable receipts, recognized difficulty, content-sensitive response, epistemic obligations, achievement predicates, maximal executions, continuing organizations, \(J_p\), \(C_I\), \(\mathsf{Admit}\), \(\mathsf{Poss}\), and more, without definitions or declaration.
+Severity: fatal for Part XIV’s central claim.
+Fix: either define each predicate or extend the primitive/declared lists; then re-prove Derivation 6.
+
+**38. The “content’s own transport from the world” is undefined.**
+Claim attacked: “the transport from the content to the carrier is faithful while the content's own transport from the world fails.”
+Why it fails: no world-to-content transport is defined in Part IV or elsewhere. If it is meant as a transport \(D_{\mathrm{world}}\to c\), the type of \(c\) as a content (organization plus commitments) again causes trouble.
+Severity: minor to serious.
+Fix: define the world-to-content transport explicitly, or remove the claim.
+====================================================================================================
+R1_hidden_primitives | rev_deepseek | sample 2 | finish stop | 33134 chars | error None
+====================================================================================================
+1. **Cycle: Build → repertoire → Deploy → (R) → Con → Build.**  
+   **Claim attacked:** In Part X, Deploy says: “The repertoire \(R_{\beta,\ell}(s,\xi)\) is the set of contents deployable in some nontrivial use respect.” Construction then says: “a binding construction is **nontrivial** when the binding is neither a relabelling of a binding already in the repertoire nor obtainable from the incoming carriers by \(\equiv_\ell\).”  
+   **Why it fails:** `Build` uses “nontrivial,” which uses “repertoire,” which is defined by `Deploy`. `Deploy` uses `(R)`. `(R)` uses `Con` or `Sel`. `Con` requires a “construction witness,” which is what `Build` defines. So `Build → repertoire → Deploy → (R) → Con → Build` is a direct cycle.  
+   **Seriousness:** fatal.  
+   **Fix:** Define repertoire independently of `Deploy` and `(R)`—e.g. as physically retained capabilities under use tasks—or remove “repertoire” from the definition of nontrivial binding and restate the dependence order.
+
+2. **Cycle: Owned ↔ Can.**  
+   **Claim attacked:** Part X Ownership: “A subhistory is **owned** by \(s\) when every process occurrence in it is an execution of a capability \(s\) possesses in the sense of Part XII (\(\operatorname{Can}\)).” Part XII: “\(\operatorname{Can}_{\Omega,\beta}(\xi,T;\chi)\) requires an owned retained realization or an owned, physically admitted, finite construction of one.”  
+   **Why it fails:** `Owned` is defined via `Can`; `Can` is defined via `owned`. This is a direct cycle.  
+   **Seriousness:** fatal.  
+   **Fix:** Define capability possession without the ownership predicate, or define ownership without `Can`—e.g. by causal/process ancestry under \(\prec\) and resource bounds.
+
+3. **Derivation 6 is false: the claimed cycle-breaking is contradicted by the text.**  
+   **Claim attacked:** Derivation 6: “the only cycle that could arise — construction requiring a represented target while representation requires construction — is broken by Part IV, where a construction witness requires an *instantiated* target and (R) is not used inside any provenance witness.”  
+   **Why it fails:** Part IV says: “a selection witness contains no itemised representation of a defect … a construction witness contains both.” If “itemised representation” is the representation predicate, then `Sel`/`Con` use `(R)`, so `(R)` uses `Sel ∨ Con`, which uses representation. If it is not `(R)`, it is an undefined predicate inside the provenance definitions. Either way the stated stratification fails. Also findings 1 and 2 give independent cycles.  
+   **Seriousness:** fatal.  
+   **Fix:** Remove “itemised representation” from `Sel`/`Con` or define it without `(R)`; repair the dependence order; then re-prove Derivation 6.
+
+4. **`Inst` and `A_Theta` are asked to supply more than Part XII lists, and the types do not match.**  
+   **Claim attacked:** Part III: “\(C_{\mathrm{adm}}\subseteq A\times B\) … for a physical organization, the physically admitted edits \(A_\Theta\) (Part XII).” Part XII: “the **admitted edit set** \(A_\Theta(o)\) — which alterations of the occurrence’s state the module permits, stated as a set.” Part IV: the module must return “boundaries, the admitted edits \(A_\Theta\) restricted to the occurrence, and every component relation.”  
+   **Why it fails:** `A_Theta(o)` is an edit set, not a set of edit–boundary pairs. `C_adm` is typed as \(A\times B\). Part XII does not list boundary conditions \(B\) among the module’s supplies, yet Part IV requires them and Part III needs them for \(C_{\mathrm{adm}}\).  
+   **Seriousness:** serious.  
+   **Fix:** Define explicitly, e.g. \(C_{\mathrm{adm}}(o)=A_\Theta(o)\times B_o\), and add \(B_o\) to what the physical module supplies.
+
+5. **`C_c` is undefined in the representation predicate.**  
+   **Claim attacked:** (R): \(\operatorname{Rep}_\ell(o,c)\iff\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\).  
+   **Why it fails:** \(C_c\) is “content \(c\)’s contract,” but `content` is defined only as “an organization together with its contract-relative commitments,” and “contract-relative commitments” is not defined. \(C_c\) is neither in the two primitive packages nor in the Part XIV declared parameters.  
+   **Seriousness:** serious.  
+   **Fix:** Declare \(C_c\) as part of content, or define it from the content’s organization and commitments.
+
+6. **`content` and `contract-relative commitments` are smuggled primitives.**  
+   **Claim attacked:** Part IV: “A **content** is an organization together with its contract-relative commitments.”  
+   **Why it fails:** “Contract-relative commitments” is never defined. Contents are used throughout \( (R) \), Deploy, New, Origin, \( (EK) \), but they are not listed as primitive packages or declared parameters.  
+   **Seriousness:** serious.  
+   **Fix:** Define commitments formally, or list contents/commitments as declared parameters.
+
+7. **`Faithful` is not well-defined for a bare transport.**  
+   **Claim attacked:** Part IV: “A transport is **faithful on \(C\)** when it satisfies (F1) and (F2) of Part V on \(C\).” Part V F1 begins: “For every active component \(k\) of \(E\) …”  
+   **Why it fails:** “Active component” is defined only relative to the identified set \(\Gamma\) in an account candidate. A transport alone does not carry \(\Gamma\), so `Faithful_C(t)` has no determinate domain of components.  
+   **Seriousness:** serious.  
+   **Fix:** Define faithfulness for all components of \(E\), or make \(\Gamma\) part of the transport/candidate data.
+
+8. **`Account(E,p)` existentially quantifies away the commitments.**  
+   **Claim attacked:** Part V: “\(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\).”  
+   **Why it fails:** The “identified set \(\Gamma\) of active commitments” is supposed to identify what is doing the explanatory work. Existential quantification means `Account(E,p)` can hold without reporting which \(\Gamma\) or \(t\) made it hold. The two-place predicate is therefore weaker than the stated notion of an explanatory candidate.  
+   **Seriousness:** serious.  
+   **Fix:** Make \(\Gamma\) and \(t\) explicit arguments of `Account`, or state and justify a canonical choice of \(\Gamma\).
+
+9. **“Active commitments” / “active component” / “identified set \(\Gamma\)” are undefined.**  
+   **Claim attacked:** Part V: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda):D\to E\), and an identified set \(\Gamma\) of active commitments in \(E\).”  
+   **Why it fails:** No predicate marks when a commitment is active, when a component is active, or how \(\Gamma\) is identified. Yet F1, non-circular dependence, and anchoring all quantify over active components/commitments.  
+   **Seriousness:** serious.  
+   **Fix:** Define `Active(k,E,Γ)` or replace \(\Gamma\) by an explicitly specified set of components.
+
+10. **Anchoring condition 4 is ill-typed: “forward kind” is defined between components, not between a component and a subnetwork.**  
+   **Claim attacked:** Part V: “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor.” Part II: “Two components \(j,j'\) are **of one forward kind on \((\ell,C)\)** when there is a bijection of their footprints under which their signatures coincide…”  
+   **Why it fails:** The anchor \(\lambda(k)\) is a subnetwork of \(D\), not a component. The definition of forward kind is only for two components of an organization. Derivation 1 talks about “the signature of its anchor subnetwork,” not about a forward kind with a subnetwork.  
+   **Seriousness:** serious.  
+   **Fix:** Define component–subnetwork forward kind explicitly, or restate condition 4 as signature equality between \(k\) on \(\tau[C]\) and \(\lambda(k)\) on \(C\).
+
+11. **Anchoring condition 4 mixes organizations and histories.**  
+   **Claim attacked:** Part V: “Where the physical module supplies a history for \(D\), each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically.”  
+   **Why it fails:** \(\lambda(k)\) is a subnetwork of the organization \(D\), not a subnetwork of actual occurrences. Part IX defines active route as “a connected subnetwork of actual occurrences.” The text never defines how an anchor in a target organization is mapped to an occurrence subnetwork in a history.  
+   **Seriousness:** serious.  
+   **Fix:** Define a realization map from \(D\)’s components to occurrence subhistories, or remove the active-route clause from anchoring.
+
+12. **`causally responsible` is an undefined primitive in the definition of selection.**  
+   **Claim attacked:** Part IV: “with the environment’s filtering causally responsible for \(t\)’s presence and not merely consistent with it.”  
+   **Why it fails:** “Causally responsible” is not defined from \(\Theta\)’s listed supplies. Part XII only says the selection witness “is a claim about a physical history under \(\Theta\)” and mentions “causal responsibility” without defining it. This smuggles a causal predicate into `Sel`.  
+   **Seriousness:** serious.  
+   **Fix:** Define causal responsibility via \(\prec\), `Exec`, and active routes, or list it explicitly as a primitive/declared relation.
+
+13. **`itemised representation` is used inside `Sel`/`Con` before `(R)` and may make provenance depend on representation.**  
+   **Claim attacked:** Part IV: “A process is **blind** with respect to a defect when no itemised representation of the defect — a record pairing the state at which fidelity failed with what would have held — lies on the route from the defect to the variation.” Also: “a construction witness contains both.”  
+   **Why it fails:** If “itemised representation” means the representation predicate, then `Sel` and `Con` depend on `(R)`, while `(R)` depends on `Sel ∨ Con`. If it does not mean `(R)`, it is an undefined predicate doing central work in distinguishing selection from construction.  
+   **Seriousness:** fatal.  
+   **Fix:** Define “itemised representation” structurally without `(R)`, or remove it from the provenance definitions.
+
+14. **“faithful transport to \(t\), to \(H\), or to the survival condition” is a type error.**  
+   **Claim attacked:** Part IV: “no event in the selection process is itself a faithful transport to \(t\), to \(H\), or to the survival condition.”  
+   **Why it fails:** Faithful transports are between organizations. \(t\) is a transport, \(H\) is a set of edit–boundary pairs, and a survival condition is a condition—not organizations.  
+   **Seriousness:** serious.  
+   **Fix:** Restate as “no event in the process contains a faithful representation of \(t\), of \(H\), or of the survival condition,” after defining representation independently.
+
+15. **`prepares` is undefined.**  
+   **Claim attacked:** Part IV: “\(\operatorname{Con}(t;h,e)\) holds when there is an episode (Part X) whose construction witness **prepares** \(t\).” Part X: “an owned subhistory … **prepares** an organization…”  
+   **Why it fails:** “Prepares” is not defined in terms of `Can`, `Exec`, \(\prec\), `Exec`, `Build`, or any declared parameter. It is a judgement word used in a central provenance predicate.  
+   **Seriousness:** serious.  
+   **Fix:** Define preparation via controlled processes, ownership, and binding construction.
+
+16. **`Attempt` is undefined and has a type error.**  
+   **Claim attacked:** Part X: “\(\operatorname{Attempt}(s,c,p,h,e)\) the relation that \(c\) is actually used, on an active route, to address \(p\) — where \(p\) is a coherently posed question that \(s\) instantiates before \(e\)…”  
+   **Why it fails:** “Actually used,” “to address,” and “relevant difficulty” are undefined. More formally, \(s\) instantiates organizations under `Inst`, not questions. Derivation 5 claims a question determines an organization \(D_p\), but `Attempt` uses \(p\) directly.  
+   **Seriousness:** serious.  
+   **Fix:** Replace \(p\) by \(D_p\) or define `Inst` for question-contents; formalize “use to address” via active routes and obligations.
+
+17. **`active route` uses several undefined terms and an undeclared parameter.**  
+   **Claim attacked:** Part IX: “An **active route** is a connected subnetwork of actual occurrences joining a represented input to an operative result, whose components satisfy the applicable relations and which has nonconstant dependence on the represented distinction under the declared contrasts.”  
+   **Why it fails:** “Represented input,” “operative result,” “applicable relations,” and “declared contrasts” are undefined. “Declared contrasts” is not in the Part XIV declared-parameters list. If “represented” invokes `(R)`, then active routes depend on `(R)`, which the dependence order does not record.  
+   **Seriousness:** serious.  
+   **Fix:** Define active routes from \(\prec\), `Inst`, and a declared contrast set; list contrasts as a declared parameter.
+
+18. **`Deploy` uses undefined judgement terms.**  
+   **Claim attacked:** Part X: “\(\operatorname{Deploy}_{\beta,\ell}(s,c,\xi;U)\) holds when \(s\) at \(\xi\) holds a representation of \(c\) … integrated into problem-directed activity and supporting the declared use task \(U\) as a retained capability.” Also: “The repertoire … the set of contents deployable in some nontrivial use respect.”  
+   **Why it fails:** “Problem-directed activity,” “supporting,” and “nontrivial use respect” are undefined. They are not derived from `(R)` and `(CT1)` as the dependence order claims.  
+   **Seriousness:** serious.  
+   **Fix:** Define deployment as a relation between a representation, a use task, and an owned retained realization; define “nontrivial use respect” via use tasks or obligations.
+
+19. **`≡_ℓ` omits much of what a content contains.**  
+   **Claim attacked:** Part X: “Two contents \(c,d\) are **content-preserving recodings** … when there is a bijection between their port sets, value domains, components and boundaries that carries the admitted edits of one onto the other and the component relations of one onto the other pointwise…”  
+   **Why it fails:** Contents include contracts, queries, scopes, counterfactual sets with meanings, obligation sets, and question provenance. The definition does not mention contracts, \(C\), \(\mathcal Q\), \(S\), \(K\), \(O_p\), or \(\rho_p\). Newness and Deploy rely on \(\equiv_\ell\), so this omission can make recoding too easy.  
+   **Seriousness:** serious.  
+   **Fix:** Include all content data—contract, query, scopes, counterfactual meanings, obligations—in the bijection.
+
+20. **`Build` uses “explanatory use,” which is undefined and may reintroduce a cycle.**  
+   **Claim attacked:** Part X: “\(\operatorname{Build}_{\beta,\ell}(s,c,h,e)\) holds when an owned subhistory of \(h\) … prepares an organization that some occurrence of \(s\) instantiates for **explanatory use** of \(c\)…”  
+   **Why it fails:** “Explanatory use” is not defined. If it means `Account(c,p)`, then `Build` depends on `Account`; if it means `Deploy`, then `Build → Deploy → (R) → Con → Build`, compounding finding 1.  
+   **Seriousness:** serious.  
+   **Fix:** Define “explanatory use” as a specific question \(p\) and an `Account` relation, and place it explicitly in the dependence order.
+
+21. **Episodes are defined by judgement words.**  
+   **Claim attacked:** Part X: “A complete critical episode contains a recognized difficulty, a target available before its criticism, a conjectural objection, and a content-sensitive response. A creative critical episode contains an instance of (G) connected to its inquiry.”  
+   **Why it fails:** “Recognized,” “available,” “conjectural,” “content-sensitive,” and “connected” are not formalized. `CreativeCriticalEpisode` is used in `(EK)`.  
+   **Seriousness:** serious.  
+   **Fix:** Define episodes as tuples of occurrences, questions, criticisms, and response maps, using `Bearing`, `Account`, and active routes.
+
+22. **`CanAdv` uses an undefined achievement predicate and continuing organization.**  
+   **Claim attacked:** Part XII: “\(\operatorname{CanAdv}(\xi,p;\chi,J_p,C_I)\): for each starting configuration in the independently specified \(J_p\) … every maximal execution completes with a history satisfying the **achievement predicate** and a **continuing organization** in \(C_I\).”  
+   **Why it fails:** “Achievement predicate” and “continuing organization” are not defined, and \(J_p\), \(C_I\) are not listed as declared parameters.  
+   **Seriousness:** serious.  
+   **Fix:** Define the achievement predicate as part of the challenge \(p\), and declare \(J_p,C_I\).
+
+23. **`Can` uses an undefined “owned, physically admitted, finite construction” and equivocates on “construction.”**  
+   **Claim attacked:** Part XII: “\(\operatorname{Can}_{\Omega,\beta}(\xi,T;\chi)\) requires an owned retained realization or an owned, physically admitted, finite construction of one…”  
+   **Why it fails:** “Construction” here is not the provenance predicate `Con` or the epistemic `Build`, but it is never defined. It also depends on “owned,” which cycles with `Can` (finding 2).  
+   **Seriousness:** serious.  
+   **Fix:** Define physical construction of a realization via `Exec` and controlled processes, not via `Can`.
+
+24. **`Admit`, `Poss`, and the capability grades are undefined.**  
+   **Claim attacked:** Part XII: “\(\mathsf{Cap}^{q,r}_\Omega(\xi)\subseteq\mathsf{Admit}^{q,r}_\Theta\); \(\mathsf{Cap}^\infty=\bigcap_{q,r}\mathsf{Cap}^{q,r}\subseteq\mathsf{Poss}_\Theta\).”  
+   **Why it fails:** `Admit^{q,r}_Theta`, `Cap^{q,r}_Omega`, and `Poss_Theta` are not defined from the listed supplies. Part XII gestures at “Possibility is the absence of a law-imposed limit short of perfection,” but that is not a formal definition.  
+   **Seriousness:** serious.  
+   **Fix:** Define the grade spaces and `Poss` from `Exec`, resources, and task sets.
+
+25. **`Scrutinizable`, `RC`, `Barriers`, and `UU/UC` use undefined judgement terms.**  
+   **Claim attacked:** Part XIII: “An aspect \(d\) … is **scrutinizable** at \(\xi\) when there is an owned, admitted continuation in which a description of \(d\) becomes a target instantiated by the system…” “\(\forall n<\omega\ \forall\) admitted target chains of length \(n\), \(\exists\) an owned enabling continuation.” “With \(\mathfrak E_\Theta\) the explanatory contents and \(\mathfrak P^{\mathrm{adv}}_\Theta\) the coherently posed advanceable challenges…”  
+   **Why it fails:** “Description,” “target chains,” “explanatory contents,” “advanceable challenges,” and “independently specified” are undefined.  
+   **Seriousness:** serious.  
+   **Fix:** Define these via `Inst`, `Can`, `Enable`, and declared challenge sets.
+
+26. **`Enable`’s question-begging condition uses `Deploy` and mis-types \(\chi\).**  
+   **Claim attacked:** Part XIII: “An enabling condition \(\chi\) for the use of content \(c\) is **question-begging** when \(\chi\) contains, as a component at the declared grain, a deployment of \(c\) or an organization held to \(c\) by a faithful transport…”  
+   **Why it fails:** \(\chi\) is said to be “a set of states and resources,” not an organization with components. The condition uses “deployment of \(c\),” which uses `Deploy → (R) → Con → Build`, feeding the cycle in finding 1.  
+   **Seriousness:** serious.  
+   **Fix:** Define \(\chi\) as an organization or state-with-structure, and define containment of a deployment without relying on the unstratified `Deploy`.
+
+27. **Part XI’s aesthetic predicates use undefined sets.**  
+   **Claim attacked:** Part XI: “An effect organization \(\mathcal R\subseteq A\times K\times F\); a purpose \(G\subseteq K\times F\); achievement \(\mathcal R[a,k]\neq\varnothing\land\mathcal R[a,k]\subseteq G[k]\) (AR); a normative relation \(\mathcal N\subseteq A\times K\times\mathcal Rsn\times\mathcal V_A\)…”  
+   **Why it fails:** \(A,K,F,\mathcal Rsn,\mathcal V_A\) are not defined and are not in the primitive packages or declared-parameter list.  
+   **Seriousness:** serious.  
+   **Fix:** Declare these sets and their types, or remove the claim that the normative relation is the only extra primitive.
+
+28. **`ProducedBy` uses active routes and “occurrences of \(\Delta\)” without definition.**  
+   **Claim attacked:** Part XI: “every change of value of an obligation in \(O\) between them lies on an active route from occurrences of \(\Delta\).”  
+   **Why it fails:** Active routes depend on `(R)` (finding 17); “occurrences of \(\Delta\)” is not defined.  
+   **Seriousness:** serious.  
+   **Fix:** Define the occurrence set of an episode and the route relation from \(\prec\) and `Inst`.
+
+29. **`Bearing` ignores the criticism’s target, defect, and grounds.**  
+   **Claim attacked:** Part IX: “\(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta)\).” The preceding sentence says a criticism has “target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection.”  
+   **Why it fails:** `Bearing` does not require that \(E_c\) concerns \(z\) or \(\delta\), nor that \(g\) supports it. Any account of \(p_\delta\) satisfies `Bearing`, regardless of the criticism’s target or defect.  
+   **Seriousness:** serious.  
+   **Fix:** Make the criticism a tuple and require the account to be of the alleged defect at the target, with grounds playing the specified role.
+
+30. **`K3` is logically overclaimed.**  
+   **Claim attacked:** Part IX: “For \(T\land B\land I\Rightarrow O\), an established \(\neg O\) yields \(\neg(T\land B\land I)\) and nothing narrower. (K3)”  
+   **Why it fails:** If \(B\) and \(I\) are themselves established, then \(\neg O\) plus \(T\land B\land I\Rightarrow O\) entails \(\neg T\), which is narrower. The claim “nothing narrower” depends on \(B\) and \(I\) not being established.  
+   **Seriousness:** serious.  
+   **Fix:** State the epistemic status of \(B\) and \(I\): if they are not established, only the conjunction is refuted; if they are, \(\neg T\) follows.
+
+31. **Derivation 1 assumes injectivity of \((\tau,\sigma)\) not required by F1/F2.**  
+   **Claim attacked:** Derivation 1: “Let \(t\) satisfy (F1) on \(C\), and let \((\tau,\sigma)\) be injective on \(C\). Then every active component \(k\) of \(E\) has, on \(\tau[C]\), the signature that its anchor subnetwork \(\lambda(k)\) has on \(C\)…” Part V F2 only says: “\(\tau(1)=1,\quad \tau(a_2a_1)=\tau(a_2)\tau(a_1)\).”  
+   **Why it fails:** `Faithful` as defined in Part IV does not include injectivity of \((\tau,\sigma)\). The derivation therefore does not apply to all faithful transports.  
+   **Seriousness:** serious.  
+   **Fix:** Add injectivity to the definition of fidelity, or prove the signature-preservation claim without it.
+
+32. **Part VII’s reversed-calculation example contains a false parenthetical.**  
+   **Claim attacked:** Part VII: “here \(\tau\) sends the intervention on \(H\) to the edit that replaces the calculation’s component assigning \(H\), which the reversed organization has none of, so \(\tau\) is undefined.”  
+   **Why it fails:** The reversed calculation is \(H=L\tan\theta\), which does have a component assigning \(H\). So the reversed organization does have a component assigning \(H\). The failure of (F2) can still be argued—target’s \(L\) changes while reversed \(E\)’s \(L\) does not—but the stated reason is false.  
+   **Seriousness:** serious.  
+   **Fix:** Correct the reason: \(\tau\) is defined, but (F2) fails because the intervention on \(H\) changes the target’s \(L\) and does not change the reversed organization’s \(L\).
+
+33. **Part VII’s odd-order skew-symmetric example asserts F1/F2/A without construction.**  
+   **Claim attacked:** Part VII: “The full Leibniz expansion with skewness substituted satisfies (F1) and (F2)… It satisfies (A)… Non-circular dependence is witnessed by \(I_3\) under removal of skewness and by \(\begin{pmatrix}0&1\\-1&0\end{pmatrix}\) under removal of oddness, each removing a proper sub-block.”  
+   **Why it fails:** The organization, ports, components, anchors, and edit translations are not written out. The claim that removing oddness “removes a proper sub-block” is not shown; the witness matrix is an instance, not a demonstrated deletion of a component.  
+   **Seriousness:** serious.  
+   **Fix:** Write the organization and check F1, F2, A, non-circularity, and adequacy explicitly, or downgrade the claim to a sketch.
+
+34. **Derivation 5 omits \(O_p\), \(\rho_p\), and the baseline non-emptiness condition, and mis-types the boundary.**  
+   **Claim attacked:** Derivation 5: “Ports: one port \(u_{(a,b)}\) … one port \(u_{\mathcal Q}\) … one port \(u_S\) … one \(u_K\) … Boundary: the target \(D\) and \(b_0\), held fixed… Its solutions are exactly the coherently posed questions on \(D\).”  
+   **Why it fails:** A question is \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\); the construction has no ports for \(O_p\) or \(\rho_p\). Coherent posing also requires \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), which is not enforced. Treating the whole target \(D\) as a boundary condition confuses an organization with a boundary value.  
+   **Seriousness:** serious.  
+   **Fix:** Add ports/components for obligations and provenance, enforce baseline solvability, and represent \(D\) as fixed background structure rather than a boundary condition.
+
+35. **Derivation 7 overclaims that adequacy catches goalpost-moving.**  
+   **Claim attacked:** Derivation 7: “Goalpost-moving is the act of changing the index without recording the change; the adequacy condition of Part V is what catches a change made to protect a candidate, whether or not it is recorded.”  
+   **Why it fails:** For non-physical organizations, \(C_{\mathrm{adm}}\) is itself a “declared admission relation.” Adequacy only ranges over \(C_{\mathrm{adm}}\setminus C\). If the declared admission relation is changed, the adequacy condition has a different quantifier domain and may not catch the protective move.  
+   **Seriousness:** serious.  
+   **Fix:** Restrict the claim to physical organizations with fixed \(A_\Theta\), or add a condition on changes to declared admission relations.
+
+36. **Derivation 8 overclaims equivariance for `(EK)` and other judgement-laden predicates.**  
+   **Claim attacked:** Derivation 8: “Transporting all data along \(\phi\) preserves (E), anchoring, (G), (P), (EK).”  
+   **Why it fails:** `(EK)` uses `CreativeCriticalEpisode`, which contains “recognized difficulty,” “conjectural objection,” and “content-sensitive response.” \(\phi\) is defined over carriers, relations, transports, histories, contracts, obligations, and \(\mathcal N\); it does not include recognition, conjecture, or content-sensitivity.  
+   **Seriousness:** serious.  
+   **Fix:** Restrict the equivariance claim to fully formal predicates, or include the missing structures in \(\phi\).
+
+37. **Part II’s roles use undefined notions.**  
+   **Claim attacked:** Part II: “A port is an **output** of component \(j\) when its value is determined by \(L_j\) given the other ports of \(V_j\) across \(B\).” Also: “an edit that alters the relation reporting the port without altering what it reports…”  
+   **Why it fails:** “Determined” and “reporting” are not defined. The observation-edit clause leans on “without altering what it reports,” which is a semantic/judgement condition.  
+   **Seriousness:** serious.  
+   **Fix:** Define output via uniqueness/existence of extensions in \(\operatorname{Sol}_D\), and define observation edits purely by the replacement condition on components.
+
+38. **Historical kinds use undefined provenance relations.**  
+   **Claim attacked:** Part II: “A **historical kind** is a predicate on the history that produced an occurrence of a component — selected, constructed, descended from, copied from — with the witness that Part IV requires for provenance.”  
+   **Why it fails:** “Descended from” and “copied from” are not defined anywhere. Part IV supplies witnesses only for selected, constructed, and declared provenance.  
+   **Seriousness:** serious.  
+   **Fix:** Define descendant/copy relations via process order \(\prec\) and `Exec`, or restrict historical kinds to selected/constructed/declared.
+
+39. **Counterfactual meanings in \(K\) are not formalized.**  
+   **Claim attacked:** Part III: “\(K\) is a declared set of **counterfactual edits** — pairs the module does not admit — each with a stated meaning.” Part V: “a pair in \(K\) enters non-vacuity only through its stated meaning.”  
+   **Why it fails:** A “meaning” is not a mathematical object in the semantics. No function or relation assigns a meaning to a pair in \(K\), and no condition says how that meaning is evaluated.  
+   **Seriousness:** serious.  
+   **Fix:** Represent each \(k\in K\) by an explicit operation on organizations or answers, or treat \(K\) as edits in a declared extended organization.
+
+40. **Part XIV’s claim that there are only two primitive packages is false.**  
+   **Claim attacked:** Part XIV: “**Primitive packages.** The semantics has two.”  
+   **Why it fails:** Part IX introduces “a physical interpretation supplying process occurrences, their ports, and the connections actually instantiated,” which is not in the physical module’s listed supplies nor in the declared parameters. Histories, active routes, contrasts, achievement predicates, and continuing organizations are also not in the two packages.  
+   **Seriousness:** fatal for the accounting claim.  
+   **Fix:** List all primitives honestly, or derive the missing items from `Inst`, `Exec`, and \(\prec\).
+
+41. **Part XIV’s declared-parameter list omits many parameters actually used.**  
+   **Claim attacked:** Part XIV: “**Declared parameters.** Neither derived nor primitive; supplied with each use…”  
+   **Why it fails:** The list omits, e.g., contrast sets, achievement predicates, \(J_p\), \(C_I\), contents, \(C_c\), active commitments \(\Gamma\), \(F\) (explanatory jobs), and counterfactual meanings.  
+   **Seriousness:** serious.  
+   **Fix:** Expand the list or derive the missing parameters.
+
+42. **Part V’s non-circular dependence and non-vacuity use judgement words.**  
+   **Claim attacked:** Part V: “The target’s answer does not appear, at the declared grain, as an **unanalysed** boundary input or as a component… under which the answer profile changes or **ceases to be determined in the claimed way**.” Also: “every admitted pair excluded from \(C\) is excluded by the stated scope \(S\), not **silently**.”  
+   **Why it fails:** “Unanalysed,” “claimed way,” and “silently” are not formal. The witness condition may be checkable, but the surrounding condition is not stated in the same vocabulary as the rest.  
+   **Seriousness:** serious.  
+   **Fix:** Replace with explicit conditions on syntactic occurrence of answer ports in boundary/component relations, and define silent exclusion as absence from \(S\).
+
+43. **Contract adequacy has ambiguous baselines.**  
+   **Claim attacked:** Part V: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”  
+   **Why it fails:** “Its baseline value” is ambiguous: baseline for \(p\) or for \(E\)? The “reverse” also does not say whether \(E\)’s baseline is \(\operatorname{Ans}_E(\tau(1),\sigma(b_0))\).  
+   **Seriousness:** serious.  
+   **Fix:** Write both baselines explicitly: \(\operatorname{Ans}_p(a,b)\neq \operatorname{Ans}_p(1,b_0)\) iff \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq \operatorname{Ans}_E(\tau(1),\sigma(b_0))\), with appropriate direction.
+
+44. **Forward kind excludes all baseline boundary pairs.**  
+   **Claim attacked:** Part II: “their signatures coincide on \(C\setminus\{(1,b):b\in B\}\). The baseline pairs are excluded on purpose: the relation a component imposes at the baseline is its **state**…”  
+   **Why it fails:** Excluding every \((1,b)\) removes boundary-condition variation at the identity edit. Two components that differ only under a change of boundary condition are declared one forward kind, even though boundary change is an admitted change.  
+   **Seriousness:** minor to serious depending on intended boundary role.  
+   **Fix:** Exclude only the designated baseline \((1,b_0)\), or define state equivalence separately and state the boundary-independence assumption.
+
+45. **Part IV’s content-identity remark does not match `(R)`.**  
+   **Claim attacked:** Part IV: “Content identity at the primitive layer … does not use the representation predicate below, which is defined in terms of it.”  
+   **Why it fails:** `(R)` is defined in terms of `Inst`, `Faithful`, `Sel`, and `Con`. It does not mention content identity. If content identity is supposed to be prior and used by `(R)`, the definition omits it; if not, the remark is false.  
+   **Seriousness:** minor.  
+   **Fix:** Either add content identity to `(R)` or delete the parenthetical.
