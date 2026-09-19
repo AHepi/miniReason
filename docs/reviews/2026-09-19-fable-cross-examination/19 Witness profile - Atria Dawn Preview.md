@@ -1,6 +1,6 @@
 # 19 Witness profile — `Atria-Dawn-Preview` as a hostile referee
 
-What this file is: the same record for the second witness. Same system prompt, same battery, same documents, one to two samples per item. Numbers from `witness-replies/usage_summary.json`; rulings from file 15 §F. Scope as in file 18. This profile is incomplete on the experiment items: at the time of writing 18 of 26 items had a usable reply, three had failed (A8, B1, B3), and five (D1, D2, D4, D7, D8) were still generating.
+What this file is: the same record for the second witness. Same system prompt, same battery, same documents, one to two samples per item. Numbers from `witness-replies/usage_summary.json`; rulings from file 15 §F. Scope as in file 18. Final count: 25 of 26 items answered with content; one (D2, the experiment 2 code review) returned nothing even under streaming.
 
 ## 1. Throughput and cost of use — and a correction
 
@@ -13,7 +13,7 @@ What this file is: the same record for the second witness. Same system prompt, s
 | Failures | Three items failed four times each with "remote end closed connection without response". Each failed attempt lasted 306 seconds to within a tenth of a second, so a single attempt is cut at about 300 seconds, at the provider or at the gateway between us — not resolved. An item whose reply needs more than that fails deterministically; retrying does not help. |
 | Concurrency | Four workers, then seven more in a second process after the user said the limit is 60 requests per minute; no rate errors. The earlier "invalid API key" errors were a burst limit at the first launch and did not recur. |
 
-**Correction.** Earlier in this session I told the user that an Atria reply takes about thirty minutes. That was wrong. It was the visible wall-clock of a four-worker queue in which failed items each held a worker for 21 minutes (four attempts of 306 seconds plus back-off). A successful reply takes two to five minutes. The right way to run this model is all items at once, and streaming so that the connection is kept alive past the 300-second cut for long replies; that change to the harness has not been made yet.
+**Correction.** Earlier in this session I told the user that an Atria reply takes about thirty minutes. That was wrong. It was the visible wall-clock of a four-worker queue in which failed items each held a worker for 21 minutes (four attempts of 306 seconds plus back-off). A successful reply takes two to five minutes. The right way to run this model is all items at once, with streaming so that the connection is kept alive past the 300-second cut. Streaming was added to the harness after this was found: the eight items that had failed four times each came back in 9 to 10 minutes, all but one.
 
 Reasoning is roughly one and a half times the visible answer — much less than Flash's ratio. Its cap is half of Flash's, and it needs about half of it.
 
@@ -33,7 +33,7 @@ Reasoning is roughly one and a half times the visible answer — much less than 
 
 ## 3. Where it was weak, and under what conditions
 
-**It fails on the longest items, deterministically.** A8 (contradictions across the whole semantics), B1 (design confounds with two documents) and B3 (a code file) each needed more than the 300-second window and died four times. Condition: two long documents, or a task that needs the whole document held at once. These are exactly the items where its style would have been most valuable. The fix is on our side (streaming), not the model's.
+**It fails on the longest items unless streamed.** Eight items (A8, B1, B3, D1, D2, D4, D7, and D8 on one of two runs) needed more than the 300-second window and died four times each under a plain request. Condition: two long documents, or a task that needs the whole document held at once — exactly the items where its style is most valuable. With streaming, seven of the eight came back (9 to 10 minutes each). The fix was on our side; the one remaining loss (D2) was the model's: no visible content at its cap.
 
 **Code claims that are right in the letter and wrong in effect.** (F-B5 #10.) It read that the forgetting counter is reset only on re-binding, never on confirmation in place, and concluded the τ = 2 and τ = 5 results were perturbed. The reading was correct — the implemented rule is cumulative-since-snap, not consecutive — and its own scenario (a slot confirmed with the counter already above τ) cannot occur, because the drop runs every step. Patched and rerun: nothing moved by more than 0.0035. Condition: reasoning about dynamic behaviour from static code; it does not simulate.
 
@@ -41,11 +41,11 @@ Reasoning is roughly one and a half times the visible answer — much less than 
 
 **Long formal replies cost reading time.** A 30,000-character reply with LaTeX in every line took me longer to adjudicate than three Flash replies. The density is real, but so is the cost.
 
-**Not yet seen on the experiment code.** B3 failed and D2 is pending, so this profile cannot say how it reads code for spurious results — the task Flash was best at.
+**On the experiment code it is Flash's equal on facts and weaker on effect.** B3 (recovered) found the same crippled lookup, the half-implemented adequacy check and the code-forced tie that Flash found, plus the order-dependent tie-break in the controls. But two of its code claims that sounded decisive were right in the letter and wrong in effect (the cumulative counter; the 'dropped sequences', which are the per-configuration change rule), and D2 was lost. Flash's code claims were more often right in effect; Atria's were more often stated with the mechanism.
 
 ## 4. Errors it did not make
 
-It made no numeric assertion that turned out false. It did not misread a pre-registered narrowing as concealment. It did not repeat the "byte-identical B" point more than once per reply. When it built a counterexample it wrote it out in full so it could be checked (F-A3 #1 is a page of construction).
+It made two numeric assertions that turned out false, both on the experiment items and both late: that the "needed" margin rests on about eight predictions (it rests on about 121), and that the M3 crossing denominators do not reconcile (it read the wrong column). On the semantics it made none. It did not misread a pre-registered narrowing as concealment. It did not repeat the "byte-identical B" point more than once per reply. When it built a counterexample it wrote it out in full so it could be checked (F-A3 #1 is a page of construction).
 
 ## 5. Agreement with the first witness, which is the point
 

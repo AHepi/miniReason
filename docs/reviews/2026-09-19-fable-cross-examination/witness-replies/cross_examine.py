@@ -29,6 +29,10 @@ SYSTEM = ("You are a hostile, meticulous referee for a philosophy-of-science and
 
 def call(messages, temperature, max_tokens=int(os.environ.get("XEXAM_MAX_TOKENS", "24000")), retries=4):
     payload = {"model": MODEL, "messages": messages, "temperature": temperature, "max_tokens": max_tokens}
+    stream = os.environ.get("XEXAM_STREAM") == "1"  # keep the connection alive past a fixed idle cut
+    if stream:
+        payload["stream"] = True
+        payload["stream_options"] = {"include_usage": True}
     data = json.dumps(payload).encode()
     last = None
     for attempt in range(retries):
@@ -36,6 +40,28 @@ def call(messages, temperature, max_tokens=int(os.environ.get("XEXAM_MAX_TOKENS"
                                      headers={"Authorization": f"Bearer {KEY}", "Content-Type": "application/json"})
         try:
             with urllib.request.urlopen(req, timeout=int(os.environ.get("XEXAM_TIMEOUT", "1800"))) as r:
+                if stream:
+                    content, reasoning, usage, finish = [], [], {}, None
+                    for raw in r:
+                        line = raw.decode().strip()
+                        if not line.startswith("data:"):
+                            continue
+                        line = line[5:].strip()
+                        if line == "[DONE]":
+                            break
+                        chunk = json.loads(line)
+                        if chunk.get("usage"):
+                            usage = chunk["usage"]
+                        for ch in chunk.get("choices", []):
+                            d = ch.get("delta", {})
+                            if d.get("content"):
+                                content.append(d["content"])
+                            if d.get("reasoning_content"):
+                                reasoning.append(d["reasoning_content"])
+                            if ch.get("finish_reason"):
+                                finish = ch["finish_reason"]
+                    usage["finish_reason"] = finish
+                    return {"content": "".join(content), "reasoning": "".join(reasoning)}, usage, None
                 body = json.loads(r.read().decode())
                 msg = body["choices"][0]["message"]
                 content = msg.get("content") or ""

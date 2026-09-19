@@ -1,0 +1,97 @@
+====================================================================================================
+B2_goalposts | atria | sample 0 | finish stop | 18163 chars | error None
+====================================================================================================
+## Part A — Per-change audit (meaning vs. machinery; timing; verdict)
+
+| # | Changes what an outcome *means*? | Made after a directional result? | Verdict |
+|---|---|---|---|
+| 1 | No (machinery: timing of change) | No | Accept |
+| 2 | No, but sets the discriminative power of occlusion | No | Accept (principled) |
+| 3 | **Yes** — defines the fitness function, hence every selection outcome | No (early) | Accept, flag stipulation (F14) |
+| 4 | No | No | Accept |
+| 5 | No (implements point 1) | No | Accept |
+| 6 | No (method) | No | Accept; stale count (F15) |
+| 7 | **Yes** — replaces the neutrality history; changes what "neutral" means | Yes (prior test found confounded) | Accept, flag (F12) |
+| 8 | **Yes** — outcomes rewritten by definition | n/a | Accept pre-freeze; contradicts §4's header (F1) |
+| 9 | No (scope) | No | Accept |
+| 10 | No | No | Accept |
+| 11 | Refines the scale, not the criterion | Yes (bound was exceeded) | Accept; note sequence with #18 |
+| 12 | Softens "reaches the top" | Partly | Accept |
+| 13 | No (handicap removal) but changes τ>0 fitness | **Yes — "diagnosis from the first control run"** | Conditional (F8) |
+| 14 | Extends the grammar; changes what "best persisting" means | Likely yes (post-first-control-run) | Conditional (F7) |
+| 15 | No (removes a lookup handicap) | Yes, but **against** the hypothesis | Accept cleanly |
+| 16 | **Yes** — changes which variable the control tests | **Yes — admits the τ result was already seen** | Split verdict (F3) |
+| 17 | No — **strictens** the substrate for all fitness outcomes | **Yes**, but anti-bias direction | Accept cleanly |
+| 18 | **Yes** — deletes the adequacy threshold and substitutes a weaker one | **Yes — 0.88 seen vs. 0.95 required** | Split verdict (F5) |
+| 19 | **Yes** — narrows the tested kind | **Yes — rebind broke the tie** | Reject as stated (F6) |
+| 20 | No (restraint) | n/a | Accept |
+| 21 | No (procedural) | n/a | Accept; missing round labels (F16) |
+
+Post-hoc and directional: **13, 14, 16, 18, 19** (plus 11, 12 in a softer sense). Of these, only **15** and **17** cut against the hypothesis; **13, 14, 16, 18, 19** all move with it.
+
+---
+
+## Part B — Findings
+
+**F1. The pre-registration claim is contradicted by the change log.**
+(1) Claim attacked: §4, "**Pre-registered outcomes** — Written before any code was run, and not changed after." (2) It fails against §9.8 ("**Pre-registered outcomes rewritten**") and §9.16/18/19, which alter the pass criteria of both named controls. §8 step 2 explicitly runs controls *before* freezing and revises on failure, so "not changed after" can only mean "after fingerprinting" — but the sentence says "before any code was run," which §9.13/16/17/18 falsify directly. (3) Serious: it misrepresents the audit trail. (4) Reword §4 as "Frozen at the fingerprint recorded in file 12; all revisions are in §9," and state that two control runs informed the frozen design.
+
+**F2. Every post-control revision moved the criterion toward the already-observed data.**
+(1) §8 step 2: "Run the two named controls of section 5. If either fails its expectation, stop and revise this document," read with §9.21 ("Three rounds before freezing"). (2) The revision loop is legitimate in principle, but the *direction* is uniform: 13 (removes a persist-family deficit), 14 (adds a gene that fixes a persist-family deficit), 16 (redirects the control to a variable where the data were already favourable), 18 (drops a threshold the data failed), 19 (drops the rule that broke the tie). No post-hoc revision tightened a criterion the data passed. This is the signature of threshold migration even when each individual change is defensible. (3) Serious. (4) Publish the raw output of each control round, and treat the H_neutral tie as a *post-hoc descriptive* result rather than a blind control, or re-run the whole design under the frozen criteria from scratch.
+
+**F3. Change 16: legitimate correction of the variable, illegitimate claim of innocence.**
+(1) §9.16: "The neutrality control compared the wrong pair — lookup-only against slot-only… this change does not create that result, it stops the check from asking a different question." (2) The *variable* correction is right: §2.6 names persistence as the kind under test, and lookup-vs-slots is the object-model axis, which §5 itself reports separately. But the change concedes "the first control run had already shown τ = 0 winning H_neutral and τ = ∞ winning H_full, **which is the supporting outcome**" — the redefinition was made with the answer in view, and the amended tolerance (0.01) plus the rebind exclusion (F6) are what convert that viewing into a pass. (3) Serious for the control's status; not fatal to the result. (4) As referee I would accept the re-specification of the tested variable **conditional on** (a) the raw first-control-run numbers being published, and (b) the H_neutral tie being reported as an observation, not as a blind control. Also the parenthetical "the wrong-kind control was τ = 0 / rebind" is unparseable and must be repaired — it is in the audit trail of the single most contested change.
+
+**F4. The record contradicts itself on the central control outcome.**
+(1) §9.16: "the first control run had already shown **τ = 0 winning H_neutral**" vs. §9.19: "Under the amended check **τ = 0, 2, 5, ∞ tied *exactly*** on H_neutral." (2) "Winning" and "tied exactly" are compatible only if τ = 0 was co-best; the document does not say that, and an exact four-way tie on a discrete fitness scale is the kind of result that needs the actual numbers to be checkable. (3) Minor-to-serious (unverifiable from this file). (4) Print the per-τ fitness values for H_neutral in §9.
+
+**F5. Change 18: the diagnosis is sound, the timing is convenient, and the replacement is too weak.**
+(1) §9.18: "The 0.95-of-ceiling adequacy threshold is dropped. It was a guess, and the diagnosis showed the ceiling is an in-sample bound… Adequacy is now the ordering, slot-only > lookup-only," read with §4's "Underpowered" outcome: "No slot architecture reaches **0.95 × the sensory ceiling** on H_full." (2) Three problems. (a) The threshold was retired *after* the tracker was measured at 0.88 of it — the passage itself says "it was 0.88 at this point." Removing a bar you have just failed is threshold-lowering regardless of the quality of the argument. (b) The argument is nonetheless correct: §2.5's ceiling is in-sample and cannot be a pass/fail bar; I accept the *removal*. (c) The replacement ("slot-only > lookup-only") is an ordinal superiority test over one rival family, not an adequacy test — a grammar can win that comparison and still be inadequate, and §4's "Underpowered" outcome still cites the deleted metric, so the pre-registered outcome set now contains a zombie criterion. (3) Serious. (4) Keep reporting the ceiling fraction (you do), **pre-specify a numeric adequacy criterion defined on held-out fitness independent of the in-sample ceiling** (e.g., absolute held-out fitness on H_full with a stated floor), and rewrite the §4 "Underpowered" line in terms of it.
+
+**F6. Change 19 redefines the kind under test, and it is load-bearing.** *(This is the sharpest finding.)*
+(1) §2.6: "**The kind under test is persistence — the τ gene and the `rebind` rule.**" vs. §5: "(`rebind` is reported beside them but **is not in the check**… a velocity-memory difference, not a persistence difference)" and §9.19: "rebind's deficit is that it cannot keep velocity through a teleport, **which is not the kind under test**." Also §4's sinking condition counts rebind *in*: "excludes all non-persisting architectures (**rebind, τ = 0**)." (2) §2.6 includes rebind in the tested kind; §5/§9.19 exclude it, on the day the exclusion is what stands between the check and a failure (rebind sat 0.026 below, i.e. above the 0.01 tolerance). So rebind is "non-persisting" when the diagnosis needs a class to be excluded on H_neutral, and "not a persistence difference" when its deficit would fail the neutrality check. That is a moved goalpost on the control that the whole §4 "supports" branch rests on. (3) Serious — arguably fatal to the control *as a control*. (4) Pick one definition before any further run: either (i) the kind is the τ gene only — then amend §2.6 and §4's sinking condition to drop rebind, and justify the velocity-memory distinction independently of the observed 0.026; or (ii) the kind is {rebind, τ = 0, 2, 5, ∞} — then the check fails at 0.026 > 0.01 and per §9.21 the attempt must be recorded as failed, not revised.
+
+**F7. The j gene and the rebind exclusion were tuned against the same deficit.**
+(1) §9.14 ("Gene added: jump-keeps-velocity… Grammar now 208 architectures") read with §9.19 ("rebind's deficit is that it cannot keep velocity through a teleport"). (2) The grammar was extended to give the *persist* family exactly the capability (velocity retention through a teleport) that was then cited to exclude *rebind* from the control. The machinery and the control criterion were adjusted in the same direction against the same failure mode, in the same round. (3) Serious. (4) Either give rebind the same j option (making it a fair baseline within the persistence family) or report the neutrality check both with and without rebind.
+
+**F8. Change 13 is a post-hoc handicap removal on the hypothesis-favoured family.**
+(1) §9.13: "Persist rules infer a fresh slot's velocity from the previous field… **Diagnosis from the first control run**: a fresh slot bound with velocity 0 lost the first prediction after a co-located start." (2) Removing an arbitrary v = 0 initialisation is defensible as a bug fix, but it was diagnosed from a run and it raises τ > 0 fitness, and it was not paired with any symmetric correction. (3) Minor-to-serious. (4) Accept if the full exhaustive table was re-run after it (it appears to have been) and if the same "no arbitrary initialisation" standard is applied to lookup (see #15, which does).
+
+**F9. Change 17 is the one clean, strictening, post-hoc fix — and it is under-annotated in §4.**
+(1) §9.17 (0.820 train vs. 0.656 held-out for k = 3 lookup; tracker 0.801 both) and §2.5: "**Every fitness figure is on the evaluation half.**" (2) The change is correct and cuts against memorisation, which favours lookup — the cleanest change in the list. But §4's outcomes were written before the split and never re-annotated with the substrate; e.g. "the best architecture for every persistence value tie (within 0.01)" does not say which half. §2.5 resolves it globally, so the ambiguity is latent rather than actual. (3) Minor. (4) Add "on the evaluation half" to each §4 outcome line.
+
+**F10. The ceiling correction and the threshold removal are a chain in the same direction.**
+(1) §9.11 ("a first version of the ceiling… was exceeded by real architectures; it was corrected") → §9.12 ("'Expected 1.0' replaced") → §9.18 (threshold dropped at 0.88). (2) Each step is individually defensible; the composition lowers the bar twice and then removes it. §2.5 now says the ceiling is "reported for scale, not as a pass/fail threshold," which is the post-revision text justifying the post-revision decision. (3) Minor (each step is honest) but it is part of F2's pattern. (4) State the ceiling's role once, up front, and never let it be a threshold.
+
+**F11. Change 15 is the strongest evidence the process was not purely self-serving.**
+(1) §9.15: "Lookup predicts from the first field… It was handicapped by needing k fields before its first prediction." (2) This removes a handicap on the *rival* architecture, i.e. it moves against the diagnosis. (3) Not a defect — I record it because a referee auditing bias should note it. (4) No fix; cite it when defending the revision process.
+
+**F12. H_neutral is declared neutral by construction, which risks making the control analytic.**
+(1) §2.7: "H_neutral is the kind-neutral history: one thing, never occluded, no crossings — **nothing in its content distinguishes a thing-tracker from a cell-tracker**," versus §5's empirical check and §1's rival, under which kind structure "appears regardless." (2) If §2.7's blanket claim is literal, the tie is guaranteed before any run and the control cannot discriminate diagnosis from rival. The real bite comes only from `displace` (a teleport could reward persistence) — and the document's own §9.19 shows that axis *does* separate architectures (rebind is 0.026 down). So the check is empirical after all, but §2.7's wording hides the mechanism that makes it so. (3) Serious (informativeness of the central control), largely fixable by clarification. (4) Rewrite §2.7 to state precisely: H_neutral contains `displace`/`set_velocity`, which *could* select persistence; the claim is that they do not, because a single visible thing can be re-bound immediately with no loss.
+
+**F13. M3 is vacuous on `swap`, and the pre-registered outcome does not exclude it.**
+(1) §2.3: "swap | 1 | 0 | exchange the two things' identities; **the sensory field is unchanged at every step**"; §3 M3: "swap → exchange the binding… A slot architecture **has thing-kind** when this holds for every configuration and every change." (2) Under swap the world's positions and velocities are unchanged and the translation *itself* performs the identity exchange, so any slot set that matched at step 2 still matches afterwards. The swap column of the M3 fraction is a pass-by-construction, contributing a guaranteed 1.0 to every architecture and no discriminating power. It does not bias architecture-vs-architecture comparisons, but it makes the reported "fraction by change type" misleading. (3) Serious for reporting integrity; minor for inference. (4) Either report thing-kind over the four detectable change types and say so, or drop swap from M3 and state that identity-swap is unobservable from sensation by construction.
+
+**F14. The load-bearing definition is stipulated, not tested.**
+(1) §2.5: "selection pressure comes from the world, not from sensation matching itself — a thing you cannot see can still act on you," and §9.3. (2) This is the choice that makes persistence selectable at all: under sensory-matching fitness, a persisting slot is *penalised* under occlusion and the result's sign reverses. The design declares it, which is its right, but the central contrast is then definition-relative. (3) Minor-to-serious (framing, not error). (4) State in §6 that the result is conditional on the true-occupancy fitness contract, and note that the sensory-matching contract is a rival well-defined on the same machinery.
+
+**F15. Stale architecture count in the change log.**
+(1) §9.6: "**112 architectures** can be enumerated" vs. §2.6's "**208 distinct architectures**" and §9.14's "Grammar now 208." (2) 112 is the pre-j count (9 rules × 3 slot counts = 27 slot configs; 81 with lookup; 3 lookup-only; 1 null = 112), consistent with 208 after the j gene (17 rules → 51 + 153 + 3 + 1 = 208). So the number is not wrong, just un-updated in the audit trail. (3) Cosmetic. (4) Write "112 (208 after change 14)."
+
+**F16. Round labels are missing, so blindness cannot be checked.**
+(1) §9.21: "**Three rounds before freezing.**" (2) No change is tagged with its round, so a reader cannot tell which of 13/14/16/18/19 were blind to which control outputs — exactly the information an auditor needs. (3) Minor. (4) Tag each §9 item with its round number and the control output that motivated it.
+
+**F17. One pre-registered outcome is not operationalised.**
+(1) §4, search bias: "the evolutionary search converges on slot architectures (or on lookup) **in most seeds**." (2) "Most seeds" has no numeric criterion for 6 seeds × 3 histories (§2.9), so the outcome cannot be adjudicated. (3) Minor. (4) State a threshold (e.g. ≥ 4 of 6 seeds on H_neutral) before running.
+
+**F18. Arithmetic verified.** Change counts (24/14), sequence counts (180/171/3249/4104), the 171 unordered pairs, the 17 rules (1 + 4×2×2), and the 208 total are all internally consistent. No finding here.
+
+---
+
+## Part C — Direct verdicts
+
+**Change 16.** *Legitimate correction or redefinition to pass?* **Both, and they must be separated.** Re-specifying the control to the persistence family is a genuine correction — §2.6 always named persistence, and lookup-vs-slots tests a different axis. What is not legitimate is presenting it as consequence-free: the τ-family result had already been seen in the hypothesis's favour, and the companion change (#19) then trimmed the family further. **As referee:** accept the variable correction; reject the innocence claim; require the raw control-round output and re-classify the H_neutral tie as post-hoc descriptive evidence rather than a blind control.
+
+**Change 18.** *Justified or convenient?* **Justified in substance, convenient in timing, and under-specified as a replacement.** The in-sample ceiling genuinely cannot be a pass/fail bar, so dropping it is right. But it was dropped immediately after the measured 0.88 fell below it, and the substitute (slot-only > lookup-only) tests superiority over one rival, not adequacy — while §4's "Underpowered" outcome still cites the deleted 0.95. **As referee:** accept the removal of the ceiling threshold; require a pre-specified numeric adequacy floor on held-out fitness, and require §4's orphaned outcome to be rewritten in those terms.
+
+**Roll-up of what I would have accepted as referee, pre-freeze:** Accept 1–12, 15, 17, 20, 21 without reservation (with F15/F16 bookkeeping). Accept 13 and 14 conditionally, requiring a full re-run and symmetric treatment of rebind. Accept 16's variable correction but downgrade its evidential status. Reject 19 as stated — it redefines the kind under test mid-experiment, and §2.6, §4 and §5/§9.19 cannot all be true (F6). Require 18 to come with a real adequacy criterion rather than an ordinal one. The design is not sunk by this, but the §4 "supports" branch currently rests on a control whose tested class was narrowed after the data were in, and the honest fix is either to re-freeze with rebind inside the check or to report the H_neutral result as a post-hoc observation rather than a pre-registered pass.

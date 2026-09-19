@@ -1,0 +1,170 @@
+====================================================================================================
+C3_regress | atria | sample 0 | finish stop | 19646 chars | error None
+====================================================================================================
+## The core argument
+
+**Finding 1 — the concession does gut the growth claim.**
+
+(1) Claim attacked: *"The meta-grammar is fixed; the regress is not escaped and no one should read this as if it were."* combined with *"Construction adds rules to G0. Blind selection over the meta-grammar can add the same rules."* and the closing *"What grew is G0."*
+
+(2) Why it fails. §1 sets its own criterion: *"Any process I can write has a fixed program. Whatever it produces was expressible by that program."* Apply that criterion to C. §4 enumerates the meta-grammar completely — 8 terms → 56 atoms → 3,136 conditions → 16 actions → **50,176 rules**, hashed and immutable after freezing (§10). Every rule C can append is an element of a pre-enumerated set. So by the document's own test, C's output *is* latent — at the meta level. Two readings then exhaust the field:
+
+- **"Latent" = expressible by the fixed program.** Then "construction extends what is latent" is **false**, by §1's own sentence. The two collision rules are not merely expressible; §6.1 *hand-builds* them, and §12.3 confirms they are in the language.
+- **"Latent" = inside G0.** Then both C and B extend what is latent — §5 says so ("Blind selection over the meta-grammar can add the same rules"), and S5 pre-registers the outcome: *"B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route."* The property therefore does not mark construction off from selection, and the claim is **vacuous** as a differentiator.
+
+This is not rescued by the pivot to provenance. The provenance contrast is definitional, not empirical: B is *specified* as never reading V (*"B never reads a defect record. Its only input is a number per candidate"*), so *"Give B the same world — it never reads V — and confirm its output is byte-identical"* cannot fail. And C itself is not doing anything other than selection over the same fixed space: §5 has C exhaustively score *every* condition and *every* action, i.e. C is exhaustive search over M under a record-derived objective, while B is stochastic search over M under a fitness objective. *"C never computes an aggregate fitness. Its only inputs are itemised records"* is misleading on its face — the condition score is *"the number of V states it is true on) − (number of N states it is true on)"* and the action score is *"the V records it fixes … minus the N records it breaks"*; both are sums over records. C computes aggregates; it just sums different quantities. That is "selection one level up," precisely the worry the design says it is not.
+
+(3) Severity: **fatal** for the growth/product reading. The experiment survives only as a process-comparison, and even that is currently definitional.
+
+(4) What would make "the object grammar grew" substantive, and does this design show it? It would have to show one of:
+
+- **A novelty proof.** The built rule is provably *outside* the initial language — not among the 50,176, requiring a term, atom, action, or condition depth absent at freeze. This needs the language to be *generative* (composition of new terms from records) rather than enumerative, plus an exhaustive membership check against the frozen set. §10 forbids exactly this ("changing anything fixed"), and §6.1 moves the other way: *"If the language cannot express the law, revise."*
+- **A non-circular closedness result.** §11 runs the §6 checks *before* freezing, and §12.3 redefined the world so that *"world and language have the same shape."* The world feature was co-designed with the grammar; the test of "G0 is closed to a world feature" is run on a world engineered to be buildable. A substantive claim needs the feature held out from language design.
+- **A quantitative, pre-thresholded "needed."** If growth must mean "G0 gained an element of M," the only honest version is degree, not closure: the reported numbers give best-G0 (lookup) 0.819 vs hand-built 0.906 on collision steps — i.e. G0 already captures ≈90% of achievable collision fidelity. "Closed" is a binary misdescription of a ~10% residual, and S1 sets **no margin at all** (*"A0+C > best-of-G0 on collision steps"*) where every other criterion uses 0.05–0.1.
+- **An empirical provenance contrast.** Add a process B′ that receives only the *aggregate* defect count per candidate (a scalar derived from V) rather than whole-architecture fitness. Then the scramble test on B′ is non-trivial. As specified, only C's arm has teeth.
+
+**Does it show it? No.** §4 enumerates and hashes the entire rule space; §6.1 revises the language until the target is expressible; §12.3 reshapes the world to the language; §10 forbids post-freeze change; S5 concedes identical machinery. Each guarantees the "grown" rule was latent in a fixed set.
+
+---
+
+## Remaining findings
+
+**Finding 2 — S1 is the one claim with no effect-size threshold.**
+
+(1) *"S1 — needed. A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did."*
+
+(2) Every other criterion carries a 0.05–0.1 margin; S1 is satisfied by any ε > 0. From §12.4, hand-built is 0.906 and best-of-G0 (the lookup) is 0.819 on collision steps — a gap of 0.087, which is *below* the 0.1 margin the original closedness check used and which was restructured in §12.4. S1 is thus the headline "needed" claim, carries the weakest pre-registered support, and would fail a 0.1 margin.
+
+(3) **Serious.** (4) Pre-register S1's margin before unfreezing; report it as a fraction of the achievable range (0.906 − 0.352), not as raw difference.
+
+**Finding 3 — the "needed" margin rests on roughly eight predictions, with no variance model.**
+
+(1) *"Every fitness figure is on the evaluation half"*; *"Configurations: unordered pairs of (cell, velocity) with distinct cells: 135"*; *"Run length 9, scored from time point 2."*
+
+(2) The evaluation half is ≈67 configurations × 7 scored steps ≈ 469 predictions. If ~20% are collision steps, the collision denominator is ≈94, and the 0.087 gap is ≈8 predictions. C is deterministic given the records and the single fixed config split, so C's M1 has one sample and no variance estimate; no power analysis appears anywhere. S2's *"within 0.01"* and S5's *"within 0.05"* are plausibly inside the noise floor at this sample size.
+
+(3) **Serious.** (4) Report exact collision-step denominators, binomial CIs, and bootstrap over configurations; re-run C across multiple exposure/evaluation splits.
+
+**Finding 4 — the exposure/evaluation split rule is not in this document.**
+
+(1) *"Exposure/evaluation split by configuration index as before."*
+
+(2) "As before" refers to experiment 1. If configurations are ordered by index and halved, the split is systematic (velocity- and position-structured), not random, which biases both halves in correlated ways and invalidates the CI in Finding 3.
+
+(3) **Minor.** (4) State the split function here, or use a hashed random partition recorded at freeze.
+
+**Finding 5 — the expressibility check makes the closedness check circular.**
+
+(1) *"Hand-build the two collision rules in the language, add them to A0, and confirm fidelity on collision-type steps is at or near the sensory ceiling for those steps. If the language cannot express the law, revise."* (§6.1), with §11 ordering *"Section 6 checks. Stop and revise if either fails"* **before** the freeze.
+
+(2) The language is revised until it expresses the target; G0 is then tested for closure *against a target the language was tuned to express*. Closedness is conditional on a grammar chosen for the feature.
+
+(3) **Serious.** (4) Freeze world and language jointly *before* any expressibility check; or hold out a second feature, unused in language design, and test closure there.
+
+**Finding 6 — the world was reshaped to fit the grammar.**
+
+(1) *"The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision."* … *"world and language have the same shape."*
+
+(2) §12.3 reports the edge case was 16% of collision-type events and inexpressible. Rather than treat that as a finding (the grammar cannot reach part of the world), the world was redefined so the grammar can reach all of it. The "new feature of the world" is thus a feature the experiment engineered for buildability. The candour is noted; candour does not remove the circularity.
+
+(3) **Serious.** (4) Keep the original walls and report the 16% as a K1-class failure of expressibility; or justify the redefinition with a held-out feature.
+
+**Finding 7 — the M4 specification is internally inconsistent.**
+
+(1) *"Give C the exposure half's defect records with the true-field column permuted among the V records (same states, same number of defects, same aggregate; wrong pairings)."*
+
+(2) You cannot have all three. If V membership is recomputed after permuting true fields, the set changes (some permuted true field will equal its prediction), violating "same states, same number." If membership is held by fiat, records are internally inconsistent — a state counted as defective whose prediction equals its true field. Additionally, C's *condition* induction uses only V/N membership, not the true-field value; only the *action* solve reads the value. So the scramble degrades action choice only, leaving condition choice intact — a much narrower dependency than "the mapped objection is on an active dependency route." Finally, with few V records a random permutation may be near-identity (with 2 records, 50% chance of no change), and no derangement requirement or changed-pairing fraction is specified.
+
+(3) **Serious.** (4) State whether membership is recomputed; require a derangement on a reported number of records; report the fraction of pairings actually altered; report condition-choice and action-choice separately under scramble.
+
+**Finding 8 — M5 cannot fail, so it is not evidence for S6.**
+
+(1) *"M5 — recoding invariance of C. (a) Reverse the order of V and N records. (b) Relabel slots i↔j throughout. Build. The rules must be identical (up to the relabel)."*
+
+(2) C's scoring is a count over records (order-free by construction), and §4 specifies the rule is *"checked on the slot pair (i, j) in both orders."* Both invariances are theorems of the design, not measurements. A check that cannot fail carries no evidential weight for *"S6 — content, not carrier."*
+
+(3) **Serious** as support for S6; **cosmetic** as a measurement. (4) Reclassify M5 as an implementation invariant, or introduce an order-sensitive step whose invariance is genuinely testable.
+
+**Finding 9 — S3's "faithful" is halved in scope by the document's own pre-registered expectation.**
+
+(1) *"S3 — faithful. … The built rules are components with the collision's signature, not a fix for the observed cases."*
+
+(2) §12.2 concedes crossings are sensorially invisible and that *"C, which builds from sensory defects, is expected not to build the crossing rule,"* and restricts S3's threshold to *"pairs with no crossing after the change step,"* with crossing pairs reported separately as F3 where A0+C fails M3 while hand-built passes. A rule set that omits half the law, and whose tracking diverges exactly where the world's kind-signature is defined, is not "a component with the collision's signature"; it is a component with the *visibly checkable* part of it. The headline wording does not match the scoped criterion.
+
+(3) **Serious.** (4) Retitle S3 "faithful on sensorily visible collision structure"; or, if the kind-signature claim is intended, make identity visible in the sensory contract so crossings are checkable.
+
+**Finding 10 — the "two rules, two rounds" rationale is contradicted by C's expected behaviour.**
+
+(1) *"The world's collision law needs two rules in this language (same-target and crossing are different conditions, and the language cannot OR three atoms). That is deliberate: building it takes two rounds."*
+
+(2) §12.2 says C is expected to build only the same-target rule, because crossings generate no defects. So C builds one of two; the deliberate two-round design is never exercised by C; and A0+C never equals A0+hand-built on the full law. The design rationale and the pre-registered expectation are inconsistent.
+
+(3) **Serious.** (4) Either give C a record type that exposes crossings (e.g. slot–thing tracking errors, not sensory errors), or drop the "building it takes two rounds" rationale and state that phase-1 construction covers the visible half only.
+
+**Finding 11 — phase-2 action composition is undefined, making K4 uninterpretable.**
+
+(1) *"An architecture may carry up to K = 3 rules, applied in order."* (§4), with §8 requiring *"the collision rules still firing correctly"* after a wall rule is added.
+
+(2) With sticky walls, a wall hit and a collision can coincide on one step. The collision rule conditions on pre-rule `w_i` (the reflected velocity) and acts with `swap_next_v`/`hold`; the wall rule sets `v_i = 0` and holds. If both fire, precedence, last-wins, and per-slot action conflicts are unspecified. §12.3 also notes *"swap_next_v and swap_v differ only when a wall bounce and a collision coincide"* — precisely the undefined-interaction case. K4 (*"Building the wall rule drops collision fidelity by more than 0.05"*) could then fire as an artifact of composition semantics rather than a finding about accumulation.
+
+(3) **Serious.** (4) Specify composition semantics (precedence, conflict resolution, whether `swap_next_v` reads pre- or post-wall velocities) before freezing; report coincident-step counts and outcomes separately.
+
+**Finding 12 — M8's cost comparison confounds algorithm with implementation.**
+
+(1) *"M8 — cost. Rounds and records C used; evaluations B used to reach comparable fidelity."*
+
+(2) C scores candidate rules on *cached* records — one exposure-half run per round. B's fitness requires re-running the architecture per candidate: 32 × 60 × 3 ≈ 5,760 evaluations. C will therefore appear cheaper by construction of the caching, not by virtue of defect-driven search. F2 and K3 inherit the confound.
+
+(3) **Serious.** (4) Give B the same cached exposure-half trajectories (its fitness is computable on cached world runs), or report world-runs and rule-evaluations as separate columns for both processes.
+
+**Finding 13 — the record format, the object of the central claim, is not pre-registered here.**
+
+(1) *"Free, fixed in code and hashed: tie-breaking order among equal-score conditions; the mutation operator of B; the record format."*
+
+(2) The representation whose causal role is the experiment's whole thesis — the thing M4 scrambles, M5 permutes, M6 empties — is declared free of this document. Worse, §5's defect record is *"the slot state before the step,"* but §4's conditions range over pair terms (`n_i, w_i, c_j, …`); whether records carry pair-level next-states is unstated, and without it C cannot evaluate most of the 3,136 conditions at all.
+
+(3) **Serious.** (4) Specify the record schema (fields, pair vs single-slot, inclusion of `n`/`w`) in §5 before freezing.
+
+**Finding 14 — "at or near the sensory ceiling" discharges a benchmark that does not reach the ceiling.**
+
+(1) *"confirm fidelity on collision-type steps is at or near the sensory ceiling for those steps."*
+
+(2) §12.4 gives hand-built 0.906 against a ceiling of 0.923 — an unexplained 0.017 residual, ≈2 predictions on the ≈94 collision denominator. Every downstream threshold (0.05, 0.1) is measured against a benchmark that itself falls short, and the residual is never diagnosed.
+
+(3) **Minor-to-serious.** (4) Diagnose the 0.017 before freezing, or express all targets as fractions of the achievable range (ceiling − A0) rather than raw fidelity.
+
+**Finding 15 — §12.4 is a disclosed but effective goalpost move, and it compounds with Finding 2.**
+
+(1) *"As first written it applied a 0.1 margin to any G0 architecture on collision steps. The best G0 architecture on collision steps turned out to be the lookup table at 0.819 (hand-built rules: 0.906; ceiling: 0.923) — a memoriser of local patterns, not machinery. The margin was meant for machinery."*
+
+(2) The original check failed (0.087 < 0.1) and was restructured so the failing architecture is moved to a non-thresholded report. The reported numbers show the lookup achieves 0.819/0.906 ≈ 90% of hand-built collision fidelity — G0 is not closed to the feature, it is 90% of the way to it. Combined with Finding 2 (S1's absent margin), "needed" is the product of two successive relaxations: the failing case excluded from thresholding, and the surviving criterion given no threshold.
+
+(3) **Serious.** (4) Restore a thresholded claim over the *full* G0 class with a margin the data can support, or restate "needed" as a degree of coverage (G0 reaches ≈90% of achievable collision fidelity; construction supplies the residual ≈10%) and threshold that residual in advance.
+
+**Finding 16 — S0's selection basis is unstated.**
+
+(1) *"S0 — selection within the closed grammar. Every G0 architecture evaluated on the collision world. Best of 208. No rules."*
+
+(2) §12.1 fixed B's peeking by moving its fitness to the exposure half. S0's selection half is never stated. If S0 is selected on the evaluation half, best-of-G0 is inflated — conservative for S1, but still a confound that must be closed off, since S1 and K1 both rest on best-of-G0.
+
+(3) **Minor.** (4) Add: "S0 is selected on the exposure half and reported on the evaluation half."
+
+**Finding 17 — the "distinct from selection" headline overstates a definitional result.**
+
+(1) *"Supports (construction is real, needed, and distinct from selection)"* alongside *"S5 — provenance is not output. B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route."*
+
+(2) If the machinery is the same, and the route difference is that one process reads a column the other is defined not to read, then "distinct from selection" holds by construction, not by evidence. F1 (*"C and B reach the same fidelity with structurally different rules"*) is listed as a finding "either way," which is the honest version; the S-list header is not.
+
+(3) **Serious** as an overclaim. (4) Retitle as "distinct in process, identical in product," and make the distinction empirical via the B′ process of Finding 1 (aggregate defect count only), whose scramble behaviour is not predetermined.
+
+**Finding 18 — tie-breaking is specified twice, inconsistently.**
+
+(1) §5: *"Take the best (condition, action); ties to the fewer-atom condition."* vs §10: *"Free, fixed in code and hashed: tie-breaking order among equal-score conditions."*
+
+(2) §5 states the rule; §10 lists it as free. Since M5 requires byte-identical rules under relabelling, and ties are plausible under symmetries, the tie rule is load-bearing, not cosmetic.
+
+(3) **Cosmetic.** (4) Move the fewer-atom rule from §5 into the fixed list, or delete it from §5.
+
+---
+
+**Verdict on the question asked:** the §1 concession does gut the growth reading, and the design does not show substantive growth — it structurally cannot, because the rule space is fixed, enumerated, hashed, and (per §6.1 and §12.3) co-designed with the world. The live residue is a provenance claim that is currently true by definition (B cannot read V) plus a "needed" claim that is a ~10% residual with no pre-registered threshold, resting on ≈8 predictions with no error bars. To make "the object grammar grew" substantive, the design would need a novelty proof against the frozen language, a held-out feature for closedness, a thresholded quantitative version of "needed," and an empirical (not definitional) provenance contrast. It has none of these.

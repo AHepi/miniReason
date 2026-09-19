@@ -1,0 +1,52 @@
+====================================================================================================
+C1_scramble_trivial | atria | sample 0 | finish stop | 9710 chars | error None
+====================================================================================================
+### Findings
+
+**1. Section 1's "operational content" is a restatement of the definitions, not a testable criterion.**
+> "remove or scramble the defect representation and the constructing process breaks, while the selecting process — **which never read it** — is unaffected. That is the operational content of 'the mapped objection is on an active dependency route.'"
+
+(1) Claim attacked: that this operationalizes the construction/selection distinction. (2) It fails because the parenthetical concedes the whole game. §5 *stipulates* that "C never computes an aggregate fitness. Its only inputs are itemised records" and that "B never reads a defect record. Its only input is a number per candidate." Given those two stipulations, the asymmetry under scrambling is analytic. The sentence tests whether the code implements the definitions, not whether the definitions carve anything. (3) Serious — this is the load-bearing claim of §1 and of M4/S4. (4) Fix: hold the input channel fixed and vary only the *use* of it (see finding 6), or derive the distinction from a metric neither process is defined in terms of (cost, transfer, accumulation).
+
+**2. The B-side of M4 is unfalsifiable and is doing cosmetic work.**
+> "Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run. **This is the test that distinguishes the provenances.**"
+
+(1) Claim attacked: that the byte-identity check is half of a distinguishing test. (2) It fails because B's input set is disjoint from V by definition; byte-identity is the only possible outcome short of a bug. It is a unit test, and its inclusion inflates M4 into appearing to have two legs when one leg cannot fail. (3) Serious (overclaim); cosmetic if relabeled. (4) Fix: restate as a plumbing assertion, and replace it with a records-fed-but-aggregate-only process B′ whose invariance is a *result* rather than a stipulation.
+
+**3. The scramble provably cannot touch C's condition-induction stage, so it probes only half the route.**
+> "Induce a condition: score every condition in the language by (number of V states it is true on) − (number of N states it is true on); keep the top 20."
+
+(1) Claim attacked: that M4 tests whether "the defect representation is really on the route" in full. (2) Condition scoring reads states only; the true-field column enters only at the action-solve stage ("count the V records it fixes … prediction now equals the true field"). Permuting the true-field column among V records therefore leaves the top-20 conditions *exactly* unchanged. So "the constructor breaks" reduces to "the constructor's action choice breaks." §1's claim concerns "a representation of the defect — which states, which predictions, what actually happened," but only the third element is at risk. (3) Serious (the test's scope is overstated). (4) Fix: report condition sets under scramble (predicted identical) and action choices (predicted divergent) as separate measurements; if you want the condition stage on the route, a condition-scoring rule that reads the true field is needed.
+
+**4. K2 mis-localizes its own failure mode.**
+> "K2. Scrambled-V construction within 0.05 of unscrambled. The constructor is not using defect content; the witness is fake."
+
+(1) Claim attacked: the inference from a K2 outcome. (2) Scrambled-C ≈ unscrambled-C can equally arise from a *world-side* property — a non-injective state→true-field map, or an action ranking that is permutation-invariant because one action fixes every V state regardless of its assigned target — or from a bug. K2 confounds "C ignores the pairing" with "the pairing carries no usable information given A0 and this world." (3) Serious — a pre-registered sink with the wrong attribution. (4) Fix: measure the mutual information between state and true field on V records; report per-action fix counts under scramble; run the scramble through a hand-built oracle-condition pipeline to localize the degeneracy.
+
+**5. The design deliberately withdraws the only condition that would make the distinction non-trivial.**
+> "S5 — provenance is not output. B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route."
+
+(1) Claim attacked: that M4 can distinguish provenances in any sense beyond wiring. (2) If the two routes are pre-registered to be equally effective, then the scramble test's only possible yield is "the processes were wired differently," which §5 already asserts. The falsifiable and interesting claim — the defect route succeeds where the fitness signal *cannot* — is never placed at risk. Worse, change-note 2 and F3 predict the opposite asymmetry: "C, which builds from sensory defects, is expected not to build the crossing rule," and pairs with post-change crossings "are expected to fail M3 for A0+C while passing for A0 + hand-built rules." So the one place the defect route could be shown necessary, it is predicted to be *weaker* than hand-construction. (3) Serious for §1's framing; the honest content sits in S5/F1/F3, not M4. (4) Fix: demote M4 to a consistency check, or add a condition in which aggregate exposure fitness is uninformative while defect structure is informative (e.g., two candidate rules with identical exposure fitness and different evaluation generalization) and compare C and B there.
+
+**6. No matched-input or role-swap control exists, so "construction" is operationalized as "the algorithm we wrote."**
+> "C never computes an aggregate fitness. Its only inputs are itemised records." / "B never reads a defect record. Its only input is a number per candidate."
+
+(1) Claim attacked: that the C/B contrast is a contrast of *routes* rather than of *data formats*. (2) Because the two processes never see the same data in the same format, the design cannot separate "uses the content of the pairing" from "was handed the pairing." The natural controls are absent: B′ (fed the itemized records but permitted to use only an aggregate statistic of them) and C′ (fed only a scalar per candidate and left to mutate over rules). If B′ is scramble-invariant *despite reading V*, and C′ is scramble-insensitive *despite being a constructor-shaped search*, the distinction localizes on use-of-content — which is the real claim. (3) Serious. (4) Fix: add B′ and C′ as pre-registered controls; the scramble asymmetry between C and B′ is a finding, between C and B it is a definition.
+
+**7. Phase 2 withholds from B the one non-trivial test of construction.**
+> "Start from **A0 + C's phase-1 rules** (kept, not rebuilt). Run C for up to 2 further rounds on the new world."
+
+(1) Claim attacked: S7's evidential value ("A wall rule is built; collision fidelity after phase 2 within 0.01 of before…"). (2) If accumulation/latency is the marker that separates construction from selection, B must receive the identical opportunity: A0 + B's phase-1 rules, then two further rounds on the sticky world. As written, S7 has no B-side counterpart, so any phase-2 success by C is uncontrolled — and B is a round-by-round appending process that could just as well accumulate. The design places weight on the trivial test (M4) and omits the non-trivial one. (3) Serious. (4) Fix: run phase 2 from B's rules as well; report whether B accumulates a wall rule and whether its collision fidelity survives.
+
+**8. There is no double dissociation.**
+> "This is the test that distinguishes the provenances."
+
+(1) Claim attacked: the claim that a single manipulation can carry a distinction between two processes. (2) A single manipulation that breaks C but not B confounds "route" with "input format." A second, orthogonal manipulation that breaks B but not C — e.g., coarsening the exposure fitness so it carries less information per candidate, or making the per-candidate signal non-separable — is absent, so "construction versus selection" cannot be separated from "records versus number." (3) Minor-to-serious. (4) Fix: add the second leg; a dissociation requires two.
+
+### Direct answer to the question
+
+The objection is correct as stated, with one refinement: the scramble is not *purely* vacuous, because it does risk something — the degeneracy of the state→field map and the correctness of the action-solve stage. But what it risks is not the construction/selection distinction. C reads the column and B does not, by construction in §5; therefore C breaks and B does not, by construction in §5. M4 is a data-flow assertion about the author's own code, and S4's second conjunct cannot fail. K2's interpretation is accordingly misattributed, since a K2 outcome would most plausibly indicate a degenerate world or a bug rather than a fake witness.
+
+A non-trivial version has three available shapes, in increasing strength: (i) give both processes the same itemized records and permit B′ to use only an aggregate statistic of them, so that B′'s scramble-invariance is a *result* about use-of-content rather than a stipulation about channel access; (ii) add the orthogonal manipulation (fitness coarsening) to obtain the second leg of a dissociation; (iii) construct a condition where exposure-fitness is uninformative while defect structure is informative, and let C and B differ in *outcome* rather than in *wiring*.
+
+Does the design have one? No — not for the scramble claim. The non-trivial content survives elsewhere: S5/F1 (same output, different route), M8 (cost in records versus evaluations), F3 (the invisible law, where the defect route's *limit* is genuinely at risk), and phase 2's accumulation question. But phase 2 withholds that question from B (finding 7), and §1 hangs the distinction on M4, which is the one measurement in the design that cannot fail in the direction claimed.

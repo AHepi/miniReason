@@ -1,0 +1,110 @@
+====================================================================================================
+D4_failure_modes_complete | atria | sample 0 | finish stop | 18292 chars | error None
+====================================================================================================
+Section 10 has 19 items. Below are only the ones it does not contain. Quotes are verbatim from the file or the code listing.
+
+## Serious
+
+**1. The S0 baselines were selected on the evaluation (test) half.**
+- Claim attacked: §1's table row "S0: best of old grammar G0, any kind — `lookup(k=2)`" (0.819 collision) and "S0: best *structured* G0" (0.366), plus §9's "**S1 needed** — 0.906 > 0.819 (best G0, a memoriser) > 0.366 (best structured G0)."
+- Why it fails: `g0_best(history_exposure, history_evaluation)` builds each architecture's lookup table from exposure, then takes `f, _ = evaluate(a, table, history_evaluation, NUM_CELLS)` and `if best is None or f > best[0]: best = (f, ...)`. That is model *selection* by test-set score. `best_slot_only` is likewise chosen by collision-step fidelity on `history_evaluation`. So 0.819 and 0.366 are maxima over the architecture set on held-out data — optimistically biased, not clean baselines. The bias favours the baseline, so S1's direction survives; the *magnitudes* do not.
+- Severity: serious (integrity of the headline comparison).
+- Fix: select the architecture on a validation split carved from the exposure half (or by an exposure-only criterion), freeze it, then report its evaluation score; report the full architecture distribution rather than only the winner.
+
+**2. "B is byte-identical under scramble" is a tautology, and it is reported as evidence.**
+- Claim attacked: abstract — "the blind process B, which never reads them, is byte-for-byte unaffected"; §5 — "B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**"; §9 — "✅ **S4 on the route** — scrambled C worse by 0.55 (threshold 0.1); B byte-identical."
+- Why it fails: `ignored_records` is a parameter of `blind_search` that is never referenced anywhere in the function body. The "test" is `blind_search([], exposure, 0, ignored_records="scrambled records passed and ignored")` — same seed, same data, same deterministic code. It cannot fail. §5 concedes the mechanism ("an argument its code never reads") but §9 and the abstract still cite the outcome as support. Additionally, the check performed is `[rule_name(r) for r in b_rules_again] == R["B"][0]["rules"]` — equality of rule-name *string lists*, not bytes; fitness dictionaries and round logs are not compared.
+- Severity: serious (an empty result is presented as half of S4's support).
+- Fix: delete the empirical claim and restate it as a design argument (B's interface is a fitness function over exposure histories, so there is no slot for records), or run B in a separate process that exposes only a fitness callback; and replace "byte-identical" with "identical rule list."
+
+**3. F2 / "C stops" is only verified over 20 of 3,136 conditions.**
+- Claim attacked: §2 — "Round 2: 1,266 defects remain; **no condition–action pair has positive net; C stops.**" and "C correctly declines to invent one"; §9 — "F2 — C stopped at one rule with 1,266 residual defects … report, no more rules warranted."
+- Why it fails: `scores.sort(reverse=True); top = scores[:top_m]` with `top_m=20`, over `len(CONDITIONS)` = 56 atoms + 1,540 AND-pairs + 1,540 OR-pairs = 3,136 (minus those with `tp == 0`). The action search never runs outside the top 20. The true statement is "no positive-net pair among the 20 conditions ranked by tp−fp." A condition ranked 21st with a positive-net action — e.g. a precise low-support condition for the change-step/co-location residuals — would be invisible. So "C correctly declines" is unestablished.
+- Severity: serious (the stopping claim is a headline).
+- Fix: dump the full round-2 score list (or the top 50 plus the best net outside the top 20) and re-run with `top_m = len(CONDITIONS)`; report where the true optimum ranks.
+
+**4. The condition score `tp - fp` ignores base rates, and tp/fp are never reported separately.**
+- Claim attacked: §2 — "Condition induced: `n_i == n_j` (score 929)."
+- Why it fails: `scores.append((tp - fp, -condition_atoms(cond), idx))` is computed over |V| = 2,830 and |N| = 4,778. Score = support × (2·precision − 1), so coverage and precision are conflated; a high-support mediocre-precision condition ties a low-support perfect one. The ranking that fixes the top-20 cut therefore depends on the raw |V|:|N| ratio and on the record-collection threshold. And only the difference (929) is reported, so coverage and precision are unauditable.
+- Severity: serious (it is the selection mechanism behind findings 3 and 5).
+- Fix: report tp and fp for the induced condition and at the top-20 boundary; use a base-rate-aware statistic or justify `tp − fp` against a permutation null.
+
+**5. Everything is hard-coded to exactly two things; "one rule suffices" is a 2-body artefact.**
+- Claim attacked: §11 — "One world, one rule language, one constructor" — as the scope statement for the whole §1 result; and §1's claim that "C's single rule reproduces the hand-built pair exactly."
+- Why it fails: `A0 = {..., "num_slots": 2, ...}`; `apply_rules` loops `for i, j in ((0, 1), (1, 0))`; `world_step(things, laws)` unpacks exactly two things. The world, the predictor, and the rule language are all 2-body. With three things a same-target 3-body collision is inexpressible (a pairwise condition selects one pair; the language fires once per step), and the code cannot be run with three slots at all. Failure mode 7 covers firing order *within a pair*, not the n-body limit.
+- Severity: serious for any claim about construction in general (the file's own scope caveat "one world" does not cover the stronger structural restriction).
+- Fix: list the pairwise/two-thing limitation explicitly; run a 3-thing world to test whether the pairwise language composes.
+
+**6. No internal holdout for rule acceptance — and the scramble itself re-triggers the M6(ii) accounting leak.**
+- Claim attacked: §10 FM6 — "C accepts every rule with positive net on exposure records"; §5's scrambled run — "3 rules: `(c_i == c_j) OR (n_i == n_j) → swap_next_v` (no hold) ×2, then a patch"; §8 — "In the real run that invariant is guaranteed by how records are collected."
+- Why it fails: (a) candidate scoring and rule acceptance share the same exposure records, so `net` is in-sample and the stopping rule can be met by noise — the scrambled run's three junk rules are exactly that symptom, but the file attributes them to FM3 (accounting) rather than to in-sample acceptance. (b) Sharper: §8's invariant "old prediction differed from outcome" holds only for the *unscrambled* pairing. `scramble` permutes `rec[3]` among V, so for any record whose shuffled outcome happens to equal its own pre-rule prediction, a rule that changes nothing counts as `fixed`. Part of the 0.55 collision drop is therefore the accounting leak re-triggered by the scramble, not pure route-dependence.
+- Severity: serious (S4's mechanism is confounded, though 0.55 ≫ the 0.1 threshold so the verdict likely stands).
+- Fix: re-run the scramble with corrected accounting (require the pre-rule prediction to differ from the outcome inside the `fixed` count) and report the corrected drop; add a leave-one-configuration-out validation split for rule acceptance.
+
+## Moderate
+
+**7. The phase-2 wall law is inexpressible in this rule language, so §7's "hand-built" reference is not correct either.**
+- Claim attacked: §7 — "A0 + phase-1 + hand-built wall rule | 0.808 | 0.769" presented as the correct reference against C's 0.773; §9 — "wall rule built ✓ (right condition, wrong action)."
+- Why it fails: §8 reports `stop_both + hold` and `swap_next_v + hold` tie at net 952 with 27 broken, and `stop_i + hold` scores only 540 "because a rule fires once per step in the first matching order, so when both things hit walls at once it can stop only one." But `HAND_WALL = (... ("stop_i", True))` — the reference rule *is* the handicapped `stop_i`. And `stop_both` is also wrong (it zeroes the velocity of a thing that did not hit a wall — hence the 27 broken). No correct wall rule exists in the language. So §7 contrasts two compromised rules, and "right condition, wrong action" understates a language limitation. Phase 2 is confounded twice over (FM10's design confound plus this).
+- Severity: moderate (S7's verdict is mis-attributed).
+- Fix: report the best achievable wall-rule fidelity in the language as the reference, and re-label C's phase-2 failure as partly inexpressibility; or extend the language to per-slot firing before re-running.
+
+**8. The ceiling is an in-sample oracle on the evaluation half, and the expressibility check therefore passes trivially.**
+- Claim attacked: §1 — "Sensory ceiling (in-sample, for scale) | 0.900 | 0.923 | 0.895"; `run_controls` — `out["expressibility_check_passes"] = hand["collision"] >= 0.9 * out["ceiling_evaluation"]["collision"]`.
+- Why it fails: `ceiling_split(evaluation)` keys on `tuple(s["sensory"] for s in seq[:t+1])` and takes the majority next *true* field **from the evaluation half itself** — a memoriser over test prefixes. No exposure-trained system can reach it, so sitting it beside C's 0.906 invites a "near-optimal" reading that is not available to any learner. Worse, the hand-built crossing rule has *zero* sensory effect (a cross and a pass-through occupy the same cells), so the expressibility bar is satisfied by the same-target rule alone and tests nothing about the language's expressive power.
+- Severity: moderate.
+- Fix: compute a cross-validated or exposure-only ceiling; move the expressibility check to the M3 level, where the crossing rule actually matters.
+
+**9. The scramble permutes only the outcome column — states and defect-set membership are preserved, and the induced condition is logically unchanged.**
+- Claim attacked: §5 — "same states, same 2,830 records, wrong pairings"; and "the defect representation is on C's route and not on B's."
+- Why it fails: the condition-induction step reads `rec[0]` (states) only, so `tp`/`fp` for every condition are *identical* under scramble. Indeed the scrambled run's condition `(c_i == c_j) OR (n_i == n_j)` is logically equivalent to the unscrambled `n_i == n_j` in this world (`c_i == c_j` never holds). The test therefore shows that the outcome *pairing* matters, not that the defect representation as a whole is on C's route.
+- Severity: moderate (the inference is narrower than stated).
+- Fix: add a second manipulation that also permutes states among records (or permutes defect-set membership) and report which manipulation drives the drop.
+
+**10. Two conflicting pre-registered thresholds for the same drift.**
+- Claim attacked: §9 — "⚠️ **S7 accumulates** — … collision fidelity within 0.01 ✗ (0.013)" versus "**Sinks:** … K4 by its letter no (0.013 < 0.05) — but see S7."
+- Why it fails: one quantity (0.013) is judged against 0.01 and against 0.05, and the pass/fail flips with the choice. Section 10 does not list the inconsistent pre-registration.
+- Severity: moderate (goalpost ambiguity on a registered outcome).
+- Fix: state which threshold is authoritative, amend the other, and report one verdict.
+
+**11. One run, one systematic split, no spread for C, and the split's balance is only half-checked.**
+- Claim attacked: status line — "run once, after freezing"; `split_history` partitions by parity of the configuration-enumeration index.
+- Why it fails: C is deterministic, so "one rule, 0.906, 2,830 records" is a single point estimate on one fixed, non-random partition; robustness of the induced rule to the split is untested. `run_controls` reports `collision_events_in_evaluation_half` but nothing for exposure, so the parity split's content balance is unverifiable.
+- Severity: moderate.
+- Fix: re-run over several seeded configuration partitions (or k-fold) and report the spread of induced rules and fidelities; report event counts for both halves.
+
+**12. The reported sequence counts do not match the enumeration in the code.**
+- Claim attacked: status line — "All figures on the evaluation half (938 held-out sequences); exposure half 951."
+- Why it fails: by inspection, `enumerate_configurations_distinct` yields 135 configurations (C(18,2) = 153 minus 18 same-cell pairs) and `enumerate_changes` yields 15 changes each (1 identity + 8 displace + 6 set-velocity), i.e. 2,025 sequences, split by parity into 1,020 / 1,005. The reported 951 / 938 total 1,889 and factor as 68×14−1 and 67×14, implying 14 changes per configuration. `generate_sequence` returns `None` only for post-change co-location, which the displacement guard `c != other[i]` already excludes, so no sequences should be dropped. Either ~136 sequences are being silently dropped (which would change the record set and hence C's 2,830) or the reported sizes are stale. I could not execute the code to settle which.
+- Severity: moderate (potentially serious; cheap to check).
+- Fix: print `len(build_history({"collision"}))` and the per-configuration change count, and reconcile; if sequences are dropped, name the filter.
+
+**13. B's input is full exposure histories, not "only a number"; and B is exactly as blind to crossings as C.**
+- Claim attacked: §11 — "a process whose only input is a number builds the same law by a route that ablation can tell apart"; §2 — "B used 1,720–1,788 full-history fitness evaluations per seed."
+- Why it fails: `fitness(rule)` calls `evaluate_rules(rules + [rule], exposure)`, i.e. B consumes complete exposure sequences (states and true fields); the number is a compression of an input strictly *richer* than C's at the sequence level. Also, since a crossing leaves the occupied cells unchanged, the crossing rule has zero fitness effect, so B's search can no more find it than C's records can — F3 is a property of the sensory contract and does not discriminate the two routes; section 10 never says so.
+- Severity: moderate (overstatement of the information asymmetry; mis-scoping of F3).
+- Fix: reword to "whose only feedback is a scalar fitness over whole histories"; state that both routes are blind to crossings, so F3 supports only the contract claim.
+
+**14. "Using no fitness number at all" is not accurate.**
+- Claim attacked: abstract — "from 2,830 itemised records of what went wrong, using no fitness number at all."
+- Why it fails: `net = fixed - broken` and the condition score `tp - fp` are scalar scores; candidates are ranked and accepted by them. The defensible distinction is *granularity* (itemised per-step records vs. a per-candidate aggregate over whole histories), not the absence of a number.
+- Severity: moderate (rhetorical overclaim on the central contrast).
+- Fix: reword to "using no aggregate fitness over histories — only itemised per-step defects."
+
+## Minor
+
+**15. Phase 1's "collision" bucket mixes same-target and crossing events.** §1's "Collision steps" column (0.352 → 0.906) merges the two, but A0's field prediction is *correct* at a crossing (identical occupied cells), so the bucket mixes a failing event type with a passing one. FM11 notes this only for phase 2. *Fix:* split into "same-target" and "crossing" sub-buckets.
+
+**16. M3's given-bound conditioning is not benign.** §4's table and FM13 ("discards 2–18% of pairs") treat the exclusions as a nuisance. They are failure-correlated, not random: the unbound pairs are those where the predictor already lost the things at a pre-change collision, so the reported fractions are upward-biased. Denominators also differ across rows (crossing column: 221 bound for A0+C vs 217 for the hand-built pair, since unbound counts are 9 vs 13), and totals are given in the text only for the crossing column. *Fix:* report total / bound / passed for every cell, and the unconditioned fraction alongside.
+
+**17. M3's binding presupposes the very individuation it measures.** §4: "C's slots pass through while the things bounce — zero." The binding is fixed by exact tuple match at `CHANGE_STEP - 1` on the *unchanged* run, and the change is applied to the slot bound to the changed thing. I checked the kinematics: at a crossing the field is identical, A0+C's slots exchange cells while the true things bounce, and no alternative binding would make them match — so the 0.000 is **not** an artefact. But the convention is what defines "the same thing," so the measurement presupposes the contract; the file never says so. *Fix:* state the presupposition, and report identity-ambiguity counts separately from tracking failures.
+
+**18. The condition-ranking tie-break is arbitrary too.** FM2 covers actions only. Upstream, `scores.sort(reverse=True)` on `(tp - fp, -condition_atoms, idx)` breaks ties by *larger* idx — OR-conditions before AND-conditions before atoms — with no justification. *Fix:* note it, or randomise with a reported seed.
+
+**19. `MAX_RULES = 3` truncates the scramble's junk accumulation.** §5's scrambled run built exactly the cap ("3 rules … then a patch"), so whether C would stop on its own under scramble, and how far fidelity would fall, is untested; the 1-vs-3 rule asymmetry is partly cap-determined. *Fix:* re-run the scramble with a large cap and report where it stops.
+
+**20. S3 cites the wrong baseline.** §9: "0.974 and 0.973 given bound on non-crossing pairs (threshold 0.9), **from 0.000 for A0**." §4's table gives A0 alone 0.946 on the no-collision-after column; 0.000 applies only to the two collision columns. *Fix:* cite per-column baselines.
+
+**21. The `predict`/`observe` interleaving in file 1 is unverifiable from this listing.** Every fidelity figure routes through `RulePredictor.observe` / `predict` / `advance_slots` combined with the base class's `observe` / `reconcile_slots`, which is not shown. If the base `observe` internally advances slots, `predict()` double-advances and every figure shifts. The reported numbers are mutually consistent with the no-double-advance reading (0.906 vs a 0.923 ceiling; M3's 1.000 for the hand-built rule), but consistency is not verification. *Fix:* emit a single-step unit test in the controls output, or publish file 1 beside this one.
+
+Two further notes on what is *not* a defect: the crossing-invisibility result survives scrutiny (finding 17), and the scramble's C-side degradation is large enough that the accounting contamination in finding 6 is unlikely to overturn S4 — but it must be measured, not assumed.

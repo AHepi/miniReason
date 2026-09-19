@@ -1,0 +1,81 @@
+====================================================================================================
+D1_results_overclaim | atria | sample 0 | finish stop | 15811 chars | error None
+====================================================================================================
+# Audit of file 14 against file 13
+
+I checked the arithmetic in §1's table, §4's M3 counts (221 + 9 = 230), §5's scramble magnitude (0.906 − 0.355 = 0.551), §8's M6(ii) diagnosis, and the §9 verdicts against the stated thresholds. Those are internally consistent. What follows is everything that is not.
+
+---
+
+## A. The one-paragraph answer
+
+**1. "Phase 1 held on every supporting outcome but one clause, and the crack it exposed was pre-registered."**
+The paragraph later identifies the failed clause as M6(ii). The pre-registered crack was a *different* thing: design change 2 pre-registered that C would not build the crossing rule (F3), and F3 is reported as a *pass with a scope caveat*, not a failure. M6(ii) was not anticipated anywhere in the design. Under the natural reading ("the crack" = the failed clause) the sentence is false; under the charitable reading it is a non-sequitur that borrows the legitimacy of F3's pre-registration for an unanticipated bookkeeping bug. Serious. Fix: say phase 1 produced five passes and one failed clause (M6(ii)), that the failure was not anticipated, and keep F3's pre-registration for the crossing finding only.
+
+**2. "the blind process B, which never reads them, is byte-for-byte unaffected"**
+§5 ran this check on **seed 0 only** ("B, seed 0, re-run… byte-identical output"). S4's criterion ("B's output under the scramble is byte-identical") is therefore verified for 1 of 6 seeds. Worse, the B-arm is a no-op by construction: design §5 stipulates "B never reads a defect record. Its only input is a number per candidate," so passing scrambled records into an argument B never reads cannot change anything unless the code is buggy. It is a bug-check, not evidence for the thesis, and it is reported as a supporting result. Minor. Fix: state "seed 0" in the paragraph, run the other five, and demote the B-arm of S4 from *support* to *implementation check*.
+
+**3. "So: same machinery, two routes, and the route is detectable by ablation."**
+This follows from the process definitions, not from the data. Design §5 defines C as reading itemised records and B as reading a per-candidate number; design §1 states the operational content as "remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected." The scramble test therefore cannot fail to break C's action step (it reads the outcome column) and cannot affect B (it does not). What the test establishes is that the code matches the stipulation — no hidden data flow. It does not establish (a) that provenance is detectable from the *product* (the ablation is applied to process *inputs*, not to the built artifact; A0+C's rule and A0+B's rule differ by a junk atom and cannot be told apart by inspecting them), or (b) that the routes are distinguishable in general. "Same machinery" is also contract-relative: §3's B rules are "the law wrapped in vacuous extra atoms" that "would misfire on a contract where they bite" (failure mode 14), so "same machinery" holds only on this world. Serious. Fix: restate as "the code's input dependency matches the design's stipulation; provenance is here detectable only by re-running the process with ablated inputs, not from the artifact; 'same machinery' is scoped to this contract."
+
+**4. "using no fitness number at all" / §2 "Zero fitness evaluations."**
+True by construction and presented as an achievement. Design §5 stipulates "C never computes an aggregate fitness. Its only inputs are itemised records." C does compute aggregates *over records* (a condition score = #V − #N; an action net = fixed − broken), so the distinction is input format (per-record outcomes vs one scalar per candidate architecture), not "aggregate vs no aggregate." M8's cost metric is asymmetric by definition and cannot fail for C. Minor. Fix: report comparable compute for both (conditions × actions × records scored for C; evaluations for B) and label the zero as a property of the input format.
+
+**5. §2 arithmetic does not close.** "Round 1: 2,830 defect records… Action solved: `swap_next_v + hold` — fixed 820, broke 0. Round 2: 1,266 defects remain."
+2,830 − 820 = 2,010, not 1,266. The gap is plausibly downstream fixing (the rule corrects later predictions that the one-step action evaluation cannot see), but the document never reconciles the two counts, and a reader cannot tell whether the 820 or the 1,266 is the reliable figure. Minor. Fix: one line stating that the re-run fixes more than the one-step count because corrections propagate, and give both numbers explicitly.
+
+**6. §1's causal gloss is unverified.** "And adding the rule *raised* non-collision fidelity: slots that stay correctly bound through a collision are right afterwards too."
+The numbers (0.702 → 0.819) support the effect; the mechanism is not tested. No decomposition of non-collision steps into collision-free runs and post-collision runs is reported, so the reader cannot see whether the whole 0.117 gain is post-collision. Minor. Fix: split the non-collision column into "no collision in run" and "post-collision."
+
+---
+
+## B. Classifying S6 and S7 as "one clause failed"
+
+**7. S6 should be marked failed.** Design §9: "**S6 — content, not carrier.** M5 rules identical; M6 builds nothing." Design M6: "It must build nothing **or rules with zero net**." §6 reports it built `IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i` **three times**, "claiming 'fixed 671, broken 0'" — i.e. positive net under C's own accounting, neither "nothing" nor "zero net." S6 is a conjunction and one conjunct failed, so it fails as pre-registered. The ⚠️ symbol is a category invented after freezing; design §10 forbids "reclassifying an outcome" post-freeze. The underlying disclosure is complete, but the symbol (and the top-line "but one clause") softens a binary failure. Serious. Fix: mark S6 ✗ and add "the failure is a diagnosed accounting bug whose invariant (old ≠ new) is guaranteed by record collection in the real run, so phase 1 is unaffected."
+
+**8. S7 should be marked failed.** Design §9: "collision fidelity after phase 2 **within 0.01** of before." §9 reports 0.013 and marks it ✗ — the pre-registered threshold is missed. Two of three conjuncts are also soft: the wall rule built has "condition right; **action wrong**," and the sticky-world total (0.773 > 0.712) is measured against a baseline the law change itself depressed. Serious. Fix: mark S7 ✗, and separate "failed as pre-registered" from "confounded by design."
+
+**9. The phase-2 gate was violated and it is not acknowledged.** Design §11 step 5: "Classify against section 9. **Phase 2 only if S1–S6 hold.**" S6 failed (finding 7). Phase 2 ran anyway, and its outcomes are reported as (partial) supports. The document is transparent about the M6(ii) data but never notes that the pre-registered gate should have blocked the run. Serious. Fix: declare phase 2 exploratory/out-of-protocol, or state on what grounds M6(ii)'s failure was judged non-blocking.
+
+---
+
+## C. The phase-2 confound
+
+**10. The confound was written into the frozen design, not discovered.** Design §3: "Phase 2… **sticky walls** — a thing whose kinematic next-state would flip its velocity (a wall hit) **instead stays** at its cell with velocity 0." Design §8 repeats it. The contradiction with the base world's reflecting walls is visible on the face of the frozen design, yet §7 presents it as a finding ("I chose a second law that fights the first world"). The design's pre-freeze checks (§6) cover expressibility and closedness for phase 1 only — nothing checks that the second law *extends* rather than contradicts the first. Serious. Fix: add a pre-freeze compatibility check for the phase-2 law; rerun with an extending law as already promised.
+
+**11. The confound is a legitimate excuse for the collapse, and only for the collapse.** §7: "the new rules **collapse everything else on the original world** (0.835 → 0.431). And so does the *hand-built* wall rule (0.636). That is not a failure of construction." The hand-built control collapsing too is a sound argument, and the admission that "the accumulation question was not actually tested" is honest. But the confound does **not** explain S7's actual failed clause: §8 attributes the 0.013 collision drift to C's one-step lookahead and arbitrary tie-break (`swap_next_v` over `stop_both` at a net-952 tie), which are faults of C, not of the world. Bundling the excused collapse with the unexcused drift under one ⚠️ invites the reader to discount both. Serious. Fix: separate "collapse — design error, excused by the hand-built control" from "0.013 drift — C's fault, not excused."
+
+**12. S7/K4's measurement location is unstated and the favourable reading was taken.** §9: "K4 by its letter no (0.013 < 0.05)." That 0.013 is measured **back on the original world** (§7: "on the original world's collision steps, 0.893 against 0.906"). The design's S7/K4 say "collision fidelity after phase 2" without specifying the world, and the sticky-world figure (0.716) is explicitly non-comparable — §7 footnote: "In phase 2 this bucket includes wall-stop steps, so it is not comparable to phase 1's collision column." So the only clean number happens to be the one that keeps K4 from firing; under the sticky-world reading the drop is ≈0.19 and K4 fires. No clean sticky-world, collision-only figure is reported, so the reader cannot check the alternative. Serious. Fix: report a collision-only figure on the sticky world, and state in §9 which world each of S7/K4's clauses is measured on.
+
+**13. Missing phase-2 rule listing.** §7: "C built `IF v_j != w_j THEN swap_next_v + hold`… **and then a patch**." Design M7 requires "The actual rules C builds and B finds, **written out**." The patch is not written out, and the hand-built wall rule's wall-stop figure is a dash. Minor. Fix: print the patch rule and the missing cell.
+
+---
+
+## D. Moved goalposts, circularity, and co-design
+
+**14. Change 4 is a moved goalpost, disclosed but still moved.** Design change 4: "As first written it applied a 0.1 margin to *any* G0 architecture on collision steps. The best G0 architecture on collision steps turned out to be the lookup table at 0.819 (hand-built rules: 0.906)… The check now has a structural part… and an overall part… the lookup's collision figure is reported as is." The original margin was 0.906 − 0.819 = **0.087 < 0.1** — the check **failed** — and was restructured so that the failing number became an unthresholded report while the passing parts (0.906 − 0.366 = 0.54; 0.835 − 0.707 = 0.128) carry the verdict. The one-paragraph then says only "beats the best the old closed grammar can do (0.819, and that by a memoriser…)," omitting that the pre-registered margin was not met. The disclosure is exemplary; the effect is still a de-thresholded failure. Serious (mitigated by disclosure). Fix: state in the paragraph that the original 0.1 margin failed and that "needed" rests on a 0.087 margin over the best generalising G0 architecture plus a 0.54 margin over structured G0.
+
+**15. The meta-grammar was co-designed to contain the answer.** Design change 3: "The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision… **One action added (`swap_next_v`)**; the two constants removed." The world was reshaped so the target law is expressible, and the exact action the law needs was added to the action set (failure mode 9 concedes the tailoring concern). "Can new machinery be built" therefore means "can the right rule be found in a space built to hold it, given defect records." The provenance claim survives (B shares the space), but the construction claim is much weaker than the one-paragraph implies. Serious. Fix: state the co-design in the paragraph; the honest claim is selection-within-a-designed-space guided by itemised defects.
+
+**16. Two "checks" cannot fail and are reported as results.** (a) M6(i): with empty V every condition scores ≤ 0 and every action net ≤ 0, so "builds nothing" is guaranteed by the arithmetic. (b) M5's relabel arm: the built rule `n_i == n_j → swap_next_v + hold` is symmetric under i↔j, so "identical rule" is guaranteed and the test cannot distinguish slot-identity tracking from symmetry — it has no power here. (c) The scramble's *condition* arm: condition induction reads states only, so finding `n_i == n_j` under scrambling is guaranteed, as §5 itself says. Minor. Fix: label these implementation/consistency checks rather than findings.
+
+**17. "Needed" is partly definitional.** G0 contains no pairwise terms and the new feature is pairwise, so no G0 architecture can *represent* the law; the empirical content is the margin over the memoriser (0.087, finding 14) and the fact that the memoriser generalises to held-out configurations at 0.819 without representing the interaction. That is real but modest, and the one-paragraph does not distinguish "G0 cannot reach the ceiling" from "G0 could not in principle." Minor. Fix: phrase S1's support as a performance margin with the definitional closure stated separately.
+
+---
+
+## E. Reproducibility gaps
+
+**18. B's cost figure cannot be reconstructed from the design.** §2: "B used 1,720–1,788 full-history fitness evaluations per seed." Design §5 specifies population 32, elitism 4, 60 generations, 3 rounds — 3 × 32 × 60 = 5,760, or ≈5,136 counting only non-elite evaluations. Neither yields 1,720–1,788, and the narrow inter-seed range (68) is inconsistent with early stopping unless convergence is near-uniform. No formula is given. Minor. Fix: state the generations actually run, or the evaluation-count formula.
+
+**19. Configurations vs sequences.** Design §3: "Configurations… **135**." Results header: "evaluation half (938 held-out sequences); exposure half 951" — 1,889 total, not 135. The mapping is inherited from experiment 1 and unstated here; note 938 = 67 × 14 and 135 × 14 = 1,890, so one sequence appears unaccounted for. Cosmetic. Fix: one line on how configurations generate sequences, and reconcile the count.
+
+**20. Internal tension in the design.** Design §4: "The world's collision law needs two rules in this language… **That is deliberate: building it takes two rounds.**" Design change 2: "C… is **expected not to build the crossing rule**." If the crossing rule is unbuidable from sensory defects, building the law takes one round, not two — the "deliberate" premise was overridden by change 2 before the run. Minor. Fix: correct §4 to say the law is expressible in two rules but only one is reachable from sensory defects.
+
+---
+
+## Verdict on the four questions
+
+1. **Overclaim?** Yes — findings 1–4: pre-registration credit mis-assigned, a 1-of-6 seed check stated generally, a definitional restatement presented as a conclusion, and a by-construction zero presented as an achievement.
+2. **Established or trivial?** Largely trivial. The scramble verifies that the code implements the stipulated input dependencies; it does not show provenance is detectable from the artifact, and "same machinery" is scoped to one contract (finding 3).
+3. **S6/S7 honest?** No. Both are conjunctions with a failed conjunct and should be ✗ under the design's binary scheme; the ⚠️ category was invented post-freeze, and S6's failure should have blocked phase 2 under the design's own gate (findings 7–9).
+4. **Confound legitimate or convenient?** Both. Legitimate for the original-world collapse — the hand-built control collapses too — and for declaring accumulation untested. Convenient in that the contradiction was on the face of the frozen design, the pre-freeze checks never covered phase-2 law compatibility, and it absorbs S7's unexcused 0.013 drift along with the gate violation (findings 10–12).
