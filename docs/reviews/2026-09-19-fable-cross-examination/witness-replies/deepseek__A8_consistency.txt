@@ -1,0 +1,304 @@
+====================================================================================================
+A8_consistency | deepseek | sample 0 | finish stop | 17232 chars | error None
+====================================================================================================
+1. **Direction inversion in Account versus representation.** Quote: Part III says “A question is \(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\). \(D\) is the target.” Part V says “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda)\) from \(D\) to \(E\).” Part IV says an occurrence represents content \(c\) when it “admits a transport to \(c\) that is faithful on \(c\)’s contract.” Claim attacked: an explanation \(E\) represents or is held to target \(D\). Why it fails: Account makes the transport run target-to-explanation, \(D\to E\). Representation requires carrier-to-content. If \(E\) is the explanation and \(D\) the target, Account makes \(D\) the carrier and \(E\) the content, so the target represents the explanation, not the explanation the target. (F1) reinforces this by anchoring \(E\)’s components in \(D\). Severity: fatal. Fix: reverse the transport direction in Account to \(E\to D\) and adjust (F1)/(F2), or explicitly separate Account from representation and stop claiming explanations represent targets.
+
+2. **Account omits provenance, while representation requires it.** Quote: Part IV: “A declared transport does not make an occurrence represent anything; it makes a modeller assert that it does.” Part V defines Account with no provenance clause: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda)\) from \(D\) to \(E\)…” Part XV then asks for a sufficiency counterexample “with a non-declared transport.” Claim attacked: Account is an explanation. Why it fails: A declared transport can satisfy (F1), (F2), (A), NonCircular, and NonVacuous if the relations are supplied. Thus (E) admits declared transports as explanatory candidates, while Part IV says declared transports represent nothing. If Account is explanation-as-representation, contradiction. Severity: serious/fatal. Fix: add a non-declared provenance condition to Account, or define Account as a candidate structure and require representation separately for explanation.
+
+3. **“Declared subset” in non-vacuity conflicts with contract provenance.** Quote: Part V: “The contract \(C\) is a declared subset of the physically admitted edits…” Part III: “A declared contract is stipulated… A selected contract… A constructed contract… Any assessment may use any of the three.” Claim attacked: Account applies to contracts of any provenance. Why it fails: If “declared” is the provenance term, then Account only applies to declared contracts, contradicting Part III and the constructed contracts used in Derivation 5/7. If “declared” means merely “stated,” the document equivocates on a term already reserved for provenance. Severity: serious. Fix: replace “declared subset” with “stated/recorded subset” and distinguish record-honesty from provenance.
+
+4. **Derivation 5 conflates contract and question.** Quote: Part III: “The contract \(C\subseteq A\times B\) is the set of admitted edit–boundary pairs… \(\mathcal Q\) is a specified set-theoretic operation…” Part XVI Derivation 5: “A contract \(C\) is … a subset of \(A\times B\) together with \(\mathcal Q\).” Claim attacked: a contract can be reified as an organization and can be the content \(c\) in (G). Why it fails: Part III defines \(C\) without \(\mathcal Q\); Derivation 5 then treats “alter \(\mathcal Q\)” as an edit to the contract. Part III also says \(\rho_p\) is “the provenance of the contract,” so changing \(\mathcal Q\), the respect, does not count as question-finding. Severity: serious. Fix: either define contract as \((C,\mathcal Q)\) in Part III, or reify the whole question \(p\), not the contract, in Derivation 5.
+
+5. **Account has inconsistent arity and type.** Quote: Part V: “The pair \(\mathcal E=(E,p,t,\Gamma)\) satisfies \(\operatorname{Account}(\mathcal E)\).” Part XI: “\(\operatorname{Account}(c,p_c)\).” Part IX: “\(\operatorname{Bearing}(c,z,p)\iff\operatorname{Account}(\mathcal E_c,p_\delta)\).” Claim attacked: Account is a well-typed predicate. Why it fails: Part V makes Account one-place over a tuple \(\mathcal E=(E,p,t,\Gamma)\); Part IX and Part XI use it as two-place, and Part XI feeds it a content \(c\), not a candidate tuple. Severity: serious. Fix: use \(\operatorname{Account}(\mathcal E)\) consistently and existentially quantify over \(t,\Gamma\), or redefine Account as \(\operatorname{Account}(x,p)\) everywhere.
+
+6. **Grievance 4’s objectivity is undercut by the historical-index rule.** Quote: Part 0, Grievance 4: “Within any contract there is a fact of the matter about fidelity. … A contract that quietly excludes physically possible changes to protect an account … is caught by the requirement that the exclusion be stated, and then by any criticism that supplies the excluded change. Objectivity lives in the physics and in the fidelity facts…” Part VIII: “A proposition indexed to a contract remains that proposition when a later theory changes the current contract. A new index is a new claim.” Part XVI Derivation 7: “The claim ‘\(\mathcal E\) is an account on \(C\)’ and the claim ‘\(\mathcal E\) is not an account on \(C'\)’ are claims at different indices and may both be true.” Claim attacked: criticism supplying an excluded change can catch a protected account. Why it fails: If the original claim is scoped to \(C\), a criticism that supplies an excluded change is a new claim at \(C'\); it cannot refute the original claim. So Grievance 4 gives only contract-relative objectivity, and scope-honesty does not prevent protective narrowing. Severity: serious. Fix: distinguish “faithful on \(C\)” from “\(C\) is adequate/non-protective”; make the latter a meta-claim with its own contract, or require maximal contracts for objectivity claims.
+
+7. **Declared grain versus contract-relative kinds.** Quote: Part XIV: “Grain \(\ell\), boundary \(\beta\), continuity \(\Omega\), and the contract \(C\) are declared indices.” Part II: “Kinds are therefore relative to the contract; a coarser contract identifies more components.” Part IV indexes representation “at grain \(\ell\)” and says \(\operatorname{Org}_\ell(o)\) is supplied by the physical module. Claim attacked: kinds are contract-relative only. Why it fails: If grain is freely declared and determines \(\operatorname{Org}_\ell(o)\), then the component set \(J\) and hence kind distinctions can be altered by grain as well as by contract. (K) indexes only to \(C\). Severity: serious. Fix: index (K) to grain and organization-at-grain, or state that grain is fixed by the physical module and not independently variable.
+
+8. **“Exactly one of three provenances” conflicts with “selection may continue beneath construction.”** Quote: Part IV: “A transport \(t\) between organizations of a physical system has exactly one of three provenances, determined by its history in the physical module.” Also: “Construction may operate on selected material. Selection may continue to operate beneath construction.” Claim attacked: provenance is a partition. Why it fails: \(\operatorname{Sel}(t;\mathcal T,\mu,H)\) and \(\operatorname{Con}(t;h,e)\) are not defined as mutually exclusive. A transport can have both a selection history and a construction witness. The text asserts “exactly one” without enforcing disjointness. Severity: serious. Fix: define provenance as originative provenance with a priority rule, or explicitly distinguish origination from maintenance/subcomponent histories.
+
+9. **Derivation 10 claims (EK) without the critical-episode conditions.** Quote: Part X: “A complete critical episode contains a recognized difficulty, a target available before its criticism, a conjectural objection, and a content-sensitive response.” Part XI (EK) begins: “\(\operatorname{CreativeCriticalEpisode}(s,\Delta,h,e)\land\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\).” Part XVI Derivation 10: “If it repairs the obligation … then (P) holds; and since the account is adequate on its contract and deployable, (EK) holds.” Claim attacked: the two-layer episode satisfies (EK). Why it fails: the described episode has surprise and construction, but no explicit conjectural objection or content-sensitive critical response. (EK) requires \(\operatorname{CreativeCriticalEpisode}\). Severity: serious. Fix: add the critical-episode conditions to the example or weaken the conclusion to (G)/(P) only.
+
+10. **Derivation 3 assumes independence of component relations.** Quote: Part XVI Derivation 3: “The component relations \(L_j(a,b)\) are supplied independently for each \((a,b)\).” Part II only says: “For each \(j\), edit \(a\), and boundary \(b\), the interpretation supplies \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\).” Claim attacked: selected transports are always underdetermined on unseen changes. Why it fails: Part II does not state independence across \((a,b)\). If the \(L_j\) are physical or constrained across edit–boundary pairs, the proof’s alteration may produce an organization that is not physically admitted, so the theorem does not establish the stated physical conclusion. Severity: serious. Fix: state the independence assumption explicitly as a condition of the theorem, or restrict the claim to populations with independently supplied per-pair relations.
+
+11. **“Two primitives” conflicts with the supplied \(L_j\).** Quote: Part XIV: “The semantics has two primitives. 1. The physical module \(\Theta\)… 2. The normative relation \(\mathcal N\)…” Part II: “the interpretation supplies \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\).” Claim attacked: every predicate is derived from \(\Theta\) and \(\mathcal N\) plus declared indices. Why it fails: \(L_j\) and the rest of the organization data \((V,X_v,J,B,A,L)\) are not derived from \(\Theta\) or \(\mathcal N\). If they are primitive, there are more than two primitives; if they are derived, no derivation is given. Severity: serious. Fix: add the organization interpretation as a parameter/index, or show how \(L_j\) is fixed by \(\Theta\).
+
+12. **(EK)’s factive repair versus fallibilism.** Quote: Part I: “Systems can be wrong about their transports, their observations, their criticisms, and their own capacities.” Part XI (EK) requires “\(\neg o(\xi)\land o(\xi')\)” and “\(\operatorname{Account}(c,p_c)\)” and “\(\operatorname{Deploy}(s,c,\xi';U_c)\).” Part XI also says: “The scope of \(\operatorname{Account}(c,p_c)\) is the contract fixed at \(e_c\). A later narrowing of that contract to rescue adequacy is a new claim at a new index, and does not retroactively satisfy (EK).” Claim attacked: (EK) is compatible with fallibilism. Why it fails: (EK) asserts actual repair and actual account, not the system’s fallible appraisal. If (EK) is used to attribute created knowledge, it is a factive external predicate while Part I stresses that systems can be wrong about their own capacities. Severity: minor/serious. Fix: clarify that (EK) is an external success predicate, and distinguish “created knowledge” from “claims to have created knowledge.”
+
+13. **Derivation 1 uses “signature” for a subnetwork.** Quote: Part II: “The **signature** of component \(j\) on \(C\) is…” Part XVI Derivation 1: “\(\operatorname{sig}_C(\lambda(k))\)” where \(\lambda(k)\) is the anchor subnetwork. Claim attacked: (F1) entails kind preservation. Why it fails: (K) defines signature only for components, not for subnetworks. (F1) compares a projected subnetwork solution to a component relation, but the proof then speaks as if the subnetwork has a component signature. Severity: minor/serious. Fix: define signature for subnetworks, or require the anchor \(\lambda(k)\) to be a single component.
+
+14. **Derivation 2 ignores \(\Gamma\).** Quote: Part V: “The pair \(\mathcal E=(E,p,t,\Gamma)\) satisfies \(\operatorname{Account}(\mathcal E)\).” Part XVI Derivation 2: “Two candidates \(\mathcal E,\mathcal E'\) for the same \(p\) that both satisfy (F1), (F2), and (A) on \(C\) are one account at grain \(C\): their components are pairwise of one kind on \(C\) and their answer profiles coincide.” Claim attacked: (F1), (F2), and (A) determine identity of accounts. Why it fails: Account includes \(\Gamma\), the active commitments. Two candidates with different \(\Gamma\) can satisfy (F1), (F2), and (A) and still be different accounts. Derivation 2 omits \(\Gamma\). Severity: minor/serious. Fix: include \(\Gamma\) in the equivalence, or show \(\Gamma\) is determined by \(E\) and \(C\).
+
+15. **“(O) and (Q) depend on nothing” is false as written.** Quote: Part XIV: “Dependence order. (O) and (Q) depend on nothing.” Part II defines (O) using \(V,(X_v),J,B,A,L\); Part III defines (Q) using \(D\) and \(\mathcal Q\). Claim attacked: the dependence order is complete and literal. Why it fails: (O) and (Q) depend on the organization/query parameters. If those are not primitives, they are unacknowledged inputs; if they are primitives, the “two primitives” claim is false. Severity: minor/serious. Fix: state that (O) and (Q) are schemata over given \(D\) and \(\mathcal Q\), or add organization/query data to the primitive/parameter list.
+
+16. **Grievance 1’s cause/correlation test does not match the formal signature test.** Quote: Part 0, Grievance 1: “A correlation has no component that responds to an intervention on its supposed input; a cause does.” Part II: “a **causal assignment** has a signature that changes under intervention on its output port and under replacement of the component, and is invariant under observation edits.” Claim attacked: the cause/correlation distinction is exactly the signature distinction. Why it fails: The formal causal signature is defined by change under output-port intervention and replacement, not by response to input intervention. A component can be invariant in signature under input intervention while the solution changes. The two criteria are not equivalent. Severity: minor/serious. Fix: align Grievance 1 with (K), or define a cause by solution change under input intervention and say so in Part II.
+
+17. **Derivation 8 is overbroad on physical admission and norms.** Quote: Part XVI Derivation 8: “Transporting all carriers, relations, transports, histories, and contracts along structure-preserving bijections preserves (E), (G), (P), (EK).” Claim attacked: structure-preserving bijections preserve all these predicates. Why it fails: (E) includes Non-vacuity with “physically admitted edits” and “stated scope”; (P) and (EK) include obligations \(O,P\) and the normative relation \(\mathcal N\). A bijection on carriers, relations, transports, histories, and contracts need not preserve physical admission, declarations/scopes, obligations, or \(\mathcal N\). Severity: serious. Fix: restrict the equivariance claim to bijections that also preserve physical admission, scope records, obligations, and \(\mathcal N\).
+
+18. **Declared provenance is said to be determined by physical history.** Quote: Part IV: “A transport \(t\) between organizations of a physical system has exactly one of three provenances, determined by its history in the physical module:” and then “**Declared.** Neither of the above. The transport is entered into the model by its author.” Claim attacked: all three provenances are determined by physical history. Why it fails: Declared provenance is not a physical history; it is a modelling act. The scope sentence says “determined by its history in the physical module,” which cannot cover the declared case. Severity: minor. Fix: say selected and constructed are physical histories; declared is a model-level provenance.
+
+19. **Question-finding provenance tracks the contract, not the query.** Quote: Part III: “\(\rho_p\) is the provenance of the contract (below).” “A claim that an episode found a question requires \(\rho_p=\text{constructed}\) for the contract in question.” Part III also says: “The respect is the query.” Claim attacked: finding a new question is captured by contract provenance. Why it fails: A new question can be new by changing \(\mathcal Q\) while \(C\) stays the same. Since \(\rho_p\) is provenance of the contract only, finding a new respect with the same contract is not represented as question-finding. Derivation 5 tries to fix this by making the contract include \(\mathcal Q\), but that contradicts Part III. Severity: serious. Fix: attach provenance to the whole question \(p\), or define the contract as \((C,\mathcal Q)\) consistently.
+
+20. **Content contract versus question contract in (EK).** Quote: Part IV: “A **content** is an organization together with its contract-relative commitments.” Part XI (EK) uses “\(\operatorname{Account}(c,p_c)\),” where \(c\) is a content and \(p_c\) is a question. Claim attacked: \(\operatorname{Account}(c,p_c)\) has a determinate contract. Why it fails: \(c\) already has contract-relative commitments, while \(p_c\) has its own contract \(C\). Part V Account uses the question’s contract. Which contract fixes the fidelity of \(c\)? The text does not distinguish them, so the adequacy claim can shift between \(c\)’s internal commitments and \(p_c\)’s contract. Severity: minor/serious. Fix: explicitly distinguish the content’s internal commitments from the question’s contract and state which one Account evaluates.
+====================================================================================================
+A8_consistency | deepseek | sample 1 | finish stop | 16804 chars | error None
+====================================================================================================
+**1. Account permits declared transports; representation does not.**
+- Claim attacked: Part V defines `Account(ℰ)` with no provenance condition: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda)\) from \(D\) to \(E\), and an identified set \(\Gamma\) of active commitments in \(E\).” Part IV says: “A declared transport does not make an occurrence represent anything; it makes a modeller assert that it does.” Part 0 (A) then asks for a counterexample “with a non-declared transport.”
+- Why it fails: `Account` can be satisfied by a declared transport, but Part IV says such a transport represents nothing. The sufficiency attack silently adds a non-declared condition not present in `(E)`. So the document both certifies and disowns the same candidate depending on which section is read.
+- Seriousness: Serious.
+- Fix: Either add a provenance conjunct to `Account` for explanatory achievement/creativity, or explicitly distinguish model-internal `Account` from representational account. Make the sufficiency attack match the stated definition.
+
+**2. “Frozen assessment” contradicts changing \(C\) during an assessment if recorded.**
+- Claim attacked: Grievance 10: “An assessment is an event with a frozen contract. An episode is a history in which contracts can change, and every change carries a provenance record.” Part III: “What is prohibited is changing \(C\) or \(\mathcal Q\) during an assessment without recording that the claim has changed.”
+- Why it fails: The first passage forbids changing the contract within an assessment. The second permits changing \(C\) or \(\mathcal Q\) during an assessment provided the change is recorded. Derivation 7 does not reconcile these; it only says claims at different indices may both be true.
+- Seriousness: Serious.
+- Fix: Prohibit any change of \(C\) or \(\mathcal Q\) inside a single assessment. Treat changes as producing a new indexed assessment. If recorded changes within an assessment are allowed, redefine “frozen assessment” accordingly.
+
+**3. Derivation 5 makes a contract an organization without supplying the required structure.**
+- Claim attacked: “A contract is a subset of \(A\times B\) together with \(\mathcal Q\). Give it ports (the edits and their boundaries), components (the closure conditions), and admitted edits (add or remove a change; alter \(\mathcal Q\)). It is then a \(D\) in the sense of (O).”
+- Why it fails: (O) requires an organization \(D=(V,(X_v)_{v\in V},J,B,A,L)\) with value domains, component footprints, and component relations \(L_j(a,b)\). A contract \(C\subseteq A\times B\) plus a query \(\mathcal Q\) does not supply \(V\), \(X_v\), \(J\), or \(L_j\). “The closure conditions” are not specified. If a contract is itself content, then (R) would require a transport faithful on the contract’s own contract, generating a regress.
+- Seriousness: Serious.
+- Fix: Give an explicit construction of a contract-organization with value domains, components, and relations, or drop the claim that contracts are organizations. Define question-finding independently of Derivation 5.
+
+**4. (EK) applies `Account` to objects that are not accounts.**
+- Claim attacked: Part X: “The content \(c\) may be an organization, a transport, or a contract.” Part XI (EK) contains: “\(\operatorname{Account}(c,p_c)\)” with the same \(c\).
+- Why it fails: `Account` is defined for an explanatory candidate \(\mathcal E=(E,p,t,\Gamma)\), where \(E\) is an organization and \(t\) is a transport. If \(c\) is a transport or a contract, `Account(c,p_c)` is a type error. Even if \(c\) is an organization, the transport and active commitments are missing.
+- Seriousness: Serious.
+- Fix: Restrict \(c\) in (EK) to an organization and write \(\exists t,\Gamma\,\operatorname{Account}((c,p_c,t,\Gamma))\), or define separate predicates for transport-account and contract-account.
+
+**5. The claim that the semantics has only two primitives is false.**
+- Claim attacked: Part XIV: “**Primitives.** The semantics has two. … Everything else is derived.”
+- Why it fails: Organizations, questions, transports, queries, boundaries, and component relations are supplied inputs. Part II says: “For each \(j\), edit \(a\), and boundary \(b\), the interpretation supplies \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\).” Part III says: “A question is \(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\).” Part IV says: “A transport from an organization \(D\) to an organization \(E\) is \(t=(\pi,\tau,\sigma,\lambda)\).” None of this is derived from \(\Theta\) or \(\mathcal N\). Part XIV itself admits “interpretations supplying these data.”
+- Seriousness: Fatal to the strong primitives claim.
+- Fix: Either list organization/question/transport/query data as primitive or derive them explicitly from \(\Theta\). Correct Derivation 6 and the dependence order.
+
+**6. Grain and contract are conflated.**
+- Claim attacked: Part XIV: “Grain \(\ell\), boundary \(\beta\), continuity \(\Omega\), and the contract \(C\) are declared indices.” Derivation 2: “Two candidates \(\mathcal E,\mathcal E'\) for the same \(p\) that both satisfy (F1), (F2), and (A) on \(C\) are one account at grain \(C\).” Part IV: “An occurrence \(o\) **represents** content \(c\) at grain \(\ell\) when … admits a transport to \(c\) that is faithful on \(c\)'s contract.”
+- Why it fails: \(C\) is not a grain. Part XIV explicitly distinguishes grain \(\ell\) from contract \(C\). Kinds are contract-relative in Part II, while (R) indexes representation by grain \(\ell\). Derivation 2 then speaks of “grain \(C\),” collapsing two indices the document elsewhere treats as distinct.
+- Seriousness: Serious.
+- Fix: Use a consistent pair \((\ell,C)\). Define account equivalence and kind equivalence relative to \(C\), and representation relative to \(\ell\) plus the content’s contract.
+
+**7. Derivation 1 compares signatures across different contracts, but (K) defines kinds only within one contract.**
+- Claim attacked: Derivation 1: “If a transport satisfies (F1) on \(C\), then every active component \(k\) of \(E\) has the same signature on \(\tau[C]\) as its anchor \(\lambda(k)\) has on \(C\), up to the port translation.”
+- Why it fails: (K) says: “Two components \(j,j'\) are **of one kind on \(C\)** when there is a bijection of their footprints under which \(\operatorname{sig}_C(j)\) and \(\operatorname{sig}_C(j')\) coincide.” That is a same-contract comparison. Derivation 1 compares a signature on \(\tau[C]\) with one on \(C\). Also \(\lambda(k)\) is a subnetwork, not a component, so (K) does not define its signature.
+- Seriousness: Serious.
+- Fix: Define a signature for subnetworks and a transport-induced signature relation. State equality up to \(\tau\), not “same kind,” unless both are placed on a common contract.
+
+**8. Derivation 2 is not proved by Derivation 1 and is false as stated.**
+- Claim attacked: “Two candidates \(\mathcal E,\mathcal E'\) for the same \(p\) that both satisfy (F1), (F2), and (A) on \(C\) are one account at grain \(C\): their components are pairwise of one kind on \(C\) and their answer profiles coincide.”
+- Why it fails: Two candidates can have different decompositions and different numbers of components while both anchor to subnetworks of the same \(D\). F1 relates each component of \(E\) to its anchor in \(D\); it does not force a bijection between components of \(E\) and \(E'\). Derivation 1 only gives each component the signature of its own anchor.
+- Seriousness: Serious.
+- Fix: Require a common refinement or an explicit anchor correspondence before claiming pairwise kind identity. Otherwise state only that answer profiles coincide under (A).
+
+**9. Derivation 3 varies organizations, not transports, and ignores the population \(\mathcal T\).**
+- Claim attacked: Derivation 3: “The component relations \(L_j(a,b)\) are supplied independently for each \((a,b)\). Survival on \(H\) constrains only \(\{L_j(a,b):(a,b)\in H\}\). Alter \(L_{j}(a,b)\) for one \((a,b)\notin H\) to any other admitted relation; the result survives on \(H\) and differs at \((a,b)\).”
+- Why it fails: \(L_j\) are components of organizations, not parts of a transport \(t=(\pi,\tau,\sigma,\lambda)\). Altering \(L_j\) changes \(D\) or \(E\), not the transport. Moreover, Part IV defines selection over “a population \(\mathcal T\) of candidate transports, a variation operator \(\mu\) on \(\mathcal T\).” The proof never shows the altered organization-with-transport is in \(\mathcal T\) or reachable by \(\mu\).
+- Seriousness: Fatal to Derivation 3 as stated.
+- Fix: Argue over the admissible variation space of transports and state the closure assumption on \(\mathcal T\) under independent variation of unseen relations. Without such an assumption, a restricted population can determine unseen values.
+
+**10. “Fidelity” in surprise excludes question fidelity, while expectation is an answer profile.**
+- Claim attacked: Part IV: “A transport is **faithful on \(C\)** when it satisfies the component and global fidelity conditions of Part V.” Part IV: “the **expectation** is \(\operatorname{Ans}_S(\tau(a),\sigma(b))\); a **violation** occurs when fidelity fails at \((a,b)\).” Part V separately has: “**Question fidelity.** For every \((a,b)\in C\), \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\). (A)”
+- Why it fails: “Component and global fidelity” are (F1) and (F2), which do not include (A). A transport can satisfy (F1)–(F2) while \(\operatorname{Ans}_S\) is wrong. Then expectation fails but no violation occurs under the stated definition. If “fidelity” was meant to include (A), Part IV misstates the condition.
+- Seriousness: Serious.
+- Fix: Define fidelity for expectation and violation to include (A), or define violation directly as a mismatch between \(\operatorname{Ans}_S\) and the target answer.
+
+**11. Non-vacuity says the contract is “declared,” but contracts can be selected or constructed.**
+- Claim attacked: Part V: “The contract \(C\) is a declared subset of the physically admitted edits.” Part III: “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\), with the witness required by Part IV. A **declared** contract is stipulated by the modeller. A **selected** contract is the surviving member…”
+- Why it fails: If \(C\) can have selected or constructed provenance, it is not a declared subset in Part III’s provenance sense. If “declared” here merely means “stated,” then Part III’s provenance distinction is erased by Part V.
+- Seriousness: Moderate to serious.
+- Fix: Say “specified subset” rather than “declared subset,” and clarify that being stated in the model is independent of provenance.
+
+**12. Objectivity is undermined by contract-relativity.**
+- Claim attacked: Grievance 4: “Objectivity lives in the physics and in the fidelity facts; scope-honesty lives in the record.” Part XIV: “Every claim is relative to them; none is a predicate that could be true or false.” Part III: “A **declared** contract is stipulated by the modeller.”
+- Why it fails: If every claim is relative to a stipulated contract, then objectivity is only objectivity-relative-to-a-chosen-scope. A stated narrow contract can protect an account while remaining “scope-honest.” Criticism supplying an excluded change creates a new indexed claim, not a refutation of the old indexed account. Grievance 4’s appeal to criticism does not restore the objectivity it claims.
+- Seriousness: Serious.
+- Fix: Add a substantive constraint on contracts — e.g., maximality or relevance to \(\mathcal Q\) — or downgrade the objectivity claim to contract-relative objectivity.
+
+**13. (EK) is factive about repair while the document denies a knowledge predicate and stresses fallibility.**
+- Claim attacked: Part XI: “\(\exists o\in O_{\mathrm{ep}}\,[\neg o(\xi)\land o(\xi')\land\operatorname{Origin}(s,c,p_c,h,e_c)\land\operatorname{Account}(c,p_c)\land\cdots\land\operatorname{Deploy}(s,c,\xi';U_c)\land\cdots]\).” Part I: “Systems can be wrong about their transports, their observations, their criticisms, and their own capacities.” Part XIV: “Nothing depends on a predicate meaning ‘really explains,’ ‘is a cause,’ or ‘is knowledge.’”
+- Why it fails: (EK) asserts actual repair, actual account adequacy, and actual deployment. It is a factive “created explanatory knowledge” predicate. Fallibilism says systems can be wrong about these; that is compatible with a factive external condition, but then the document cannot also say nothing depends on a knowledge predicate. The name “Created explanatory knowledge” and the conjunct \(o(\xi')\) make it factive about the claimed repair.
+- Seriousness: Serious.
+- Fix: Rename it to something like “attributed created explanatory knowledge” with a fallible witness, or accept the factive knowledge predicate and remove or qualify the Part XIV denial.
+
+**14. (R) takes more from outside than \(\operatorname{Org}_\ell(o)\).**
+- Claim attacked: Part IV: “The one thing (R) takes from outside is \(\operatorname{Org}_\ell(o)\): which organization a physical occurrence instantiates at a grain.” But (R) is: “\(\operatorname{Rep}_\ell(o,c)\iff\exists t\,[\operatorname{Faithful}_C(t:\operatorname{Org}_\ell(o)\to c)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\).”
+- Why it fails: (R) also takes the content \(c\), its contract \(C\), and the existence and provenance of \(t\) as parameters. \(c\) is “an organization together with its contract-relative commitments,” not derived from \(\operatorname{Org}_\ell(o)\). So the “one thing” claim is false.
+- Seriousness: Serious.
+- Fix: Acknowledge \(c\) and its contract as inputs to the representation predicate, or derive them from the physical module.
+
+**15. `Account` is used with inconsistent arity and argument types.**
+- Claim attacked: Part V: “The pair \(\mathcal E=(E,p,t,\Gamma)\) satisfies \(\operatorname{Account}(\mathcal E)\)…” Part VI: “\(\operatorname{Account}(E|W,p)\).” Part IX: “\(\operatorname{Account}(\mathcal E_c,p_\delta)\).” Part XI: “\(\operatorname{Account}(c,p_c)\).”
+- Why it fails: `Account` is defined for a tuple containing an organization, question, transport, and commitments. It is then used with one argument, two arguments, and sometimes with \(c\) that may be a transport or contract. The notation is not merely shorthand; in (EK) it changes the type of the predicate’s argument.
+- Seriousness: Moderate to serious.
+- Fix: Use one consistent signature, e.g. \(\operatorname{Account}(E,p,t,\Gamma)\), and do not apply it to non-organization contents.
+
+**16. Non-circular dependence removes components of \(E\) using edits from \(C\), which is a contract on \(D\).**
+- Claim attacked: Part V: “There exists \((a,b)\in C\) that removes or replaces a nonempty block of \(\Gamma\) while preserving the other boundary conditions…”
+- Why it fails: \(C\) is a contract on the target \(D\). \(\Gamma\) is a set of active commitments in \(E\). The edit that removes or replaces \(E\)-components should be the translated edit \((\tau(a),\sigma(b))\), not the untranslated \((a,b)\).
+- Seriousness: Minor to moderate.
+- Fix: State the condition under \(\tau[C]\) or explicitly say “the translated edit removes…”
+
+**17. The dependence order is false: (O) and (Q) do depend on supplied data.**
+- Claim attacked: Part XIV: “(O) and (Q) depend on nothing.” But (O) is “\(\operatorname{Sol}_D(a,b)=\{z\in X_D:\forall j\in J,\ z|_{V_j}\in L_j(a,b)\}\)” and (Q) is “\(\operatorname{Ans}_p(a,b)=\mathcal Q(D,a,b)\).”
+- Why it fails: (O) depends on \(D\), \(J\), \(L_j\), \(A\), \(B\), and \(X_v\). (Q) depends on \(D\), \(C\), and \(\mathcal Q\). These are supplied or declared data, not nothing. This also undermines Derivation 6: “Every predicate in Parts II–XIII is defined from \(\Theta\) … together with declared indices.”
+- Seriousness: Serious.
+- Fix: Replace “depend on nothing” with “are definitions in terms of supplied organization/question data,” and either derive those data from \(\Theta\) or add them to the primitive/base class.
+
+**18. Repair’s “claimed obligations” are used factively.**
+- Claim attacked: Part XI: “For claimed obligations \(O\) and protected obligations \(P\), fixed for the comparison, \(\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\iff\exists o\in O[\neg o(\xi)\land o(\xi')]\land\cdots\).”
+- Why it fails: If \(O\) are merely claimed obligations, then \(o(\xi')\) is itself a claim, not automatically a fulfilled obligation. If \(o(\xi')\) is factive, then “claimed” is misleading. (EK) then inherits the ambiguity when it uses `Repair`.
+- Seriousness: Moderate.
+- Fix: Distinguish claimed obligations from satisfied obligations. Define \(o(\xi')\) explicitly as satisfaction under the relevant contract, or rename the predicate to “claimed repair” and add an external correctness condition.
+====================================================================================================
+A8_consistency | deepseek | sample 2 | finish stop | 15803 chars | error None
+====================================================================================================
+**Finding 1 — Account permits declared transports, representation forbids them.**  
+(1) Claim attacked: Part V’s `Account` says an explanatory candidate is `(E,p,t,Γ)` satisfying (F1), (F2), (A), NonCircular, NonVacuous, with no provenance condition on `t`. Part IV says representation requires provenance: “whose provenance is selected or constructed” and “A declared transport does not make an occurrence represent anything; it makes a modeller assert that it does.”  
+(2) Why it fails: `(E)` can be satisfied by `Dec(t)`. If `Account` is the semantics’ account of explanation, this contradicts Part 0’s “a claim about creativity cannot rest on [declaration]” and Part XI’s `Deploy`, which requires selected or constructed provenance. If `Account` is not representation, then `(E)` is not an account of explanation in the sense Part 0 announces.  
+(3) Severity: serious.  
+(4) Fix: add a provenance condition to `Account` for explanatory use, or separate “modelled candidate” from “account”; require Sel/Con for any `Account` used in `(EK)`.
+
+**Finding 2 — Non-vacuity requires a declared contract, but Part III allows selected and constructed contracts.**  
+(1) Claim attacked: Part V Non-vacuity: “The contract `C` is a declared subset of the physically admitted edits.” Part III: “A selected contract is the surviving member of a population… A constructed contract is the result of an episode… Any assessment may use any of the three.”  
+(2) Why it fails: if an assessment uses a selected or constructed contract, Non-vacuity’s wording is false of it. Yet `(E)` is supposed to apply to accounts on any such contract.  
+(3) Severity: serious.  
+(4) Fix: replace “declared subset” with “subset,” and define non-vacuity separately for each provenance.
+
+**Finding 3 — Non-vacuity imports a record condition about excluded edits, contradicting the claim that every conjunct concerns changes in `C`.**  
+(1) Claim attacked: Part V: “Every conjunct is a condition on how supplied relations behave under the changes in `C`.” Non-vacuity: “every physically admitted edit excluded from `C` is excluded by a stated scope, not silently.”  
+(2) Why it fails: the latter is a condition on edits outside `C` and on the record, not a condition on supplied relations under changes in `C`. It also cannot be checked by `(E)`’s formal clauses.  
+(3) Severity: serious.  
+(4) Fix: move scope-honesty out of `(E)` into a separate record constraint, or formalize a scope function from excluded physical edits to stated reasons.
+
+**Finding 4 — Derivation 7’s frozen assessment contradicts Part III’s prohibition of unrecorded change “during an assessment.”**  
+(1) Claim attacked: Part III: “What is prohibited is changing `C` or `Q` during an assessment without recording that the claim has changed.” Derivation 7: “it does not move within an assessment because assessments are indexed.”  
+(2) Why it fails: Part III allows recorded change during an assessment; Derivation 7 says the contract does not move within an assessment. If the contract changes, Part III’s own wording treats it as a changed claim, not the same frozen assessment.  
+(3) Severity: serious.  
+(4) Fix: distinguish an assessment event from a claim index; say changing `C` or `Q` creates a new claim/assessment, and drop the phrase “during an assessment.”
+
+**Finding 5 — Grain is a declared index, but kinds are said to be contract-relative only.**  
+(1) Claim attacked: Part XIV: “Grain `ℓ`, boundary `β`, continuity `Ω`, and the contract `C` are declared indices.” Part II: “Kinds are therefore relative to the contract; a coarser contract identifies more components.”  
+(2) Why it fails: `Org_ℓ(o)` is supplied by the physical module and fixes which components exist. Changing `ℓ` changes components and footprints while holding `C` fixed, so signatures and kind-claims change without a contract change. Kinds are relative to `(ℓ,C)`, not `C` alone. Part V’s “no further condition about kinds” then hides the grain dependence.  
+(3) Severity: serious.  
+(4) Fix: index kind-claims to `(ℓ,C)`, or make `ℓ` part of the contract, or define `Org_ℓ` in a way that cannot alter component typing independently of `C`.
+
+**Finding 6 — `(EK)` is factive about repair while Part I insists on fallibility.**  
+(1) Claim attacked: Part I: “Systems can be wrong about their transports, their observations, their criticisms, and their own capacities.” Part XI `(EK)` requires `Account(c,p_c)`, `o(ξ')`, `Deploy`, and `ProducesVia`.  
+(2) Why it fails: `CreateEK` is a success predicate requiring an actual corrected obligation and a correct account. If this is an attribution a system can make of itself, it contradicts fallibility. If it is external, it is not the system’s knowledge and cannot be used to characterize the system’s epistemic state. Also, `Account` may be declared by Finding 1, so `(EK)` can be factive about a merely asserted repair.  
+(3) Severity: serious.  
+(4) Fix: separate an external factive `CreateEK` from the system’s fallible appraisal; require non-declared provenance for the `Account` conjunct; clarify whether `O_p` are claimed or actual obligations.
+
+**Finding 7 — Grievance 4’s objectivity claim is undermined by contract-relativity.**  
+(1) Claim attacked: Grievance 4: “Objectivity lives in the physics and in the fidelity facts; scope-honesty lives in the record.” Part XIV: “Every claim is relative to [indices].”  
+(2) Why it fails: fidelity facts are relative to a contract `C`, and `C` is declared by the modeller. Objectivity within `C` does not rebut the charge that explanatory merit is contract-relative. The only non-relative element is physical possibility.  
+(3) Severity: serious.  
+(4) Fix: state explicitly that objectivity is conditional on a contract, and explanatory merit is contract-relative; or specify objective constraints on contract selection beyond physical possibility.
+
+**Finding 8 — Transport direction in `(R)` contradicts transport direction in `Account`.**  
+(1) Claim attacked: Part IV `(R)`: `Faithful_C(t: Org_ℓ(o) → c)`. Part V: “a transport `t=(\pi,\tau,\sigma,\lambda)` from `D` to `E`,” where `p=(D,C,b_0,Q,O_p,ρ_p)` and `D` is the target.  
+(2) Why it fails: representation is carrier-to-content. `Account` uses target-to-candidate. If `E` is the content representing target `D`, the transport should run `E→D`; if `D` is the carrier, then `D` represents `E`. The document never resolves this direction.  
+(3) Severity: fatal or serious.  
+(4) Fix: define whether `Account` underwrites representation; if so, reverse the transport or require bidirectional fidelity; if not, state that `Account` is not a representation relation.
+
+**Finding 9 — Declared provenance is not a physical history, yet Part IV places it among physical provenances.**  
+(1) Claim attacked: Part IV: “A transport `t` between organizations of a physical system has exactly one of three provenances, determined by its history in the physical module.” Declared: “Neither of the above. The transport is entered into the model by its author.”  
+(2) Why it fails: an authorial model entry is not a history in the physical module. Either declared transports are not transports between physical organizations, or the tripartite taxonomy is not exhaustive for physical transports.  
+(3) Severity: serious.  
+(4) Fix: distinguish physical provenance from model-entry status; say declared transports are not physical transports at all.
+
+**Finding 10 — `(F1)` projects `Sol_{λ(k)}` onto `V_k` without a port translation.**  
+(1) Claim attacked: Part V: `proj_{V_k}[Sol_{λ(k)}(a,b)] = L_k(τ(a),σ(b))`.  
+(2) Why it fails: `V_k` is a footprint of component `k` in `E`; `Sol_{λ(k)}` is a subset of `X_D`. Projection requires the port translation associated with `λ(k)`, and `Sol` for a subnetwork is not defined in Part II.  
+(3) Severity: serious.  
+(4) Fix: define `Sol` for subnetworks and write the projection using the port translation from `λ`.
+
+**Finding 11 — Non-circular dependence uses an edit on `D` to remove a block of `Γ` in `E`.**  
+(1) Claim attacked: Part V: “There exists `(a,b)∈C` that removes or replaces a nonempty block of `Γ` while preserving the other boundary conditions.”  
+(2) Why it fails: `(a,b)∈C` is an edit–boundary pair on the target `D`; `Γ` is a set of active commitments in `E`. No operation is defined by which a `D`-edit removes `E`-commitments. Part VI later uses a separate “declared restriction operation” on `Γ`.  
+(3) Severity: serious.  
+(4) Fix: define the edit/restriction operation on `E`, or state Non-circular dependence using the restriction operation of Part VI.
+
+**Finding 12 — Part VII’s reversed-calculation example contradicts Part II’s edit rule.**  
+(1) Claim attacked: Part VII: “intervening on `H` changes the target’s `L` but not the calculation’s `H`.”  
+(2) Why it fails: Part II says “An edit that sets a port replaces the component assigning that port.” An intervention on `H` sets `H` directly, so in the reversed calculation `H = L tan θ`, the calculation’s `H` is replaced and does change. The intended failure is that the calculation’s `L` does not change. Part V states the correct version: “changes the target’s downstream value but not the calculation’s.”  
+(3) Severity: serious.  
+(4) Fix: change “calculation’s `H`” to “calculation’s `L`,” or rewrite the example consistently.
+
+**Finding 13 — Derivation 1 applies `(K)` to a subnetwork.**  
+(1) Claim attacked: Derivation 1: “`sig_C(λ(k))`,” where `(K)` defines the signature of component `j`.  
+(2) Why it fails: `λ(k)` is an anchor subnetwork, not a component. `(K)` gives no signature for arbitrary subnetworks.  
+(3) Severity: serious.  
+(4) Fix: define signatures for subnetworks, or require `λ(k)` to be a component.
+
+**Finding 14 — Derivation 2 is false for different decompositions.**  
+(1) Claim attacked: Derivation 2: “Two candidates … that both satisfy (F1), (F2), and (A) on `C` are one account at grain `C`: their components are pairwise of one kind on `C`.”  
+(2) Why it fails: `(F1)` anchors each component of `E` to a subnetwork of `D`; it does not compare decompositions of two candidates. One candidate with a single component anchored to a union can satisfy `(F1)`, `(F2)`, and `(A)` alongside another candidate with two components anchored to the parts, if the relations are equivalent. Their components are not pairwise of one kind.  
+(3) Severity: serious/fatal for the derivation.  
+(4) Fix: require the same component decomposition, or weaken the conclusion to equality of answer profiles only.
+
+**Finding 15 — Derivation 5 conflates contract with question.**  
+(1) Claim attacked: Derivation 5: “A contract `C` is an organization (a set of edits with a query).” Part III: `p=(D,C,b_0,Q,O_p,ρ_p)`; the contract is `C⊆A×B`; `Q` is part of the question.  
+(2) Why it fails: a contract alone has no query. The proof’s object is a question-content, not a contract-content.  
+(3) Severity: serious.  
+(4) Fix: distinguish contract-content from question-content; if `C` is to be content in `(G)`, define its organization without `Q`, or say `p` is the content.
+
+**Finding 16 — Derivation 6’s “two primitives” overclaim is contradicted by undefined/non-derived predicates.**  
+(1) Claim attacked: Derivation 6: “Every predicate in Parts II–XIII is defined from `Θ` … and `N` … together with declared indices.”  
+(2) Why it fails: `O_p`, histories, `Enable`, `ProducedBy`, `ProducesVia`, `Lic`, `Scope`, `Live`, `U_c`, and others are used but not defined from `Θ` or `N`. Part XI `(EK)` uses `ProducesVia`; Part XIII `UU` uses `Enable`.  
+(3) Severity: serious/fatal.  
+(4) Fix: define these predicates from the primitives, or add them as primitives and revise the derivation.
+
+**Finding 17 — “Everything else is derived” is false for declared indices.**  
+(1) Claim attacked: Part XIV: “Everything else is derived.” Part XIV also says: “Grain `ℓ`, boundary `β`, continuity `Ω`, and the contract `C` are declared indices.”  
+(2) Why it fails: declared indices are not derived from `Θ` or `N`.  
+(3) Severity: minor/serious.  
+(4) Fix: say “Everything else is either derived or a declared index.”
+
+**Finding 18 — `(EK)` has free variables.**  
+(1) Claim attacked: Part XI: `CreateEK(s,Δ,h,e) ⇔ … Repair_{O,P}(ξ,ξ';Δ) …`.  
+(2) Why it fails: `O`, `P`, `ξ`, `ξ'`, `O_ep`, and `U_c` are not parameters or bound variables of `CreateEK`. The formula is not well formed.  
+(3) Severity: serious.  
+(4) Fix: add these as parameters or bind them inside the formula.
+
+**Finding 19 — `RetReal` can be vacuously true on empty execution families.**  
+(1) Claim attacked: Part XII: `RetReal(π,T,C;χ) ⇔ ∀z∈C ∀i∈dom T ∀η∈Exec(π,z,i;χ), η` completes… followed by “Execution families are nonempty on legitimate inputs; deadlock is not vacuous success.”  
+(2) Why it fails: if `Exec` is empty, the universal condition is true. The informal non-vacuity clause does not fix the formal definition.  
+(3) Severity: serious.  
+(4) Fix: add `Exec(π,z,i;χ) ≠ ∅` for legitimate inputs into the formula.
+
+**Finding 20 — `Bearing` has mismatched parameters.**  
+(1) Claim attacked: Part IX: `Bearing(c,z,p) ⇔ Account(E_c,p_δ)`.  
+(2) Why it fails: `z` and `p` are unused; `E_c` is undefined; `p_δ` is not bound to `p`.  
+(3) Severity: serious.  
+(4) Fix: define `E_c` and connect `p`, `z`, and `p_δ` explicitly.
+
+**Finding 21 — The identification example gives the wrong identified feature.**  
+(1) Claim attacked: Part VII: “the readings identify `b_B-b_A` and not `x`.”  
+(2) Why it fails: for the matrix `[[1,1,0],[1,0,1]]`, the kernel is spanned by `(1,-1,-1)`. An identifiable linear feature `c^T` must annihilate the kernel. `b_B-b_A` gives dot product `-2`, so it is not identifiable. The identifiable contrast is `x-b_B` (up to combinations of the readings).  
+(3) Severity: serious.  
+(4) Fix: correct the feature to `x-b_B` or the appropriate linear combination of the readings.
+
+**Finding 22 — “Nothing depends on … ‘is knowledge’” conflicts with `CreateEK` and the knowledge-creation class.**  
+(1) Claim attacked: Part XIV: “Nothing depends on a predicate meaning ‘really explains,’ ‘is a cause,’ or ‘is knowledge.’” Part XI defines `CreateEK`; Part XIV defines “The knowledge-creation class: an instance of `(EK)`.”  
+(2) Why it fails: `CreateEK` is a predicate of created explanatory knowledge and is used to classify systems.  
+(3) Severity: minor/serious.  
+(4) Fix: say no primitive knowledge predicate is used, or rename the class and predicate.
+
+**Finding 23 — Dependence order misstates `(P)`.**  
+(1) Claim attacked: Part XIV: “`(P)`, `(EK)` depend on `(G)`, `(E)`, Deploy.”  
+(2) Why it fails: `(P)` is `Repair`, which depends on obligations and `ProducedBy`, not on `(G)`, `(E)`, or Deploy. `(EK)` depends on `(P)`, `(G)`, `(E)`, and Deploy.  
+(3) Severity: minor.  
+(4) Fix: correct the dependence order.
+
+**Finding 24 — “four conditions” but five conjuncts.**  
+(1) Claim attacked: Part V: “satisfies `Account(E)` exactly when the following four conditions hold,” then `(E)` has `(F1)∧(F2)∧(A)∧NonCircular∧NonVacuous`.  
+(2) Why it fails: counting is inconsistent.  
+(3) Severity: cosmetic.  
+(4) Fix: say five conjuncts, or treat `(F1)` and `(F2)` as one condition.
+
+**Finding 25 — Non-vacuity’s last sentence assigns a non-circular-dependence failure to Non-vacuity.**  
+(1) Claim attacked: Part V Non-vacuity: “A contract consisting only of relabelings, or excluding every change under which the active commitments could matter to `Q`, does not satisfy non-circular dependence and is therefore not a contract on which an account can be claimed.”  
+(2) Why it fails: the stated defect is explicitly a failure of Non-circular dependence, not of Non-vacuity.  
+(3) Severity: minor.  
+(4) Fix: move the sentence to Non-circular dependence or rewrite it as a consequence of that condition.

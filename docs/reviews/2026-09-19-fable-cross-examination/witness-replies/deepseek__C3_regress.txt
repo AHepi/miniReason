@@ -1,0 +1,484 @@
+====================================================================================================
+C3_regress | deepseek | sample 0 | finish stop | 14319 chars | error None
+====================================================================================================
+## Findings
+
+**1. Fatal: the Section 1 concession makes “the object grammar grew” either false or vacuous.**  
+Quote: “Construction adds rules to G0. Blind selection over the meta-grammar can add the same rules. The meta-grammar is fixed; the regress is not escaped and no one should read this as if it were.” Also: “What grew is G0.”  
+If the meta-grammar is fixed, and blind selection over that same meta-grammar can add the same rules, then any rule added to G0 was already in the fixed meta-grammar. Adding it to A0 is selection one level up. The claim “construction extends what is latent” is false relative to the meta-grammar, or vacuous if “latent” only means “latent relative to G0.” The experiment therefore tests provenance — whether a defect representation was on the route — not growth of the object grammar. To make “the object grammar grew” substantive, the design would have to show that the meta-grammar itself expanded, or that the new machinery uses primitives/terms/conditions/actions not present in any prior fixed space, or prove a lower bound that no fixed meta-grammar of the given form can generate the rule without being pre-specified to contain the target. The design shows none of these. It does not show object-grammar growth.
+
+**2. Fatal: the meta-grammar was tailored to the target world.**  
+Quote: “The world is therefore exactly ‘kinematics, then a pairwise rule on the kinematic next-states’ — the same shape as the rule language.” Also §12.3: “the rule language’s terms are the slots’ own kinematic next-states, so world and language have the same shape.”  
+The world was revised after the §6 check to match the rule language. The expressibility check is circular: the language was built to express the law, and the world was reshaped so the language expresses it. This cannot test construction of new machinery. It tests search in a language designed to contain the answer.  
+Fix: freeze the meta-grammar before defining the new law, or use an independent world and a language not tailored to it; report failure if inexpressible.
+
+**3. Fatal/serious: closedness is definitional, and the empirical check was a moved goalpost.**  
+Quote: “Nothing in G0 has one: every G0 slot updates independently. That is what makes G0 closed to it, if it is.” Also §12.4: “The check now has a structural part (slot-only G0 on collision steps) and an overall part (any G0, all steps). … A0 alone 0.352; best slot-only G0 0.366; lookup 0.819; hand 0.906. Both parts pass.”  
+If G0 is defined as lacking pairwise interaction, closedness is true by definition, not an empirical finding. The empirical check was split after the lookup scored 0.819 against hand-built 0.906 on collision steps — a difference of 0.087, failing the original 0.1 margin. Exempting the lookup from the collision threshold and moving the threshold to overall steps is a moved goalpost. The claim “no G0 machinery can do what a pairwise rule does” is not proven by testing the best of 208; it is either definitional or incomplete.  
+Fix: prove expressivity independently, or pre-register the threshold and do not exempt architectures that are in G0.
+
+**4. Serious: C’s action scoring is myopic and underdetermines the law.**  
+Quote: “Solve an action: for each kept condition and each action, count the V records it fixes (apply action to the state, run kinematics, prediction now equals the true field) minus the N records it breaks.”  
+C only checks the current predicted field, i.e. occupancy. For same-target collisions, multiple actions — `stop_both` with hold, `swap_next_v` with hold, etc. — fix the current occupancy field but differ on the next step. The true collision law requires exchanging velocities. C may select a one-step patch that fails M3. Tie-breaking among actions is not specified beyond “fixed in code.” Also, §4 says `hold` means “do not move this step,” but §5 says “apply action to the state, run kinematics,” which is ambiguous if hold is chosen.  
+Fix: score actions over a multi-step horizon or include velocity in the true field; specify deterministic tie-breaking; define exactly how `hold` interacts with kinematics.
+
+**5. Serious: S3 excludes exactly the cases where the built component lacks the world’s kind-signature.**  
+Quote: “So C, which builds from sensory defects, is expected not to build the crossing rule” and “S3’s threshold applies to pairs with no crossing after the change step; pairs with a post-change crossing are reported separately as F3 — the invisible law, and are expected to fail M3 for A0+C while passing for A0 + hand-built rules.”  
+S3 claims “The built rules are components with the collision’s signature, not a fix for the observed cases.” But for crossings, the built component is exactly a fix for observed same-target cases; it does not have the full collision signature. Excluding crossings from S3’s threshold narrows the fidelity claim after the fact. Construction is not shown for the full new law.  
+Fix: either make crossings visible, or redefine S3 to claim only the visible part and drop the “collision’s signature” language.
+
+**6. Serious: C vs B confounds provenance with search algorithm and information type.**  
+Quote: “S5 — provenance is not output. B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.”  
+C uses greedy induction over itemised defect records. B uses mutation–selection over single rules with population 32, elitism 4, 60 generations, seeds 0–5. They are not the same machinery. The comparison confounds defect-record input versus scalar fitness, and greedy induction versus evolutionary search. A fidelity difference cannot be attributed to provenance.  
+Fix: equate search power and budget, or use the same search algorithm on different inputs. Do not call them “same machinery.”
+
+**7. Serious: S0/best-of-G0 may select on the evaluation half.**  
+Quote: “S0 — selection within the closed grammar. Every G0 architecture evaluated on the collision world. Best of 208. No rules.” Also §5: “All three see the exposure half. All fitness is on the evaluation half.”  
+If S0 selects the best of 208 on the evaluation half, it peeks at the test set, biasing S1 and K1. If it selects on the exposure half, the design must say so. Section 5 also contradicts §12.1, where B’s fitness is moved to the exposure half.  
+Fix: specify that S0 selects on exposure and is evaluated on evaluation; remove the contradictory sentence.
+
+**8. Serious: M5’s claimed invariance does not follow from the algorithm.**  
+Quote: “M5 — recoding invariance of C. (a) Reverse the order of V and N records. (b) Relabel slots i↔j throughout. Build. The rules must be identical (up to the relabel).”  
+C keeps the top 20 conditions and breaks ties by an order fixed in code. If scores tie at the top-20 cutoff or for the best action, reversing record order can change which conditions/actions are selected. Relabeling can change atom ordering. The claim “must be identical” is not entailed unless tie-breaking is permutation-invariant or all scores are unique.  
+Fix: use permutation-invariant tie-breaking independent of record order, or require margins and test multiple permutations.
+
+**9. Serious/minor: M6 is ill-defined and contradicts S6.**  
+Quote: “M6 — route ablation of C. Give C an empty V. It must build nothing. Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net.” Also S6: “M6 builds nothing.”  
+Empty V trivially builds nothing because the loop condition “until no V remain” is satisfied immediately. Replacing true field with predicted field creates records still labelled V; C may process them and append rules. “Rules with zero net” is not defined or measured. S6 contradicts the “or rules with zero net” allowance.  
+Fix: define a proper null-defect condition and a net-effect metric; align S6 with M6.
+
+**10. Serious/minor: M4 uses a single permutation and an undefined “same aggregate.”**  
+Quote: “Give C the exposure half’s defect records with the true-field column permuted among the V records (same states, same number of defects, same aggregate; wrong pairings).”  
+A single permutation may accidentally preserve enough correct pairings to leave C’s output above the 0.1-worse threshold, especially if there are few defect records. “Same aggregate” is ambiguous and may be impossible if true fields are occupancy patterns.  
+Fix: use many random permutations, report the distribution, ensure enough defects, define aggregate precisely, and test a condition-only ablation.
+
+**11. Minor: “C never computes an aggregate fitness” is false as written.**  
+Quote: “C never computes an aggregate fitness. Its only inputs are itemised records.”  
+C sums counts over V and N for condition scoring and action scoring. These are aggregates over itemised records. The distinction is about representation, not aggregation.  
+Fix: reword as “uses itemised defect records rather than a scalar fitness per candidate.”
+
+**12. Serious: S2 has no mechanism to protect non-collision fidelity.**  
+Quote: “S2 — protected. Non-collision fidelity of A0+C ≥ A0’s, within 0.01.”  
+C may append up to 3 rules even if a later rule harms non-collision or has no positive net. The append criterion takes the best (condition, action) even if the net is negative. This can break S2.  
+Fix: require positive net improvement or no harm to N before appending; add an explicit non-collision protection check in the loop.
+
+**13. Serious/minor: phase-2 rule interaction is under-specified.**  
+Quote: “An architecture may carry up to K = 3 rules, applied in order.” Also §8: “Start from A0 + C’s phase-1 rules (kept, not rebuilt). Run C for up to 2 further rounds on the new world.”  
+When multiple rules fire, order matters, especially for wall/collision overlap. The document does not specify whether later rules see the modified state or the original state; condition terms include kinematic next-state computed from current state. This can produce different results and affect S7.  
+Fix: specify sequential evaluation semantics, conflict resolution, and test interaction cases.
+
+**14. Minor/serious: M1 does not separate same-target from crossing collisions.**  
+Quote: “split into collision steps (a collision occurred in the true world at that step) and non-collision steps.”  
+Since crossings are invisible and C is expected not to build the crossing rule, S1’s collision-step comparison may be driven by same-target collisions only. The metric cannot support “the closed grammar could not do the new feature” for the full collision law.  
+Fix: split collision steps into same-target and crossing, report separately.
+
+**15. Serious: “no G0 machinery can do what a pairwise rule does” is overclaimed.**  
+Quote: “no G0 machinery can do what a pairwise rule does.”  
+Testing the best of 208 does not prove no G0 machinery can do it. If G0 is defined as independent slots, it is true by definition; if not, the 208 are only a sample. The check is either redundant or incomplete.  
+Fix: prove expressivity formally or state it as definitional.
+
+**16. Minor: B’s byte-identical output under scramble is a tautology.**  
+Quote: “Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run.”  
+Since B never reads V, byte-identical output is trivially true and provides no evidence about provenance. It only sanity-checks that the implementation does not secretly read V.  
+Fix: use it as an implementation sanity check, not as part of S4’s evidentiary claim.
+
+**17. Fatal/serious: §6.1 permits post-hoc revision of the fixed meta-grammar.**  
+Quote: “If the language cannot express the law, revise.”  
+This allows tuning the meta-grammar to the target law after seeing the world. It undermines the claim that the meta-grammar is fixed and independent.  
+Fix: freeze the meta-grammar before seeing the world; if inexpressible, report failure and do not revise.
+
+**18. Minor: “if it is” hedges the central closedness claim.**  
+Quote: “That is what makes G0 closed to it, if it is.”  
+The experiment’s S1 depends on closedness. If closedness is definitional, the experiment tests search, not construction. The hedge should be removed by a proof or by reframing the claim.
+
+**19. Minor: the “two rules” design is undermined by the crossing-invisibility expectation.**  
+Quote: “The world’s collision law needs two rules in this language (same-target and crossing are different conditions, and the language cannot OR three atoms). That is deliberate: building it takes two rounds.”  
+Section 12.2 expects C not to build the crossing rule. So C will build one rule, not two. The “building it takes two rounds” claim applies only to hand-built rules, not to C. This weakens the construction claim.  
+Fix: clarify or redesign so the process is expected to build the full law, or drop the two-round claim.
+
+**20. Minor: the overall closedness threshold may be diluted by non-collision steps.**  
+Quote: “the best G0 architecture of any kind is below A0 + hand-built rules overall by at least 0.1.”  
+If overall includes many non-collision steps where both architectures perform similarly, the overall difference can be small even when the collision difference is large. The threshold is not meaningful for closedness on the new feature.  
+Fix: threshold on collision steps, or report both and justify the overall threshold.
+
+**21. Minor: S1 has no margin.**  
+Quote: “A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did.”  
+A tiny improvement counts as “could not do it.” Given the lookup’s 0.819 versus hand-built 0.906, the lookup is close enough that “could not do it” is an overclaim.  
+Fix: pre-register a margin and use M3 to show kind-signature, not just fidelity.
+
+**22. Minor: A0’s built-in reflection may interact with sticky-wall rules in phase 2.**  
+Quote: “A0 = `slots=2, persist(τ=∞, r=5, j=no)` … Its slots move by pass-through kinematics with reflecting walls.”  
+Phase 2 changes walls to sticky. The rule language can add a wall rule, but the design does not specify how the added rule overrides A0’s built-in reflection. This can produce ordering effects.  
+Fix: specify override semantics and test wall-rule interaction with existing kinematics.
+====================================================================================================
+C3_regress | deepseek | sample 1 | finish stop | 15389 chars | error None
+====================================================================================================
+The central argument first, then findings. If construction is selection over a fixed meta-grammar, then "construction extends what is latent" is indexed to *something*. Indexed to the program, it is false (every rule is latent from the start). Indexed to G0, it is vacuous (G0 was defined to exclude pairwise rules). The document uses both indices and never supplies a third. Everything below follows from that.
+
+---
+
+**Finding 1. The G0 equivocation makes "What grew is G0" false in one sense and vacuous in the other.**
+
+Claim attacked (§1): "**G0, the object grammar**: the 208 architectures of experiment 1. Closed." … "Construction adds rules to G0." … "What grew is G0."
+
+Why it fails: G0 is defined as a fixed finite set of 208 architectures. Adding a rule to A0 yields A0+r, which is not one of the 208. Read literally, G0 cannot grow — the output is outside it, and "grew" is false. Read loosely (G0 = "the object grammar" as whatever the meta-grammar can express), G0 always contained A0+r; nothing grew, and "Closed" was never true. The phrase "What grew is G0" trades on sliding between these. It is not a claim the experiment can settle because it is not a claim about a single object.
+
+Severity: fatal to the framing.
+
+Fix: Pick one. Either G0 = the 208, in which case say plainly that the extended architecture lies outside G0 and "growth" is a metaphor for a move within the meta-grammar; or G0 = the closure of the 208 under the rule language, in which case delete "Closed" and admit the grammar the world exceeded was never G0.
+
+---
+
+**Finding 2. The false-or-vacuous dilemma is decisive, and the document contains the proof of the vacuous horn.**
+
+Claim attacked (§1): "The meta-grammar is fixed; the regress is not escaped and no one should read this as if it were." Combined with §4: "a small fixed language of rules" … "**50,176 rules.**"
+
+Why it fails: Given a fixed, finite meta-grammar, the set of architectures reachable from A0 is finite, enumerable, and fixed before the experiment runs. Every rule C can ever append is a member of a set that existed at t=0. So:
+- Indexed to the system: construction adds no expressive capacity; "extends what is latent" is false.
+- Indexed to G0: true only because G0 is defined as slot-independent (§3), i.e. by construction. That is the vacuous horn.
+The document supplies no non-definitional index. §12.4 hands the reader the definitional proof: "the best slot-only architecture in G0 is below A0 + hand-built rules" — of course it is, because G0 is defined to have no pairwise rules.
+
+Severity: fatal.
+
+Fix: Replace "construction extends what is latent" with a claim that has content: e.g. "construction is a route in which the error signal is local and per-record, and this route reaches a target that a scalar-fitness route over the same meta-grammar reaches only with X more evaluations." Then the claim is about a process, not a capacity. The capacity language ("needed", "grew") must come out.
+
+---
+
+**Finding 3. G0's closure to pairwise interaction is analytic, so S1's "needed" is a tautology.**
+
+Claim attacked (§3): "Nothing in G0 has one: every G0 slot updates independently. That is what makes G0 closed to it, if it is." And S1 (§9): "A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did."
+
+Why it fails: The sentence supplies its own proof. If G0 is by definition slot-independent, then no G0 architecture implements a pairwise rule — trivially. §6.2's "structural" check tests this analytic fact. S1 then re-states it: an architecture that can express a pairwise rule beats architectures that cannot. That is not evidence the world *needed* an extension; it is evidence the definition held.
+
+Severity: serious (fatal to S1's reading).
+
+Fix: Do what §6 does not: threshold closedness against the best *sensory-contract* predictor (the ceiling), not against hand-built rules drawn from the same meta-grammar. Better: use M3 as the closure test. M3 asks whether slots track their things through collisions — the lookup at 0.819 may approximate behaviourally while failing M3 representational tracking. The design already has the right test and does not use it for closure.
+
+---
+
+**Finding 4. S1 specifies no margin, and the numbers show its gap may fall inside §6's closedness margin.**
+
+Claim attacked: S1 "A0+C > best-of-G0 on collision steps." Against §6: "the best slot-only architecture in G0 is below A0 + hand-built rules on collision steps by at least 0.1" and §6.2 overall "by at least 0.1." §12.4: "lookup 0.819; hand 0.906."
+
+Why it fails: C is expected to reach hand-built (S3). The gap against the *best* G0 member (the lookup, 0.819) is then 0.087 — less than the 0.1 margin that certifies closure. S1 as written passes on any positive gap, so it can be satisfied while closedness against the strongest G0 member is not. The two thresholds are not reconciled.
+
+Severity: serious.
+
+Fix: State S1's margin explicitly and make it exceed the closedness margin relative to the best-of-G0 (not slot-only) member, or report the lookup gap as the real test and treat S1 as a weak confirmation.
+
+---
+
+**Finding 5. M4 is circular: B's byte-identity is stipulated, and C's degradation only shows C reads its own inputs.**
+
+Claim attacked (§7): "Give C the exposure half's defect records with the **true-field column permuted** … Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run. **This is the test that distinguishes the provenances.**"
+
+Why it fails: B's byte-identity is a consequence of the prior stipulation that "B never reads a defect record" — it tests the implementation matches its own definition. C's degradation tests that C reads the true-field column — also stipulated by its action solver ("prediction now equals the true field"). Neither branch is evidence that the provenances differ in kind; both are code-path checks. The test cannot fail in the direction that would matter (a constructor insensitive to defect *content*), and it cannot distinguish C from any supervised learner with a different loss.
+
+Severity: serious.
+
+Fix: Add a control that could in principle refute the claim: e.g. an aggregate-fitness learner over the same meta-grammar fed the same scrambled labels, or C fed only aggregate label counts. Show C's advantage requires the per-record pairing, not merely a labelled target.
+
+---
+
+**Finding 6. C does compute an aggregate; the claim that it doesn't is false.**
+
+Claim attacked (§5): "**C never computes an aggregate fitness. Its only inputs are itemised records.**"
+
+Why it fails: Condition scoring is "(number of V states it is true on) − (number of N states it is true on)"; action scoring is "(count the V records it fixes) … minus the N records it breaks." Both are sums over records — aggregate scores under a chosen loss. Reading itemised records and summing them is computing an aggregate. The "itemised vs number" contrast with B is bookkeeping about data format, not a difference in kind.
+
+Severity: serious.
+
+Fix: Delete the sentence. Restate C as an inductive learner with per-record labels, and identify the operative difference from B as feedback granularity (local per-record labels vs a single scalar per rule). Then test *that*.
+
+---
+
+**Finding 7. "Nothing inside the process represents what went wrong" is false of B too.**
+
+Claim attacked (§1): "A **selected** piece of machinery was produced by variation and survival. Nothing inside the process represents *what went wrong*. The process receives, per candidate, a number."
+
+Why it fails: A per-candidate fitness is a representation of how wrong the candidate is. Coarser than a per-record label, but not "nothing." The inference the document wants — B is unaffected by scrambling defect fields — follows from the stipulation, not from the absence of an error representation. As written, the premise is false and the conclusion is a restatement of the design choice.
+
+Severity: serious.
+
+Fix: Replace with a claim about granularity: "B's error signal is a scalar; C's is a vector of per-state labels." Then design a process-level test (e.g. budget-matched comparison) that could show the granularity matters.
+
+---
+
+**Finding 8. F1 concedes C and B are "one kind", which contradicts §9's header.**
+
+Claim attacked: §9 header "Supports (construction is real, needed, and distinct from selection)." Against F1: "By Derivation 2 they are one kind on this contract; extending to 7 cells or 3 things says whether they come apart."
+
+Why it fails: If C and B are one kind on this contract, then this experiment cannot support "distinct from selection." S5's "provenance is not output" needs the provenance difference to be a difference in kind, which F1 denies at this scale. The scope at which kinds separate is deferred to a future experiment, which means it is not tested here.
+
+Severity: serious.
+
+Fix: Strike "distinct" from the §9 header, or state the scale/condition under which kinds separate and make this experiment reach it. As written, the header overclaims against the document's own finding.
+
+---
+
+**Finding 9. M6 is vacuous and self-immunising.**
+
+Claim attacked (§7): "Give C an empty V. It must build nothing. Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net."
+
+Why it fails: With empty V, C has no records to score, so building nothing is enforced by the algorithm. With true = predicted there are by definition no wrong predictions, so this reduces to the empty-V case. The disjunct "or rules with zero net" makes the outcome unfalsifiable.
+
+Severity: minor.
+
+Fix: Replace with a real ablation of defect content (e.g. permuted labels with matched V/N margins) and a directional prediction.
+
+---
+
+**Finding 10. §12.2 concedes the built component is not the world's law, undermining "faithful."**
+
+Claim attacked: §12.2 "the constructor should build exactly the kinds its contract can see" and S3's threshold "applies to pairs with **no crossing after the change step**." Against §1 point (iii): "a faithful component with the world's kind-signature, not a patch."
+
+Why it fails: The world's new law has two rules; the constructor is expected to build only one, and the expectation is pre-registered. So M3/S3 can certify fidelity only on the visible sub-contract. Calling the result "the world's kind-signature" is an overclaim, and the pre-registered exemption means the strongest test (crossings) is pre-emptively excluded — a moved goalpost, even if honestly declared.
+
+Severity: serious.
+
+Fix: Weaken all fidelity language to "faithful on the sensory-visible sub-contract," or make crossings distinguishable in sensation so the full law is in the contract.
+
+---
+
+**Finding 11. Closedness is measured against the meta-grammar, not the world.**
+
+Claim attacked (§6.2): "the best G0 architecture of any kind is below A0 + hand-built rules overall by at least 0.1."
+
+Why it fails: "Hand-built rules" are drawn from the same fixed meta-grammar. So the inference is "G0 cannot do what the meta-grammar can" — true by Finding 3. The world enters only through the ceiling, which is measured, not stipulated. To support "extending G0 was needed," the comparison must be G0 vs the world's best achievable prediction, not G0 vs a grammar the designer wrote.
+
+Severity: serious.
+
+Fix: Define closedness against the sensory ceiling (0.923) with a stated margin, and report the lookup's 0.819 against that.
+
+---
+
+**Finding 12. Phase 2's "latency" is retention, not latency.**
+
+Claim attacked: §8 title "does what was built become latent?" and S7 "A wall rule is built; collision fidelity after phase 2 within 0.01 of before; total fidelity on the sticky world beats A0 + phase-1 rules."
+
+Why it fails: Once A0+C is fixed, its rules are part of the architecture; calling them "latent for the next round" says only that they are retained. The wall rule already belongs to the fixed meta-grammar ("A wall hit is `v_i != w_i`, so phase 2's law is expressible without constants"). Phase 2 therefore re-runs the same selection over a fixed finite space. "Accumulates" reduces to "retained rules do not break." No new sense of "latent" is established.
+
+Severity: serious.
+
+Fix: Define latency operationally (e.g. the built rule is used as a primitive by a further construction whose search would otherwise be infeasible, and say what the infeasibility is), or drop the term and describe phase 2 as a retention test.
+
+---
+
+**Finding 13. §12.4 is a goalpost move, and transparency does not restore the pre-registration.**
+
+Claim attacked: §12.4 "The check now has a structural part … The lookup's collision figure is reported as is. Recorded with the numbers so the reader can judge whether this is a fair restatement or a moved goalpost."
+
+Why it fails: The strongest G0 member (lookup, 0.819) is excluded from the thresholded comparison *after* being observed to approach hand-built (0.906). The threshold now applies to a subset chosen because the full set failed the margin. "The reader can judge" is not a criterion; it relocates a pre-registered threshold to post-hoc adjudication.
+
+Severity: serious.
+
+Fix: Report closedness against the full G0 with a single margin, downgrade the claim to exploratory, and do not treat either part as confirming S1.
+
+---
+
+**Finding 14. §1 restricts the claim to provenance, but §9 requires a capacity claim.**
+
+Claim attacked: §1 "The claim from file 10 is about **provenance**, which is about the route, not the output." Against S1's "needed."
+
+Why it fails: Provenance does not entail that an extension was *needed*. If the only claim is about route, then the strongest thing the experiment can show is that C's route differs from B's. "The closed grammar could not do it; extending it did" is a capacity claim, unsupported by a provenance claim. The support criteria overreach the stated claim.
+
+Severity: serious.
+
+Fix: Split §9 into a provenance section (route-only, matched-budget comparisons) and a capacity section (which must meet Finding 3's fix). Do not let provenance findings discharge capacity criteria.
+
+---
+
+**Finding 15. The design does not show "G0 grew" in any substantive sense; and the missing tests are identified but unused.**
+
+Claim attacked: the question "Does it show it?"
+
+Why it fails: To make "the object grammar grew" substantive, the design would have to show at least one of:
+(a) the extension is unreachable by any process confined to G0's own composition operators, with G0's closure established independently of G0's definition;
+(b) the extension changes the system's input–output mapping on a class of inputs no G0 architecture matches, with that class fixed independently of the result;
+(c) the extension is itself usable as a primitive for further extensions in a way that compounds beyond what the fixed meta-grammar's enumeration would predict.
+
+The design shows none. (a) is definitional (Finding 3). (b) is defeated by the lookup's approximation and by the crossing exclusion (Findings 4, 10). (c) is retention (Finding 12). The design even has the right instrument for (a) — M3 — and uses it as a reported measure rather than the closure threshold. So the answer is no.
+
+Severity: fatal to the headline claim.
+
+Fix: Choose one of (a)–(c) and rebuild §6/§9 around it, with a pre-specified margin and a result that could actually come out the other way.
+====================================================================================================
+C3_regress | deepseek | sample 2 | finish stop | 16625 chars | error None
+====================================================================================================
+# Findings
+
+## 1. Section 1's own concession converts "the object grammar grew" into bookkeeping
+
+**Quote attacked.** "The meta-grammar is fixed; the regress is not escaped and no one should read this as if it were."
+
+**(1) Claim attacked.** That the design nevertheless tests a substantive claim, namely "the object grammar grew."
+
+**(2) Why it fails.** If the meta-grammar is fixed and enumerable (50,176 rules, K=3), then every rule C can possibly append to A0 already exists as an element of a finite, pre-declared set. "G0 grew" states: the process landed on a point outside the original 208 architectures but inside the fixed meta-grammar's reach of A0. That is a change in the value of a pointer, not growth of a grammar. The design itself says so: "Construction adds rules to G0. Blind selection over the meta-grammar can add the same rules." "Grew" is applied to G0 only because G0 is drawn narrowly enough to exclude the meta-grammar's own contents. If G0 is replaced by G0∘meta-grammar — the only grammar the processes can actually act over — nothing grows at all.
+
+**(3) Severity.** Fatal. The experiment's stated headline (S1: "the closed grammar could not do it; extending it did") is entirely carried by this restricted baseline.
+
+**(4) Fix.** Delete the "growth" language and state the remaining claim exactly: a specific code path (reading defect records) is causally responsible for producing a point in the fixed meta-grammar. Or redefine "latent" (see finding 2) so that it does not reduce to "member of the fixed meta-grammar."
+
+## 2. "Construction extends what is latent" is either vacuous or denied
+
+**Quote attacked.** "if 'construction' meant 'produces something not latent at any level,' it could never be shown" combined with "Construction adds rules to G0. Blind selection over the meta-grammar can add the same rules."
+
+**(1) Claim attacked.** The design's working gloss of construction, that it "extends what is latent."
+
+**(2) Why it fails.** Two readings only. (a) Latent = a member of the fixed meta-grammar. Then B extends what is latent just as much as C does ("can add the same rules"), and S5 confirms B reaches within 0.05 in ≥4/6 seeds. The thesis is true of both and therefore distinguishes neither — vacuous. (b) Latent = not latent at any level. Section 1 has already forbidden this reading ("it could never be shown"). So the phrase is either a property shared by the two processes named as opposites, or an impossibility the design has banned. There is no third reading on offer.
+
+**(3) Severity.** Fatal. It is the exact sentence the design needs to do constructive work, and it cannot.
+
+**(4) Fix.** Give a formal definition of "latent" that is neither "in the fixed meta-grammar" nor "in no grammar" and show a process producing rules outside it. None is supplied.
+
+## 3. The provenance claim and the growth claim are welded, though independent
+
+**Quote attacked.** "The semantics says they still differ, and that the difference is checkable: remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected."
+
+**(1) Claim attacked.** That provenance is a *kind* distinction between constructed and selected machinery.
+
+**(2) Why it fails.** The scramble test measures a fact about the code path of C: does it dereference a specific column? B "never read it" — but that is a stipulation about B's implementation, not a discovered property of blind selection. Any program can be forbidden to read a column; the test distinguishes two programs built to differ along exactly the axis being tested. Nothing in M4 speaks to whether the *object grammar* extended; it speaks only to whether one specific program consumed one specific field. The growth claim and the provenance claim are separate; the design treats the second as evidence for the first.
+
+**(3) Severity.** Serious. The provenance claim survives (as a code fact); the grammar claim does not, and the rhetoric borrows credibility from the surviving one.
+
+**(4) Fix.** Separate the two claims in the document. State that provenance is a property of the process, not of the extension, and remove "the object grammar grew" from the outcomes.
+
+## 4. S1 is false as literally worded, given S5
+
+**Quote attacked.** "A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did."
+
+**(1) Claim attacked.** That extension requires construction.
+
+**(2) Why it fails.** B is also "outside G0" in the identical trivial sense — B searches the meta-grammar. S5 pre-registers that B reaches within 0.05 of C in ≥4/6 seeds. So the closed grammar could not do it, but blind selection over the meta-grammar could (by the design's own prediction). "Extending it did" is therefore not a description unique to construction; it is shared with the process the design positions as the alternative. As written, S1 is a claim about the baseline G0 masquerading as a claim about C.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Restate S1 as: "A0+C > best-of-G0 on collision steps, and A0+B is expected to equal A0+C — but the two routes into the meta-grammar differ in their input." Then S1 makes no claim about growth.
+
+## 5. The choice of baseline decides the conclusion
+
+**Quote attacked.** "G0, the object grammar: the 208 architectures of experiment 1. Closed."
+
+**(1) Claim attacked.** That G0 is the relevant grammar and is "closed."
+
+**(2) Why it fails.** "Closed" is asserted for a set the design has itself chosen to exclude the meta-grammar from. The processes do not operate on G0; they operate on G0∘{meta-grammar rules}. By choosing G0 as "the grammar," the design makes "closure" true by fiat; by choosing G0∘meta-grammar, "closure" is false because construction and blind search both reach the same points. Nothing in the design independently justifies fixing the baseline at the 208 slot-only architectures rather than at the composed space both processes actually traverse.
+
+**(3) Severity.** Serious. This is the load-bearing choice.
+
+**(4) Fix.** State the composed grammar explicitly; if "closure of G0" is the target, say that it is a claim about a specific set the experimenter chose, not about the grammar available to any process.
+
+## 6. The world is fitted to the meta-grammar, so expressibility is circular
+
+**Quote attacked.** "The world is therefore exactly 'kinematics, then a pairwise rule on the kinematic next-states' — the same shape as the rule language."
+
+**(1) Claim attacked.** That the collision law is a "new feature" whose expressibility is a discovery.
+
+**(2) Why it fails.** The collision law was rewritten (Section 12.3) and the rule language was rewritten (one action added, two constants removed; 50,176 instead of 43,904) until "world and language have the same shape." Any world built to the shape of the meta-grammar is expressible in it. The experiment then discovers that the meta-grammar can express a law written to fit the meta-grammar. The "extension is needed" claim (S1) is downstream of this engineering; a language that fits a law by construction is not evidence that the extension was necessary in any interesting sense.
+
+**(3) Severity.** Serious. It is a design-induced success criterion.
+
+**(4) Fix.** Use a world whose law was fixed before the meta-grammar was finalised, or state openly that the meta-grammar was tuned to the world and that expressibility is therefore guaranteed by construction.
+
+## 7. The ceiling is a hand-built extension; the extension pre-existed the processes
+
+**Quote attacked.** "Hand-build the two collision rules in the language."
+
+**(1) Claim attacked.** That the machinery added in S1 came into being through the tested processes.
+
+**(2) Why it fails.** The two rules are written by the experimenters using their knowledge of the collision law and of the meta-grammar; they exist before C or B run. Every "extension" claim in S1/S3 is measured against these hand-built rules as a ceiling. So the machinery whose growth is reported was authored by humans and merely re-discovered — or not — by C. Whether "G0 grew" is answered "yes" before the experiment begins.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Present hand-built rules purely as an expressibility check (which is what Section 6.1 calls them); stop using them as the object whose growth is being tested.
+
+## 8. The scramble test is tautological under the design
+
+**Quote attacked.** "This is the test that distinguishes the provenances."
+
+**(1) Claim attacked.** That M4 distinguishes construction from selection as kinds.
+
+**(2) Why it fails.** The test perturbs an input (the true-field column) that C has been defined to read and B has been defined not to read: "Its only input is a number per candidate." The test therefore observes that the process designed to consume field X consumes field X, and the process designed not to consume it does not. It cannot fail unless the code is buggy. A test whose outcome is entailed by the definitions of the two arms cannot distinguish kinds; it can only detect implementation errors.
+
+**(3) Severity.** Serious. It is presented as the experiment's principal discriminating measurement ("This is the test that distinguishes the provenances").
+
+**(4) Fix.** Either drop M4 as a kind-discriminator and call it a code-integrity check, or define construction without reference to which columns are read.
+
+## 9. Even taken literally, M4 perturbs only the action-fitting step
+
+**Quote attacked.** "Give C the exposure half's defect records with the true-field column permuted among the V records."
+
+**(1) Claim attacked.** That scrambling V targets "the defect representation" of C.
+
+**(2) Why it fails.** C's procedure has two stages: (i) induce a condition scored by "number of V states it is true on − number of N states it is true on" — the *states*, not the true fields; (ii) solve an action by checking whether prediction equals the true field after applying an action. Permuting the true-field column leaves stage (i) untouched and corrupts only stage (ii). Whatever the outcome, it does not establish that "the defect representation" as a whole is on the route; it establishes that the true-field column is used when fitting actions.
+
+**(3) Severity.** Minor–serious.
+
+**(4) Fix.** Perturb the states (or the record identity) too, and describe precisely which stage of C is being ablated.
+
+## 10. S4's threshold has no derivation
+
+**Quote attacked.** "Scrambled-V construction is worse than unscrambled on collision steps by at least 0.1."
+
+**(1) Claim attacked.** That 0.1 separates "construction uses defect content" from "construction does not."
+
+**(2) Why it fails.** No argument, model, or pilot is offered for 0.1 rather than 0.05 (used in K2) or 0.15. Any number can be dialled until both S4 and K2 are non-overlapping; the threshold is an unfalsifiable knob unless derived.
+
+**(3) Severity.** Minor.
+
+**(4) Fix.** Derive the threshold from the expected effect of the induced scramble on the fitting step, or pre-register it with justification.
+
+## 11. Pre-registered excuse in Section 12.2 narrows S3's domain
+
+**Quote attacked.** "S3's threshold applies to pairs with **no crossing after the change step**".
+
+**(1) Claim attacked.** S3 ("A0+C ≥ 0.9 on collision-containing pairs ... The built rules are components with the collision's signature, not a fix for the observed cases").
+
+**(2) Why it fails.** The design declares in advance that C is expected *not* to build the crossing rule — i.e., is expected to build something less than the world's law — and simultaneously carves crossings out of the S3 threshold domain. This is a pre-registered excuse for the specific failure mode that would most directly refute "the object grammar grew faithfully." It also concedes a substantive point: what C builds is a partial pattern-fitting, not the law.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Apply S3 to *all* collision-containing pairs and report crossings separately as a failure, without pre-labelling them "the invisible law" or removing them from the pass criterion.
+
+## 12. Section 12.4's "Both parts pass" is not evidenced by the numbers shown
+
+**Quote attacked.** "Recorded with the numbers so the reader can judge whether this is a fair restatement or a moved goalpost: A0 alone 0.352; best slot-only G0 0.366; lookup 0.819; hand 0.906. Both parts pass."
+
+**(1) Claim attacked.** That both parts of the split closedness check pass, and that this is a fair restatement rather than a moved goalpost.
+
+**(2) Why it fails.** Section 6.2 requires the *overall* check to clear "at least 0.1" against *all* G0 architectures. The numbers printed are collision-step numbers (0.906 matches the collision-step hand-built figure, 0.923 the ceiling in the same note). For the structural part the margin is 0.906 − 0.366 = 0.54; for the lookup on collision steps the margin is 0.906 − 0.819 = 0.087, i.e. *below* the pre-registered 0.1. The lookup is then excluded from the threshold by appeal to its being "a memoriser of local patterns, not machinery" — a post-hoc reclassification. No numbers are given for the overall (all-step) check that Section 6.2 also requires. "Both parts pass" is asserted, not shown, and one of the two parts as stated falls short of its stated threshold.
+
+**(3) Severity.** Serious. This is the exact place where a moved goalpost would be visible.
+
+**(4) Fix.** Print the overall-check numbers and the source of the 0.1 threshold; if the lookup is excluded from the structural check, justify the exclusion by a criterion fixed before seeing its score.
+
+## 13. "G0 is closed to it" trades on two incompatible senses of "closed"
+
+**Quote attacked.** "Nothing in G0 has one: every G0 slot updates independently. That is what makes G0 closed to it, if it is."
+
+**(1) Claim attacked.** That G0 is "closed" to pairwise interaction.
+
+**(2) Why it fails.** Sense (a): no G0 architecture is a pairwise machine. Sense (b): no G0 architecture can be extended to become one without leaving G0. Only (a) is established by "every G0 slot updates independently." Sense (b) is trivially false because the meta-grammar is available to every process; the design's own Section 5 adds rules to A0. The word "closed" slides between them, so the reader hears (b) while the evidence supports only (a).
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Replace "closed" with "not expressive of pairwise interaction as a slot-only architecture" wherever (a) is meant, and stop using "closed" where only (b) would support S1.
+
+## 14. Extending G0 has no consequence distinct from being scored above best-of-G0
+
+**Quote attacked.** S1 as a whole, plus "The closed grammar could not do it; extending it did."
+
+**(1) Claim attacked.** That "extension of G0" is a substantive event, not the label applied retrospectively to any architecture that beats the 208.
+
+**(2) Why it fails.** On the design's own terms, G0 is closed (finding 13, sense a). Any process whose output beats best-of-G0 is therefore by definition one whose architecture is no longer in G0. "G0 was extended" is thus equivalent to "best-of-G0 was beaten." Since both C and B are expected to beat it (S5), "extension" names no feature shared by C but not B; it names the fact that a rule was appended, which is exactly what B does. The label adds nothing to the measurement.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Define a positive property of C's output that cannot be paraphrased as "best-of-G0 was beaten" — otherwise drop the extension claim entirely.
+
+---
+
+# Direct answer to the two posed questions
+
+**What would the design have to show to make "the object grammar grew" substantive?** One of: (a) the extension is not a member of the fixed meta-grammar — foreclosed by Section 1; (b) the extension is not reachable by search over the fixed meta-grammar — contradicted by S5 on the design's own pre-registered terms; (c) the meta-grammar itself was extended — declared out of scope ("Escaping the regress. The meta-grammar is fixed."); or (d) "grammar" is redefined over a level the design forbids (representations, questions — also out of scope). On the design's stated rules, no demonstration is possible.
+
+**Does the design show it?** No. The design shows (at most) that C reaches a point in the fixed meta-grammar via defect records and B reaches a comparable point via a scalar. Both points are in the same fixed, finite space. "The object grammar grew" is a re-description of the pointer move, not of any growth of grammar. The concession in Section 1 does not leave a narrowed but intact claim standing; it removes the distinction the experiment is named for.

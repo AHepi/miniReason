@@ -1,0 +1,392 @@
+====================================================================================================
+B2_goalposts | deepseek | sample 0 | finish length | 1817 chars | error None
+====================================================================================================
+## Cross-cutting findings
+
+**Finding 1 — The pre-registration claim is contradicted by Section 9 itself.**
+- **Claim attacked:** Section 4: “Written before any code was run, and not changed after.”
+- **Why it fails:** Change 8 says “Pre-registered outcomes rewritten to match, with two added.” Changes 11, 13, 16, 17, 18, and 19 explicitly cite run results (“first control run”, “on train = test”, “it was 0.88 at this point”, etc.). Therefore the outcomes were not written before any code was run and not changed after.
+- **Severity:** fatal.
+- **Fix:** Restore and date-stamp the original outcomes; report all post-control additions/rewrites as exploratory; do not call the final list “pre-registered.”
+
+**Finding 2 — The controls were run before freezing, so “pre-registered” is false by the document’s own order of work.**
+- **Claim attacked:** Section 8: step 2 run controls; step 3 fingerprint/freeze. Status: “Nothing was run before that moment except the control check in section 8, step 2.”
+- **Why it fails:** If controls were run before freezing, any change made after controls but before freezing is post-hoc. Section 9 contains multiple such changes. This is not a minor sequencing issue: it means the design was selected after seeing control behavior.
+- **Severity:** fatal.
+- **Fix:** Either freeze before running controls, or count the control run as part of the experiment and label all subsequent revisions as a new attempt.
+
+**Finding 3 — Section 4’s underpowered outcome still uses the 0.95 ceiling threshold that change 18 says was dropped.**
+- **Claim attacked:** Change 18: “The 0.95-of-ceiling adequacy threshold is dropped.” Section 4 still says: “No slot architecture reaches 0.95 × the sensory ceiling on H_full. Then the grammar in 2.6 cannot express an adequate predictor… this attempt is
+====================================================================================================
+B2_goalposts | deepseek | sample 1 | finish length | 19590 chars | error None
+====================================================================================================
+I treat “before freezing” as irrelevant if results were seen before freezing. The central audit question is whether Section 9 is a record of design choices made before data, or a record of post-hoc repair. Several entries are explicitly the latter.
+
+## Overall findings
+
+**Finding 1 — The freeze statement is false or misleading.**
+- **Claim attacked:** “**Nothing was run before that moment except the control check in section 8, step 2.**”
+- **Why it fails:** The control check is not a neutral formality. Change 16 says “the first control run had already shown τ = 0 winning H_neutral and τ = ∞ winning H_full”; change 17 says “Diagnosis: on train = test the *k* = 3 lookup scored 0.820 … and 0.656 on held-out configurations”; change 18 says “it was 0.88 at this point.” The document was revised after seeing results from the very histories that later serve as the main test.
+- **Severity:** fatal to the pre-registration claim.
+- **Fix:** Either no runs before freezing, or treat those runs as pilot data and run the final experiment on new histories/worlds. Report a timestamped log of every run.
+
+**Finding 2 — Section 4 contradicts Section 9.**
+- **Claim attacked:** Section 4: “Written before any code was run, and not changed after.”
+- **Why it fails:** Change 8 says “Pre-registered outcomes rewritten to match, with two added.” Rewriting outcomes is changing them. If this happened before code, they are not pre-registered relative to the earlier design; if after code, they are post-hoc.
+- **Severity:** serious/fatal to the meaning of “pre-registered.”
+- **Fix:** Version the outcomes. State exactly which version was frozen before the first run. Do not call a rewritten set “not changed after.”
+
+**Finding 3 — The amended checks are tuned on the same histories used for the main outcomes.**
+- **Claim attacked:** The controls are presented as checks before the main run.
+- **Why it fails:** Changes 13, 16, 17, 18, and 19 all use results from H_neutral and/or H_full to alter the grammar or the checks. The main exhaustive selection is then performed on H_neutral and H_full. That is design-level train/test contamination.
+- **Severity:** fatal.
+- **Fix:** Use pilot histories to amend the design, then freeze and evaluate on independent histories, or pre-register before any control run.
+
+**Finding 4 — Change 6 contains a stale architecture count.**
+- **Claim attacked:** “112 architectures can be enumerated.”
+- **Why it fails:** Section 2.6 says “**208 distinct architectures**,” and Change 14 says “Grammar now 208 architectures.” A frozen document should not contain two incompatible sizes for the hypothesis space.
+- **Severity:** minor to serious; it makes the audit trail unreliable.
+- **Fix:** Correct to 208, or explain that 112 was an earlier count superseded by Change 14.
+
+**Finding 5 — Change 11 calls the ceiling a “true bound,” but Section 2.5 says it is in-sample.**
+- **Claim attacked:** Change 11: “corrected to the majority-continuation predictor, which is the true bound.”
+- **Why it fails:** Section 2.5 explicitly says: “It is an in-sample bound (it has seen the prefixes it predicts) and is reported for scale, not as a pass/fail threshold.” An in-sample majority-continuation predictor is not a true bound for exposure-trained architectures on held-out configurations.
+- **Severity:** serious.
+- **Fix:** Call it an in-sample ceiling. If it is used for pass/fail, use a held-out ceiling.
+
+**Finding 6 — Change 16’s “winning” contradicts Change 19’s “tied exactly.”**
+- **Claim attacked:** Change 16: “τ = 0 winning H_neutral” versus Change 19: “τ = 0, 2, 5, ∞ tied exactly on H_neutral.”
+- **Why it fails:** “Winning” and “tied exactly” are incompatible. If τ = 0 strictly won on H_neutral, the neutrality check failed. If they tied, Change 16’s description is wrong.
+- **Severity:** serious/fatal to the neutrality result.
+- **Fix:** Report the exact fitness values for each τ on H_neutral. Do not use “winning” and “tied” interchangeably.
+
+## Change-by-change audit
+
+**Finding 7 — Change 1: step-3 changes.**
+- **Claim attacked:** “Changes applied at step 3, not step 0.”
+- **Why it fails:** This changes the operational meaning of every history: it fixes when interventions occur. It is not merely machinery. The rationale that step-0 changes are indistinguishable from initial configurations is only partly true, because the change label would differ even if the state coincides.
+- **Severity:** minor.
+- **Fix:** State clearly that step-0 changes are absorbed into configuration enumeration and excluded by design. I would accept this as a pre-run design choice.
+
+**Finding 8 — Change 2: 3-cell occlusion.**
+- **Claim attacked:** “A 3-cell window hides it for at least three steps, beyond *k* = 3.”
+- **Why it fails:** A thing can leave a 3-cell window in one step if it starts at the edge and moves outward. If it is outside the window, occlusion does nothing. The “at least three steps” claim is false in general.
+- **Severity:** serious, because the occlusion duration is central to the contrast between lookup and persistence.
+- **Fix:** Compute the actual occlusion-duration distribution over configurations and changes. Choose window/kinematics so the hidden period exceeds *k* for the cases that matter.
+
+**Finding 9 — Change 3: fitness against true occupancy.**
+- **Claim attacked:** “Fitness is against true occupancy, not the sensory field.”
+- **Why it fails:** This changes what fitness means, and therefore which architectures are selected. It is not just machinery. It makes persistence beneficial under occlusion by construction. That is defensible if the world-state contract is the intended one, but it must be stated as a normative choice, not a neutral measurement fix.
+- **Severity:** central design choice; not invalid by itself.
+- **Fix:** Report the sensory-fitness variant as a robustness check. I would accept the world-state fitness target if it was specified before data.
+
+**Finding 10 — Change 4: run length and scoring window.**
+- **Claim attacked:** “Run length 9, scored from time point 2.”
+- **Why it fails:** This sets the horizon and determines whether τ = 5 can matter. It changes the experimental contract, but not the wording of the outcomes.
+- **Severity:** minor.
+- **Fix:** State the horizon and justify it against the longest τ. I would accept it as a design choice.
+
+**Finding 11 — Change 5: fixed grammar instead of free-form rules.**
+- **Claim attacked:** “The hypothesis space is a grammar of architectures, not free-form tables and rules.”
+- **Why it fails:** This defines what “kind” can be expressed. It is not mere machinery; it constrains the possible conclusion. It also means the experiment cannot test construction, as Section 4 already concedes.
+- **Severity:** serious scope limitation.
+- **Fix:** State the exact grammar and acknowledge that any result is relative to it. I would accept it as a scope limit, not as a general test of latent kinds.
+
+**Finding 12 — Change 6: exhaustive primary selection.**
+- **Claim attacked:** “Primary selection is exhaustive, not evolutionary. 112 architectures can be enumerated.”
+- **Why it fails:** Exhaustive selection is a legitimate method, but the count is wrong (see Finding 4). Also, it removes search reachability only for the fixed grammar; it does not test the claim that the machinery does not determine which kinds are expressed.
+- **Severity:** minor to serious.
+- **Fix:** Correct the count to 208. I would accept exhaustive selection as a method, with the reachability claim limited to search within the grammar.
+
+**Finding 13 — Change 7: H_neutral added.**
+- **Claim attacked:** “H_neutral added: one thing, no occlusion. The previous sinking condition … was wrong.”
+- **Why it fails:** This changes the neutral history and therefore changes what the neutrality outcome means. It is a legitimate conceptual correction if made before any run: pure watching of two things does contain crossings. But it also moves the neutral test to a much easier 1-thing world. If it was made after seeing pure-watching results, it is post-hoc.
+- **Severity:** serious if post-hoc; acceptable if timestamped before the first run.
+- **Fix:** Report H_passive as an additional neutrality test. If H_passive is not neutral, say so.
+
+**Finding 14 — Change 8: pre-registered outcomes rewritten.**
+- **Claim attacked:** “Pre-registered outcomes rewritten to match, with two added.”
+- **Why it fails:** This directly contradicts Section 4’s “not changed after.” Adding outcomes is also a meaning change: the set of success/failure conditions changes.
+- **Severity:** serious/fatal to pre-registration.
+- **Fix:** Version the outcomes. I would not accept this as pre-registration unless the rewritten version is explicitly the frozen pre-run version and the earlier version is reported.
+
+**Finding 15 — Change 9: construction out of scope.**
+- **Claim attacked:** “Construction declared out of scope, with the reason.”
+- **Why it fails:** It limits the claim, which is honest, but it also immunizes point 1 from direct test. It does not change outcome meaning.
+- **Severity:** minor.
+- **Fix:** Keep the scope statement. I would accept it.
+
+**Finding 16 — Change 10: change counts corrected.**
+- **Claim attacked:** “Change counts corrected (24 and 14, not 26).”
+- **Why it fails:** This is a factual correction and matches Section 2.3. It does not change outcome meaning. It does, however, count `identity` as a “change,” which is odd.
+- **Severity:** cosmetic.
+- **Fix:** Clarify that `identity` is a no-op baseline. I would accept the correction.
+
+**Finding 17 — Change 11: ceiling corrected after being exceeded.**
+- **Claim attacked:** “A first version of the ceiling … was exceeded by real architectures; it was corrected.”
+- **Why it fails:** This is explicitly after seeing results. It changes the ceiling and therefore the underpowered threshold. The replacement is then called the “true bound,” contradicting Section 2.5.
+- **Severity:** serious.
+- **Fix:** Report both ceilings and the reason for the correction. I would not accept the corrected ceiling as pre-registered.
+
+**Finding 18 — Change 12: “Expected 1.0” replaced.**
+- **Claim attacked:** “‘Expected 1.0’ replaced throughout.”
+- **Why it fails:** This changes the expected outcome. It is a reasonable correction: no sensory predictor can be right at the step where an invisible change first shows. But if it was made after seeing failures, it is post-hoc.
+- **Severity:** minor to serious depending on timing.
+- **Fix:** Timestamp it. I would accept it if it was before code.
+
+**Finding 19 — Change 13: fresh slot velocity inference.**
+- **Claim attacked:** “Persist rules infer a fresh slot’s velocity from the previous field… Diagnosis from the first control run.”
+- **Why it fails:** This is explicit post-hoc tuning of the machinery whose kind is under test. It may be a genuine bug fix, but it was made after seeing that a fresh slot with velocity 0 lost a prediction.
+- **Severity:** serious.
+- **Fix:** Report both versions and a sensitivity analysis. I would accept it only if it is treated as a pre-specified bug fix, not as a neutral design choice.
+
+**Finding 20 — Change 14: jump-keeps-velocity gene added.**
+- **Claim attacked:** “Gene added: jump-keeps-velocity (*j* in 2.6). Grammar now 208 architectures.”
+- **Why it fails:** This expands the hypothesis space. If it was added after seeing control results, it is post-hoc. The timing is not stated.
+- **Severity:** serious if post-hoc; acceptable if before results.
+- **Fix:** Timestamp it and report the pre-gene results. I would accept it only if it predates the first run.
+
+**Finding 21 — Change 15: lookup predicts from the first field.**
+- **Claim attacked:** “Lookup predicts from the first field… It was handicapped by needing *k* fields before its first prediction.”
+- **Why it fails:** This directly affects the object-model axis and the adequacy check. If it was changed after seeing lookup lose, it is post-hoc.
+- **Severity:** moderate to serious depending on timing.
+- **Fix:** Timestamp it and report both versions. I would accept it if before results.
+
+**Finding 22 — Change 16: neutrality check “compared the wrong pair.”**
+- **Claim attacked:** “The neutrality control compared the wrong pair — lookup-only against slot-only. … The check now compares best-per-persistence-value.”
+- **Why it fails:** The logical point is partly sound: Section 2.6 says the kind under test is persistence, so lookup versus slots is indeed the object-model axis, not the persistence axis. But the change was made after the first control run had already shown τ = 0 winning H_neutral and τ = ∞ winning H_full. It therefore selects the check that passes on the observed data. It is also paired with Change 19, which excludes `rebind` even though Section 2.6 explicitly includes the `rebind` rule in the kind under test. Finally, Change 16’s “τ = 0 winning” contradicts Change 19’s “tied exactly.”
+- **Severity:** serious/fatal to the neutrality claim as a pre-registered result.
+- **Fix:** Report the original lookup-vs-slot check as a separate object-model finding. Pre-register the τ-only check before data. Clarify whether τ = 0 won or tied. Either include `rebind` in the neutrality check or redefine the kind under test in Section 2.6 before freezing. I would accept the logical distinction, but not this change as a clean pre-registered correction.
+
+**Finding 23 — Change 17: exposure/evaluation split after seeing overfitting.**
+- **Claim attacked:** “Diagnosis: on train = test the *k* = 3 lookup scored 0.820 on H_full and 0.656 on held-out configurations, while the tracker scored 0.801 on both.”
+- **Why it fails:** This is explicitly after seeing results. It changes every fitness figure and the selection rule. It penalizes lookup and therefore favors slots/persistence. The held-out split is methodologically necessary, but it was introduced after observing that lookup overfits.
+- **Severity:** serious.
+- **Fix:** Report both train=test and held-out results. Re-freeze and evaluate on fresh histories. I would accept held-out evaluation as a method, but not as a post-hoc change that is then treated as pre-registered.
+
+**Finding 24 — Change 18: dropping the 0.95 threshold.**
+- **Claim attacked:** “The 0.95-of-ceiling adequacy threshold is dropped. It was a guess… Adequacy is now the ordering, slot-only > lookup-only.”
+- **Why it fails:** The diagnosis—that the ceiling is in-sample and that the tracker’s gap comes from the change step and co-located starts—may explain why 0.95 is not attainable by any sensory predictor without a thing-count prior. But that is an argument that the original threshold was mis-specified, not an argument to replace it after observing 0.88. The new “adequacy” check is weaker: slot-only beating lookup-only does not show that the grammar is adequate; both could be poor. This is a moved goalpost that removes the pre-registered underpowered failure condition.
+- **Severity:** fatal to the adequacy claim.
+- **Fix:** Keep the 0.95 threshold and report the attempt as failed, or revise the design and re-freeze before seeing 0.88. If a different adequacy criterion is wanted, define it independently of the observed ordering. I would not accept Change 18.
+
+**Finding 25 — Change 19: neutrality restricted to the τ family.**
+- **Claim attacked:** “Neutrality check restricted to the τ family… rebind sat 0.026 below… which is not the kind under test.”
+- **Why it fails:** Section 2.6 says: “The kind under test is persistence — the τ gene and the `rebind` rule.” Change 19 excludes `rebind` after observing that it fails the neutrality check by 0.026. That is a redefinition of the kind under test to exclude a failing case.
+- **Severity:** fatal to the neutrality claim.
+- **Fix:** Include `rebind` and report the neutrality failure, or redefine the kind under test in Section 2.6 before freezing and report `rebind` as a separate velocity-memory axis. I would not accept the exclusion as written.
+
+**Finding 26 — Change 20: thing-count prior considered and not added.**
+- **Claim attacked:** “A thing-count prior was considered and not added… would close part of the co-location gap.”
+- **Why it fails:** This is a non-change, but it admits a known model inadequacy. It appears to be informed by observed co-location failures. It does not change outcomes, but it limits the adequacy claim.
+- **Severity:** minor.
+- **Fix:** Report the co-location gap as a limitation. I would accept it as a scope note.
+
+**Finding 27 — Change 21: revision stops here.**
+- **Claim attacked:** “Revision stops here. Three rounds before freezing. If the two checks do not pass under these criteria, the attempt is recorded as failed.”
+- **Why it fails:** This is a procedural commitment, not a substantive correction. It does not cure the post-hoc nature of Changes 16–19, because the criteria themselves were amended after seeing control results.
+- **Severity:** minor.
+- **Fix:** Keep the stop rule, but state that the final criteria were chosen after pilot results. I would accept it only as a process commitment, not as evidence of pre-registration.
+
+## Direct answers
+
+**Did the changes alter what pre-registered outcomes mean, or only machinery?**  
+They altered outcome meaning in at least these cases: Change 3 (fitness target), Change 5 (hypothesis space and kind), Change 7 (adds/changes the neutral outcome), Change 8 (rewrites outcomes), Change 11 (ceiling and underpowered threshold), Change 12 (expected 1.0), Change 16 (neutrality check), Change 17 (held-out fitness and selection), Change 18 (adequacy threshold), Change 19 (definition of the kind under test). Changes 1, 2, 4, 6, 10, 13, 14, 15, 20, and 21 are mostly machinery or scope, though several affect performance and therefore indirectly affect outcomes.
+
+**Which changes were made after seeing results pointing in a particular direction?**  
+Explicitly: Changes 11, 13, 16, 17, 18, and 19. Likely Change 20. Changes 14 and 15 are not timestamped; if they came after the first control run, they are also post-hoc. Changes 7, 8, and 12 are ambiguous; they need timestamps.
+
+**Is Change 16 a legitimate correction or a redefinition to make a failing check pass?**  
+It is logically defensible that lookup-versus-slots is the wrong pair for a persistence neutrality check, because Section 2.6 defines the kind under test as persistence. But as written, it is not a clean pre-registered correction: it was made after the first control run, it is paired with Change 19’s exclusion of `rebind`, and it contradicts itself about whether τ = 0 “won” or “tied.” I would accept the distinction in principle, but I would not accept Change 16 as pre-registered evidence. It is a post-hoc redefinition of the check, even if the underlying logical point is sound.
+
+**Is Change 18 justified by the stated diagnosis or convenient?**  
+It is convenient. The diagnosis may explain why 0.95 is not attainable by any sensory predictor without a thing-count prior, but that is grounds for revising the design and re-freezing before seeing 0.88, not for dropping the threshold after seeing 0.88. The replacement—slot-only > lookup-only—is not an adequacy criterion for the grammar; it only says one architecture class beats another. I would not accept Change 18.
+
+**Which changes would I have accepted as a referee?**  
+I would accept, conditionally: Changes 1, 3, 4, 5 (as a scope limit), 6 (with the count corrected), 7 (if timestamped before the first run), 8 (only as a versioned pre-run rewrite), 9, 10, 12 (if pre-run), 14 and 15 (if pre
+====================================================================================================
+B2_goalposts | deepseek | sample 2 | finish stop | 19731 chars | error None
+====================================================================================================
+I audit Section 9 against the definitions and promises in Sections 2, 4, 5, and 8. Findings are numbered. I treat “change made after seeing results” as any amendment whose stated rationale cites a control run, a train/test comparison, a score, or a deficit.
+
+## Findings
+
+**Finding 1 — Change 1 (“Changes applied at step 3, not step 0”).**  
+Claim attacked: “A change at step 0 is indistinguishable from a different initial configuration, and all configurations were already enumerated; step-0 changes added nothing.”  
+Why it fails: nothing material. It changes the world/contract, not the meaning of a pre-registered outcome.  
+Severity: cosmetic/minor.  
+Fix: none, if step-0 changes are explicitly out of scope.  
+Referee verdict: accept.
+
+**Finding 2 — Change 2 (“Occlusion is a 3-cell window, not a single cell”).**  
+Claim attacked: “A 3-cell window hides it for at least three steps, beyond *k* = 3.”  
+Why it fails: the stated rationale is false as written. The occlusion rule says a window “reads 0 in the sensory field from step 3 to the end, whatever is there.” A thing outside the window is not hidden at all; a thing inside may be hidden for more or fewer than three steps depending on velocity and position. The design also appears chosen to exceed lookup *k* = 3, which bakes in an advantage for slot/persistence machinery.  
+Severity: serious.  
+Fix: report the actual distribution of hidden durations per configuration; justify the 3-cell window independently of defeating lookup; state whether the window is fixed for the run.  
+Referee verdict: I would accept a 3-cell window as a design choice, but not the false “at least three steps” justification.
+
+**Finding 3 — Change 3 (“Fitness is against true occupancy, not the sensory field”).**  
+Claim attacked: “Under occlusion, predicting ‘nothing there’ would be *correct* against sensation and a persisting slot would be *penalised* for tracking the hidden thing. Selection pressure must come from the world.”  
+Why it fails: this is not machinery. It changes what fitness and M1/M2 mean: from matching sensation to inferring hidden occupancy. It is a substantive contract choice that makes occlusion the central test. If it was adopted before any data, it is defensible; if not, it is post hoc.  
+Severity: serious.  
+Fix: pre-register the true-occupancy target; report sensory-field fitness separately as a robustness check.  
+Referee verdict: accept only if pre-registered before data.
+
+**Finding 4 — Change 4 (“Run length 9, scored from time point 2”).**  
+Claim attacked: “Enough steps after the change for occlusion effects and for τ = 5 to matter.”  
+Why it fails: the horizon is chosen so τ = 5 can matter. That is not a fatal flaw, but it is a design bias: a shorter run would make longer persistence invisible.  
+Severity: minor.  
+Fix: derive run length from the τ range and occlusion durations before running; show results are not sensitive to horizon.  
+Referee verdict: accept if pre-registered.
+
+**Finding 5 — Change 5 (“The hypothesis space is a grammar of architectures, not free-form tables and rules”).**  
+Claim attacked: “This is the concrete form of your point 1: the machinery is latent, and only which of it is used is selected.”  
+Why it fails: it changes what “kinds emerge” can mean. Persistence is explicitly a gene in the grammar. The experiment can test which latent kind is used, not whether kinds emerge from non-kind. The document later admits construction is out of scope, but the title and claims still risk overclaiming.  
+Severity: serious scope issue.  
+Fix: state plainly that construction is out of scope; avoid “emerge” language for the selected kind.  
+Referee verdict: accept with the scope caveat.
+
+**Finding 6 — Change 6 (“Primary selection is exhaustive, not evolutionary”).**  
+Claim attacked: “112 architectures can be enumerated.”  
+Why it fails: Section 2.6 says “there are **208 distinct architectures**,” and Change 14 says “Grammar now 208 architectures.” Also 208 implies a slot-count-0 lookup-only case, but Section 2.6 says “up to *M* ∈ {1, 2, 3} slots.” The frozen document is internally inconsistent about the architecture space.  
+Severity: serious.  
+Fix: update the count; specify whether *M* = 0 is included; reconcile 112 and 208.  
+Referee verdict: accept exhaustive selection, reject the number as written.
+
+**Finding 7 — Change 7 (“H_neutral added: one thing, no occlusion”).**  
+Claim attacked: “The previous sinking condition (‘kinds under pure watching’) was wrong: pure watching of two things contains crossings, which may already demand identity.”  
+Why it fails: this changes the neutral history and the sinking condition after the prior neutral history was found unsuitable. That can be a legitimate design fix, but it also looks like an ad hoc rescue: a new neutral history is introduced so the neutrality check can pass.  
+Severity: serious.  
+Fix: pre-register H_neutral before any run; report the old neutral history as exploratory; show H_neutral is neutral for all no-persistence variants, including `rebind`.  
+Referee verdict: suspicious; accept only if clearly before data.
+
+**Finding 8 — Change 8 (“Pre-registered outcomes rewritten to match, with two added”).**  
+Claim attacked: Section 4 says outcomes were “Written before any code was run, and not changed after.”  
+Why it fails: Change 8 explicitly says the pre-registered outcomes were “rewritten to match, with two added: search bias, and fidelity-kind dissociation.” That is a direct contradiction. Rewriting outcomes is not a machinery change; it changes what counts as support, sink, underpowered, and finding-either-way.  
+Severity: fatal to the pre-registration claim.  
+Fix: separate original outcomes from amended outcomes; report both; re-freeze and rerun on fresh data if the amended outcomes are to be treated as confirmatory.  
+Referee verdict: reject as pre-registered.
+
+**Finding 9 — Change 9 (“Construction declared out of scope”).**  
+Claim attacked: “This tests selection — the expression of latent kinds. It cannot test construction.”  
+Why it fails: nothing materially wrong; it is an honest scope restriction.  
+Severity: minor.  
+Fix: none, if consistently applied.  
+Referee verdict: accept.
+
+**Finding 10 — Change 10 (“Change counts corrected (24 and 14, not 26)”).**  
+Claim attacked: corrected counts.  
+Why it fails: no material problem.  
+Severity: minor.  
+Fix: ensure all histories and tables use the corrected counts.  
+Referee verdict: accept.
+
+**Finding 11 — Change 11 (“Fitness reported against a sensory ceiling”).**  
+Claim attacked: “A first version of the ceiling counted every ambiguous prefix as unachievable and was exceeded by real architectures; it was corrected to the majority-continuation predictor, which is the true bound.”  
+Why it fails: it is corrected after real architectures exceeded the previous ceiling. More importantly, the majority-continuation predictor is not obviously a “true bound” for architectures that carry latent state and memory. It is an in-sample construction, tie-breaking is unspecified, and it can overfit the evaluation half.  
+Severity: serious.  
+Fix: define the conditioning set for “prefix”; specify tie-breaking; prove it is an upper bound for the relevant predictor class; report the original failed ceiling as exploratory.  
+Referee verdict: accept only if mathematically justified independently and pre-registered.
+
+**Finding 12 — Change 12 (“‘Expected 1.0’ replaced throughout”).**  
+Claim attacked: “No sensory predictor can be right at the step where an invisible change first shows.”  
+Why it fails: the correction is analytically plausible, but it changes expectations and any pass/fail language built on 1.0.  
+Severity: minor if pre-registered.  
+Fix: state the maximum achievable score given the change step; report the old expectation as superseded.  
+Referee verdict: accept if before data.
+
+**Finding 13 — Change 13 (“Persist rules infer a fresh slot's velocity from the previous field”).**  
+Claim attacked: “Diagnosis from the first control run: a fresh slot bound with velocity 0 lost the first prediction after a co-located start.”  
+Why it fails: this is a machinery change made after a control run. It tunes the persist rules and can affect neutrality and adequacy. It may be a legitimate bug fix, but it is post hoc.  
+Severity: serious.  
+Fix: report both old and new rules; show results are not sensitive to the change; run fresh controls.  
+Referee verdict: accept only as a disclosed bug fix with sensitivity analysis.
+
+**Finding 14 — Change 14 (“Gene added: jump-keeps-velocity”).**  
+Claim attacked: “Grammar now 208 architectures.”  
+Why it fails: this expands the hypothesis space after a control run. It is construction, not selection. It can help persist architectures pass. It also creates the 112/208 inconsistency and the *M* = 0 inconsistency noted in Finding 6.  
+Severity: serious.  
+Fix: pre-register the grammar; if the gene is added after seeing controls, treat it as construction and report separately.  
+Referee verdict: reject as pre-registered.
+
+**Finding 15 — Change 15 (“Lookup predicts from the first field”).**  
+Claim attacked: “It was handicapped by needing *k* fields before its first prediction.”  
+Why it fails: this changes the lookup pathway after observing that it was handicapped. It may be a fairness fix, but it alters the object-model axis after results.  
+Severity: serious.  
+Fix: pre-register lookup behavior; report both versions.  
+Referee verdict: accept only if pre-registered or as sensitivity analysis.
+
+**Finding 16 — Change 16 (“The neutrality control compared the wrong pair”).**  
+Claim attacked: “The kind under test was always persistence (section 2.6 says so; the wrong-kind control was τ = 0 / rebind). … Recorded honestly: the first control run had already shown τ = 0 winning H_neutral and τ = ∞ winning H_full, which is the supporting outcome; this change does not create that result, it stops the check from asking a different question.”  
+Why it fails: the conceptual point is partly right — lookup-only vs slot-only is the object-model axis, not the persistence axis. But the amendment was made after the first control run and after seeing the τ = 0 / τ = ∞ split. It changes the pass/fail criterion. The sentence “this change does not create that result” is false in the relevant sense: the data existed, but the new criterion is what labels the data as a pass. Combined with Change 19, it becomes a redefinition of the kind under test to make the neutrality check pass.  
+Severity: serious/fatal to pre-registration.  
+Fix: report the original control as failed or exploratory; pre-register the new neutrality check; run it on fresh histories.  
+Referee verdict: I would accept the correction in substance as a referee, but not as a pre-registered pass.
+
+**Finding 17 — Change 17 (“Exposure/evaluation split by configuration index”).**  
+Claim attacked: “Diagnosis: on train = test the *k* = 3 lookup scored 0.820 on H_full and 0.656 on held-out configurations, while the tracker scored 0.801 on both. The lookup was memorising 2,398 local patterns. All fitness is now on the held-out half.”  
+Why it fails: the held-out split was adopted after seeing that lookup beat the tracker on train = test and collapsed on held-out. That is a post hoc metric change that favors the diagnosis. Held-out evaluation is good methodology, but the timing makes the final comparison exploratory. Also, selection is still done on the evaluation half, so there is no independent test set for architecture selection; and the even/odd split by index may be confounded if index order correlates with configuration type.  
+Severity: serious.  
+Fix: pre-register the split; use a random/balanced split; report train = test as exploratory; use nested validation if selection and reporting are to be separated.  
+Referee verdict: I would accept held-out evaluation as a referee, but reject treating the post hoc version as confirmatory.
+
+**Finding 18 — Change 18 (“The 0.95-of-ceiling adequacy threshold is dropped”).**  
+Claim attacked: “It was a guess, and the diagnosis showed the ceiling is an in-sample bound: the tracker's gap to it is the change step itself and co-located starts, which no sensory predictor without a thing-count prior can see. Adequacy is now the ordering, slot-only > lookup-only, on held-out configurations. The fraction of ceiling is still reported (it was 0.88 at this point).”  
+Why it fails: this drops a pre-registered failure threshold after seeing the tracker score 0.88, below 0.95. The stated diagnosis may explain why 0.95 is not reached; it does not justify replacing a quantitative adequacy threshold with a weaker ordering. The new ordering can pass even if both slot-only and lookup-only are poor. Moreover, the diagnosis is internally shaky: the ceiling is in-sample, so part of the gap may be ceiling overfitting, not “the change step itself” or co-location. The original Section 4 “Underpowered” outcome is met: no slot architecture reaches 0.95 × the ceiling, so the pre-registered result is failure or revision, not a dropped threshold.  
+Severity: fatal.  
+Fix: keep the original threshold and report the attempt as failed/underpowered, or re-freeze with a new adequacy criterion and rerun on fresh data.  
+Referee verdict: I would not accept dropping the threshold as a pre-registered amendment; I would accept reporting 0.88 and the ordering as exploratory.
+
+**Finding 19 — Change 19 (“Neutrality check restricted to the τ family”).**  
+Claim attacked: “Under the amended check τ = 0, 2, 5, ∞ tied *exactly* on H_neutral and rebind sat 0.026 below; rebind's deficit is that it cannot keep velocity through a teleport, which is not the kind under test.”  
+Why it fails: Section 2.6 says, “The kind under test is persistence — the τ gene and the `rebind` rule. A thing-tracker keeps a slot alive when nothing confirms it; a cell-tracker does not.” Change 19 excludes `rebind` after it sat 0.026 below, and declares its deficit “not the kind under test.” That contradicts Section 2.6 and changes the kind being tested. It is especially suspicious because Change 14 added the `j` gene for jump-keeps-velocity, and then Change 19 excludes `rebind` because it cannot keep velocity through a teleport. The grammar was expanded in a way that disadvantages `rebind`, and then `rebind` was excluded.  
+Severity: fatal.  
+Fix: include `rebind` and report the neutrality failure, or amend Section 2.6 and pre-register the narrower kind under test.  
+Referee verdict: reject as a pre-registered pass.
+
+**Finding 20 — Change 20 (“A thing-count prior was considered and not added”).**  
+Claim attacked: “It would let a lone blob bind two slots and would close part of the co-location gap. It is a further piece of latent machinery and a candidate for a follow-up, not a change made after seeing results.”  
+Why it fails: it is not a change, but it admits a known co-location gap in the grammar. If adequacy depends on that gap, the grammar is known to be inadequate for part of the contract, and Change 18 drops the threshold that would have flagged this.  
+Severity: minor/serious limitation.  
+Fix: report the size and effect of the co-location gap on M1/M2/M3; treat the thing-count prior as a separate experiment.  
+Referee verdict: accept as disclosure, but it weakens the adequacy claim.
+
+**Finding 21 — Change 21 (“Revision stops here”).**  
+Claim attacked: “Three rounds before freezing. If the two checks do not pass under these criteria, the attempt is recorded as failed and reported, not revised again.”  
+Why it fails: the stopping rule is retrospective. Three rounds of revision after seeing controls means the final criteria were selected after multiple looks. Saying “no more revision” does not cure the bias from the earlier rounds.  
+Severity: serious.  
+Fix: number the rounds, report all amendments and control results, and run a fresh confirmation.  
+Referee verdict: accept as transparency, not as validation.
+
+## Cross-cutting findings
+
+**Finding 22 — Multiple amendments were made after results pointed in a particular direction.**  
+Claim attacked: the document’s status line says, “Nothing was run before that moment except the control check in section 8, step 2.”  
+Why it fails: Changes 11, 13, 14, 15, 16, 17, 18, and 19 all cite control results, train/test scores, or observed deficits. Several explicitly favor the diagnosis: Change 16 cites “the first control run had already shown τ = 0 winning H_neutral and τ = ∞ winning H_full”; Change 17 cites lookup scoring 0.820 on train and 0.656 held out; Change 18 cites “it was 0.88 at this point”; Change 19 cites `rebind` sitting “0.026 below.” This is a garden of forking paths, not a pre-registered confirmation.  
+Severity: fatal.  
+Fix: separate discovery from confirmation; report every amendment and control score; rerun the frozen design on fresh histories/configurations.
+
+**Finding 23 — `r = 5` on a 6-cell line is a confound for neutrality.**  
+Claim attacked: the neutrality claim that “H_neutral” cannot distinguish a thing-tracker from a cell-tracker.  
+Why it fails: Section 2.6 says `r ∈ {2, 5}` and a slot can re-bind “the nearest unconfirmed slot within distance *r*.” On a 6-cell line, maximum distance is 5, so `r = 5` lets any unconfirmed slot re-bind to any occupied cell. The τ = 0/2/5/∞ tie on H_neutral may therefore be an artifact of over-permissive re-binding, not genuine history neutrality.  
+Severity: serious.  
+Fix: restrict `r` below the line diameter or report neutrality separately for `r = 2` and `r = 5`.  
+Referee verdict: reject the neutrality conclusion until this is checked.
+
+**Finding 24 — Section 4 still contains the 0.95 threshold that Change 18 says was dropped.**  
+Claim attacked: Change 18: “The 0.95-of-ceiling adequacy threshold is dropped.”  
+Why it fails: Section 4 still says, “No slot architecture reaches 0.95 × the sensory ceiling on H_full. Then the grammar in 2.6 cannot express an adequate predictor for this world.” The frozen document is internally inconsistent about the adequacy criterion.  
+Severity: serious.  
+Fix: reconcile Section 4 with Section 5 and Change 18; if the threshold is dropped, remove or mark the Section 4 outcome as superseded.
+
+**Finding 25 — Section 5 excludes `rebind` while Section 2.6 includes it.**  
+Claim attacked: Section 5: “`rebind` is reported beside them but is not in the check: it differs from τ = 0 in re-inferring velocity from scratch every step, which is a velocity-memory difference, not a persistence difference.”  
+Why it fails: Section 2.6 says, “The kind under test is persistence — the τ gene and the `rebind` rule.” The document cannot both define `rebind` as part of the kind under test and exclude it from the neutrality check for that kind.  
+Severity: fatal.  
+Fix: reconcile the definition; if `rebind` is excluded, amend Section 2.6 and pre-register the narrower kind.
+
+**Finding 26 — M3’s “if a match exists” clause can excuse ambiguous cases.**  
+Claim attacked: Section 3 M3: “if a match exists, apply the **translated** change to the slot state … and check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity).”  
+Why it fails: two things can share a cell and have the same velocity, or cross. The “if a match exists” condition can let ambiguous configurations drop out of the denominator, inflating the thing-signature fraction. This interacts with the neutrality/adequacy checks because M3 is used to certify thing-kind.  
+Severity: serious if M3 is used for the main conclusion.  
+Fix: pre-specify matching and tie-breaking for co-located/crossing cases; report the fraction of dropped cases.

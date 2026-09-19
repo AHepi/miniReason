@@ -1,0 +1,117 @@
+====================================================================================================
+D4_failure_modes_complete | deepseek | sample 0 | finish length | 7380 chars | error None
+====================================================================================================
+Ranked by severity, most severe first. These are failure modes not listed in section 10, or only partly gestured at there.
+
+## 1. The B “byte-identical” test is vacuous — serious
+
+**Claim attacked:** “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.** … it is a demonstration that the two processes’ outputs depend on different things”.
+
+**Why it fails:** The code is:
+```python
+b_rules_again, _, _ = blind_search([], exposure, 0, ignored_records="scrambled records passed and ignored")
+```
+and
+```python
+def blind_search(start_rules, exposure, seed, ..., ignored_records=None):
+```
+`ignored_records` is never referenced. Worse, the call passes a string literal, not the scrambled records. `blind_search` is deterministic given `seed`, `exposure`, and `start_rules`; re-running it with the same seed necessarily gives identical output. The test cannot show B is insensitive to defect content. It only shows an unused parameter is unused.
+
+**Severity:** serious. It invalidates S4’s B clause as reported. The code-inspection claim may still hold, but this test does not support it.
+
+**Fix:** Remove the test, or implement a real intervention: pass scrambled records through a channel B could read, e.g. into its fitness or mutation, and show no change. Compare full outputs, not just rule names.
+
+## 2. C is trained and accepted on the same exposure records, with no internal held-out check — serious
+
+**Claim attacked:** Section 10 #6 says “Never checks its conjecture on the evaluation half. C accepts every rule with positive net on exposure records. A critical step — try the rule and look at the new defects — is only implicit (the next round’s records).”
+
+**Why it fails:** #6 notices the evaluation-half omission, but not that C both *builds* and *accepts* on the same exposure half. `construct([], exposure)` collects `V, N` from exposure. `construct_round` selects the condition and action on those same `V, N`, using `net = fixed - broken`. The next round reuses the same exposure half. There is no internal validation split and no correction for the large multiple-comparison search over `CONDITIONS × ACTIONS`. A rule with a small positive net by chance can be accepted. The M6(ii) diagnostic exposes one symptom, not the general overfitting risk.
+
+**Severity:** serious.
+
+**Fix:** Split exposure into construction and validation subsets, or use cross-validation; require a margin or significance threshold; report held-out net.
+
+## 3. Condition scoring `tp - fp` ignores base rates — serious
+
+**Claim attacked:** The constructor “induced” the condition `n_i == n_j` with “score 929”, using “no fitness number at all”.
+
+**Why it fails:** The scoring code is:
+```python
+scores.append((tp - fp, -condition_atoms(cond), idx))
+```
+This ranks conditions by a raw count difference. With `V = 2830` and `N = 4778`, a condition that fires on many non-defects can still score highly if it fires on more defects. A rare perfect condition (`tp=50, fp=0`) scores 50 and may be excluded; a common condition (`tp=2000, fp=1500`) scores 500. The score also ignores the different sizes of `V` and `N`. It is not a likelihood, precision, or base-rate-aware score.
+
+**Severity:** serious.
+
+**Fix:** Use a normalized score (precision/recall, likelihood ratio, Fisher exact, or at least `tp - fp * (|V|/|N|)`), or score conditions by their best achievable net over actions.
+
+## 4. `top_m=20` truncation is a hard, unlisted search limit — serious
+
+**Claim attacked:** The constructor builds the right rule from itemised defects; the failure-mode list does not mention condition pruning.
+
+**Why it fails:** `construct_round` does:
+```python
+top = scores[:top_m]
+```
+with `top_m=20`. Only the top 20 conditions by `(tp - fp, -condition_atoms, idx)` are ever considered for action solving. If the condition that enables the best action is outside that top 20, C cannot find it. This is a hard cap on the hypothesis space, not a neutral efficiency measure.
+
+**Severity:** serious.
+
+**Fix:** Increase `top_m`, use a score slack threshold, or score conditions by best net over actions before truncating. Report how often the true condition is in the top 20.
+
+## 5. The rule language is hardcoded to two slots; with 3 slots, rules never fire on slot 2 — serious
+
+**Claim attacked:** Section 10 #7 says the rule language “Fires once per step, first matching order” and “Cannot express ‘apply to each slot independently’”. It does not mention slot count.
+
+**Why it fails:** The code is:
+```python
+for i, j in ((0, 1), (1, 0)):
+```
+in `apply_rules`. It only ever considers slots 0 and 1. If a `RulePredictor` had 3 slots, no rule would ever be applied to slot 2, and no pairwise rule involving slot 2 could be expressed. The constructor, the rule language, and `thing_signature` all assume exactly two things/slots (`len(binding) != 2`, `things` as a two-element list, etc.).
+
+**Severity:** serious for any generality claim.
+
+**Fix:** Iterate over all ordered pairs of non-`None` slots, and generalize `thing_signature` and the record machinery to `n` slots.
+
+## 6. The “given bound” figures condition on a post-treatment success variable — serious
+
+**Claim attacked:** “Given-bound fractions (unbound = the predictor was not tracking both things exactly at step 2; shown as count).” The text presents 0.974 and 0.973 as evidence that C’s slots “are the thing”.
+
+**Why it fails:** The code reports:
+```python
+out[tag] = {"total": total, "unbound": unbound, "passed": passed,
+            "given_bound": (passed / bound) if bound else None}
+```
+The denominator excludes pairs where the predictor was already misbound at step 2. That binding success is itself affected by the rules. A0 alone has 99 unbound in the same-target bucket; C has 21. Those failures are dropped from the reported fraction rather than counted as failures. The table gives unbound counts, but no unconditional pass rate. The headline can overstate C’s advantage. Section 10 #13 only notes that 2–18% of pairs are discarded; it does not flag the selection bias.
+
+**Severity:** serious.
+
+**Fix:** Report unconditional pass/total, treat unbound as failures, or predefine binding from ground truth and score all pairs.
+
+## 7. M3’s crossing bucket includes any crossing after the change, not the first collision — serious
+
+**Claim attacked:** “on the 230 pairs with a crossing after the change, C’s slots pass through while the things bounce — zero”.
+
+**Why it fails:** The code defines:
+```python
+crossing_after = any(changed[t]["event"] == "cross" for t in range(CHANGE_STEP, RUN_LENGTH))
+...
+tag = "cross_after" if crossing_after else ...
+```
+A pair is tagged crossing if *any* crossing occurs after the change. If C failed earlier at a same-target collision or another event, that pair still counts as a crossing failure. The zero for C is likely due to the missing crossing rule, but the bucket does not isolate that cause. The hand-built crossing rule reaching 1.000 is suggestive, not conclusive.
+
+**Severity:** serious for the specificity of F3.
+
+**Fix:** Classify by the first collision after the change, or restrict the crossing bucket to pairs whose first post-change collision is a crossing.
+
+## 8. B’s fitness optimises overall accuracy, not collision-step fidelity — serious
+
+**Claim attacked:** “B used 1,720–1,788 full-history fitness evaluations per
+====================================================================================================
+D4_failure_modes_complete | deepseek | sample 1 | finish length | 0 chars | error None
+====================================================================================================
+(empty)
+====================================================================================================
+D4_failure_modes_complete | deepseek | sample 2 | finish length | 0 chars | error None
+====================================================================================================
+(empty)

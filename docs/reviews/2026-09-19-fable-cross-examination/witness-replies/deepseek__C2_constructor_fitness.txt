@@ -1,0 +1,275 @@
+====================================================================================================
+C2_constructor_fitness | deepseek | sample 0 | finish stop | 11081 chars | error None
+====================================================================================================
+The passage under attack is: “**C never computes an aggregate fitness. Its only inputs are itemised records.**” and the companion: “**B never reads a defect record. Its only input is a number per candidate.**”
+
+## 1.
+
+**Claim attacked:** “C never computes an aggregate fitness. Its only inputs are itemised records.”
+
+**Why it fails:** The text immediately after gives C an explicit scalar objective: “score every condition in the language by (number of V states it is true on) − (number of N states it is true on); keep the top 20.” That is a sum over records. It is used to rank conditions and select candidates. It is a fitness function. It is itemised in its input representation, but aggregate in its computation. The same is true of the action score: “count the V records it fixes … minus the N records it breaks. Take the best (condition, action).” A scalar used to rank and take the best is a fitness.
+
+**Severity:** Fatal to the stated distinction.
+
+**Fix:** Replace “C never computes an aggregate fitness” with “C never computes a global black-box architecture fitness; it computes a local, structured fitness over rule components from itemised records.” Then the contrast is local/structured vs global/black-box, not aggregate vs non-aggregate.
+
+## 2.
+
+**Claim attacked:** “Its only inputs are itemised records.”
+
+**Why it fails:** C also uses the current architecture, the kinematics, the fixed meta-grammar, the exposure half, the N records, and the tie-breaking order. More importantly, the itemised records are transformed into aggregate counts before any selection occurs. The sentence describes the data format, not the computation.
+
+**Severity:** Serious.
+
+**Fix:** Say “C’s input data are itemised V/N records; its selection criteria are aggregate scores over those records.” Do not use “only inputs” as a differentiator.
+
+## 3.
+
+**Claim attacked:** “B never reads a defect record. Its only input is a number per candidate.”
+
+**Why it fails:** B’s number is “**exposure-half** fitness of the current architecture plus the candidate rule.” That fitness is computed from the same per-step predictions and true fields that generate C’s defect/non-defect records. It is an aggregate function of the current architecture’s errors. B does not see the individual tuples, but it is not defect-independent. The difference is interface compression: C gets the itemised error tuples; B gets a scalar sufficient statistic of them.
+
+**Severity:** Serious.
+
+**Fix:** Say “B receives only a scalar summary of the current architecture’s errors; C receives the itemised error tuples.” Do not say B does not read defect content.
+
+## 4.
+
+**Claim attacked:** The M4 scramble test as a provenance test: “Give C the exposure half’s defect records with the **true-field column permuted** … Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run. **This is the test that distinguishes the provenances.**”
+
+**Why it fails:** B is defined as a process that never reads V. Its “byte-identical” outcome is therefore analytic, not empirical. The test does not show that B lacks a representation of the defect; it shows that B’s input interface excludes the scrambled file. To test whether B uses defect content, you would have to scramble the true fields in B’s exposure half or give B the same V and see whether it uses them. The current design confounds “does not receive this representation” with “does not operate on any defect representation.”
+
+**Severity:** Fatal for M4 as a provenance test.
+
+**Fix:** Define a common information set. Scramble the underlying true labels for both processes. Or add a B+V condition where B receives the same records but can only convert them into a scalar. If B+V still equals B, then the representation is not on B’s active route. Also add a C control with an equally rich but irrelevant record type.
+
+## 5.
+
+**Claim attacked:** “Blind selection over the meta-grammar can add the same rules” plus S5: “B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.”
+
+**Why it fails:** If both processes search the same fixed 50,176-rule meta-grammar, and B is expected to reach the same fidelity, then the rules are latent in the grammar. The difference is not construction vs selection; it is informed/exhaustive-ish component-wise search vs mutation search over complete rules. C enumerates 3,136 conditions, keeps the top 20, then tests 16 actions using labelled records. B mutates whole rules using a scalar. That is a search-operator difference, not a different kind of provenance.
+
+**Severity:** Fatal to the strong provenance claim.
+
+**Fix:** Reframe the experiment as a comparison of search operators and inductive biases. If you want construction in a stronger sense, require C to produce new predicates, new terms, or new representations not already present in the fixed meta-grammar.
+
+## 6.
+
+**Claim attacked:** The implicit claim that C’s condition score is not a fitness.
+
+**Why it fails:** `(number of V states it is true on) − (number of N states it is true on)` is a signed classification objective: true positives minus false positives. It uses positive and negative examples. It is used to “keep the top 20.” That is supervised rule induction with a fitness. The action score `fixed(V) − broken(N)` is a counterfactual reward over records. Both are aggregate objectives.
+
+**Severity:** Fatal to the wording “C never computes an aggregate fitness.”
+
+**Fix:** Call these “local component scores” or “structured fitnesses.” Admit that C computes aggregate scores over records; what it does not compute is a global architecture-level black-box reward.
+
+## 7.
+
+**Claim attacked:** “Repeat until no V remain or 3 rules.”
+
+**Why it fails:** “No V remain” is an aggregate stopping criterion. It counts residual defects. Combined with “keep the top 20,” C uses multiple aggregate criteria even if one refuses to call the condition/action scores fitnesses.
+
+**Severity:** Serious.
+
+**Fix:** Enumerate all selection and stopping criteria and state which are aggregate. Do not claim C never computes an aggregate fitness while using aggregate counts to terminate.
+
+## 8.
+
+**Claim attacked:** C’s action score as evidence that C “operates on a representation of the defect”: “for each kept condition and each action, count the V records it fixes (apply action to the state, run kinematics, prediction now equals the true field) minus the N records it breaks.”
+
+**Why it fails:** This evaluates each record independently over a one-step horizon. It ignores interactions with existing rules, rule order, and consequences for later steps. It is a myopic aggregate score. It may select a rule that fits individual defect records but not the architecture. Therefore the score alone does not establish that the defect representation plays a faithful causal role in building a component. It establishes that the records are used as a training set for a local heuristic.
+
+**Severity:** Serious.
+
+**Fix:** Evaluate candidate rules in situ with the current architecture, or explicitly state the myopic assumption and show via M3/M7 that the resulting rules are faithful despite it.
+
+## 9.
+
+**Claim attacked:** “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected. That is the operational content of ‘the mapped objection is on an active dependency route.’”
+
+**Why it fails:** The selecting process is defined as one that never read the representation. Its unaffectedness is true by definition. This is circular as an operational test. It does not discover a difference in provenance; it encodes the difference in the input plumbing.
+
+**Severity:** Serious to fatal for that operationalization.
+
+**Fix:** Define the processes by behavior before assigning labels. Use an independent criterion for “operates on a representation,” e.g., whether the process can be made to use the representation and whether that changes its search trajectory in a way not reducible to extra evaluations.
+
+## 10.
+
+**Direct answer to the question:** Is there any sense in which C “operates on a representation of the defect” that B does not, beyond efficiency?
+
+**Claim:** The document treats the itemised defect records as a different provenance.
+
+**Why it partly fails and partly holds:** There is a weak sense in which yes: C uses the tuple `(slot state before the step, predicted field, true field)` for credit assignment and hypothesis generation. It can ask which state features are true on defects and false on non-defects, and which action would convert the predicted field into the true field. B’s mutation operator receives no per-state credit; it only sees a scalar per complete candidate. That is a real difference in inductive bias and sample complexity. But it is not beyond efficiency/information in the strong sense: B’s scalar is computed from the same per-step errors, and with enough evaluations B can find the same rules in the fixed meta-grammar. S5 expects exactly that. The difference is algorithmic guidance, not a different kind of process. If “operates on a representation” means the representation is causally necessary for hypothesis generation, then yes for C and no for B. If it means a different provenance kind, no.
+
+**Severity:** Serious overclaim.
+
+**Fix:** State the weaker claim: C uses a structured error signal for credit assignment and hypothesis generation; B uses a black-box scalar. Then design an experiment that isolates this from raw search budget—e.g., match evaluation counts, give B the same records only through a scalar wrapper, and test whether C succeeds where B fails at equal budget. Do not call it “construction vs selection” without that.
+
+## 11.
+
+**Claim attacked:** The contrast between C and B as “aggregate vs itemised.”
+
+**Why it fails:** B’s fitness is an aggregate over exposure configurations. C’s condition and action scores are aggregates over V/N records. Both aggregate. The real contrast is global architecture-level objective vs local component-level objective. Using “aggregate” as the differentiator is equivocation.
+
+**Severity:** Serious.
+
+**Fix:** Use “global architecture fitness” for B and “local component score” for C. Drop “aggregate” from the distinction.
+
+## 12.
+
+**Claim attacked:** “C never computes an aggregate fitness” could be defended as “C never computes an aggregate *architecture* fitness.”
+
+**Why it fails:** Even under that charitable reading, C still selects rules greedily by local aggregate scores and stops on an aggregate residual-defect count. The distinction from B then becomes objective scope and search procedure, not the presence or absence of aggregation. The document should not use the unqualified sentence as if it marked a kind difference.
+
+**Severity:** Serious.
+
+**Fix:** Qualify every claim about aggregation by its unit: records, conditions, actions, or architectures. Then state explicitly that C optimizes local component scores and B optimizes a global architecture score.
+====================================================================================================
+C2_constructor_fitness | deepseek | sample 1 | finish stop | 7468 chars | error None
+====================================================================================================
+The claim is false as stated. Findings:
+
+**Finding 1 — C’s condition induction is an aggregate fitness.**
+- **Claim attacked** (§5, C): “score every condition in the language by (number of V states it is true on) − (number of N states it is true on); keep the top 20. … **C never computes an aggregate fitness. Its only inputs are itemised records.**”
+- **Why it fails:** The score is a sum over itemised records: +1 for each V state satisfying the condition, −1 for each N state satisfying it. That is a scalar objective on condition candidates. “Keep the top 20” is selection by that scalar. It is a fitness function on conditions, whatever it is called. If the author means “not a full-architecture fitness,” they must say so; as written the sentence is contradicted by the immediately preceding algorithm.
+- **Seriousness:** serious.
+- **Fix:** Replace with a precise distinction: “C computes local, supervised fitness scores for condition and action candidates; it does not compute a single full-architecture fitness by exposure-half evaluation.”
+
+**Finding 2 — C’s action selection is also aggregate fitness.**
+- **Claim attacked** (§5, C): “for each kept condition and each action, count the V records it fixes … minus the N records it breaks. Take the best (condition, action).”
+- **Why it fails:** This is another sum over records. It evaluates each `(condition, action)` candidate by a scalar: number of V records fixed minus number of N records broken. “Take the best” is selection by that scalar. So C computes aggregate fitness on rule candidates.
+- **Seriousness:** serious.
+- **Fix:** Same as Finding 1: admit that C computes local aggregate objectives, and define “aggregate fitness” so that it means something narrower than any summed score over records.
+
+**Finding 3 — “Only inputs are itemised records” does not distinguish C from B’s “number per candidate.”**
+- **Claim attacked** (§5): C: “Its only inputs are itemised records.” B: “B never reads a defect record. Its only input is a number per candidate.”
+- **Why it fails:** C’s decisions are made on aggregated counts derived from those records. C also uses a number per candidate — the condition score and the action score. B’s number is also a scalar derived from the exposure half. The real difference is not “records versus number”; it is that C receives per-record true-field labels and computes its own scalar objectives, while B receives one black-box scalar per candidate from the environment. B’s scalar fitness is itself a lossy summary of the same underlying defects.
+- **Seriousness:** serious.
+- **Fix:** State the actual difference: “C receives a labeled error representation and computes local objectives from it; B receives only a black-box scalar objective.”
+
+**Finding 4 — The C/B distinction collapses to informed local search versus mutation search.**
+- **Claim attacked** (§1): “A constructed piece was produced by operating on a representation of the defect … A selected piece … receives, per candidate, a number.”
+- **Why it fails:** Once C is admitted to score condition and action candidates by summed defect-minus-nondefect counts, both C and B are selecting over the same fixed meta-grammar using scalar objectives. C does a nearly exhaustive, supervised search over conditions/actions; B does mutation-selection over whole rules. That is a difference in search strategy and information access, not a difference in whether selection occurs. The document’s own F1 already says: “C and B reach the same fidelity with structurally different rules. By Derivation 2 they are one kind on this contract.” The “C never computes an aggregate fitness” line is doing illegitimate work to make an algorithmic contrast look ontological.
+- **Seriousness:** serious; fatal to the specific claim that C is not fitness-driven.
+- **Fix:** Recast the contrast as “informed/supervised local search vs blind evolutionary search.” Make the provenance claim rest on the causal role of the defect representation, not on the absence of fitness.
+
+**Finding 5 — There is a genuine representational difference, but it is exactly the informed-search advantage.**
+- **Claim attacked** (§1, §5): C “operates on a representation of the defect”; B “never reads a defect record.”
+- **Why it fails:** C reads `V = {(slot state before the step, predicted field, true field)}` and `N` records; B does not. C’s action score uses the true field to check whether a counterfactual application fixes the prediction. That is real error attribution: B cannot know which condition fixes which defect from a scalar alone. So yes, C operates on a representation of the defect in a way B does not. But that is precisely what makes it an informed search. If B matches C’s fidelity in S5, then on this contract the representation buys sample/search efficiency, not a different output kind. To show it is more than efficiency, the design needs a case where B with unlimited scalar evaluations cannot find the rules because the fitness landscape is deceptive, while C can. That is not preregistered.
+- **Seriousness:** serious.
+- **Fix:** Either add such a case, or explicitly limit the claim to “C has an error-representation advantage; on this contract it may be only an efficiency advantage.”
+
+**Finding 6 — M4’s scramble is not a clean test of the whole defect representation.**
+- **Claim attacked** (§7, M4): “Give C the exposure half’s defect records with the true-field column permuted among the V records (same states, same number of defects, same aggregate; wrong pairings). Build… This is the test that distinguishes the provenances.”
+- **Why it fails:** Condition induction scores conditions by how many V states and N states they are true on. The condition language uses only `c, v, n, w`; it does not read the true-field column. Therefore permuting the true-field column among V records cannot affect condition induction. It can only affect the action-scoring step, where “prediction now equals the true field” is checked. So M4 tests one stage’s dependence on one column, not the whole defect representation. It is narrower than the claim “This is the test that distinguishes the provenances.”
+- **Seriousness:** serious.
+- **Fix:** Scramble predicted-field and state columns separately; report stage-specific sensitivity. Or define M4 explicitly as an action-stage scramble. To test condition induction, scramble which records are classified as V versus N.
+
+**Finding 7 — S5 undercuts the route as evidence of a different kind.**
+- **Claim attacked** (§9, S5): “provenance is not output. B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.”
+- **Why it fails:** If B matches C’s fidelity, the only remaining difference is the route. But if C’s route is just informed search with a local aggregate objective, the experiment shows search efficiency and information access, not construction as a different kind. S5 is listed as a support for “construction is real, needed, and distinct from selection,” yet it asserts that the outcome is invariant to the purported distinction. The provenance claim then rests entirely on M4/M6, and Finding 6 weakens M4.
+- **Seriousness:** serious.
+- **Fix:** Either drop S5 as support for construction and treat it as a boundary condition, or add an outcome where the route makes a non-efficiency difference — e.g., B fails even with substantially more evaluations, while C succeeds because of the defect representation.
+====================================================================================================
+C2_constructor_fitness | deepseek | sample 2 | finish stop | 13502 chars | error None
+====================================================================================================
+1. **Claim attacked:** “C never computes an aggregate fitness. Its only inputs are itemised records.”  
+**Why it fails:** C explicitly computes scalar scores over records: conditions by `(#V true) − (#N true)`, actions by `(#V fixed) − (#N broken)`. It keeps the top 20 and takes the best action. A sum over records is an aggregate. The fact that the sum is computed record-by-record does not make the output non-aggregate. This is fitness, itemised during computation but scalar at selection.  
+**Severity:** fatal to the quoted sentence.  
+**Fix:** replace with: “C does not compute one end-to-end architecture fitness on the evaluation half; it selects conditions and actions by local, record-decomposed scores.”
+
+2. **Claim attacked:** C is “construction,” B is “blind selection,” and the distinction is provenance.  
+**Why it fails:** C enumerates conditions, scores them, keeps the top 20, scores actions, takes the best, appends. That is generate-and-test over a fixed meta-grammar. B mutates single rules and selects by fitness. Both are selection over the same fixed rule space. The remaining difference is the proposal distribution and the objective’s locality: C uses an informed, near-enumerative local search; B uses mutation search. The distinction collapses to “informed/exhaustive-ish search vs mutation search,” not “construction vs selection.”  
+**Severity:** fatal to the claimed kind distinction as written.  
+**Fix:** call C what it is: “record-informed greedy local search over a fixed meta-grammar.” If “construction” is still wanted, define it as a route property that is a species of selection, not the opposite of selection.
+
+3. **Claim attacked:** “B never reads a defect record. Its only input is a number per candidate.”  
+**Why it fails:** B’s number is computed by evaluating the current architecture plus candidate against the exposure half, which requires comparing predictions to true fields. The fitness evaluator reads exactly the defect/correct data. If “B” means the whole pipeline, B reads defect records. If “B” means only the selection operator, then C’s selection operator also only sees scores? No: C’s selection operator directly sees V/N records. The document never fixes the process boundary.  
+**Severity:** serious to fatal, depending on the boundary.  
+**Fix:** define the boundary explicitly: “B’s selection operator receives only a scalar; that scalar is produced by a fitness evaluator that reads predictions and true fields.”
+
+4. **Claim attacked:** M4 “is the test that distinguishes the provenances.”  
+**Why it fails:** M4 gives C scrambled V records, then gives B “the same world” and says B never reads V, so B must be byte-identical. B is not given scrambled V at all. The test is asymmetric and tautological: if B’s code has no V input, byte-identity under a V-scramble is guaranteed by construction. It shows only that B’s interface excludes V; it does not show that defect content is absent from B’s causal route. B’s fitness still depends on true fields.  
+**Severity:** fatal to M4 as a provenance distinguisher.  
+**Fix:** either feed both processes the same shared, scrambled representation, or run B with a fitness function computed from scrambled state–outcome pairings, or downgrade M4 to an input-access negative control.
+
+5. **Claim attacked:** “operating on a representation of the defect — which states, which predictions, what actually happened.”  
+**Why it fails:** C’s V records are a labelled table. Condition scoring uses only the state features and counts; the “what actually happened” column is used in action scoring as a target. This is a supervised example set, not a semantic representation of “what went wrong.” B’s fitness also depends on what actually happened. The difference is granularity of access, not representation of a defect mechanism.  
+**Severity:** serious overclaim.  
+**Fix:** call it a “labelled failure table” and specify exactly which columns drive condition scoring and which drive action scoring.
+
+6. **Claim attacked:** C and B can be compared on fidelity as if they differ only in route.  
+**Why it fails:** C optimises local proxy scores: condition coverage difference and action fix/break difference. B optimises full architecture exposure-half fitness. These are different objectives. A fidelity difference between C and B may be due to objective mismatch, not provenance. S5’s “Same machinery, different route” is unsupported by fidelity alone.  
+**Severity:** serious confound.  
+**Fix:** evaluate C’s selected rules under B’s full exposure fitness, or give B the same local scores, or compare algorithms under an identical objective.
+
+7. **Claim attacked:** “C — construction.”  
+**Why it fails:** The meta-grammar is fixed; rules are pre-enumerated. C selects rules from that fixed set by scoring and ranking. That is selection. The document itself says the regress is not escaped and “What grew is G0.” So the output was latent in the meta-grammar; what differs is the route through records.  
+**Severity:** fatal to “construction vs selection” as an ontological distinction in this design.  
+**Fix:** state that construction here is a route property within selection, not a different kind of process.
+
+8. **Claim attacked:** C is an “exhaustive-ish informed search” if that is meant to contrast cleanly with B.  
+**Why it fails:** C is greedy and pruned. It keeps only the top 20 conditions and commits to one rule per round. It does not exhaustively search combinations up to K = 3. If the true condition ranks below top 20, C cannot recover it.  
+**Severity:** serious for claims about C’s search power.  
+**Fix:** describe C as “greedy, condition-enumerating local search with top-20 pruning.” Report the rank of hand-built conditions and ablate the top-20 cutoff.
+
+9. **Claim attacked:** B’s failure would show “the defect-driven route is inferior to blind search” (K3).  
+**Why it fails:** B gets population 32, elitism 4, 60 generations, seeds 0–5, over 50,176 rules. C evaluates all 3,136 conditions plus up to 20 × 16 action pairs per round. The evaluation budgets and proposal operators are not matched. If B underperforms, it may be budget or mutation operator, not blindness.  
+**Severity:** serious confound.  
+**Fix:** match evaluation counts or run B to convergence before classifying K3; report M8 before any K3 verdict.
+
+10. **Claim attacked:** C builds from defect records.  
+**Why it fails:** C’s action scoring says: “apply action to the state, run kinematics, prediction now equals the true field.” C uses the world’s correct kinematic model to roll out counterfactual states. That is model-based search, not merely defect-record induction. B’s fitness also uses the simulator, but C’s search operator explicitly exploits kinematics.  
+**Severity:** serious confound.  
+**Fix:** ablate C’s kinematics, or state clearly that C is model-based; give B equivalent model access; separate defect access from model access.
+
+11. **Claim attacked:** “All three see the exposure half. All fitness is on the evaluation half.”  
+**Why it fails:** B’s stated fitness is “exposure-half fitness of the current architecture plus the candidate rule.” That directly contradicts “All fitness is on the evaluation half.” If “fitness” means reported measurement, say measurement; if it means selection, B uses exposure.  
+**Severity:** serious freezing ambiguity.  
+**Fix:** distinguish “selection fitness” (exposure half) from “reported measurement” (evaluation half).
+
+12. **Claim attacked:** “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected.”  
+**Why it fails:** The selecting process is defined as one that never read it. The test cannot fail to produce the claimed difference; it is a definitional restatement. It does not establish that a process using raw defect records is a different kind from one using a scalar computed from the same records.  
+**Severity:** fatal to the operational inference as stated.  
+**Fix:** define the kinds independently of the scramble test; use interventions on a shared representation; test whether changing the interface alone changes the kind.
+
+13. **Claim attacked:** M4’s scramble “same states, same number of defects, same aggregate; wrong pairings.”  
+**Why it fails:** “Aggregate” is undefined. Condition scores are unchanged by permuting the true-field column because they use V/N states, not true fields. Only action scoring uses the true field. If the true field is deterministic given the state, permuting true fields among V records may leave recoverable information. The test may fail to break C for reasons unrelated to provenance.  
+**Severity:** serious.  
+**Fix:** define which aggregate is held constant; verify that both condition and action scores change; include a positive control where C must break.
+
+14. **Direct answer to “Is there any sense in which C operates on a representation of the defect that B does not, beyond efficiency?”**  
+**Claim attacked:** The document treats “operates on” as if it were a kind difference.  
+**Why it fails:** There is a narrow sense: C’s selection operator is a function of the raw joint distribution of `(state, prediction, outcome)`, so failure content can steer which condition/action is proposed. B’s selection operator is a function of a scalar summary. That is an information-bottleneck difference. But B’s scalar is computed from the same outcomes, so defect content is still causally upstream if the fitness evaluator is inside B. Beyond efficiency, the distinction exists only if the scalar is not a sufficient statistic for C’s local search. Otherwise it is an interface/efficiency difference, not a different kind.  
+**Severity:** serious ambiguity.  
+**Fix:** define “operates on” as “direct access at the selection operator” versus “causal dependence through a fitness evaluator.” Then say which one the provenance claim needs.
+
+15. **Claim attacked:** The design can separate record access from search algorithm.  
+**Why it fails:** C has both record access and an informed enumerative proposal; B has neither record access nor an informed proposal. Any difference between them confounds two variables. There is no B′ that uses itemised records but selects by full fitness, and no C′ that uses C’s search but only a scalar.  
+**Severity:** serious.  
+**Fix:** add a 2×2 control: search operator (record-informed vs mutation) × objective (full fitness vs local scores). At minimum, add one process that uses C’s records but B’s selection rule, or vice versa.
+
+16. **Claim attacked:** S5: “B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.”  
+**Why it fails:** Same fidelity does not establish same machinery. The rules may be structurally different, as F1 anticipates. “Same machinery” is undefined.  
+**Severity:** minor to serious.  
+**Fix:** operationalise “same machinery” via M7 rule equivalence or behavioural equivalence, not fidelity alone.
+
+17. **Claim attacked:** “ties to the fewer-atom condition” is a neutral tie-break.  
+**Why it fails:** It is an inductive bias toward simpler conditions, which may favour the hand-built law or C’s success. B may not have the same bias.  
+**Severity:** minor to serious.  
+**Fix:** pre-register the tie-break as a prior; run sensitivity with random tie-breaking; give B comparable regularisation if comparing.
+
+18. **Claim attacked:** Section 12.4’s closedness check split is a fair restatement.  
+**Why it fails:** The original check applied a 0.1 margin to any G0 architecture on collision steps. The lookup table reached 0.819 against hand-built 0.906, a gap of 0.087, which fails the original 0.1 margin. The check was then split so the lookup’s collision score is “reported as is” but not thresholded there, while the structural part applies only to slot-only G0. That is a moved goalpost, as the document half-admits.  
+**Severity:** serious.  
+**Fix:** pre-register the original threshold; if changing it, justify the new margin independently of the observed 0.087 gap; report both original and revised classifications.
+
+19. **Claim attacked:** Section 12.2’s narrowing of S3 to “pairs with no crossing after the change step.”  
+**Why it fails:** Original S3 required M3 given-bound for A0+C ≥ 0.9 on collision-containing pairs. The new text carves out crossing pairs and reports them separately as F3. This protects S3 from the predicted failure on the invisible law. Pre-registering the expectation before code helps, but changing the success criterion still narrows the original claim.  
+**Severity:** serious.  
+**Fix:** report the original S3 on all collision-containing pairs and the revised S3′ separately; do not call the narrowed criterion S3 without saying it is a revision.
+
+20. **Claim attacked:** “The world’s collision law needs two rules in this language… That is deliberate: building it takes two rounds.”  
+**Why it fails:** This design gives C a shaped local reward: the first rule can reduce defects even if full architecture fitness barely improves. B is selected by full exposure fitness, where a partial first rule may not improve fitness enough to survive. The comparison then confounds defect-shaped local scoring with search algorithm.  
+**Severity:** serious confound.  
+**Fix:** give B the same intermediate defect-based shaping, or test whether B can find the first rule under full fitness, or compare C and B under identical shaping.

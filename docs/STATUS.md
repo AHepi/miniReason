@@ -1,5 +1,9 @@
 # Current research status
 
+## 2026-09-19 — FW5 rewrite review thread published (separate from H005)
+
+A separate session read only PURPOSE.md and FW5, rewrote the semantics around kinds as edit-signatures, ran two frozen experiments, and had both cross-examined by two outside models. The thread is in [docs/reviews/2026-09-19-fable-cross-examination/](reviews/2026-09-19-fable-cross-examination/README.md); the transferable lessons are under 2026-09-19 headings in [docs/lessons/](lessons/README.md). Outcome: the experiments' headlines did not survive (a fair memoriser ties the selected tracker; the construction-versus-selection contrast was analytic; a frozen stopping rule was breached), and the rewrite has a consolidated revision list (file 15 §G) that has not yet been carried out. Nothing in H005 is affected; its section below remains current for that study.
+
 ## H005 active three-cycle comparison — 2026-09-14
 
 The user redefined a cycle as one complete template invocation and authorized up to five cycles per selected chain. Root has published the [current research contract](reviews/multi-cycle-research-contract-2026-09-14.md), [earliest recovered commitment-interface interpretation](reviews/commitment-interface-source-2026-09-14.md), [FCL-1 language proposition](reviews/fcl1-language-proposition-2026-09-14.md), and [H005 protocol](../experiments/diagnostics/H005-open-prose-commitments/PROTOCOL.md).

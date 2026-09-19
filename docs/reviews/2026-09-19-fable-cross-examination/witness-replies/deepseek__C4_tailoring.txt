@@ -1,0 +1,261 @@
+====================================================================================================
+C4_tailoring | deepseek | sample 0 | finish length | 9232 chars | error None
+====================================================================================================
+Direct answer: **No. The defence is not adequate.** The world and the meta-grammar were co-designed. The world was explicitly redefined after an inexpressible edge case was found, and the language contains the collision law as a primitive action. “Blind search has the same actions” only shows that both processes search the same engineered space; it does not make that space general, nor does it remove the tailoring.
+
+---
+
+**1. The world was redefined to fit the language.**
+- **Claim attacked:** “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision. The rule language’s terms are the slots’ own kinematic next-states, so world and language have the same shape. One action added (`swap_next_v`); the two constants removed.” (§12.3)
+- **Why it fails:** This is not a neutral design choice; it is explicit tailoring of the target to the representation. The original edge case — reflection off a wall into a neighbour’s cell — was 16% of collision-type events and inexpressible in the language. Instead of reporting that the language could not express the world, the world was changed until the edge case disappeared. The expressibility check in §6.1 then cannot fail, because the world was adjusted until the language could express it. The construction success is therefore circular: the target law is defined in the language’s terms.
+- **Seriousness:** fatal to the claim that G0 is closed to an independent new feature and that the constructor builds a faithful component of the world.
+- **Fix:** Freeze the world independently before designing the language. If the language cannot express it, report that as a negative result. If revision is allowed, validate the revised language on a held-out set of laws that were not used during design.
+
+---
+
+**2. The language contains the target law as a primitive.**
+- **Claim attacked:** “Action: one of `swap_next_v` (take the other’s outgoing velocity)…” and “Terms: for each slot, its cell `c`, velocity `v`, and its own kinematic next cell `n` and next velocity `w`” (§4); the world says “the two things **stay where they are and exchange outgoing velocities**: thing 1 takes w_2, thing 2 takes w_1” (§3).
+- **Why it fails:** `swap_next_v` is literally the collision law’s action. `n_i, w_i` are the world’s kinematic next-states. The condition `n_i == n_j` is the same-target collision. The answer is a primitive of the meta-grammar. This is not “new machinery” in any strong sense; it is a one-step lookup in a space that was built to contain the answer.
+- **Seriousness:** fatal to the “construction” claim if construction means inventing new primitives.
+- **Fix:** Remove target-specific primitives. Test whether C can invent `swap_next_v` from lower-level operations, or downgrade the claim to “rule selection within a fixed meta-grammar” and say so in the title and abstract.
+
+---
+
+**3. The expressibility check is circular.**
+- **Claim attacked:** “Hand-build the two collision rules in the language, add them to A0, and confirm fidelity on collision-type steps is at or near the sensory ceiling for those steps. If the language cannot express the law, revise.” (§6.1)
+- **Why it fails:** The check can always be passed by revising the language or the world. §12.3 shows that this is exactly what happened. There is no independent criterion for “the language cannot express the law” that does not get resolved by changing the target. The check has no evidential force because it is a tuning step before freezing.
+- **Seriousness:** fatal to the claim that the language is general or that the world is an independent test.
+- **Fix:** Pre-register the language and the world separately, with no revision after a mismatch. If a mismatch occurs, report it as a negative result. If revision is necessary, use a held-out suite of laws to validate the revised language.
+
+---
+
+**4. “Blind search has the same actions” does not rescue the defence.**
+- **Claim attacked:** “B — blind selection over the meta-grammar… B never reads a defect record. Its only input is a number per candidate.” (§5); the defence that B has the same actions.
+- **Why it fails:** Giving B the same tailored action set does not make the action set general or unbiased. It only ensures that C and B are compared within the same engineered space. The tailoring charge is about the space, not about who uses it. B’s success would only show that blind search can find the primed answer; it would not show that construction is needed or that the language is general. The comparison is fair only relative to the tailored meta-grammar.
+- **Seriousness:** serious to fatal for the defence of generality.
+- **Fix:** Include a control with a generic language, for example random actions or lower-level primitives, and show that C or B can still build the collision law. Otherwise state the claim as “within a hand-designed meta-grammar that already contains the collision primitive.”
+
+---
+
+**5. The world’s law is made partly invisible, and the success criteria are carved out.**
+- **Claim attacked:** “When two things meet head-on in adjacent cells, ‘they bounce’ and ‘they pass through each other’ produce the *same* occupancy fields at every step — the identity swap is invisible to sensation. So C… is **expected not to build the crossing rule**… S3’s threshold applies to pairs with **no crossing after the change step**; pairs with a post-change crossing are reported separately as **F3 — the invisible law**, and are expected to fail M3 for A0+C while passing for A0 + hand-built rules.” (§12.2)
+- **Why it fails:** This admits that the built rules will not have the world’s full collision signature. M3 says it checks tracking “*including through collisions*” (§7), and S3 says “The built rules are components with the collision’s signature, not a fix for the observed cases” (§9). Those claims are false for crossing collisions. The success criterion is restricted to the subset the constructor can see. The hand-built comparison is unfair because hand-built gets the invisible rule. This is a moved goalpost.
+- **Seriousness:** serious to fatal for the kind-signature claim.
+- **Fix:** State from the start that the world has an unidentifiable component. Either remove M3’s full-signature claim or define a separate outcome for the visible projection only. Do not compare A0+C to A0+hand-built on crossing cases as if they were the same test.
+
+---
+
+**6. The closedness check was split after seeing the lookup table’s score.**
+- **Claim attacked:** “As first written it applied a 0.1 margin to *any* G0 architecture on collision steps. The best G0 architecture on collision steps turned out to be the lookup table at 0.819 (hand-built rules: 0.906; ceiling: 0.923) — a memoriser of local patterns, not machinery. The margin was meant for machinery. The check now has a structural part… and an overall part…” (§12.4)
+- **Why it fails:** This is a post hoc redefinition of the success criterion after observing that the original threshold failed. The lookup table is a G0 architecture, and it can approximate the law’s visible effects at 0.819, only 0.087 below hand-built. The claim “G0 was closed” is weakened to “no slot-only G0 machinery and no G0 overall by 0.1.” The “margin was meant for machinery” is an interpretive rationalisation, not a pre-registered criterion.
+- **Seriousness:** serious.
+- **Fix:** Pre-register the exact closedness criterion and the competitor set before seeing any scores. If the original criterion fails, report K1. If a structural claim is wanted, state it as a separate structural result, not as the primary closedness check.
+
+---
+
+**7. Order-of-operations contradiction between §3 and §4.**
+- **Claim attacked:** §3 says “Each step, first compute each thing’s kinematic next-state (n_i, w_i)… Then, if n_1 = n_2…” but §4 says “A rule is `IF condition THEN action`, checked on the slot pair (i, j) in both orders, **before** kinematics on each step.”
+- **Why it fails:** The rule language’s conditions use `n_i, w_i`, which are the outputs of kinematics. A rule cannot be checked “before kinematics” and also refer to kinematic next-states unless the kinematic computation is already done. The world is defined as kinematics then rule; the language description says rule before kinematics. This is incoherent and could lead to implementation bugs.
+- **Seriousness:** serious if it reflects a real implementation ambiguity; minor if a wording error.
+- **Fix:** Say “after computing the kinematic next-states, before applying the movement update” and align §3 and §4.
+
+---
+
+**8. C’s “never computes an aggregate fitness” is false.**
+- **Claim attacked:** “C never computes an aggregate fitness. Its only inputs are itemised records.” (§5)
+- **Why it fails:** C scores every condition by “(number of V states it is true on) − (number of N states it is true on)” and counts fixes/breaks over records. These are aggregates over records. The distinction from B is that C’s aggregates are per-condition/action error counts, not the overall exposure-half fitness. But the claim as worded is false.
+- **Seriousness:** minor to serious, because the provenance distinction is partly built on
+====================================================================================================
+C4_tailoring | deepseek | sample 1 | finish stop | 14995 chars | error None
+====================================================================================================
+**Verdict: the defence is inadequate.** The tailoring is not merely inferable; it is documented in §12.3 and reinforced by §6.1’s revision clause. The following findings attack the specific claims that the world/language match is innocent, that the language is general, and that blind search sharing the same actions rescues the design.
+
+1. **Direct post hoc tailoring of the world to the language.**  
+   - **Claim attacked:** “The world is therefore exactly ‘kinematics, then a pairwise rule on the kinematic next-states’ — the same shape as the rule language.”  
+   - **Why it fails:** §12.3 says the earlier world had an edge case that was “inexpressible in the rule language” and that “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states… One action added (`swap_next_v`); the two constants removed.” This is not an observation of a natural match. The world was changed after the language failed on 16% of collision-type events, and the language was changed to fit the new world. That is co-adaptation.  
+   - **Seriousness:** fatal to the claim that the world and language are independent, and serious for any “construction” claim that depends on the world’s feature being genuinely outside the language.  
+   - **Fix:** freeze the world independently of the rule language; run the original edge case as a stress test; if the language cannot express the world, report that as a negative result rather than revising the world into expressibility.
+
+2. **The expressibility check cannot fail.**  
+   - **Claim attacked:** §6.1: “Hand-build the two collision rules in the language… If the language cannot express the law, revise.”  
+   - **Why it fails:** A pre-freeze check that says “if it fails, revise” is not a check. It guarantees that the final language will express the target law. The meta-grammar is therefore fixed only after being tailored to the target.  
+   - **Seriousness:** fatal to the defence that the language is general in any non-question-begging sense.  
+   - **Fix:** pre-register the language before the world is chosen; if the language cannot express the law, record that outcome and stop, or revise only on a separate calibration world and then test on a held-out world.
+
+3. **`swap_next_v` and the terms `n_i, w_i` are the world’s law in disguise.**  
+   - **Claim attacked:** §4 presents the language as a general rule language: “Action: one of `swap_next_v` (take the other’s outgoing velocity)…” and terms include “its own kinematic next cell `n` and next velocity `w`.”  
+   - **Why it fails:** The world’s collision law is exactly “stay where they are and exchange outgoing velocities.” The action `swap_next_v` plus `hold` is that operation. The terms `n_i, w_i` are the world’s intermediate variables. Generality is not demonstrated by a large rule count when the exact target action and exact target variables are hand-installed.  
+   - **Seriousness:** serious to fatal to the generality defence.  
+   - **Fix:** ablate `swap_next_v`; test on laws requiring other actions; derive the action set from prior principles, not from the target world’s collision rule.
+
+4. **The evaluation order is contradictory.**  
+   - **Claim attacked:** §4: “A rule is `IF condition THEN action`, checked on the slot pair (i, j) in both orders, **before** kinematics on each step.”  
+   - **Why it fails:** The same rule language uses terms “its own kinematic next cell `n` and next velocity `w`.” If the rule is checked before kinematics, `n` and `w` do not yet exist. §12.3 says the world is “kinematics first, then the pairwise law on the kinematic next-states.” §5 C says C will “apply action to the state, run kinematics.” These three cannot all be true.  
+   - **Seriousness:** fatal to the claim that world and language “have the same shape.”  
+   - **Fix:** specify one unambiguous order. If conditions use `n,w`, compute kinematics first, then evaluate conditions and apply actions without re-running kinematics. If rules act before kinematics, remove `n,w` and `swap_next_v`. Update C’s action-application procedure to match.
+
+5. **The “same shape” sentence is definitional, not evidential.**  
+   - **Claim attacked:** §3: “The world is therefore exactly ‘kinematics, then a pairwise rule on the kinematic next-states’ — the same shape as the rule language.”  
+   - **Why it fails:** The word “therefore” is doing no work. The world is *defined* that way in the preceding sentences. The rule language is *defined* with the same intermediate variables. The match is stipulated.  
+   - **Seriousness:** serious.  
+   - **Fix:** define the world in purely observational terms first; then ask whether the language can express it. Do not define the world in the language’s vocabulary and present the result as a match.
+
+6. **The blind-search defence does not address tailoring.**  
+   - **Claim attacked:** The defence that “the blind search has the same actions” implies the language is general.  
+   - **Why it fails:** B searches the same tailored meta-grammar. If B succeeds, it shows the solution is in the pre-tailored space. It does not show the space is general, nor that the world was not tailored. Equality of action sets only controls for search method, not for co-adaptation of world and language.  
+   - **Seriousness:** serious.  
+   - **Fix:** run B on a neutral or control language not tailored to the target world; compare C and B across multiple independently generated worlds and languages, including ones where the exact rule is absent.
+
+7. **B is not searching the same combinations as C.**  
+   - **Claim attacked:** §5 B: “mutation–selection over single rules… Append the best. Repeat for 3 rounds.” The implied defence is that B can add the same rules.  
+   - **Why it fails:** C adds up to 3 rules via defect-driven sequential induction. B greedily selects one rule per round. If the exact collision law needs two rules and the first rule alone is not beneficial, B may fail even though the rule set is expressible. B’s action set is the same; B’s sequence search is not.  
+   - **Seriousness:** serious.  
+   - **Fix:** search jointly over sequences of up to K rules, or use the same sequential protocol for both C and B, so that the comparison is between routes rather than between different search topologies.
+
+8. **The “needed” claim is circular relative to G0.**  
+   - **Claim attacked:** §3: “Nothing in G0 has one: every G0 slot updates independently. That is what makes G0 closed to it, if it is.”  
+   - **Why it fails:** G0 is closed to pairwise interaction because G0 is defined as having independent slots. The meta-grammar is defined as containing pairwise rules. It is therefore guaranteed that G0 cannot represent the law while the meta-grammar can. “Needed” is true only relative to the pre-supplied meta-grammar.  
+   - **Seriousness:** serious.  
+   - **Fix:** define closure independently of the meta-grammar; test whether G0 can approximate the law with more resources or added features; compare against several meta-grammars, not only the one that contains the target.
+
+9. **Hand-building the exact rules before construction guarantees the target is in the search space.**  
+   - **Claim attacked:** §6.1: “Hand-build the two collision rules in the language, add them to A0, and confirm fidelity…”  
+   - **Why it fails:** The experiment confirms before C runs that the exact target rule is expressible and effective. C’s later success may be template matching against a pre-validated rule, not construction of genuinely new machinery.  
+   - **Seriousness:** serious.  
+   - **Fix:** do not hand-build the exact target rules before C; use held-out law variants; or measure C on a law not already known to be in the language.
+
+10. **C is itself a selection process over the meta-grammar.**  
+    - **Claim attacked:** §5 C: “Induce a condition: score every condition… keep the top 20. Solve an action: … Take the best… Append.”  
+    - **Why it fails:** C scores and selects conditions and actions using aggregate counts over defect records. That is selection over a candidate space with a defect-derived objective. The construction/selection distinction is not established by saying C “never computes an aggregate fitness”; C computes aggregate counts.  
+    - **Seriousness:** serious to the provenance claim.  
+    - **Fix:** show a non-selective constructive operation, such as structured composition, variable discovery, or abstraction that is reused under new defects. Otherwise rename the process “defect-guided selection” and weaken the construction claim.
+
+11. **The scramble test distinguishes “uses defects” from “does not use defects,” not “constructs” from “selects.”**  
+    - **Claim attacked:** §1: “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected.”  
+    - **Why it fails:** Any process that uses defect records as part of its objective will break under scrambling. A selecting process that uses defect records as fitness would also break. M4 therefore does not isolate construction from selection; it isolates defect-reading from non-defect-reading.  
+    - **Seriousness:** fatal to the claim that M4 is “the test that distinguishes the provenances.”  
+    - **Fix:** test whether the built component is transformed, reused, or composed under new defect records; ablate internal representations, not just input columns.
+
+12. **The closedness check was moved after the numbers came in.**  
+    - **Claim attacked:** §12.4: “The margin was meant for machinery. The check now has a structural part… and an overall part…; the lookup’s collision figure is reported as is.”  
+    - **Why it fails:** The original check applied a 0.1 margin to any G0 architecture on collision steps. When the lookup reached 0.819 against hand-built 0.906, the check was reinterpreted so the lookup would not be thresholded there. That is a moved goalpost.  
+    - **Seriousness:** serious.  
+    - **Fix:** predefine “machinery” operationally before seeing which architecture wins; report both the original and revised checks; do not change the criterion after observing the result.
+
+13. **“G0 could not do it” is false on the reported numbers.**  
+    - **Claim attacked:** §9 S1: “A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did.”  
+    - **Why it fails:** §12.4 reports the lookup at 0.819 on collision steps, hand-built at 0.906, ceiling 0.923. G0 partially did it. The claim can only be about representation, not behavioral sufficiency.  
+    - **Seriousness:** serious overclaim.  
+    - **Fix:** distinguish behavioral approximation from representational kind. Use M3 to support “represents” and report the partial performance without saying G0 “could not do it.”
+
+14. **The overall closedness check is dominated by non-collision steps.**  
+    - **Claim attacked:** §6.2: “Overall: the best G0 architecture of any kind is below A0 + hand-built rules overall by at least 0.1.”  
+    - **Why it fails:** Collisions are rare. Overall fidelity is driven by non-collision steps. A lookup can pass an overall threshold without representing the collision law.  
+    - **Seriousness:** serious confound.  
+    - **Fix:** predefine collision-step weighting or require a collision-step gap for all G0 architectures, not only slot-only ones.
+
+15. **The crossing exemption weakens the construction claim.**  
+    - **Claim attacked:** §12.2: “S3’s threshold applies to pairs with **no crossing after the change step**; pairs with a post-change crossing are reported separately as **F3 — the invisible law**, and are expected to fail M3 for A0+C while passing for A0 + hand-built rules.”  
+    - **Why it fails:** The world’s law includes crossings. C is expected to fail on crossings because the sensory field lacks identity. The success criterion is then restricted to cases where C can see defects. That is a pre-registered limitation, but it means C builds only the visible subset of the law.  
+    - **Seriousness:** serious.  
+    - **Fix:** use a sensory field with identity or velocity so crossings are visible; or explicitly claim only construction of the visible same-target law and do not call it construction of the collision law as stated.
+
+16. **The language has direct access to the world’s hidden ontology.**  
+    - **Claim attacked:** §3 says the sensory field is “occupancy, no identity, no velocity,” while §4 gives the rule language terms `c_i, v_i, n_i, w_i` for each slot.  
+    - **Why it fails:** The world’s law is defined over things with positions and velocities. The rule language is defined over slots with positions, velocities, and kinematic next-states. If slots are bound to things, the language is handed the latent variables that the sensory field lacks. This bypasses the binding problem.  
+    - **Seriousness:** serious.  
+    - **Fix:** restrict the rule language to observable sensory features, or make the binding a learned variable and include it in the construction task.
+
+17. **Tie-breaking may break M5’s recoding invariance.**  
+    - **Claim attacked:** §10: “Free, fixed in code and hashed: tie-breaking order among equal-score conditions…” and §7 M5: “Reverse the order of V and N records… The rules must be identical.”  
+    - **Why it fails:** If tie-breaking depends on record order, reversing V and N can change the selected condition. M5 may then fail for an implementation detail unrelated to the content/carrier claim.  
+    - **Seriousness:** minor to serious.  
+    - **Fix:** specify a canonical, order-invariant tie-breaking rule and test it before freezing.
+
+18. **“C never computes an aggregate fitness” is misleading.**  
+    - **Claim attacked:** §5 C: “C never computes an aggregate fitness. Its only inputs are itemised records.”  
+    - **Why it fails:** C scores conditions by “(number of V states it is true on) − (number of N states it is true on)” and actions by “count the V records it fixes… minus the N records it breaks.” Those are aggregate scores over records. The contrast with B is the objective, not aggregation.  
+    - **Seriousness:** minor.  
+    - **Fix:** say “C does not evaluate whole-architecture fitness; it scores local condition/action counts.”
+
+19. **Phase 2’s sticky-wall law was also designed to be expressible.**  
+    - **Claim attacked:** §8: “Start from A0 + C’s phase-1 rules… Run C for up to 2 further rounds…” and §4: “A wall hit is `v_i != w_i`, so phase 2’s law is expressible without constants.”  
+    - **Why it fails:** The phase-2 law is explicitly checked for expressibility in the tailored language. Accumulation is therefore also tested only on a feature that has been pre-arranged to fit the language.  
+    - **Seriousness:** serious.  
+    - **Fix:** predefine phase-2 independently of the language; include an inexpressible control; or report phase 2 as a test of reusable defect-guided selection, not open-ended construction.
+====================================================================================================
+C4_tailoring | deepseek | sample 2 | finish stop | 9595 chars | error None
+====================================================================================================
+Answer: No. The defence is inadequate. The tailoring is not a suspicion; it is stated in the text.
+
+**Finding 1 — The world is defined as an instance of the rule language, so expressibility is stipulated, not tested.**
+- Claim attacked: The collision world is an independent “new feature” against which the meta-grammar is tested.
+- Why it fails: The text says: “The world is therefore exactly ‘kinematics, then a pairwise rule on the kinematic next-states’ — the same shape as the rule language.” That is not a discovered coincidence; it is the specification. The “new feature” is a pairwise rule on kinematic next-states, and the meta-grammar is a language of rules on kinematic next-states. The section-6 expressibility check is therefore close to a tautology.
+- Severity: fatal.
+- Fix: Define the collision law in an independent formalism — e.g. equal-mass elastic collisions with simultaneous update and explicit momentum/energy constraints — freeze the language first, then report expressibility as an outcome rather than a check that can trigger revision.
+
+**Finding 2 — `swap_next_v` is the collision law’s conclusion, not a primitive.**
+- Claim attacked: C “builds” the collision machinery rather than selecting a pre-packaged answer.
+- Why it fails: The world says the things “exchange outgoing velocities”; the action is “`swap_next_v` (take the other's outgoing velocity).” The needed action is literally a primitive in the language. C’s “Solve an action” step is selection from a set containing the target action. No composition is required.
+- Severity: fatal.
+- Fix: Remove `swap_next_v`; use lower-level position/velocity primitives and require C to compose an equivalent. Or use target laws that are not named by any single action.
+
+**Finding 3 — The terms `n_i, w_i` contain the world’s internal variables and its exact antecedent.**
+- Claim attacked: The language is general and not tailored to the collision law.
+- Why it fails: The language’s terms are “`c_i, v_i, n_i, w_i, c_j, v_j, n_j, w_j`.” The world’s collision condition is “if `n_1 = n_2` … or (`n_1 = p_2` and `n_2 = p_1`).” The language’s atoms are equality/inequality over exactly those terms. The world’s collision predicate is therefore an equality pattern over the language’s own variables. The language supplies both the antecedent and the action.
+- Severity: fatal.
+- Fix: Restrict the language to sensory observables; force C to infer `n,w` from `c,v` and the update rule; or define the world with hidden variables not present in the language.
+
+**Finding 4 — Section 12 change 3 is post-hoc fitting after the language failed an edge case.**
+- Claim attacked: The design is frozen before the section-6 checks, so the collision result is not obtained by moving the target.
+- Why it fails: The text admits: “The section-6 check showed this edge case was 16% of all collision-type events, inexpressible in the rule language…” The response was: “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states… One action added (`swap_next_v`); the two constants removed.” You changed the world and the language after seeing an inexpressibility case. That removes the counterexample and guarantees expressibility.
+- Severity: fatal.
+- Fix: Freeze world and language before the check. Report the original inexpressibility as a result. If you revise, mark it exploratory and validate on a fresh, independently specified world/language pair.
+
+**Finding 5 — The expressibility check has an explicit escape hatch.**
+- Claim attacked: Section 6.1 tests whether the language can express the law.
+- Why it fails: It says: “If the language cannot express the law, revise.” A check that revises the language until it passes cannot fail. It is not a check; it is a guarantee.
+- Severity: fatal.
+- Fix: Remove the revision clause. Make expressibility an outcome: either the frozen language expresses the frozen world, or it does not.
+
+**Finding 6 — “Blind search has the same actions” only equalises C and B; it does not show the language is general.**
+- Claim attacked: The defence that B searches the same rule/action space is adequate to rebut the tailoring charge.
+- Why it fails: B’s process is “mutation–selection over single rules … fitness = exposure-half fitness of the current architecture plus the candidate rule.” B searches the same 50,176-rule space that contains the exact condition/action. If the target is planted in the hypothesis space, both C and B can find it. S5’s “Same machinery, different route” then shows only that two search methods can hit a target placed in their shared, tailored space.
+- Severity: serious.
+- Fix: Compare across multiple laws drawn from an independent distribution, including laws not expressible by the language. Show C can compose an unanticipated equivalent from primitives not named for the target.
+
+**Finding 7 — G0’s “closedness” is tautological given how the world is defined.**
+- Claim attacked: S1’s “The closed grammar could not do it; extending it did” is an empirical finding.
+- Why it fails: The text says: “Nothing in G0 has one: every G0 slot updates independently. That is what makes G0 closed to it, if it is.” Then the new world is defined as a pairwise rule on slots’ kinematic next-states. G0 is defined as independent slots; the new feature is defined as the pairwise thing G0 lacks. The comparison is between a class defined to lack the feature and a world defined to require it.
+- Severity: serious.
+- Fix: Define the new feature by its observable behaviour, not by its implementation as pairwise. Test whether any G0 architecture can approximate that behaviour. Do not use “pairwise vs independent” as both premise and conclusion.
+
+**Finding 8 — C’s defect records are already in the world’s internal variables.**
+- Claim attacked: C is a general-purpose constructor operating on defect representations.
+- Why it fails: C collects “defect records V = {(slot state before the step, predicted field, true field)}” and induces conditions over the language’s terms. The true field is generated by the same `n,w` law. C’s condition search is template matching in the world’s own variables. That is not independent construction; it is fitting a template whose terms were chosen to match the world.
+- Severity: serious.
+- Fix: Give C only sensory input/output records. Hide `n,w`. Require C to infer the dynamics. Test on worlds with hidden state not present in C’s representation.
+
+**Finding 9 — The final language is post hoc and less general, contradicting the “general language” defence.**
+- Claim attacked: The meta-grammar is a fixed, general language.
+- Why it fails: The text records: “One action added (`swap_next_v`); the two constants removed. 50,176 rules instead of 43,904.” The action was added after the check; constants were removed. The final language is not the pre-registered one, and removing constants reduces generality. The version that succeeds is the version amended around the target.
+- Severity: serious.
+- Fix: Pre-register the final language before any world/language check. Report all versions. Test the version frozen before the collision-law revision.
+
+**Finding 10 — S3’s post-hoc exclusion protects the faithful-component claim.**
+- Claim attacked: S3 shows the built rules are faithful components with the collision’s kind-signature.
+- Why it fails: Change 2 says: “S3’s threshold applies to pairs with no crossing after the change step; pairs with a post-change crossing are reported separately as F3 — the invisible law.” You exclude the cases where C is expected to fail from the primary success criterion. That is a moved goalpost. It also pre-empts failure by predicting it.
+- Severity: serious.
+- Fix: Pre-register the exclusion before knowing which pairs cross. Make the primary M3 analysis include all pairs; report the crossing subset as a pre-registered secondary analysis.
+
+**Finding 11 — The closedness check was split after seeing that a G0 lookup table nearly reaches the hand-built rules.**
+- Claim attacked: The 0.1 closedness margin is a pre-registered test of whether G0 lacks the machinery.
+- Why it fails: Change 4 says: “The margin was meant for machinery… A0 alone 0.352; best slot-only G0 0.366; lookup 0.819; hand 0.906.” The best G0 on collision steps is the lookup at 0.819, but it is not thresholded on collision steps. S1 says “A0+C > best-of-G0 on collision steps”; the check avoids applying the original margin to the best-of-G0 on exactly those steps. Defining “machinery” after seeing that the lookup approximates the law is a moved goalpost.
+- Severity: serious.
+- Fix: Pre-register what counts as machinery. Apply the original 0.1 margin to best-of-G0 on collision steps, whatever kind it is. If a lookup table gets 0.819, treat that as evidence against the strong closedness claim.
+
+**Finding 12 — The target’s complexity was deliberately matched to K = 3.**
+- Claim attacked: The two-round construction demonstrates general construction capacity.
+- Why it fails: The text says: “The world's collision law needs two rules in this language (same-target and crossing are different conditions, and the language cannot OR three atoms). That is deliberate: building it takes two rounds.” The target was chosen so that the fixed rule budget K = 3 is sufficient. That is another design alignment between world, language, and construction success criterion.
+- Severity: serious.
+- Fix: Do not design the target’s expressibility depth to fit K. Draw laws from an independent distribution. Report when K is insufficient rather than engineering the target to fit it.

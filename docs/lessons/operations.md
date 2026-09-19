@@ -46,3 +46,20 @@ Five provider slots permit independent dependency-ready arms, while each arm's c
 Exact-public-byte approval evidence is occurrence-specific. A previously accepted wave is not proof about different new bytes. Present fresh canonical derivation, published-input matches and established destination authorization to normal approval review; preserve any rejection and its resolution. The successful resolution is evidence for that action, not a bypass rule.
 
 H004's final audit checked65new canonical request/trace pairs,100uniquecombined provider coordinates, zero pending markers, preserved source/plan/record trees and4,081tracked/H004files without credential-pattern matches. Its terminal state closes those coordinates; it does not qualify the full durable scheduler or authorize their replay. Reopening requires a separately identified scientific question and occurrence, with unchanged old evidence.
+
+
+## 2026-09-19 — Running two reasoning models as hostile witnesses
+
+Evidence: the adjudication's §0 in the [cross-examination folder](../reviews/2026-09-19-fable-cross-examination/), the harness and battery files there, and the reply text files. Hidden reasoning text was captured for diagnosis and is not published; only public reply text, usage counts and finish reasons are.
+
+A reasoning model spends its completion allowance on reasoning first. deepseek-flash returned empty content at 6,000 and 24,000 output tokens on a third of items and needed its cap (131,072); Atria-Dawn-Preview returned nothing at 24,000 and its cap is 65,536 (100,000 is rejected). Treat an empty reply with finish reason "length" as a resource failure and rerun at the cap; count it in the accounting either way.
+
+A 600-second read timeout silently cut long generations and the retry path printed nothing, so a stalled run looked like a slow one. Print every retry; set the timeout from observed generation time (Atria at its cap: about thirty minutes per reply). Atria reported burst-rate limits as "Invalid API key" (401); a direct small request succeeding while every harness call failed was the tell.
+
+Both hosts were policy-denied at the egress gateway (403) until the user changed the environment policy; an automatic reviewer then denied one curl carrying the key as exfiltration while the same request from Python was allowed. Preserve both events; neither is a provider observation.
+
+`pkill -f` with the script's name matched the shell issuing it and killed the session twice. Stop a run by scanning process argv for the exact command.
+
+Check that each battery item is assembled with every document its prompt asks about: one item (D8) was sent without the design file it was to map, one of three samples noticed, and the item had to be rebuilt and rerun. Items written to overlap on purpose produce repeated findings, so a count of findings overstates distinct findings; mark duplicates in the adjudication.
+
+Credentials pasted into a chat transcript are a security incident, not a footnote: rotate them at once. The keys never entered any deliverable (scanned), but the transcript cannot be edited.

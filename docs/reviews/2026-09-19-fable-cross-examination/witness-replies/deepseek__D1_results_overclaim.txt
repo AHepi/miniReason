@@ -1,0 +1,433 @@
+====================================================================================================
+D1_results_overclaim | deepseek | sample 0 | finish stop | 14231 chars | error None
+====================================================================================================
+**Finding 1.** Claim attacked: “Phase 1 held on every supporting outcome but one clause” (results, “The answer in one paragraph”). Why it fails: S6 is a supporting outcome, not a mere clause. Design §9 defines S6 as “M5 rules identical; M6 builds nothing.” Results §6/§9 record **M6(ii) ✗**: C built a rule from no-defect-content records. That is S6 failing. The phrase “one clause” understates a failed pre-registered outcome. Severity: serious. Fix: mark S6 failed outright and say phase 1 failed one supporting outcome.
+
+**Finding 2.** Claim attacked: “So: **same machinery, two routes, and the route is detectable by ablation.**” Why it fails: C and B are not the same machinery. C is a record-level condition/action inducer; B is a mutation–selection search. They share A0 and the rule language, not machinery. The B half of the ablation is tautological: design §5 says “B never reads a defect record,” so scrambling V cannot affect it. The “route detectable” result follows from the code’s input wiring, not from an experiment. Severity: serious. Fix: relabel as “same rule language, different input routes”; provide a symmetric ablation or drop the “same machinery” claim.
+
+**Finding 3.** Claim attacked: “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**” Why it fails: if the code never reads the argument, byte-identical output is guaranteed by definition. It tests nothing about provenance. Severity: serious. Fix: do not present this as evidence; if the claim is about B’s route, ablate B’s actual fitness/selection input.
+
+**Finding 4.** Claim attacked: “That is not a claim about the code's data flow — it is a demonstration that the two processes' outputs depend on different things.” Why it fails: it is exactly a claim about data flow. The demonstration consists in showing that C reads V and B does not. Severity: serious. Fix: state it as a code-level fact, not an empirical discovery.
+
+**Finding 5.** Claim attacked: “C never computes an aggregate fitness. Its only inputs are itemised records” (design §5) and “using no fitness number at all” (results answer paragraph). Why it fails: C computes the condition score “(number of V states it is true on) − (number of N states it is true on)” and action net counts such as “fixed 820, broke 0” and “net 952.” Those are aggregates over records. Severity: serious. Fix: say “record-level aggregate scores,” not “no aggregate fitness.”
+
+**Finding 6.** Claim attacked: “from 2,830 itemised records of what went wrong, using no fitness number at all.” Why it fails: C also used **4,778 non-defect records** (results §2) to score conditions and actions. The answer paragraph omits the N records and the aggregate scores. Severity: serious. Fix: state that C used 2,830 V and 4,778 N records and selected by record-aggregate counts.
+
+**Finding 7.** Claim attacked: “⚠️ **S6 content, not carrier** — M5 ✓, M6(i) ✓, **M6(ii) ✗**.” Why it fails: design S6 requires M6 to build nothing. M6(ii) built a rule from records with no defect content. That is a failed supporting outcome, not a warning. Severity: serious. Fix: mark S6 ❌ and downgrade the “content, not carrier” claim.
+
+**Finding 8.** Claim attacked: “⚠️ **S7 accumulates** — wall rule built ✓ (right condition, wrong action); sticky-world total beats phase-1 ✓; collision fidelity within 0.01 ✗ (0.013).” Why it fails: a rule with the right condition and wrong action is not “a wall rule built.” The collision-fidelity clause failed. S7 therefore failed at least one clause and arguably two. Severity: serious. Fix: mark S7 ❌.
+
+**Finding 9.** Claim attacked: the decision to run phase 2 and classify S7. Why it fails: design §11 says “Phase 2 only if S1–S6 hold.” S6 did not hold. Running phase 2 and reporting S7 is a protocol violation. Severity: fatal/serious. Fix: acknowledge phase 2 as exploratory and outside the pre-registered classification.
+
+**Finding 10.** Claim attacked: “I chose a second law that fights the first world rather than extending it. Phase 2 is confounded by the design…” Why it fails: design §8 explicitly defined sticky walls as “instead of reflecting.” The contradiction was chosen in the design, not discovered as an external confound. It is a design error, not an excuse for S7. Severity: serious. Fix: mark S7 failed; phase 2 inconclusive.
+
+**Finding 11.** Claim attacked: “C built `IF v_j != w_j THEN swap_next_v + hold` (condition right: a wall hit; action wrong)” and S7’s “wall rule built ✓.” Why it fails: the action is wrong, so the built rule does not implement the sticky-wall law. Calling it a wall rule is false. Severity: serious. Fix: mark “wall rule built” as failed.
+
+**Finding 12.** Claim attacked: “M3 given-bound fractions … unbound = the predictor was not tracking both things exactly at step 2; shown as count.” Why it fails: the unbound counts differ sharply between A0 and A0+C (same-target: A0 99 unbound vs C 21 unbound). S3’s “far above A0” therefore compares different denominators. Conditioning on a post-treatment variable biases the comparison. Severity: serious. Fix: report unconditional pass rates or matched denominators.
+
+**Finding 13.** Claim attacked: “C's single rule reproduces the hand-built pair exactly, because the crossing rule adds nothing at the sensory level” (results §1). Why it fails: M3 shows A0+C scores **0.000** on crossing-after pairs while A0 + hand-built pair scores **1.000**. The crossing rule does matter for the thing-signature test. Severity: serious. Fix: say C matches the hand-built pair on M1 sensory fidelity only, not on M3.
+
+**Finding 14.** Claim attacked: “S1 needed — 0.906 > 0.819 (best G0, a memoriser) > 0.366.” Why it fails: best G0 gets 0.819 on collision steps. The closed grammar can approximate the law to four-fifths of the ceiling. “The closed grammar could not do it” is an overclaim. Severity: serious. Fix: qualify as “C exceeds the best G0 by 0.087,” not as necessity.
+
+**Finding 15.** Claim attacked: design change 4: “As first written it applied a 0.1 margin to *any* G0 architecture on collision steps… The check now has a structural part… and an overall part.” Why it fails: the original check would have failed because 0.906 − 0.819 = 0.087 < 0.1. The check was split after seeing the lookup’s number. That is a moved goalpost, even if recorded. Severity: serious. Fix: report the original check’s failure and justify the new check independently of the observed number.
+
+**Finding 16.** Claim attacked: design change 3: “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states… The rule language's terms are the slots' own kinematic next-states, so world and language have the same shape. One action added (`swap_next_v`).” Why it fails: the world and action set were tailored to make the collision law expressible. The construction claim is weakened because the exact operation needed was added to the language. Severity: serious. Fix: acknowledge tailoring and test on an unmodified world/language.
+
+**Finding 17.** Claim attacked: “Every one is `n_i == n_j` plus one atom that is vacuous in this world (`c_i == c_j` is never true — positions are distinct; the rest are almost never false).” Why it fails: at least one extra atom is not vacuous. For seed 3, condition `(c_i != v_j) AND (n_i == n_j)` is false in both orders for the valid configuration i=(cell 0, velocity 1), j=(cell 1, velocity 0). Their kinematic next-states are both cell 1, so a same-target collision occurs, but `c_i != v_j` is `0 != 0` false and `c_j != v_i` is `1 != 1` false. B’s rule would not fire. Severity: serious. Fix: report per-seed firing on all 135 configurations; if this configuration is in the evaluation half, the identical-fidelity claim is false.
+
+**Finding 18.** Claim attacked: “All six seeds: same fidelity to 16 digits.” Why it fails: given Finding 17, seed 3’s rule cannot have identical collision fidelity to C if the blocking configuration is in the evaluation half. If it is in the exposure half, B’s exposure fitness is suboptimal and should be reported. The results do not say which half contains it. Severity: serious. Fix: provide per-seed per-configuration outputs.
+
+**Finding 19.** Claim attacked: “All figures on the evaluation half (938 held-out sequences); exposure half 951.” Why it fails: design §3 says there are **135 configurations** split by configuration index. 938 + 951 = 1889, which is not 135 or a simple multiple explained in the design. The mapping from 135 configurations to 938/951 sequences is missing. Severity: serious. Fix: explain the unit and report configuration counts for both halves.
+
+**Finding 20.** Claim attacked: “Sensory ceiling (in-sample, for scale).” Why it fails: design §7 says every measurement is on the evaluation half. An in-sample ceiling is not a valid evaluation-half benchmark. Severity: minor/serious. Fix: report the evaluation-half sensory ceiling.
+
+**Finding 21.** Claim attacked: “F2 — C stopped at one rule with 1,266 residual defects, all of them the change step or co-location ambiguity; report, no more rules warranted.” Why it fails: design §9 defines F2 as “C needs more rounds than K = 3. Report residual defects by cause.” The results neither report by cause nor test the pre-registered finding; they substitute a different conclusion. Severity: minor/serious. Fix: report F2 as not tested or failed, with a residual-defect breakdown.
+
+**Finding 22.** Claim attacked: “Round 2: 1,266 defects remain; **no condition–action pair has positive net; C stops.**” Why it fails: design §5 says C repeats “until no V remain or 3 rules.” Stopping on “no positive net” is an added stopping rule not in the design. Severity: serious. Fix: disclose the added rule; if it was post hoc, mark it as such.
+
+**Finding 23.** Claim attacked: S4’s use of the scrambled run as clean evidence. Why it fails: the same accounting bug that caused M6(ii) also affected the scrambled run: “the scrambled run built three junk rules with small positive nets.” The scrambled run’s rule set is therefore contaminated by the bug, not solely by scrambled outcomes. Severity: serious. Fix: rerun the scramble with the invariant check fixed or filter records that are not true defects.
+
+**Finding 24.** Claim attacked: “Two diagnostics were run on the frozen code afterwards to explain two failures; they changed nothing” and the “un-pre-registered collapse on the original world.” Why it fails: design §10 says after freezing it is “Not permitted… adding a measurement.” The diagnostics and the original-world collapse measurement are additional post-freeze measurements. Severity: serious. Fix: label them exploratory and exclude them from the pre-registered classification.
+
+**Finding 25.** Claim attacked: “S5 **provenance is not output** — B within 0.05 of C in 6 of 6 (identical).” Why it fails: S5 only tests performance parity. It does not test provenance. Equal output is consistent with different provenance but does not establish it. Severity: serious. Fix: relabel S5 as “performance parity,” not “provenance is not output.”
+
+**Finding 26.** Claim attacked: “S4 **on the route** — scrambled C worse by 0.55; B byte-identical.” Why it fails: only C’s input is ablated. B has no defect representation to ablate, so B’s half is circular. The result shows C uses the outcome column; it does not show a general route-detection method. Severity: serious. Fix: either create a symmetric ablation or limit S4 to “C depends on outcome labels.”
+
+**Finding 27.** Claim attacked: “C's condition induction uses states, which were not scrambled.” Why it fails: M4 scrambles only the true-field column. The state column—part of the defect representation—is left intact. This is an incomplete route ablation. Severity: serious. Fix: scramble states as well, or acknowledge that only outcome labels were tested.
+
+**Finding 28.** Claim attacked: “C built exactly one rule… from 2,830 itemised records of what went wrong” and “C never computes an aggregate fitness.” Why it fails: C uses 4,778 non-defect records to score conditions and actions, and it selects by aggregate counts. The “no fitness number” framing hides the N-record contribution. Severity: serious. Fix: state the full record set and the aggregate selection scores.
+
+**Finding 29.** Claim attacked: “Phase 2's ‘collision’ bucket mixes wall-stop steps in, so its figures are not comparable to phase 1's.” Why it fails: S7’s “collision fidelity within 0.01 of before” is then measured on the original world’s collision steps (0.893 vs 0.906), not on the sticky world’s collision-only steps. The metric does not match the phase-2 world. Severity: serious. Fix: report sticky-world collision-only fidelity with wall-stop steps excluded.
+
+**Finding 30.** Claim attacked: “The one supporting clause that failed is an ablation of C's own bookkeeping (M6 ii).” Why it fails: M6(ii) is a pre-registered route ablation, not merely bookkeeping. Its failure means C can build a rule from records with no defect content, which undermines the content-not-carrier claim. Severity: serious. Fix: describe it as a failed route-ablation check.
+
+**Finding 31.** Claim attacked: “The crack it exposed was pre-registered.” Why it fails: the M6(ii) check was pre-registered; the failure of that check was not. The sentence conflates having a pre-registered test with having pre-registered the failure. Severity: minor. Fix: say the check was pre-registered, not the crack.
+
+**Finding 32.** Claim attacked: “All of it is in section 9.” Why it fails: the detailed failure modes are in section 10, not section 9. Severity: cosmetic. Fix: correct the cross-reference.
+
+**Finding 33.** Claim attacked: “B has no simplicity pressure, so it keeps whatever junk arrived with the law… they would come apart on a contract where the junk atom matters (allow co-location, or a thing at cell 1 with velocity 1).” Why it fails: a thing at cell 1 with velocity 1 is already allowed in the present world. The extra atoms are not all vacuous here; Finding 17 gives a current-world configuration where seed 3’s atom matters. Severity: serious. Fix: remove the claim that the atoms are vacuous in this world and report where they bite.
+====================================================================================================
+D1_results_overclaim | deepseek | sample 1 | finish stop | 19891 chars | error None
+====================================================================================================
+All findings are against the text. Quotations are exact.
+
+**1. Post-freeze diagnostics violate the design’s own prohibition on added measurements.**
+Quote: “Two diagnostics were run on the frozen code afterwards to explain two failures; they changed nothing and are reported in section 8.”
+Claim attacked: the run is clean because the diagnostics “changed nothing.”
+Why it fails: Design 13 §10 says “Not permitted after freezing: changing anything fixed; adding a measurement; reclassifying an outcome.” The diagnostics add measurements—e.g. “`stop_i + hold` scores only 540,” “tie at net 952,” “fixed 979, broke 27.” These are not in the frozen measurement set.
+Severity: serious.
+Fix: either pre-register the diagnostics or mark §8 as post hoc/exploratory and exclude it from classification.
+
+**2. “Phase 1 held on every supporting outcome but one clause” is false; S6 is a supporting outcome and it failed.**
+Quote: “Phase 1 held on every supporting outcome but one clause” and “The one supporting clause that failed is an ablation of C’s own bookkeeping (M6 ii).”
+Claim attacked: phase 1 succeeded except for a minor clause.
+Why it fails: Design 13 §9 registers S6 as a supporting outcome: “S6 — content, not carrier. M5 rules identical; M6 builds nothing.” Results §6 reports “M6(ii) ✗.” A conjunct of S6 failed. S6 therefore failed as a pre-registered outcome, not merely one clause inside a still-passing outcome.
+Severity: serious.
+Fix: state “S1–S5 supported; S6 failed.”
+
+**3. “The crack it exposed was pre-registered” misattributes the pre-registration.**
+Quote: “and the crack it exposed was pre-registered.”
+Claim attacked: the M6(ii) failure was anticipated.
+Why it fails: The pre-registered expectation in design 13 §12.2 is crossing invisibility / F3, not the “fragile defect accounting” revealed by M6(ii). Design 13 §9 expected M6 to “build nothing,” not to fail by building a no-op or false-positive rule.
+Severity: serious.
+Fix: separate the pre-registered F3 result from the un-pre-registered M6(ii) failure.
+
+**4. “Using no fitness number at all” is misleading.**
+Quote: “using no fitness number at all.”
+Claim attacked: C uses no aggregate number.
+Why it fails: C computes “score 929” for the condition and “fixed 820, broke 0” for the action. Those are aggregate counts derived from records. The design’s narrow phrase “never computes an aggregate fitness” is not the same as “no fitness number at all.”
+Severity: minor.
+Fix: say “no exposure-half fitness; it uses aggregate counts derived from itemised records.”
+
+**5. The margin over best-of-G0 is below the design’s own 0.1 threshold used elsewhere.**
+Quote: “beats the best the old closed grammar can do (0.819, and that by a memoriser; 0.366 for any structured architecture).”
+Claim attacked: the closed grammar could not do it; extending it did.
+Why it fails: C is 0.906 vs best-of-G0 0.819: margin 0.087. Design 13 §6.2 uses a 0.1 margin for the overall closedness check. The structural argument rests on 0.366, but the headline “beats the best” overstates the collision-step margin.
+Severity: serious.
+Fix: report the 0.087 margin and note it is below the 0.1 threshold used in the design’s closedness check.
+
+**6. “Passes the thing-signature test on 97% of pairs” hides the denominator.**
+Quote: “passes the thing-signature test on 97% of pairs — except pairs with a crossing after the change, where it scores zero.”
+Claim attacked: C passes M3 broadly.
+Why it fails: The 97% is only for bound, non-crossing pairs. The table excludes “unbound” pairs (13, 21, 9 in the three buckets) and gives crossing pairs 0.000 on 230 total pairs. The overall figure including crossing is not 97%.
+Severity: minor.
+Fix: say “97% of bound non-crossing pairs; 0.000 on crossing pairs.”
+
+**7. “Same machinery, two routes, and the route is detectable by ablation” is largely trivial from the coding.**
+Quote: “So: same machinery, two routes, and the route is detectable by ablation.”
+Claim attacked: provenance is empirically distinguished.
+Why it fails: B’s “only input is a number per candidate”; its code never reads the V record array. Therefore passing scrambled V to B as an argument it never reads must produce byte-identical output. That is a code-path fact, not an empirical discovery. The scramble test corrupts C’s outcome labels while leaving B’s fitness computed from the true world, so the comparison is asymmetric. C and B also share the same rule space and the same underlying exposure-half error target; C’s “fix V, don’t break N” is a decomposition of the same accuracy B optimises.
+Severity: serious.
+Fix: either acknowledge this as a code-path demonstration, or design a non-trivial ablation that holds information constant across both processes.
+
+**8. The phase-2 confound is real but used conveniently.**
+Quote: “Phase 2 is confounded by my own design — the second law I chose contradicts the first world’s walls instead of extending them.”
+Claim attacked: the phase-2 failure is excused by the design.
+Why it fails: The contradiction was visible in the design itself: “sticky walls — a thing that would leave the line stops at its current cell with velocity 0, instead of reflecting.” The author chose that law and pre-registered S7 around it. The design gate said phase 2 only if S1–S6 hold; S6 did not hold. The “back on the original world” total and the hand-built wall rule are added measurements not in design §8. The confound explains some collapse, but C’s original-world total falls to 0.431 while the hand-built wall rule falls only to 0.636—so C’s extra drop is not fully explained by the confound.
+Severity: serious.
+Fix: mark S7 failed as run; report phase 2 as invalid for accumulation and, at most, exploratory.
+
+**9. “No structured old-grammar architecture gets above a third” is false.**
+Quote: “no structured old-grammar architecture gets above a third.”
+Claim attacked: structured G0 is below one third.
+Why it fails: The table gives best structured G0 collision fidelity 0.366, which is above one third.
+Severity: cosmetic.
+Fix: say “barely exceeds one third” or “no structured architecture exceeds 0.366.”
+
+**10. “Co-location ambiguities” contradicts the world definition.**
+Quote: “Those residual defects are the change step itself and co-location ambiguities.”
+Claim attacked: residual defects include co-location ambiguities.
+Why it fails: Design 13 §3 says “Things always have distinct positions,” and the contract’s `displace` only permits “a cell [that] is not the other thing’s.” Co-location should not occur in the true world.
+Severity: minor.
+Fix: state what these ambiguities actually are—e.g. adjacent blobs or slot-binding ambiguity—not co-location.
+
+**11. F2 was not the pre-registered F2.**
+Quote: “F2 — C stopped at one rule with 1,266 residual defects.”
+Claim attacked: F2 is reported as pre-registered.
+Why it fails: Design 13 §9 registers F2 as “C needs more rounds than K = 3. Report residual defects by cause.” C instead stopped early and no more rules were warranted. That may be a legitimate finding, but it is not the registered one.
+Severity: minor.
+Fix: label it “F2 not observed; C stopped early” and report residual causes separately.
+
+**12. “Vacuous in this world” overclaims.**
+Quote: “Every one is n_i == n_j plus one atom that is vacuous in this world.”
+Claim attacked: B’s extra atoms are vacuous.
+Why it fails: The parenthetical admits “the rest are almost never false.” “Almost never false” is not “vacuous.” For example, seed 1’s `c_j != v_j` can be false for a stationary thing at cell 0. The results only show the atoms did not bite on the evaluation half.
+Severity: minor.
+Fix: say “vacuous on the evaluation half” and check the full 135-configuration state space.
+
+**13. The example of where the junk atom matters is wrong.**
+Quote: “would come apart on a contract where the junk atom matters (allow co-location, or a thing at cell 1 with velocity 1).”
+Claim attacked: the listed contract exposes the junk atoms.
+Why it fails: The junk atoms involve equalities/inequalities among cells and velocities. A thing at cell 1 with velocity 1 is not obviously the relevant edge case; a thing at cell 0 with velocity 0 or next-cell values 0/1 are more direct.
+Severity: cosmetic.
+Fix: give a concrete state that falsifies the atom, e.g. `c_j == v_j`.
+
+**14. Given-bound conditioning discards 2–18% of pairs and may bias M3.**
+Quote: “Given-bound fractions (unbound = the predictor was not tracking both things exactly at step 2; shown as count).”
+Claim attacked: M3 fairly compares A0 and A0+C.
+Why it fails: The denominators differ across rows (unbound counts 18/99/21 vs 13/21/9). Conditioning on being bound at step 2 selects a non-random subset, and the comparison is on that subset. The design acknowledges 2–18% discarded, but the results do not quantify the bias.
+Severity: serious.
+Fix: report unconditional pass rates, or analyse the unbound cases separately.
+
+**15. “That is not a claim about the code’s data flow” is false.**
+Quote: “That is not a claim about the code’s data flow — it is a demonstration that the two processes’ outputs depend on different things.”
+Claim attacked: the M4 result is not merely code-path dependence.
+Why it fails: The byte-identical B output is exactly a claim about code data flow: B’s code never reads the scrambled records argument. The two processes’ outputs depend on different inputs because they were written to take different inputs.
+Severity: serious.
+Fix: acknowledge it as code-path dependence; to support provenance, show an observer can distinguish routes without reading the source.
+
+**16. M6(ii) is inconsistently classified against its own criterion.**
+Quote: “M6(ii) ✗: C built a no-op rule from records with no defect content.”
+Claim attacked: M6(ii) failed.
+Why it fails: Design 13 M6 says: “It must build nothing or rules with zero net.” If the built rule is truly a “no-op,” it has zero net and satisfies the letter of M6(ii). But §6 says it “claimed ‘fixed 671, broken 0’,” and §8 says it “leaves the prediction unchanged on 671 of them”—suggesting the remaining 258 may change predictions, in which case it is not a no-op and the failure is worse. The document cannot have it both ways.
+Severity: serious.
+Fix: determine whether the rule changes any prediction. If zero net, mark M6(ii) passed by the letter; if harmful, say so and explain the unpenalised V breaks.
+
+**17. “Wall rule built ✓ (right condition, wrong action)” is a moved goalpost.**
+Quote: “wall rule built ✓ (right condition, wrong action).”
+Claim attacked: S7’s first clause passed.
+Why it fails: Design 13 S7 says “A wall rule is built.” A rule that fires on wall hits but performs the wrong action is not a wall rule in the intended sense. It is a rule about walls that fails to implement sticky walls.
+Severity: serious.
+Fix: mark the first clause failed or at best partial; require correct action for “wall rule built.”
+
+**18. The hand-built comparison undercuts “not a failure of construction.”**
+Quote: “And so does the hand-built wall rule (0.636). That is not a failure of construction.”
+Claim attacked: the original-world collapse is entirely due to the contradictory law.
+Why it fails: C’s rules collapse original-world total to 0.431; the hand-built wall rule collapses only to 0.636. The confound explains some collapse, not the extra 0.205. C’s wrong action, patch, and one-step lookahead worsen the result.
+Severity: serious.
+Fix: compare C directly against the hand-built wall rule on the same metric and acknowledge the extra drop.
+
+**19. Phase 2 was run despite the pre-registered gate.**
+Quote: Design 13 §8: “Run only if phase 1’s supporting outcomes hold.” Design 13 §11: “Phase 2 only if S1–S6 hold.” Results §6: “M6(ii) ✗.”
+Claim attacked: phase 2 is a valid pre-registered test.
+Why it fails: S6 did not hold. Therefore phase 2 should not have been run as part of the frozen protocol. Reporting S7 as a pre-registered outcome after the gate failed is a protocol violation.
+Severity: serious.
+Fix: do not run phase 2, or report it only as exploratory and outside the pre-registered classification.
+
+**20. Phase 2 adds unregistered baselines and measurements.**
+Quote: “A0 + phase-1 + hand-built wall rule” and “Back on the original world, all” in the phase-2 table.
+Claim attacked: phase 2 measures what design §8 specified.
+Why it fails: Design 13 §8 specifies: does it build a wall rule; collision fidelity unchanged; total fidelity on the new world beats A0 + phase-1 rules. It does not register a hand-built wall rule baseline or total fidelity back on the original world. These are added measurements.
+Severity: serious.
+Fix: mark them exploratory; do not use them to reclassify S7.
+
+**21. The rule language’s “fires once per step” limitation makes the sticky-wall law hard to express.**
+Quote: “The natural per-slot rule `stop_i + hold` scores only 540 because a rule fires once per step in the first matching order, so when both things hit walls at once it can stop only one.”
+Claim attacked: phase 2 tested construction of a wall rule in the same language.
+Why it fails: Design 13 §4 defines the language and says rules are “checked on the slot pair (i, j) in both orders.” The implementation fires once per step, so a natural per-slot law cannot be expressed. Design §6’s expressibility check only hand-built the collision rules, not the sticky-wall law.
+Severity: serious.
+Fix: extend the language to allow per-slot application or multiple firings per step; pre-register an expressibility check for phase 2.
+
+**22. “The phase-1 result stands” ignores that S6 is a phase-1 result.**
+Quote: “In the real run that invariant is guaranteed by how records are collected, so the phase-1 result stands.”
+Claim attacked: the M6(ii) failure does not damage phase 1.
+Why it fails: S1–S5 may stand, but S6 is a phase-1 supporting outcome and it failed. The sentence conflates fidelity results with the full pre-registered outcome set.
+Severity: serious.
+Fix: say “the phase-1 fidelity results stand; S6 failed.”
+
+**23. S1 is classified ✅ despite the small margin and the design’s own 0.1 threshold.**
+Quote: “✅ S1 needed — 0.906 > 0.819 (best G0, a memoriser) > 0.366 (best structured G0).”
+Claim attacked: S1 is cleanly supported.
+Why it fails: The margin over 0.819 is 0.087, below the 0.1 margin used in design §6.2 for the overall closedness check. The structural argument is strong, but the classification should not present the collision-step win as unqualified.
+Severity: serious.
+Fix: report the margin explicitly and qualify S1.
+
+**24. S6 should be ❌, not ⚠️.**
+Quote: “⚠️ S6 content, not carrier — M5 ✓, M6(i) ✓, M6(ii) ✗.”
+Claim attacked: S6 is partially supported.
+Why it fails: S6 is a conjunct: M5 identical and M6 builds nothing. M6(ii) failed. A conjunctive pre-registered outcome fails if any required clause fails. ⚠️ is a euphemism.
+Severity: serious.
+Fix: mark S6 failed outright.
+
+**25. S7 should be ❌ as run, not ⚠️.**
+Quote: “⚠️ S7 accumulates — wall rule built ✓ (right condition, wrong action); ... collision fidelity within 0.01 ✗ (0.013).”
+Claim attacked: S7 is partially supported.
+Why it fails: S7 has three conjuncts. Even granting the wall-rule clause, the collision-fidelity clause failed (0.013 > 0.01). The phase-2 confound makes the test invalid for accumulation, but it does not make the pre-registered S7 outcome true. ⚠️ again minimises a failed pre-registered outcome.
+Severity: serious.
+Fix: mark S7 failed as run; separately state that phase 2 is invalid for accumulation.
+
+**26. “Builds the right law” overclaims.**
+Quote: “what it shows is that a process whose only inputs are itemised defects builds the right law.”
+Claim attacked: C built the world’s collision law.
+Why it fails: C built only the same-target rule. It never built the crossing rule. The hand-built pair is the full law; C’s one rule is only sensorily sufficient because crossings are invisible to occupancy sensation. M3 exposes the missing crossing rule: C scores 0.000 on crossing pairs.
+Severity: serious.
+Fix: say “builds the sensorily sufficient same-target rule” and point to F3 for the crossing failure.
+
+**27. Design says the collision law needs two rules; results show one rule suffices for M1.**
+Quote: Design 13 §4: “The world’s collision law needs two rules in this language... That is deliberate: building it takes two rounds.” Results 14 §1: “C’s single rule reproduces the hand-built pair exactly.”
+Claim attacked: the two-rule requirement is part of the test.
+Why it fails: For the sensory fidelity measured by M1, one rule suffices. The second rule matters only for M3’s finer thing-identity contract. The design’s “takes two rounds” is therefore misleading against the actual measured outcome.
+Severity: minor.
+Fix: state that the second rule is needed only for M3 crossing tracking, not for sensory fidelity.
+
+**28. API-key handling is an unaddressed security failure.**
+Quote: “API keys were pasted into a chat transcript; they should be rotated when the work is done.”
+Claim attacked: this is merely a note.
+Why it fails: Credentials pasted into a transcript should be rotated immediately, not “when the work is done.” The document treats a security incident as a process footnote.
+Severity: serious (security).
+Fix: rotate keys now; remove them from any transcript; report the incident properly.
+
+**29. The stated lack of adversarial cross-examination weakens the audit claim.**
+Quote: “External adversarial cross-examination was blocked by the session’s network policy at first attempt.”
+Claim attacked: the document has been externally probed.
+Why it fails: The design/result pair leans on “a hostile reviewer should probe” changes 2 and 4. If the external adversarial cross-examination never ran, the claimed robustness is weaker than presented.
+Severity: minor (process).
+Fix: state clearly that no external adversarial run occurred and do not use its absence as a limitation that preserves confidence.
+
+**30. The answer paragraph’s “route is detectable by ablation” repeats the trivial code-path claim in the conclusion.**
+Quote: “a process whose only input is a number builds the same law by a route that ablation can tell apart.”
+Claim attacked: the conclusion rests on a non-trivial provenance distinction.
+Why it fails: As in finding 7, B’s route is “not reading V” by construction. The ablation distinguishes code paths, not provenances in the file-10 sense.
+Severity: serious.
+Fix: weaken the conclusion to “the two implemented processes depend on different inputs; whether this constitutes a general provenance distinction is not established here.”
+
+---
+
+**Direct answers**
+
+- Does the “answer in one paragraph” overclaim relative to the tables? **Yes.** See findings 2–8. It calls S6 a “clause,” says the exposed crack was “pre-registered,” ignores the 0.087 margin over best-of-G0, and presents the B byte-identity as a substantive provenance result.
+- Is “same machinery, two routes, and the route is detectable by ablation” actually established, or trivial from coding? **Trivial from coding.** See findings 7, 15, 30. B never reads V by construction; byte-identity is guaranteed. The non-trivial claim would require an information-matched ablation, which was not run.
+- Is classifying S6 and S7 as “one clause failed” honest? **No.** S6 should be failed outright (findings 2, 16, 24). S7 should be failed as run (findings 17, 19, 25). The confound makes phase 2 invalid for accumulation, but it does not convert a failed pre-registered conjunctive outcome into partial support.
+- Is the phase-2 confound a legitimate excuse or a convenient one? **Legitimate as a design flaw, convenient as an excuse.** See findings 8, 18, 19, 20. It was foreseeable, the gate S1–S6 had already failed, added measurements were used to support it, and C’s collapse is worse than the hand-built wall rule’s, so the confound does not explain all of the phase-2 failure.
+====================================================================================================
+D1_results_overclaim | deepseek | sample 2 | finish stop | 14349 chars | error None
+====================================================================================================
+## Findings
+
+**F1. The “answer in one paragraph” overclaims relative to the tables.**
+- **Claim attacked:** “**Phase 1 held on every supporting outcome but one clause, and the crack it exposed was pre-registered.**” and “The one supporting clause that failed is an ablation of C’s own bookkeeping (M6 ii)…”
+- **Why it fails:** S6 is a pre-registered outcome, not a clause: “S6 — content, not carrier. M5 rules identical; M6 builds nothing.” M6(ii) built a rule, so S6 did not hold. The *test* was pre-registered; the *failure* was not. The paragraph also ignores S7’s failed clause: section 9 admits “collision fidelity within 0.01 ✗ (0.013).” So the summary is softer than the tables.
+- **Seriousness:** serious.
+- **Fix:** state S6 and S7 as failed outcomes; distinguish “pre-registered test” from “pre-registered expectation.”
+
+**F2. “Same machinery, two routes, and the route is detectable by ablation” is not established; the B half is tautological.**
+- **Claim attacked:** “So: **same machinery, two routes, and the route is detectable by ablation.**” and “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.** … That is not a claim about the code’s data flow — it is a demonstration that the two processes’ outputs depend on different things…”
+- **Why it fails:** B never reads the defect records *by design*: “B never reads a defect record. Its only input is a number per candidate.” If the code never reads the scrambled argument, byte-identical output is guaranteed, not an empirical result. The sentence “not a claim about the code’s data flow” is false: it is exactly a data-flow claim. “Same machinery” is also not tested; C and B are different algorithms sharing only the rule language.
+- **Seriousness:** fatal / serious.
+- **Fix:** call the B check a code audit, not evidence; for a non-trivial control, scramble the exposure-half outcomes used to compute B’s fitness. Describe “same machinery” as “same meta-grammar,” not same process.
+
+**F3. S6 should be marked failed outright, not “⚠️.”**
+- **Claim attacked:** “⚠️ **S6 content, not carrier** — M5 ✓, M6(i) ✓, **M6(ii) ✗**: C built a no-op rule from records with no defect content.”
+- **Why it fails:** S6 is a conjunction. M6(ii) is a direct sub-test: “Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net.” It built a rule. Therefore S6 failed. The design says “Not permitted after freezing: … reclassifying an outcome”; “⚠️” is not in the pre-registered outcome set.
+- **Seriousness:** serious.
+- **Fix:** mark S6 ❌. You may defend the phase-1 real-run invariant, but you cannot call S6 held.
+
+**F4. S7 should be marked failed and phase 2 should not have run.**
+- **Claim attacked:** “⚠️ **S7 accumulates** — wall rule built ✓ (right condition, wrong action); sticky-world total beats phase-1 ✓ (0.773 > 0.712); collision fidelity within 0.01 ✗ (0.013).”
+- **Why it fails:** “wall rule built ✓ (right condition, wrong action)” is self-contradictory: a wall rule with the wrong action is not the wall rule. The collision-fidelity clause failed by 0.013 against a 0.01 threshold. Worse, the design says: “Phase 2 only if S1–S6 hold.” S6 failed, so phase 2 was off-protocol.
+- **Seriousness:** fatal / serious.
+- **Fix:** mark S7 ❌ or “not run per protocol.” Rerun only after fixing C and choosing an additive second law.
+
+**F5. The phase-2 confound is legitimate for the accumulation question, but convenient as a blanket excuse.**
+- **Claim attacked:** “Phase 2 is confounded by my own design — the second law I chose contradicts the first world’s walls instead of extending them — and also exposed two more weaknesses in C.”
+- **Why it fails:** The confound is real: sticky walls “instead of reflecting” contradict the original reflecting walls, so the original-world collapse is guaranteed for any correct sticky rule. But the confound was foreseeable and written into the design. It does not explain C’s wrong wall action, which the diagnostic attributes to one-step lookahead and tie-breaking, nor the mixed collision bucket. It also does not cure the fact that phase 2 was off-protocol because S6 failed.
+- **Seriousness:** serious.
+- **Fix:** treat the confound as a reason the accumulation question was not tested, not as a general excuse for S7. Rerun with an additive law and isolate wall-stop steps.
+
+**F6. B did not run the pre-registered three rounds.**
+- **Claim attacked:** “B used 1,720–1,788 full-history fitness evaluations per seed to reach the same place.”
+- **Why it fails:** The design says B must “Repeat for 3 rounds.” With population 32, elitism 4, and 60 generations, one round is approximately `32 + 28×60 = 1712` evaluations. The reported 1,720–1,788 is one round, not three. The listed B architectures also contain only one rule per seed. This is a protocol deviation.
+- **Seriousness:** serious.
+- **Fix:** report actual rounds and per-round evaluations. If B stopped early, pre-register or justify that stopping rule.
+
+**F7. C’s stopping rule deviates from the frozen design.**
+- **Claim attacked:** “Round 2: 1,266 defects remain; **no condition–action pair has positive net; C stops.**”
+- **Why it fails:** The design says: “Repeat until no V remain or 3 rules.” C had V remaining and fewer than 3 rules. “No positive net” is a new stopping criterion not in sections 2–5.
+- **Seriousness:** serious.
+- **Fix:** pre-register the stopping rule or run to the designed stopping condition and report negative-net rules.
+
+**F8. “C never computes an aggregate fitness” / “no fitness number at all” is false.**
+- **Claim attacked:** “using no fitness number at all”; design: “C never computes an aggregate fitness. Its only inputs are itemised records.”
+- **Why it fails:** C scores conditions by `(#V true) − (#N true)` and actions by net fixes minus breaks. Those are aggregate counts over records. The distinction is granularity—per-rule net counts versus whole-architecture fitness—not presence versus absence of aggregation.
+- **Seriousness:** serious / minor.
+- **Fix:** say “no whole-architecture fitness,” not “no fitness number.”
+
+**F9. B’s “only input is a number” is still aggregate defect information, so M4’s B control is vacuous.**
+- **Claim attacked:** “B never reads a defect record. Its only input is a number per candidate.”
+- **Why it fails:** The number is the exposure-half fitness, computed from prediction errors. B therefore depends on defect information in aggregate. M4 only scrambles the itemised `V` argument B ignores; it does not scramble the world or B’s fitness inputs. The ablation therefore does not remove defect information from B’s route.
+- **Seriousness:** serious.
+- **Fix:** clarify “itemised” versus “aggregate.” Run a control where B’s fitness inputs are permuted/corrupted.
+
+**F10. The “B byte-identical” test cannot fail.**
+- **Claim attacked:** “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**”
+- **Why it fails:** By construction, passing an argument the code never reads cannot change output. This is not an empirical finding.
+- **Seriousness:** serious.
+- **Fix:** remove it as evidence; label it a code audit.
+
+**F11. “S5 provenance is not output” is not tested by S5.**
+- **Claim attacked:** “✅ **S5 provenance is not output** — B within 0.05 of C in 6 of 6 (identical).”
+- **Why it fails:** S5 only compares collision fidelity. It does not test whether C and B are “one kind” or whether provenance is irrelevant. C and B are different algorithms; shared rule language is not shared machinery.
+- **Seriousness:** serious.
+- **Fix:** rename S5 to “output equivalence.” Test machinery separately if that is the claim.
+
+**F12. S3’s “from 0.000 for A0” is misleading and the denominators are not paired.**
+- **Claim attacked:** “✅ **S3 faithful** — 0.974 and 0.973 given bound on non-crossing pairs (threshold 0.9), from 0.000 for A0.”
+- **Why it fails:** A0’s no-collision-after fraction is 0.946, not 0.000. The 0.000 applies to same-target and crossing buckets. Also the M3 table shows different unbound counts: A0 alone has 99 unbound on same-target, while A0+C has 21. The comparison is not on the same pairs.
+- **Seriousness:** minor / serious.
+- **Fix:** report each bucket separately and use paired denominators or count unbound as failures.
+
+**F13. The closedness-check split is a moved goalpost.**
+- **Claim attacked:** design change 4: “The check now has a structural part … Recorded with the numbers so the reader can judge whether this is a fair restatement or a moved goalpost … Both parts pass.”
+- **Why it fails:** The original check applied a 0.1 margin to any G0 on collision steps. Hand-built 0.906 minus lookup 0.819 = 0.087, which fails the 0.1 margin. The split was introduced after seeing the lookup number, allowing both parts to pass.
+- **Seriousness:** serious.
+- **Fix:** report the original check as failed; pre-register the structural criterion or state that closedness was established only for structured G0, not for all G0.
+
+**F14. “Vacuous extra atoms” is not fully established.**
+- **Claim attacked:** “the same law wrapped in vacuous extra atoms” and “the rest are almost never false.”
+- **Why it fails:** “Almost never false” is not “vacuous.” The results claim identical fidelity to 16 digits across six seeds; that needs proof that the extra atoms never bite on the evaluation half, not an assertion.
+- **Seriousness:** minor.
+- **Fix:** prove vacuity or report configurations where the extra atom could matter.
+
+**F15. Phase 2’s collision bucket mixes wall-stops, so the pre-registered S7 collision clause cannot be evaluated from it.**
+- **Claim attacked:** “\*In phase 2 this bucket includes wall-stop steps, so it is not comparable to phase 1’s collision column.”
+- **Why it fails:** The design says to measure whether “the collision rules are still firing correctly (collision fidelity unchanged).” A bucket containing wall-stop steps does not measure that. The later use of “Back on the original world, all” is a post-hoc substitute.
+- **Seriousness:** serious.
+- **Fix:** define collision-type steps so they exclude wall-stops, and pre-register that definition.
+
+**F16. “Back on the original world” is an added measurement after freezing.**
+- **Claim attacked:** table column “**Back on the original world, all**” and design: “Not permitted after freezing: … adding a measurement.”
+- **Why it fails:** The column is not in design sections 7 or 8. It is used to argue the phase-2 confound. That makes it a post-hoc measurement used in interpretation.
+- **Seriousness:** serious.
+- **Fix:** label it explicitly as a post-hoc diagnostic and do not use it for primary classification.
+
+**F17. The post-freeze diagnostics are post-hoc.**
+- **Claim attacked:** “Two diagnostics were run on the frozen code afterwards to explain two failures; they changed nothing and are reported in section 8.”
+- **Why it fails:** They are additional measurements after freezing, even if code was unchanged. The design forbids adding measurements. They are explanatory, but they are not part of the frozen run.
+- **Seriousness:** minor / serious.
+- **Fix:** label them exploratory and keep them out of primary outcome classification.
+
+**F18. “Builds the right law” overclaims: C built only the same-target rule.**
+- **Claim attacked:** “what it shows is that a process whose only inputs are itemised defects builds the right law.”
+- **Why it fails:** The design says the collision law needs two rules. C built one. M3 shows crossing pairs score 0.000 for A0+C. The hand-built pair gets 1.000 on crossings. C did not build the full collision law; it built the sensory-visible same-target rule.
+- **Seriousness:** serious.
+- **Fix:** say “builds the sensory-visible same-target rule,” not “the right law.”
+
+**F19. “A rule fires once per step” is a hidden implementation detail.**
+- **Claim attacked:** “a rule fires once per step in the first matching order.”
+- **Why it fails:** Design section 4 describes rules checked on `(i, j)` in both orders, but does not state this one-fire-per-step restriction. It materially affects action scoring and phase-2 failure.
+- **Seriousness:** serious.
+- **Fix:** document this in the design or allow per-slot independent firing.
+
+**F20. The rule language is tailored to the target action.**
+- **Claim attacked:** design: “`swap_next_v` is in the action set. A tailoring concern, noted in the design; mitigated only by B having the same actions and by the data having to choose it over `swap_v`.”
+- **Why it fails:** C selects from a meta-grammar that already contains the exact action needed. B having the same actions is not a mitigation; both are given the answer space. This limits the construction claim.
+- **Seriousness:** minor / serious.
+- **Fix:** state prominently that the experiment tests rule selection within a fixed, partly tailored meta-grammar, not invention of the action set.
+
+**F21. The residual-defect classification is unsubstantiated.**
+- **Claim attacked:** “1,266 residual defects, all of them the change step or co-location ambiguity.”
+- **Why it fails:** No breakdown or coding procedure is given. “All of them” is an unsupported causal classification.
+- **Seriousness:** minor.
+- **Fix:** provide a table of residual defects by cause.
+
+**F22. Design says building the law takes two rounds; results show C built one rule and stopped.**
+- **Claim attacked:** design: “That is deliberate: building it takes two rounds.” Results: “C built exactly one rule.”
+- **Why it fails:** The design’s expectation is not what happened. Change 2 partly pre-registers the crossing invisibility, but the two statements are not reconciled.
+- **Seriousness:** minor.
+- **Fix:** reconcile section 4 with the pre-registered F3 expectation and the actual one-rule result.
+
+**F23. “C’s single rule reproduces the hand-built pair exactly” is true only for sensory fidelity.**
+- **Claim attacked:** “C’s single rule reproduces the hand-built pair exactly, because the crossing rule adds nothing at the sensory level.”
+- **Why it fails:** On M3, the hand-built pair gets 1.000 on crossing pairs; C gets 0.000. The sentence can be read as full equivalence, which is false.
+- **Seriousness:** minor.
+- **Fix:** add “on sensory fidelity only.”

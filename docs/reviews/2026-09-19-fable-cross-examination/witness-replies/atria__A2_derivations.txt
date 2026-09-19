@@ -1,0 +1,501 @@
+====================================================================================================
+A2_derivations | atria | sample 0 | finish stop | 26034 chars | error None
+====================================================================================================
+## Derivation 1 — Kind preservation
+
+**1.** *Claim attacked:* "If a transport satisfies (F1) on \(C\), then every active component \(k\) of \(E\) has the same signature on \(\tau[C]\) as its anchor \(\lambda(k)\) has on \(C\), up to the port translation."
+*Why it fails:* (K) defines signatures only for components of a fixed organization — "Fix an organization \(D\) and a contract \(C\)... The **signature** of component \(j\) on \(C\) is..." But by the definition of transport, "\(\lambda\) assigns each component of \(E\) a **subnetwork** of \(D\)," not a component. So \(\operatorname{sig}_C(\lambda(k))\) is not defined by (K) at all. The proof silently replaces the undefined \(L_{\lambda(k)}\) with \(\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b)\), i.e., it extends (K) from components to subnetworks without stating or justifying the extension.
+*Severity:* serious.
+*Fix:* add an explicit definition of subnetwork signature (e.g. \(\operatorname{sig}_C(U)=\{(a,b,\operatorname{proj}_{V_U}\operatorname{Sol}_U(a,b))\}\)) and prove it agrees with (K) when \(U\) is a single component.
+
+**2.** *Claim attacked:* the Corollary, "A condition 'each component must anchor to a **component** of the same kind' adds nothing to (F1) on any contract."
+*Why it fails:* ill-typed in the same place as (1): anchors are subnetworks, so the proposed condition cannot even be stated in the vocabulary. The corollary attacks a condition that the framework's own definitions make unexpressible.
+*Severity:* minor.
+*Fix:* restate as "anchored to a subnetwork with the same signature," or introduce component-anchors as a special case.
+
+**3.** *Claim attacked:* "The word 'kind' is therefore eliminable from the definition of an account, and its elimination loses no case," and "There is no third case."
+*Why it fails:* circular. 'Kind' is *defined* in (K) as the equivalence class under signature coincidence; therefore "(F1) ⇒ same kind" is analytic, not a theorem with content. The dichotomy "either \(C\) separates them and (F1) catches it, or \(C\) doesn't and they are one kind" is a restatement of the definition. What an opponent (Grievances 1 and 11; Part XV(C)) claims is that a kind-label can discriminate where no admitted change does — a possibility (K) forecloses by fiat, not by argument. The corollary therefore does not engage the objection it announces.
+*Severity:* serious (it is the load-bearing move for "no anchoring condition" in Part V and is question-begging).
+*Fix:* separate the trivial entailment from the substantive analysis-of-kinds claim; present the latter as conjecture, as Part XV already does, and delete "loses no case."
+
+**4.** *Claim attacked:* "...up to the port translation," i.e. that \(\operatorname{sig}_C(\lambda(k))\) and \(\operatorname{sig}_{\tau[C]}(k)\) coincide.
+*Why it fails:* set-level coincidence under the map \((a,b)\mapsto(\tau(a),\sigma(b))\) requires that map to be **injective on \(C\)**. (F2) only makes \(\tau\) a composition homomorphism with \(\tau(1)=1\); non-injective \(\tau\) is permitted. If \(\tau(a)=\tau(a')\) for distinct \((a,b),(a',b')\in C\), the two signature sets differ in their first-two coordinates and no footprint bijection repairs it.
+*Severity:* minor.
+*Fix:* add injectivity of \((\tau,\sigma)\) on \(C\) as a hypothesis, or state coincidence as a relation on the graph of \((\tau,\sigma)\).
+
+## Derivation 2 — Indistinguishable is identical
+
+**5.** *Claim attacked:* "...their components are pairwise of one kind on \(C\)."
+*Why it fails:* (K) is defined for two components **of one fixed organization** ("Fix an organization \(D\)... Two components \(j,j'\)..."). Here \(k\) ranges over components of \(E\) and \(k'\) over components of \(E'\), different organizations with different port sets. No bijection between their component sets or their ports is supplied by the hypotheses. "Pairwise of one kind" is not well-posed under (K).
+*Severity:* serious.
+*Fix:* define cross-organization kind-equivalence relative to a supplied port and component bijection, and add that bijection to the hypotheses.
+
+**6.** *Claim attacked:* the proof line "Immediate from Derivation 1 and (A)."
+*Why it fails:* invalid inference. Derivation 1 relates each component of \(E\) to **its own anchor in \(D\)**; it yields no relation between a component of \(E\) and a component of \(E'\). To chain through, you would need \(\lambda(k)\) and \(\lambda'(k')\) to be the same subnetwork of \(D\) (or kind-equivalent), which is not assumed.
+*Severity:* serious.
+*Fix:* add the hypothesis that corresponding components anchor to the same subnetworks of \(D\), or drop the kind claim.
+
+**7.** *Claim attacked:* "...are one account at grain \(C\)."
+*Why it fails:* non sequitur even under a narrow reading. The hypothesis is only "(F1), (F2), and (A)"; NonCircular and NonVacuity are not assumed, so the candidates need not satisfy Account at all — one could be circular, the other not. And even with full (E), two candidates can differ in \(\Gamma\), in \(\mathsf S_{E,p}\), in critical blocks, in provenance, and in deployability — distinctions the semantics elsewhere insists are explanatory (Part VI; Derivation 9). "One account" is a stipulated quotient, not a derived identity.
+*Severity:* serious.
+*Fix:* assume full (E) and conclude only "coincident answer profiles and (under the added correspondence) coincident component signatures on \(C\)," stating that identity-of-account is a *defined* equivalence at that grain.
+
+**8.** *Claim attacked:* Consequence: "A claim that two such candidates 'really' differ is a claim that some admitted change separates them, and must supply it."
+*Why it fails:* stipulation masquerading as result. This is exactly what the partisan of primitive kinds denies; the derivation supplies no argument against a kind-difference with no edit-response difference. Same circularity mode as (3).
+*Severity:* serious.
+*Fix:* flag the sentence as a consequence *of the (K)-analysis*, conditional on that analysis, and refer the substantive dispute to Part XV rather than presenting it as closed.
+
+## Derivation 3 — Underdetermination of selected transports
+
+**9.** *Claim attacked:* the proof step "Alter \(L_{j}(a,b)\) for one \((a,b)\notin H\) to any other admitted relation; the result survives on \(H\) and differs at \((a,b)\)."
+*Why it fails:* survival is defined relative to a population: "The transport \(t\) is **a member of \(\mathcal T\) that survived**." The alteration changes the target organization to a different \(E'\); nothing guarantees that a transport to \(E'\) is **in \(\mathcal T\)**. If \(\mathcal T\) is a singleton, or excludes the variant, no such \(t'\) exists. The derivation silently assumes a richness condition on the population. (Also, a survival condition "requiring fidelity on \(H\)" may require *more* than fidelity on \(H\) — e.g. regularity or simplicity — and then exclude the altered variant.) Finally, the stated finiteness of \(H\) is never used; the proof works for any \(H\subsetneq C\).
+*Severity:* serious (the front matter, Grievance 3, asserts selected transports are "**always** underdetermined," which this gap does not support).
+*Fix:* add an explicit richness hypothesis — e.g. for each \((a,b)\in C\setminus H\) and each component \(j\), \(\mathcal T\) contains transports whose target realizes any admissible relation at \((a,b)\) — and state the theorem conditional on it; or weaken the claim to "unless the population is degenerate at \((a,b)\)."
+
+**10.** *Claim attacked:* "to any other **admitted** relation."
+*Why it fails:* "admitted relation" is never defined. \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\) is arbitrary; which subsets count as admissible? If all are admissible, the variant is a set-theoretic construct with no guarantee of physical realizability, which undercuts the Consequence's claim to be explaining the primitive layer's fallibility.
+*Severity:* minor.
+*Fix:* define the admissible class (e.g. relations realizable under the physical module) and carry the construction out inside it.
+
+**11.** *Claim attacked:* "with a different **value** at \((a,b)\)."
+*Why it fails:* a transport has no defined "value at \((a,b)\)." Presumably meant: \(\pi[\operatorname{Sol}_D(a,b)]\neq\operatorname{Sol}_{E'}(\tau(a),\sigma(b))\), i.e. \(t'\) *fails fidelity* there. But the alteration need not change the projected solution set — if the altered \(L_j(a,b)\) happens to be equivalent given the remaining components, no difference materializes.
+*Severity:* minor.
+*Fix:* define "value at \((a,b)\)" and require the alteration to change \(\operatorname{Sol}_{E'}(\tau(a),\sigma(b))\) (or the component relation), noting this is generic but not automatic.
+
+**12.** *Claim attacked:* Consequence: "This is why the primitive layer is fallible... It is also why surprise is possible."
+*Why it fails:* category slide. Underdetermination (many transports fit \(H\)) is not failure (the actual transport misbehaves on \(C\setminus H\)). The actual survivor may be faithful on all of \(C\); what is shown is absence of *guarantee*, not actual fallibility. And surprise (Derivation 4) requires an actual violation, which underdetermination alone does not deliver.
+*Severity:* serious (overclaim).
+*Fix:* state that selection provides no guarantee of fidelity off \(H\); delete the causal "this is why surprise is possible," since Derivation 4 handles surprise (and does so definitionally — see (13)).
+
+## Derivation 4 — Surprise requires an incomplete history
+
+**13.** *Claim attacked:* the whole derivation, plus Part IV's "This is derived, not assumed (Derivation 4)."
+*Why it fails:* vacuous. Part IV **defines** surprise as "a violation at \((a,b)\notin H\)," and a violation requires an expectation, which requires a transport. So "surprise requires \(H\subsetneq C\)" follows immediately from the definition plus nonemptiness of the occurring set. Nothing is derived; the "proof" unpacks the definition. The claim that this is derived rather than assumed is false.
+*Severity:* serious (as a circularity/vacuity charge against a derivation the document cites as support).
+*Fix:* present it as an unpacking of the definition and retract "derived, not assumed"; or prove something nontrivial — e.g. conditions under which a violation at some \((a,b)\in C\setminus H\) actually occurs.
+
+**14.** *Claim attacked:* "...a history \(H\) strictly smaller than the contract \(C\) of **changes the world admits**."
+*Why it fails:* scope conflation. Part III defines \(C\) as "the set of admitted edit–boundary pairs the claim ranges over," and Part V says "\(C\) is a **declared subset** of the physically admitted edits." If the world admits a change outside \(C\), a system can be surprised in the ordinary sense while \(H=C\); the semantics has no place for out-of-contract surprise. The claim holds only relative to \(C\).
+*Severity:* minor-to-serious.
+*Fix:* state the result relative to \(C\) explicitly, and either add a notion of contract-violation (surprise by an uncontracted change) or concede the limitation.
+
+## Derivation 5 — Question-finding is representable
+
+**15.** *Claim attacked:* the proof: "Give it ports (the edits and their boundaries), components (the closure conditions), and admitted edits (add or remove a change; alter \(\mathcal Q\)). It is then a \(D\) in the sense of (O)."
+*Why it fails:* unverified. An organization is \((V,(X_v),J,B,A,L)\): nonempty value domains per port, footprints, a boundary set, an admitted-edit set closed under a partial associative composition with identity, and an interpreted relation \(L_j(a,b)\) for every component, edit, and boundary. None of this is supplied. "Closure conditions" is not a component relation; contracts are not required to be closed under \(A\)'s composition at all; and no \(L_j\) is written down. The sentence "It is then a \(D\)" is an assertion.
+*Severity:* serious.
+*Fix:* write out the organization explicitly — \(V\), \(X_v\), \(J\), the meta-edit monoid and its composition, and the \(L_j\) — and then verify (O).
+
+**16.** *Claim attacked:* the same proof, as to level.
+*Why it fails:* level confusion. The edits in \(A\) act on the target organization; making a contract into an organization requires **meta-edits** (adding/removing members of \(C\), altering \(\mathcal Q\)) that are not elements of \(A\), whose interaction with \(A\)'s composition is unspecified, and against which (O)'s side conditions ("An edit that sets a port replaces the component assigning that port") are unchecked.
+*Severity:* serious.
+*Fix:* define the meta-edit structure and its interpretation explicitly, or use a different construction (e.g. contracts as subobjects of the edit monoid with organizations built over them).
+
+**17.** *Claim attacked:* "Hence an episode whose originative contribution is a new contract satisfies (G)."
+*Why it fails:* non sequitur. (G) is \(\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}\). That a contract *can be* a content \(c\) is necessary for (G)-with-a-contract; it does not entail that any episode satisfies (G), which additionally requires an owned subhistory with a nontrivial binding construction, novelty against the prior repertoire, and an actual attempt. The "hence" infers existence from admissibility.
+*Severity:* serious.
+*Fix:* separate "contracts are admissible contents" (itself needing (15)–(16)) from "this episode satisfies (G)," and prove or assume the latter with a witness.
+
+**18.** *Claim attacked:* "Deploy, Build, and New apply," and the Consequence, "Finding the right question is a creative act on the same footing as answering one... the present one does, by giving contracts provenance."
+*Why it fails:* Deploy requires, via (R), a faithful transport with selected or constructed provenance from the carrier's organization to the contract-content; what fidelity *to a contract-content* means — which carrier components must match which closure conditions under which translated edits — is uninterpreted, and no transport is exhibited. And the derivational work is supposed to come from treating contracts as organizations, not from the provenance label \(\rho_p\), which Part III assigns by stipulation.
+*Severity:* serious.
+*Fix:* specify the transport and check (F1)/(F2) for contract-contents, or state Deploy's satisfaction as an assumption; and reword the Consequence conditionally.
+
+**19.** *Claim attacked:* the construction's stopping point.
+*Why it fails:* regress unremarked. A contract-content's kinds and fidelity are themselves contract-relative (Part II: "Kinds are therefore relative to the contract"), so assessing a contract-as-content requires a meta-contract, which by Derivations 5/7 is itself a content. The construction raises the index a level rather than bottoming out. (Part XIII's scrutinizability can absorb this, but Derivation 5 does not say so.)
+*Severity:* minor.
+*Fix:* note the level-raising and point to (RC) for the iteration.
+
+## Derivation 6 — There are two primitives
+
+**20.** *Claim attacked:* "Every predicate in Parts II–XIII is defined from \(\Theta\) ... and, where invoked, \(\mathcal N\), together with declared indices."
+*Why it fails:* false as written. Several relation symbols are used and never defined anywhere: \(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\) and \(\operatorname{ProducesVia}(\Delta,c,o;\xi,\xi')\) in (P)/(EK); \(\operatorname{Result}(\Delta)\) in (EK); \(\operatorname{Lic}_j(u)\), \(\operatorname{Scope}_j(u)\), and \(\operatorname{Live}_j(d;u)\) in (K2); \(\operatorname{Enable}(s,U_c,\chi)\) in (U1)/(U2); \(\equiv_\ell\) in (N); \(\operatorname{Exec}(\pi,z,i;\chi)\) in (CT1). Until these are defined, the dependence order cannot be checked and "two primitives" is unproven.
+*Severity:* serious.
+*Fix:* define each, or admit them as further primitives (which falsifies the "two primitives" claim).
+
+**21.** *Claim attacked:* Consequence: "There is no residual predicate meaning 'explains,' 'represents,' 'is a cause,' or 'is knowledge.'"
+*Why it fails:* overclaim by slide. The dependence order shows no such predicate is *left undefined*; it does not show the defined predicates *capture* the target notions. "Explains" in particular is the constitutive **conjecture** of Part 0 ("A genuine explanatory achievement that these four cannot represent counts against the conjecture"), not a theorem. Absence of undefined vocabulary is a property of the formalism, not an adequacy proof.
+*Severity:* serious.
+*Fix:* restrict the consequence to "no predicate in Parts II–XIII is left undefined apart from \(\Theta\) and \(\mathcal N\)," and keep adequacy as conjecture.
+
+**22.** *Claim attacked:* "There are two primitives," given the list in Part XIV.
+*Why it fails:* presentational. \(\Theta\) is a bundle — "substrate state spaces, attributes, admitted processes, controlled-action interpretation, resources, accuracy grades, and \(\operatorname{Org}_\ell\)" — and the "declared indices" (grain, boundary, continuity, contract) are supplied, not derived, and essential to every claim. Contract in particular is an index here but a *content* in Derivation 5, which the derivation does not reconcile.
+*Severity:* minor.
+*Fix:* say "two primitive packages plus declared indices," or justify the bundling and the index/content dual role of \(C\).
+
+## Derivation 7 — Frozen assessment, moving question
+
+**23.** *Claim attacked:* the derivation as a whole ("...are both representable without contradiction").
+*Why it fails:* trivial. Two claims indexed to different contracts can both be true; "without contradiction" is established by noting a satisfiable pattern, not by argument. Nothing is proved beyond the observation that indexing avoids contradiction.
+*Severity:* minor (vacuity).
+*Fix:* either prove something nontrivial (e.g. invariance of the assessment's truth value under later contract change) or present it as a consistency observation.
+
+**24.** *Claim attacked:* the proof's reliance on Part VIII: "A proposition indexed to a contract remains that proposition when a later theory changes the current contract. A new index is a new claim."
+*Why it fails:* the key premise is itself stated without proof, so the derivation assumes what it needs.
+*Severity:* minor (circularity).
+*Fix:* prove or explicitly axiomatize the historical-index claim.
+
+**25.** *Claim attacked:* Consequence: "Goalpost-moving is the act of changing the index without recording the change, and it is a failure of the record, not a licensed operation of the semantics."
+*Why it fails:* a norm about record-keeping, not a consequence of anything derived above.
+*Severity:* minor (overclaim).
+*Fix:* present it as a framework stipulation.
+
+## Derivation 8 — Equivariance under recoding
+
+**26.** *Claim attacked:* "Transporting all carriers, relations, transports, histories, and contracts along structure-preserving bijections preserves (E), (G), (P), (EK)."
+*Why it fails:* the negative conjuncts are not automatically preserved. (G) contains \(\operatorname{New}\), i.e. \(\neg\exists d\in R_{<e}(s,h)\, d\equiv_\ell c\), and \(\operatorname{Build}\) contains "is **not** a composition of content-preserving transfers." Negated existentials survive recoding only if the recoding is a bijection of the **entire** content/history domain that preserves \(\equiv_\ell\), the repertoire order, and transfer-composition. A recoding defined only on the presented carriers (e.g. port relabeling) does not suffice: a recoded content could be \(\equiv_\ell\)-equivalent to a prior content outside the recoding's domain, making \(\operatorname{New}\) true before and false after.
+*Severity:* serious.
+*Fix:* state that \(\varphi\) is a global bijection preserving \(\equiv_\ell\), the repertoire order, and transfer-composition, then verify the negations.
+
+**27.** *Claim attacked:* the same claim, as regards (P) and (EK); proof: "Each is a conjunction of equalities and existence claims over the transported data; bijections preserve them."
+*Why it fails:* false characterization. (P) contains \(\neg o(\xi)\) and (EK) contains \(\neg o(\xi)\land o(\xi')\), with \(o\in O\) obligations fixed "for the comparison" and, where invoked, grounded in the **primitive** normative relation \(\mathcal N\). A structure-preserving bijection of carriers need not preserve which obligations hold. (EK) also contains the undefined \(\operatorname{Result}(\Delta)\) and \(\operatorname{ProducesVia}\) (see (20)). So the blanket "bijections preserve them" is too quick for exactly the two cases where normativity enters.
+*Severity:* serious.
+*Fix:* restrict the claim to (E) and (G) under (26)'s hypothesis, or add a hypothesis that the recoding preserves the normative structure — and define \(\operatorname{ProducesVia}\) first.
+
+## Derivation 9 — Output descriptions do not determine accounts
+
+**28.** *Claim attacked:* the derivation as a whole.
+*Why it fails:* valid but trivial: "no function of the projection agrees with the claim on both" is immediate from "equal inputs to a function give equal outputs." Its presentation as a derivation inflates a one-line observation about functional dependence. Additionally, account claims are indexed (to contracts, grains, boundaries), so "differ on an account claim" should read "differ on an account claim at a fixed index," and the two systems must be assigned the *same* projection function.
+*Severity:* cosmetic / minor.
+*Fix:* demote to a remark and add the index qualification.
+
+## Derivation 10 — The two-layer episode
+
+**29.** *Claim attacked:* "Under (F1), \(t_1\) is faithful on the extended contract."
+*Why it fails:* vacuous as stated — (F1) *is* component fidelity, so the sentence says "if it is faithful, it is faithful." The example never verifies (F1)/(F2) for \(S_1\): no ports, value domains, components, or \(L_j(a,b)\) are written down for either \(P\) or \(S_1\). The central construction is asserted, not exhibited.
+*Severity:* serious.
+*Fix:* specify \(P\) and \(S_1\) concretely and check (F1) and (F2) on the extended contract, at least for the occlusion edit and one displacement.
+
+**30.** *Claim attacked:* "By Derivation 1, the persistence components have the signature of things on that contract... No one declared them to be 'objects.' **They are objects** because they respond as objects do to what the contract admits."
+*Why it fails:* two defects. (i) Ill-typed citation: Derivation 1 yields signature-equivalence with the **anchor subnetwork** (a thing's continuity subnetwork), not "the signature of things" — and per (1), subnetwork signatures are not defined by (K). (ii) Overclaim: "They are objects" reintroduces precisely the unqualified identification the semantics elsewhere forbids (Grievance 2: kind-claims are level-relative; "at any level of detail, a *kind* is nothing over and above how a component responds to the changes that level admits"). Being of one kind, on this contract, with a thing's continuity subnetwork is not *being* an object; it is a grain-relative equivalence.
+*Severity:* serious.
+*Fix:* say the persistence components are of one kind, on that contract, with the continuity subnetworks of things, and mark "they are objects" as a grain-relative claim or delete it.
+
+**31.** *Claim attacked:* "On any contract containing it, the two persistence components are of one kind (Derivation 2)," justified by "The swap edit is invisible in the sensory field and leaves every prediction unchanged."
+*Why it fails:* mis-citation and non sequitur. Derivation 2 concerns two *candidate accounts* for the same question under (F1),(F2),(A); its hypotheses are not in play for two components of one organization. The correct citation is (K) directly, with the swap supplying the footprint bijection. And the stated reason — prediction-invariance — concerns outputs, whereas the semantics explicitly denies output-equivalence is kind-equivalence ("Contents are not identified by having the same outputs").
+*Severity:* minor-to-serious.
+*Fix:* cite (K), exhibit the swap-induced footprint bijection, and argue from signature coincidence rather than prediction-invariance.
+
+**32.** *Claim attacked:* "...and since the account is adequate on its contract and deployable, (EK) holds."
+*Why it fails:* incomplete. (EK) additionally requires \(\operatorname{CreativeCriticalEpisode}\) — whose four constituents per Part X are "a recognized difficulty, a target available before its criticism, a conjectural objection, and a content-sensitive response," none of which is exhibited for the occlusion episode — plus \(e_c\preceq_h e\), an epistemic obligation \(o\) with \(\neg o(\xi)\land o(\xi')\), \(c\in\operatorname{Result}(\Delta)\), and \(\operatorname{ProducesVia}(\Delta,c,o;\xi,\xi')\); the last two are undefined (see (20)).
+*Severity:* serious.
+*Fix:* exhibit the episode's four constituents, name the epistemic obligation and its before/after status, and define \(\operatorname{Result}\) and \(\operatorname{ProducesVia}\).
+
+**33.** *Claim attacked:* "This episode is a relative-consistency witness for the class."
+*Why it fails:* with \(t_1\)'s fidelity presupposed (29) and (EK) incomplete (32), what is exhibited is a narrative, not a model of the class axioms. (The closing sentence — "It is not a claim that any actual infant, animal, or program has been shown to instantiate it" — is honest, but does not repair the gap.)
+*Severity:* minor-to-serious.
+*Fix:* formalize the example sufficiently to check the axioms, or relabel it an illustrative scenario.
+
+**34.** *Claim attacked:* "If the population's transports can only predict from occupancy, no member survives the extended history: the fidelity failure is structural, not parametric."
+*Why it fails:* a stipulation about the expressive range of \(\mathcal T\), not a consequence of anything; it is acceptable in an example but is doing the work that the "selection cannot fix this" conclusion rests on, and should be flagged as an assumption.
+*Severity:* minor.
+*Fix:* state it as an assumption on \(\mathcal T\).
+====================================================================================================
+A2_derivations | atria | sample 2 | finish stop | 30490 chars | error None
+====================================================================================================
+# Referee report: Derivations 1–10
+
+## Cross-cutting defect (affects Derivations 1, 2, 10)
+
+**Finding 1 — (F1) is not well-typed as written.**
+Claim attacked: the displayed equation
+
+> \(\operatorname{proj}_{V_k}\!\big[\operatorname{Sol}_{\lambda(k)}(a,b)\big]=L_k(\tau(a),\sigma(b)). \tag{F1}\)
+
+Why it fails: \(V_k\subseteq V_E\), whereas \(\operatorname{Sol}_{\lambda(k)}\subseteq\prod_{v\in V_{\lambda(k)}}X_v\) with \(V_{\lambda(k)}\subseteq V_D\). The left side is a subset of a product over \(E\)'s ports; the right side is a subset of a product over \(E\)'s ports; but the thing being projected is a set over \(D\)'s ports. Part IV says λ comes "with a port translation," and Derivation 10 needs one (persistence-component ports are not literally ports of \(P\)), yet (F1) never applies it. Serious. Fix: write \(\operatorname{proj}_{\phi_k}\) for the port translation \(\phi_k:V_k\to V_{\lambda(k)}\), and state that (F1) is an equality of subsets of \(\prod_{v\in V_k}X_v\) after translation.
+
+---
+
+## Derivation 1
+
+**Finding 2 — (K) is used outside its stated domain.**
+Claim attacked:
+
+> "By (K), \(\operatorname{sig}_C(\lambda(k))=\{(a,b,\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b))\}\)"
+
+Why it fails: (K) defines \(\operatorname{sig}_C(j)\) for a *component* \(j\) *of a fixed organization* *under a fixed contract*, with third coordinate \(L_j(a,b)\). Here \(\lambda(k)\) is a *subnetwork* of a *different* organization, indexed by a *different* contract (\(C\) vs. \(\tau[C]\)). Neither signatures for subnetworks nor cross-organization, cross-contract kind comparison is defined anywhere in Part II. Serious. Fix: either extend (K) explicitly to subnetworks (third coordinate = projected solution set, which is what the proof actually does) and define kind-comparison across organizations via the port translation, or restrict λ to single components.
+
+**Finding 3 — the corollary proves the wrong thing.**
+Claim attacked:
+
+> "A condition 'each component must anchor to a component of the same kind' adds nothing to (F1) on any contract."
+
+Why it fails: what is proved is signature agreement between \(k\) and a *subnetwork* \(\lambda(k)\). Since (K) assigns kinds only to components, "the kind of \(\lambda(k)\)" is undefined, so the stated anchoring condition is not even formulable under what has been proved. If λ is required to map to single components, that is a strictly stronger restriction on transports than (F1) imposes, and its cost is unassessed. Serious (this is the load-bearing claim under attack point (C)). Fix: state the corollary as "no anchoring condition *beyond (F1)* is needed for components anchored to subnetworks," and separately prove or deny the component-anchoring variant.
+
+**Finding 4 — overclaim: "eliminable … loses no case."**
+Claim attacked:
+
+> "The word 'kind' is therefore eliminable from the definition of an account, and its elimination loses no case."
+
+Why it fails: kinds are not eliminable from the semantics — (K) defines them, and Derivations 2 and 10 and Part II all use them. What is (at best) eliminable is one extra *condition*. And "loses no case" is unquantified: no class of cases is specified, so nothing could falsify it. Serious. Fix: replace with "an additional kind-anchoring condition is implied by (F1) for subnetwork anchors," and drop the eliminability claim or prove it relative to a specified class.
+
+**Finding 5 — "active" is undefined.** The claim quantifies over "every active component \(k\) of \(E\)," but Part V never defines *active* (it defines \(\Gamma\) as "an identified set of active commitments," a different object). Minor. Fix: define active component (e.g., non-deleted and in the scope of \(\Gamma\)).
+
+---
+
+## Derivation 2
+
+**Finding 6 — the derivation is false as stated; counterexample.**
+Claim attacked:
+
+> "Two candidates \(\mathcal E,\mathcal E'\) for the same \(p\) that both satisfy (F1), (F2), and (A) on \(C\) are one account at grain \(C\): their components are pairwise of one kind on \(C\) and their answer profiles coincide."
+
+Why it fails: take \(D\) on ports \(\{x,y,z\}\) with components \(\{x{=}y\}\), \(\{y{=}z\}\), so \(\operatorname{Sol}_D=\{x{=}y{=}z\}\). Let \(E\) have components \(\{x{=}y\},\{y{=}z\}\) anchored to the corresponding components of \(D\). Let \(E'\) have a single component over \(\{x,y,z\}\) with relation \(\{x{=}y{=}z\}\), anchored to all of \(D\) (so \(\operatorname{proj}\operatorname{Sol}_D=L\)). Both satisfy (F1) and (F2) (same global solution set), and (A) (same answer profile). But the active components have different footprints and different signature multisets (\(\{\{x{=}y\},\{y{=}z\}\}\) vs. \(\{\{x{=}y{=}z\}\}\)); no bijection of footprints makes the signatures coincide. So the components are *not* pairwise of one kind. Fatal as stated. Fix: restrict to active components *and* prove that the anchor multisets agree, or weaken the claim to "answer profiles coincide and signature multisets coincide up to the declared anchors \(\Gamma,\Gamma'\)."
+
+**Finding 7 — the proof has a hole at the anchors.**
+Claim attacked:
+
+> "*Proof.* Immediate from Derivation 1 and (A)."
+
+Why it fails: Derivation 1 compares a component of \(E\) to *its own anchor in \(D\)*. To compare components of \(E\) and \(E'\) to each other you need the anchors \(\lambda(k)\) and \(\lambda'(k')\) to be of one kind on \(C\). Nothing in (F1), (F2), (A) guarantees that; the anchors are part of the candidates' data and may differ arbitrarily. Serious. Fix: add anchor agreement as an assumption, or prove it from a canonical-anchor construction.
+
+**Finding 8 — "one account at grain \(C\)" is introduced by the theorem it purports to prove.**
+Why it fails: the relation "are one account at grain \(C\)" is never defined in Parts II–V. If it is *defined* as "pairwise kind-identical components plus coincident answer profiles," the derivation is a definition dressed as a theorem; if it means organizational identity, Finding 6 refutes it. Serious (circularity). Fix: define account-identity-at-\(C\) explicitly, then state which part is definitional and which is substantive.
+
+**Finding 9 — scope slip.** The claim says the candidates "satisfy (F1), (F2), and (A) *on \(C\)*," but (F1) and (F2) are conditions on \(\tau[C]\) and \(\tau'[C]\) respectively, and each candidate has its own \(\tau,\sigma\). Minor. Fix: say "on their translated contracts."
+
+**Finding 10 — Consequence overclaims.**
+Claim attacked:
+
+> "Underdetermination of an account by a contract is not a failure of the semantics to decide; it is the semantics reporting that the contract does not contain the distinction."
+
+Why it fails: what is shown (at best) is that the *answer profiles* and, conditionally, the *signature classes* agree. The candidates' organizations — decompositions, footprints, component counts — may differ (Finding 6). Those differences are contained in the candidates but not in the contract, so underdetermination reaches further than the proof licenses. Serious. Fix: restrict the consequence to answer-profile and signature-class underdetermination.
+
+---
+
+## Derivation 3
+
+**Finding 11 — the theorem is false as stated; the document's own defeat condition is already reachable.**
+Claim attacked:
+
+> "Let \(t\) be selected on a finite history \(H\subsetneq C\). For every \((a,b)\in C\setminus H\) there exists a transport \(t'\), also surviving on \(H\), with a different value at \((a,b)\)."
+
+Why it fails: Part IV defines *Selected* as membership in a population \(\mathcal T\) that survived a condition requiring fidelity on \(H\). No condition says \(|\mathcal T|>1\), nor that \(\mu\) can produce variants, nor that the physical module leaves \(E\)'s relations free. Take \(\mathcal T=\{t\}\) with \(t\) faithful on all of \(C\), \(H\subsetneq C\): \(t\) is the unique survivor, hence "determined on \(C\setminus H\)" — precisely the case Part XV says would refute Derivation 3. So the claim needs a non-degeneracy assumption that is nowhere stated. Fatal as stated. Fix: add and flag the assumption: "for each \((a,b)\in C\setminus H\), \(\mathcal T\) contains (or \(\mu\) can produce) a transport whose target differs there," and acknowledge that a physically determined or singleton population is a genuine counterexample.
+
+**Finding 12 — "a different value at \((a,b)\)" is undefined, and under at least one reading the construction does not produce one.**
+Why it fails: if the transport's "value at \((a,b)\)" means \(\pi[\operatorname{Sol}_D(a,b)]\), then altering \(E\)'s component relations changes neither \(\pi\) nor \(\operatorname{Sol}_D\), so the value is unchanged. If it means \(\operatorname{Sol}_E(\tau(a),\sigma(b))\), the altered component must be *non-redundant* at that pair; a redundant component (implied by the others) leaves the solution set fixed. The proof says only
+
+> "Alter \(L_{j}(a,b)\) for one \((a,b)\notin H\) to any other admitted relation; the result survives on \(H\) and differs at \((a,b)\)."
+
+Serious. Fix: define "value"; add a non-redundancy requirement on the altered component; or conclude "the component relations differ" rather than "the value differs."
+
+**Finding 13 — the alteration is not shown to be admissible.** "any other admitted relation" presupposes a notion of *admitted relation* that is never defined, and the construction bypasses the variation operator \(\mu\) and the physical module entirely, though Part XII insists selection is "a claim about a physical history." Serious. Fix: define admissibility of a target organization via \(\Theta\) and show the altered organization is realizable, or state the theorem as a claim about the *space of logically possible transports*, not about the population.
+
+**Finding 14 — notation slip.** The proof writes \(L_j(a,b)\) for the altered relation, but (F1) indexes component relations by *translated* pairs \(L_j(\tau(a),\sigma(b))\). Cosmetic. Fix: subscript consistently.
+
+**Finding 15 — the finiteness assumption is idle.** The proof works identically for any \(H\subsetneq C\), finite or not. Cosmetic. Fix: drop "finite," or use finiteness for a compactness-style strengthening.
+
+**Finding 16 — Consequence conflates underdetermination with fallibility.**
+Claim attacked:
+
+> "A correspondence produced by selection is faithful where it was tested and unconstrained where it was not. This is why the primitive layer is fallible: …"
+
+Why it fails: what is (at best) shown is that fidelity on \(C\setminus H\) is *not entailed* by survival on \(H\). "Unconstrained" is stronger — the physical module and the homomorphism condition \(\tau(a_2a_1)=\tau(a_2)\tau(a_1)\) constrain \(t\) on \(C\setminus H\) whenever unseen edits compose from seen ones. And non-uniqueness is not error: the survivor may be faithful on all of \(C\). "This is why the primitive layer is fallible" asserts an actual defect from a modal fact about alternatives. Serious. Fix: conclude "not guaranteed," and separate non-uniqueness from actual infidelity.
+
+---
+
+## Derivation 4
+
+**Finding 17 — the derivation is vacuous: the conclusion is the definition.**
+Claim attacked:
+
+> "A system can be surprised only if it holds a transport selected on a history \(H\) strictly smaller than the contract \(C\) of changes the world admits."
+
+Why it fails: Part IV stipulates
+
+> "**surprise** is a violation at \((a,b)\notin H\)."
+
+Given that, "surprise requires \(H\subsetneq C\)" is analytic. The proof's two cases ("no transport → no expectation," "\(H=C\) → no \((a,b)\notin H\)") unpack the definition; nothing is derived. Serious (as a theorem it is empty). Fix: either define surprise from independent ingredients (expectation, fidelity failure) without baking incompleteness in, or label the item a *remark* rather than a derivation.
+
+**Finding 18 — the claim conflates the contract with what the world admits.**
+Why it fails: \(C\) is, by Part V, "a declared subset of the physically admitted edits." If \(C\subsetneq\operatorname{PhysAdmitted}\) and \(H=C\), the world still admits changes the transport was never shaped against, and the system is vulnerable in every ordinary sense — yet Derivation 4's condition fails and, by the definition, no "surprise" occurs. The claim's phrase "the contract \(C\) of changes the world admits" is therefore stronger than the proof supports. Serious. Fix: conclude \(H\subsetneq C\), and treat the gap between \(C\) and the physically admitted set as a separate scope-honesty condition (which Part 0 grievance 4 already half-admits).
+
+**Finding 19 — constructed transports are excluded from surprise by fiat.** Part IV defines expectation and violation only for a transport "selected on history \(H\)." So a constructed transport can be unfaithful but never "surprised." This is a stipulation, not a result, and it makes "surprise" track provenance rather than epistemic state. Minor/serious. Fix: either define expectation/violation for arbitrary transports and prove that only selected ones can be surprised, or flag the restriction.
+
+**Finding 20 — Consequence appends an undelivered philosophical thesis.**
+Claim attacked:
+
+> "The two responses … are the difference between learning and creating, and the semantics distinguishes them by their witnesses, not by their outcomes."
+
+Why it fails: the derivation establishes nothing about learning vs. creating; that claim rests on Part X's Build/(G), not on D4. Minor. Fix: move the sentence to Part X or delete.
+
+---
+
+## Derivation 5
+
+**Finding 21 — the (O) axioms are never verified for the contract-organization.**
+Claim attacked:
+
+> "Give it ports (the edits and their boundaries), components (the closure conditions), and admitted edits (add or remove a change; alter \(\mathcal Q\)). It is then a \(D\) in the sense of (O)."
+
+Why it fails: (O) requires nonempty value domains \(X_v\), a component index set with footprints, a boundary set, an edit monoid closed under a partial associative composition with identity, and relations \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\). None of these is exhibited. Edits are *operations*, not values with domains; "the closure conditions" are properties of \(A\), not relations on a product of port domains; "alter \(\mathcal Q\)" is not an edit on ports unless \(\mathcal Q\) is itself encoded in ports. Serious. Fix: give the construction explicitly (e.g. \(V=A\times B\) with \(X_v=\{0,1\}\), valuations = contracts, plus ports encoding \(\mathcal Q\); components as relations enforcing closure; edit monoid generated by toggles) and check each clause of (O).
+
+**Finding 22 — regress: the contract-content needs a contract of its own, which is not supplied.**
+Why it fails: Deploy requires (R), hence a transport to the content that is faithful *on the content's contract*. If the content is itself a contract \(C\), its contract is a meta-contract \(\check C\); by Part III, \(\check C\) must have provenance \(\rho\in\{\text{declared},\text{selected},\text{constructed}\}\), and if constructed it is another content needing another faithful transport. No well-foundedness or stopping condition is given. So "question-finding is representable" is established only at the price of an unbounded ascent, or of a *declared* meta-contract — which Part 0 forbids as a resting place for creativity claims ("a claim about creativity cannot rest on it"). Serious (arguably fatal to attack point (E)). Fix: specify the meta-contract and its provenance, add an explicit well-foundedness condition on content/contract levels, or restrict the claim to a fixed finite level.
+
+**Finding 23 — the proof checks the wrong conjuncts of (G).**
+Claim attacked:
+
+> "Deploy, Build, and New apply."
+
+Why it fails: (G) is \(\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}\). Deploy is *not* a conjunct of (G) (it enters via the repertoire \(R\) in New, and separately in (EK)); Attempt — "actually used to address \(p\)" — is a conjunct and is never mentioned. Serious. Fix: verify Attempt, or state that Deploy is invoked only through New.
+
+**Finding 24 — Build requires a represented target, re-importing the regress.** Part X's Build requires that the episode "prepares a represented organization for explanatory use of \(c\)" and that "\(t\), or the organization it targets, is available as a represented target." For a contract-content this is exactly the (R)-condition of Finding 22. The proof's phrase "can be the content \(c\) in (G)" therefore presupposes what must be shown. Serious. Fix: as Finding 22.
+
+**Finding 25 — Consequence overclaims parity.**
+Claim attacked:
+
+> "Finding the right question is a creative act on the same footing as answering one."
+
+Why it fails: answering requires \(\operatorname{Account}(c,p_c)\) — fidelity of a transport to a target under a contract. A contract-content has no target to be faithful *to*; its adequacy condition is different in kind. The derivation shows (at best) that a contract can be made to satisfy the *syntactic* shape of a content, not that the two roles are "on the same footing." Serious. Fix: either construct the exact analogue of (E) for contract-contents, or weaken to "question-finding is *representable*, unlike in input-question frameworks."
+
+---
+
+## Derivation 6
+
+**Finding 26 — the proof is an appeal to the author's own list.**
+Claim attacked:
+
+> "*Proof.* By the dependence order of Part XIV, following each definition to its base."
+
+Why it fails: the dependence order is a table compiled in the same document; "following each definition to its base" is the verification, not a proof, and no such verification is exhibited for any single predicate. Serious (the item is a survey with an unperformed proof obligation). Fix: exhibit the reduction for at least the nontrivial cases — (R), (E), Build, (G), (EK) — showing each is a first-order condition on \(\Theta\) and \(\mathcal N\) plus indices, or reframe as a checklist whose items are proof obligations.
+
+**Finding 27 — \(\operatorname{Org}_\ell\) is doing the semantic work while being called physics.**
+Claim attacked:
+
+> "The one thing (R) takes from outside is \(\operatorname{Org}_\ell(o)\): which organization a physical occurrence instantiates at a grain. That is supplied by the physical module, not by the semantics."
+
+Why it fails: organization-attribution-at-a-grain is precisely a representation-attribution; whether a physical theory determines it (rather than a modelling decision) is a substantive assumption, not a deliverance of "a theory of matter." The "two primitives" claim is therefore partly definitional: whatever resists reduction is declared an index or shoved into \(\Theta\). Serious. Fix: state \(\operatorname{Org}_\ell\) explicitly as a bridge-law assumption with its own fallibility and attack surface, and separate "physics supplies it" from "the semantics needs it supplied."
+
+**Finding 28 — obligations are unplaced in the dependence order.** \(O_p\) (Part III), \(O\), \(P\), \(O_{\mathrm{ep}}\) (Part XI) are used in (P) and (EK), but Part XIV's dependence order never says whether they come from \(\Theta\), from \(\mathcal N\), or from declaration. If they are declared, (EK)'s normative force is index-relative; if from \(\mathcal N\), then \(\mathcal N\) is far more than "when a question invokes one." Serious. Fix: place obligations explicitly, and state which are normative inputs and which are declared indices.
+
+**Finding 29 — Consequence overclaims and misdescribes indices.**
+Claim attacked:
+
+> "There is no residual predicate meaning 'explains,' 'represents,' 'is a cause,' or 'is knowledge.'"
+
+and
+
+> "Grain \(\ell\), boundary \(\beta\), continuity \(\Omega\), and the contract \(C\) are declared indices. Every claim is relative to them; none is a predicate that could be true or false."
+
+Why it fails: \(\operatorname{Account}\) *is* a predicate meaning "explains" — the claim can only be "no *undefined* such predicate." And while a contract \(C\) is not itself true or false, \(\operatorname{Faithful}_C(t)\) is, so the index/indexed-claim distinction does not show that index choice carries no truth-bearing load. Minor. Fix: reword as "no undefined semantic predicate," and note that index choice is truth-conditionally inert only relative to a fixed index.
+
+---
+
+## Derivation 7
+
+**Finding 30 — "takes over operative use" is not a defined relation.**
+Claim attacked:
+
+> "The episode is a history in which a contract-content \(C'\) is built (Derivation 5) and takes over operative use."
+
+Why it fails: no predicate \(\operatorname{Operative}(\cdot)\), no update rule for the operative contract, and no mechanism linking a built content to operative deployment is defined anywhere in Parts X–XIII (Part XIII uses "operative use" and "operative return" without defining a switch). The consistency claim relies on an undefined transition. Serious. Fix: define the operative contract of a system state and its update under a construction witness, then re-run the consistency argument.
+
+**Finding 31 — the result is near-vacuous as a consistency proof.**
+Why it fails: two claims at *different indices* are automatically consistent; the substantive claim — that one and the same system can host a frozen assessment and a contract-changing episode — requires checking that Deploy/(R)/repertoire machinery is simultaneously satisfiable, which is not done (and Deploy is what imports the regress of Finding 22). Minor/serious. Fix: verify the joint satisfiability against Deploy and (R), or downgrade to a remark on index relativity.
+
+**Finding 32 — the derivation inherits Derivation 5's gaps.** If a contract cannot be a content, the episode described cannot occur. Minor (conditional). Fix: fix D5 first.
+
+**Finding 33 — Consequence is normative, not derived.**
+Claim attacked:
+
+> "Goalpost-moving is the act of changing the index without recording the change, and it is a failure of the record, not a licensed operation of the semantics."
+
+Why it fails: nothing in the derivation yields a norm about records; it is a stipulation about good practice. Minor. Fix: mark it as a methodological rule.
+
+---
+
+## Derivation 8
+
+**Finding 34 — "structure-preserving bijection" is never defined, and the theorem's content is exactly that definition.**
+Claim attacked:
+
+> "Transporting all carriers, relations, transports, histories, and contracts along structure-preserving bijections preserves (E), (G), (P), (EK)."
+
+Why it fails: the result is isomorphism-invariance, whose strength is fixed entirely by what "structure-preserving" must preserve: the \(\Theta\)-interpretation, \(\prec_h\), the provenance witnesses (Sel/Con are *historical* claims), obligation evaluation at \(\xi,\xi'\), and the repertoire with its "before \(e\)" order. None is specified. Serious. Fix: define the class of admissible bijections explicitly and note that the theorem is isomorphism invariance under that class.
+
+**Finding 35 — (G) contains a negative existential over a repertoire, so injectivity is not enough.**
+Why it fails: \(\operatorname{New}(s,c,h,e)\iff\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c\). If the bijection maps the source structure *into* a target system whose repertoire contains extra contents not in the image, New can fail in the target while holding in the source. Preservation therefore requires the map to be an isomorphism *of the whole structure including repertoires and the temporal order*, not merely a bijection of carriers. Serious. Fix: require full-structure isomorphism; state that partial relabellings do not preserve (G).
+
+**Finding 36 — no Consequence paragraph; nothing to overclaim.** The caveat ("does not apply to coarsenings, changed boundaries, or lost event identities") is correct but only as strong as Finding 34's definition. Cosmetic.
+
+---
+
+## Derivation 9
+
+**Finding 37 — the claim is a tautology; the substantive premise is asserted, not proved.**
+Claim attacked:
+
+> "If \(M_0,M_1\) have the same input–output projection and differ on an account claim, no function of the projection agrees with the claim on both. *Proof.* Equal inputs to a function give equal outputs."
+
+Why it fails: the proof is the trivial direction. The load-bearing premise — that such \(M_0,M_1\) *exist* — is supplied by
+
+> "Parallel and priority wiring are an instance."
+
+with no construction and no verification that the two differ on \(\operatorname{Account}\) (which requires a difference in (F1)/(F2)/(A) under some contract, not merely in wiring). Serious. Fix: construct the pair explicitly, specify the contract, and exhibit the (F1) or (F2) failure in one and success in the other.
+
+**Finding 38 — "input–output projection" must exclude edit-responses, or the claim is false.**
+Why it fails: (E) is a condition on responses to *admitted edits*. If the "input–output projection" included the response to every edit in \(C\), then (F1) and (A) would be visible in the projection and the two systems could not differ on account status while having the same projection. The claim therefore silently assumes an *output-only* projection. Serious. Fix: define the projection as excluding edit-response signatures, and note explicitly that this is exactly what (E) reaches beyond.
+
+**Finding 39 — asserted applications are unchecked.**
+Claim attacked:
+
+> "The same holds for attribution from emitted text and for use inferred from delivery logs."
+
+Why it fails: neither case is constructed; whether emitted text or delivery logs omit edit-response structure is an empirical claim about those data sources. Minor. Fix: construct one, or delete.
+
+---
+
+## Derivation 10
+
+**Finding 40 — (G) is asserted without Attempt.**
+Claim attacked:
+
+> "If \(S_1\) was built by an owned subhistory containing a nontrivial binding construction … and \(S_1\) is not in the prior repertoire, then (G) holds."
+
+Why it fails: (G) is \(\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}\). New (not in prior repertoire) and Build (binding construction) are supplied; Attempt — actual use of \(S_1\) to address \(p\) — is not. Minor/serious. Fix: add that \(S_1\) was deployed to address the occlusion question.
+
+**Finding 41 — (EK) is asserted from a proper subset of its conjuncts.**
+Claim attacked:
+
+> "If it repairs the obligation … while protecting …, then (P) holds; and since the account is adequate on its contract and deployable, (EK) holds."
+
+Why it fails: (EK) additionally requires \(\operatorname{CreativeCriticalEpisode}\) (a recognized difficulty, a target available *before* its criticism, a conjectural objection, a content-sensitive response), an event \(e_c\preceq_h e\) with \(\operatorname{Origin}(s,c,p_c,h,e_c)\), \(c\in\operatorname{Result}(\Delta)\), and \(\operatorname{ProducesVia}(\Delta,c,o;\xi,\xi')\). None is checked; "adequate and deployable" is two conjuncts of a six-clause definition. Serious overclaim. Fix: verify the episode structure and ProducesVia, or say "the remaining conjuncts are satisfiable by stipulation, which is what a relative-consistency check requires."
+
+**Finding 42 — faithfulness is cited under the wrong condition.**
+Claim attacked:
+
+> "Under (F1), \(t_1\) is faithful on the extended contract."
+
+Why it fails: Part V defines faithful as satisfying *both* (F1) and (F2); the global agreement \(\pi[\operatorname{Sol}_D]=\operatorname{Sol}_E\) and the homomorphism conditions \(\tau(1)=1\), \(\tau(a_2a_1)=\tau(a_2)\tau(a_1)\) are not checked anywhere in the episode. Minor. Fix: check (F2), or write "satisfies (F1)".
+
+**Finding 43 — misattribution of the swap argument.**
+Claim attacked:
+
+> "On any contract containing it, the two persistence components are of one kind (Derivation 2)."
+
+Why it fails: Derivation 2 concerns two *candidates for the same question*; the claim used here is the intra-organization kind relation of (K) (with the swap itself supplying the footprint bijection — which is correct, but it is (K), not D2). Minor. Fix: cite (K).
+
+**Finding 44 — the surprise step needs the occlusion to be inside the contract but outside the history, which is not stated.**
+Why it fails: Derivation 4's surprise requires the violating pair to lie in \(C\setminus H_0\). The episode says only "An occlusion occurs"; it never says the occlusion edit was in \(S_0\)'s contract before it occurred. If it was not, no fidelity-on-\(C\) was violated and no surprise (as defined) occurred. Minor. Fix: stipulate \(C\supsetneq H_0\) with the occlusion edit in \(C\).
+
+**Finding 45 — (F1) cannot be checked as written, per Finding 1.** The persistence components' ports (position, velocity) are not literally ports of \(P\); the projection in (F1) is ill-typed without the port translation \(\phi_k\). So "Under (F1), \(t_1\) is faithful" is not verifiable against the stated equation. Serious. Fix: as Finding 1.
+
+**Finding 46 — "relative-consistency witness" overstates what a stipulation gives.**
+Claim attacked:
+
+> "This episode is a relative-consistency witness for the class."
+
+Why it fails: the episode is a stipulated toy model, and the base class requires "correct typing" (Part XIV), which is not demonstrated for \(P\), \(S_0\), or \(S_1\). A consistency witness for a class defined by satisfaction of axioms should exhibit the satisfying assignment *complete*; this one leaves conjuncts of (G) and (EK) unchecked (Findings 40–41). Minor. Fix: either complete the check, or say "a stipulated model illustrating the definitions, not a consistency proof."
+
+**Finding 47 — the honest disclaimer does not repair the above.** The final sentence ("It is not a claim that any actual infant, animal, or program has been shown to instantiate it") guards against an empirical overclaim the document never made; it does not address the internal gaps. Cosmetic.
+
+---
+
+## Summary of severity
+
+- Fatal as stated: **6, 11** (Derivation 2's pairwise-kind conclusion; Derivation 3's missing non-degeneracy assumption).
+- Serious: 1–4, 7–13, 16–18, 21–28, 30, 31, 34, 35, 37, 38, 41, 45.
+- Minor/cosmetic: 5, 9, 14, 15, 19, 20, 29, 32, 33, 36, 39, 40, 42–44, 46, 47.
+
+The pattern worth naming: Derivations 2, 4, and 9 are close to definitional/trivial (the conclusion is a restatement of a stipulation), while Derivations 1, 3, and 5 are the load-bearing ones and each fails for a *missing assumption* rather than a computational error — cross-organization kinds (D1), population non-degeneracy (D3), and the meta-contract regress (D5). The document's own Part XV lists counterexamples it regards as refuting; Findings 6 and 11 show two of them are reachable under the definitions as written.

@@ -1,0 +1,293 @@
+====================================================================================================
+C1_scramble_trivial | deepseek | sample 0 | finish stop | 21095 chars | error None
+====================================================================================================
+**Finding 1 — The scramble test is tautological and tests code compliance, not provenance.**
+- **Claim attacked:** Section 1: “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected. That is the operational content of ‘the mapped objection is on an active dependency route.’” Section 7 M4: “Give C the exposure half’s defect records with the **true-field column permuted** among the V records… Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run. **This is the test that distinguishes the provenances.**”
+- **Why it fails:** C is *defined* to read V: “C never computes an aggregate fitness. Its only inputs are itemised records.” B is *defined* not to read V: “B never reads a defect record. Its only input is a number per candidate.” Therefore permuting V changes C’s input and leaves B’s input untouched. The predicted result — C breaks, B is byte-identical — is guaranteed by the code’s data flow. It does not distinguish construction from selection; it distinguishes “reads V” from “does not read V.” A selection process that read V would also break under the scramble, and a construction process hard-coded to ignore V would not. The test assumes the distinction it claims to operationalize.
+- **Seriousness:** Fatal to S4 and to the claim that the scramble test is “the test that distinguishes the provenances.”
+- **Fix:** A non-trivial version must equalize information and manipulate *route*, not just input format. For example: give B the same itemised V records but force it to aggregate them into a scalar before search; give C the same scalar fitness as B; compare not merely fidelity but the *kind-signature*, structural rules, and generalization of what is built. Or use a content-preserving scramble that preserves all sufficient statistics for C’s algorithm but destroys specific state–error pairings, and predict a specific structural change in the built rule. The current design has no such test: M4/S4 are the only provenance-specific tests, and they are trivial; M5/M6 are implementation checks; M1/M2/M3 are performance/faithfulness; S5 is a performance comparison.
+
+**Finding 2 — B also uses defect content, just in aggregate.**
+- **Claim attacked:** Section 5: “B never reads a defect record. Its only input is a number per candidate,” contrasted with C’s “only inputs are itemised records.”
+- **Why it fails:** B’s fitness is “exposure-half fitness of the current architecture plus the candidate rule.” Exposure-half fitness is computed by comparing predicted fields to true fields on the exposure half. That is defect content, aggregated into a scalar. The provenance distinction is therefore itemised-vs-aggregate, not defect-representation-vs-no-defect-representation. M4 scrambles V for C but never scrambles the true fields used to compute B’s fitness, so the comparison is asymmetric.
+- **Seriousness:** Serious, possibly fatal to the construction/selection distinction as framed.
+- **Fix:** Define the boundary of the process and the representation. Run a symmetric scramble of the true fields used for B’s fitness, and compare C and B under matched information content. If B only needs the aggregate, say so and drop the stronger provenance claim.
+
+**Finding 3 — The meta-grammar is hand-tailored to the target law, so “construction” is selection from an oracle language.**
+- **Claim attacked:** Section 1: “The meta-grammar is fixed; the regress is not escaped.” Section 4: “The world’s collision law needs two rules in this language… That is deliberate: building it takes two rounds.” Section 6.1: “If the language cannot express the law, revise.”
+- **Why it fails:** The rule language’s terms and actions — `n`, `w`, `swap_next_v`, etc. — are chosen to match the collision law’s shape. B can find the law by blind search because the law is already in the language. S1’s “needed” claim is only relative to G0; it does not show that new machinery was constructed beyond a fixed, target-tuned language. The expressibility check even permits revising the language until it expresses the law.
+- **Seriousness:** Serious.
+- **Fix:** Use a generic rule language not designed around the target law, or explicitly state that the claim is “rule selection from a supplied language,” not construction of new machinery.
+
+**Finding 4 — The closedness check was moved after seeing the lookup result.**
+- **Claim attacked:** Section 12.4: “As first written it applied a 0.1 margin to *any* G0 architecture on collision steps. The best G0 architecture on collision steps turned out to be the lookup table at 0.819… The margin was meant for machinery… The check now has a structural part… and an overall part… Recorded with the numbers so the reader can judge whether this is a fair restatement or a moved goalpost.”
+- **Why it fails:** The original pre-registered check was violated by a G0 architecture. The post hoc distinction between “machinery” and “memoriser” is not defined independently. If the lookup approximates the law’s visible effects at 0.819, then G0 is not behaviorally closed for the M1 fidelity measure. Excluding it from the structural threshold saves S1 by redefining the object of the test.
+- **Seriousness:** Serious; self-admitted potential moved goalpost.
+- **Fix:** Pre-register a definition of “machinery” before seeing results. Or treat the lookup as a counterexample to closure and base S1 on a representation-dependent measure such as M3, not M1.
+
+**Finding 5 — M4’s claim “same aggregate” is false under the described permutation.**
+- **Claim attacked:** Section 7 M4: “true-field column permuted among the V records (same states, same number of defects, same aggregate; wrong pairings).”
+- **Why it fails:** If the true-field column is permuted while the predicted field stays fixed, some V records will become correct (`predicted == permuted true`) and others will remain wrong. The number of defects and the aggregate error are not preserved. The N records are left unchanged, producing an inconsistent mixed distribution. C’s algorithm depends on V being wrong records, so it is not a clean scramble.
+- **Seriousness:** Serious; a bug in the intervention.
+- **Fix:** Define a scramble that preserves per-record wrongness and the aggregate error, or report the changed aggregate. For example, permute true fields only among values that keep `predicted != true`, or condition on predicted and true marginals.
+
+**Finding 6 — M6’s expected result is not enforced by C’s algorithm.**
+- **Claim attacked:** Section 7 M6: “Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net.”
+- **Why it fails:** C’s action scoring still runs. If all “fixes” are zero because the replaced true field equals the original prediction, C may still select the action that breaks the fewest N records or has zero net on V but negative net on N. Nothing in the algorithm forces it to build nothing. “Rules with zero net” is not defined operationally.
+- **Seriousness:** Serious.
+- **Fix:** Add an explicit abort condition when no action has positive net gain; include a no-op action; define “zero net” and pre-register how ties are handled.
+
+**Finding 7 — M5’s “rules must be identical” conflicts with the free tie-breaking order.**
+- **Claim attacked:** Section 7 M5: “Reverse the order of V and N records… Relabel slots i↔j throughout… The rules must be identical (up to the relabel).” Section 10: “Free, fixed in code and hashed: tie-breaking order among equal-score conditions.”
+- **Why it fails:** If tie-breaking depends on input order or slot label, reversing V/N or relabeling i↔j can change the selected condition/action. The test then fails for an implementation reason, not a provenance reason.
+- **Seriousness:** Serious.
+- **Fix:** Make tie-breaking invariant to record order and slot relabeling, or pre-register the tie-break and report M5 as a test of that implementation choice.
+
+**Finding 8 — S3 contradicts the pre-registered exclusion of crossing collisions.**
+- **Claim attacked:** Section 9 S3: “M3 given-bound for A0+C ≥ 0.9 on collision-containing pairs… The built rules are components with the collision’s signature, not a fix for the observed cases.” Section 12.2: “C… is expected not to build the crossing rule… S3’s threshold applies to pairs with **no crossing after the change step**.”
+- **Why it fails:** The world’s collision law includes both same-target and crossing collisions. C is expected to build only the same-target rule. S3 as written in section 9 claims the built rules have the collision’s signature, but the threshold excludes the crossing cases where the signature is absent. This is an overclaim or a moved qualification.
+- **Seriousness:** Serious.
+- **Fix:** Update S3 in section 9 to include the no-crossing qualifier, or split the claim into visible and invisible collision types. Report F3 separately as already planned.
+
+**Finding 9 — The rule semantics are under-specified and inconsistent with the world’s stated order.**
+- **Claim attacked:** Section 3: “The world is therefore exactly ‘kinematics, then a pairwise rule on the kinematic next-states’ — the same shape as the rule language.” Section 4: “A rule is `IF condition THEN action`, checked on the slot pair (i, j) in both orders, **before** kinematics on each step.”
+- **Why it fails:** The world computes kinematic next-states first, then applies the pairwise law. The language checks conditions before kinematics, using `n` and `w` as terms. It is unclear whether `n` and `w` are recomputed after each rule, how multiple rules in order compose, what `hold` means for actions like `swap_next_v`, and how conflicts between rules are resolved. The “same shape” claim is asserted, not demonstrated.
+- **Seriousness:** Serious; reproducibility and construct validity.
+- **Fix:** Give a formal operational semantics with pseudocode, including rule ordering, recomputation, conflict resolution, and the precise meaning of `hold`/`move` for every action.
+
+**Finding 10 — V records are per-slot, but conditions are pairwise.**
+- **Claim attacked:** Section 5: “collect defect records V = {(slot state before the step, predicted field, true field)} for every wrong prediction.” Section 4: “A rule is `IF condition THEN action`, checked on the slot pair (i, j) in both orders.”
+- **Why it fails:** A condition is evaluated on a pair of slots, but V appears to store a single slot’s state. It is not specified how a pairwise condition is evaluated on a per-slot record, or how the other slot’s state is supplied. This is a representational mismatch between the defect records and the rule language.
+- **Seriousness:** Serious.
+- **Fix:** Define V records as full pair states or full architecture states, or redefine the condition language to operate on single-slot records. Align the record format with the rule vocabulary.
+
+**Finding 11 — “C never computes an aggregate fitness” is false on its face.**
+- **Claim attacked:** Section 5: “C never computes an aggregate fitness. Its only inputs are itemised records.”
+- **Why it fails:** C scores every condition by “(number of V states it is true on) − (number of N states it is true on)” and scores actions by counting fixes and breaks. Those are aggregates over records. C does not compute the global architecture fitness, but it does compute aggregate condition/action scores.
+- **Seriousness:** Minor to serious; it weakens the claimed contrast with B.
+- **Fix:** Rephrase as “C does not use the global architecture fitness; it computes condition/action scores from itemised records.”
+
+**Finding 12 — M3’s binding and translated-edit protocol are under-specified and may leak identity.**
+- **Claim attacked:** Section 7 M3: “Experiment 1’s translated-edit test on the collision world: bind slots to things at step 2, apply the translated change, and check every slot tracks its thing’s (position, velocity) through every later step *including through collisions*.”
+- **Why it fails:** The sensory field has no identity, so slot-to-thing binding is an experimenter intervention. It is not stated how binding is performed, how it is maintained through collisions, or whether the binding provides information the process does not have. “Experiment 1’s translated-edit test” is not defined in this file. Tracking through collisions may be circular if the tracking criterion itself uses the collision rule.
+- **Seriousness:** Serious.
+- **Fix:** Specify the binding protocol, ensure it does not leak identity to A0 or A0+C, define the translated change, and state how tracking is evaluated without using the target law.
+
+**Finding 13 — The pre-registration chronology contradicts itself.**
+- **Claim attacked:** Section 12.2: “A pre-registered expectation added after thinking the world through, **before any code ran**.” Section 12.3: “**As first coded**, a thing reflecting off a wall into its neighbour’s cell was handled by a special ‘hold’ clause. **The section-6 check showed** this edge case was 16% of all collision-type events.”
+- **Why it fails:** 12.3 says code was written and a section-6 check was run before the design was frozen. 12.2 claims the expectation was added before any code ran. At least one of these statements is false, or “code” is being used in two senses.
+- **Seriousness:** Serious for pre-registration integrity.
+- **Fix:** Give a precise timeline with timestamps: when code was written, when checks were run, when each change was made, and which changes were informed by observed results. Do not call a post-check expectation “pre-registered” without qualification.
+
+**Finding 14 — The world and rule language were revised to fit the hand-built rules after seeing an inexpressible edge case.**
+- **Claim attacked:** Section 12.3: “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision. The rule language’s terms are the slots’ own kinematic next-states, so world and language have the same shape. One action added (`swap_next_v`); the two constants removed.”
+- **Why it fails:** After observing that 16% of collision-type events were inexpressible in the rule language, the authors redefined the world so the edge case became expressible. They also added an action and removed constants. The world/language alignment is now true by construction. This may be legitimate pre-freezing design, but it weakens external validity and the claim that the language is a general-purpose meta-grammar.
+- **Seriousness:** Serious.
+- **Fix:** Pre-register the world independently of the rule language. If the language cannot express the world, report that as a limitation rather than redefining the world to fit the language. If revision is necessary, document it as an adaptive design choice with its consequences.
+
+**Finding 15 — S1 uses fidelity, but the lookup table can approximate the visible effects.**
+- **Claim attacked:** Section 9 S1: “A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did.” Section 12.4: “The best G0 architecture on collision steps turned out to be the lookup table at 0.819… it memorises local sensory patterns… and can approximate the law’s visible effects without representing it.”
+- **Why it fails:** If the lookup can approximate the law’s visible effects, then G0 can achieve non-trivial collision-step fidelity without pairwise machinery. S1 as written is a fidelity comparison, so it does not establish that the closed grammar “could not do it.” It only establishes that a particular structural class of G0 machinery cannot do it. The claim “extending it did” is about representation, but S1 measures fidelity.
+- **Seriousness:** Serious.
+- **Fix:** Base S1 on M3 or another representation-dependent measure, or explicitly restrict “could not do it” to the structural subclass and report the lookup’s fidelity as a counterexample to behavioral closure.
+
+**Finding 16 — S5 undermines the provenance distinction rather than supporting it.**
+- **Claim attacked:** Section 9 S5: “B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.”
+- **Why it fails:** If B reaches the same fidelity by blind selection over the same meta-grammar, then the output does not reveal whether it was constructed or selected. The only thing distinguishing C and B is the code’s input path. S5 therefore supports output-indistinguishability, not the claim that the defect route is epistemically distinctive. It also shows that the defect-driven route is not necessary for the performance outcome.
+- **Seriousness:** Serious.
+- **Fix:** Clarify that S5 is a null result about output provenance. If the experiment is meant to show that the route matters, S5 needs a stronger endpoint than fidelity, such as kind-signature, sample efficiency, or generalization to a new law.
+
+**Finding 17 — The thresholds are arbitrary and lack uncertainty estimates.**
+- **Claim attacked:** Section 9 S2: “Non-collision fidelity of A0+C ≥ A0’s, within 0.01.” S4: “worse than unscrambled on collision steps by at least 0.1.” S5: “within 0.05 of C in at least 4 of 6 seeds.”
+- **Why it fails:** The thresholds are not justified by a power analysis or by the measurement noise. C is deterministic in the design; B has six seeds. There is no confidence interval, no multiple evaluation split, and no correction for multiple comparisons across S1–S7.
+- **Seriousness:** Minor to serious.
+- **Fix:** Pre-register thresholds from pilot noise or theoretical bounds. Report confidence intervals across evaluation splits and seeds. Correct for multiple outcomes.
+
+**Finding 18 — K2’s inference from “scrambled within 0.05” to “not using defect content” is invalid.**
+- **Claim attacked:** Section 9 K2: “Scrambled-V construction within 0.05 of unscrambled. The constructor is not using defect content; the witness is fake.”
+- **Why it fails:** A constructor could use defect content in a permutation-invariant way, or the task could be easy enough that many corrupted records still yield the same rule. Similar performance under one scramble does not imply absence of dependence on defect content. It may mean the scramble preserved the relevant statistics.
+- **Seriousness:** Serious.
+- **Fix:** Use stronger controls: remove V entirely, replace true fields with predicted fields, or use a scramble that preserves all sufficient statistics but changes the specific pairings. Compare not just fidelity but structural rules.
+
+**Finding 19 — “Building it takes two rounds” is inconsistent with the expectation that C will not build the crossing rule.**
+- **Claim attacked:** Section 4: “The world’s collision law needs two rules in this language… That is deliberate: building it takes two rounds.” Section 12.2: “C… is expected not to build the crossing rule, because there are no defects from crossings.”
+- **Why it fails:** If C cannot see crossing defects, it will not build the crossing rule. Then C cannot build the full collision law in two rounds; it can build at most the same-target rule. The claim that building the law takes two rounds applies to the hand-built oracle, not to C.
+- **Seriousness:** Serious.
+- **Fix:** Distinguish the hand-built rule set from the C-buildable rule set. State explicitly which parts of the law are visible to C and which are not, and revise the “two rounds” claim accordingly.
+
+**Finding 20 — M1’s “collision steps” includes invisible crossing collisions, diluting the comparison.**
+- **Claim attacked:** Section 7 M1: “overall, and split into **collision steps** (a collision occurred in the true world at that step) and **non-collision steps**.”
+- **Why it fails:** Section 12.2 says crossing collisions are invisible to sensation and produce no defects. Including them in the collision-step fidelity measure adds cases where A0, A0+C, and G0 may all be perfect because the occupancy fields are identical under bounce and pass-through. This dilutes the visible same-target collision difference and makes S1/K1 less interpretable.
+- **Seriousness:** Minor to serious.
+- **Fix:** Split M1 into same-target collisions, crossing collisions, and non-collisions. Report each separately.
+
+**Does the design have a non-trivial version of the scramble test?** No. The only provenance-specific test is M4/S4, and it is guaranteed by the code’s input paths. M5/M6 test implementation invariance, M1/M2/M3 test performance and faithfulness, and S5 tests whether blind selection can match performance. None of these separates construction from selection except by stipulation of which process reads which input format. A non-trivial test would need to equalize information content, manipulate the route while holding aggregate statistics and search resources constant, and show that the *kind-signature* or generalization of the built machinery depends on the defect representation in a way that selection on the same aggregate cannot mimic. The design does not contain such a test.
+====================================================================================================
+C1_scramble_trivial | deepseek | sample 1 | finish stop | 10489 chars | error None
+====================================================================================================
+I do not find a non-trivial scramble test in the design. Findings below are ordered around M4/S4 and the Section 1 claim.
+
+**Finding 1 — M4/S4 is a code-dependency check, not a provenance test.**
+(1) Claim attacked: Section 7 M4: “**This is the test that distinguishes the provenances.**” Section 1: “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected.”
+(2) Why it fails: C is defined in Section 5 as reading V/N records: “collect **defect records** V = {(slot state before the step, predicted field, true field)} for every wrong prediction and **non-defect records** N for every right one.” B is defined as never reading them: “**B never reads a defect record. Its only input is a number per candidate.**” The scramble changes only the true-field column of V. Therefore C’s input changes and B’s does not. The predicted result is entailed by the implementations. It tests data flow through C’s code, not construction versus selection.
+(3) Severity: Fatal to the claim that M4 distinguishes provenances.
+(4) Fix: Replace with a matched-information, matched-search mediation test; see Finding 13.
+
+**Finding 2 — B’s byte-identical clause is a tautology.**
+(1) Claim attacked: M4: “Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run.”
+(2) Why it fails: If B never reads V, and the only intervention is inside V, then B’s input is unchanged. With fixed seeds and deterministic code, byte-identical output is a necessary consequence. It cannot be a discriminating pre-registered outcome.
+(3) Severity: Serious.
+(4) Fix: Remove as evidence; if retained, label it as an implementation sanity check only.
+
+**Finding 3 — C’s break under scramble is also definitional.**
+(1) Claim attacked: S4: “Scrambled-V construction is worse than unscrambled on collision steps by at least 0.1”.
+(2) Why it fails: C’s action-solving step explicitly compares to the true-field column: “count the V records it fixes (apply action to the state, run kinematics, prediction now equals the true field)”. Permuting that column directly changes the score C optimises. Any process using that column will change. This shows C reads its declared input, not that the defect representation is on a construction route distinct from selection.
+(3) Severity: Serious/fatal as evidence.
+(4) Fix: Compare C to a content-blind version of C with the same search operator and budget; or preserve every sufficient statistic C actually uses.
+
+**Finding 4 — B is not defect-blind; it uses an aggregate of the same true fields.**
+(1) Claim attacked: B: “**B never reads a defect record. Its only input is a number per candidate.**”
+(2) Why it fails: B’s number is “**exposure-half** fitness of the current architecture plus the candidate rule.” That scalar is computed by running on the exposure half against true fields. It is an aggregate summary of the same defects. The contrast is itemised representation versus scalar summary, not representation versus no representation. M4 scrambles only C’s itemised V, not B’s aggregate, so the “unaffected” half is confounded.
+(3) Severity: Serious.
+(4) Fix: Match information: give both processes the same V/N records; force the control to use only the aggregate; intervene on the structure while preserving the aggregate.
+
+**Finding 5 — “same aggregate” controls nothing.**
+(1) Claim attacked: M4: “(same states, same number of defects, same aggregate; wrong pairings)”.
+(2) Why it fails: C “never computes an aggregate fitness. Its only inputs are itemised records.” B does not read V. Preserving the aggregate of V is irrelevant to both. It is a decorative control.
+(3) Severity: Minor.
+(4) Fix: Preserve the sufficient statistics actually used by each process, or drop the phrase.
+
+**Finding 6 — S5 and F1 undermine the distinctness claim.**
+(1) Claim attacked: M4 as the test distinguishing provenances.
+(2) Why it fails: S5 says “B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.” F1 says “C and B reach the same fidelity with structurally different rules. By Derivation 2 they are one kind on this contract”. If blind selection over the meta-grammar finds the same machinery, construction is not needed for this world. The provenance difference is not operationalised as a difference in capability. M4 then only shows C’s code reads V.
+(3) Severity: Serious.
+(4) Fix: Make B fail under matched budgets, or reframe as output equivalence and drop the claim that M4 distinguishes kinds.
+
+**Finding 7 — M6 is similarly trivial.**
+(1) Claim attacked: M6: “Give C an empty V. It must build nothing. Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net.”
+(2) Why it fails: C’s induction scores conditions by V/N and solves actions by fixing V. Empty V or V with no error leaves nothing to optimise. Building nothing is entailed by C’s definition.
+(3) Severity: Minor/serious.
+(4) Fix: Label as a sanity check, not evidence for defect content.
+
+**Finding 8 — Section 4 contradicts itself on when rules are checked.**
+(1) Claim attacked: Section 4: “A rule is `IF condition THEN action`, checked on the slot pair (i, j) in both orders, **before** kinematics on each step.”
+(2) Why it fails: The same section defines terms as “for each slot, its cell `c`, velocity `v`, and its own kinematic next cell `n` and next velocity `w`”. n and w are kinematic next states; they cannot be evaluated before kinematics. The world definition says the opposite: “first compute each thing’s kinematic next-state (n_i, w_i) ... Then, if ...”. The rule language and C’s induction are ill-defined.
+(3) Severity: Serious/fatal to implementation.
+(4) Fix: Change to “checked after kinematics and before applying actions”; or remove n,w from conditions. Since the collision condition needs n_i == n_j, conditions must be after kinematics.
+
+**Finding 9 — C’s induction is underspecified.**
+(1) Claim attacked: C: “Induce a condition: score every condition in the language by (number of V states it is true on) − (number of N states it is true on); ... Solve an action: for each kept condition and each action, count the V records it fixes (apply action to the state, run kinematics, prediction now equals the true field) minus the N records it breaks.”
+(2) Why it fails: A defect record is a whole field; a condition is on a slot pair (i,j). The text does not define how a condition is evaluated on a record, which pair is selected if multiple match, or whether fixing one slot’s prediction fixes the record. This ambiguity can change C’s output and M4’s outcome.
+(3) Severity: Serious.
+(4) Fix: Define records as local pair states or specify a unique matching rule; define “record fixed” as entire field correct; pre-register tie-breaking.
+
+**Finding 10 — K2 is not a theoretical sink.**
+(1) Claim attacked: K2: “Scrambled-V construction within 0.05 of unscrambled. The constructor is not using defect content; the witness is fake. Kills the provenance distinction as modelled.”
+(2) Why it fails: If C is implemented as reading the true-field column, scrambled-V will almost certainly be worse. If it is within 0.05, it means C’s code is broken or the scramble is ineffective. The outcome tests implementation, not the theoretical distinction.
+(3) Severity: Serious.
+(4) Fix: Remove K2 as a theoretical sink; replace with the matched-information test.
+
+**Finding 11 — Search-algorithm confound.**
+(1) Claim attacked: M4/S4 as evidence about provenance.
+(2) Why it fails: C uses condition scoring and top-20 action solving; B uses “mutation–selection over single rules (population 32, elitism 4, 60 generations, seeds 0–5)”. They differ in search operator, population, generations, and input format. M4 attributes any scramble-induced difference to provenance, but it is confounded with algorithmic differences. A content-blind process with C’s search might also break or not.
+(3) Severity: Serious.
+(4) Fix: Equalise search operators and budgets, or compare C to a content-blind version of C with the same search.
+
+**Finding 12 — A fixed meta-grammar makes “construction” selection over that grammar.**
+(1) Claim attacked: Section 1: “The meta-grammar is fixed; the regress is not escaped” and “Blind selection over the meta-grammar can add the same rules.”
+(2) Why it fails: The new machinery is a rule from a fixed 50,176-rule space. If B can select it, the only difference is route. M4 does not test route beyond input access. The claim “construction is real” reduces to “C uses a different search operator that reads defect records”.
+(3) Severity: Serious.
+(4) Fix: Either define construction as a property that yields better generalisation under matched budgets, or concede that the experiment tests algorithmic differences.
+
+**Finding 13 — No non-trivial version is present; what one would look like.**
+(1) Claim attacked: M4/S4 as the provenance test.
+(2) Why it fails: It lacks matched information, matched search, and a content-preserving intervention. A non-trivial version would:
+- give C and a control C′ identical itemised V/N records, identical search operator, identical evaluation budget, identical tie-breaking;
+- constrain C′ to compress V/N into a scalar before search, or otherwise deny it the structured condition–action induction;
+- intervene on defect content while preserving every sufficient statistic available to C′ — e.g. use two worlds with identical sensory sequences and identical aggregate error but different hidden causes requiring different rules; or permute state→true-field pairings only within world-consistent records and preserve the count of fixed/broken records per candidate action if possible;
+- measure whether C’s built rule tracks the hidden cause and generalises to a novel defect of the same kind, while C′ fails or needs more evaluations;
+- pre-register that the only difference is whether defect content is used as a structured representation or as a scalar.
+Does the design have one? No. M3 is closer (kind-signature), but it is not a scramble test and does not compare to a content-blind control. M5 is a symmetry check. M6 is an ablation. M4 is the only one claimed to distinguish provenances, and it is trivial.
+(3) Severity: Fatal to the claim that the design has a non-trivial provenance test.
+(4) Fix: Implement the matched-information, matched-search mediation test above.
+====================================================================================================
+C1_scramble_trivial | deepseek | sample 2 | finish stop | 9066 chars | error None
+====================================================================================================
+I find the scramble test trivial in the sense you describe, and the design has no non-trivial version of it. Findings follow.
+
+**Finding 1 — M4 is a code-level manipulation check, not a provenance test.**
+- **Claim attacked:** M4: “Give C the exposure half's defect records with the **true-field column permuted** among the V records… Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run. **This is the test that distinguishes the provenances.**”
+- **Why it fails:** C is defined in §5 as reading defect records: “collect **defect records** V… **C never computes an aggregate fitness. Its only inputs are itemised records.**” B is defined in §5 as not reading them: “**B never reads a defect record. Its only input is a number per candidate.**” Therefore scrambling V can only affect C. The test cannot fail for B and must affect C if C’s code uses V. It tests data flow through the code, not construction versus selection.
+- **Severity:** Fatal to M4 as “the test that distinguishes the provenances.”
+- **Fix:** Reclassify M4 as an implementation/manipulation check. For a provenance test, give both processes the same access to V and apply the same scramble to both.
+
+**Finding 2 — S4 is a pre-registered outcome that is guaranteed by the definitions.**
+- **Claim attacked:** S4: “Scrambled-V construction is worse than unscrambled on collision steps by at least 0.1, and B's output under the scramble is byte-identical to B's without it.”
+- **Why it fails:** The first clause is entailed by C’s algorithm if it uses V. The second is entailed by B’s definition that it never reads V. The outcome has no power to test the provenance distinction; it is a code assertion disguised as an empirical prediction.
+- **Severity:** Fatal for S4.
+- **Fix:** Replace S4 with an outcome that could fail under the provenance hypothesis, e.g. an equal-access scramble.
+
+**Finding 3 — The operationalisation is circular.**
+- **Claim attacked:** §1: “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected. That is the operational content of ‘the mapped objection is on an active dependency route.’”
+- **Why it fails:** This defines a constructing process as one that reads the defect representation and a selecting process as one that does not. M4 then confirms those definitions. It cannot discover whether construction and selection are distinct kinds; it can only instantiate the stipulated distinction.
+- **Severity:** Fatal for the central philosophical claim.
+- **Fix:** Define provenance independently of input access, e.g. by counterfactual dependence of the built machinery on defect content in novel contexts.
+
+**Finding 4 — C versus B is confounded by algorithm.**
+- **Claim attacked:** The design compares C’s route to B’s route as if the route were the only difference.
+- **Why it fails:** C is greedy induction over itemised records; B is population-based mutation–selection over aggregate fitness. They differ in search operator, population size, generations, tie-breaking, and more. Even if M4 shows C depends on V and B does not, it does not isolate “route” from “algorithm.” Any fidelity difference is confounded.
+- **Severity:** Serious.
+- **Fix:** Use the same search algorithm with V on/off and aggregate fitness on/off; compare C to C-no-V to B to a B that has V access but no requirement to use it.
+
+**Finding 5 — B’s byte-identical output is not evidence of selection provenance.**
+- **Claim attacked:** M4: “Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run.”
+- **Why it fails:** If B never reads V and is deterministic given its seed, identity is guaranteed. It shows no input dependence, not that B is selecting in any substantive sense.
+- **Severity:** Minor as a check; serious as part of “distinguishes the provenances.”
+- **Fix:** Drop or reclassify this clause.
+
+**Finding 6 — M6 and S6 are also trivial code checks.**
+- **Claim attacked:** M6: “Give C an empty V. It must build nothing. Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net.”
+- **Why it fails:** These are direct consequences of C’s algorithm. They test that the code behaves as written, not whether construction versus selection is a real distinction.
+- **Severity:** Serious if S6 is used as support for provenance.
+- **Fix:** Same as Finding 1.
+
+**Finding 7 — The design has no non-trivial provenance test.**
+- **Claim attacked:** §1: “the difference is checkable” and M4: “This is the test that distinguishes the provenances.”
+- **Why it fails:** A non-trivial test would manipulate the defect representation while holding information access and algorithm fixed, or compare two processes that could both use or ignore it. The design has two separately specified algorithms, one with V access and one without. M3 tests translated-edit fidelity; phase 2 tests accumulation; M5 tests recoding invariance. None is a non-trivial provenance test.
+- **Severity:** Fatal for the experiment’s claim to distinguish provenances.
+- **Fix:** Add an equal-access test; see the final section below.
+
+**Finding 8 — The scramble destroys the joint distribution C actually uses.**
+- **Claim attacked:** M4: “same states, same number of defects, same aggregate; wrong pairings.”
+- **Why it fails:** C’s action scoring uses “apply action to the state, run kinematics, prediction now equals the true field” on V records. Permuting the true-field column among V records destroys the state–true-field pairing. Any supervised learner would be affected. It tests sensitivity to labels, not whether a defect representation is on the causal route.
+- **Severity:** Serious.
+- **Fix:** Use a scramble that preserves the defect’s information content but changes its format/carrier, or intervene upstream on the world-to-record mapping.
+
+**Finding 9 — Section 12.2 undermines S4’s collision-step claim.**
+- **Claim attacked:** §12.2: “C, which builds from sensory defects, is expected **not to build the crossing rule**, because there are no defects from crossings; only same-target collisions… produce visible defects.”
+- **Why it fails:** If C cannot build the crossing rule, then scrambling V (which contains only same-target defects) may not affect crossing-step fidelity. S4 requires scrambled-V construction to be worse on collision steps by at least 0.1. If “collision steps” includes crossings, unscrambled C is already failing them, so the scramble may not worsen by 0.1; if it excludes crossings, S4 must be restricted. This is an unaddressed inconsistency.
+- **Severity:** Serious.
+- **Fix:** Pre-specify collision-step subsets; ensure S4 applies to same-target collisions where C uses V; report crossing steps separately.
+
+**Finding 10 — S5 and F1 are in tension.**
+- **Claim attacked:** S5: “B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.” F1: “C and B reach the same fidelity with structurally different rules.”
+- **Why it fails:** If the rules are structurally different, they are not “same machinery.” S5 conflates same fidelity with same machinery. Also, same fidelity does not show provenance is not output; the route difference remains stipulated.
+- **Severity:** Serious.
+- **Fix:** Clarify “same machinery” or drop the claim.
+
+**Finding 11 — “Same aggregate” is ambiguous.**
+- **Claim attacked:** M4: “same states, same number of defects, same aggregate; wrong pairings.”
+- **Why it fails:** If “aggregate” means aggregate fitness, C never computes aggregate fitness, so scrambling V does not change it. If it means the aggregate of V records, that is not the fitness relevant to B. The phrase obscures what is held constant.
+- **Severity:** Minor.
+- **Fix:** Define exactly what is preserved (marginal distributions, counts) and what is destroyed (state–label pairing).
+
+### What a non-trivial version would look like
+
+A non-trivial scramble test needs at least:
+
+1. **Equal access.** Both the constructing and selecting processes receive the same defect records and the same aggregate fitness.
+2. **Same architecture.** They differ only in the update rule: one conditions on itemised defects, the other on aggregate fitness.
+3. **Intervention.** Scramble the defect records for both, holding aggregate fitness fixed.
+4. **Prediction.** The constructor’s output changes; the selector’s does not, despite equal access.
+
+That would show the route is doing causal work. Alternatively, a **counterfactual defect-transfer test**: build from defects in W1, then test on W2 where surface statistics are matched but the underlying law differs. A constructed component should carry W1-specific defect information; a selected component should track W2’s fitness. The design has no such test. M3 tests translated-edit fidelity; phase 2 tests accumulation; M5 tests recoding invariance. So no, the design does not have a non-trivial version of the scramble test.
