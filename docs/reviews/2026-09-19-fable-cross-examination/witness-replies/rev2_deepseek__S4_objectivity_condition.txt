@@ -1,0 +1,256 @@
+====================================================================================================
+S4_objectivity_condition | rev2_deepseek | sample 0 | finish stop | 24335 chars | error None
+====================================================================================================
+Findings on the Part V objectivity condition.
+
+1. **The Part XV counterexample is impossible as stated.**
+   - **Claim attacked:** “**A protective contract the objectivity condition admits.** A stated scope, passing Part V’s objectivity condition, that nonetheless excludes an admitted change on which the candidate is evaluable and wrong.”
+   - **Why it fails:** By Part V’s own definition, “\(C\) is protective when there is an admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) on which the candidate is *evaluable* … and on which the candidate’s pulled-back answer differs from the target’s.” So a scope that excludes an admitted change on which the candidate is evaluable and wrong is *already protective*. It cannot “pass Part V’s objectivity condition.” The advertised counterexample is self-contradictory. The real loophole is a scope that excludes an admitted change on which the candidate is *silent* by construction—but Part XV explicitly says that is “not a counterexample.”
+   - **Severity:** Serious. It hides the actual weakness by stating the defeat condition in a form that cannot occur.
+   - **Fix:** Restate the defeat condition as: a stated scope passing the condition that excludes an admitted change on which the candidate is silent by construction but would be wrong under any natural extension of its translation/query. Or change the condition so candidate-caused silence counts as protection.
+
+2. **The condition is too weak because silence is under the candidate’s control.**
+   - **Claim attacked:** “Silence about a change — a pair on which the candidate has no translation — is a stated limit of scope, not protection.”
+   - **Why it fails:** The transport \(t=(\pi,\tau,\sigma,\lambda)\) is part of the candidate \(\mathcal E\). Nothing in Part IV or Part V requires \(t\) to be maximal on \(C_{\mathrm{adm}}\), or requires missing translations to be independent of the candidate. A candidate can choose a stated scope \(S\) excluding exactly the admitted pair on which it would be wrong, and choose \(\tau,\sigma,\mathcal Q_E\) to be undefined outside \(C\). Then the pair is in \(C_{\mathrm{adm}}\setminus C\), the candidate is not evaluable, and \(C\) is declared not protective. This is precisely protective scoping.
+   - **Severity:** Fatal to the objectivity condition’s purpose.
+   - **Fix:** Require a maximal translation/query domain determined by \(E,D,C_{\mathrm{adm}}\), not by the candidate’s chosen partial \(t\). Count candidate-caused silence as protection whenever the target’s answer is defined on the excluded admitted pair.
+
+3. **“Evaluable” is not well-defined because transport partiality is never formalized.**
+   - **Claim attacked:** “on which the candidate is *evaluable* — \(\tau(a)\), \(\sigma(b)\) and the query are all defined there.”
+   - **Why it fails:** Part IV writes \(t=(\pi,\tau,\sigma,\lambda):D\to E\) with “\(\pi:X_D\to X_E\) on the stated scope, \(\tau:A_D\to A_E\) translates edits, \(\sigma\) translates boundaries.” If \(\tau,\sigma\) are total functions, then there is no pair on which \(\tau(a)\) or \(\sigma(b)\) is undefined. If they are partial, their domains are never specified. The condition also omits \(\pi\)’s domain, \(\lambda\)’s domain, \(E\)’s edit/boundary sets, \(\mathcal Q_E\), and the target \(\mathcal Q\). “The query” is ambiguous between target query and translated query.
+   - **Severity:** Serious/fatal. The central predicate of the objectivity condition is not formally defined.
+   - **Fix:** Define \(t\) as a tuple of partial maps with explicit domains, or total maps with an explicit undefined value. Define evaluability as a conjunction: \((a,b)\in C_{\mathrm{adm}}\), \(\tau(a)\in\operatorname{dom}A_E\), \(\sigma(b)\in\operatorname{dom}B_E\), \(\operatorname{Sol}_E(\tau(a),\sigma(b))\) defined, \(\pi\) and the relevant inverse image defined, and both \(\mathcal Q(D,a,b)\) and \(\mathcal Q_E(E,\tau(a),\sigma(b))\) defined.
+
+4. **The “pulled-back answer” may be ill-defined.**
+   - **Claim attacked:** “the candidate’s pulled-back answer differs from the target’s: \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq \operatorname{Ans}_p(a,b)\).”
+   - **Why it fails:** Part IV defines \(\mathcal Q_E(E,\tau(a),\sigma(b)):=\mathcal Q\) evaluated on \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) and the components \(\lambda\) anchors. But \(\pi\) may be partial or non-injective; \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) may be empty or may not be a solution set of \(D\) at \((a,b)\). \(\mathcal Q\) was specified as an operation on \(D\), its solutions, and its component structure—not on an arbitrary subset of \(X_D\). The objectivity condition never requires \(\pi\) to be defined on that preimage, nor requires \(\mathcal Q_E\) to be defined.
+   - **Severity:** Serious. The inequality in the definition may have no truth value.
+   - **Fix:** Define \(\mathcal Q_E\) explicitly on relational preimages, state the empty case, require \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\subseteq \operatorname{Sol}_D(a,b)\) or state the intended fallback, and include \(\mathcal Q_E\) definedness in evaluability.
+
+5. **The question’s own query can be left undefined on the excluded admitted pairs.**
+   - **Claim attacked:** The objectivity condition ranges over \(C_{\mathrm{adm}}\) and can compare target and candidate there.
+   - **Why it fails:** Part III says a question is coherently posed when “\(\mathcal Q\) is defined on every pair in \(C\),” not on every pair in \(C_{\mathrm{adm}}\). A question can exclude admitted pairs from \(S\) and also leave \(\mathcal Q\) undefined there. Then there is no target answer \(\operatorname{Ans}_p(a,b)\) to compare, so the pair is not evaluable and \(C\) is non-protective. The question’s own partial query defeats the objectivity condition.
+   - **Severity:** Serious/fatal. It makes the condition vacuous for deliberately partial questions.
+   - **Fix:** Require \(\mathcal Q\) to be defined on all of \(C_{\mathrm{adm}}\), or require any undefined \(\mathcal Q\) on \(C_{\mathrm{adm}}\setminus C\) to be independently justified by the target and obligations \(O_p\), not used to escape comparison.
+
+6. **The condition conflates the question’s scope with the candidate’s silence.**
+   - **Claim attacked:** “Silence about a change — a pair on which the candidate has no translation — is a stated limit of scope, not protection.”
+   - **Why it fails:** The stated scope \(S\) is part of the question \(p\). Silence is a property of the candidate’s transport \(t\). The semantics never requires that the candidate’s lack of translation be recorded in \(S\)’s exclusion reasons, nor that the exclusion reason be “candidate has no translation.” The sentence labels a candidate limitation as a question-scope limitation.
+   - **Severity:** Serious. It is a category mistake that grounds the weakness.
+   - **Fix:** Separate question scope \(S\) from candidate coverage. Require a candidate coverage record. Only treat silence as a scope limit when it is independently required by the question’s target/query/obligations, not by the candidate’s omission.
+
+7. **The condition is circular/self-certifying.**
+   - **Claim attacked:** “\(C\) is **not protective** for \(\mathcal E\)” is an objectivity claim about \(C\) against the module in force.
+   - **Why it fails:** Evaluability is partly determined by the candidate’s own partial transport, and the transport is only required to be defined on \(C\). Thus \(C\) is judged non-protective using a property the candidate can tailor to \(C\). This is not an objective fact about \(C\) against \(C_{\mathrm{adm}}\); it is a fact about how much of \(C_{\mathrm{adm}}\) the candidate chose to cover.
+   - **Severity:** Fatal. The objectivity condition becomes contract-relative in exactly the way Grievance 4 denies.
+   - **Fix:** Define evaluability from \(C_{\mathrm{adm}}\) and the structures of \(D,E\) independently of the particular partial \(t\), or require \(t\) to be maximal on \(C_{\mathrm{adm}}\) up to stated, question-independent limits.
+
+8. **Part V’s protective condition is not Grievance 4’s protective condition.**
+   - **Claim attacked:** Grievance 4: “a contract is protective for a candidate when some physically admitted change it excludes would alter the target’s answer and not the candidate’s, or the reverse.” Part V: “the candidate’s pulled-back answer differs from the target’s.”
+   - **Why it fails:** Grievance 4 is differential: target changes and candidate does not, or the reverse. Part V is cross-sectional inequality: both answers may change, but to different values, and Part V calls this protective while Grievance 4 does not. Conversely, if one answer is undefined, Part V calls the pair not evaluable while Grievance 4 may still speak of alteration. The two definitions are not equivalent.
+   - **Severity:** Serious. The document gives two different definitions of its central objectivity notion.
+   - **Fix:** Harmonize them. State whether protection is answer-profile difference or differential response, and define the undefined-answer cases explicitly.
+
+9. **Grievance 4 overclaims that exclusions are caught.**
+   - **Claim attacked:** “A contract that quietly excludes such a change is caught by the requirement that exclusions be stated, and then by the adequacy condition, whether or not anyone supplies the change.”
+   - **Why it fails:** Non-vacuity only requires exclusions to be in \(S\). Account-hood at \(C\) explicitly “looks outside \(C\)” nowhere: “None looks outside \(C\).” The objectivity condition catches only evaluable-and-wrong cases. If the candidate is silent on the excluded admitted change, neither the requirement that exclusions be stated nor the adequacy condition catches it, and Part V says silence is not protection. The overclaim is false.
+   - **Severity:** Serious. It is the main advertised defense against relativism.
+   - **Fix:** Weaken Grievance 4, or strengthen Part V so candidate-caused silence on an admitted pair where the target’s answer is defined counts as protection.
+
+10. **Collision with Derivation 7.**
+    - **Claim attacked:** Derivation 7: “the objectivity condition of Part V answers it only where the candidate is evaluable and wrong on the excluded change.”
+    - **Why it fails:** This is not a contradiction—Derivation 7 openly limits the condition—but it does collide with any reading of Grievance 4 that the condition catches protective index changes generally. It also leaves Derivation 7 unable to distinguish a legitimate scope change from a protective one when the candidate is silent by construction. The condition covers only the subcase where the candidate is already evaluable and wrong.
+    - **Severity:** Serious. It confirms the condition is incomplete for the goalpost-moving problem.
+    - **Fix:** Either present Derivation 7 as a partial result only, or extend objectivity to cover candidate-caused silence.
+
+11. **Collision with Part VIII’s historical index.**
+    - **Claim attacked:** Part VIII: “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change.” Part V: “The claim is indexed to the module in force.”
+    - **Why it fails:** The truth of the objectivity claim also depends on the candidate’s translation/query domains. Same \(C\), same module, different partial \(t\) can change whether \(C\) is protective. So the index cannot be just \((C,\text{module})\); it must include \(t\)’s domains and \(\mathcal Q_E\)’s domain. Also, if a later module admits a pair that was in \(K\), then \(K\cap C_{\mathrm{adm}}=\varnothing\) fails, the contract form \(C=(C_{\mathrm{adm}}\cap S)\cup K\) is invalid, and the claim that “account-hood at \(C\) is untouched” becomes doubtful.
+    - **Severity:** Serious.
+    - **Fix:** Define the index as \((C,C_{\mathrm{adm}},\operatorname{dom}\tau,\operatorname{dom}\sigma,\operatorname{dom}\mathcal Q_E,\text{module})\). Require reclassification of \(K\) whenever the module changes.
+
+12. **Collision with \(K\) is indirect but real on module change.**
+    - **Claim attacked:** Part III: “\(K\cap C_{\mathrm{adm}}=\varnothing\)” and Part V: “the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\).”
+    - **Why it fails:** For admitted pairs, \(C_{\mathrm{adm}}\setminus C=C_{\mathrm{adm}}\setminus S\), so \(K\) does not directly enter the objectivity comparison. But if the module later admits a pair that was in \(K\), that pair is inside \(C\), so it is exempt from the “outside \(C\)” objectivity test, and the contract form is broken. The condition does not catch this.
+    - **Severity:** Minor to serious, depending on how often modules are allowed to change.
+    - **Fix:** State the comparison set explicitly as \(C_{\mathrm{adm}}\setminus S\). Require \(K\) to be disjoint from the current \(C_{\mathrm{adm}}\) and reindex when the module changes.
+
+13. **The condition is too weak at the component level.**
+    - **Claim attacked:** The inequality \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq \operatorname{Ans}_p(a,b)\) captures what is wrong with a protective scope.
+    - **Why it fails:** It compares only answer profiles on excluded admitted pairs, not component fidelity (F1)/(F2). A candidate can have wrong component responses on excluded admitted pairs but coincidentally produce the same answer profile; \(C\) is then non-protective by Part V. If objectivity is supposed to track the semantics’ own change-fidelity standard, this is too weak.
+    - **Severity:** Serious if objectivity is meant to be structural; minor if answer-level objectivity is intended.
+    - **Fix:** Require failure of component fidelity on \(C_{\mathrm{adm}}\setminus C\), or state explicitly that objectivity is answer-level and anchoring is the structural condition.
+
+14. **If the silence loophole is closed naively, the condition becomes too strong.**
+    - **Claim attacked:** “non-protection of the contract against the module in force” is correctly calibrated.
+    - **Why it fails:** If one fixes the silence problem by requiring total translations and total queries on \(C_{\mathrm{adm}}\), then non-protection requires answer equality on every admitted change outside \(C\), including changes irrelevant to \(O_p\) and irrelevant to the question’s \(\mathcal Q\). That would label legitimate scoped or idealized accounts non-objective. There is no relevance filter.
+    - **Severity:** Minor to serious.
+    - **Fix:** Relativize protection to the question’s obligations \(O_p\) or a declared relevance criterion, or keep full-module objectivity in the anchored grade and make the second conjunct question-relative.
+
+15. **Evaluability omits the target answer.**
+    - **Claim attacked:** “evaluable — \(\tau(a)\), \(\sigma(b)\) and the query are all defined there.”
+    - **Why it fails:** The inequality requires \(\operatorname{Ans}_p(a,b)\) to be defined. The target query may be partial. The phrase “the query” is ambiguous between target \(\mathcal Q\) and translated \(\mathcal Q_E\). If the target answer is undefined, the pair cannot witness protection, yet the condition may still be read as making it evaluable.
+    - **Severity:** Serious.
+    - **Fix:** Explicitly require both \(\operatorname{Ans}_p(a,b)\) and \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) to be defined.
+
+16. **Evaluability omits \(E\)’s edit and boundary domains.**
+    - **Claim attacked:** \(\tau(a)\) and \(\sigma(b)\) being defined suffices for the candidate answer to be defined.
+    - **Why it fails:** \(\tau(a)\) may be defined as a symbol but not lie in \(A_E\); \(\sigma(b)\) may not lie in \(B_E\); \(\operatorname{Sol}_E(\tau(a),\sigma(b))\) may be undefined; \(\lambda\) may not anchor the components relevant to the excluded pair. The condition does not require \((\tau(a),\sigma(b))\) to be in \(E\)’s domain.
+    - **Severity:** Serious.
+    - **Fix:** Require \(\tau(a)\in A_E\), \(\sigma(b)\in B_E\), \((\tau(a),\sigma(b))\in E\)’s contract/domain, and \(\operatorname{Sol}_E(\tau(a),\sigma(b))\) defined.
+
+17. **“Admitted pair outside \(C\)” is a misleading formulation.**
+    - **Claim attacked:** “there is an admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\).”
+    - **Why it fails:** Since \(C=(C_{\mathrm{adm}}\cap S)\cup K\) and \(K\cap C_{\mathrm{adm}}=\varnothing\), the set is exactly \(C_{\mathrm{adm}}\setminus S\). The phrase suggests \(K\) is part of the comparison, but it cannot be. This obscures where the real exclusion is.
+    - **Severity:** Cosmetic to minor.
+    - **Fix:** Write \(C_{\mathrm{adm}}\setminus S\).
+
+18. **The condition never inspects the reason for an exclusion.**
+    - **Claim attacked:** “Silence … is a stated limit of scope, not protection.”
+    - **Why it fails:** Non-vacuity requires exclusions to be in \(S\) with reasons recorded, but the objectivity condition never checks those reasons. A reason like “the candidate has no translation here” is a candidate limitation, not a question limitation, and should not automatically render \(C\) non-protective. Because reasons are not inspected, the condition cannot distinguish legitimate scope limits from protective omissions.
+    - **Severity:** Serious.
+    - **Fix:** Require exclusion reasons to be independent of candidate coverage. Classify candidate-caused exclusions as protection when the target answer is defined.
+
+19. **“The query” is ambiguous.**
+    - **Claim attacked:** “\(\tau(a)\), \(\sigma(b)\) and the query are all defined there.”
+    - **Why it fails:** There are at least three objects: the target query \(\mathcal Q\), the translated query \(\mathcal Q_E\), and the query evaluated on the pulled-back solution set. The condition does not say which must be defined, nor which solution sets must be nonempty.
+    - **Severity:** Serious.
+    - **Fix:** Name \(\mathcal Q\), \(\mathcal Q_E\), and their domains explicitly in the evaluability condition.
+
+20. **The “or the reverse” clause in Grievance 4 is not captured for undefined answers.**
+    - **Claim attacked:** Grievance 4: “would alter the target’s answer and not the candidate’s, or the reverse.”
+    - **Why it fails:** Part V compares two defined answers with \(\neq\). If the target’s answer is undefined but the candidate’s is defined, or vice versa, Part V has no inequality and treats the pair as not evaluable. Grievance 4’s “or the reverse” suggests that one-sided definedness or one-sided alteration should count. The two are not aligned.
+    - **Severity:** Minor to serious.
+    - **Fix:** Specify how undefined answers are treated. If they are to count as protection in one direction, state it explicitly in Part V.
+
+21. **The active-component set \(\Gamma\) can also be tailored to \(C\).**
+    - **Claim attacked:** The candidate’s pulled-back answer outside \(C\) is well-defined for the candidate.
+    - **Why it fails:** Part V says an explanatory candidate includes “an identified set \(\Gamma\) of active commitments in \(E\),” and (F1) is required only for active components. Outside \(C\), the candidate may have components not in \(\Gamma\) that would change the answer if included. The objectivity condition uses the candidate’s pulled-back answer without requiring \(\Gamma\) to be complete for the excluded pair.
+    - **Severity:** Serious. It is another form of silence/coverage by construction.
+    - **Fix:** Require the same or a maximal active-component set for the excluded pair, or define the candidate’s answer on excluded pairs independently of \(\Gamma\)’s choice for \(C\).
+
+22. **No condition prevents a candidate from being “objective” by having no relation at all to the excluded change.**
+    - **Claim attacked:** Non-protection is a substantive objectivity claim.
+    - **Why it fails:** If \(E\) has no component corresponding to the excluded admitted edit, and \(\tau\) is undefined there, the candidate is silent. The condition says this is a stated limit. But an organization that is simply invariant to an admitted change may be exactly the organization that fails to explain the target’s dependence on that change. The condition does not force the candidate to say whether its silence is principled or a failure to model.
+    - **Severity:** Serious.
+    - **Fix:** Require the candidate to declare, for each excluded admitted pair, whether its silence is due to (i) the question’s query/target, (ii) a declared idealization, or (iii) a missing component. Only (i) and (ii) are limits; (iii) counts as protection or at least as an objectivity failure.
+
+23. **No direct collision with \(K\) for admitted pairs, but the text is imprecise.**
+    - **Claim attacked:** “the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\).”
+    - **Why it fails:** This is fine mathematically because \(K\cap C_{\mathrm{adm}}=\varnothing\). But the text should say the objectivity condition ranges over \(C_{\mathrm{adm}}\setminus S\), because \(C\) contains \(K\). Otherwise readers may think \(K\) is involved in the comparison, or that admitted pairs in \(K\) are exempt when the module changes.
+    - **Severity:** Cosmetic to minor.
+    - **Fix:** State the range as \(C_{\mathrm{adm}}\setminus S\) and add the module-change clause from finding 12.
+
+24. **No direct formal contradiction with Derivation 7, but Derivation 7 concedes the condition’s limit.**
+    - **Claim attacked:** Derivation 7 shows the frozen assessment and moving question are consistent.
+    - **Why it fails:** Derivation 7 is consistent, but its final sentence—“answers it only where the candidate is evaluable and wrong on the excluded change”—is precisely the limitation that lets protective scoping through when the candidate is silent. So Derivation 7 does not support the stronger Grievance 4 claim.
+    - **Severity:** Minor to serious.
+    - **Fix:** Add an explicit note that Derivation 7 covers only evaluable-and-wrong protection, not silent protection.
+
+25. **No direct formal contradiction with Part VIII for fixed \(C\), but the index is underspecified.**
+    - **Claim attacked:** “A claim indexed to a contract keeps its identity” and “The claim is indexed to the module in force.”
+    - **Why it fails:** Two candidates with the same \(C\) and same module can differ in whether \(C\) is protective, because their translation/query domains differ. So the objectivity claim is not indexed just to \(C\) and module; it is indexed to the candidate’s coverage as well. Part VIII’s claim-indexing story is incomplete for Part V.
+    - **Severity:** Serious.
+    - **Fix:** Expand the index as in finding 11, and say that a change in coverage is a new candidate or a new claim.
+
+26. **The condition does not require the translation to be injective, but Derivation 1 and fidelity comparisons assume injectivity.**
+    - **Claim attacked:** The objectivity comparison inherits the transport’s semantics without extra assumptions.
+    - **Why it fails:** Derivation 1 assumes \((\tau,\sigma)\) injective on \(C\). The objectivity condition uses \(\tau,\sigma\) on \(C_{\mathrm{adm}}\setminus C\) without requiring injectivity there. Non-injective translations can make the comparison between target and candidate answers ambiguous or can collapse distinct edits.
+    - **Severity:** Serious.
+    - **Fix:** Require the relevant part of \(\tau,\sigma\) to be injective for the objectivity comparison, or state the relational semantics for non-injective translations.
+
+27. **The condition does not require \(\pi\) to preserve enough structure to make the pulled-back query meaningful.**
+    - **Claim attacked:** The candidate answer \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) is a pulled-back answer to the target question.
+    - **Why it fails:** Part IV allows \(\pi:X_D\to X_E\) “on the stated scope.” If \(\pi\) is not defined on the relevant preimage, or if \(\pi^{-1}\) is not compatible with \(D\)’s components, \(\mathcal Q\) evaluated on \(\pi^{-1}[\operatorname{Sol}_E]\) may not be an answer to the target question. The objectivity condition treats it as one.
+    - **Severity:** Serious.
+    - **Fix:** Require \(\pi\) to be defined on the relevant preimage and require \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) to stand in the relation to \(\operatorname{Sol}_D(a,b)\) that \(\mathcal Q\) requires.
+====================================================================================================
+S4_objectivity_condition | rev2_deepseek | sample 1 | finish stop | 14100 chars | error None
+====================================================================================================
+**Finding 1 — The objectivity condition is vacuous for any partial transport, and partiality is not prohibited.**
+(1) Attacked claim: “\(C\) is protective when there is an admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) on which the candidate is *evaluable* — \(\tau(a)\), \(\sigma(b)\) and the query are all defined there — … Silence about a change — a pair on which the candidate has no translation — is a stated limit of scope, not protection”.
+(2) Why it fails: (F1)–(F2) quantify only over \(C\). A candidate can set the domains of \(\tau,\sigma,\pi\) to exactly what \(C\) needs. Then for every \((a,b)\in C_{\mathrm{adm}}\setminus C\), \(\tau(a)\) or \(\sigma(b)\) is undefined, so the candidate is not evaluable, so \(C\) is not protective. The candidate can therefore pass the objectivity condition while being arbitrarily wrong on every admitted pair outside \(C\), simply by refusing to define translation there. This is not a “stated limit of scope”; it is a limit of the candidate’s translation declaration. It makes the condition too weak in precisely the way Part XV says it must not be.
+(3) Seriousness: fatal.
+(4) Fix: for objectivity, require \(t\) to be total on \(C_{\mathrm{adm}}\) (or on the admitted pairs where the target answer is defined), or count silence on such a pair as protection/failure. If silence is allowed, restrict it to pairs where the target answer is undefined or the module does not admit the pair, and make the scope reasons independently checkable.
+
+**Finding 2 — “Evaluable” is not a defined predicate, and the parenthetical definition is insufficient.**
+(1) Attacked claim: “on which the candidate is *evaluable* — \(\tau(a)\), \(\sigma(b)\) and the query are all defined there”.
+(2) Why it fails: \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) is defined in Part IV as \(\mathcal Q\) evaluated on \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) and the components \(\lambda\) anchors. Evaluability therefore also requires \(\pi^{-1}\), \(\operatorname{Sol}_E\), \(\lambda\), and \(\mathcal Q_E\) to be defined at the translated pair. The parenthetical omits \(\pi\), \(\lambda\), \(\operatorname{Sol}_E\), and the pullback. It is a gloss, not a definition.
+(3) Seriousness: serious.
+(4) Fix: define an explicit predicate \(\operatorname{Evaluable}(E,p,t,a,b)\) listing every object that must be defined: \((a,b)\in C_{\mathrm{adm}}\), \(\tau(a)\), \(\sigma(b)\), \(\operatorname{Sol}_E(\tau(a),\sigma(b))\), \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\), the \(\lambda\)-anchors, \(\mathcal Q\) on both sides, and \(\operatorname{Ans}_p(a,b)\).
+
+**Finding 3 — The target-side answer \(\operatorname{Ans}_p(a,b)\) is not required to be defined outside \(C\).**
+(1) Attacked claim: “\(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq\operatorname{Ans}_p(a,b)\)”.
+(2) Why it fails: Part III only requires, for coherent posing, that “\(\mathcal Q\) is defined on every pair in \(C\)”. It does not require \(\mathcal Q\) to be defined on \(C_{\mathrm{adm}}\setminus C\). If \(\mathcal Q\) is partial to \(C\), then for an admitted pair outside \(C\), \(\operatorname{Ans}_p(a,b)\) is undefined, and the inequality is ill-defined or vacuously false. The objectivity condition therefore cannot catch a contract that hides a change the target’s own query does not cover, even if the candidate would be wrong under that admitted change.
+(3) Seriousness: fatal.
+(4) Fix: for objectivity, require \(\mathcal Q\) and \(\operatorname{Ans}_p\) to be defined on all of \(C_{\mathrm{adm}}\), or explicitly restrict protective pairs to the domain of \(\mathcal Q\), and state that restriction.
+
+**Finding 4 — \(\pi\)’s partiality breaks evaluability even if \(\tau,\sigma\) are total.**
+(1) Attacked claim: “\(\tau(a)\), \(\sigma(b)\) and the query are all defined there” is enough for evaluability.
+(2) Why it fails: Part IV says \(\pi:X_D\to X_E\) “on the stated scope”. Even if \(\tau\) and \(\sigma\) are total, \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) may be undefined outside the stated scope. The translated query depends on that pullback. So evaluability is not established by \(\tau,\sigma\), and the query alone.
+(3) Seriousness: serious.
+(4) Fix: include \(\pi\) and its pullback in the definition of evaluability, or require \(\pi\) to be total on the relevant pairs for an objectivity claim.
+
+**Finding 5 — The condition rewards silence and punishes full declaration.**
+(1) Attacked claim: “Silence about a change — a pair on which the candidate has no translation — is a stated limit of scope, not protection”.
+(2) Why it fails: Two candidates can have the same organization \(E\) and the same wrong response outside \(C\), but candidate A defines \(\tau,\sigma,\pi\) on the excluded admitted pair and is caught as protective, while candidate B leaves them undefined and is treated as merely “silent” and therefore non-protective. Objectivity then depends on how much translation the author bothered to declare, not on the candidate’s organization or its relation to the target.
+(3) Seriousness: fatal.
+(4) Fix: make silence on an admitted pair with defined target answer count as a failure of objectivity or as a protective pair. If the semantics wants to allow silence, it must distinguish silence due to the module’s non-admission or the target query’s undefinedness from silence due to the candidate’s own partial translation.
+
+**Finding 6 — This collides with Grievance 4’s claim that the change is caught “whether or not anyone supplies the change”.**
+(1) Attacked claim: Grievance 4: “A contract that quietly excludes such a change is caught by the requirement that exclusions be stated, and then by the adequacy condition, whether or not anyone supplies the change.”
+(2) Why it fails: Part V catches the exclusion only if the candidate is *evaluable* on the excluded pair. If no one supplies the translation, the candidate is silent, and the condition explicitly says silence is not protection. Stating the exclusion in \(S\) does not by itself catch wrongness. The claim in Grievance 4 is therefore false on Part V’s own definition.
+(3) Seriousness: serious.
+(4) Fix: either revise Grievance 4 to say the exclusion is caught only when the candidate is evaluable and wrong there, or strengthen Part V so that silence on an admitted pair with defined target answer is itself a failure of objectivity.
+
+**Finding 7 — The Part XV defeat is self-contradictory as stated.**
+(1) Attacked claim: Part XV: “**A protective contract the objectivity condition admits.** A stated scope, passing Part V’s objectivity condition, that nonetheless excludes an admitted change on which the candidate is evaluable and wrong.”
+(2) Why it fails: By Part V, if there is an admitted pair outside \(C\) on which the candidate is evaluable and wrong, then \(C\) *is* protective. The objectivity claim requires \(C\) to be *not* protective. So such a contract cannot pass Part V’s objectivity condition. The stated counterexample is impossible under Part V’s definition.
+(3) Seriousness: serious.
+(4) Fix: restate the defeat as a contract that is protective by Grievance 4’s informal description but non-protective by Part V because the candidate is silent there. If the intended counterexample is evaluable-and-wrong, Part V already excludes it, so there is no counterexample.
+
+**Finding 8 — Part III misstates the range of the objectivity condition and obscures the role of \(K\).**
+(1) Attacked claim: Part III: “the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\)”.
+(2) Why it fails: Part V ranges over \(C_{\mathrm{adm}}\setminus C\), not over all of \(C_{\mathrm{adm}}\). Since \(C=(C_{\mathrm{adm}}\cap S)\cup K\) and \(K\cap C_{\mathrm{adm}}=\varnothing\), this is \(C_{\mathrm{adm}}\setminus S\). The counterfactual set \(K\) is therefore outside the objectivity condition entirely. The statement in Part III is at best misleading; the later sentence that “a pair in \(K\) enters non-vacuity only through the relations it declares” is also not matched by Part V’s non-vacuity condition, which only mentions the baseline and \(S\).
+(3) Seriousness: minor to serious, depending on whether \(K\) is meant to constrain objectivity.
+(4) Fix: state explicitly that objectivity ranges over \(C_{\mathrm{adm}}\setminus C\), equivalently over admitted pairs excluded by \(S\), and state separately what, if anything, \(K\) contributes to objectivity and non-vacuity.
+
+**Finding 9 — Evaluability can change the truth value of an old objectivity claim, colliding with Derivation 7.**
+(1) Attacked claim: Derivation 7: “The assessment is indexed to \(C\); its claim keeps its identity and its truth value at that index.”
+(2) Why it fails: Whether \(C\) is protective depends on whether the candidate is evaluable on an excluded admitted pair. Evaluability depends on the candidate’s transport domain. If the same organization \(E\) is later equipped with a more extensive transport \(t'\), a \(C\) that was non-protective for \(t\) can become protective for \(t'\), while \(C\), the question, and the module are unchanged. The truth value of “\(C\) is protective” at that \(C\) therefore changes with the transport, not with the index.
+(3) Seriousness: serious.
+(4) Fix: index evaluability to the assessment, or declare that any later extension of the transport is a new candidate and a new claim. Better: define protection from data fixed by \(C\), the module, and the target query, not from the candidate’s optional translation domain.
+
+**Finding 10 — The same problem collides with Part VIII’s historical index.**
+(1) Attacked claim: Part VIII: “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change”.
+(2) Why it fails: The objectivity claim for \(C\) is a conjunction that includes “\(C\) is not protective”. If protection depends on the candidate’s later-supplied evaluability, then the truth value of that conjunct at the old index can change without a change of contract or module. That is exactly what Part VIII says cannot happen.
+(3) Seriousness: serious.
+(4) Fix: include the candidate’s transport domain in the index, or define protection using only data that are fixed when the assessment is made.
+
+**Finding 11 — \(C_{\mathrm{adm}}\) may be inflated by a declared \(B\), making the condition too strong or ill-defined.**
+(1) Attacked claim: Part V’s objectivity condition ranges over “\(C_{\mathrm{adm}}\)”, with Part III defining \(C_{\mathrm{adm}}\) for a physical organization as “\(A_\Theta(o)\times B\)”.
+(2) Why it fails: The physical module is said to supply \(A_\Theta(o)\), but Part XII does not say the module supplies an admitted boundary set. \(B\) is organization data. If \(B\) is merely declared, then \(C_{\mathrm{adm}}\) can be inflated with boundary conditions the module does not admit, making almost any candidate protective. Conversely, if \(B\) is restricted arbitrarily, the condition can be made too weak. The objectivity condition is therefore not well-defined as a module-relative condition.
+(3) Seriousness: serious.
+(4) Fix: have the physical module supply the admitted edit–boundary relation, or at least an admitted boundary set \(B_\Theta(o)\). Define \(C_{\mathrm{adm}}\) from that relation, not as a product with an arbitrary declared \(B\).
+
+**Finding 12 — The “pulled-back answer” can be undefined or empty, and this is not covered by evaluability.**
+(1) Attacked claim: “the candidate’s pulled-back answer differs from the target’s: \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq\operatorname{Ans}_p(a,b)\)”.
+(2) Why it fails: \(\operatorname{Ans}_E\) is defined via \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\). If that pullback is empty, the query may be undefined on the empty set, or may return a value that is not a candidate answer under the change. The condition does not require the pullback to be nonempty. “Evaluable” as glossed does not cover this.
+(3) Seriousness: minor to serious.
+(4) Fix: include nonemptiness of the relevant pullback, or specify how \(\mathcal Q\) acts on empty pullbacks, in the definition of evaluability.
+
+**Finding 13 — The anchored grade repeats the same “where the translation is defined” loophole, so fixing objectivity alone will not align the grades.**
+(1) Attacked claim: Anchored grade, condition 3: “fidelity holds not only on the pairs the contract selected but on every pair the module admits, where the translation is defined.”
+(2) Why it fails: “where the translation is defined” makes the universal quantifier over \(C_{\mathrm{adm}}\) conditional on the candidate’s own translation domain. A candidate can evade world-kind by leaving translation undefined on admitted pairs, exactly as in the objectivity condition. If objectivity is strengthened by requiring totality but anchoring is not, the two grades are inconsistent.
+(3) Seriousness: serious.
+(4) Fix: require translation totality on \(C_{\mathrm{adm}}\) for both the anchored grade and objectivity, or define a canonical extension of the translation from the candidate’s declared organization so that “where defined” cannot be chosen strategically.
+
+**Finding 14 — The stated scope reasons are not checked, so “exclusions be stated” does no objectivity work.**
+(1) Attacked claim: Part V non-vacuity: “every admitted pair excluded from \(C\) is excluded by the stated scope \(S\), not silently”, together with Grievance 4’s claim that this catches protective contracts.
+(2) Why it fails: \(S\) is only required to record a reason for each exclusion. No condition evaluates the reason. A scope can exclude the critical admitted change for an arbitrary reason, and if the candidate is silent there, the objectivity condition passes. The requirement that exclusions be stated records the gap; it does not close it.
+(3) Seriousness: serious.
+(4) Fix: require the reason for an exclusion to be independently checkable, or make exclusion of an admitted pair with defined target answer a failure of objectivity unless the pair is in \(K\) or the target answer is undefined there.
+====================================================================================================
+S4_objectivity_condition | rev2_deepseek | sample 2 | finish length | 0 chars | error None
+====================================================================================================
+(empty)

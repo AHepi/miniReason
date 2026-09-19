@@ -1,0 +1,142 @@
+====================================================================================================
+S2_derivations | rev2_atria | sample 0 | finish stop | 18915 chars | error None
+====================================================================================================
+## Part XVI, Derivation 1
+
+**Finding 1. (F1) is ill-typed, and the proof smuggles in an unstated visible-ports hypothesis.**
+Attacked: (Part V) "`proj_{V_k}[Sol_{λ(k)}(a,b)] = L_k(τ(a),σ(b))`" together with (Derivation 1) "the visible ports of the anchor being those λ translates to `V_k`".
+Why it fails: `Sol_{λ(k)}` is a set of valuations on ports of *D*, while `V_k` is a set of ports of *E*; the projection is not defined without λ's port translation. Part II says a subnetwork's visible ports are "a declared subset `V_U^vis` of its ports", and Part IV says λ comes "with a port translation" — nothing requires `V_{λ(k)}^vis` to be the preimage of `V_k`. If the anchor has extra visible ports, its signature carries strictly more information than the component's and Derivation 1's conclusion fails.
+Severity: serious.
+Fix: add to the transport definition (Part IV) the clause that λ's port translation is a bijection `V_{λ(k)}^vis ≅ V_k` for each active *k*, and rewrite (F1) as projection along that translation.
+
+**Finding 2. Part V cites Derivation 1 as stronger than it is: the injectivity hypothesis is dropped.**
+Attacked: (Part V) "By Derivation 1, (F1) entails that every component of *E* has the signature of its anchor subnetwork on the translated contract".
+Why it fails: Derivation 1's hypothesis is "(F1) **and** `(τ,σ)` injective on `C`". (F2) gives only `τ(1)=1` and `τ(a₂a₁)=τ(a₂)τ(a₁)` — a homomorphism, not a monomorphism. Without injectivity the two signature sets need not be in bijection: if `(a₁,b)≠(a₂,b)` in `C` with `τ(a₁)=τ(a₂)`, then `sig_C(λ(k))` has two triples and `sig_{τ[C]}(k)` one (F1 does force the third coordinates to agree on such a fibre, but the sets still differ), so the component is *not* of one forward kind with its anchor.
+Severity: serious.
+Fix: restate the Part V sentence as "By Derivation 1, (F1) **plus injectivity of `(τ,σ)` on `C`** entails…", or prove the weaker quotient-statement actually available without injectivity.
+
+**Finding 3. Derivation 10 asserts the injectivity Derivation 1 needs, on a bad reason.**
+Attacked: "by Derivation 1, with `(τ,σ)` injective on that contract (which it is, since the translation is a relabelling)".
+Why it fails: a relabelling is a bijection on ports/components; injectivity of the *pair*-map `(a,b) ↦ (τ(a),σ(b))` on the contract additionally requires σ to be injective on the boundaries occurring in `C`, which the scenario never fixes. The parenthetical is a non sequitur, not a check.
+Severity: minor (the scenario is explicitly unchecked, but the justification is invalid as written).
+Fix: either stipulate σ injective on the extended contract's boundaries or mark injectivity as an unverified assumption, as (F1)/(F2) are.
+
+## Part XVI, Derivation 2
+
+**Finding 4. "Account-equivalent" is not well-defined as stated: the bijection is only on components.**
+Attacked: "there is a bijection between their active components carrying `Γ` onto `Γ'` under which, for every `(a,b)∈C`, the anchored relations `proj_{V_k}Sol_{λ(k)}(a,b)` coincide".
+Why it fails: the anchored relation of *E* lives on ports of *E*, that of *E'* on ports of *E'*; "coincide" needs a port-level bijection and an anchor identification, neither of which the definition supplies. The claim then imports one — "have the same anchor map up to that bijection" — which is not a condition of the defined relation.
+Severity: serious.
+Fix: state the bijection as a pair (component bijection, port bijection carrying anchor visible ports onto anchor visible ports and `λ` onto `λ'`), and require coincidence of the transported relations.
+
+**Finding 5. (F2) is a unused hypothesis of the claim.**
+Attacked: "If `E` and `E'` both satisfy (F1), (F2) and (A) on `C` …" and the proof, which uses only (F1) and (A).
+Why it fails: account-equivalence as defined mentions anchored relations and answer profiles only; the assembled-solution condition (F2) is never entered. The claim is true with (F1) and (A) alone.
+Severity: minor.
+Fix: drop (F2) from the hypothesis, or add assembled-solution coincidence to the definition.
+
+**Finding 6. "The pulled-back answer profiles coincide" is ambiguous, and the proof's step is valid under only one reading.**
+Attacked: "… and the pulled-back answer profiles coincide", with proof step "(A) gives the profiles".
+Why it fails: (A) gives `Ans_E(τ(a),σ(b)) = Ans_{E'}(τ'(a),σ'(b))` in `Y_p`. If "pulled-back" means `π^{-1}[Ans_E]` and `π'^{-1}[Ans_{E'}]` as subsets of `X_D`, (A) does *not* imply their equality — two different pullbacks of the same `Y_p`-subset need not agree, so an extra hypothesis on `π,π'` is required.
+Severity: minor.
+Fix: say which object the profiles live in; if `X_D`, add "and `π^{-1}[Ans_E(τ(a),σ(b))] = π'^{-1}[Ans_{E'}(τ'(a),σ'(b))]`" as a conjunct.
+
+## Part XVI, Derivation 3
+
+**Finding 7. The derivation is valid, but Part XV's specified refuter is impossible as stated.**
+Attacked: (Part XV) "A selection history `H⊊C`, in a population closed under pointwise alteration of component relations off `H`, whose survivor is determined on `C∖H`. This refutes Derivation 3 under its hypothesis."
+Why it fails: Derivation 3's claim is existential and explicitly compatible with a faithful survivor ("It does not follow that the survivor *is* unfaithful there"). Under the closure hypothesis, either no admissible `L'` changes the solution set at any pair — then the claim's antecedent is false and it is vacuous, not refuted — or some does, and then closure supplies ≥2 surviving members differing at that pair, so the survival data do not determine the survivor. If "determined" means determined by the actual physical history, that is trivially true of every selection and refutes nothing.
+Severity: serious (a reader hunting this counterexample is hunting for one that cannot exist).
+Fix: restate the attack as exhibiting a closure-satisfying population whose *actual* survivor is faithful on all of `C` — which refutes nothing — or drop the line and keep only the honest reading: Derivation 3 establishes non-entailment, never actual unfaithfulness.
+
+(The closure hypothesis itself is strong — a population containing, for every admissible relation, a variant of the survivor — but it is stated, so it is not a defect.)
+
+## Part XVI, Derivation 4
+
+Nothing wrong: the two unpacking claims follow from the definition, and the remark is correctly marked as unsupported elsewhere. One boundary note: surprise is defined only for *selected* transports ("Let *t* be selected on `H`"), so it is undefined, not merely never-occurring, for a constructed transport.
+
+## Part XVI, Derivation 5
+
+**Finding 8. The "in"-ports' role is ambiguous, and the factor-closure component is unjustified — this gap is not in the list.**
+Attacked: "the baseline port reads 'in'; if `u_{(a₂a₁,b)}` reads 'in' then so do its factors where the composition is defined", together with the claim "Its solutions are candidate questions on `D`; a particular question is a particular solution".
+Why it fails: Part III imposes no factor-closure condition on contracts (`C=(C_adm∩S)∪K`). If the "in" set encodes `C` (or `C_adm∩S`), the closure component excludes legitimate, non-factor-closed contracts, so "solutions include the question" is false for those questions. If the "in" set encodes `C_adm`, then `C` itself is not encoded and a solution does not determine the question. Either reading damages the claim; the factor-closure component needs an independent justification (e.g., a proof that scopes may be taken factor-closed without loss) or deletion.
+Severity: serious.
+Fix: say exactly what the "in" predicate ranges over; if it is `C_adm∩S`, either prove `S` may be assumed factor-closed or replace the closure component with a component that tests membership in a declared scope without imposing algebraic closure.
+
+**Finding 9. Gap (i) is imprecise about which conjunct is missing.**
+Attacked: "Coherence (`Sol_D(1,b₀)≠∅`; `Q` defined on `C`) is a global condition on `D` and is not a local component of `D_p`; the solutions of `D_p` include incoherent questions…".
+Why it fails: the construction fixes "Boundary: the target `D` and `b₀`, held fixed", so `Sol_D(1,b₀)≠∅` is settled by the boundary and cannot vary between solutions of `D_p` — it discriminates nothing. Only "`Q` defined on `C`" is genuinely solution-dependent and genuinely unencoded.
+Severity: minor.
+Fix: split the gap: baseline solvability is a boundary condition on `D_p` (state it there); only `Q`-definedness is a missing local component.
+
+**Finding 10. Gap (ii) is partly wrong and partly a category error.**
+Attacked: "`b₀`, `O_p` and `ρ_p` are not ports of `D_p` as constructed; adding `b₀` as a port with domain `B`…".
+Why it fails: `b₀` *is* present — in the boundary ("the target `D` and `b₀`, held fixed"); questions differing in `b₀` are different organizations, not different solutions. And `ρ_p` cannot be a port of `D_p` at all: Part III defines `ρ_p` as the provenance of the transport that *represents* the question-organization, so treating it as organization data would make question-provenance circular rather than merely incomplete. `O_p` is the only genuine omission.
+Severity: minor.
+Fix: retract the `b₀` and `ρ_p` clauses; keep `O_p` (and note that `ρ_p` is fixed by the representing transport, as Part III already says).
+
+**Finding 11. Two further unlisted gaps.**
+Attacked: "Ports: … one port `u_Q` with domain the set of queries admissible on `D`", and "Admitted edits: toggle a pair; alter `Q`; alter `S`; add a pair to `K` with a meaning."
+Why it fails: (a) port domains must be sets; the class of "set-theoretic operations on `D`, its solutions, and its component structure" is not shown to be one (same for "the declared counterfactual sets with meanings"). (b) `D_p` is claimed to be an organization "in the sense of (O)", but (O) requires `A_p` closed under a partial associative composition with identity and a relation `L_j(a,b)` for every component, edit and boundary — none of these is supplied or verified.
+Severity: minor.
+Fix: add the two clauses to the gap list, or bound the query domain by a declared set and supply `A_p`'s composition structure and the component relations.
+
+## Part XVI, Derivation 6
+
+**Finding 12. The proof is a three-case spot-check, not a verification of the order.**
+Attacked: "*Proof.* Each definition names its inputs at first use. Three places could have produced a cycle and do not: …", concluding "that order has no cycle".
+Why it fails: the claim quantifies over every defined predicate in Parts II–XIII (roughly thirty); the three cases are the interesting ones, but `(K1)`, reason use, Standing, Receipts, `ProducedBy`, `Result`, Barriers, `(U1)`–`(U3)` are covered only by "following the order of Part XIV … reaches the base", which is an assertion of the same shape as the claim. (I found no actual cycle: `(R) → Con → Build → (E) → (F1)/(F2)/(A) → (O)/(Q)/(K)` terminates, and Deploy/Can/ownership rest on `Exec`, not on `(R)`.)
+Severity: minor.
+Fix: replace the three cases with a dependency table (predicate → immediate inputs), or explicitly scope the claim to the three risk points and say the rest is bookkeeping to be audited.
+
+## Part XVI, Derivation 7
+
+**Finding 13. The consistency claim is unconditional, but it rests on Derivation 5's explicitly conditional construction.**
+Attacked: "The episode is a history in which a question-organization with contract `C'` is built (Derivation 5) and takes over operative use", concluding "are both representable without contradiction".
+Why it fails: Derivation 5 states that "until they are closed, question-finding is representable *conditionally* on closing them"; Derivation 7's "representable without contradiction" inherits that conditionality without recording it.
+Severity: minor.
+Fix: add "conditional on Derivation 5's gaps" to the claim, or to the consequence.
+
+## Part XVI, Derivation 8
+
+**Finding 14. The preserved structure is insufficient for (R), (G) and (EK): only part of the module is preserved.**
+Attacked: "such that `φ` preserves the physical module's admission (`A_Θ`, Inst, `≺`) … Transporting all data along `φ` preserves (E), anchoring, (R), (G), (P), (EK)."
+Why it fails: Part XII's module also supplies substrate state spaces, admitted processes, the intervention repertoire, resources and accuracy grades, and `Exec(π,z,i;χ)`. `Con` requires a construction witness, i.e. `Build`, which requires an *owned* subhistory; ownership is defined from retained realization, which is defined from `Exec`. `Deploy` requires a retained capability, hence `Exec` likewise. With `Exec` unpreserved, `Build`, `Con`, `Deploy`, `Can` are unpreserved, so (R) (via `Con`), (G) (via `Build` and `Deploy`) and (EK) (via `(G)`, `Deploy`, `ProducesVia`) do not follow. (P) is the only listed predicate fully covered by the stated hypotheses (active routes, occurrences, obligations).
+Severity: serious.
+Fix: require `φ` to preserve the whole module Θ — state spaces, admitted processes, `A_Θ`, the intervention repertoire, resources and accuracy grades, `Inst`, `≺`, and `Exec` — and then re-derive preservation of `Con`/`Build`/`Deploy`/`Can` explicitly.
+
+**Finding 15. The query, the question's provenance, the indices and the use tasks are not among the transported data.**
+Attacked: the list "carriers, organizations (ports, domains, components, relations, edits, boundaries), transports (including their anchor maps `λ`), histories with their events and precedence, contracts, obligations and the normative relation", concluding that (E) and anchoring are preserved.
+Why it fails: (E) contains (A), and (A) is a statement about `Ans`, i.e. about the query `Q` — which is part of the question tuple `p=(D,C,b₀,Q,O_p,ρ_p)` and is *not* in the list. Anchoring's resolution condition quantifies over distinct *effects on `Ans_p`*, so it needs `Q` and the grain `ℓ`; `Deploy`/`Can`/`ownership` need `β` and `Ω`; `Deploy` and `Enable` need the use tasks `U` and enabling conditions `χ`. None is listed.
+Severity: serious.
+Fix: extend the hypothesis: `φ` carries questions (queries and provenance) and preserves the indices `(ℓ,β,Ω)` and the declared use tasks and enabling conditions, commuting with `Q` in the sense that `Ans` is preserved.
+
+**Finding 16. The solution-preservation parenthetical is imprecise about *why* it is a hypothesis.**
+Attacked: "carries `Sol` to `Sol` (solution preservation, which for a bijection of the organization data is a hypothesis, not a consequence)".
+Why it fails: a data-level bijection that carries component relations pointwise *does* preserve `Sol`, by (O) — the relations and the edit/boundary coordinates are all transported. What is genuinely a hypothesis is that the separately given valuation-level bijection (the `π` inside transport data) agrees with the port-level bijection.
+Severity: cosmetic.
+Fix: reword to "solution preservation is automatic at the level of organization data; what is a hypothesis is that the carrier-level bijection commutes with it."
+
+## Part XVI, Derivation 9
+
+Nothing wrong: the claim is the triviality that equal inputs to a function give equal outputs, and it is correctly applied.
+
+## Part XVI, Derivation 10
+
+**Finding 17. "(G) holds" is asserted from `Build ∧ New`; (G) is `Attempt ∧ New ∧ Build`.**
+Attacked: "If `S₁` was built by an owned subhistory containing a nontrivial binding construction required for the use … and `S₁` is not in the prior repertoire, then (G) holds."
+Why it fails: (G) is the conjunction `Attempt ∧ New ∧ Build`. `Attempt` requires that `c` is actually used, on an active route, to address a coherently posed question whose question-organization some occurrence of `s` instantiates before `e`, with an obligation in `O_p` failing at the state before `e`. None of that is stipulated (the scenario later says only that (P) and (EK) lack constituents). Also "required for the *use*" does not match Part X's definition, which requires the binding to be "required for the *transport* — when deleting the binding breaks (F1) or (F2)".
+Severity: serious (the scenario misstates the logic of the load-bearing origin predicate).
+Fix: either stipulate the `Attempt` constituents (a question, a failing obligation, an active-route use) and change "required for the use" to "required for the transport", or downgrade the conclusion to "then `Build` and `New` hold, and (G) additionally requires `Attempt`, which the scenario does not supply".
+
+**Finding 18. The swap paragraph misapplies (K): it needs a reading Part II does not state.**
+Attacked: "Under (K), with the swap supplying the footprint bijection, the two persistence components are of one forward kind on any contract containing the swap".
+Why it fails: Part II's forward-kind condition is "there is a bijection of their visible ports, carrying value domains onto value domains, under which their signatures coincide on `C∖{(1,b₀)}`" — the bijection acts on ports only; the `(a,b)` coordinates are fixed. So coincidence requires `β(L₁(a,b)) = L₂(a,b)` at the *same* pair. At `(displace thing 1, b)`: `β(L₁(displace₁,b))` is component 2's relation under *displacing thing 2*, i.e. `L₂(displace₂,b)`, which differs from `L₂(displace₁,b)` (component 2 is untouched by displacing thing 1). Hence on the scenario's own contract — which contains displacements and velocity changes — the two components are *not* of one forward kind under the strict reading; the claim works only if the bijection is also allowed to act on the edit/boundary coordinate (`β(displace₁)=displace₂`), which Part II never says. The paragraph's conclusion ("identity, at this grain and contract, is exhausted by trajectory") therefore does not follow as written: under the strict reading trajectory *does* distinguish the components; under the liberal reading it does not, but the liberal reading is unstated.
+Severity: serious.
+Fix: amend Part II to state explicitly whether the port bijection induces (and is required to induce) a bijection on the edit–boundary coordinates; if it is, verify that this does not collapse any distinction Part II relies on (cause vs. correlation, measurement vs. rule); if it is not, restrict the swap claim to contracts whose acting edits are swap-invariant and withdraw "on any contract containing the swap".
+
+**Finding 19. The stipulated selection witness is incomplete relative to Part IV's definition.**
+Attacked: "that it satisfies the clauses of Part IV's selection witness (two or more members, an applied operator, an eliminated rival that differed on an encountered pair, blindness)".
+Why it fails: Part IV's `Sel` also requires non-triviality ("no event of `Σ_h` instantiates an organization held to `t`, to `H`, or to the survival condition by a faithful transport") and that `H` is non-empty; the parenthetical omits non-triviality.
+Severity: minor.
+Fix: add non-triviality to the parenthetical, or say "all clauses" without enumerating.
