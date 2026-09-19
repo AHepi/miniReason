@@ -1,0 +1,1075 @@
+====================================================================================================
+T8_consistency | rev3_deepseek | sample 0 | finish stop | 28397 chars | error None
+====================================================================================================
+**Findings. I do not summarise the document. I attack it.**
+
+---
+
+### 1. Transport orientation and the declared “transported query” are inconsistent.
+
+**Quote:**  
+> “When the transport serves a question, it carries a fifth datum, the **transported query** \(\mathcal Q_E\), an operation on \(E\) of the same type as \(\mathcal Q\), declared with the transport…”  
+> “**Orientation.** … \(\pi,\tau,\sigma\) run forward from \(D\); \(\lambda\) runs back…”  
+> “What a question asks … is fixed by the type of \(\mathcal Q\) and the shape of \(C\), not by a label.”
+
+**Claim attacked:** The transported query is the same respect as the original query, carried forward by the transport.
+
+**Why it fails:** \(\mathcal Q_E\) is *declared*, not derived from \(\mathcal Q\), \(\tau\), \(\sigma\), or \(\lambda\). “Same type” does not fix a set-theoretic operation. A transport can therefore declare a \(\mathcal Q_E\) of the same type but different respect. (A) only forces agreement on \(C\); outside \(C\), the respect can silently change. Calling it the “transported query” is a misnomer: it is a new datum, not a translation.
+
+**Severity:** Serious.
+
+**Fix:** Define \(\mathcal Q_E\) as the image of \(\mathcal Q\) under the transport, e.g. require \(\mathcal Q_E(\tau(a),\sigma(b))=\mathcal Q(D,a,b)\) on all of \(C_{\mathrm{adm}}\) or state exactly which data determine \(\mathcal Q_E\). If \(\mathcal Q_E\) is genuinely declared, then drop the claim that the respect is fixed by \(\mathcal Q\) and \(C\).
+
+---
+
+### 2. Account is overloaded between two-place and four-place uses.
+
+**Quote:**  
+> “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified:  
+> \(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\).”  
+> Part VI: “the transport and commitments are the fixed ones of \(\mathcal E\), not existentially re-chosen.”  
+> Part XI: “\(\operatorname{Account}(E_c,p_c)\).”
+
+**Claim attacked:** The same \(\operatorname{Account}\) predicate is used consistently across Parts V, VI, IX, XI.
+
+**Why it fails:** Part VI and Part IX use the four-place condition. Part XI uses the two-place existential form. In (EK), \(\operatorname{Account}(E_c,p_c)\) may be witnessed by a different transport \(t\) and set \(\Gamma\) than the one required by Origin, Build, or Deploy. Part XI says “Deploy supplies the provenance condition through (R)”, but the account witness itself need not be the deployed or built transport. This weakens (EK) and makes the arity shift do hidden work.
+
+**Severity:** Serious.
+
+**Fix:** Use the four-place form explicitly in (EK), naming \(t_c,\Gamma_c\), and require that \(t_c\) is the transport deployed or built. Or state a compatibility condition relating the existential account witness to the Origin/Deploy witness.
+
+---
+
+### 3. The objectivity condition is indexed to the module, but Part VIII only indexes claims to contracts.
+
+**Quote:**  
+> Grievance 4: “‘C is not protective’ is a fact about C against the physically admitted changes…”  
+> Part V: “The claim is indexed to the module in force: a later module with a larger \(A_\Theta\) makes it a new claim at a new index (Part VIII)…”  
+> Part VIII: “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change…”
+
+**Claim attacked:** Part VIII’s “historical index” handles the index shift in the objectivity condition.
+
+**Why it fails:** The objectivity condition can change when \(A_\Theta\) changes while the contract \(C\) stays fixed. Part VIII only says claims indexed to a contract keep their truth value. It does not say what happens to a claim whose truth depends on the module’s admitted edit set. The index is therefore underdescribed.
+
+**Severity:** Serious.
+
+**Fix:** Define the relevant index as a tuple containing the module \(\Theta\), the contract \(C\), and possibly the grain \(\ell\). Update Part VIII to cover module-indexed claims explicitly.
+
+---
+
+### 4. The anchored grade is extensional, so Part 0’s “matches the mechanism” overclaims.
+
+**Quote:**  
+> Part 0: “The second is what ‘the explanation matches the mechanism at the module’s index’ means…”  
+> Part V: “The target itself, \(E=D\) under the identity transport, is an anchored account of \(D\)… the semantics has no predicate that separates a mechanism from its faithful copy, and does not want one.”  
+> Part XV: “A decoy that shares a world-kind with the mechanism on every admitted change is not excluded and is not meant to be: at that index it is the mechanism.”
+
+**Claim attacked:** The anchored grade is what it means for an explanation to match the mechanism.
+
+**Why it fails:** If the target’s own identity copy is an anchored account, and a decoy with the same world-kind is “the mechanism” at that index, then “matches the mechanism” is satisfied by the mechanism itself and by any extensional duplicate. The phrase cannot do the work Part 0 assigns it. At best the anchored grade matches the mechanism’s extensional profile.
+
+**Severity:** Serious.
+
+**Fix:** Replace “matches the mechanism” with “matches the mechanism’s extensional profile at the module’s index” and state that explanatory match additionally requires Origin, Deploy, or operative status.
+
+---
+
+### 5. The operative condition is not a change to an account, and Grievance 12 overstates history’s role.
+
+**Quote:**  
+> Grievance 12: “the one thing history changes about an account is whether it is *operative* (Part V)…”  
+> Part V: “Where the physical module supplies a history for \(D\), an anchored account is **operative** when each anchor is an **active route**… This condition is about history, not signature; it is stated outside the anchored grade…”
+
+**Claim attacked:** History changes an account only via operativity.
+
+**Why it fails:** Operativity is an additional predicate on physical anchored accounts, not a change to \(\operatorname{Account}\) or anchored account-hood. It also applies only when the module supplies a history for \(D\). Moreover, history enters representation and Deploy through (R), so Grievance 12’s “the one thing” is false if “account” is read broadly.
+
+**Severity:** Minor to serious depending on how “account” is read.
+
+**Fix:** State that operativity is a further historical condition on physical anchored accounts, and that history also affects representation and Deploy through provenance.
+
+---
+
+### 6. Part IV’s selection witness and Derivation 3 use different hypotheses; Derivation 10 stipulates without checking.
+
+**Quote:**  
+> Part IV: “the members that survived were exactly the members faithful on \(H\)…”  
+> Derivation 3: “suppose \(\mathcal T\) is **closed under pointwise alteration off \(H\)**…”  
+> Derivation 10: “assume … it satisfies the clauses of Part IV’s selection witness … none of which is checked here.”
+
+**Claim attacked:** Derivation 3 and Derivation 10 are consistent illustrations of the selection witness.
+
+**Why it fails:** Derivation 3 adds a closure hypothesis not required by Part IV and does not show that this closure is compatible with Part IV’s non-triviality and blindness clauses. Derivation 10 explicitly stipulates the selection witness without checking it, so it cannot show that the physical selection definition is satisfiable in the described case. The text admits this, but the admission does not remove the tension.
+
+**Severity:** Minor.
+
+**Fix:** State the closure hypothesis in Derivation 3 as an extra assumption and prove or deny compatibility with Part IV’s clauses. Label Derivation 10 as pure illustration, not as evidence for satisfiability.
+
+---
+
+### 7. The provenance of a content’s occurrence is ill-defined when several minimal transports witness (R).
+
+**Quote:**  
+> “The **provenance of a content’s occurrence on \(C\)** is the provenance of the \(\prec_h\)-minimal transports witnessing (R) for it on \(C\), with the same rule for mixed cases…”  
+> “If all minimal witnesses are of one kind, that is \(t\)’s provenance… If they are of both kinds, \(t\) has **mixed** provenance…”
+
+**Claim attacked:** The provenance of a content’s occurrence is well-defined by the minimal-witness rule.
+
+**Why it fails:** The mixed rule is defined for multiple witnesses of one transport’s occurrence. It is not defined for multiple transports witnessing (R) for the same content. If one selected and one constructed transport both minimally witness (R), the text does not say whether the content’s provenance is selected, constructed, or mixed. Part III then assigns \(\rho_p\in\{\text{declared},\text{selected},\text{constructed}\}\), with no mixed option.
+
+**Severity:** Serious.
+
+**Fix:** Define content provenance for multiple minimal transports, or require uniqueness of the minimal witnessing transport. Extend \(\rho_p\) to handle mixed provenance, or forbid mixed-provenance questions.
+
+---
+
+### 8. Part VII sends the selection-artefact family to attack (D); Part XV files it under attack (B).
+
+**Quote:**  
+> Part VII: “Explanation of an apparent effect as a selection artefact … is listed under attack (D).”  
+> Part XV, under attack (B): “(ii) **closable, not done** — explanation of an apparent effect as a selection artefact…”  
+> Part 0, under attack (B): “explanation of an effect as a selection artefact is a missing *condition* rather than a missing transport and is listed under (D).”
+
+**Claim attacked:** The cross-references between Part VII, Part XV, and Part 0 are consistent.
+
+**Why it fails:** Part VII and Part 0 say the selection-artefact case belongs to attack (D). Part XV explicitly sorts it under attack (B). This is a straightforward internal cross-reference contradiction.
+
+**Severity:** Minor.
+
+**Fix:** Correct the cross-reference to (B) or move the case to (D) consistently.
+
+---
+
+### 9. The informal-term list contradicts Derivation 6’s well-founded-order claim.
+
+**Quote:**  
+> Part XIV: “The following are used in Parts IV–XIII without a formal definition … Derivation 6 does not cover them.”  
+> Derivation 6: “Every *defined* predicate in Parts II–XIII is defined from … the informal terms listed in Part XIV, by the dependence order there, and that order has no cycle… Following the order of Part XIV from each defined predicate reaches the base.”  
+> Part XIV: “Among the *defined* predicates of Parts II–XIII the order is well-founded; the informal terms listed above are outside it.”
+
+**Claim attacked:** The defined predicates form a well-founded order reaching a base.
+
+**Why it fails:** If defined predicates depend on informal terms, and those informal terms are outside the order, then following the order from a defined predicate does not reach the base; it stops at undefined terms. If they are not inputs, Derivation 6 should not list them as part of the definitional base. Also, Part XIV lists “globally indispensable” as informal, but Part VI defines it in the finite monotone theorem.
+
+**Severity:** Serious.
+
+**Fix:** Either define the informal terms or count them as additional primitives/declared parameters. Remove “globally indispensable” from the informal list. Revise Derivation 6 so that it does not claim the order reaches a base through undefined terms.
+
+---
+
+### 10. Part 0 and Part XV say the target’s own copy fails Origin; Part X says it can satisfy Origin.
+
+**Quote:**  
+> Part 0: “The target’s own copy and the faithful modular table satisfy the anchored grade and fail Origin…”  
+> Part XV: “the target’s own copy, the faithful modular table — and the class does not claim they explain: they fail Origin…”  
+> Part X: “the target’s own faithful copy, built from error records, is an anchored, originated account that is \(\equiv_\ell\) to the target: New fails for it if the target is already in the repertoire, and holds if it is not — in which case building the target’s mirror from its errors is discovering it, and the semantics says so without embarrassment.”
+
+**Claim attacked:** The target’s own copy fails Origin.
+
+**Why it fails:** Part X explicitly says New holds if the target is not already in the repertoire, and that building the target’s mirror from its errors counts as discovering it. If Build and Deploy also hold, Origin holds. Part 0 and Part XV state without qualification that the target’s own copy fails Origin. That is false under Part X.
+
+**Severity:** Fatal to the stated sufficiency examples.
+
+**Fix:** Qualify Part 0 and Part XV: the target’s own copy fails Origin only when the target is already in the repertoire. If it is not, it can satisfy Origin, and the semantics must accept it as discovery.
+
+---
+
+### 11. The finite monotone theorem is false as stated.
+
+**Quote:**  
+> “If \(\Gamma\) is finite, \(\mathsf S\) is upward closed, and \(\Gamma\in\mathsf S\), then the critical singletons are exactly \(\bigcup\min\mathsf S\) and the globally indispensable ones are exactly \(\bigcap\min\mathsf S\).”
+
+**Claim attacked:** The theorem correctly characterizes critical singletons and globally indispensable elements.
+
+**Why it fails:** Let \(\mathsf S=\{\{a\},\{b\},\{a,b\}\}\) and \(\Gamma=\{a,b\}\). Then \(\min\mathsf S=\{\{a\},\{b\}\}\), so \(\bigcup\min\mathsf S=\{a,b\}\). But neither \(\{a\}\) nor \(\{b\}\) is a critical singleton for \(\Gamma\), since deleting either leaves a support. The critical singletons are none. The theorem confuses “critical for some minimal support” with “critical for \(\Gamma\).”
+
+**Severity:** Serious mathematical error.
+
+**Fix:** State criticality relative to a support \(W\), or change the theorem to say that critical singletons *for minimal supports* are \(\bigcup\min\mathsf S\), while globally indispensable elements are \(\bigcap\min\mathsf S\).
+
+---
+
+### 12. Part IX uses a definite description forbidden by Part IV’s non-functional \(\operatorname{Inst}\).
+
+**Quote:**  
+> Part IV: “It is a relation, not a function: one occurrence may instantiate several organizations at one grain… Every definition that needs ‘the organization \(o\) instantiates’ quantifies over \(\operatorname{Inst}_\ell(o,\cdot)\).”  
+> Part IX: “Let \(p_\delta\) be the question whose target organization is (the organization \(z\) instantiates)…”
+
+**Claim attacked:** Bearing can use “the organization \(z\) instantiates.”
+
+**Why it fails:** If \(z\) instantiates several organizations at the grain, there is no unique target organization for \(p_\delta\). Part IX violates Part IV’s explicit rule.
+
+**Severity:** Serious.
+
+**Fix:** Quantify over \(\operatorname{Inst}_\ell(z,D)\) or define \(\operatorname{Bearing}\) for each instantiated organization separately.
+
+---
+
+### 13. Mixed provenance is a fourth provenance, but Part III, Part I, and Part X do not accommodate it.
+
+**Quote:**  
+> Part IV: “If they are of both kinds, \(t\) has **mixed** provenance, which is declared as such and does not count as constructed for (G).”  
+> Part I: “Two produced provenances, not one.”  
+> Part III: “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\).”  
+> Part X: “Construction is not selection… One transport cannot satisfy both for the same route.”
+
+**Claim attacked:** There are exactly three provenances, and the selection/construction distinction is exhaustive.
+
+**Why it fails:** Mixed provenance is introduced as a fourth status. It is not in \(\rho_p\). It is said not to count as constructed for (G), but the formal definition of \(\operatorname{Con}(t;h,e)\) can hold if there is a constructed minimal witness, regardless of whether other minimal witnesses are selected. The text does not amend \(\operatorname{Sel}\) or \(\operatorname{Con}\) to make mixed provenance satisfy neither for (R) or (G).
+
+**Severity:** Serious.
+
+**Fix:** Integrate mixed provenance into all definitions. Define whether mixed satisfies (R), (G), and \(\rho_p\). Or define \(\operatorname{Sel}\) and \(\operatorname{Con}\) as exclusive provenance predicates and state that mixed satisfies neither.
+
+---
+
+### 14. Historical kinds use content provenance applied to bindings, which is a category error.
+
+**Quote:**  
+> Part II: “A **historical kind** is a predicate on the history that produced an occurrence of a component — selected, constructed, descended from, copied from — with the witness that Part IV requires for the provenance of a content’s occurrence, applied to the binding that realizes the component.”  
+> Part IV: “The **provenance of a content’s occurrence on \(C\)** is the provenance of the \(\prec_h\)-minimal transports witnessing (R) for it on \(C\)…”
+
+**Claim attacked:** The provenance witness for contents can be applied to a binding that realizes a component.
+
+**Why it fails:** Part IV’s content provenance is defined via (R), which is a representation relation between an occurrence and a content. A binding \(\lambda(k)\) is an assignment of a component to a subnetwork, not an occurrence representing a content. Applying (R)-based provenance to a binding is not defined.
+
+**Severity:** Serious.
+
+**Fix:** Define a separate provenance witness for component bindings or component occurrences. Do not reuse the content-provenance definition by fiat.
+
+---
+
+### 15. Part XIV says provenance does not depend on (R), but Part IV defines content provenance via (R).
+
+**Quote:**  
+> Part XIV: “(R) depends on (F1)–(F2), \(\operatorname{Inst}\) and physical provenance; provenance depends on \(\Theta\) and on Part X’s witnesses… but not on (R)…”  
+> Part IV: “The **provenance of a content’s occurrence on \(C\)** is the provenance of the \(\prec_h\)-minimal transports witnessing (R) for it on \(C\)…”
+
+**Claim attacked:** The dependence order between provenance and (R) is well-founded and stated correctly.
+
+**Why it fails:** Transport provenance may not depend on (R), but content provenance does. Part III’s \(\rho_p\) uses content provenance. Part XIV conflates the two or states the dependence order falsely for content provenance.
+
+**Severity:** Serious.
+
+**Fix:** Distinguish transport provenance from content provenance. State explicitly that content provenance depends on (R), while transport provenance does not.
+
+---
+
+### 16. Part 0’s “two primitive packages” is undermined by Part XIV’s undefined informal terms.
+
+**Quote:**  
+> Part 0: “The semantics has two primitive packages.”  
+> Part XIV: “Informal terms, listed. The following are used in Parts IV–XIII without a formal definition and are supplied with each use as declared data, or are not yet defined…”
+
+**Claim attacked:** The semantics has only two primitive packages.
+
+**Why it fails:** If a term is “not yet defined” and is used in definitions, it functions as an additional primitive or undeclared parameter. Listing it does not make it non-primitive. The list includes occurrence, carrier, physical location, problem-directed activity, role bindings, and more.
+
+**Severity:** Serious.
+
+**Fix:** Either define the informal terms or classify them explicitly as additional primitives or declared parameters. Do not claim exactly two primitive packages while relying on undefined terms.
+
+---
+
+### 17. Part 0 says “proper decomposition”; Part V says “refine a cover.”
+
+**Quote:**  
+> Part 0: “whose anchors are a proper decomposition of the target at the resolution the question needs.”  
+> Part V: “The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches… An anchor may be the whole target only when \(D\) has one component.”
+
+**Claim attacked:** The properness condition is a proper decomposition.
+
+**Why it fails:** A cover allows overlapping anchors. A decomposition usually implies a partition or non-overlapping refinement. The text does not say whether two active components may have overlapping anchors, nor whether a touched component may lie in two anchors.
+
+**Severity:** Minor to serious depending on intended strength.
+
+**Fix:** State whether anchors form a partition, a cover, or a non-overlapping refinement. Align Part 0 and Part V.
+
+---
+
+### 18. Historical kind includes “descended from” and “copied from,” but content provenance does not.
+
+**Quote:**  
+> Part II: “A **historical kind** is a predicate on the history that produced an occurrence of a component — selected, constructed, descended from, copied from…”  
+> Part IV: “**Copying** is a content-preserving transfer with its own witness; **descent** is a chain of selections each of whose populations contains the previous survivor; both are historical kinds in the sense of Part II.”  
+> Part IV: “The **provenance of a content’s occurrence on \(C\)** is the provenance of the \(\prec_h\)-minimal transports witnessing (R)…”
+
+**Claim attacked:** Historical kinds are covered by the provenance definition for contents.
+
+**Why it fails:** The content-provenance definition recognizes selected, constructed, and declared. It does not classify “descended from” or “copied from” as provenance categories, yet Part II and Part IV call them historical kinds and say historical kinds use the content-provenance witness.
+
+**Severity:** Minor.
+
+**Fix:** Extend the provenance definition to include copying and descent, or separate historical kinds from provenance.
+
+---
+
+### 19. Build’s final clause has no clear subject.
+
+**Quote:**  
+> “contains a **nontrivial binding construction required for that transport**, contains an **itemised defect representation** … on an active route to the *acceptance* of the binding… and is neither a content-preserving transfer nor a composition of them.”
+
+**Claim attacked:** The Build predicate is well-formed.
+
+**Why it fails:** “is neither a content-preserving transfer nor a composition of them” lacks a clear subject. If it modifies “binding construction,” a binding construction is an assignment, not a transfer. If it modifies the prepared organization, an organization is not a transfer either. The clause is not parsed by any definition.
+
+**Severity:** Minor.
+
+**Fix:** Rewrite to say exactly what is not a content-preserving transfer: the construction process, the binding, or the prepared organization.
+
+---
+
+### 20. Derivation 6 says “three places” and lists four.
+
+**Quote:**  
+> “Three places could have produced a cycle and do not: (i)… (ii)… (iii)… (iv)…”
+
+**Claim attacked:** The count is correct.
+
+**Why it fails:** There are four numbered items.
+
+**Severity:** Cosmetic.
+
+**Fix:** Change “three” to “four.”
+
+---
+
+### 21. Part III claims questions are represented as contents, but Derivation 5 does not represent the question tuple.
+
+**Quote:**  
+> Part III: “A question — its target, its scope of admitted changes, what it asks — can be found as well as answered, and the semantics represents both, as far as the construction in Derivation 5 goes…”  
+> Derivation 5 gaps: “(0) A solution of \(D_p\) is a valuation, not a content… (ii) \(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed… (iii) ‘Add a pair to \(K\)’ requires the pair’s declared relations as a port value; the domain of \(u_K\) must be the set of pairs-with-relations, and it is not written out.”
+
+**Claim attacked:** The semantics represents question-finding via the construction in Derivation 5.
+
+**Why it fails:** Derivation 5’s \(D_p\) omits \(b_0\), \(O_p\), \(\rho_p\), and coherence conditions. A solution of \(D_p\) is a valuation, not yet a content. Thus the question tuple is not represented as a content. The phrase “as far as” hedges, but Part III still asserts representation.
+
+**Severity:** Serious.
+
+**Fix:** Either complete the construction so that the full question tuple, including provenance and obligations, is represented, or weaken Part III to say only that target, scope, and query are representable conditionally.
+
+---
+
+### 22. Objectivity uses anchored-grade silence for a predicate that need not be anchored.
+
+**Quote:**  
+> Part V: “\(C\) is protective when there is an admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) that touches some anchor of an active component of \(E\) — so that the candidate is not silent on it in the structural sense of the anchored grade…”
+
+**Claim attacked:** The objectivity condition is defined for \(\operatorname{Account}(E,p,t,\Gamma)\), with no anchoring requirement.
+
+**Why it fails:** “Silence in the structural sense of the anchored grade” is defined for anchored accounts with properness and resolution. An account at \(C\) need not be anchored. The objectivity condition therefore imports a distinction that may not be available for the candidate it is assessing.
+
+**Severity:** Serious.
+
+**Fix:** Define silence for any transport via its anchor map \(\lambda\), or restrict objectivity claims to anchored accounts.
+
+---
+
+### 23. “The target is right about itself by definition” conflicts with Part III’s incoherent questions.
+
+**Quote:**  
+> Part V: “The target is right about itself by definition, so ‘the candidate is better’ is not a case.”  
+> Part III: “A question may fail to pick out its alleged target, assume an incompatible baseline, or combine incompatible requirements.”
+
+**Claim attacked:** The target’s answer is correct by definition in every objectivity assessment.
+
+**Why it fails:** If the question is incoherent or fails to pick out its alleged target, the “target” of the assessment may not be the object the question claims. The objectivity condition should be restricted to coherently posed questions.
+
+**Severity:** Minor.
+
+**Fix:** State that objectivity is only defined for coherently posed questions, or drop the claim that the target is right by definition.
+
+---
+
+### 24. Part XIV lists “globally indispensable” as informal, but Part VI defines it.
+
+**Quote:**  
+> Part XIV: “Informal terms, listed… and ‘globally indispensable’ (Part VI: a commitment in every minimal support).”  
+> Part VI: “the globally indispensable ones are exactly \(\bigcap\min\mathsf S\).”
+
+**Claim attacked:** “Globally indispensable” is undefined or informal.
+
+**Why it fails:** Part VI gives it a formal characterization. It should not appear in the informal list without qualification.
+
+**Severity:** Minor.
+
+**Fix:** Remove “globally indispensable” from the informal list, or state that it is formally defined in Part VI and only its use in other definitions is informal.
+
+---
+
+### 25. Part XIV’s claim that provenance does not pass through (R) conflicts with Part III’s question provenance.
+
+**Quote:**  
+> Part XIV: “the question’s provenance is derived, Part IV.”  
+> Part III: “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\) attaches to the whole tuple \(p\)… Its witness is the one Part IV gives for the provenance of any content’s occurrence: the provenance of the transport by which an occurrence represents the question-organization…”  
+> Part IV: content provenance is defined via (R).
+
+**Claim attacked:** Question provenance and content provenance are consistent with the dependence order.
+
+**Why it fails:** Question provenance uses content provenance. Content provenance uses (R). But Part XIV says provenance does not depend on (R). If “provenance” there is meant broadly, it is false; if it means only transport provenance, the text must say so.
+
+**Severity:** Serious.
+
+**Fix:** Disambiguate transport provenance, content provenance, and question provenance. State explicitly that content and question provenance depend on (R).
+
+---
+
+### 26. Part XII’s “finite construction” is ambiguous between physical construction and Part X’s \(\operatorname{Build}\).
+
+**Quote:**  
+> Part XII: “holds retained realizations of \(T\) under \(\chi\), or holds retained realizations from which a physically admitted, finite construction produces one…”
+
+**Claim attacked:** The term “construction” is used consistently.
+
+**Why it fails:** Part X defines \(\operatorname{Build}\) as a specific historical predicate involving ownership, itemised defect representations, and acceptance. Part XII’s “finite construction” appears to mean a physical process of producing a retained realization. The same word carries two different theoretical roles.
+
+**Severity:** Minor.
+
+**Fix:** Use “physical realization” or “finite physical construction” in Part XII, and reserve \(\operatorname{Build}\) for Part X’s defined predicate.
+
+---
+
+**No further findings** on the sections not quoted above, except that the document’s repeated self-labelling as “conjecture,” “scoped,” or “open” does not repair the formal contradictions above; it only records that some of them are known.
+====================================================================================================
+T8_consistency | rev3_deepseek | sample 1 | finish stop | 21328 chars | error None
+====================================================================================================
+**Finding 1 — Transported query is declared, not translated.**
+- **Quoted passage:** Part IV: “When the transport serves a question, it carries a fifth datum, the **transported query** \(\mathcal Q_E\), an operation on \(E\) of the same type as \(\mathcal Q\), declared with the transport”; Part III: “What a question asks … is fixed by the type of \(\mathcal Q\) and the shape of \(C\), not by a label.”
+- **Claim attacked:** Question identity and fidelity are fixed by \(\mathcal Q\) and \(C\).
+- **Why it fails:** \(\mathcal Q_E\) is declared independently of \(\mathcal Q\) and the transport. (A) only requires \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\) on \(C\). A candidate can choose a same-type \(\mathcal Q_E\) that agrees on \(C\) while not being the translation of \(\mathcal Q\). The “respect” of the question is therefore not held fixed by the transport.
+- **Seriousness:** Serious.
+- **Fix:** Define \(\mathcal Q_E\) as the image of \(\mathcal Q\) under \((\tau,\sigma)\), or require structural preservation of \(\mathcal Q\) by the transport, and include \(\mathcal Q_E\) in the question/transport data.
+
+**Finding 2 — Four-place versus two-place Account makes (EK) detach the account from construction/deployment.**
+- **Quoted passage:** Part V: “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified: \(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)”; Part VI: “\(\operatorname{Account}(E|W,p,t|W,W)\)”; Part IX: “\(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta,t_c,\Gamma_c)\)”; Part XI: “\(\operatorname{Account}(E_c,p_c)\).”
+- **Claim attacked:** Account-hood can be used uniformly across support, bearing, and knowledge-creation.
+- **Why it fails:** Parts VI and IX use the four-place form to fix the transport and commitments. Part XI’s (EK) uses the two-place form, so \(E_c\) can be an account of \(p_c\) under some transport/\(\Gamma\) not identical to the constructed/deployed transport required by Origin, Build, and Deploy. (EK) can therefore be satisfied by a declared or otherwise unrelated account.
+- **Seriousness:** Serious.
+- **Fix:** Use four-place Account in (EK), with the same transport that Build, Deploy, and representation require; or state explicitly that the existential witness must be the constructed/selected transport.
+
+**Finding 3 — Objectivity is indexed to the module, but Part VIII indexes claims only to contracts.**
+- **Quoted passage:** Part V: “The claim is indexed to the module in force: a later module with a larger \(A_\Theta\) makes it a new claim at a new index (Part VIII), and account-hood at \(C\) is untouched by it”; Part VIII: “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change.”
+- **Claim attacked:** Objectivity is a claim about \(C\), and index-fixity is handled by Part VIII.
+- **Why it fails:** Objectivity is indexed to \((C,\Theta)\)—or at least to \((C,C_{\mathrm{adm}})\). Changing \(\Theta\) changes whether \(C\) is protective without changing \(C\). Part VIII says contract-indexed claims keep their truth value at their own index; it does not cover module changes. Grievance 4 also calls non-protection “a fact about \(C\) against the physically admitted changes,” which is module-relative.
+- **Seriousness:** Serious.
+- **Fix:** State that objectivity is indexed to \((C,\Theta)\) or \((C,C_{\mathrm{adm}})\), and revise Part VIII to acknowledge the module index.
+
+**Finding 4 — The anchored grade’s extensional stance contradicts Part 0’s “matches the mechanism.”**
+- **Quoted passage:** Part 0: “The second is what ‘the explanation matches the mechanism at the module’s index’ means”; Part V: “What it does not separate is a decoy with the same response to every admitted edit — and the semantics says that such a decoy is, at this index, the mechanism.”
+- **Claim attacked:** The anchored grade captures matching a mechanism.
+- **Why it fails:** If any decoy with the same response to every admitted edit is “the mechanism,” and the target’s own copy and modular table satisfy the anchored grade, then “matches the mechanism” reduces to “is an extensional copy at the index.” The phrase reifies a mechanism the semantics does not distinguish from a copy.
+- **Seriousness:** Serious.
+- **Fix:** Replace “matches the mechanism” with “matches the target’s component structure on \(C_{\mathrm{adm}}\),” or define “mechanism” only as the extensional equivalence class.
+
+**Finding 5 — The operative condition contradicts Grievance 12’s history claim and conflates anchors with active routes.**
+- **Quoted passage:** Grievance 12: “the one thing history changes about an account is whether it is operative (Part V)”; Part V: “an anchored account is **operative** when each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences.”
+- **Claim attacked:** Only operativeness is historical about an account, and anchors can be active routes.
+- **Why it fails:** History also determines Build, Origin, Newness, Deploy, representation provenance, and (EK). So “the one thing” is false for the candidate. Worse, anchors are subnetworks of the target organization \(D\); active routes are subnetworks of actual occurrences. Identifying them requires a realization map from \(D\)’s components to occurrences, which is not defined.
+- **Seriousness:** Serious.
+- **Fix:** Scope the Grievance 12 claim to Account/anchoring alone. Define a realization map \(r:D\to h\) and say the realization of an anchor is an active route.
+
+**Finding 6 — Derivation 10 conflates the \(P\)-tracker population with \(S_0\)’s population and drops the selection witness for \(t_0\).**
+- **Quoted passage:** Derivation 10: “assume, as a stipulation about that population, that … it satisfies the clauses of Part IV’s selection witness … none of which is checked here”; later: “If the simulation layer’s population can only predict from occupancy — a stipulation about \(S_0\)’s population, distinct from the stipulation about the trackers of \(P\) above.”
+- **Claim attacked:** \(t_0\) is a selected transport, and the scenario illustrates selection versus construction.
+- **Why it fails:** The selection-witness stipulation is attached to the \(P\)-to-\(F\) trackers, not to \(S_0\)’s transport \(t_0\). A separate stipulation is then introduced for \(S_0\)’s population. The scenario never supplies a selection witness for \(t_0\). Also, Derivation 3 only says selection gives no guarantee off \(H\); Derivation 10 stipulates that no member survives the extended history, which is stronger and not derived.
+- **Seriousness:** Serious.
+- **Fix:** Give separate selection witnesses for \(P\) and \(S_0\), or mark \(t_0\)’s provenance as stipulated/declared; distinguish “no guarantee” from “no survivor.”
+
+**Finding 7 — Content provenance can be mixed, but question provenance cannot.**
+- **Quoted passage:** Part IV: “The provenance of a content’s occurrence on \(C\) is the provenance of the \(\prec_h\)-minimal transports witnessing (R) for it on \(C\), with the same rule for mixed cases”; Part III: “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\).”
+- **Claim attacked:** Questions use the one definition of content provenance.
+- **Why it fails:** Content provenance allows “mixed,” but \(\rho_p\) has no mixed value. Since Part IV says questions use the content-provenance definition, a question can have mixed provenance that Part III cannot represent. Also, transports are not themselves ordered by \(\prec_h\); only occurrences/events are, so “\(\prec_h\)-minimal transports” is undefined without a carrier-occurrence order.
+- **Seriousness:** Serious.
+- **Fix:** Define the order on transports via their carrier occurrences. Either add “mixed” to \(\rho_p\) or exclude mixed provenance for questions.
+
+**Finding 8 — Part VII sends the selection-artefact case to (D); Part XV puts it under (B)(ii).**
+- **Quoted passage:** Part VII: “it is listed under attack (D)”; Part XV: “(ii) **closable, not done** — explanation of an apparent effect as a selection artefact …”
+- **Claim attacked:** The cross-reference between Part VII and Part XV is coherent.
+- **Why it fails:** (D) is “Genesis.” (B)(ii) is the selection-artefact case under “An explanation without a faithful transport.” Part VII also says the case is “not a case of a missing transport,” which contradicts its placement under (B). The cross-reference and heading are inconsistent.
+- **Seriousness:** Serious.
+- **Fix:** Point to (B)(ii), and reconcile “not a missing transport” with the heading of (B), or move the case to (D).
+
+**Finding 9 — The informal-term list contradicts Part VI on “globally indispensable.”**
+- **Quoted passage:** Part XIV: “‘globally indispensable’ (Part VI: a commitment in every minimal support). Derivation 6 does not cover them”; Part VI: “the globally indispensable ones are exactly \(\bigcap\min\mathsf S\).”
+- **Claim attacked:** “Globally indispensable” is an informal, undefined term.
+- **Why it fails:** Part VI defines it in the finite monotone theorem. Listing it as informal is false.
+- **Seriousness:** Minor.
+- **Fix:** Remove “globally indispensable” from the informal list, or mark it as defined only under the theorem’s hypotheses.
+
+**Finding 10 — Part 0 says the target’s own copy fails Origin; Part X says it can satisfy Origin.**
+- **Quoted passage:** Part 0: “The target’s own copy and the faithful modular table satisfy the anchored grade and fail Origin”; Part X: “So the target’s own faithful copy, built from error records, is an anchored, originated account that is \(\equiv_\ell\) to the target: New fails for it if the target is already in the repertoire, and holds if it is not.”
+- **Claim attacked:** The target’s own copy always fails Origin.
+- **Why it fails:** Direct contradiction. Part 0 says it fails Origin. Part X says if the target is not already in the repertoire, New holds, and a built mirror can be an originated account. The same object is both excluded and admitted.
+- **Seriousness:** Fatal.
+- **Fix:** Qualify Part 0: an identity copy without Build fails Origin; a built mirror can satisfy Origin if the target is not already in the repertoire. Alternatively, exclude mirrors by an additional condition.
+
+**Finding 11 — Part 0 treats anchored-but-not-explanatory candidates as counterexamples; Part V/XV say they are not.**
+- **Quoted passage:** Part 0: “A candidate that satisfies the anchored grade while plainly explaining nothing counts against it too”; Part V: “‘This explains nothing’ said of the target’s own copy is not a complaint about account-hood; it is a complaint about **origin and deployment**”; Part XV: “they fail Origin, and the sufficiency claim is for the conjunction.”
+- **Claim attacked:** Anchored-but-not-explanatory candidates count against the constitutive conjecture.
+- **Why it fails:** Part V and Part XV say such candidates are expected and fail Origin, so they do not refute the conjunction. Part 0’s formulation omits the Origin requirement used in attack (A). It either weakens the counterexample or contradicts the later treatment.
+- **Seriousness:** Serious.
+- **Fix:** State in Part 0 that the counterexample must satisfy the anchored grade **and** Origin, as Part XV attack (A) does.
+
+**Finding 12 — Part V cites Derivation 1 without its injectivity hypothesis.**
+- **Quoted passage:** Part V: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract”; Derivation 1: “Let \(t\) satisfy (F1) on \(C\), and let \((\tau,\sigma)\) be injective on \(C\).”
+- **Claim attacked:** (F1) alone entails signature preservation.
+- **Why it fails:** Derivation 1 requires injectivity of \((\tau,\sigma)\) on \(C\). (F1) does not state it. Without injectivity, different target pairs can map to the same translated pair, and the signature correspondence can fail.
+- **Seriousness:** Serious.
+- **Fix:** Add the injectivity hypothesis wherever Derivation 1 is invoked, or weaken the claim.
+
+**Finding 13 — Objectivity “extends” \(\tau\) outside \(C\), but Part IV defines \(\tau\) as total on \(A_D\).**
+- **Quoted passage:** Part V: “the transport being extended to such pairs by \(\lambda\)”; Part IV: “\(\tau:A_D\to A_E\) translates edits.”
+- **Claim attacked:** The transport’s edit translation can be extended to excluded admitted pairs.
+- **Why it fails:** If \(\tau\) is a total function on \(A_D\), it is already defined on \(C_{\mathrm{adm}}\setminus C\) and needs no extension. If it is only defined on \(C\), Part IV’s typing is false. The text uses both pictures.
+- **Seriousness:** Serious.
+- **Fix:** Make \(\tau\) partial and state that extension to excluded pairs is supplied by \(\lambda\), or keep \(\tau\) total and delete “extended.”
+
+**Finding 14 — Operative condition identifies an organization anchor with an occurrence route.**
+- **Quoted passage:** Part V: “each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences”; Part IX: “An **active route** is a connected subnetwork of actual occurrences.”
+- **Claim attacked:** Anchors, which are subnetworks of \(D\), can be active routes.
+- **Why it fails:** Anchors are subnetworks of the target organization \(D\). Active routes are subnetworks of actual occurrences. The document never defines the map from components of \(D\) to occurrences, so the identification is unlicensed.
+- **Seriousness:** Serious.
+- **Fix:** Define a realization map from \(D\)’s components/subnetworks to occurrences, and say the realization of the anchor is an active route.
+
+**Finding 15 — Bearing’s \(t_c\) has the wrong orientation or unspecified orientation.**
+- **Quoted passage:** Part IX: “let \(E_c\) be the organization the criticism supplies, with the grounds \(g\) as its boundary conditions and the connection \(t_c\) as its transport. Then \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta,t_c,\Gamma_c)\)”; Part V: Account requires “a transport \(t=(\pi,\tau,\sigma,\lambda):D\to E\).”
+- **Claim attacked:** A criticism’s connection transport can directly witness Account.
+- **Why it fails:** Account requires \(t:D\to E\), where \(D\) is the target of \(p_\delta\). Bearing says \(t_c\) is the criticism’s connection from grounds \(g\) to \(E_c\). If so, it is not a transport from \(D_z\) to \(E_c\). The orientation is either wrong or unstated.
+- **Seriousness:** Serious.
+- **Fix:** Specify \(t_c:D_z\to E_c\) and treat \(g\) as boundary conditions of \(E_c\), or adjust Account for criticism.
+
+**Finding 16 — \(\mathcal N\) is called a primitive package and a declared input.**
+- **Quoted passage:** Part XIV: “The semantics has two. … 2. The **normative relation** \(\mathcal N\), when a question invokes one”; Part XI: “a normative relation \(\mathcal N\subseteq A\times K\times\mathcal Rsn\times\mathcal V_A\) declared as a substantive input when aesthetic value is claimed.”
+- **Claim attacked:** The status of the normative relation is consistent.
+- **Why it fails:** A primitive package is not a declared parameter; a declared input belongs in the declared-parameters list. The text assigns both statuses.
+- **Seriousness:** Minor to serious.
+- **Fix:** Choose one status. If \(\mathcal N\) is declared, move it to declared parameters. If primitive, remove “declared” from Part XI.
+
+**Finding 17 — Part XIV omits the transported query from “all listed” declared parameters.**
+- **Quoted passage:** Part 0: “It claims that they are all listed”; Part IV: “it carries a fifth datum, the **transported query** \(\mathcal Q_E\) … declared with the transport”; Part XIV declared parameters: “the query \(\mathcal Q\).”
+- **Claim attacked:** All declared parameters are listed in Part XIV.
+- **Why it fails:** \(\mathcal Q_E\) is declared with the transport and is not listed. The list includes \(\mathcal Q\) but not \(\mathcal Q_E\). The “all listed” claim is false.
+- **Seriousness:** Serious.
+- **Fix:** Add the transported query to the declared-parameters list, or derive \(\mathcal Q_E\) from \(\mathcal Q\) and the transport.
+
+**Finding 18 — Question provenance is asserted unconditionally, but Derivation 5 is explicitly unfinished.**
+- **Quoted passage:** Part III: “Its witness is the one Part IV gives for the provenance of any content’s occurrence: the provenance of the transport by which an occurrence represents the question-organization of Derivation 5”; Derivation 5: “the construction below is a sketch … until they are closed, question-finding is representable conditionally.”
+- **Claim attacked:** Questions have a defined provenance witness.
+- **Why it fails:** Part III presents the witness as available. Derivation 5 says the question-organization construction has listed gaps. Without that construction, question provenance cannot be applied as stated.
+- **Seriousness:** Serious.
+- **Fix:** Mark Part III’s question-provenance clause as conditional on closing Derivation 5’s gaps, or supply the construction.
+
+**Finding 19 — Part XIV lists occurrences and histories as informal, but Part IV and Part IX define them.**
+- **Quoted passage:** Part XIV: “occurrences, carriers and physical location, and the physical interpretation of a history (Part IV, IX)” are “used … without a formal definition”; Part IV: “An **occurrence** is a physically located carrier”; Part IX: “A **history** \(h\) is a set of occurrences with the acyclic precedence \(\prec_h\) supplied by the physical module.”
+- **Claim attacked:** These terms are informal/undefined.
+- **Why it fails:** They receive explicit definitions in Parts IV and IX. Listing them as informal is inaccurate, even if parts of their physical interpretation are declared.
+- **Seriousness:** Minor.
+- **Fix:** Remove them from the informal list or reclassify them as partially defined with declared components.
+
+**Finding 20 — Part 0’s “no admitted change separates” conflicts with Part II’s baseline exclusion.**
+- **Quoted passage:** Part 0: “two components no admitted change separates are one forward kind there”; Part II: “their signatures coincide on \(C\setminus\{(1,b_0)\}\). Only the question’s baseline pair is excluded.”
+- **Claim attacked:** Forward kind is separation by admitted changes.
+- **Why it fails:** The baseline pair \((1,b_0)\) is in \(C\). If two components differ there, an admitted pair separates them, but Part II still calls them one forward kind. Part 0’s gloss is therefore inconsistent with the formal definition.
+- **Seriousness:** Minor.
+- **Fix:** Qualify Part 0: “no admitted non-baseline change separates them,” or explicitly treat the baseline as state rather than kind.
+
+**Finding 21 — Properness makes anchored accounts silent on no admitted pair, making the objectivity silence clause vacuous for anchored accounts.**
+- **Quoted passage:** Part V: “by properness an anchored account is silent on no admitted pair that touches a component the question’s contract reaches”; Part V objectivity: “Silence — a pair touching no anchor — is a stated limit of scope, not protection.”
+- **Claim attacked:** The silence clause of objectivity is meaningful for anchored accounts.
+- **Why it fails:** Properness says no touched component of \(D\) lies outside every anchor. Any admitted pair touches some component of \(D\). So an anchored account has no silence on any admitted pair. The silence clause can only apply to unanchored accounts. If objectivity is intended for anchored accounts, the clause is vacuous.
+- **Seriousness:** Minor to serious.
+- **Fix:** State explicitly that the silence clause applies to Account, not necessarily to anchored accounts, or weaken properness.
+
+**Finding 22 — “Relay” is undefined in the construction definition.**
+- **Quoted passage:** Part X: “Reconstruction by a learner is construction; relay is not.”
+- **Claim attacked:** Construction is defined clearly enough to exclude relay.
+- **Why it fails:** “Relay” is never defined. The sentence excludes a class without saying what class it is.
+- **Seriousness:** Minor.
+- **Fix:** Define “relay” or remove the clause.
+
+**Finding 23 — Derivation 6 says “Three places” and lists four.**
+- **Quoted passage:** Derivation 6: “Three places could have produced a cycle and do not: (i) … (ii) … (iii) … (iv) …”
+- **Claim attacked:** The enumeration is correct.
+- **Why it fails:** Four places are listed under “three.”
+- **Seriousness:** Cosmetic.
+- **Fix:** Change “Three” to “Four.”
+
+**Finding 24 — Part XIV’s “Derivation 6 does not cover them” is ambiguous against Derivation 6’s dependence claim.**
+- **Quoted passage:** Part XIV: “Derivation 6 does not cover them”; Derivation 6: “Every *defined* predicate in Parts II–XIII is defined from … the informal terms listed in Part XIV, by the dependence order there.”
+- **Claim attacked:** The relation between Derivation 6 and the informal terms is clear.
+- **Why it fails:** Derivation 6 does use the informal terms as base inputs; Part XIV says it does not cover them. “Cover” is doing two jobs: define versus depend on. The text can be read as contradictory.
+- **Seriousness:** Minor.
+- **Fix:** Say “Derivation 6 does not define them” rather than “does not cover them.”
+====================================================================================================
+T8_consistency | rev3_deepseek | sample 2 | finish stop | 36184 chars | error None
+====================================================================================================
+# Findings
+
+## 1. Transport orientation vs. transported query in Account
+
+**Quote:** Part IV: “When the transport serves a question, it carries a fifth datum, the **transported query** \(\mathcal Q_E\), an operation on \(E\) of the same type as \(\mathcal Q\), declared with the transport… \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\mathcal Q_E(E,\tau(a),\sigma(b))\).”
+
+Part V: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda):D\to E\), and an identified set \(\Gamma\) of active commitments in \(E\).”  
+Part V, condition (A): “For every \((a,b)\in C\), \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\).”
+
+**Claim attacked:** Account-hood uses a four-place transport and requires the transported answer to equal the target question’s answer.
+
+**Why it fails:** Part IV says a question-serving transport carries a fifth datum \(\mathcal Q_E\), and defines \(\operatorname{Ans}_E\) via \(\mathcal Q_E\). Part V’s transport is four-place \(( \pi,\tau,\sigma,\lambda)\) and condition (A) silently equates \(\operatorname{Ans}_E\) with \(\operatorname{Ans}_p=\mathcal Q(D,a,b)\), ignoring \(\mathcal Q_E\). If \(\mathcal Q_E\) is part of the transport, Account must quantify over it or add a condition that \(\mathcal Q_E\) agrees with \(\mathcal Q\) through the transport. As written, the “transported query” is either unused in Account or contradicts the transport tuple.
+
+**Seriousness:** Serious.
+
+**Fix:** Either include \(\mathcal Q_E\) in the transport tuple used by Account, or state that the transport’s fifth datum is only for questions and that (A) already identifies \(\operatorname{Ans}_E\) with the transported \(\mathcal Q_E\). Add the missing agreement condition.
+
+---
+
+## 2. Four-place versus two-place Account in Parts V, VI, IX, XI
+
+**Quote:** Part V: “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified: \(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\).”
+
+Part VI: “where \(t|W\) is \(t\) with its anchor map restricted to \(W\); the transport and commitments are the fixed ones of \(\mathcal E\), not existentially re-chosen.”  
+Part IX: “Then \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta,t_c,\Gamma_c)\).”  
+Part XI: “\(\land\operatorname{Account}(E_c,p_c)\land c\in\operatorname{Result}(\Delta)\)”.
+
+**Claim attacked:** Account is a single predicate, either two-place with existential \(t,\Gamma\), or four-place with fixed \(t,\Gamma\).
+
+**Why it fails:** Part V defines a two-place abbreviation but then uses a four-place version as the primary condition. Part VI explicitly fixes \(t,\Gamma\), which is incompatible with treating Account as existential over them. Part IX uses the four-place form; Part XI uses the two-place form. The definitions of \(\mathsf S_{E,p}\), \(\operatorname{CriticalBlock}\), and \(\operatorname{Bearing}\) depend on the fixed-witness reading. If Account is two-place, those definitions may be satisfied by a different transport or commitment set than the one named.
+
+**Seriousness:** Serious.
+
+**Fix:** Define \(\operatorname{Account}_{t,\Gamma}(E,p)\) as the primitive predicate and reserve \(\operatorname{Account}(E,p)\) for the existential abbreviation. Use the subscripted form throughout Parts VI, IX, and XI.
+
+---
+
+## 3. Objectivity condition vs. Grievance 4 and Part VIII
+
+**Quote:** Grievance 4: “A contract that quietly excludes such a change is caught by the requirement that exclusions be stated, and then by the objectivity condition — where the candidate covers the component the change touches. Where it does not, the candidate is silent, its scope is a stated limit…”
+
+Part V: “Silence — a pair touching no anchor — is a stated limit of scope, not protection, and it is not under the candidate’s control: it is read off \(\lambda\).”  
+Part V: “The claim is indexed to the module in force: a later module with a larger \(A_\Theta\) makes it a new claim at a new index (Part VIII)…”  
+Part VIII: “A claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change…”
+
+**Claim attacked:** Objectivity is account-hood plus non-protection; exclusions are stated; truth at an index is fixed.
+
+**Why it fails:** Grievance 4 says exclusions are stated in the scope, while Part V says silence is structural, read off \(\lambda\), and “never declared.” Grievance 4 treats “physically admitted changes” as an absolute court, while Part V indexes non-protection to “the module in force.” Part VIII says a claim’s truth value at its own index is fixed, but if the module in force is part of the index, a later module changes whether the same contract is protective, producing a new claim at a new index. The text does not reconcile these two ways of fixing the index.
+
+**Seriousness:** Serious.
+
+**Fix:** Distinguish declared scope exclusions from structural silence explicitly, and state whether “physically admitted” means the current module or an ideal final module. For Part VIII, specify that the index includes the module in force.
+
+---
+
+## 4. Anchored grade’s extensional stance vs. Part 0’s “the mechanism”
+
+**Quote:** Part 0: “An **anchored account** is an account at a contract whose anchors are a proper decomposition of the target at the resolution the question needs, and whose components are of one forward kind with their anchors under every change the physical module admits, not only the ones the contract selected. The first grade is what can be assessed within a question. The second is what ‘the explanation matches the mechanism at the module’s index’ means…”
+
+Part V: “The target itself, \(E=D\) under the identity transport, is an anchored account of \(D\). … the semantics has no predicate that separates a mechanism from its faithful copy, and does not want one.”
+
+**Claim attacked:** The anchored grade is the condition under which an explanation “matches the mechanism.”
+
+**Why it fails:** Part 0 treats “the mechanism” as a distinct thing that an anchored account matches, but Part V says the target itself and any faithful copy are anchored and that no predicate separates mechanism from copy. “Matches the mechanism” therefore collapses to “is a faithful extensional copy of the target,” not to matching an independently identified mechanism. Part 0’s sufficiency attack then cannot rely on “the mechanism” as a separate standard.
+
+**Seriousness:** Serious.
+
+**Fix:** Replace “matches the mechanism” with “is a faithful anchored copy of the target at the module’s index,” or explicitly define what additional non-extensional content “mechanism” is supposed to carry.
+
+---
+
+## 5. Operative condition vs. Grievance 12
+
+**Quote:** Grievance 12: “What the semantics denies is that a component’s history makes any difference to its fidelity or its kind on a contract; the one thing history changes about an account is whether it is operative (Part V)…”
+
+Part IX: “A backup that would have responded identically is not on the active route; the difference between the two is a difference in \(h\), not in signature…”  
+Part IX: “which has nonconstant dependence on the instantiated distinction under the declared contrasts.”
+
+**Claim attacked:** History is the only thing that changes operative status; operative status is not signature-dependent.
+
+**Why it fails:** The active-route definition identifies backups by a counterfactual signature claim: “would have responded identically” and “nonconstant dependence … under the declared contrasts.” That is a modal signature condition, not a purely historical one. If two components are of one forward kind under all admitted changes, the active/backup distinction is historical; but the criterion for being a backup is itself stated in signature/counterfactual terms. Grievance 12’s clean asymmetry is overstated.
+
+**Seriousness:** Moderate.
+
+**Fix:** State the operative condition as a purely historical predicate over actual occurrences and causal routes, or admit that it uses counterfactual signature information to identify backups.
+
+---
+
+## 6. Selection witness vs. Derivation 3 and Derivation 10
+
+**Quote:** Part IV: “which **eliminated at least one member** that differed from \(t\) at a pair of \(H\) on which that member failed and \(t\) did not.”  
+Derivation 3: “suppose \(\mathcal T\) is **closed under pointwise alteration off \(H\)** … Then for every \((a,b)\in C\setminus H\) there is a pair in \(\mathcal T\) that survives on \(H\) and whose solution set at \((\tau(a),\sigma(b))\) differs from \(E\)’s…”  
+Part XV: “A selection history \(H\subsetneq C\), in a population closed under pointwise alteration of component relations off \(H\), whose survivor is determined on \(C\setminus H\). This refutes Derivation 3 under its hypothesis.”
+
+**Claim attacked:** Derivation 3 states a nontrivial limitation of selection, and Part XV can refute it with a survivor determined off \(H\).
+
+**Why it fails:** Under Derivation 3’s closure hypothesis, the proof yields multiple survivors that agree on \(H\) and differ off \(H\). A unique “survivor determined on \(C\setminus H\)” cannot exist under that hypothesis. The proposed Part XV refutation is therefore inconsistent with Derivation 3’s own assumptions. Derivation 10 also asserts \(S_0\) is “selected” without supplying the eliminated-rival, non-triviality, or blindness clauses of Part IV’s selection witness.
+
+**Seriousness:** Serious.
+
+**Fix:** Restate Part XV’s attack as a case where the closure hypothesis fails, and either supply a selection witness for \(S_0\) in Derivation 10 or mark it explicitly as an assumed illustration rather than a selected transport.
+
+---
+
+## 7. Provenance definition for contents vs. earliest-witness rule
+
+**Quote:** Part IV: “Among the witnesses whose events produced the occurrence that carries \(t\), take those that are \(\prec_h\)-minimal… If all minimal witnesses are of one kind, that is \(t\)’s provenance… If they are of both kinds, \(t\) has **mixed** provenance…”  
+Part IV: “The **provenance of a content’s occurrence on \(C\)** is the provenance of the \(\prec_h\)-minimal transports witnessing (R) for it on \(C\), with the same rule for mixed cases.”  
+Part III: “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\) attaches to the whole tuple \(p\).”
+
+**Claim attacked:** Content provenance is defined by minimal transports, and question provenance uses content provenance.
+
+**Why it fails:** Transport provenance uses minimal *witnesses* for one transport. Content provenance uses minimal *transports* witnessing (R). These are different comparisons. Content provenance can be “mixed,” but Part III’s \(\rho_p\) has no mixed value. If a selected transport and a later constructed transport both witness (R) for the same question-content, the earliest-witness rule picks the selected transport, so the question’s provenance is selected even if it was constructed and built. That conflicts with Part III’s “constructed question” and with Part X’s “finding” requirement.
+
+**Seriousness:** Serious.
+
+**Fix:** Define content provenance separately from transport provenance, add “mixed” to \(\rho_p\) if needed, and state whether a later constructed transport can override an earlier selected one for the same content.
+
+---
+
+## 8. Part VII’s “two further families not treated” vs. Part XV’s sorting
+
+**Quote:** Part VII: “Explanation of an apparent effect as a selection artefact is not a case of a missing transport: what the semantics lacks is a *condition* on the provenance of the target’s own components… and it is listed under attack (D).”  
+Part XV: “An explanation without a faithful transport… (ii) **closable, not done** — explanation of an apparent effect as a selection artefact…”  
+Part 0: “explanation of an effect as a selection artefact is a missing *condition* rather than a missing transport and is listed under (D).”
+
+**Claim attacked:** The selection-artefact case is under attack (D).
+
+**Why it fails:** Part XV places it under attack (B), “An explanation without a faithful transport,” even while saying it is not a missing transport. Part VII and Part 0 say attack (D). This is a direct cross-reference contradiction.
+
+**Seriousness:** Minor.
+
+**Fix:** Move the selection-artefact case explicitly under attack (D) in Part XV, or change the cross-references in Part VII and Part 0.
+
+---
+
+## 9. Informal-term list vs. Derivation 6
+
+**Quote:** Part XIV: “The following are used in Parts IV–XIII without a formal definition… occurrences, carriers and physical location… and Derivation 6 does not cover them.”  
+Derivation 6: “Every *defined* predicate in Parts II–XIII is defined from the physical module… the informal terms listed in Part XIV, by the dependence order there, and that order has no cycle.”  
+Derivation 6: “Three places could have produced a cycle and do not: (i)… (ii)… (iii)… (iv)…”
+
+**Claim attacked:** The defined predicates form a well-founded order relative to the listed informal terms.
+
+**Why it fails:** Part XIV lists items that are actually defined in the text, e.g. “occurrences” (Part IV: “An **occurrence** is a physically located carrier”) and “globally indispensable” (Part VI: “the globally indispensable ones are exactly \(\bigcap\min\mathsf S\)”). Derivation 6 says “Three places” but lists four. More seriously, Derivation 6 claims Build does not pass through (R), but Build requires an itemised defect representation “used, in the sense of Part IX, in the criticism the binding survives,” and Part IX reason use speaks of “the represented objection.” If that is (R), Build does pass through (R); if it is informal, Part XIV’s list is incomplete.
+
+**Seriousness:** Serious.
+
+**Fix:** Correct the informal/defined boundary, fix “three” to “four,” and either show that Part IX’s “represented objection” does not use (R) or add it to the informal list and redo the well-foundedness claim.
+
+---
+
+## 10. Part 0’s “anchored while plainly explaining nothing” vs. Part V and Part X
+
+**Quote:** Part 0: “A candidate that satisfies the anchored grade while plainly explaining nothing counts against it too.”  
+Part V: “The target itself, \(E=D\) under the identity transport, is an anchored account of \(D\)… ‘This explains nothing’ said of the target’s own copy is not a complaint about account-hood; it is a complaint about origin and deployment.”  
+Part X: “the target’s own faithful copy, built from error records, is an anchored, originated account that is \(\equiv_\ell\) to the target: New fails for it if the target is already in the repertoire, and holds if it is not.”
+
+**Claim attacked:** A candidate satisfying only the anchored grade while explaining nothing counts against the constitutive conjecture.
+
+**Why it fails:** Part 0’s unqualified sentence would count the target’s own copy as a counterexample, but Part V says it fails Origin, not anchoring, and Part X says a built faithful copy can satisfy Origin if the target is not already in the repertoire. The text oscillates between “anchored and explaining nothing” and “anchored plus Origin and explaining nothing.” The known cases are not consistently classified.
+
+**Seriousness:** Serious.
+
+**Fix:** In Part 0, qualify the counterexample condition with Origin, and state explicitly whether a built mirror of the target counts as originated and whether it is supposed to explain.
+
+---
+
+## 11. “Anchoring is fidelity on the full admitted contract” vs. condition 3
+
+**Quote:** Part I: “Anchoring is fidelity on the full admitted contract with a proper decomposition.”  
+Part V: “Anchoring is therefore component fidelity on the full admitted contract, with a proper decomposition at the question’s resolution.”  
+Part V, condition 3: “fidelity holds not only on the pairs the contract selected but on every admitted pair that **touches** the anchor… A candidate is *silent* on an admitted pair only when that pair touches no anchor of any active component.”
+
+**Claim attacked:** Anchoring requires fidelity on the full admitted contract.
+
+**Why it fails:** Condition 3 explicitly allows silence on admitted pairs that touch no anchor. That is not fidelity on the full admitted contract. The later summary “full admitted contract” overstates what condition 3 requires.
+
+**Seriousness:** Serious.
+
+**Fix:** Replace “full admitted contract” with “the admitted contract restricted to pairs touching an anchor,” or strengthen condition 3 to require fidelity on every admitted pair.
+
+---
+
+## 12. Part XIV dependence order vs. Derivation 6: Build and (EK)
+
+**Quote:** Part XIV: “provenance depends on \(\Theta\) and on Part X’s witnesses, which depend on \(\operatorname{Inst}\) and \(\equiv_\ell\) but not on (R).”  
+Part X Build: “contains an itemised defect representation… on an active route to the *acceptance* of the binding: … what makes the episode construction is that the record is used, in the sense of Part IX, in the criticism the binding survives before it is kept.”  
+Part IX reason use: “A response uses a reason when a structural map from the represented objection into the response suborganization preserves role bindings…”
+
+**Claim attacked:** Part X’s construction witness does not depend on (R), so the dependence order is well-founded.
+
+**Why it fails:** Build explicitly imports Part IX’s reason use, which speaks of “the represented objection.” If “represented” is the representation predicate (R), then Build depends on (R), creating a cycle with (R)’s dependence on provenance. If it is informal, Part XIV’s informal list omits it. Part XIV also says “(P), (EK) depend on (G), (E), Deploy, ProducedBy,” but (EK) also depends on CreativeCriticalEpisode, Repair, Origin, and Result.
+
+**Seriousness:** Serious.
+
+**Fix:** Either show that “represented objection” is not (R), or add it to the informal terms and revise the dependence order. Complete the listed dependencies of (EK).
+
+---
+
+## 13. Part III’s “found question requires \(\rho_p=\text{constructed}\)” vs. Part X’s Origin conditions
+
+**Quote:** Part III: “A claim that an episode *found* a question requires \(\rho_p=\text{constructed}\) with the witness.”  
+Part X: “What (G) does require of a found question is only this: that it is coherently posed, that some obligation of it fails at the state before \(e\) (Attempt), that it is new to the repertoire, and that it was built; a random new contract meeting those four counts.”
+
+**Claim attacked:** The conditions for finding a question are consistent between Part III and Part X.
+
+**Why it fails:** Part X’s four conditions do not include \(\rho_p=\text{constructed}\). Content provenance can be selected or mixed if an earlier selected transport witnesses (R) for the same question-content. So a question can satisfy Origin’s conditions while \(\rho_p\neq\text{constructed}\), contradicting Part III’s requirement.
+
+**Seriousness:** Serious.
+
+**Fix:** Add \(\rho_p=\text{constructed}\) as an explicit conjunct of finding a question, or explain why Origin’s Build condition entails constructed content provenance despite the earliest-witness rule.
+
+---
+
+## 14. Part VI’s finite monotone theorem is internally inconsistent
+
+**Quote:** Part VI: “If \(\Gamma\) is finite, \(\mathsf S\) is upward closed, and \(\Gamma\in\mathsf S\), then the critical singletons are exactly \(\bigcup\min\mathsf S\) and the globally indispensable ones are exactly \(\bigcap\min\mathsf S\). *Proof.* … Deletion of \(d\) from \(\Gamma\) preserves support exactly when a minimal support omits \(d\).”
+
+**Claim attacked:** The critical singletons for \(\Gamma\) are \(\bigcup\min\mathsf S\).
+
+**Why it fails:** The proof’s last sentence gives: \(d\) is critical for \(\Gamma\) iff no minimal support omits \(d\), i.e. \(d\in\bigcap\min\mathsf S\), not \(\bigcup\min\mathsf S\). Example: \(\mathsf S=\{\{a\},\{b\},\{a,b\}\}\), \(\Gamma=\{a,b\}\). No singleton is critical for \(\Gamma\), but \(\bigcup\min\mathsf S=\{a,b\}\). The theorem is false as stated for critical singletons of \(\Gamma\). It may be true for “critical for some \(W\),” but that is not what the proof’s last sentence says.
+
+**Seriousness:** Serious.
+
+**Fix:** State explicitly whether “critical singletons” are relative to \(\Gamma\) or to some support \(W\). If relative to \(\Gamma\), replace \(\bigcup\min\mathsf S\) with \(\bigcap\min\mathsf S\).
+
+---
+
+## 15. CT1 vs. CT2: non-emptiness dropped from the fixed point
+
+**Quote:** CT1: “\(\operatorname{RetReal}(\pi,T,C;\chi)\iff\forall z\in C\ \forall i\in\operatorname{dom}T\ \big[\operatorname{Exec}(\pi,z,i;\chi)\neq\varnothing\land\forall\eta\in\operatorname{Exec}(\pi,z,i;\chi),\ \eta\text{ completes with }o\in T[i]\text{ and }z'\in C\big]\).”  
+CT2: “\(F(C)\) = states whose executions all complete and return into \(C\). \(F\) is monotone; \(C\subseteq F(C)\) is the invariant form; the union of post-fixed sets is the greatest fixed point.”
+
+**Claim attacked:** The retention fixed point captures retained realization.
+
+**Why it fails:** CT1 requires non-empty execution families and says “deadlock is not vacuous success, and an empty family is not a realization.” CT2 defines \(F(C)\) as states whose executions all complete and return; for an empty execution family, “all executions complete” is vacuously true. CT2 can therefore admit deadlock states that CT1 excludes.
+
+**Seriousness:** Serious.
+
+**Fix:** Add non-emptiness of \(\operatorname{Exec}\) to the definition of \(F(C)\), or define \(F(C)\) directly from CT1.
+
+---
+
+## 16. Part XIV’s informal list includes already-defined terms
+
+**Quote:** Part XIV: “The following are used in Parts IV–XIII without a formal definition… occurrences, carriers and physical location… and ‘globally indispensable’ (Part VI: a commitment in every minimal support).”  
+Part IV: “An **occurrence** is a physically located carrier.”  
+Part VI: “the globally indispensable ones are exactly \(\bigcap\min\mathsf S\).”
+
+**Claim attacked:** These terms are informal and not formally defined.
+
+**Why it fails:** Both are given definitions in the text. The list conflates “informal gloss” with “not defined.”
+
+**Seriousness:** Minor.
+
+**Fix:** Remove defined items from the informal list or mark them as “defined but not rigorously formalized.”
+
+---
+
+## 17. Part XIV’s dependence order omits (EK) dependencies
+
+**Quote:** Part XIV: “(P), (EK) depend on (G), (E), Deploy, ProducedBy.”  
+Part XI (EK): “\(\operatorname{CreateEK}(s,\Delta,h,e)\iff{}\operatorname{CreativeCriticalEpisode}(s,\Delta,h,e)\land\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\land\exists o\in O_{\mathrm{ep}}\,\exists c,p_c,e_c\,[\dots]\)”
+
+**Claim attacked:** The dependence order lists all dependencies of (EK).
+
+**Why it fails:** (EK) also depends on CreativeCriticalEpisode, Repair, and Result. Omitting them weakens Derivation 6’s claim that each definition names its inputs at first use and that the order is well-founded.
+
+**Seriousness:** Moderate.
+
+**Fix:** Add the omitted dependencies to Part XIV’s order.
+
+---
+
+## 18. Part XV’s proposed refutation of Derivation 3 misstates the hypothesis
+
+**Quote:** Part XV: “A selection history \(H\subsetneq C\), in a population closed under pointwise alteration of component relations off \(H\), whose survivor is determined on \(C\setminus H\). This refutes Derivation 3 under its hypothesis.”
+
+**Claim attacked:** This is a possible counterexample to Derivation 3.
+
+**Why it fails:** Under the stated closure hypothesis, Derivation 3 proves there are alternative survivors that agree on \(H\) and differ off \(H\). Therefore a unique survivor determined on \(C\setminus H\) cannot exist. The attack either contradicts the hypothesis or uses “survivor” ambiguously. It does not refute Derivation 3; it restates what Derivation 3 denies under closure.
+
+**Seriousness:** Serious.
+
+**Fix:** State the counterexample as a population not closed under pointwise alteration off \(H\), or explain how “survivor” is unique despite multiple surviving members.
+
+---
+
+## 19. Derivation 10: \(S_0\) selected without witness, and Attempt incomplete
+
+**Quote:** Derivation 10: “A simulation layer \(S_0\) with a transport \(t_0\) selected on a history \(H_0\) containing displacements and velocity changes but no occlusions. \(S_0\) predicts occupancy from recent occupancy. It is faithful on \(H_0\).”  
+Derivation 10: “then (G) holds.”  
+Part X Attempt: “where \(p\) is a coherently posed question whose question-organization some occurrence of \(s\) instantiates before \(e\), and some obligation in \(O_p\) fails at the state before \(e\).”
+
+**Claim attacked:** Derivation 10 exemplifies the selection/construction distinction and illustrates (G).
+
+**Why it fails:** \(S_0\) is asserted to be selected without the eliminated-rival, non-triviality, or blindness clauses required by Part IV. The conditional claim that (G) holds omits Attempt’s obligation-failure conjunct. Since Derivation 10 says “no condition is checked on it,” it is not a consistency witness, but the text still uses it to illustrate selected/constructed provenance.
+
+**Seriousness:** Moderate.
+
+**Fix:** Mark \(S_0\)’s “selected” as an assumption with missing witness, and include the obligation-failure condition in the conditional for (G).
+
+---
+
+## 20. “World-kind” for mathematical organizations
+
+**Quote:** Part V: “‘World’ here means the physical module: a world-kind is a fact about \((\Theta,\ell,C_{\mathrm{adm}})\), and the module is the semantics’ only access to the world.”  
+Part III: “for a mathematical or modelled organization, a **declared admission relation** stated with the question.”  
+Part VII: “Adequacy is relative to the declared admission relation.”
+
+**Claim attacked:** Anchored grade condition 3’s “world-kind” applies uniformly.
+
+**Why it fails:** For mathematical organizations there is no physical module \(\Theta\); \(C_{\mathrm{adm}}\) is a declared admission relation. Calling condition 3 a “world-kind” claim is at best a category mistake and at worst conceals that mathematical anchoring is relative to a declaration, not to the world.
+
+**Seriousness:** Moderate.
+
+**Fix:** Define a separate “admission-kind” for non-physical organizations, or state that “world-kind” is used loosely for declared admission relations.
+
+---
+
+## 21. Part VII direction vs. declared admission relation loophole
+
+**Quote:** Part VII: “The reversed calculation … is not anchored as a production account, because on the production edits — admitted, and outside the identification contract — its component assigning \(H\) is not of one forward kind with the target’s assignment of \(L\).”  
+Part III: “for a mathematical or modelled organization, a **declared admission relation** stated with the question.”
+
+**Claim attacked:** The reversed calculation necessarily fails anchored grade as a production account.
+
+**Why it fails:** For a mathematical organization, \(C_{\mathrm{adm}}\) is declared with the question. If the identification question declares an admission relation that omits production edits, those edits are not admitted for that question, and condition 3 does not require the reversed calculation to respond to them. The claim that they are “admitted” is relative to a different declaration. The direction argument therefore does not rule out a reversed calculation anchored under a suitably narrow declared admission relation.
+
+**Seriousness:** Moderate.
+
+**Fix:** Specify which declaration fixes \(C_{\mathrm{adm}}\) for the production/identification example, and state that direction is represented only relative to a declaration that admits the production edits.
+
+---
+
+## 22. Mixed provenance vs. Con
+
+**Quote:** Part IV: “If they are of both kinds, \(t\) has **mixed** provenance, which is declared as such and does not count as constructed for (G).”  
+Part IV: “\(\operatorname{Con}(t;h,e)\) holds when there is an episode … whose construction witness prepares \(t\).”
+
+**Claim attacked:** Con(t) is sufficient for construction provenance relevant to (G).
+
+**Why it fails:** A transport can have a construction witness on one route and a minimal selection witness on another, yielding mixed provenance. Con(t) may hold, but the mixed rule says it “does not count as constructed for (G).” Thus Con(t) is not sufficient for the construction attribution used by (G), and the relationship between Con and mixed provenance is not stated.
+
+**Seriousness:** Moderate.
+
+**Fix:** State that Con(t) fails or is overridden when mixed provenance holds, or exclude mixed routes from the construction witness definition.
+
+---
+
+## 23. Part XIV conflates transport provenance and content provenance
+
+**Quote:** Part XIV: “Provenance, from physical history (Part IV, XII).”  
+Part XIV: “(R) depends on (F1)–(F2), \(\operatorname{Inst}\) and physical provenance; provenance depends on \(\Theta\) and on Part X’s witnesses, which depend on \(\operatorname{Inst}\) and \(\equiv_\ell\) but not on (R).”  
+Part IV: “The provenance of a content’s occurrence on \(C\) is the provenance of the \(\prec_h\)-minimal transports witnessing (R) for it on \(C\).”
+
+**Claim attacked:** “Provenance” has a single place in the dependence order and does not depend on (R).
+
+**Why it fails:** Transport provenance is from physical history. Content provenance is defined from (R). Part XIV’s dependence order says provenance does not depend on (R). That is false for content provenance. Since Part III’s question provenance and Part II’s historical kinds use content provenance, the well-foundedness claim is affected.
+
+**Seriousness:** Serious.
+
+**Fix:** Separate “transport provenance” and “content provenance” in Part XIV’s dependence order, and state that content provenance depends on (R).
+
+---
+
+## 24. Part XIV informal list omits “represented objection” used by Build
+
+**Quote:** Part X Build: “the record is used, in the sense of Part IX, in the criticism the binding survives before it is kept.”  
+Part IX reason use: “A response uses a reason when a structural map from the represented objection into the response suborganization preserves role bindings…”  
+Part XIV: “The following are used in Parts IV–XIII without a formal definition… role bindings and the operative deliberative rule (reason use)…”
+
+**Claim attacked:** The informal-term list is complete for the terms used in Parts IV–XIII.
+
+**Why it fails:** Part IX uses “the represented objection,” which is neither in the informal list nor defined. If it is (R), then Build depends on (R), contradicting Derivation 6. If it is informal, the list is incomplete.
+
+**Seriousness:** Serious.
+
+**Fix:** Add “represented objection” to the informal list or define it without (R), and then re-evaluate the dependence order.
+
+---
+
+## 25. Part XIV dependence order omits (K1) and Bearing details
+
+**Quote:** Part XIV: “(K1) depends on (E).”  
+Part IX: “\(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta,t_c,\Gamma_c)\).”
+
+**Claim attacked:** (K1) depends only on (E).
+
+**Why it fails:** Bearing also depends on the target question \(p_\delta\), the criticism’s organization \(E_c\), its boundary conditions, its transport \(t_c\), and \(\Gamma_c\). Saying it depends on (E) is too coarse for the dependence-order proof.
+
+**Seriousness:** Minor.
+
+**Fix:** Expand the dependence entry for (K1).
+
+---
+
+## 26. Part V’s “none a condition on anything outside \(C\)” vs. objectivity and anchored grade
+
+**Quote:** Part V: “\(\operatorname{Account}(E,p,t,\Gamma)\) holds exactly when the following **five** conditions hold, each a condition on supplied relations under the changes in \(C\), and none a condition on anything outside \(C\).”  
+Part V: “An **objectivity claim** … is the conjunction of \(\operatorname{Account}(E,p,t,\Gamma)\) and a claim about \(C\) against the module in force: that \(C\) is **not protective**…”  
+Part V, anchored grade: “fidelity holds … on every admitted pair that **touches** the anchor.”
+
+**Claim attacked:** Account-hood is entirely internal to \(C\).
+
+**Why it fails:** Account-hood itself is internal to \(C\), but the document repeatedly presents anchoring and objectivity as upgrades to account-hood. Anchoring uses \(C_{\mathrm{adm}}\); objectivity uses \(C_{\mathrm{adm}}\setminus C\). The “none a condition on anything outside \(C\)” sentence is true only for the five conjuncts of (E), not for the advertised notion of adequacy. The text does not always keep this distinction clear.
+
+**Seriousness:** Moderate.
+
+**Fix:** State explicitly that account-hood is internal to \(C\), while anchoring and objectivity are indexed to \(C_{\mathrm{adm}}\) and are not conjuncts of (E).
+
+---
+
+## 27. Part V’s “target is right about itself by definition” vs. target as a modelled organization
+
+**Quote:** Part V: “The target is right about itself by definition, so ‘the candidate is better’ is not a case.”  
+Part III: “A question may fail to pick out its alleged target, assume an incompatible baseline, or combine incompatible requirements.”
+
+**Claim attacked:** The target’s answer profile is always the standard of correctness for objectivity.
+
+**Why it fails:** Part III allows a question to fail to pick out its alleged target or to be incoherently posed. If the target organization is misidentified or the question is ill-posed, “the target is right about itself by definition” is not enough to make the objectivity comparison well-founded. The target’s answer profile may be defined by an organization that is not the intended target.
+
+**Seriousness:** Moderate.
+
+**Fix:** Require that the target organization be correctly picked out by the question before using its answer profile as the objectivity standard.
+
+---
+
+## 28. Part XVI Derivation 6’s “three places” enumerates four
+
+**Quote:** Derivation 6: “Three places could have produced a cycle and do not: (i)… (ii)… (iii)… (iv)…”
+
+**Claim attacked:** The proof enumerates three potential cycles.
+
+**Why it fails:** It enumerates four. This is a minor but checkable internal inconsistency.
+
+**Seriousness:** Cosmetic.
+
+**Fix:** Change “Three” to “Four.”
+
+---
+
+## 29. Part XIV’s informal list says “Derivation 6 does not cover them,” but Derivation 6 uses them as inputs
+
+**Quote:** Part XIV: “Derivation 6 does not cover them.”  
+Derivation 6: “Every *defined* predicate in Parts II–XIII is defined from … the informal terms listed in Part XIV, by the dependence order there, and that order has no cycle.”
+
+**Claim attacked:** The informal terms are outside Derivation 6’s scope.
+
+**Why it fails:** Derivation 6 explicitly uses the informal terms as base inputs in its well-foundedness claim. “Does not cover” is ambiguous: it does not define them, but it does include them in the order. The text should say “does not define them” rather than “does not cover them.”
+
+**Seriousness:** Minor.
+
+**Fix:** Replace “Derivation 6 does not cover them” with “Derivation 6 treats them as undeclared base inputs.”
+
+---
+
+## 30. Part X’s “discovering it” vs. Part 0’s sufficiency attack
+
+**Quote:** Part X: “building the target’s mirror from its errors is discovering it, and the semantics says so without embarrassment.”  
+Part 0: “Produce a candidate that satisfies the anchored grade of Account (Part V) on an admitted contract, that satisfies Origin (Part X) — it is new to the repertoire, built, and deployed — and that plainly explains nothing. This would show that change-fidelity, proper anchoring and origination together are not enough.”
+
+**Claim attacked:** A built mirror of the target is an originated account, and if it “plainly explains nothing” it would refute sufficiency.
+
+**Why it fails:** If building the target’s mirror from error records is “discovering it,” the document refuses to call it “plainly explaining nothing.” The sufficiency attack therefore cannot use the built mirror as a counterexample without contradicting Part X’s assertion that discovering the target is a genuine originated achievement. The status of the built mirror is inconsistent between the two passages.
+
+**Seriousness:** Serious.
+
+**Fix:** State whether a built mirror of the target counts as explaining, as discovering, or as neither, and adjust the sufficiency attack accordingly.

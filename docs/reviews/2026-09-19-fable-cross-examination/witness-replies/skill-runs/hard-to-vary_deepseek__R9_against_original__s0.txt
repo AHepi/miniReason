@@ -1,0 +1,261 @@
+I use the documents’ own terms — “contract”, “transport”, “Account”, “Sel/Con/Dec”, “forward kind”, “anchored account” — because they come from the texts under audit. `references/word-list.md` maps them, but I do not treat that map as evidence for the audit.
+
+## 1. The question, frozen
+
+The frozen question is: **audit `20a_revision_ledger` against `10_semantics_original` and `20_semantics_revised`; for each row marked Done, is the repair actually present in 20, and does it do what the row says? Find defects of 10 surviving in 20 under new wording. Find new defects 20 introduces. Rank by severity. Quote.**
+
+The jobs I take the ledger to have are:
+
+1. For each Done row: locate the claimed passage in 20.
+2. Decide whether the text in 20 actually does the repair the row names.
+3. Decide whether the repair does the job the row says it does.
+4. Find rows whose “Done” is only a moved location, not a working repair.
+5. Find defects of 10 that survive in 20 under new wording.
+6. Find defects 20 introduces that 10 did not have.
+7. Rank by severity.
+
+## 2. The ledger as parts
+
+`20a_revision_ledger` says: “‘Not done’ means exactly that.” It also says: “What this file is: the mapping from the consolidated revision list (file 15 §G, as amended by §F and §E3) to the sections of file 20 that carry it”. The ledger’s rows are asserted provenance: their authority is the file-15 list plus the author’s mapping. The quoted 20 passages are the built text; the defects below are built by cross-reading.
+
+## 3. Done rows, one by one
+
+I mark each Done row **held** (present and doing the named job), **loose** (present but not doing the job), **idle** (no effect), **borrowed** (rests on some other explanation), or **unknown**.
+
+| Row | Evidence in 20 | Mark |
+|---|---|---|
+| G1 “Two primitive packages plus the organization interpretation as a declared parameter plus declared indices” | 20 Part XIV: “**Primitive packages.** The semantics has two.”; “**Declared parameters.** Neither derived nor primitive; supplied with each use”. | Held |
+| G1 “Θ’s admitted edit set stated explicitly before anything quantifies over it” | 20 Part XII: “the **admitted edit set** \(A_\Theta(o)\) — which alterations of the occurrence's state the module permits, stated as a set”; Part III: “\(C=(C_{\mathrm{adm}}\cap S)\cup K\)”. | Held, but see F4 |
+| G1 “Org_ℓ as a relation (Inst) with (R) existential; uniqueness not assumed” | 20 Part IV: “The physical module supplies a relation \(\operatorname{Inst}_\ell(o,D)\)”; (R): “\(\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land...\)”. | Held |
+| G1 “Admissible grains constrained” | 20 Part II: “A grain \(\ell\) is a declared index, but not a free one.” | Held |
+| G1 “Define or count as primitive: ProducedBy, ProducesVia, Result, Lic, Scope, Live, Enable, ≡_ℓ, Exec, restriction, observation edit, independent boundary, nontrivial binding construction, content-preserving recoding, owned, relevant, non-question-begging, ≺_h” | 20 Part XI: “\(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\) holds when”; Part X: “A **binding** is an assignment \(\lambda(k)\)”; Part IX: “An appraiser \(j\) has a declared appraisal record”; Part XIII: “\(\operatorname{Enable}(s,U,\chi)\) holds when”; Part XII: “\(\operatorname{Exec}(\pi,z,i;\chi)\)”; Part VI: “The **restriction** \(E|W\)”; Part II: “**observation edit**”; Part V: “A boundary condition \(b\) is **independent**”; Part X: “**required for that use** when deleting the binding breaks (F1) or (A)”; Part XIII: “**question-begging**”. | Held, but see F7, F20 |
+| G1 “(O) and (Q) depend on nothing → schemata over supplied data” | 20 Part II: “(O) is a schema over the supplied data”; Part III: “(Q) is a schema over the supplied \(D\) and \(\mathcal Q\)”. | Held |
+| G2 “C = (C_adm ∩ S) ∪ K with stated meanings; fidelity on C, objectivity on C_adm” | 20 Part III: “\(C=(C_{\mathrm{adm}}\cap S)\cup K\)”; “Fidelity conditions range over all of \(C\); the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\)”. | Held, but see F4 |
+| G2 “Non-vacuity says ‘stated subset’” | 20 Part V: “The contract \(C\) is a stated subset of the admitted pairs together with a declared counterfactual set”. | Held |
+| G2 “Contract-adequacy condition (protective contracts) as a conjunct of (E); objectivity = two indices” | 20 Part V: “**Contract adequacy.** \(C\) is not **protective** for \(\mathcal E\): there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.” | **Loose — F2** |
+| G2 “Admission relation for mathematical organizations declared” | Grievance 7: “a mathematical question must *declare* its admission relation”; Part III: “for a mathematical or modelled organization, a **declared admission relation** stated with the question.” | Held, but see F13 |
+| G3 “One transport orientation for Account and (R)” | 20 Part IV: “A transport from \(D\) to \(E\) is the relation by which \(E\) is *held to* \(D\): \(D\) is what \(E\) answers to.” | Held |
+| G3 “Three layers; content identity at the primitive layer not via Rep” | 20 Part IV: “Content identity at the primitive layer — that two occurrences carry the same thing — is a fidelity fact between their organizations under \(P\)'s admitted edits; it does not use the representation predicate below, which is defined in terms of it.” | **Loose — F8** |
+| G3 “Sel non-triviality over events with discrimination requirement, applied operator, causal responsibility; no ‘represents’ in the clause” | 20 Part IV: “**Selected.** \(\operatorname{Sel}(t;\mathcal T,\mu,H,\Sigma_h)\) holds when there are”; “Non-triviality is a condition on the *events* of \(\Sigma_h\)”. | Held |
+| G3 “One definition of Sel; Part XII derived from it” | 20 Part XII: “This paragraph adds no second definition; Part IV's is the only one.” | Held |
+| G3 “Blindness = no itemised representation, scalar allowed” | 20 Part IV: “A process is **blind** with respect to a defect when no itemised representation... a scalar summary of fidelity... is explicitly permitted”. | Held |
+| G3 “Provenance precedence; declared is model-level” | 20 Part IV: “with the following precedence: it is *constructed* if a construction witness exists; otherwise *selected* if a selection witness exists; otherwise *declared*.” | Held |
+| G3 “Account carries no provenance condition; (R), Deploy, (EK) add Sel ∨ Con” | 20 Part V: “(E) carries **no provenance condition**”; Part X Deploy: “by (R), a faithful transport with selected or constructed provenance”; Part XI: “Deploy supplies the provenance condition”. | Held |
+| G3 “Account(E, p) arity with t, Γ existential” | 20 Part V: “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified”. | **Loose — F3** |
+| G3 “Survival criterion labelled a stipulation” | Ledger itself says “Partly — the general survival criterion is whatever the selection witness records, and file 20 does not fix one”. | Not audited as Done |
+| G3 “Con requires an *instantiated* target, breaking the Rep/Con cycle” | 20 Part IV: “the organization \(t\) targets is instantiated by an occurrence in the episode's history before \(e\)”; D6: “broken by Part IV, where a construction witness requires an *instantiated* target”. | Held |
+| G4 “(K) indexed to (ℓ, C); identity edit excluded (baseline = state)” | 20 Part II: “Two components \(j,j'\) are **of one forward kind on \((\ell,C)\)** when... signatures coincide on \(C\setminus\{(1,b):b\in B\}\).” | Held |
+| G4 “Forward and historical kinds; ‘nothing over and above’ and ‘no third case’ withdrawn” | 20 Part 0: “a *forward kind* is how a component responds... as a second kind of kind”; Grievance 12. | Held |
+| G4 “Two grades of adequacy; anchoring stated: properness, resolution, no global relation, world-kind on C_adm, actuality of route” | 20 Part V: “**anchored account-hood**, adds four conditions”; conditions 1–4. | Held, but see F10, F23 |
+| G4 “‘Why there is no anchoring condition’ rewritten to say what it is” | 20 Part V: “The right court of appeal is not \(C\) but \(C_{\mathrm{adm}}\)”. | Held |
+| G4 “Grievance 1 aligned with the formal causal signature” | Grievance 1: “A cause and a correlation are two components with different signatures under (K).” | Held |
+| G4 “λ a proper decomposition (ROM and global-anchor cases)” | 20 Part V conditions 1 and 3. | Held, but see F10 |
+| G4 “Asymmetry transports/components stated and defended” | Grievance 12: “It is an asymmetry, and it is stated rather than hidden.” | Held |
+| G4 “Dispositions as finer forward contracts with the trigger in C” | Ledger: “Not done — a one-sentence gap remains”. | Not audited as Done |
+| G5 “Five conjuncts, not ‘four conditions’” | 20 Part V: “holds exactly when the following **five** conditions hold”; (E): “\(\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}\).” | **Loose — F18** |
+| G5 “Non-circular dependence witness: proper sub-block, translated edit on E” | 20 Part V: “there exists an edit \(\tau(a)\) on \(E\)... that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\)”. | **Loose — F1** |
+| G5 “Non-vacuity’s last sentence moved” | 20 Part V non-vacuity no longer contains 10’s sentence: “A contract consisting only of relabelings, or excluding every change under which the active commitments could matter to \(\mathcal Q\), does not satisfy non-circular dependence...” | **Loose — F17** |
+| G5 “(EK) world-state; Bearing parameters; RetReal non-empty; identification example corrected; (I3) numbering” | 20 Part XI: “all conditions evaluated at the end state \(\xi'\) unless stated”; Part IX K1; Part XII CT1; Part VII identification. | Held, but see F11, F12 |
+| G5 “Surprise entails loss of (R) and Deploy on C” | 20 Part IV: “surprise at \((a,b)\in C\) is a failure of fidelity on \(C\), so on that contract the system has, by (R), stopped representing the content, and by Part X stopped deploying it”. | Held |
+| G6 “Derivation 1: subnetwork signature; injectivity; corollary → analysis-of-kinds conjecture” | 20 D1: “let \((\tau,\sigma)\) be injective on \(C\)”; “the analysis-of-kinds conjecture of Part XV”. | Held |
+| G6 “Derivation 2: account-equivalence with Γ; ‘identical’ removed” | 20 D2: “**account-equivalent on \(C\)** when there is a bijection between their active components”. | Held |
+| G6 “Derivation 3: pair, closure hypothesis, ‘no guarantee’” | 20 D3: “selection provides no *guarantee* of fidelity where it did not test.” | **Loose — F6** |
+| G6 “Derivation 4 retracted as a derivation” | 20 D4: “This is recorded as a remark and not as a derivation”. | Held |
+| G6 “Derivation 5: question-organization built; provenance on the whole question; merit condition” | 20 D5: “Its solutions are exactly the coherently posed questions on \(D\).” | **Loose — F15, F21** |
+| G6 “Derivation 6: restricted consequence” | 20 D6: “No residual predicate is left undefined.” | **Loose — F7** |
+| G6 “Derivation 7: any change ends the assessment” | 20 D7: “by Part III, the change ends the first assessment and begins another.” | Held |
+| G6 “Derivation 8: restricted bijections; λ transported; pole/shadow excluded” | 20 D8: “because \(\lambda\) is among the transported data, a recoding that would change what a component is anchored to — the pole-height port carried to the shadow-length port — is not among the permitted \(\phi\)”. | Held |
+| G6 “Derivation 10: scenario, population assumption stated, ‘they are objects’ removed, (K) cited for the swap, (EK) not claimed” | 20 D10: “This is a scenario, not a consistency witness”; “a stipulation about \(\mathcal T\), not a consequence of anything”; “the correct report is that identity, at this grain and contract, is exhausted by trajectory.” | **Loose — F9, F24** |
+| G6 “(EK) an external success predicate” | 20 Part XI: “(EK) is an **external success predicate**”. | Held |
+| G6 “Merit condition under (P)” | 20 Part X: “it is subject to the **merit condition**”. | Held |
+| G7 “Symmetry explanation; selection-artefact explanation; concept creation; mathematical admission listed as open” | 20 Part 0 (B), (E); Part VII; Part X; Part XV. | Held |
+| G7 “Impossibility eliminations through K, scoped” | 20 Part VII: “the edit belongs to \(K\), declared with its meaning”. | Held, but see F4 |
+| G7 “Nothing cited from the experiments as a test of a definition” | 20 Part 0: “Nothing in it has been tested by an experiment; the experiments that have been run test proxies...” | **Loose — F19** |
+
+## 4. Findings
+
+**F1 (critical, new in 20). Proper sub-block makes the one-component candidate fail non-circular, contradicting the document’s own example.**
+20 Part V says: “there exists an edit \(\tau(a)\) on \(E\)... that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\)”; and “Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing.” But 20 Part V also says: “The one-component candidate that repackages \(\operatorname{Sol}_D\) satisfies (E). It is an account at \(C\) and not anchored.” If Γ has one component, there is no nonempty proper sub-block, so non-circular cannot be satisfied. The one-component candidate therefore does **not** satisfy (E). This breaks the stated reason for the second grade, and the ledger row G5 “Non-circular dependence witness: proper sub-block” is marked Done while introducing the contradiction.
+
+**F2 (critical, new in 20). Contract adequacy does not compare the target and candidate on the excluded pair.**
+20 Part V says: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.” If both differ from their own baselines, but differ from each other, the condition is satisfied. That is exactly a pair that “would separate the candidate from the target.” 20 Part XV admits the hole: “A protective contract the adequacy condition admits. A stated scope, passing Part V's adequacy condition, that nonetheless excludes exactly the admitted change that would separate the candidate from the target. This shows the adequacy condition is too weak”. Ledger row G2 says this is Done.
+
+**F3 (critical, new in 20). Account arity breaks Part VI.**
+20 Part V says: “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified: \(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\).” 20 Part VI says: “Fix \(\mathcal E\). The **restriction** \(E|W\), for \(W\subseteq\Gamma\)... Define \(\mathsf S_{E,p}=\{W\subseteq\Gamma:\operatorname{Account}(E|W,p)\}\).” But \(E\) alone does not fix \(\Gamma\). \(\operatorname{Account}(E|W,p)\) existentially re-quantifies a new \(\Gamma'\), so \(W\in\mathsf S_{E,p}\) no longer means that \(W\) is the active set. The ledger row G3 “Account(E, p) arity with t, Γ existential” is Done, but the downstream definition is ill-typed.
+
+**F4 (high, new in 20). \(K\) counterfactual edits are in \(C\), but the organization need not supply \(L_j(a,b)\) for them.**
+20 Part III says: “\(K\) is a declared set of **counterfactual edits** — pairs the module does not admit — each with a stated meaning”; “Fidelity conditions range over all of \(C\)”. But 20 Part II supplies \(L_j(a,b)\) only for edits \(a\) in \(A\), the admitted edits: “For each \(j\), edit \(a\), and boundary \(b\), the interpretation supplies \(L_j(a,b)\subseteq...\)”. If \(a\in K\) is not admitted, \(L_j(a,b)\) is undefined. The document does not extend the organization to \(K\), so “fidelity on \(K\)” is not evaluable as stated. This is new in 20 and is not repaired by the ledger row G2 “C = (C_adm ∩ S) ∪ K”.
+
+**F5 (high, new in 20). \(\tau\) is defined as a function but then said to be undefined.**
+20 Part IV says: “\(t=(\pi,\tau,\sigma,\lambda):D\to E\) where \(\pi:X_D\to X_E\) on the stated scope, \(\tau:A_D\to A_E\) translates edits”. 20 Part VII says: “here \(\tau\) sends the intervention on \(H\) to the edit that replaces the calculation's component assigning \(H\), which the reversed organization has none of, so \(\tau\) is undefined and (F2) fails at that pair”. If \(\tau\) is undefined at an edit in the contract, the transport is not a function of the claimed type, and (F2) is not false but unevaluable. This parenthetical is new in 20.
+
+**F6 (high, new in 20). Derivation 3 assumes translation does not collapse \(C\setminus H\) into \(H\).**
+20 D3 says: “Survival on \(H\) constrains only the relations at pairs in \(H\). The altered pair agrees with \((E,t)\) on \(H\), hence survives”. But the alteration is of “\(L_j(\tau(a),\sigma(b))\)”. If \((\tau,\sigma)\) is not injective, an \((a,b)\in H\) may translate to the same \(\tau(a),\sigma(b)\) as the altered \((a,b)\in C\setminus H\), so the altered pair need not agree on \(H\). D1 explicitly adds injectivity: “let \((\tau,\sigma)\) be injective on \(C\)”. D3 does not. The ledger row G6 “Derivation 3: pair, closure hypothesis” is Done, but the proof is not closed under the document’s own translation definition.
+
+**F7 (medium, new in 20). Derivation 6 overclaims “No residual predicate is left undefined.”**
+20 D6 says: “No residual predicate is left undefined.” But 20 Part V relies on “a nonempty **proper** sub-block \(B\subsetneq\Gamma\)”, and “sub-block” is not defined in Part II, Part V, or Part VI. Part VI defines \(\operatorname{CriticalBlock}(B;W,p)\) for “nonempty \(B\subseteq W\)”, but not the term used in non-circular dependence. Other undefined phrases include “state” in “the relation a component imposes at the baseline is its **state**”.
+
+**F8 (medium, new in 20). The content-identity clause is false about (R).**
+20 Part IV says: “Content identity at the primitive layer... does not use the representation predicate below, which is defined in terms of it.” But (R) is: “\(\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\).” (R) does not mention content identity. The clause “which is defined in terms of it” is therefore inaccurate.
+
+**F9 (medium-high, surviving from 10). The simulation layer is over \(P\), but the scenario has it predict occupancy, which is the field \(F\).**
+20 Part IV says: “The **simulation layer** \(S\) is an organization over \(P\) whose components are dependencies among things and whose queries are predictions: what a port of \(P\) will take under an admitted edit.” 20 D10 says: “A simulation layer \(S_0\)... \(S_0\) predicts occupancy from recent occupancy.” Occupancy is the sensory field \(F\), not a port of \(P\). The same mismatch is in 10 Part IV and 10 Derivation 10; 20’s added three-layer section did not repair it.
+
+**F10 (medium, new in 20). The anchored grade is unsatisfiable for targets with no nonempty proper subnetwork.**
+20 Part V condition 1 says: “Every anchor \(\lambda(k)\) is a proper subnetwork of \(D\)... no anchor is the whole target”. If the target organization \(D\) has one component and no nonempty proper subnetwork, no active component of \(E\) can have a proper anchor. The document does not note this. The ledger row G4 “Two grades of adequacy” is Done.
+
+**F11 (medium, surviving from 10). Bearing declares “grounds \(g\)” but does not use it.**
+20 Part IX says: “A criticism \(c\) has target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection. Let \(p_\delta\) be the question about the defect and \(E_c\) the organization the criticism supplies. Then \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta)\).” The variable \(g\) is declared and unused. 10 Part IX had the same. The ledger row G5 “Bearing parameters” is Done.
+
+**F12 (low-medium, surviving from 10). (EK) writes \(\operatorname{Account}(c,p_c)\), while the text says the organization is \(E\).**
+20 Part XI formula contains: “\(\land\operatorname{Account}(c,p_c)\land\)”. The following sentence says: “Here \(c\) is a content whose organization is the \(E\) of \(\operatorname{Account}(E,p_c)\)”. The formula should use \(E\), not \(c\), under the Part V arity. The ledger row G5 “(EK) world-state” is Done.
+
+**F13 (medium, surviving from 10 under new wording). Grievance 4 says “physically admitted”, while mathematics uses a declared admission relation.**
+20 Grievance 4 says: “a contract is protective for a candidate when some physically admitted change it excludes”. 20 Part III says: “for a mathematical or modelled organization, a **declared admission relation** stated with the question.” For mathematical organizations there need be no physical admission. The ledger row G2 “Admission relation for mathematical organizations declared” is Done, but Grievance 4 was not aligned.
+
+**F14 (medium, surviving from 10). The odd-order example’s non-circular witness is a target contrast, not a removal of a sub-block of \(E\)’s active commitments.**
+20 Part VII says: “Non-circular dependence is witnessed by \(I_3\) under removal of skewness and by \(\begin{pmatrix}0&1\\-1&0\end{pmatrix}\) under removal of oddness, each removing a proper sub-block.” Non-circular dependence in Part V is about an edit “on \(E\)” that removes or replaces a proper sub-block \(B\subsetneq\Gamma\). \(I_3\) and the 2-by-2 matrix are target examples under contrasts, not sub-blocks of the account’s \(\Gamma\). The same category slip is in 10.
+
+**F15 (medium, new in 20). Derivation 5 does not build enough to establish “coherently posed”.**
+20 D5 says: “Its solutions are exactly the coherently posed questions on \(D\).” But 20 Part III defines “coherently posed” as including “\(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other's complements as stated.” D5’s construction lists only “the closure conditions — the baseline port reads ‘in’; if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined; \(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.” It does not include components enforcing \(\mathcal Q\)-definedness. It also does not represent \(\rho_p\), though Part III says “\(\rho_p\) attaches to the whole tuple \(p\)”. The ledger row G6 “Derivation 5: question-organization built” is Done.
+
+**F16 (low-medium, new in 20). Part 0’s account-at-a-contract summary omits non-vacuity and adequacy.**
+20 Part 0 says: “An **account at a contract** is a candidate whose components and assembled organization are faithful to their anchors under every change the contract admits, that answers the question asked, that does not restate the answer, and whose contract is stated.” 20 Part V adds “Non-vacuity” and “Contract adequacy” as conjuncts of (E). The summary is incomplete. This is new because the two-grade summary is new.
+
+**F17 (low, surviving from 10 under new wording). The old non-vacuity sentence is dropped, not moved.**
+10 Part V had: “A contract consisting only of relabelings, or excluding every change under which the active commitments could matter to \(\mathcal Q\), does not satisfy non-circular dependence and is therefore not a contract on which an account can be claimed.” 20 Part V non-vacuity says only: “The contract \(C\) is a stated subset of the admitted pairs together with a declared counterfactual set, in the form of Part III, and every admitted pair excluded from \(C\) is excluded by the stated scope \(S\), not silently.” The ledger row G5 “Non-vacuity’s last sentence moved” is not accurate as written.
+
+**F18 (low-medium, surviving from 10 under new wording). The count is still wrong.**
+20 Part V says: “holds exactly when the following **five** conditions hold”. The (E) line has six conjuncts: “\(\text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}\).” 10 said “four conditions” with five conjuncts. 20 says “five conditions” with six conjuncts. The ledger row G5 “Five conjuncts, not ‘four conditions’” is Done, but the text still does not say “six conjuncts”.
+
+**F19 (low, new in 20). The experiment sentence refers to experiments that are not cited.**
+20 Part 0 says: “Nothing in it has been tested by an experiment; the experiments that have been run test proxies, and the proxies are named as proxies where they are cited.” No experiments or proxies are cited in 20. The ledger row G7 “Nothing cited from the experiments as a test of a definition” is Done, but the sentence still asserts a citation practice.
+
+**F20 (low, surviving from 10). “nontrivial use respect” remains undefined.**
+20 Part X says: “The repertoire \(R_{\beta,\ell}(s,\xi)\) is the set of contents deployable in some nontrivial use respect.” “Nontrivial use respect” is not defined in 20. The ledger row G1 lists “relevant” as replaced, but not this phrase.
+
+**F21 (medium, new in 20). “\(s\) instantiates” a question.**
+20 Part X says: “where \(p\) is a coherently posed question that \(s\) instantiates before \(e\)”. Questions are tuples in Part III; Derivation 5 constructs a question-organization \(D_p\). The text elsewhere says occurrences instantiate organizations, not questions. This is a type slip.
+
+**F22 (medium, new in 20). Condition 3 may exclude legitimate components that coincide with a projection of \(\operatorname{Sol}_D\) on \(C\).**
+20 Part V condition 3 says: “No active component's relation is, on \(C\), definable as \(\operatorname{Sol}_D(a,b)\) or a projection of it”. A proper sub-component could legitimately have exactly that relation on the chosen \(C\) without being the whole explanandum repackaged. The condition is stated by name to exclude one case, but its wording is wider than the case.
+
+**F23 (medium, new in 20). “One forward kind with its anchor subnetwork” is not defined for component-to-subnetwork comparison.**
+20 Part II defines: “Two components \(j,j'\) are **of one forward kind on \((\ell,C)\)** when...”. 20 Part V condition 4 says: “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor”. The kind relation is defined between two components, not between a component of \(E\) and a subnetwork of \(D\). Derivation 1 says the same: “a faithful component is of one forward kind, on \(C\), with its anchor subnetwork.”
+
+**F24 (medium, new in 20). The relative-consistency witness is downgraded to a scenario.**
+20 D10 says: “This is a scenario, not a consistency witness: its organizations are described, not written out, and no condition is checked on it.” 10 Derivation 10 said: “This episode is a relative-consistency witness for the class.” The ledger itself notes: “That is a loss the list did not price.” This is a loss of support, not a formal contradiction.
+
+**F25 (low, new in 20). The coherent-posedness clause is awkward.**
+20 Part III says: “\(S\) and \(K\) are disjoint from each other's complements as stated.” The intended condition is presumably \(S\cap K=\varnothing\), but the wording is not plain.
+
+## 5. Defects of 10 that survive in 20 under new wording
+
+**S1. The condition count is still wrong.** 10: “following four conditions hold”; (E) has five conjuncts. 20: “following **five** conditions hold”; (E) has six conjuncts. See F18.
+
+**S2. Bearing’s grounds parameter is still idle.** 10: “A criticism has target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection. Let \(p_\delta\) be the question about the defect. Then \(\operatorname{Bearing}(c,z,p)\iff\operatorname{Account}(\mathcal E_c,p_\delta)\).” 20: “A criticism \(c\) has target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection. Let \(p_\delta\) be the question about the defect and \(E_c\) the organization the criticism supplies. Then \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta)\).” \(g\) is still unused. See F11.
+
+**S3. (EK) still writes Account(c,p_c).** 10 formula: “\(\land\operatorname{Account}(c,p_c)\land\)”. 20 formula: “\(\land\operatorname{Account}(c,p_c)\land\)”. 20 adds the explanatory sentence, but the formula still uses \(c\). See F12.
+
+**S4. The odd-order non-circular witness is still a target contrast.** 10: “Non-circular dependence is witnessed by \(I_3\) under removal of skewness and by \(\begin{pmatrix}0&1\\-1&0\end{pmatrix}\) under removal of oddness.” 20: “Non-circular dependence is witnessed by \(I_3\) under removal of skewness and by \(\begin{pmatrix}0&1\\-1&0\end{pmatrix}\) under removal of oddness, each removing a proper sub-block.” See F14.
+
+**S5. The simulation-layer scenario still predicts occupancy.** 10 Part IV: “The **simulation layer** \(S\) is an organization over \(P\) whose components are dependencies among things and whose queries are predictions: what a port of \(P\) will take under an admitted edit.” 10 D10: “\(S_0\) predicts occupancy from recent occupancy.” 20 Part IV and D10 repeat the same structure. See F9.
+
+**S6. “nontrivial use respect” is still undefined.** 10 Part X: “The repertoire \(R_{\beta,\ell}(s,\xi)\) is the set of contents deployable in some nontrivial use respect.” 20 Part X: same. See F20.
+
+**S7. The old non-vacuity sentence is dropped, not moved.** See F17.
+
+**S8. Grievance 4 still says “physically admitted” where mathematics uses a declared admission relation.** See F13.
+
+## 6. New defects 20 introduces
+
+**N1. Non-circular proper sub-block contradicts the one-component candidate.** See F1.
+
+**N2. Contract adequacy is too weak by its own admission.** See F2.
+
+**N3. Account arity breaks Part VI.** See F3.
+
+**N4. \(K\) edits in \(C\) have no supplied \(L_j(a,b)\).** See F4.
+
+**N5. \(\tau\) is total in the definition and undefined in the example.** See F5.
+
+**N6. Derivation 3 lacks the injectivity condition that Derivation 1 adds.** See F6.
+
+**N7. Derivation 6 overclaims “No residual predicate is left undefined.”** See F7.
+
+**N8. The content-identity clause misdescribes (R).** See F8.
+
+**N9. Anchored grade is unsatisfiable for targets with no nonempty proper subnetwork.** See F10.
+
+**N10. Derivation 5 does not build enough for “coherently posed”.** See F15.
+
+**N11. Part 0’s account-at-a-contract summary omits non-vacuity and adequacy.** See F16.
+
+**N12. Condition 3 is wider than the one-component case it names.** See F22.
+
+**N13. “One forward kind with its anchor subnetwork” is not typed.** See F23.
+
+**N14. “\(s\) instantiates” a question.** See F21.
+
+**N15. The experiment sentence asserts uncited proxies.** See F19.
+
+**N16. The relative-consistency witness is downgraded to a scenario.** See F24.
+
+## 7. Whole-explanation checks
+
+**Flip.** If the ledger had said “Not done” for G2 and G5, would the same text be in 20? Yes: 20 Part XV already flips G2 by naming “A protective contract the adequacy condition admits”, and 20 Part V flips G5’s one-component claim by saying it “satisfies (E)” while non-circular demands a proper sub-block.
+
+**Direction.** The ledger runs from revision-list item to location. It often runs backwards from the result “Done” to a section that merely contains the words. G2-3 is the clearest: the location exists, but the condition does not do the job the row names.
+
+**Hunt the answer in the starting points.** The ledger’s starting point is “the consolidated revision list (file 15 §G, as amended by §F and §E3)”. The conclusion “Done” is already sitting in the mapping. The rows do not carry an independent test of whether the repair works.
+
+**Change list left out.** The ledger leaves out the change “the repair must be tested against a near-neighbour defect.” If that change were on the list, G2-3, G3-2, G5-1, G5-2, G6-3, and G6-6 would not be marked Done.
+
+**Rivals.** The best rival to the ledger’s “Done” reading is: “the passage exists, but the condition is either mistyped, incomplete, or admitted by 20 itself to be too weak.” That rival is supported by F1–F6.
+
+**Where the parts came from.** The ledger rows are **asserted**. The 20 passages are **built** text (except where 20 itself says “scenario” or “stipulation”). The defects above are **built** from cross-reading. No row is a fitted empirical claim; the ledger is a documentary map.
+
+## 8. Ranked by severity
+
+1. **F1 / N1** — non-circular proper sub-block contradicts the one-component candidate satisfying (E). Critical.
+2. **F2 / N2** — contract adequacy is too weak, and 20 admits it. Critical.
+3. **F3 / N3** — Account arity breaks Part VI’s support sets. Critical.
+4. **F4 / N4** — \(K\) edits in \(C\) have no supplied \(L_j(a,b)\). High.
+5. **F5 / N5** — \(\tau\) is total by definition and undefined in the example. High.
+6. **F6 / N6** — Derivation 3 lacks injectivity. High.
+7. **F9 / S5** — simulation layer over \(P\) predicts occupancy. Medium-high.
+8. **F8 / N8** — content-identity clause false about (R). Medium.
+9. **F10 / N9** — anchored grade unsatisfiable for one-component targets. Medium.
+10. **F7 / N7** — Derivation 6 overclaims no undefined predicates. Medium.
+11. **F11 / S2** — Bearing’s grounds \(g\) unused. Medium-low.
+12. **F12 / S3** — (EK) formula uses \(c\) not \(E\). Low-medium.
+13. **F13 / S8** — Grievance 4 “physically admitted” vs declared admission. Medium.
+14. **F14 / S4** — odd-order non-circular witness category error. Medium.
+15. **F15 / N10** — Derivation 5 incomplete for coherent posedness. Medium.
+16. **F23 / N13** — “one forward kind with anchor subnetwork” not typed. Medium.
+17. **F24 / N16** — no relative-consistency witness remains. Medium loss.
+18. **F18 / S1** — five conditions vs six conjuncts. Low-medium.
+19. **F17 / S7** — non-vacuity sentence dropped not moved. Low.
+20. **F20 / S6** — “nontrivial use respect” undefined. Low.
+21. **F16 / N11** — Part 0 omits non-vacuity and adequacy. Low-medium.
+22. **F22 / N12** — condition 3 wider than named case. Medium.
+23. **F21 / N14** — “\(s\) instantiates” a question. Medium.
+24. **F19 / N15** — experiment sentence uncited. Low.
+25. **F25** — awkward disjointness phrasing. Low.
+
+## 9. What would make it harder to vary
+
+The one or two cuts that would tighten the ledger most:
+
+- **Cut G2-3 and G5-2.** Rewrite contract adequacy so it directly compares \(\operatorname{Ans}_p(a,b)\) with \(\operatorname{Ans}_E(\tau(a),\sigma(b))\), not each against its own baseline. Then a pair where both change but differently is caught.
+- **Cut the proper-sub-block contradiction.** Either say explicitly that the one-component candidate fails non-circular, or add a named exception for the case that only all of \(\Gamma\) can be removed, and restate why the anchored grade is still needed.
+
+A third cut: restore \(\operatorname{Account}(E,p,t,\Gamma)\) as the primitive relation in Part VI, and define \(\mathsf S_{E,p}\) over a fixed \(t,\Gamma\).
+
+## 10. What this does not show
+
+Hard to vary is not the same as true. This audit does not show that 20 is false as a semantics. It shows that several ledger rows marked Done are loose, idle, or contradicted by 20’s own text. Passing a row is not proof; failing a row is not disproof.
+
+## 11. One next step
+
+Re-issue `20a_revision_ledger` with at least G2-3, G3-2, G3-8, G5-1, G5-2, G6-3, and G6-6 changed from Done to Loose/Partly, and add one test per row: “name a near-neighbour defect that the quoted passage would fail to repair.”

@@ -1,0 +1,306 @@
+====================================================================================================
+B5_M3_circular | deepseek | sample 0 | finish length | 1834 chars | error None
+====================================================================================================
+## Findings
+
+**1. M3's binding condition is the very property M3 claims to test.**
+Claim attacked (design §3, M3): *"match its bound slots to the things by (cell, velocity); … then continue … and check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity). A slot architecture **has thing-kind** when this holds for every configuration and every change."*
+Why it fails: the pair (cell, velocity) *is* the thing-signature. Establishing the binding requires the slot to already be exactly equal in (cell, velocity) to the thing (code: `if ti not in used and tuple(th) == st`). The check then re-tests equality of (cell, velocity) at every later step. The predicate under test is used as the precondition of the test. This is not a defect of a component probe — it is a defect of using M3 to back the claim "the selected architectures *have* thing-kind" (§4: *"the top architectures all have persisting slots (τ > 0), and those have thing-kind under M3"*). You cannot read thing-kind off a test whose entry condition is thing-kind.
+Severity: fatal for §4's use of M3; cosmetic for M3 as a *component* probe (see finding 8).
+Fix: separate the two quantities. Report (i) bind-rate = bound_pairs/total_pairs and (ii) tracking-given-bound = passed/bound_pairs. State explicitly that M3 tests preservation, not acquisition, and remove M3 from the evidence for §4's "have thing-kind" clause; use M1/M2 selection instead.
+
+**2. The translated edit plants the answer for displace and set_velocity.**
+Claim attacked (design §3): *"apply the TRANSLATED change to the slot state (displace → set that slot's cell; set_velocity → set that slot's velocity …)"* and the code `apply_translated_change`: `s["cell"] = c` (displace), `predictor.slots[inverse[i]]["vel"] = v` (set_velocity).
+Why it fails:
+====================================================================================================
+B5_M3_circular | deepseek | sample 1 | finish stop | 21708 chars | error None
+====================================================================================================
+# Referee report — M3 ("thing-signature"), §3 of `11_exp1_design`, and `thing_signature()` in `12a_exp1_code`
+
+Quoted matter is marked. Code quotes are from `apply_translated_change`, `thing_signature`, `Predictor.advance_slots`/`reconcile_slots`, `generate_sequence`.
+
+---
+
+## A. The three requested attacks
+
+### Finding 1 — The translated edit writes the same literal into the slot that the world edit writes into the thing; the subsequent comparison is a comparison of `step_kinematics` with `step_kinematics`.
+
+(1) **Claim attacked:** §3: *"apply the **translated** change to the slot state (displace → set that slot's cell; set_velocity → set that slot's velocity …), then continue on the post-change sensory sequence and check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity)."*
+
+(2) **Why it fails.** In the world:
+
+```
+elif kind == "displace":
+    _, i, c = change
+    things[i][0] = c
+```
+and in the slot:
+```
+if kind == "displace":
+    _, i, c = change
+    s = predictor.slots[inverse[i]]
+    s["cell"] = c
+    s["prev_cell"] = c
+```
+Both functions destructure **the same `change` tuple** and write **the same `c`**. For `set_velocity`, both write the same `v`; neither touches the other component. From t = 3 onward the slot is advanced by `Predictor.advance_slots` → `step_kinematics(s["cell"], s["vel"], num_cells)` and the thing is advanced by `generate_sequence` → `step_kinematics(c, v, num_cells)`. That is the *same function object* on the same 6-cell line with the same reflection rule. So from the moment of the edit the slot's trajectory is the identical computation as the thing's trajectory. The assertion "slot = thing at every later step" is therefore a theorem about two call sites in one file, not a measurement of the architecture. The check tests whether `step_kinematics` is a function.
+
+(3) **Severity:** fatal to M3 as a test of anything, and fatal to the §4 outcome that uses it.
+
+(4) **Fix:** the change must be applied **only to the sensory stream and the world**; the predictor must be left to *infer* the new (cell, velocity) from the post-change field with its own read-in rule. If the intent is to test the slot's *response* to an edit, the edit must be applied to the slot's inputs, not to the slot's state. As written, M3 has no object-level content for `displace`, `set_velocity`, `identity`, or `swap`.
+
+---
+
+### Finding 2 — The binding predicate and the success predicate are the same predicate; the test's premise is its conclusion.
+
+(1) **Claim attacked:** §3: *"match its bound slots to the things by (cell, velocity); … then … check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity). A slot architecture **has thing-kind** when this holds for every configuration and every change."*
+
+(2) **Why it fails.** Binding:
+```
+for ti, th in enumerate(things):
+    if ti not in used and tuple(th) == st:
+```
+Check:
+```
+if states[si] is None or states[si] != tuple(changed[t]["things"][ti]):
+```
+Both are the *same equality on `(cell, velocity)`*, the first used to *establish* slot↔thing correspondence, the second used to *confirm* it. The design conditions the "translated edit" on the predictor already satisfying the very relation the test then certifies. So M3 states: *"a slot that at t = 2 equals a thing at t = 2 in (cell, velocity), which is handed the thing's own post-change state, and which is thereafter advanced by the thing's own kinematics, equals the thing."* No architecture can fail this except by `reconcile_slots` actively overwriting or deleting the slot. A test whose binding step is the test is not an independent measurement.
+
+(3) **Severity:** fatal.
+
+(4) **Fix:** the binding must be a *ground-truth annotation* fixed before the run and independent of the predictor's state (e.g. annotate slot indices by construction from initialisation), and the pass criterion must be something the predictor must earn, e.g. that the rule *re-establishes* an alignment from sensation after the predictor's state has been corrupted on purpose (negative control), or that the slot's trajectory coincides with the thing's from the *sensory stream alone* after a change it was not told about.
+
+---
+
+### Finding 3 — Reconcile cannot fail for four of the five change types; the only surviving content is a restatement of the τ gene.
+
+(1) **Claim attacked:** §3: *"then continue on the post-change sensory sequence and check at every later step…"* — i.e. that the post-change continuation is where the architecture's read-in rule does work.
+
+(2) **Why it fails.** In `thing_signature`, at `CHANGE_STEP` the code advances the slots, applies the translation, calls `reconcile_slots(changed[3])`, and then reads slot states. For `displace`/`set_velocity`/`identity`/`swap`, at step 3 the teleported/velocity-set slot sits on an occupied, unoccluded cell, so `confirmed[i]` is true; the other slot is confirmed too; `matched` therefore already contains every occupied cell, and `reconcile_slots` skips every re-binding branch (`if c in matched: continue`). Counts are incremented only for unconfirmed slots. So reconcile is a **no-op**, and the M3 verdict for those four change types is exactly 1.0 for any architecture that (a) formed the binding at t = 2 and (b) does not discard slots gratuitously. The only branch that can move state — expiry, `if s["count"] > tau` — is reached only via `occlude`, which is the one change type the slot is *not* edited for. In other words M3's informative content is: *"does the τ gene expire during a seven-step occlusion,"* which is the label `persistence_of()` already prints. The by-type table therefore has at most one non-tautological row.
+
+(3) **Severity:** serious (the experiment can still be run; M3 as a claim about kind-response is dead).
+
+(4) **Fix:** if the point is persistence under unobservability, M3 should be *only* the occlude row and should be named as such; the other rows should be reported under a different heading ("edit-transcription consistency check") and should not be used in §4 as evidence.
+
+---
+
+### Finding 4 — `swap` is a null test: the world edit and the "translated" edit cancel.
+
+(1) **Claim attacked:** §3: *"swap → exchange the binding"*.
+
+(2) **Why it fails.** `apply_change_to_world` does `things[0], things[1] = things[1], things[0]`. `apply_translated_change` does `binding = {slot: 1 - thing for slot, thing in binding.items()}`. The two operations are inverse relabellings; slots are not touched. The check then compares slot *s* against `changed[t]["things"][1 - ti]`, which is the index at which the pre-swap trajectory now sits. So `swap` passes iff the slot continued to track the same physical trajectory it was already tracking — which is precisely the `identity` case. The design itself says the sensory field is unchanged for swap, so no architecture can distinguish the two rows. The row is a duplicate of `identity` under a different name and inflates the "by change type" table with a guaranteed pass.
+
+(3) **Severity:** minor-to-serious (it is not a false claim, but it is a mislabelled measurement; the by-type table advertises a change type that is not a change).
+
+(4) **Fix:** delete the swap row from M3, or replace it with a test the architecture *cannot* pass by relabelling: e.g. require the predictor to identify *which* slot corresponds to *which* thing after the swap using only the sensory stream, and report that as a distinct re-identification measure.
+
+---
+
+### Finding 5 — The `j` gene is inert under M3, and `apply_translated_change` forges the very internal evidence `j` is defined to derive.
+
+(1) **Claim attacked:** §2.6: *"On re-binding, velocity is corrected from the slot's previous cell — unless *j* is set and the jump is more than one cell, in which case the old velocity is kept (a teleport preserves velocity; a one-cell mismatch means the velocity changed)"*, together with §9 change 14 (*"Gene added: jump-keeps-velocity … Grammar now 208 architectures"*) and the §3 formula that applies the edit with `s["prev_cell"] = c`.
+
+(2) **Why it fails.** Two things. First, since the translated edit writes the post-teleport cell directly and the cell is occupied at step 3, no re-binding occurs for that slot (Finding 3), so neither value of `j` is exercised by the `displace`/`set_velocity` rows. The one gene introduced specifically to let the grammar cope with teleports is *not tested by the test that teleports things*. Second, `s["prev_cell"] = c` writes into the slot's private history the exact fact the `j` branch exists to compute: `reconcile_slots` reads `abs(c - s["prev_cell"]) > 1` as an inference about whether the jump was a teleport or a direction change. The experimenter has therefore supplied the answer to the inference. If `j` were exercised later in the same run, it would be exercised on fabricated `prev_cell` data.
+
+(3) **Severity:** serious (undetected: the design's capability claim for the grammar rests partly on `j`).
+
+(4) **Fix:** do not write `prev_cell`; and construct at least one M3 case where the teleport is only visible as a field discontinuity, so that `j`'s two settings produce different predictions. Report the M3 fraction split by `j` value.
+
+---
+
+### B. The defence
+
+### Finding 6 — The defence *"This is component fidelity (F1) of file 10, computed directly"* does not survive; it survives only as a code self-consistency check, which is not what §4 uses it for.
+
+(1) **Claim attacked:** §3, final sentence: *"This is component fidelity (F1) of file 10, computed directly."*
+
+(2) **Why it fails.** The defence trades on "computed directly" as if directness were the same as well-posedness. It is not. F1, however file 10 defines it, is a property of the *architecture* — the component's response to a change. In M3 the response is authored by the experimenter inside the component (Findings 1, 2, 5); what is left for the architecture to contribute is (i) whether it assembled a binding at t = 2 — which M3 assumes rather than tests (Finding 3's pre-condition and Finding 7's channel) — and (ii) whether its read-in rule left the authored state alone. Property (ii) is a *non-interference / stability* property, not fidelity, and for four of five change types it is vacuously satisfied because reconcile never executes a branch. The defence also asserts an identity between M3 and a definition in another document that this document does not restate, so it cannot be checked here. Finally, if "F1 = write the thing's state into the component and see if it stays," then F1 is a definition of the slot data structure, not a fidelity criterion, and calling an experimenter-authored write "fidelity" is a category error. Where the defence *does* have purchase: a residual code-consistency check, i.e. "M3 would flag it if `advance_slots` used a different kinematic rule." That check is worth having and is worth exactly nothing as evidence for the §1 diagnosis, which is what §4 enlists it for:
+
+> §4: *"On **H_full**, the top architectures all have persisting slots (τ > 0), and those have thing-kind under M3."*
+
+That sentence is the empirical use, and it is unsupported.
+
+(3) **Severity:** fatal to the defence as stated and to the §4 outcome that depends on it.
+
+(4) **Fix:** either rename M3 to what it is ("translated-edit transcription check; verifies that the read-in rule does not corrupt an externally supplied slot state") and remove it from §4, or replace it with a test in which the predictor receives only sensory fields and must produce the thing-aligned (cell, velocity) trajectory after an unannounced change, with slot↔thing correspondence fixed by construction rather than by equality matching.
+
+---
+
+## C. Further defects in M3, not raised in the brief
+
+### Finding 7 — §4's criterion "τ > 0 ⇒ has thing-kind" contradicts M3's own occlude row for τ = 2 and τ = 5.
+
+(1) **Claim attacked:** §4: *"On **H_full**, the top architectures all have persisting slots (τ > 0), and those have thing-kind under M3."*
+
+(2) **Why it fails.** Occlusion runs from step 3 to the end. A slot whose thing is occluded is unconfirmed at steps 3…9, so its count reaches 6. `reconcile_slots` drops it when `s["count"] > tau`. With τ = 2 the slot dies at step 5; with τ = 5 at step 8; both inside `RUN_LENGTH + 1`, and the design says so itself (§9 change 4: *"Enough steps after the change for occlusion effects and for τ = 5 to matter"*). So τ = 2 and τ = 5 are persisting slots that **fail** M3's every-step check on the occlude rows. The sentence quantifies over "τ > 0" and asserts a property that τ = 2, 5 do not have. Either §4 means "τ = ∞" (not written) or it means a fraction threshold (not written — see Finding 8).
+
+(3) **Severity:** serious (a pre-registration defect: whichever reading fits the result can be adopted afterwards, which is precisely what §7 forbids).
+
+(4) **Fix:** write the exact τ value or the exact fraction threshold in §4 before running; if the intended claim is only about τ = ∞, say "τ = ∞."
+
+---
+
+### Finding 8 — The verdict criterion is not operationalised: §3 defines "has thing-kind" as an all-configurations conjunction but permits reporting "a fraction."
+
+(1) **Claim attacked:** §3: *"A slot architecture **has thing-kind** when this holds for every configuration and every change. Reported as a fraction, by change type."*
+
+(2) **Why it fails.** A conjunction over 171 configurations × 24 changes and a fraction over the same set are different verdicts. §4's text needs the binary. Nothing in §3–§7 fixes the mapping from fraction to verdict. A fraction of 0.99 on a co-located-start configuration is not the conjunction, and the author is free to call it "has thing-kind" or not once the number is on screen. This is a moved goalpost in advance.
+
+(3) **Severity:** serious.
+
+(4) **Fix:** pre-register both: the Boolean (all pairs pass) and, if a fraction is to be used, the threshold and the denominator after exclusions, with the exclusion rule written down (see Finding 9).
+
+---
+
+### Finding 9 — The fraction silently includes binding failures, which are a different capacity; the prose and the code disagree about whether they are.
+
+(1) **Claim attacked:** §3: *"match its bound slots to the things …; if a match exists, apply the translated change … and check … that each bound slot's (cell, velocity) equals its bound thing's"*, versus the code.
+
+(2) **Why it fails.** The prose is conditional on the architecture's own success ("if a match exists", "each bound slot"), which is the "given bound" conditioning: it excludes exactly the pairs where the architecture failed to assemble a complete correspondence, i.e. the hard part. The code does the opposite:
+```
+if not ok or len(binding) != len(things):
+    unbound += 1
+    continue
+```
+with `total += 1` and `by_type[ct][1] += 1` already executed, so non-binding pairs are scored as failures of "thing-kind." Consequences: (a) the reported per-change-type fractions are a blend of *can't-bind* and *can't-track*, and the design gives no separate accounting; (b) every architecture with fewer slots than things is scored 0 on M3 across the board — a 1-slot architecture can never satisfy `len(binding) == len(things)` in the 2-thing world, so M3 is partly a test of slot count dressed as a test of persistence; (c) configurations where the two things converge on one cell at t = 2 (e.g. thing A at (2, +1), thing B at (4, 0): at t = 2 both are at cell 4, one field bit) can leave a slot's velocity unrecoverable and the pair fails for sensory-ambiguity reasons M3 does not report. None of these are persistence, and all of them enter the M3 fraction.
+
+(3) **Severity:** serious (it makes the headline number uninterpretable and drives the "every configuration" verdict to false for structural reasons).
+
+(4) **Fix:** report three quantities, pre-registered and separated: (i) fraction of (configuration, change) pairs on which a complete, unambiguous slot↔thing bijection exists at t = 2; (ii) among those, fraction tracked to the end; (iii) among those, fraction *by change type*. Restrict architectures to `num_slots >= num_things`, or report slot-count deficiency as its own category.
+
+---
+
+### Finding 10 — M3 excludes exactly the architectures most likely to be selected on H_full.
+
+(1) **Claim attacked:** §3: *"M3 — thing-signature (2-thing world only), per slot architecture"*, versus §4's claim about *"the top architectures."*
+
+(2) **Why it fails.** The code:
+```
+for a in archs:
+    if a["use_lookup"] or not a["num_slots"]:
+        continue
+    m3[architecture_name(a)] = thing_signature(a, 6, confs, chgs)
+```
+So a `lookup(k) + slots:persist(…)` architecture — permitted by §2.6, enumerated by `enumerate_architectures`, and evaluable on M1/M2 — is never M3-tested. If such an architecture is the M1 maximum on H_full, the §4 sentence *"the top architectures … have thing-kind under M3"* is not checkable, and any substitute (a slot-only sibling) is a **different architecture**. The design's own distinction between the object-model axis and the persistence axis is used to justify reporting lookup separately; the same argument forbids using M3 to certify a lookup-containing architecture.
+
+(3) **Severity:** serious.
+
+(4) **Fix:** either run M3 on lookup+slot architectures with the lookup pathway frozen and included in the prediction, or pre-register that §4's claim applies only when the M1 argmax is slot-only and report the lookup+slot case as "not M3-tested."
+
+---
+
+### Finding 11 — M3 has no negative control and no baseline comparison; a fraction of 1.0 is therefore uninterpretable.
+
+(1) **Claim attacked:** §3's reporting of the M3 fraction as a substantive result.
+
+(2) **Why it fails.** There is no reported control in which the slot state is deliberately shuffled before the continuation, no control in which the translation is applied to the *wrong* slot, and no comparison of the change-type rows against the `identity` row (which the code does compute, since `enumerate_changes` includes `("identity",)`, but which the design never nominates as a baseline). Given Finding 3, `identity`, `displace`, `set_velocity` and `swap` should all be identical for a slot-only architecture with an intact binding; if the results show otherwise, that is a bug report, not a finding, and without the control the author cannot tell which they are looking at. A test that any architecture implementing "do nothing to the slots" passes at 1.0 does not discriminate anything on the strength of its own number.
+
+(3) **Severity:** serious.
+
+(4) **Fix:** pre-register a shuffled-slot control and a wrong-slot-translation control; report `identity` as the baseline row and require the claim to be stated as a *difference* from baseline rather than an absolute fraction.
+
+---
+
+### Finding 12 — `unbound_pairs` is a measurement that §7 does not permit to be added.
+
+(1) **Claim attacked:** §7: *"**Not permitted after freezing:** changing anything fixed; adding a measurement; reclassifying an outcome."*
+
+(2) **Why it fails.** `thing_signature` returns `{"fraction": …, "by_type": …, "unbound_pairs": unbound, "total_pairs": total}` and the main loop writes all of it into the results file. §3 pre-registers only "a fraction, by change type." An unregistered, exactly-the-hard-cases quantity appears in the output, in the very place where the distinction between "could not bind" and "could not track" would decide the interpretation (Finding 9). It is benign in content and not benign in status.
+
+(3) **Severity:** minor.
+
+(4) **Fix:** declare it in §3 before running, or drop it. Either way, state the classification rule that will use it.
+
+---
+
+### Finding 13 — M3 verifies the predictor against `changed[t]["things"]`, i.e. against the world's private bookkeeping, for the entire occluded period, while the design elsewhere concedes this is not achievable from sensation.
+
+(1) **Claim attacked:** §3: *"check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity)"*, in combination with §2.5's *"two things starting in one cell are one blob to sensation"* and §2.5's refusal to make the ceiling a pass/fail threshold.
+
+(2) **Why it fails.** M3 requires the slot to hold the *true* (cell, velocity) of a thing that is invisible for seven consecutive steps, with the correspondence supplied externally. That is not a component-fidelity property that any sensation-driven component can exhibit; it is a property of the experimenter's edit plus faithful copying. The design already accepts that this is unachievable for prediction (that is why the ceiling is "reported for scale, not as a pass/fail threshold," §2.5) but then makes it a pass/fail threshold in M3 via "every configuration and every change."
+
+(3) **Severity:** serious (internal inconsistency between §2.5 and §3).
+
+(4) **Fix:** state what the occluded-period requirement is *for* — if it is a test of τ, make that the explicit claim and drop the appearance of testing tracking; if it is a test of tracking, provide the predictor the same information the test assumes.
+
+---
+
+## Summary of verdicts
+
+- Findings 1, 2, 6: **fatal.** M3 is a no-op comparison of `step_kinematics` to `step_kinematics` on a state the experimenter wrote, and the §4 outcome resting on it is unsupported.
+- Findings 3, 4, 5, 7, 8, 9, 10, 11, 13: **serious.** Even after fixing the triviality, the criterion, denominator, architecture set, and baseline are not pinned down.
+- Findings 12: **minor.**
+- The defence *"component fidelity (F1) of file 10, computed directly"* survives only as a code self-consistency check and fails as evidence for the §1 diagnosis for four of the five change types.
+====================================================================================================
+B5_M3_circular | deepseek | sample 2 | finish stop | 13724 chars | error None
+====================================================================================================
+**Finding 1 — M3’s translated edit makes the post-change state match by construction.**
+1. **Claim attacked:** Design §3: “apply the translated change to the slot state (displace → set that slot's cell; set_velocity → set that slot's velocity; occlude → nothing, it is a sensor edit; swap → exchange the binding)”.
+2. **Why it fails:** For `displace` and `set_velocity`, the code `apply_translated_change` assigns the slot exactly the post-change cell/velocity of its bound thing at step 3. The very next check at `t = CHANGE_STEP = 3` compares the slot to that same thing state. So the first post-change check is tautological. For `swap`, no slot state changes at all; only the binding label is exchanged. The only change that can actually fail is `occlude`, because the sensory field hides the thing and the reconcile rule may drop or misbind the slot. Therefore M3 is not a general test of thing-signature; it is a persistence-under-occlusion test with a trivial baseline for every other change type.
+3. **Seriousness:** Fatal for the claim that M3 measures thing-signature across all changes. Serious for the overall design if M3 is used in §4 to support “those have thing-kind under M3”.
+4. **Fix:** Either remove the translated edit and test whether the architecture can infer the change from sensation, or restrict M3 to `occlude` and rename it accordingly. If component fidelity F1 requires the translated edit, report M3 only for `occlude` and do not aggregate it with `displace`, `set_velocity`, and `swap`.
+
+**Finding 2 — The binding at step 2 is a pre-test of the very tracking property M3 claims to test.**
+1. **Claim attacked:** Design §3: “run the predictor to step 2 on the unchanged sequence; match its bound slots to the things by (cell, velocity); if a match exists, apply the translated change... then continue... and check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity).”
+2. **Why it fails:** To be counted as bound, a slot must already exactly match a thing at step 2. So the test only runs on pairs where the architecture was already tracking correctly before the change. The post-change tracking check therefore assumes the conclusion for the pre-change period. It cannot establish that the architecture has thing-kind from scratch; it can only establish that a slot which already had thing-kind can maintain it under a translated edit.
+3. **Seriousness:** Serious; fatal if M3 is presented as evidence for thing-kind rather than conditional maintenance.
+4. **Fix:** Report M3 as a conditional probability \(P(\text{track after change} \mid \text{bound at step 2})\). Separately report \(P(\text{bound at step 2})\) for all configuration/change pairs. Do not describe the product as “has thing-kind”.
+
+**Finding 3 — “Given bound” conditioning and the missing denominator.**
+1. **Claim attacked:** Design §3: “if a match exists, apply the translated change... A slot architecture has thing-kind when this holds for every configuration and every change. Reported as a fraction, by change type.”
+2. **Why it fails:** The code does not implement the binary criterion. `thing_signature` returns `{"fraction": passed / total, ...}`. `total` includes all configuration×change pairs, and `unbound` pairs are `continue`d without incrementing `passed`. So the reported fraction is \(P(\text{track and bound})\), not \(P(\text{track} \mid \text{bound})\). The design’s phrase “if a match exists” suggests conditioning, but the code’s aggregate fraction mixes binding failure and tracking failure. Worse, the design never defines a threshold for “has thing-kind”; if it means `fraction == 1`, the code does not compute that boolean.
+3. **Seriousness:** Serious. The pre-registered outcome in §4 (“those have thing-kind under M3”) cannot be evaluated from the code as written.
+4. **Fix:** Compute and report three quantities separately: \(P(\text{bound})\), \(P(\text{track} \mid \text{bound})\), and the binary `all(bound and track)`. Define the threshold if a fraction is intended.
+
+**Finding 4 — The `t = CHANGE_STEP` check is tautological for every translated edit.**
+1. **Claim attacked:** Code `thing_signature`: after `p.advance_slots()`, `binding = apply_translated_change(...)`, `p.reconcile_slots(...)`, the loop `for t in range(CHANGE_STEP, RUN_LENGTH + 1): ... states = p.slot_states(); ... if states[si] != tuple(changed[t]["things"][ti]): tracking = False`.
+2. **Why it fails:** At the first iteration \(t = CHANGE_STEP = 3\), the slot state has just been set by `apply_translated_change` to exactly `changed[3]["things"][ti]` for `displace` and `set_velocity`. The comparison therefore cannot fail for those change types unless the reconcile step immediately overwrites it. For `swap`, the slot state is unchanged and the binding is swapped to match the unchanged thing indices. So the \(t=3\) check contributes nothing for `displace`, `set_velocity`, or `swap`. Only `occlude` can make the \(t=3\) check non-trivial, and only if the occluded window covers the slot’s cell.
+3. **Seriousness:** Serious. It inflates the fraction with trivial passes.
+4. **Fix:** Do not count \(t = CHANGE_STEP\) as a tracking test after a translated edit. Start checking at \(t = CHANGE_STEP + 1\), or report the \(t=3\) result separately as a sanity check.
+
+**Finding 5 — M3 includes `swap`, which is a pure relabeling and tests nothing about slot dynamics.**
+1. **Claim attacked:** Design §3: “swap → exchange the binding”.
+2. **Why it fails:** The world’s `swap` change only exchanges the two things’ identity indices. The sensory field is unchanged at every step. The translated edit exchanges the binding. No slot cell or velocity is edited. Any architecture that passes `identity` (or even any architecture with a correct binding) passes `swap` trivially. It adds no discriminative information about thing-kind.
+3. **Seriousness:** Minor to serious; it dilutes the aggregate fraction and is reported by change type in §3.
+4. **Fix:** Remove `swap` from M3, or report it only as a binding-labelling sanity check, not as evidence for thing-kind.
+
+**Finding 6 — M3 excludes slot+lookup architectures, contradicting “per slot architecture”.**
+1. **Claim attacked:** Design §3: “M3 — thing-signature (2-thing world only), per slot architecture.” Code: `for a in archs: if a["use_lookup"] or not a["num_slots"]: continue`.
+2. **Why it fails:** The design says per slot architecture, not per slot-only architecture. Architectures with both a lookup pathway and slots are skipped entirely. The lookup pathway does not affect slot state, so M3 could be computed for them. This is a deviation from the frozen design and narrows the evidence.
+3. **Seriousness:** Serious; design-code mismatch, and it changes which architectures are covered by a pre-registered measurement.
+4. **Fix:** Either run M3 on all architectures with `num_slots > 0`, or amend the design to say “slot-only” before freezing.
+
+**Finding 7 — The binding rule in code is stricter than the design’s “if a match exists”.**
+1. **Claim attacked:** Design §3: “match its bound slots to the things by (cell, velocity); if a match exists”. Code: `if not ok or len(binding) != len(things): unbound += 1; continue`, where `ok` is set false if any non-`None` slot cannot be matched to an unused thing.
+2. **Why it fails:** The code requires every non-`None` slot to match a distinct thing, and requires exactly `len(things)` matched slots. An architecture with an extra bound slot that does not interfere with the tracked things is marked unbound and counted as a failure. The design’s wording could be read as allowing a matching subset of slots to things. This is an under-specified binding criterion that can manufacture failures.
+3. **Seriousness:** Minor to serious; it can affect the M3 fraction and by-type results.
+4. **Fix:** Specify the binding rule precisely. If extra slots are allowed, match an injective subset and ignore unbound extra slots. If not, state that all non-`None` slots must match distinct things.
+
+**Finding 8 — M3’s “has thing-kind” is never computed, so §4’s outcome is a moved goalpost.**
+1. **Claim attacked:** Design §4: “On H_full, the top architectures all have persisting slots (τ > 0), and those have thing-kind under M3.” Design §3: “A slot architecture has thing-kind when this holds for every configuration and every change.”
+2. **Why it fails:** The code returns only a fraction in `results["M3"]`. There is no boolean, no threshold, and no comparison to 1. The classification in §4 cannot be performed from the raw results as written. If the author later picks a threshold after seeing the fraction, that is a moved goalpost.
+3. **Seriousness:** Fatal for the pre-registered classification as written.
+4. **Fix:** Code the binary criterion as `fraction == 1` (or a pre-registered threshold), and record it before running. If a threshold is used, state it in §3 before freezing.
+
+**Finding 9 — The defence “component fidelity (F1) computed directly” is unsupported without F1’s definition, and does not rescue the overclaim.**
+1. **Claim attacked:** Design §3: “This is component fidelity (F1) of file 10, computed directly.”
+2. **Why it fails:** File 10 is not included in the provided material, so the claim cannot be checked. More importantly, the defence only works if F1 is defined as conditional component fidelity given correct binding, and if F1 is explicitly allowed to be trivial for non-occlusion changes. The design does not say that. It calls M3 “thing-signature” and uses it in §4 to claim “those have thing-kind”. That is a broader claim than “the component maintains its state after a translated edit given it was already bound”.
+3. **Seriousness:** Serious to fatal for the M3-based inference in §4.
+4. **Fix:** Quote the exact F1 definition from file 10. If F1 is conditional, say so in §3 and limit the conclusion in §4 to conditional F1, not thing-kind. If F1 is meant to be an independent test, add a non-translated control.
+
+**Finding 10 — The slot reconciliation’s `matched` set cannot handle multiple things in one cell.**
+1. **Claim attacked:** Code `reconcile_slots`: `matched = {s["cell"] for i, s in enumerate(self.slots) if s is not None and confirmed[i]}` and later `for c in occupied_cells(field, self.num_cells): if c in matched: continue`.
+2. **Why it fails:** `matched` is a set of cells, not a multiset. If two things share a cell, the field has one bit. If two slots are confirmed at that cell, `matched` contains the cell once. Then any unconfirmed slot that should rebind to that same occupied cell is skipped because `c in matched`. This can cause a slot architecture to fail M3 (and M1/M2) on configurations with co-located things, even if it could in principle track them. The world explicitly allows sharing: “Things pass through each other and may share a cell.”
+3. **Seriousness:** Serious; it creates spurious failures on a permitted world state and can affect the selected sets.
+4. **Fix:** Track matched counts per cell, not a set. Allow multiple slots to confirm at the same cell. Alternatively, if the grammar is not meant to handle co-location, remove co-located configurations or state the limitation before freezing.
+
+**Finding 11 — The M3 code uses the unchanged sensory stream for velocity inference at the change step, which may advantage or disadvantage architectures in a way the design does not describe.**
+1. **Claim attacked:** Design §3: “run the predictor to step 2 on the unchanged sequence; match its bound slots to the things by (cell, velocity); if a match exists, apply the translated change to the slot state... then continue on the post-change sensory sequence”.
+2. **Why it fails:** In code, after the loop over `range(CHANGE_STEP)`, `p.previous_field` is the unchanged step-2 sensory field. Then `p.reconcile_slots(changed[CHANGE_STEP]["sensory"])` is called. For rules that infer velocity for newly bound slots, `infer_velocity` uses `self.previous_field`, which is still the unchanged step-2 field, not the post-change field. For the change step, the previous field should arguably be the unchanged step-2 field because the change is applied at step 3 before recording. That is correct. But the design does not specify this. It is a subtle implementation choice that affects `rebind` and new-slot velocity inference at step 3. It could change M3 results.
+3. **Seriousness:** Minor to serious; under-specified but not necessarily wrong.
+4. **Fix:** State explicitly in §3 that velocity inference at the change step uses the step-2 sensory field (pre-change). Alternatively, report it as a free implementation detail fixed in code.
+
+**Finding 12 — The M3 test does not check that the binding itself remains correct after things cross.**
+1. **Claim attacked:** Design §3: “check at every later step that each bound slot's (cell, velocity) equals its bound thing's (position, velocity)”.
+2. **Why it fails:** The binding is fixed at step 3. If two things cross after step 3, a slot might follow the correct physical thing but the binding’s thing index may no longer correspond to that physical thing if the world’s identity semantics are ambiguous. The code compares to `changed[t]["things"][ti]`, which is identity-indexed. The test therefore assumes the identity index remains the correct referent. For a thing-signature test, that is probably the intent, but it means the test is not checking physical continuity independent of identity labels. It is checking label tracking.
+3. **Seriousness:** Minor (definitional).
+4. **Fix:** Clarify that M3 tests tracking of the labelled thing, not physical continuity. If physical continuity is intended, add a check independent of identity labels.

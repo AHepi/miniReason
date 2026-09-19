@@ -1,0 +1,212 @@
+====================================================================================================
+R3_sufficiency_anchored | rev_atria | sample 0 | finish stop | 20576 chars | error None
+====================================================================================================
+# Attack (A): constructions, and what blocks them
+
+## Part 1 — The four named attempts, concretely
+
+I built each of the four decoys the document names, plus two it does not name, and checked them conjunct by conjunct. The verdict: **I cannot produce a candidate that satisfies (E), the four anchored conditions, a non-declared transport, and that plainly explains nothing.** Every full-circularity route is closed. But the reason it is closed is not always the reason the document gives, and the same conditions that close the decoys also close genuine mechanisms (Part 2 below).
+
+### Attempt 1 — the one-component repackaging
+
+Construction. Target `D` with components `c₁: y=f(x)`, `c₂: z=g(y)`; question `p` reads `z`, `C` = interventions on `x`. Candidate `E` has one component `k` with `L_k = proj_{V_k} Sol_D` (the graph of `g∘f`), `Γ = {k}`, `λ(k) = D`.
+
+Blocked, and blocked by *three* things, not two:
+
+- Anchored condition 1: `λ(k) = D` violates "no anchor is the whole target."
+- Anchored condition 3: `L_k` is a projection of `Sol_D`.
+- **And (E) itself, via Non-circular dependence.** The witness requires "a nonempty proper sub-block `B ⊊ Γ`." A singleton has no nonempty proper subset. The witness is unsatisfiable. See Finding 7.
+
+### Attempt 2 — the two-component split of it
+
+Split the graph of `g∘f` into `R₁, R₂` with `R₁ ∩ R₂ = graph(g∘f)`, each anchored to a proper subnetwork.
+
+- If `R_i` *is* a projection of `Sol_D` (i.e. the split is a partition of the answer's graph), condition 3 blocks both pieces.
+- If `R_i` is *not* a projection of `Sol_D`, then by (F1) each `R_i` must equal `proj_{V_{k_i}} Sol_{λ(k_i)}` for a proper subnetwork — i.e. each is a **local relation of a genuine part of the mechanism**, and their conjunction recovers the answer. That is not a decoy; it is a decomposition, and by the document's own lights it is an account.
+
+So the split is either blocked or genuine. There is no middle case. Note what this means: **all anti-repackaging work is done by condition 3, and it is done extensionally** (Finding 9).
+
+### Attempt 3 — the lookup with a proper decomposition
+
+Two sub-cases.
+
+*Global lookup* (one relation keyed on the full input state): its relation is a projection of `Sol_D` → condition 3; if anchored to the whole target → condition 1. Blocked.
+
+*Modular lookup* (pieces keyed on local inputs, each matching a local anchor's signature on all of `C_adm`): **not blocked by anything.** (F1) holds because each piece is a local relation; (F2) holds by assembly; (A) holds; Non-circularity's witness is satisfiable (removing one piece breaks determination); properness's cover is satisfiable; condition 4 holds because each piece matches its anchor on every admitted edit.
+
+The document concedes this and reclassifies it:
+
+> "A table that genuinely encodes an organization's response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component, and by nothing if it is a faithful decomposition — in which case it is an account."
+
+Verdict: this does not refute sufficiency *at the index* — extensionally, a modular lookup whose pieces carry the local signatures of the mechanism on every admitted change is indistinguishable from the mechanism at that grain, which is exactly the document's kind-relativism. But the reclassification is terminological fiat, not an argument, and it means "anchored account" certifies rote modular encodings. Cost to the intuitive reading of sufficiency; not a refutation.
+
+### Attempt 4 — the decoy with the same world-kind
+
+Let `E` differ from the mechanism only on edits outside `C`. Condition 4 quantifies over `C_adm`, so:
+
+- If the decoy differs on some pair in `C_adm`, condition 4 blocks it.
+- If it matches on **all** of `C_adm`, nothing blocks it. The document concedes this and answers by index:
+
+> "a decoy with the same signature on C but a different response to some admitted edit fails 4"
+
+— note the asymmetry: the decoy that matches on *all* admitted edits is not mentioned here, and Part XV lists it as open under attack (F) without resolution. So the anchored grade does **not** exclude the strongest form of the decoy. See Findings 8 and 10.
+
+### Attempt 5 (not in the document) — the baked-in background
+
+Goal: put the answer in a slot the formal apparatus never inspects — a *non-active* component, or a boundary condition — while keeping enough active structure to satisfy the non-circularity witness.
+
+*Full baking* (the whole answer in a background component `m`): **blocked.** Removing any active `B ⊊ Γ` leaves the answer unchanged and still determined, so the witness fails. The witness is cleverer than it looks: full baking makes everything else answer-redundant, and redundancy is exactly what the witness detects.
+
+*Partial baking* (one part of a two-part answer in `m`, the other part active): blocked by **properness's cover clause** — "no component of `D` that some pair in `C_adm` touches lies outside every anchor," read with "the anchors of the *active* components refine a cover." The `D`-component carrying the baked part is `C_adm`-touched (it is answer-relevant), so it must sit in an *active* anchor, and (F1) then forces that active component to carry its genuine local relation. The baking is squeezed out.
+
+Residual gap, minor: the witness ("removes or replaces a nonempty proper sub-block `B ⊊ Γ`") and condition 3 ("no *active* component's relation…") **never inspect non-active components or boundary conditions for circularity.** The cover clause closes the answer-relevant case, but by a side effect, not by a circularity check. A candidate carrying a redundant, non-active, globally-defined relation alongside genuine active structure passes everything. It is not circular for the question asked, so this is cosmetic — but the informal sentence "The target's answer does not appear, at the declared grain, as an unanalysed boundary input or as a component" is not implemented by the formal witness, which ranges only over `Γ`.
+
+### Attempt 6 (not in the document) — the honest single-component mechanism
+
+This is the construction that matters, and it is in Part 2.
+
+---
+
+## Part 2 — Do the four anchored conditions exclude a genuine mechanism?
+
+Yes. Three of them do, and one case is fatal.
+
+### Finding 1 — Properness's "no anchor is the whole target" makes single-component targets unexplainable at the anchored grade (fatal for that class)
+
+Target: a physical ROM. `D` with `V = {x₁, x₂, w}`, `J = {c}`, `V_c = V`, `L_c(a,b) = {(x₁,x₂,w) : w = h(x₁,x₂)}` (adjusted under interventions). Question `p`: `Q` reads `w`; `C = C_adm` = interventions on `x₁` and `x₂`. This is a physically admitted contract, and the grain is admissible (every component has a signature realized by admitted edits).
+
+The honest mechanism explanation is `E = D`, `t = identity`, `λ(k) = {c}`, `Γ = {k}`.
+
+- Condition 1: "no anchor is the whole target" — the only subnetwork of `D` containing `c` is `D` itself. **Fails.**
+- There is no escape: the only proper subnetwork is `∅`, whose visible projection is the full relation, not the graph of `h`. No finer grain exists at this index, and moving to one is "a new claim at a new index."
+
+**Claim attacked:** "Every anchor `λ(k)` is a proper subnetwork of `D` … no anchor is the whole target."
+**Why it fails:** a genuine mechanism can be a single component at the claimed grain. For such a target, covering the `C_adm`-touched component (which the cover clause requires) forces the anchor to be the whole target.
+**Severity:** fatal for single-component targets; serious overall.
+**Fix:** replace with "no anchor is the whole target *unless `D` is a single component at `ℓ`*." This is safe: the repackaging is still excluded by condition 3, and the honest ROM is let in.
+
+### Finding 2 — Condition 3, conjoined with (F1), excludes the honest mechanism whenever a component's relation extensionally coincides with a projection of `Sol_D` (fatal for that class)
+
+Same ROM. (F1) forces `L_k = proj_{V_k} Sol_{λ(k)} = Sol_D`. Condition 3 then fires:
+
+> "No active component's relation is, on `C`, definable as `Sol_D(a,b)` or a projection of it: a component whose relation is the target's own solution set is the explanandum repackaged as a law, and it is excluded by name."
+
+So the honest account and the repackaging have the *same extensional relation*, and condition 3 cannot tell them apart. It excludes both.
+
+Corollary for multi-component targets: if `D` contains a redundant answer-display component `c₃: w = g(f(x₁),x₂)`, the cover clause forces `c₃` into an active anchor; (F1) forces that component's relation to be the answer graph; condition 3 forbids it. Co-anchoring `c₃` with another component evades condition 3 only by adding visible ports — and if `c₃` and its co-anchor are separately variable with distinct answer effects, **Resolution forbids the co-anchoring**, closing the escape route.
+
+**Claim attacked:** condition 3, as stated.
+**Why it fails:** it is extensional in form ("definable as … or a projection of it") but must distinguish intensional roles (repackaging vs. genuine local relation). When the target itself contains a component whose local relation *is* the answer graph, the distinction has no extensional grip.
+**Severity:** fatal for single-component and redundant-component targets; serious overall.
+**Fix:** restrict condition 3 to components whose anchor is *not* a single component of `D`, and add an intensional clause ("the relation is *introduced as* `Sol_D` rather than read off the anchor") with a stated definition language — or drop condition 3 and rely on properness plus the Finding-1 fix, since properness already forbids `λ(k) = D` for multi-component targets.
+
+### Finding 3 — Properness's active-cover clause over-excludes partial mechanism explanations (serious)
+
+> "the anchors of the active components refine a cover of `D`'s components: … no component of `D` that some pair in `C_adm` touches lies outside every anchor."
+
+Take a target with an answer-producing pathway plus a bystander component `c_b` that is touched by admitted edits but does not affect `Ans_p`. A genuine mechanism explanation that models only the pathway and is silent on `c_b` matches the answer profile on all of `C_adm` (adequacy holds, (A) holds, (F1)/(F2) hold for its components) but **fails the cover clause**, hence is not anchored.
+
+**Claim attacked:** the cover clause, as written.
+**Why it fails:** it converts the anchored grade from "about the answer-producing mechanism" into "a complete model of `D`'s `C_adm`-touched structure." Partial mechanism explanations are genuine.
+**Severity:** serious.
+**Fix:** restrict the cover to components of `D` on the answer's dependency path, or allow non-active anchors to count toward it.
+
+### Finding 4 — Condition 4 over-excludes idealized mechanism explanations (serious)
+
+> "each active component of `E` is of one forward kind, on `(ℓ, C_adm)`, with its anchor: fidelity holds not only on the pairs the contract selected but on every pair the module admits."
+
+An idealized account (e.g. an ideal-pendulum relation for a real pendulum) matches its anchor only inside the operating regime. On admitted edits outside the regime where the answer profile is nonetheless robust, adequacy does not fire (it only checks pairs where `Ans_p` differs), but condition 4 does. So condition 4 is strictly stronger than adequacy and penalizes idealization.
+
+**Claim attacked:** condition 4's quantification over all of `C_adm`.
+**Why it fails:** most genuine mechanism explanations are idealized; condition 4 certifies only unidealized ones.
+**Severity:** serious.
+**Fix:** restrict condition 4's signature requirement to pairs in `C_adm` where the anchor's visible behaviour is non-constant, or add a declared-idealization clause with a stated exclusion set subject to adequacy.
+
+### Finding 5 — Resolution over-excludes coarse-grained genuine explanations (minor)
+
+> "Whenever two components of `D` can be separately varied by pairs in `C_adm` with distinct effects on `Ans_p`, they lie in distinct anchors."
+
+A genuine explanation that lumps two separately-variable functions into one module ("the amplifier stage") has one component anchored to `{c₁,c₂}`; Resolution forbids it. The document's remedy is a finer grain, but the grain of `D` is fixed by the module.
+
+**Severity:** minor (the lumped account remains an account at `C`; it merely is not anchored).
+**Fix:** state that Resolution governs `E`'s grain index, not `D`'s, and allow a coarser `E`-grain with its own admissibility record.
+
+### Finding 6 — The active-route clause is void where the module supplies no history (minor)
+
+> "Where the physical module supplies a history for `D`, each anchor is an active route (Part IX) … and not a backup that would have responded identically."
+
+For non-historical targets (and for mathematical organizations under a declared admission relation) the clause is void, so a backup anchor passes.
+
+**Severity:** minor.
+**Fix:** make the active-route requirement unconditional, with a declared "no history supplied" flag that downgrades the claim accordingly.
+
+---
+
+## Part 3 — Cross-cutting defects
+
+### Finding 7 — The non-circularity witness cannot be satisfied by any singleton `Γ`, contradicting three passages (serious)
+
+> "The witness: there exists an edit `τ(a)` on `E`, translated from some `(a,b)∈C`, that removes or replaces a nonempty proper sub-block `B ⊊ Γ` while preserving the other boundary conditions, under which the answer profile changes or ceases to be determined in the claimed way. Removing all of `Γ` changes the profile of any candidate and witnesses nothing."
+
+For `Γ = {k}` there is no nonempty proper subset. The sentence "Removing all of `Γ` … witnesses nothing" confirms the witness *is* the condition. So every single-component candidate fails (E). Yet:
+
+- Part V: "The one-component candidate whose single relation is `Sol_D` satisfies (E) on every contract and fails conditions 1 and 3."
+- Part V: "The one-component candidate that repackages `Sol_D` satisfies (E). It is an account at `C` and not anchored."
+- Part VII: of the reversed calculation, "it is an account at that contract" — the reversed calculation is one component.
+- Part XV: "A candidate meeting (E) alone and explaining nothing is already known to exist — the one-component repackaging of `Sol_D` — and is why the second grade is stated."
+
+The inconsistency is systematic, not a slip. And in the ROM case of Finding 1 it bites the honest account: the honest single-component mechanism fails (E), not just the anchored grade.
+
+**Claim attacked:** the above four passages.
+**Why they fail:** under the literal reading of the witness, all are false. Under the reading where the witness is merely illustrative and the condition is the informal "The target's answer does not appear … as an unanalysed boundary input or as a component," the one-component repackaging *still* fails (its single component's relation is `Sol_D`), and condition 3 becomes redundant with Non-circular dependence rather than a distinct anchored-grade requirement.
+**Severity:** serious — it mislocates the exclusion of the document's own paradigm decoy, and thereby misstates the motivation for the second grade.
+**Fix:** either (a) state Non-circular dependence as the informal condition with the witness as one sufficient check, plus an explicit singleton clause; or (b) accept that (E) excludes singletons and revise Parts V, VII and XV.
+
+### Finding 8 — The anchored grade carries no provenance condition, so "about the actual mechanism" is satisfiable by a declared transport (serious)
+
+Part V lists the anchored conditions as properness, resolution, no-global-relation, world-kind. None mentions provenance, and Part V is explicit that "(E) carries **no provenance condition**." Since anchoring is (E) plus those four, a candidate whose transport is **declared** can be an anchored account. Yet:
+
+> "An anchored account … is what 'the explanation is about the actual mechanism' means here."
+
+and Part 0: "Declaration is permitted as a modelling convenience, and a claim about representation or creativity cannot rest on it."
+
+The gap is visible in the attack's own phrasing — "with a non-declared transport" is tacked onto attack (A) in Part 0 and Part XV, because the defined grade does not supply it.
+
+**Claim attacked:** "Anchoring is … what 'the model is about the actual mechanism' means here."
+**Why it fails:** the defined notion does not bear the weight claimed; the sufficiency hypothesis is strictly stronger than the defined grade.
+**Severity:** serious.
+**Fix:** add a `Sel ∨ Con` conjunct to the anchored grade, or rename it and reserve "mechanistic" for anchored plus non-declared.
+
+### Finding 9 — Condition 3's "definable" is intensional, but every available check is extensional (serious)
+
+> "No active component's relation is, on `C`, **definable as** `Sol_D(a,b)` or a projection of it."
+
+Dilemma: if "definable" is intensional, the condition is uncheckable without a specified definition language, and the document supplies none; if it is read extensionally, it is Finding 2's over-exclusion. There is no third reading.
+
+**Severity:** serious.
+**Fix:** specify the language (e.g. first-order over `L`-relations and ports) in which "definable" is evaluated, and prove the condition is invariant under `≡_ℓ`; or replace it with the structural condition of Findings 1–2.
+
+### Finding 10 — Condition 4's world-kind is indexed to `(ℓ, C_adm)`, so the anchored grade does not certify "about the actual mechanism" beyond the index (serious)
+
+> "each active component of `E` is of one forward kind, on `(ℓ, C_adm)`, with its anchor"
+
+and
+
+> "It is what separates a mechanism from a decoy that shares its signature on the contract someone happened to choose."
+
+But a decoy that shares the mechanism's signature on *every* admitted change — not merely the chosen contract — passes condition 4. Part XV lists exactly this as open under attack (F) and does not resolve it. Combined with Finding 8, the two formal conditions doing the "actual mechanism" work (4, and the provenance that is not there) jointly fail to distinguish the actual mechanism from an admittedly-indistinguishable one.
+
+**Claim attacked:** the two quoted sentences.
+**Why they fail:** the second is falsified by the decoy of Attempt 4; the first's index is doing all the work, which the document elsewhere concedes ("'One kind at that index' is a fact about the pairing of an organization with a contract, not a fact about the world").
+**Severity:** serious for the rhetoric, minor for the formalism.
+**Fix:** either strengthen condition 4 to an unconditional active-route/historical requirement, or state plainly that "about the actual mechanism" means "about the actual mechanism at `(ℓ, C_adm)`" and drop the stronger reading.
+
+---
+
+## Bottom line for attack (A)
+
+**No sufficiency-refuting candidate exists along the four named routes**, and I could not construct one along two further routes. The conditions are more robust than the document's own presentation suggests: the non-circularity witness blocks full baking because baking makes everything else redundant; properness's active-cover clause blocks partial baking; (F1)+properness force active components to carry genuinely local relations; condition 3 blocks the residual repackaging.
+
+But the same machinery **excludes genuine mechanisms**: the honest account of any single-component target is blocked by properness, condition 3, and (via Finding 7) the non-circularity witness simultaneously (Finding 1, 2, 7 — fatal for that class); partial and idealized mechanism explanations are blocked by the cover clause and condition 4 (Findings 3, 4 — serious). And the grade that emerges is weaker than advertised: it admits a declared transport (Finding 8) and an admittedly-indistinguishable decoy (Finding 10), while its anti-repackaging condition is either uncheckable or over-exclusive (Finding 9).
+
+The constitutive conjecture's sufficiency claim therefore survives, but only after the anchored grade is repaired as follows: relax properness for single-component targets; make condition 3 intensional or structural; restrict the cover clause to the answer's dependency path; bound condition 4 by non-constancy or declared idealization; add `Sel ∨ Con`; and fix the singleton witness. Without those, the honest ROM is excluded and the declared-transport decoy is admitted — which is the inverse of what "about the actual mechanism" should deliver.

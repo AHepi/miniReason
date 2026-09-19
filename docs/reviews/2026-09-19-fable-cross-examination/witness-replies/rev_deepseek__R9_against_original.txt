@@ -1,0 +1,414 @@
+====================================================================================================
+R9_against_original | rev_deepseek | sample 0 | finish stop | 22307 chars | error None
+====================================================================================================
+Findings, ordered by severity. Quotes are from file 20 unless marked 10 or 20a.
+
+**1. [Fatal] The new “Contract adequacy” condition does not compare candidate with target; it compares each to its own baseline.**
+Attacked: 20a G2 row: “Contract-adequacy condition (protective contracts) as a conjunct of (E) … | Done”. In 20 Part V:
+> “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.”
+Why fails: Suppose at an excluded admitted pair the target changes from baseline to \(y_1\), and \(E\) changes from baseline to \(y_2\neq y_1\). Then \(\operatorname{Ans}_p\) differs from baseline, and \(\operatorname{Ans}_E\) also differs from baseline, so neither conjunct fires. The adequacy condition passes although candidate and target disagree at an admitted pair outside the contract. This is exactly the protective-contract case it was introduced to catch.
+Fix: Require no \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) and \(\operatorname{Ans}_p(a,b)\) differ, or at which one is defined and the other is not.
+
+**2. [Fatal] The revised non-circular-dependence witness contradicts the repeated claim that the one-component \(\operatorname{Sol}_D\) candidate satisfies (E).**
+Attacked: 20a G5 row: “Non-circular dependence witness: proper sub-block, translated edit on E | Done”. In 20 Part V:
+> “The witness: there exists an edit \(\tau(a)\) on \(E\), translated from some \((a,b)\in C\), that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\) while preserving the other boundary conditions… Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing.”
+But 20 also says:
+> “The one-component candidate whose single relation is \(\operatorname{Sol}_D\) satisfies (E) on every contract and fails conditions 1 and 3.”
+And:
+> “The one-component candidate that repackages \(\operatorname{Sol}_D\) satisfies (E). It is an account at \(C\) and not anchored.”
+And Part XV:
+> “A candidate meeting (E) alone and explaining nothing is already known to exist — the one-component repackaging of \(\operatorname{Sol}_D\)”.
+Why fails: If \(E\) has one active component, then \(\Gamma=\{k\}\), and there is no nonempty proper sub-block \(B\subsetneq\Gamma\). So the one-component candidate fails NonCircular. It does not satisfy (E) on every contract. This also removes the stated known counterexample to sufficiency.
+Fix: Either allow a different non-circularity witness for singleton \(\Gamma\), or stop claiming the one-component \(\operatorname{Sol}_D\) candidate satisfies (E). If the latter, sufficiency needs a new named open case.
+
+**3. [Serious/fatal for Part VI] Changing \(\operatorname{Account}\) to a two-place existential predicate breaks the restriction set \(\mathsf S_{E,p}\).**
+Attacked: 20a G3 row: “Account(E, p) arity with t, Γ existential | Part V opening | Done”. In 20 Part V:
+> “\(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)”.
+In 20 Part VI:
+> “The **restriction** \(E|W\), for \(W\subseteq\Gamma\), is the organization obtained by deleting every component in \(\Gamma\setminus W\)… Define \(\mathsf S_{E,p}=\{W\subseteq\Gamma:\operatorname{Account}(E|W,p)\}\).”
+Why fails: \(\operatorname{Account}(E|W,p)\) existentially quantifies over some new \(t',\Gamma'\). It does not require \(\Gamma'=W\). Therefore \(W\in\mathsf S_{E,p}\) no longer means that \(W\) is the support set. The finite monotone theorem and all support claims are about the wrong object.
+Fix: Use the explicit four-place predicate in Part VI: \(\mathsf S_{E,p}=\{W\subseteq\Gamma:\exists t'\ \operatorname{Account}(E|W,p,t'|W,W)\}\), or restore explicit \(\Gamma\) into the account predicate.
+
+**4. [Serious] “Anchored account-hood” is not well-defined because it adds conditions on “the anchor map” after the transport has been existentially quantified away.**
+Attacked: 20a G4 row: “Two grades of adequacy; anchoring stated: properness, resolution, no global relation, world-kind on C_adm, actuality of route | Done”. In 20 Part V:
+> “The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified: \(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)”.
+Then:
+> “The stronger grade, **anchored account-hood**, adds four conditions on the anchor map, all stated in the same vocabulary”.
+Why fails: If \(\operatorname{Account}(E,p)\) only requires existence of some \(t,\Gamma\), then an “anchored” account cannot refer to “the anchor map” without specifying which witness. One witness may have proper anchors, another not.
+Fix: Define \(\operatorname{Account}^{\mathrm{anch}}(E,p)\iff\exists t,\Gamma[\operatorname{Account}(E,p,t,\Gamma)\land\text{Properness}\land\text{Resolution}\land\text{NoGlobal}\land\text{WorldKind}]\).
+
+**5. [Serious] The new selection definition uses undefined and ill-typed material: “causally responsible,” \(\Sigma_h\), and “faithful transport to \(t\), to \(H\), or to the survival condition.”**
+Attacked: 20a G3 row: “Sel non-triviality over events with discrimination requirement, applied operator, causal responsibility; no ‘represents’ in the clause | Done”. In 20 Part IV:
+> “with the environment's filtering causally responsible for \(t\)'s presence and not merely consistent with it.”
+And:
+> “Non-triviality is a condition on the *events* of \(\Sigma_h\): no event in the selection process is itself a faithful transport to \(t\), to \(H\), or to the survival condition.”
+Why fails: “Causally responsible” is not defined in the semantics and is not in the primitive packages or declared parameters. \(\Sigma_h\) is introduced but never defined. A faithful transport is a relation between organizations; \(t\) is already a transport, \(H\) is a set of edit–boundary pairs, and a survival condition is a condition, so “faithful transport to \(t\), to \(H\), or to the survival condition” is ill-typed. Also “blindness” is defined but is not made a conjunct of \(\operatorname{Sel}\).
+Fix: Define causal responsibility or remove it; define \(\Sigma_h\) in the tuple; rephrase non-triviality as a condition on process events and representations; make blindness a conjunct if intended.
+
+**6. [Serious] Derivation 10 contains two incompatible stipulations about the tracker population.**
+Attacked: 20a G6 row: “Derivation 10: scenario, population assumption stated… | Done”. In 20 Part XVI:
+> “assume, as a stipulation about that population, that it contains trackers that keep a thing through an unconfirmed spell and trackers that do not, and that its survival condition is prediction of the field under the encountered changes.”
+But later:
+> “*If* the population's transports can only predict from occupancy — a stipulation about \(\mathcal T\), not a consequence of anything — no member survives the extended history.”
+Why fails: The first stipulation says the population contains trackers that keep a thing through an unconfirmed spell, i.e. trackers that can survive occlusion. The second stipulation says the transports can only predict from occupancy, i.e. cannot survive occlusion. Both cannot be true of the same stipulated population.
+Fix: Choose one population. If it contains persistence trackers, selection may survive occlusion; if it contains only occupancy predictors, delete the first stipulation.
+
+**7. [Serious] Derivation 6’s “no predicate left undefined” claim is false; several terms used in Parts II–XIII are not defined or listed.**
+Attacked: 20a G1 row: “Define or count as primitive: … | Done”; 20a G6 row: “Derivation 6: restricted consequence | Done”. In 20 Part XIV:
+> “No predicate in Parts II–XIII is left undefined apart from the two packages and the declared parameters”.
+But 20 Part IX defines:
+> “An **active route** is a connected subnetwork of actual occurrences joining a represented input to an operative result, whose components satisfy the applicable relations and which has nonconstant dependence on the represented distinction under the declared contrasts.”
+“Operative result,” “represented input,” and “declared contrasts” are not defined or listed in Part XIV. 20 Part X uses “incoming carriers,” “relabelling,” and “explanatory use”; 20 Part X Origin uses “relevant difficulty.”
+Fix: Either define these terms in the dependence order or add them to the declared parameters/primitive packages. Remove the absolute claim in Derivation 6.
+
+**8. [Serious] “Surprise entails loss of (R) and Deploy on \(C\)” is too strong because (R) is existential over organizations and transports.**
+Attacked: 20a G5 row: “Surprise entails loss of (R) and Deploy on C | Done”. In 20 Part IV:
+> “surprise at \((a,b)\in C\) is a failure of fidelity on \(C\), so on that contract the system has, by (R), stopped representing the content, and by Part X stopped deploying it”.
+Why fails: (R) says:
+> “\(\operatorname{Rep}_\ell(o,c)\iff\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\).”
+If one transport fails on \(C\), a different instantiated organization with a different faithful selected or constructed transport can still satisfy (R). Therefore the system has not necessarily “stopped representing” or “stopped deploying” the content.
+Fix: Say the particular transport has ceased to be faithful on \(C\), and representation via that transport is lost; do not conclude loss of (R) simpliciter.
+
+**9. [Serious] The added parenthetical explanation of the reversed-calculation example is false.**
+Attacked: 20a G5-related correction in Part VII. In 20 Part VII:
+> “here \(\tau\) sends the intervention on \(H\) to the edit that replaces the calculation's component assigning \(H\), which the reversed organization has none of, so \(\tau\) is undefined and (F2) fails at that pair”.
+Why fails: The reversed calculation \(H=L\tan\theta\) does assign \(H\); it has a component assigning \(H\) from \(L\) and \(\theta\). The failure is not that it has no component assigning \(H\); it is that intervening on \(H\) replaces that component in the reversed calculation while \(L\) does not change as it does in the target.
+Fix: Restore the 10-style explanation: intervening on \(H\) changes the target’s \(L\) but not the reversed calculation’s \(L\), so (F2) fails; \(\tau\) need not be undefined.
+
+**10. [Serious] The new definition of “coherently posed” contains a set-theoretic condition that forces \(S=K\), which cannot be intended.**
+Attacked: 20a G2 row: “C = (C_adm ∩ S) ∪ K with stated meanings… | Done”. In 20 Part III:
+> “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other's complements as stated.”
+Why fails: “\(S\) and \(K\) are disjoint from each other’s complements” means \(S\cap K^c=\varnothing\) and \(K\cap S^c=\varnothing\), hence \(S\subseteq K\) and \(K\subseteq S\), so \(S=K\). But \(S\) is a stated scope of admitted pairs and \(K\) is a counterfactual set, which the text treats as distinct. The condition is either trivial or incoherent.
+Fix: State the intended relation exactly, likely \(S\subseteq C_{\mathrm{adm}}\), \(K\cap C_{\mathrm{adm}}=\varnothing\) where \(K\) is truly non-admitted, and \(S\cap K=\varnothing\).
+
+**11. [Serious] “Fidelity conditions range over all of \(C\)” is ill-defined when \(C\) contains \(K\), because \(K\) is not admitted.**
+Attacked: 20a G2 row and 20 Part III:
+> “Fidelity conditions range over all of \(C\); the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\); a pair in \(K\) enters non-vacuity only through its stated meaning.”
+Why fails: \(K\) is “a declared set of **counterfactual edits** — pairs the module does not admit.” But (F1), (F2), and (A) require \(\tau(a),\sigma(b)\). The transport’s \(\tau:A_D\to A_E\) is defined on admitted edits; the text does not say \(\tau,\sigma\) are defined on non-admitted counterfactual pairs. Thus fidelity on all of \(C\) may be undefined exactly on \(K\). Also Part V non-vacuity does not mention \(K\) entering it.
+Fix: Either require \(\tau,\sigma\) to be extended to \(K\) with stated meanings and say so, or restrict fidelity to \(C_{\mathrm{adm}}\cap S\) and treat \(K\) separately.
+
+**12. [Serious] The new “question-begging” definition is a category error.**
+Attacked: 20a G1 row: “non-question-begging | Part XIII (Enable; question-begging as a structural condition) | Done”. In 20 Part XIII:
+> “\(\operatorname{Enable}(s,U,\chi)\) holds when \(\chi\) is an admitted enabling condition — a set of states and resources the module permits — under which \(s\) has \(\operatorname{Can}\) for the use task \(U\). An enabling condition \(\chi\) for the use of content \(c\) is **question-begging** when \(\chi\) contains, as a component at the declared grain, a deployment of \(c\) or an organization held to \(c\) by a faithful transport”.
+Why fails: \(\chi\) is defined as a set of states and resources. A set of states and resources does not have “components at the declared grain” in the organization sense. The condition mixes a state/resource set with organizational decomposition.
+Fix: Define \(\chi\) as an organization or a structured condition with components, or rephrase as: \(\chi\) includes a state realization of a deployment of \(c\) or of an organization faithfully transported to \(c\).
+
+**13. [Serious] The merit condition for question-finding uses a counterfactual “would repair” that (P) does not define.**
+Attacked: 20a G6 row: “Merit condition under (P) | Part X Origin | Done”. In 20 Part X:
+> “the found question \(p'\) counts as found, rather than re-parameterised, only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P), with \(o\) failing at the state before \(e\).”
+Why fails: \(\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\) is defined for an actual transition from \(\xi\) to \(\xi'\). The merit condition evaluates only the before-state and asks what “would” repair. It does not specify the counterfactual end-state, the episode, or the active routes. So (P) is not applied as defined.
+Fix: Define a hypothetical deployment state and episode, or require an actual later state at which \(p'\) repairs \(o\). Otherwise the merit condition is not a condition in the semantics.
+
+**14. [Serious] The sufficiency attack has been moved from the original \(\operatorname{Account}\) to the new anchored grade without acknowledging it as a change of the conjecture.**
+Attacked: 20a “What the revision changed…” and 20a G4. In 10 Part 0:
+> “A candidate that satisfies all four while plainly explaining nothing counts against it too.”
+In 20 Part 0:
+> “A candidate that satisfies the anchored grade while plainly explaining nothing counts against it too.”
+And 20 Part XV:
+> “A candidate meeting (E) alone and explaining nothing is already known to exist — the one-component repackaging of \(\operatorname{Sol}_D\) — and is why the second grade is stated; it does not refute the class, because the class's sufficiency claim is for the anchored grade.”
+Why fails: The original constitutive conjecture was assessed against the base account conditions. The revision concedes that a candidate satisfies the old condition and explains nothing, but rescues the class by redefining the sufficiency claim around a stronger grade. That is a goalpost move unless explicitly presented as a change of conjecture.
+Fix: State that the constitutive conjecture has been strengthened from account-hood to anchored account-hood, and list the original counterexample as a refutation of the old conjecture rather than as “already known” but harmless.
+
+**15. [Minor/serious] The count of conditions is still wrong, and 20a is internally inconsistent about it.**
+Attacked: 20a G5 row: “Five conjuncts, not ‘four conditions’ | Part V (now six, with adequacy) | Done”. In 20 Part V:
+> “\(\operatorname{Account}(E,p,t,\Gamma)\) holds exactly when the following **five** conditions hold”.
+But the equation is:
+> “\(\operatorname{Account}(E,p,t,\Gamma)\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}. \tag{E}\)”.
+Why fails: There are six conjuncts in (E), but the prose says five conditions. 20a itself says “Five conjuncts” and then “now six”.
+Fix: Standardize either “five conditions, with (F1) and (F2) grouped as Component fidelity” or “six conjuncts.”
+
+**16. [Serious] Derivation 5 asserts that the constructed question-organization has “exactly” the coherently posed questions as solutions, but the construction does not enforce the definition.**
+Attacked: 20a G6 row: “Derivation 5: question-organization built; provenance on the whole question; merit condition | Done”. In 20 Derivation 5:
+> “Components: the closure conditions — the baseline port reads ‘in’; if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined; \(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III. … Its solutions are exactly the coherently posed questions on \(D\).”
+Why fails: Coherently posed requires \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) defined on every pair in \(C\), and the \(S/K\) condition from Part III. The vague clause “\(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III” does not enforce those conditions, and the \(S/K\) condition in Part III is itself defective (finding 10). The “exactly” is unproved.
+Fix: Write the components explicitly as constraints enforcing each clause of coherently posed, and prove the solution set equality.
+
+**17. [Minor] The ledger says “relevant” was replaced, but 20 still uses it.**
+Attacked: 20a G1 row: “relevant | Part X … ‘required for that use’ replacing ‘relevant’ | Done”. In 20 Part X Origin:
+> “for which the relevant difficulty is that some obligation in \(O_p\) fails at the state before \(e\).”
+Why fails: “Relevant” survives under new wording, and it is not defined.
+Fix: Replace with the defined “required for the use” or define “relevant difficulty.”
+
+**18. [Minor] The new content-identity sentence falsely or ambiguously says the representation predicate is defined in terms of content identity.**
+Attacked: 20a G3 row: “content identity at the primitive layer not via Rep | Part IV ‘Three layers’ | Done”. In 20 Part IV:
+> “Content identity at the primitive layer — that two occurrences carry the same thing — is a fidelity fact between their organizations under \(P\)'s admitted edits; it does not use the representation predicate below, which is defined in terms of it.”
+Why fails: (R) is not defined in terms of content identity at the primitive layer; it is defined in terms of \(\operatorname{Inst}\), fidelity, and provenance. The sentence invites a circularity charge.
+Fix: Say content identity at the primitive layer is a fidelity fact between organizations and does not use (R); (R) uses \(\operatorname{Inst}\), not content identity.
+
+**19. [Minor] The G1 row says \(\Theta\)’s admitted edit set is stated “before anything quantifies over it,” but the document order does not do that.**
+Attacked: 20a G1 row: “Θ's admitted edit set stated explicitly before anything quantifies over it | Part XII ‘What the module supplies’ (A_Θ); Part III contract form; Part II admissible grains | Done”. In 20 Part II:
+> “A grain is **admissible** for an occurrence \(o\) when the physical module licenses an organization at that grain … and every component of that organization has a signature that some physically admitted edit realizes”.
+Why fails: Part II and Part V use “physically admitted”/\(C_{\mathrm{adm}}\) before Part XII defines \(A_\Theta(o)\). The definition is backward-referenced, not stated before.
+Fix: Move the \(A_\Theta(o)\) definition earlier or explicitly forward-reference it at first use.
+
+**20. [Minor] The contract form uses \(A_\Theta\), but Part XII defines \(A_\Theta(o)\).**
+Attacked: 20a G2 row: “C = (C_adm ∩ S) ∪ K… | Done”. In 20 Part III:
+> “for a physical organization, the physically admitted edits \(A_\Theta\) (Part XII)”.
+In 20 Part XII:
+> “the **admitted edit set** \(A_\Theta(o)\) — which alterations of the occurrence's state the module permits”.
+Why fails: \(A_\Theta\) and \(A_\Theta(o)\) are not the same symbol. A contract is relative to an organization/occurrence, so the occurrence parameter matters.
+Fix: Use \(A_\Theta(o)\) consistently or define \(A_\Theta\) as the union over occurrences.
+
+**21. [Minor/serious] “Admissible grains” uses “signature” without a contract.**
+Attacked: 20a G1 row: “Admissible grains constrained | Part II ‘Admissible grains’ | Done”. In 20 Part II:
+> “every component of that organization has a signature that some physically admitted edit realizes”.
+Why fails: Signature is defined relative to a contract \(C\) by (K). Here no \(C\) is specified; “a signature that some physically admitted edit realizes” is not well-formed.
+Fix: Say: for some admitted edit \(a\), the component’s relation changes under \(a\), or define a signature on the full admitted contract \(C_{\mathrm{adm}}\).
+
+**22. [Minor/serious] “Selected question” borrows the discrimination requirement from the transport definition, where it is not defined for questions.**
+Attacked: 20a G3/G5 rows. In 20 Part III:
+> “A **selected** question is the surviving member of a population of questions under a variation-and-survival history satisfying the discrimination requirement of Part IV.”
+Why fails: The discrimination requirement in Part IV is part of \(\operatorname{Sel}(t;\mathcal T,\mu,H,\Sigma_h)\) for transports. A question is a tuple \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\), not a transport. Derivation 5 later makes a question-organization, but Part III does not say the selected question’s population is a population of question-organizations satisfying that requirement.
+Fix: Define selected questions explicitly via the question-organization \(D_p\), or say the requirement applies to the question-organization.
+
+I have no additional finding for the remaining Done rows not named above.
+====================================================================================================
+R9_against_original | rev_deepseek | sample 1 | finish stop | 18369 chars | error None
+====================================================================================================
+Findings, ranked by severity. Quotations are from the texts as supplied.
+
+## Fatal
+
+**F1 — 20a G5 “Non-circular dependence witness: proper sub-block” is marked Done, but the repair contradicts 20’s own claim that the one-component candidate satisfies (E).**
+Claim attacked: 20 Part V says the witness is “an edit τ(a) on E … that removes or replaces a nonempty proper sub-block \(B\subsetneq\Gamma\)”. It then says: “The one-component candidate that repackages \(\operatorname{Sol}_D\) satisfies (E). It is an account at \(C\) and not anchored.” If \(\Gamma\) has one member, there is no nonempty proper sub-block. If \(\Gamma\) is empty, likewise. So the one-component candidate cannot satisfy (E) as stated. Severity: fatal. Fix: require a nonempty sub-block, not proper, or exempt singleton \(\Gamma\), or delete the one-component claim.
+
+**F2 — 20a G4 “λ a proper decomposition … conditions 1 and 3” is marked Done, but condition 3 excludes every faithful component.**
+Claim attacked: 20 Part V condition 3 says: “No active component’s relation is, on \(C\), definable as \(\operatorname{Sol}_D(a,b)\) or a projection of it”. But (F1) says: \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)] = L_k(\tau(a),\sigma(b))\). Since \(\operatorname{Sol}_{\lambda(k)}\) is a projection of \(\operatorname{Sol}_D\) onto the anchor’s components (hidden ports projected away), \(L_k\) is a projection of \(\operatorname{Sol}_D\). Condition 3 therefore excludes every component of every faithful decomposition. Severity: fatal. Fix: restrict condition 3 to the whole-target case, or define “definable” narrowly as definable without using \(\lambda(k)\).
+
+**F3 — 20a G1 “owned” is marked Done, but 20 defines “owned” circularly with Can.**
+Claim attacked: Part X says: “A subhistory is **owned** by \(s\) when every process occurrence in it is an execution of a capability \(s\) possesses in the sense of Part XII (\(\operatorname{Can}\))”. Part XII says: “\(\operatorname{Can}_{\Omega,\beta}(\xi,T;\chi)\) requires an owned retained realization or an owned, physically admitted, finite construction of one”. Severity: fatal. Fix: define ownership without Can, or define Can without ownership, or split the notions.
+
+**F4 — 20a G3 “Con requires an *instantiated* target, breaking the Rep/Con cycle” is marked Done, but the claimed separation does not follow from the definition of Sel.**
+Claim attacked: Part IV says: “What keeps the two apart: a selection witness contains no itemised representation of a defect and no target instantiated before the variation; a construction witness contains both.” But the definition of Sel in Part IV requires population, applied variation, history \(H\), eliminating survival condition, causal responsibility; it nowhere says the target was not instantiated before the variation. A selection process can have the target instantiated in its history. Severity: fatal. Fix: add “no target instantiated before the variation” to Sel, or stop claiming Sel excludes it.
+
+**F5 — 20a G6 “Derivation 1: subnetwork signature; injectivity” is marked Done, but Part V cites Derivation 1 without injectivity.**
+Claim attacked: Part V says: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract”. Derivation 1 now says: “let \((\tau,\sigma)\) be injective on \(C\)”. The citation omits the new hypothesis. Severity: fatal for the formal entailment. Fix: add injectivity to (F1)/the citation, or restate Derivation 1 without it.
+
+**F6 — 20a G6 “Derivation 3: pair, closure hypothesis, ‘no guarantee’” is marked Done, but the proof fails if \(\tau\) is non-injective.**
+Claim attacked: Derivation 3 says: “Survival on \(H\) constrains only the relations at pairs in \(H\).” If \(\tau(a)\) for \((a,b)\notin H\) equals \(\tau(a')\) for some \((a',b')\in H\), then altering the relation at \((a,b)\) alters the relation at \((a',b')\), which is constrained by survival on \(H\). The proof assumes a separation it does not state. Severity: fatal for the derivation as written. Fix: require \(\tau\) injective on \(C\), or require the closure operation to respect fibers of \((\tau,\sigma)\).
+
+**F7 — 20a G2 “Contract-adequacy condition … as a conjunct of (E)” is marked Done, but 20’s Part 0 still says the first grade is assessable within a question.**
+Claim attacked: Part 0 says: “An **account at a contract** is a candidate whose components and assembled organization are faithful to their anchors under every change the contract admits, that answers the question asked, that does not restate the answer, and whose contract is stated.” It then says: “The first grade is what can be assessed within a question.” Part V says: \(\operatorname{Account}(E,p,t,\Gamma)\iff\) (F1)∧(F2)∧(A)∧NonCircular∧NonVacuous∧**Adequate**, where Adequate ranges over \((a,b)\in C_{\mathrm{adm}}\setminus C\). Severity: fatal inconsistency. Fix: align Part 0 with Part V, or move adequacy out of (E).
+
+**F8 — 20a G2 “\(C=(C_{\mathrm{adm}}\cap S)\cup K\)” is marked Done, but the definition contradicts the preceding sentence.**
+Claim attacked: Part III says: “The **contract** \(C\) is the set of admitted edit–boundary pairs the claim ranges over”. It then says \(C=(C_{\mathrm{adm}}\cap S)\cup K\), where \(K\) is “a declared set of **counterfactual edits** — pairs the module does not admit”. So \(C\) is not a set of admitted pairs. Severity: fatal definitional contradiction. Fix: say “edit–boundary pairs, admitted or declared counterfactual”.
+
+**F9 — 20a G5 “Five conjuncts” is marked Done, but the arity change in Part V breaks Part VI’s \(\mathsf S_{E,p}\).**
+Claim attacked: Part V says: “\(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)”. Part VI says: \(\mathsf S_{E,p}=\{W\subseteq\Gamma:\operatorname{Account}(E|W,p)\}\). Because \(\operatorname{Account}(E|W,p)\) existentially quantifies over some \(\Gamma\), it may choose commitments outside \(W\). Severity: fatal for the support machinery. Fix: define \(\mathsf S_{E,p}\) with the commitments fixed to \(W\), e.g. \(\operatorname{Account}(E|W,p,t,\Gamma=W)\).
+
+**F10 — 20a G4 “actuality of route” is marked Done, but condition 4 is a category error.**
+Claim attacked: Part V condition 4 says: “Where the physical module supplies a history for \(D\), each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences”. Part IX defines an active route as “a connected subnetwork of actual occurrences”. But an anchor \(\lambda(k)\) is a subnetwork of \(D\), an organization, not a subnetwork of occurrences in \(h\). Severity: fatal type confusion. Fix: state the condition on occurrences instantiating the anchor, or keep it as a separate history condition.
+
+## Serious
+
+**F11 — 20a G5 “Bearing parameters” is marked Done, but Bearing still ignores target, grounds, and connection.**
+Claim attacked: Part IX says: “A criticism \(c\) has target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection. … Then \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta)\).” \(z\), \(g\), and the connection do not appear on the right. A criticism about the wrong target can have Bearing. Severity: serious. Fix: include a target/connection condition in the right-hand side, or remove the unused parameters.
+
+**F12 — 20a G5 “Five conjuncts, not ‘four conditions’” is marked Done, but 20 says five conditions and writes six conjuncts.**
+Claim attacked: Part V says: “the following **five** conditions hold”, then writes: \(\operatorname{Account}(E,p,t,\Gamma)\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}\). The ledger itself says “Five conjuncts … (now six, with adequacy)”. Severity: serious/cosmetic but formal. Fix: count consistently; say six conjuncts or merge (F1)/(F2).
+
+**F13 — 20a G5 “Non-vacuity’s last sentence moved” is marked Done, but the moved condition is absent.**
+Claim attacked: 10 non-vacuity had: “A contract consisting only of relabelings, or excluding every change under which the active commitments could matter to \(\mathcal Q\), does not satisfy non-circular dependence and is therefore not a contract on which an account can be claimed.” 20 non-vacuity says only: “\(\operatorname{Sol}_D(1,b_0)\neq\varnothing\). The contract \(C\) is a stated subset …”. The relabeling case is not restored in adequacy. Severity: serious. Fix: restore the condition or prove adequacy catches relabeling-only contracts.
+
+**F14 — 20a G3 “causal responsibility” is marked Done, but “causally responsible” is undefined and not listed as primitive or declared.**
+Claim attacked: Part IV Sel says: “with the environment’s filtering causally responsible for \(t\)’s presence and not merely consistent with it.” Part XIV lists two primitive packages and declared parameters; “causal responsibility” is neither. Severity: serious. Fix: define causal responsibility in the physical module or list it as a declared parameter.
+
+**F15 — 20a G4 “Forward and historical kinds” is marked Done, but historical kinds invoke undefined witnesses.**
+Claim attacked: Part II says: “A **historical kind** is a predicate on the history that produced an occurrence of a component — selected, constructed, descended from, copied from — with the witness that Part IV requires for provenance.” Part IV defines witnesses only for transport provenance: \(\operatorname{Sel}\), \(\operatorname{Con}\), \(\operatorname{Dec}\). There are no witnesses for “descended from” or “copied from”. Severity: serious. Fix: define those witnesses or restrict historical kinds to Sel/Con/Dec.
+
+**F16 — 20a G4 “Grievance 1 aligned with formal causal signature” is marked Done, but Grievance 1 contradicts Part II.**
+Claim attacked: Grievance 1 says: “Intervening on the **input port** of a causal assignment replaces the component that assigns that port and leaves the causal component’s own relation in force”. Part II says: “a **causal assignment** has a signature that changes under intervention on its **output port**”. Severity: serious. Fix: make the grievance use the formal signature’s port convention.
+
+**F17 — 20a G5 “identification example corrected” is marked Done, but the reversed-calculation parenthetical is formally confused.**
+Claim attacked: Part VII says: “\(\tau\) is undefined and (F2) fails at that pair”. If \(\tau\) is undefined, (F2) is not well-formed. Severity: serious. Fix: say the transport is not defined on that edit, or extend \(\tau\) and then show (F1)/(F2) fail.
+
+**F18 — 20a G6 “Derivation 5: question-organization built” is marked Done, but the construction overclaims.**
+Claim attacked: Derivation 5 says: “Its solutions are exactly the coherently posed questions on \(D\).” Coherently posed includes “\(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other’s complements as stated.” The construction only says: “\(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.” Severity: serious. Fix: add components enforcing each coherence clause or weaken “exactly”.
+
+**F19 — 20a G2 “Contract adequacy” is marked Done, but the comparison is undefined.**
+Claim attacked: Part V says: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse.” “Does not” lacks a specified baseline for \(\operatorname{Ans}_E\), and “or the reverse” leaves the second comparison ambiguous. Severity: serious. Fix: state both baseline values explicitly.
+
+**F20 — 20a G6 “Derivation 10: population assumption stated” is marked Done, but the scenario’s population stipulations conflict.**
+Claim attacked: Derivation 10 says: “assume, as a stipulation about that population, that it contains trackers that keep a thing through an unconfirmed spell and trackers that do not”. It later says: “If the population’s transports can only predict from occupancy … no member survives”. Those cannot both describe the same population. Severity: serious. Fix: distinguish the tracker population from the simulation-layer transport population, or remove the contradiction.
+
+**F21 — 20a G5 “Surprise entails loss of (R) and Deploy on C” is marked Done, but the entailment needs an identity between contracts.**
+Claim attacked: Part IV says: “surprise at \((a,b)\in C\) is a failure of fidelity on \(C\), so on that contract the system has, by (R), stopped representing the content, and by Part X stopped deploying it”. (R) requires faithfulness on \(c\)’s contract. The text does not establish that the surprise contract \(C\) is \(c\)’s contract. Severity: serious. Fix: state \(C=C_c\), or restrict the claim.
+
+**F22 — 20a G4 “world-kind on \(C_{\mathrm{adm}}\)” is marked Done, but condition 4 is type-mismatched.**
+Claim attacked: Part V condition 4 says: “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor”. Part II defines “Two components \(j,j'\) are **of one forward kind**”. An anchor is a subnetwork, not a component. Severity: serious. Fix: define kind between a component and a subnetwork, or phrase condition 4 as signature equality.
+
+**F23 — 20a G5 “(EK) world-state” is marked Done, but (EK) still writes \(\operatorname{Account}(c,p_c)\) with a content where Part V expects an organization.**
+Claim attacked: Part XI has: \(\exists c,p_c,e_c[\ldots \operatorname{Account}(c,p_c)\ldots]\). Part V defines \(\operatorname{Account}(E,p)\). Part XI adds: “Here \(c\) is a content whose organization is the \(E\) of \(\operatorname{Account}(E,p_c)\)”, but the formula still says \(\operatorname{Account}(c,p_c)\). Severity: serious type mismatch. Fix: write \(\operatorname{Account}(E_c,p_c)\) explicitly.
+
+**F24 — 20a G1 “Lic, Scope, Live” is marked Done, but the definitions use undefined terms.**
+Claim attacked: Part IX says: “\(\operatorname{Lic}_j(u)\): the form of \(u\) is in \(\mathcal L_j\); \(\operatorname{Scope}_j(u)\): every pair \(u\) ranges over lies in \(C_j\); \(\operatorname{Live}_j(d;u)\): premise \(d\) has not been withdrawn in \(j\)’s log before \(u\).” “Form of \(u\)” and “before” are not defined. Severity: serious. Fix: define argument form and the ordering of the withdrawal log.
+
+**F25 — 20a G6 “Derivation 8” is marked Done, but the odd-order example’s anchoring claim is not stated.**
+Claim attacked: Part VII says: “the background components (arithmetic, the determinant) are anchored to themselves under the identity translation, which is stated rather than assumed.” The example does not actually state this anchor map. Severity: serious. Fix: state the anchor map or remove “which is stated”.
+
+## Minor
+
+**F26 — 20a G2 “Admission relation for mathematical organizations declared” is marked Done, but “coherently posed” is obscure.**
+Quote: “\(S\) and \(K\) are disjoint from each other’s complements as stated.” Severity: minor. Fix: state \(S\cap K=\varnothing\) and \(S\subseteq C_{\mathrm{adm}}\), \(K\cap C_{\mathrm{adm}}=\varnothing\).
+
+**F27 — 20a G3 “declared is model-level” is marked Done, but Part IV contradicts its own “determined by history”.**
+Quote: “A transport \(t\) … has a provenance determined by its history in the physical module”. Then: “Declared provenance is a status in the model, not a physical history.” Severity: minor. Fix: say provenance is determined by history or by the absence of a witness.
+
+**F28 — 20a G1 “Θ’s admitted edit set stated explicitly before anything quantifies over it” is marked Done, but Part II quantifies over “physically admitted edit” before Part XII.**
+Quote: Part II: “every component of that organization has a signature that some physically admitted edit realizes”. Part XII is where \(A_\Theta\) is supplied. Severity: minor. Fix: define \(A_\Theta\) earlier or forward-reference explicitly.
+
+**F29 — 20a G6 Derivation 1 is marked Done, but “up to port translation” is the wrong translation.**
+Quote: “has, on \(\tau[C]\), the signature that its anchor subnetwork \(\lambda(k)\) has on \(C\), up to the port translation.” The first two coordinates are translated by \((\tau,\sigma)\), not by the port translation of \(\lambda\). Severity: minor. Fix: say “up to \((\tau,\sigma)\) and the port translation”.
+
+**F30 — 20a G4 “λ a proper decomposition” is marked Done, but “refine a cover” is misused.**
+Quote: “the anchors of the active components refine a cover of \(D\)’s components”. Severity: minor. Fix: say the anchors form a cover, or define the refinement relation.
+
+**F31 — 20a G3 “content identity at the primitive layer not via Rep” is marked Done, but the sentence is unclear.**
+Quote: “it does not use the representation predicate below, which is defined in terms of it.” (R) is defined in terms of \(\operatorname{Inst}\), not content identity. Severity: minor. Fix: rewrite.
+
+**F32 — 20a G3 “Org_ℓ as relation (Inst) with (R) existential” is marked Done, but the existential over \(D\) may overgenerate representation.**
+Quote: \(\operatorname{Rep}_\ell(o,c)\iff\exists D\exists t[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\). If one occurrence instantiates several organizations and one has a faithful transport, \(o\) represents \(c\), even if the operative organization does not. Severity: minor. Fix: restrict to the relevant organization or add an operative-use condition.
+
+**F33 — 20a G6 Derivation 5 is marked Done, but Attempt’s instantiation language is type-short.**
+Quote: “where \(p\) is a coherently posed question that \(s\) instantiates before \(e\)”. A system instantiates organizations, not questions, unless \(D_p\) is meant. Severity: minor. Fix: say \(s\) instantiates the question-organization \(D_p\).
+
+**F34 — 20a G6 “Merit condition under (P)” is marked Done, but the counterfactual is not well-defined.**
+Quote: “a deployable account of \(p'\) would repair \(o\) under (P)”. (P) includes \(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\), which depends on an actual episode. Severity: minor. Fix: define the counterfactual explicitly or state the merit condition as an existence claim about a possible episode with its own \(\Delta'\).
+
+End of findings.
+====================================================================================================
+R9_against_original | rev_deepseek | sample 2 | finish stop | 20618 chars | error None
+====================================================================================================
+Findings, ranked by severity.
+
+## Fatal
+
+### 1. The one-component candidate is said to satisfy (E), but it cannot satisfy non-circular dependence.
+**Claim attacked.** 20a G5: “Five conjuncts, not ‘four conditions’ | Part V (now six, with adequacy) | Done”. 20 Part V: “The one-component candidate that repackages \(\operatorname{Sol}_D\) satisfies (E). It is an account at \(C\) and not anchored.” 20 Part XV: “A candidate meeting (E) alone and explaining nothing is already known to exist — the one-component repackaging of \(\operatorname{Sol}_D\).”
+**Why it fails.** 20 Part V non-circular dependence requires: “there exists an edit \(\tau(a)\) on \(E\) … that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\) while preserving the other boundary conditions”. If \(E\) has one active component, then \(\Gamma=\{k\}\), and there is no nonempty proper sub-block \(B\subsetneq\Gamma\). The text itself adds: “Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing.” So the one-component candidate fails non-circular dependence and therefore does **not** satisfy (E). The claim that it does contradicts the definition of (E).
+**Severity.** Fatal. It is an internal contradiction, and Part XV’s sufficiency concession depends on it.
+**Fix.** Either remove the claim that the one-component candidate satisfies (E), or revise non-circular dependence so that the one-component case can satisfy it, or explicitly say the one-component candidate fails non-circular dependence and only fails anchoring.
+
+### 2. Fidelity is said to range over all of \(C\), but \(C\) contains counterfactual edits \(K\) that are not in \(A\), so \(\operatorname{Sol}_D(a,b)\) is undefined on them.
+**Claim attacked.** 20a G2: “C = (C_adm ∩ S) ∪ K with stated meanings; fidelity on C, objectivity on C_adm | Part III ‘Contracts’ | Done”. 20 Part III: “Fidelity conditions range over all of \(C\); the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\); a pair in \(K\) enters non-vacuity only through its stated meaning.” 20 Part III also says: “\(K\) is a declared set of **counterfactual edits** — pairs the module does not admit”.
+**Why it fails.** Part II defines \(A\) as the set of admitted edits and \(\operatorname{Sol}_D(a,b)\) for edits \(a\) in that set. If \(a\in K\) is “pairs the module does not admit”, then \(a\notin A\), so \(\operatorname{Sol}_D(a,b)\) and \(L_j(a,b)\) are not defined. Yet (F1), (F2), and (A) are required to hold for every \((a,b)\in C\), including \(K\).
+**Severity.** Fatal. It breaks the formal definition of fidelity on \(C\).
+**Fix.** Either put \(K\) into \(A\) as formal edits with stipulated relations, or restrict fidelity conditions to \(C_{\mathrm{adm}}\cap S\) and treat \(K\) only through its stated meaning.
+
+### 3. The question tuple omits \(C_{\mathrm{adm}}\), \(S\), and \(K\), but Account conditions quantify over \(C_{\mathrm{adm}}\setminus C\).
+**Claim attacked.** 20a G2: “Contract-adequacy condition (protective contracts) as a conjunct of (E); objectivity = two indices | Part V ‘Contract adequacy’ | Done”. 20 Part III: “A question is \(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\).” Then: “\(C=(C_{\mathrm{adm}}\cap S)\cup K\).”
+**Why it fails.** Part V’s adequacy condition says: “there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\)”. But \(p\) contains only \(C\), not \(C_{\mathrm{adm}}\), \(S\), or \(K\). From \(C\) alone one cannot recover \(C_{\mathrm{adm}}\setminus C\), because \(C_{\mathrm{adm}}\setminus C=C_{\mathrm{adm}}\setminus S\), and \(S\) is not in the tuple. So \(\operatorname{Account}(E,p)\) is not well-defined from \(p\) as stated.
+**Severity.** Fatal. The central account predicate depends on data not in its argument.
+**Fix.** Include \(C_{\mathrm{adm}},S,K\) in the question tuple, or make \(C\) a structured object carrying those components.
+
+### 4. The construction witness requires the transport’s target to be instantiated before the episode, which blocks deployment of newly constructed contents.
+**Claim attacked.** 20a G3: “Con requires an *instantiated* target, breaking the Rep/Con cycle | Part IV ‘Constructed’; Derivation 6 | Done”. 20 Part IV: “\(\operatorname{Con}(t;h,e)\) holds when there is an episode … whose construction witness prepares \(t\), and in which the organization \(t\) targets is instantiated by an occurrence in the episode’s history before \(e\)”.
+**Why it fails.** In (R), a carrier represents content \(c\) by a transport \(t:c\to D\). So the target of \(t\) is \(c\). If \(c\) is a newly constructed content at \(e\), then \(c\) is not instantiated before \(e\). But Deploy requires a representation of \(c\), which requires a faithful transport with selected or constructed provenance. If the transport is constructed, \(\operatorname{Con}\) requires \(c\) instantiated before the episode. Thus a newly constructed content cannot be deployed, and (EK) cannot hold for it.
+**Severity.** Fatal. It undermines the construction-origin knowledge claim.
+**Fix.** Separate construction of a new content from representation of a pre-existing target. Require the world-target of a representation transport to be instantiated before the episode, not the content being created.
+
+## Serious
+
+### 5. The selection non-triviality clause has a type error: events are said to be faithful transports.
+**Claim attacked.** 20a G3: “Sel non-triviality over events with discrimination requirement, applied operator, causal responsibility; no ‘represents’ in the clause | Part IV ‘Selected’ | Done”. 20 Part IV: “Non-triviality is a condition on the *events* of \(\Sigma_h\): no event in the selection process is itself a faithful transport to \(t\), to \(H\), or to the survival condition.”
+**Why it fails.** A faithful transport, as defined in Part IV, is a quadruple \((\pi,\tau,\sigma,\lambda)\) between organizations. An event is not a transport. The clause is type-incorrect, so it does not define the non-triviality it claims to define.
+**Severity.** Serious. The definition of selected provenance is formally broken.
+**Fix.** Replace with: “no event in the selection process carries an itemised representation of \(t\), \(H\), or the survival condition”, or define a precise subprocess-to-transport relation.
+
+### 6. Derivation 3 changes the type of the selected population from “realized transports” to “organization–transport pairs”.
+**Claim attacked.** 20a G6: “Derivation 3: pair, closure hypothesis, ‘no guarantee’ | Derivation 3; Grievance 3; Part XV | Done”. 20 Part IV: “a population \(\mathcal T\) of realized transports with \(|\mathcal T|\ge 2\)”. 20 Derivation 3: “Let \(t:D\to E\) be selected on \(H\subsetneq C\) from a population \(\mathcal T\) of organization–transport pairs”.
+**Why it fails.** The selection witness \(\operatorname{Sel}(t;\mathcal T,\mu,H,\Sigma_h)\) is defined over a population of transports, not of organization–transport pairs. Derivation 3 then varies component relations of \(E\), which changes the organization, not merely the transport. The derivation does not use the same \(\mathcal T\) as the definition it is supposed to be about.
+**Severity.** Serious. The central underdetermination result is about a different type of population than the definition permits.
+**Fix.** Either extend \(\operatorname{Sel}\) to populations of organization–transport pairs, or reformulate Derivation 3 in terms of transports whose component relations are variable.
+
+### 7. “Admissible grains” says a component has a signature that an edit realizes; signatures are not realized by edits.
+**Claim attacked.** 20a G1: “Admissible grains constrained | Part II ‘Admissible grains’ | Done”. 20 Part II: “A grain is **admissible** for an occurrence \(o\) when the physical module licenses an organization at that grain … and every component of that organization has a signature that some physically admitted edit realizes”.
+**Why it fails.** A signature is defined in (K) as a set of triples \((a,b,L_j(a,b))\) relative to a contract \(C\). An edit does not “realize” a signature. An edit realizes or fails to distinguish a relation. The sentence also has no contract relative to which the signature is taken.
+**Severity.** Serious. It makes grain-admissibility undefined.
+**Fix.** Say: “every component relation is realized by some physically admitted edit”, and relativize to a contract.
+
+### 8. Part V says “five conditions” but (E) has six conjuncts, and 20a admits the text is now six.
+**Claim attacked.** 20a G5: “Five conjuncts, not ‘four conditions’ | Part V (now six, with adequacy) | Done”. 20 Part V: “holds exactly when the following **five** conditions hold”. 20 Part V equation (E): “\((F1)\land(F2)\land(A)\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}\)”.
+**Why it fails.** The formal conjunction has six conjuncts. The prose says five. The ledger says “now six”. The document was not updated consistently.
+**Severity.** Serious, though easily fixed.
+**Fix.** Change “five” to “six”, or state five headings with (F1) and (F2) grouped as one condition and make the equation match.
+
+### 9. Derivation 5 claims the question-organization’s solutions are exactly the coherently posed questions, but the construction does not enforce coherence.
+**Claim attacked.** 20a G6: “Derivation 5: question-organization built; provenance on the whole question; merit condition | Derivation 5; Part III; Part X | Done”. 20 Derivation 5: “Its solutions are exactly the coherently posed questions on \(D\).”
+**Why it fails.** Part III defines a coherently posed question by: \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) defined on every pair in \(C\), and \(S\) and \(K\) disjoint as stated. The construction lists ports and closure conditions, but none of these enforces nonempty target solutions, totality of \(\mathcal Q\), or disjointness. It at best represents a subset of coherently posed questions.
+**Severity.** Serious overclaim.
+**Fix.** Weaken to “a superset of the coherently posed questions” or add components enforcing the coherence conditions.
+
+### 10. The merit condition for question-finding uses (P) prospectively, but (P) requires an actual episode and ProducedBy relation.
+**Claim attacked.** 20a G6: “Merit condition under (P) | Part X Origin | Done”. 20 Part X: “the found question \(p'\) counts as found, rather than re-parameterised, only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P), with \(o\) failing at the state before \(e\).”
+**Why it fails.** (P) is defined as \(\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\), and it contains \(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\). To evaluate “would repair \(o\) under (P)” before the account exists, one must have an episode \(\Delta\) and a produced-by route that have not yet happened. The condition is ill-defined at the moment of finding.
+**Severity.** Serious. It undermines the stated line between finding and re-parameterising.
+**Fix.** Define a prospective repair predicate that does not require an actual \(\Delta\), or state the merit condition at the end of the episode rather than at the moment of finding.
+
+### 11. The anchored grade’s fourth condition mixes subnetworks of an organization with routes of actual occurrences.
+**Claim attacked.** 20a G4: “Two grades of adequacy; anchoring stated: … actuality of route | Part V ‘Two grades’ | Done”. 20 Part V condition 4: “Where the physical module supplies a history for \(D\), each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically.”
+**Why it fails.** The anchor \(\lambda(k)\) is a subnetwork of \(D\), which is an organization. Part IX defines an active route as “a connected subnetwork of actual occurrences”. These are different types. An organization is not a set of occurrences. The condition does not say how an anchor, which is organization data, is identified with an occurrence route.
+**Severity.** Serious. The anchored grade is not well-typed where histories are involved.
+**Fix.** Distinguish the anchor subnetwork of \(D\) from the occurrence route that realizes it, and state a realization relation between them.
+
+### 12. “Faithful on \(C\)” is used without an active-commitment set \(\Gamma\), but (F1) is defined only for active components.
+**Claim attacked.** 20a G3: “Account carries no provenance condition; (R), Deploy, (EK) add Sel ∨ Con | Part V after (E); Part X Deploy; Part XI (EK) | Done”. 20 Part IV: “A transport is **faithful on \(C\)** when it satisfies (F1) and (F2) of Part V on \(C\).” 20 Part V (F1): “For every **active component** \(k\) of \(E\) with anchor subnetwork \(\lambda(k)\subseteq D\)”.
+**Why it fails.** “Active component” is defined by \(\Gamma\), the identified set of active commitments in \(E\). But \(\operatorname{Faithful}_C(t)\) is used in (R), in \(\operatorname{Sel}\), and elsewhere without a \(\Gamma\). So fidelity is not well-defined for a bare transport. This defect survives from document 10.
+**Severity.** Serious. The representation predicate and provenance definitions depend on an undefined fidelity predicate.
+**Fix.** Define \(\operatorname{Faithful}_C(t,\Gamma)\) or define fidelity over all components of \(E\) independently of \(\Gamma\).
+
+### 13. The coherence condition “\(S\) and \(K\) are disjoint from each other’s complements” is logically wrong.
+**Claim attacked.** 20a G2: “C = … | Part III ‘Contracts’ | Done”. 20 Part III: “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other’s complements as stated.”
+**Why it fails.** \(S\) disjoint from \(K\)’s complement implies \(S\subseteq K\). \(K\) disjoint from \(S\)’s complement implies \(K\subseteq S\). Together they imply \(S=K\). That is not the intended condition; the intended condition is that \(S\) and \(K\) are disjoint.
+**Severity.** Serious formal error.
+**Fix.** Say “\(S\cap K=\varnothing\)” and, if needed, “\(K\cap C_{\mathrm{adm}}=\varnothing\)”.
+
+### 14. (EK) tells us “the \(E\) of \(\operatorname{Account}(E,p_c)\)”, but Account is now a predicate, not an object.
+**Claim attacked.** 20a G5: “(EK) world-state … | Part XI (evaluated at ξ’); … | Done”. 20 Part XI: “Here \(c\) is a content whose organization is the \(E\) of \(\operatorname{Account}(E,p_c)\)”.
+**Why it fails.** \(\operatorname{Account}(E,p_c)\) is a truth predicate after the revision. It does not have an “\(E\)” as a component to extract. This is a type error introduced by changing Account’s arity.
+**Severity.** Serious.
+**Fix.** Say: “\(c\) is a content with organization \(E\) such that \(\operatorname{Account}(E,p_c)\)”.
+
+### 15. Enable’s question-begging clause says an enabling condition can contain “a deployment of \(c\)” as a component.
+**Claim attacked.** 20a G1: “Enable; question-begging as a structural condition | Part XIII | Done”. 20 Part XIII: “\(\chi\) contains, as a component at the declared grain, a deployment of \(c\) or an organization held to \(c\) by a faithful transport”.
+**Why it fails.** Deployment is a predicate, not a component. An enabling condition is a set of states and resources. It can contain an occurrence or an organization, not a deployment predicate.
+**Severity.** Serious type error.
+**Fix.** Say: “contains an occurrence instantiating an organization held to \(c\) by a faithful transport”, or “contains a representation of \(c\)”.
+
+### 16. “Operative deliberative rule” remains undefined, so Derivation 6’s “no residual predicate is left undefined” is false.
+**Claim attacked.** 20a G1: “Define or count as primitive: ProducedBy, ProducesVia, Result, Lic, Scope, Live, Enable, ≡_ℓ, Exec, restriction, observation edit, independent boundary, nontrivial binding construction, content-preserving recoding, owned, relevant, non-question-begging, ≺_h | … | Done”. 20a G6: “Derivation 6: restricted consequence | Derivation 6 | Done”. 20 Part IX: “sends content changes to the changes specified by the **operative deliberative rule**”.
+**Why it fails.** The phrase “operative deliberative rule” is not defined in document 20 and is not listed in the G1 inventory. Derivation 6 nevertheless claims: “No residual predicate is left undefined.”
+**Severity.** Serious. It falsifies the closure claim.
+**Fix.** Define “operative deliberative rule” or add it to the declared parameters.
+
+### 17. “Answer ports” is undefined in the definition of independent boundary.
+**Claim attacked.** 20a G1: “independent boundary | Part V | Done”. 20 Part V: “A boundary condition \(b\) is **independent** of the answer when no faithful transport carries the answer ports into the boundary ports.”
+**Why it fails.** “Answer ports” is not defined. It presumably means ports read by \(\mathcal Q\), but that is not stated. The relation “carries … into” is also not the transport relation defined earlier.
+**Severity.** Serious. It makes the non-circular dependence condition partly undefined.
+**Fix.** Define answer ports as the ports of \(E\) read by \(\mathcal Q\), and define the carrying relation precisely.
+
+### 18. The eliminative-explanation section anchors a rival’s supposed structure to a “deleted subnetwork”, but a deleted component is not a subnetwork of \(D\).
+**Claim attacked.** 20a G7: “Impossibility eliminations through \(K\), scoped | Part VII | Done”. 20 Part VII: “the rival’s supposed structure is anchored to a *deleted* subnetwork, whose relation is full by (O), and the anchor is proper because the deleted subnetwork is not the whole target.”
+**Why it fails.** In a transport, \(\lambda\) assigns each component of \(E\) a subnetwork of \(D\). If the rival’s structure is absent in \(D\), it is not a subnetwork of \(D\). If it is deleted, it is not in \(J\), so it is not available to \(\lambda\). This defect survives from document 10 under new wording.
+**Severity.** Serious. It breaks the formal treatment of eliminative explanation.
+**Fix.** Anchor to the subnetwork that appears under the introducing edit, or extend the definition to allow an empty subnetwork whose relation is full.
+
+## Minor
+
+### 19. 20a claims “concept creation” is listed as open, but 20 only lists “the invention of a new dimension of variation”.
+**Claim attacked.** 20a G7: “Symmetry explanation; selection-artefact explanation; concept creation; mathematical admission listed as open | … | Done — listed, not solved”. 20 Part X: “The invention of a new dimension of variation — a port the target organization did not have … is not a question found”.
+**Why it fails.** “Concept creation” does not appear in document 20. The listed limit is specifically about adding a port or dimension, not about concept creation in general.
+**Severity.** Minor ledger inaccuracy.
+**Fix.** Correct the ledger or add an explicit concept-creation limit.
+
+### 20. 20a says \(\Theta\)’s admitted edit set is stated “before anything quantifies over it”, but Part II quantifies over “some physically admitted edit” before Part XII defines \(A_\Theta\).
+**Claim attacked.** 20a G1: “\(\Theta\)’s admitted edit set stated explicitly before anything quantifies over it | Part XII …; Part III …; Part II … | Done”. 20 Part II: “every component … has a signature that some **physically admitted edit** realizes”. 20 Part XII: “The physical module \(\Theta\) supplies: … the **admitted edit set** \(A_\Theta(o)\)”.
+**Why it fails.** In document order, Part II uses “physically admitted edit” before Part XII supplies the definition. The ledger’s “before anything quantifies over it” is false as a claim about file structure.
+**Severity.** Minor, but it is a false ledger claim.
+**Fix.** Move the \(A_\Theta\) definition earlier or amend the ledger to acknowledge the forward reference.
+
+### 21. Derivation 10 invokes Derivation 1 without the injectivity hypothesis Derivation 1 now requires.
+**Claim attacked.** 20a G6: “Derivation 10: scenario, population assumption stated, … | Derivation 10 | Done”. 20 Derivation 10: “then by Derivation 1 the persistence components are of one forward kind, on that contract, with the continuity subnetworks of things”.
+**Why it fails.** 20 Derivation 1 now states: “Let \(t\) satisfy (F1) on \(C\), and let \((\tau,\sigma)\) be injective on \(C\).” Derivation 10 does not state injectivity for its transport.
+**Severity.** Minor because Derivation 10 is explicitly a scenario, not a checked witness, but the invocation is still formally incomplete.
+**Fix.** Add the injectivity condition or drop the Derivation 1 citation.

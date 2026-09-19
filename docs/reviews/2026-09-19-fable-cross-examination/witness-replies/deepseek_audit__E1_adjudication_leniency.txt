@@ -1,0 +1,695 @@
+====================================================================================================
+E1_adjudication_leniency | deepseek_audit | sample 0 | finish stop | 12802 chars | error None
+====================================================================================================
+## Findings
+
+**1. A1 row 5 — “Grain is an unconstrained truth-changing index” is marked Partly valid; it should be Valid, serious.**
+
+> | 5 | **Grain is an unconstrained truth-changing index.** | **Partly valid.** | The document is explicit that every claim is relative to ℓ, which is honest scoping. But the witness is right that nothing constrains *admissible* grains, so a claim can be rescued by grain-shopping — the very thing file 10 forbids in Derivation 7 for contracts. |
+
+The “Why” concedes the whole finding: nothing constrains admissible grains, and grain-shopping can rescue claims. That the document is explicit about relativity to ℓ does not constrain admissibility. This is not a scope error. **Fix:** change verdict to Valid, serious; state that grain-shopping is a live failure mode and add the proposed admissibility condition.
+
+**2. A1 rows 18–19 — load-bearing undefined formal operations are marked “minor”; they should be Valid, serious until shown unused.**
+
+> | 18 | Restriction operation and “named background” undefined. | **Valid, minor.** | Fix: restriction deletes components in Γ holding b fixed. |
+> | 19 | “Independent boundary conditions” not formalised. | **Valid, minor.** | Fix: no faithful transport from the answer ports into the boundary ports. |
+
+If restriction and boundary-independence are part of the machinery for non-circular dependence and the (A) condition, they cannot be “minor” before the document shows they carry no load. **Fix:** elevate to serious, define the operations before using them in the central conditions, and remove “minor” unless the author can show no condition depends on them.
+
+**3. A1 row 12 — “Declared provenance is meta-linguistic” is marked minor; it is serious for the provenance trichotomy.**
+
+> | 12 | **Declared provenance is meta-linguistic, not physical.** | **Valid, minor.** | Dec is an annotation meaning “no selected or constructed witness”. Say so. |
+
+If Dec is merely an annotation, the third provenance is not a physical provenance. The trichotomy selected/constructed/declared is then not a physical taxonomy, which matters for experiment 2’s provenance contrast. **Fix:** either define declared provenance as an epistemic status outside the physical provenance taxonomy, or remove it as a third physical provenance.
+
+**4. A2 row 6 — the concession quietly preserves the original claim by asserting, without audit, that “all the experiments actually used” the weaker claim.**
+
+> This weakens the consequence used in experiments 1 and 2 (“indistinguishable is identical”) to “indistinguishable have identical anchored relations on C” — which is all the experiments actually used.
+
+This is exactly where the leniency bites. Derivation 2’s “indistinguishable is identical” is false; the replacement is weaker. The adjudication cannot save the experiments by asserting they used only the weaker claim unless it audits where experiments 1 and 2 relied on identity. **Fix:** check the experiments for uses of “indistinguishable is identical”; if any conclusion depends on it, restate or withdraw that conclusion.
+
+**5. A3 row 5 — non-vacuity is trivially satisfied; the verdict Partly valid changes the subject.**
+
+> | 5 | Non-vacuity is satisfied trivially. | **Partly valid.** | It was never meant to catch this; the decomposition condition is where it belongs. |
+
+The finding is not that non-vacuity was meant to catch the ROM. It is that non-vacuity, as a stated condition, is trivially satisfied and does no discriminating work. “It was never meant to” is not an answer. **Fix:** mark Valid; state that non-vacuity is not a discriminator against the ROM, and rely on the decomposition condition.
+
+**6. A5 row 12 — “Recorded exclusion is not an answer” is marked Partly valid although the author agrees.**
+
+> | 12 | Recorded exclusion is not an answer. | **Partly valid.** | If the question requires a distinction the contract cannot see and no record supplies it, the candidate is not an account *of that question* — which the document already says (“an answer to one is not an answer to the other”). Say it at this spot. |
+
+“The document already says it” is not a reason for Partly valid. If the finding is correct, the verdict is Valid; if the document already contains it, the verdict may be Duplicate, not Partly valid. **Fix:** mark Valid or Duplicate, not Partly valid.
+
+**7. A6 (E) row 21 — “No notion of a good question” is answered by a promise to say what “good” means.**
+
+> | 21 | No notion of a *good* question, so random new contracts count. | **Partly valid.** | The document has no merit function on purpose; “good” here means: a question whose answer repairs an obligation under (P). Say that, and it is not random. |
+
+“Say that” is a future edit, not a current answer. If there is no formal merit condition, random new contracts can still count or be presented as repairing an obligation. **Fix:** mark Valid, serious; add the merit condition to the formal apparatus, not just as a sentence to be added later.
+
+**8. B2 row 9 — the normative-choice finding is downgraded to Partly valid because the design “says why.”**
+
+> | 9 | Fitness against true occupancy “makes persistence beneficial under occlusion by construction” and is a normative choice, not a measurement fix. | **Partly valid.** | It is a choice about what selection acts on — the world, not sensation — and the design says why. But the witness is right that it should be stated as the choice that sets the direction of the result. |
+
+Design rationale does not make a normative choice less normative. The author concedes it sets the direction of the result. **Fix:** mark Valid; report the fitness target as an interpretive/normative choice and state its direction in the results.
+
+**9. B4 row 10 — the Invalid verdict on the missing transfer test is self-contradictory.**
+
+> | 10 | §7.3’s “what you could later do” was not run as a transfer test. | **Invalid.** | M2 is exactly that: fitness on the full contract after exposure to H_neutral. Slot architectures do not learn, so the number is the transfer. |
+
+If slot architectures do not learn, exposure to H_neutral cannot transfer anything. M2 is then just evaluation on H_full, not a transfer test. The row states the premise that refutes its own verdict. **Fix:** change to Valid or at least Partly valid; state that M2 is cross-contract evaluation, not transfer; either run an actual transfer test or withdraw the “what you could later do” claim.
+
+**10. B4 row 12 — “Exhaustive selection is argmax” is treated as wording.**
+
+> | 12 | Exhaustive selection is argmax, not variation and selection. | **Valid, wording.** | “Selection with unlimited reach” was a euphemism. |
+
+If the mechanism is argmax over the full architecture space, it is not variation and selection. That is not a wording issue; it affects whether the experiment instantiates the “selected” provenance at all. **Fix:** change to Valid, serious; rename the mechanism and revise any claim about selection.
+
+**11. C2 row 3 — the C/B collapse is marked “Valid for what the experiment showed,” which lets the advertised claim survive.**
+
+> | 3 | The C/B contrast collapses to informed local search versus mutation search; S5 (B reaches the same fidelity) confirms the difference is efficiency and inductive bias, not kind. | **Valid for what the experiment showed.** | The provenance distinction in file 10 is a *definition*; the experiment instantiated it, it did not test it. To show more than efficiency: a budget-matched case where scalar search fails and itemised credit succeeds. Not pre-registered, not run. |
+
+The author concedes the experiment did not test the provenance distinction. That is fatal to experiment 2’s advertised construction/selection test, not merely “valid for what it showed.” **Fix:** change to Valid, serious/fatal to the experiment’s claim; state that the experiment only instantiates the distinction and that the budget-matched test is experiment 3.
+
+**12. C3 row 6 — the overclaim about fidelity is marked Partly valid because the prediction was pre-registered.**
+
+> | 6 | §12.2 pre-registers that C will build only half the law and carves crossings out of S3; “faithful with the world’s kind-signature” is then an overclaim. | **Partly valid.** | The prediction was correct and stated in advance, which is worth something. But all fidelity language must read “on the sensory-visible sub-contract.” |
+
+Correct pre-registration does not answer the overclaim. The finding is that “faithful with the world’s kind-signature” overstates after crossings are carved out. **Fix:** mark Valid; restrict all fidelity language to the sensory-visible sub-contract and report S3 as partly failed.
+
+**13. D4 row 8 — B’s mismatched fitness objective is marked “Valid as far as it goes,” but it is a current confound.**
+
+> | 8 | (cut off) B’s fitness optimises overall accuracy, not collision-step fidelity. | Valid as far as it goes. | B’s fitness is the overall exposure fitness; C’s records are collision-dominated. Another asymmetry for experiment 3’s equal-access design. |
+
+This is not just a note for experiment 3. B is selected under a different objective from the one used to compare it with C, so the current C/B comparison is confounded. **Fix:** change to Valid, serious; report B’s collision-step performance or re-run with matched objective; otherwise acknowledge the comparison is confounded.
+
+**14. D8 row 10 — “translated edits” are not in file 10’s sense; Partly valid is too generous.**
+
+> | 10 | “Thing identities through translated edits” are not translated edits in file 10’s sense (no transport t, no τ). | **Partly valid.** | M3 does apply the same change to world and predictor, which is the operational core of a translated edit; but no transport was written down, so the τ is implicit. |
+
+File 10 defines translated edits through a transport τ. “Operational core” is a weaker, different thing. No transport means the experiment does not instantiate the formal definition. **Fix:** mark Valid; either add the explicit transport τ or rename M3 as a same-change test, not a translated-edit test.
+
+**15. Section 0 item 8 — the D8 verdict is allowed to survive on the author’s assertion about file 13, despite the cross-examination being invalid.**
+
+> | 8 | **One battery item was assembled without the design it asks about.** D8 ... The verdict survives because the mapping to the definitions is absent from file 13 as well — that is the finding — but the item was badly built. |
+
+The witnesses could not check file 13. The claim that the mapping is absent from file 13 is therefore the author’s assertion, not an independently examined finding. The item should not be treated as adjudicated on the same footing as the others. **Fix:** re-run D8 with file 13 supplied, or mark the D8 verdict provisional pending that check.
+
+**16. Missing rulings — A8, B1, B3, D1, D2, D7 and the Atria witness are explicitly deferred.**
+
+> *(A8, B1, B3, D1, D2, D7 follow when the rerun lands; then the Atria witness.)*
+
+Also:
+
+> 3. **Atria 401.** ... Diagnosed in section 0.1 below once found.
+
+Section 0.1 does not exist in the document. Findings are mentioned but never ruled on. **Fix:** either complete the missing sections or mark the affected verdicts as outside the current adjudication; remove the reference to a section 0.1 that has not been written.
+
+**17. A2 and D4 present verdicts from truncated or pending evidence as settled.**
+
+> ### A2 — The derivations (sample 0, truncated after Derivation 2; samples 1–2 pending)
+
+> ### D4 — Failure modes the results file missed (one complete sample, two empty; the complete one was cut off at its eighth finding)
+
+The tables contain verdicts while the evidence base is explicitly incomplete. A finding that would have appeared in the missing part cannot be adjudicated. **Fix:** mark all A2 verdicts provisional until samples 1–2 are checked; mark D4 provisional until the cut-off sample is completed.
+
+**18. A6 (D) row 8 — Derivation 3 is called a proof defect but the corrected claim is treated as if the original survives.**
+
+> | 8 | **Derivation 3’s proof alters a component relation of the organization, not the transport, and ignores whether the altered thing is in the population or reachable by variation.** | **Valid as a proof defect.** | The claim survives in corrected form: the *organization–transport pair* is underdetermined by H within any population closed under the alteration. State it that way. |
+
+If the proof alters the wrong object and ignores reachability, the original Derivation 3 is not established. “Survives in corrected form” is a new claim, not the old one. **Fix:** change to Valid, serious; withdraw the original derivation as unproven and present the corrected organization–transport claim separately.
+====================================================================================================
+E1_adjudication_leniency | deepseek_audit | sample 1 | finish stop | 27379 chars | error None
+====================================================================================================
+The following are defects in the adjudication. Quotations are from the adjudication text.
+
+---
+
+**1. The whole adjudication is prospective, so every original overclaim survives in files 10–14.**
+Quote: “**Status: in progress.** … Nothing here has yet been carried into files 10–14; the change list at the end is what will be carried.”
+Claim attacked: the adjudication treats “Valid” and “serious” verdicts as if they repair the work.
+Why it fails: a reader of files 10–14 still sees the uncorrected definitions, derivations, experiment designs and results. The errata files are not yet authoritative. This is a concession in form only.
+Verdict change: this is not a finding against a witness; it is a fatal process defect in the adjudication.
+Fix: either carry the change list into files 10–14 now, or mark files 10–14 superseded and make file 16/17 the only citable versions.
+
+---
+
+**2. Cross-cutting leniency: proposed repairs are used to downgrade findings that are valid against the original text.**
+Quote: A7 #3 — “| 3 | (F1) does not catch a wrong anchor even when C separates kinds … | **Partly valid.** | If the decoy and the real producer differ … the account fails (A) on C_phys — caught by finding 1’s repair.”
+Claim attacked: the finding is about file 10 as written.
+Why it fails: C_phys is not in file 10. The repair may be good, but the verdict on the original finding should be “Valid,” not “Partly valid.” The same pattern occurs at A7 #5, A7 #6, A5 #8, D8 #10.
+Verdict change: “Partly valid” → “Valid” wherever the only reason for downgrading is the author’s new repair.
+Severity: serious.
+Fix: separate “verdict on the original work” from “what the repair would be”; the repair belongs in the change list, not in the verdict.
+
+---
+
+**3. A1 #5: grain-shopping is central, not a scoping caveat.**
+Quote: “| 5 | **Grain is an unconstrained truth-changing index.** | **Partly valid.** | The document is explicit that every claim is relative to ℓ, which is honest scoping. But the witness is right that nothing constrains *admissible* grains, so a claim can be rescued by grain-shopping …”
+Claim attacked: unconstrained grains allow a claim to be rescued by changing grain.
+Why it fails: “explicit relative to ℓ” is not a constraint; it is exactly the escape hatch. The author concedes the witness is right that nothing constrains admissible grains.
+Verdict change: “Partly valid” → “Valid, serious.”
+Fix: add the constraint to the definition of admissible grain; do not leave it as a proposed fix.
+
+---
+
+**4. A1 #15: “declared data” is not a definition.**
+Quote: “| 15 | **Lic, Scope, Live are undefined.** | **Partly valid, minor.** | They are the appraisal’s declared data (FW5: “enacted license”). Say so.”
+Claim attacked: undefined terms in the appraisal.
+Why it fails: saying they are declared data does not say what they are, what type they have, or what constraints they satisfy. If they occur in appraisal conditions, undefined terms are not minor.
+Verdict change: “Partly valid, minor” → “Valid” (serious if they are load-bearing).
+Fix: define Lic, Scope, Live as typed components of the declared tuple.
+
+---
+
+**5. A1 #16: “controlled action” is an interpretation, and the finding is not answered by saying constructor theory defines resources physically.**
+Quote: “| 16 | **“Controlled-action interpretation” and “resources” in Θ smuggle agency.** | **Partly valid.** | Constructor theory defines tasks and resources physically; “controlled action” is an interpretation. Fix: control = an intervention repertoire in Θ.”
+Claim attacked: file 10’s wording imports agency.
+Why it fails: the author concedes “controlled action” is an interpretation and then supplies a replacement. That means the original wording is defective. “Partly valid” understates.
+Verdict change: “Partly valid” → “Valid” (at least minor, serious if Θ is used formally).
+Fix: replace the phrase everywhere and list the intervention repertoire in Part XIV.
+
+---
+
+**6. A3 #5: “never meant to catch this” changes the subject.**
+Quote: “| 5 | Non-vacuity is satisfied trivially. | Partly valid. | It was never meant to catch this; the decomposition condition is where it belongs.”
+Claim attacked: non-vacuity is trivially satisfied by the ROM.
+Why it fails: the finding is about what non-vacuity actually rules out, not about the author’s intention. Since the ROM passes all four conditions, non-vacuity’s trivial satisfaction is part of the sufficiency hole.
+Verdict change: “Partly valid” → “Valid” (serious within A3).
+Fix: either strengthen non-vacuity or state explicitly that it does no anti-vacuity work in this case; do not use “not meant to catch this” as a defence.
+
+---
+
+**7. A5 #8: invoking a finer contract or history to choose the anchor concedes the finding.**
+Quote: “| 8 | A kind-label is needed to choose the anchor λ … | Partly valid. | On that contract they are one forward kind; “heart” is a claim about a finer contract (blood flow) or about history (evolved to pump). Either cashes out. Not an evasion once both routes exist.”
+Claim attacked: the current contract cannot choose the anchor without a kind-label.
+Why it fails: “once both routes exist” is the whole issue. The finding is that the current contract alone does not supply the distinction. The author answers by assuming a further route that the question may not contain.
+Verdict change: “Partly valid” → “Valid” (serious for anchor selection).
+Fix: state that anchor selection requires the kind to be cashed out in the question; if neither finer contract nor history is available, λ is not determined.
+
+---
+
+**8. A5 #12: “recorded exclusion” is narrowed to “no record supplies it.”**
+Quote: “| 12 | Recorded exclusion is not an answer. | Partly valid. | If the question requires a distinction the contract cannot see and no record supplies it, the candidate is not an account *of that question* — which the document already says … Say it at this spot.”
+Claim attacked: a recorded exclusion is not an answer.
+Why it fails: the author only addresses the case where no record exists. If a record does supply the exclusion, the original claim still quietly survives: the record is treated as an answer. But a historical record of exclusion is not automatically an answer to a forward explanatory question.
+Verdict change: “Partly valid” → “Valid.”
+Fix: distinguish recorded exclusion as a historical kind from an explanatory answer; if the question is forward, recorded exclusion remains not an answer.
+
+---
+
+**9. A6 E #21: “no merit function on purpose” is not answered by stipulating one.**
+Quote: “| 21 | No notion of a *good* question, so random new contracts count. | Partly valid. | The document has no merit function on purpose; “good” here means: a question whose answer repairs an obligation under (P). Say that, and it is not random.”
+Claim attacked: without a notion of a good question, random new contracts count.
+Why it fails: “good means repairs an obligation” is a merit criterion. If it is not formal, random contracts still count; if it is formal, the document lacks it. The author changes the subject from “no merit function” to a proposed verbal formula.
+Verdict change: “Partly valid” → “Valid” (minor to serious depending on how questions are individuated).
+Fix: state the criterion formally under (P) or admit that random new contracts are not excluded.
+
+---
+
+**10. A7 #3: the decoy finding is valid against file 10, not merely “partly.”**
+Quote: “| 3 | (F1) does not catch a wrong anchor even when C separates kinds: a decoy with a different signature but the same effect on the queried answer under C passes (F1), (F2), (A). | **Partly valid.** | If the decoy and the real producer differ in their effect on the answer under *some* physically admitted edit, the account fails (A) on C_phys — caught by finding 1’s repair.”
+Claim attacked: (F1) fails to catch a wrong anchor under C.
+Why it fails: the repair is C_phys, a new condition. Under file 10’s C, the decoy passes. The finding is valid as stated.
+Verdict change: “Partly valid” → “Valid, serious.”
+Fix: adopt C_phys as the anchored-account condition or explicitly label such accounts “at C, not anchored.”
+
+---
+
+**11. A7 #5: pole-and-shadow is repaired by a condition not in the original.**
+Quote: “| 5 | Pole and shadow when the production contract is unavailable: the reversed calculation is faithful at identification; the document can only say “different question.” | **Partly valid; repaired by 1.** | … On C_phys the reversed calculation fails (F1).”
+Claim attacked: the original document cannot say why the reverse calculation is not a production account.
+Why it fails: “repaired by 1” is a proposed new condition. The finding is fully valid against file 10.
+Verdict change: “Partly valid; repaired by 1” → “Valid; repaired only by the new C_phys condition.”
+Severity: serious.
+Fix: state the original limitation and then adopt C_phys.
+
+---
+
+**12. A7 #6: the realism finding is likewise repaired by a new condition.**
+Quote: “| 6 | Scientific realism about mechanisms is not representable if kinds are contract-relative. | **Partly valid; repaired by 1 and A5.**”
+Claim attacked: contract-relative kinds cannot represent mechanism realism.
+Why it fails: the answer depends on adding world-kind on C_phys and historical kinds, neither of which is in file 10. The original claim is correct.
+Verdict change: “Partly valid; repaired by 1 and A5” → “Valid; the repair requires new machinery.”
+Severity: serious.
+Fix: make the repair explicit in file 10 and stop presenting it as a partial validity.
+
+---
+
+**13. B2 #9: the normative-choice finding is conceded and then downgraded.**
+Quote: “| 9 | Fitness against true occupancy “makes persistence beneficial under occlusion by construction” and is a normative choice, not a measurement fix. | **Partly valid.** | It is a choice about what selection acts on — the world, not sensation — and the design says why. But the witness is right that it should be stated as the choice that sets the direction of the result.”
+Claim attacked: the fitness target is a normative choice that sets the direction.
+Why it fails: the author concedes it “sets the direction of the result.” That is not a partial validity; it is a serious confound for any causal reading of the headline.
+Verdict change: “Partly valid” → “Valid, serious.”
+Fix: report the result as conditional on the normative fitness choice and remove any unqualified “history selects persistence” language.
+
+---
+
+**14. B5 #1: the conditional-binding finding is conceded but kept at “partly valid.”**
+Quote: “| 1 | Binding at step 2 requires exact (cell, velocity) equality, which is the very property then tested; “given bound” discards the cases where it fails. | **Partly valid, and the fix is right.** | Two quantities must be reported separately … The results file did report unbound counts but drew the conclusion from the conditional figure.”
+Claim attacked: the thing-signature test conditions on the very binding it tests.
+Why it fails: the author concedes the conclusion was drawn from the conditional figure and that M3 tests preservation, not acquisition. That is a serious defect in the headline claim, not a partial one.
+Verdict change: “Partly valid” → “Valid, serious.”
+Fix: report unconditional rates as primary; restrict M3 to preservation claims.
+
+---
+
+**15. C1 #6: deferring the non-trivial test to experiment 3 does not rescue M4.**
+Quote: “| 6 | A non-trivial version: equal access … | **Accepted as the design of experiment 3.** | Neither exists in file 13.”
+Claim attacked: M4 is not a non-trivial provenance discrimination.
+Why it fails: accepting a future design concedes that the current M4 is trivial/confounded. The current claim that M4 distinguishes provenances must be withdrawn now.
+Verdict change: “Accepted as design of experiment 3” → “Valid, fatal to M4’s provenance claim.”
+Fix: withdraw M4 as a provenance test; describe it as a code check.
+
+---
+
+**16. C2 #3: the C/B contrast is conceded to be efficiency, but the provenance claim is left standing.**
+Quote: “| 3 | The C/B contrast collapses to informed local search versus mutation search; S5 … | **Valid for what the experiment showed.** | The provenance distinction in file 10 is a *definition*; the experiment instantiated it, it did not test it. To show more … Not pre-registered, not run.”
+Claim attacked: the experiment cannot support construction-versus-selection.
+Why it fails: the “why” concedes the experiment does not test file 10’s provenance distinction and then promises a future budget-matched test. That future test does not retroactively license current claims.
+Verdict change: “Valid for what the experiment showed” → “Valid, fatal to any provenance claim from this experiment.”
+Fix: restrict conclusions to efficiency and inductive bias.
+
+---
+
+**17. C3 #6: pre-registering half the law does not cure the overclaim.**
+Quote: “| 6 | §12.2 pre-registers that C will build only half the law … “faithful with the world’s kind-signature” is then an overclaim. | **Partly valid.** | The prediction was correct and stated in advance, which is worth something. But all fidelity language must read “on the sensory-visible sub-contract.””
+Claim attacked: fidelity language overclaims.
+Why it fails: the finding is about the overclaim; the author concedes all fidelity language must be qualified. “Stated in advance” may reduce the dishonesty charge, not the overclaim.
+Verdict change: “Partly valid” → “Valid.”
+Fix: strike “faithful with the world’s kind-signature” and use “faithful on the sensory-visible sub-contract.”
+
+---
+
+**18. C4 #4: “did not bite here” leaves a live design asymmetry.**
+Quote: “| 4 | B searches one rule per round greedily; if the first rule alone is not beneficial, B could fail on an expressible law. | Valid as an asymmetry; did not bite here. | The same-target rule is beneficial alone. Note for experiment 3: give both processes the same sequential protocol.”
+Claim attacked: B’s search protocol is an uncontrolled asymmetry.
+Why it fails: “did not bite here” is not a general answer. The paper’s comparisons are used to support general claims about construction versus selection; the asymmetry remains a confound for any law whose first rule is not independently beneficial.
+Verdict change: “Valid as an asymmetry; did not bite here” → “Valid, serious for general claims.”
+Fix: match sequential protocols now, or restrict all conclusions to this one law.
+
+---
+
+**19. A7 #9 is not a duplicate of A5.6.**
+Quote: “| 9 | Derivation 1 is circular as an answer to the steelman. | Valid. | Duplicate of A5.6 in effect; narrowed as there.”
+Claim attacked: Derivation 1 is circular as an answer to the steelman.
+Why it fails: A5.6 says the corollary equivocates and must be narrowed. That is a scope defect. Circularity is a distinct defect: Derivation 1 uses a kind notion that the steelman denies. Marking it duplicate lets the circularity go unanswered.
+Verdict change: “Duplicate” → “Valid, distinct.”
+Severity: serious.
+Fix: answer the circularity charge separately: state whether Derivation 1 is meant to prove something about world-kind or only about (K)-kind on C.
+
+---
+
+**20. C4 #1 is not a duplicate of C3.5.**
+Quote: “| 1 | The world was redefined after the language failed an edge case (change 3), and the language changed in the same step. The §6.1 check “if the language cannot express the law, revise” cannot fail. | **Valid.** | Duplicate of C3.5, sharpened: an expressibility check with a revision clause is a guarantee, not a check.”
+Claim attacked: the expressibility check cannot fail.
+Why it fails: C3.5 is about tailoring the world to the meta-grammar. C4 #1 is about an unfalsifiable revision clause. The latter is a distinct process defect: it allowed the world and language to be co-revised after failure. Marking it duplicate understates it.
+Verdict change: “Duplicate” → “Valid, distinct, serious.”
+Fix: freeze the world’s law before finalising the language; pre-register that the world will not be revised in response to language failure.
+
+---
+
+**21. D3 #4: the scramble test is undermined by its own diagnostic, but kept as “Valid, and done.”**
+Quote: “| 4 | M6(ii)’s accounting bug undermines M4 … | **Valid, and done** — file 17 §8b. | With the fix, M6(ii) passes and the placebo passes; but the scramble effect turned out to be **seed-dependent** (2 of 5 permutations gave no degradation), because states recur across records. The witness’s suspicion that the scramble did not destroy what it claimed to was right for a different reason than the bug.”
+Claim attacked: the scramble test did not reliably destroy the defect content it claims to remove.
+Why it fails: if 2 of 5 scrambles produce no degradation, M4 cannot be a stable content-dependence test. “Valid, and done” is too generous.
+Verdict change: “Valid, and done” → “Valid, serious; M4’s conclusion is withdrawn or conditioned.”
+Fix: report per-permutation defect counts; only count scrambles that demonstrably remove defect records; otherwise do not use M4 as evidence.
+
+---
+
+**22. D3 #5 and D3 #6: current taxonomy/mediation claims are deferred to experiment 3.**
+Quote: D3 #5 — “| 5 | Cross-classification controls are needed … | **Accepted for experiment 3.** | One C and one B cannot support a taxonomy.” D3 #6 — “| 6 | Mediation, not input-dependence … | **Accepted for experiment 3.** | — |”
+Claim attacked: the current experiment cannot support a taxonomy or mediation claims.
+Why it fails: accepting controls for a future experiment concedes the current result does not support the taxonomy/mediation. The current claims must be withdrawn, not deferred.
+Verdict change: “Accepted for experiment 3” → “Valid, fatal to current taxonomy/mediation claims.”
+Fix: state that one C and one B cannot support the taxonomy; strike mediation language from file 14.
+
+---
+
+**23. D4 #2: the validation-split risk did bite in phase 2.**
+Quote: “| 2 | C builds and accepts on the same exposure records with no internal validation split … | **Valid as a risk; did not bite in phase 1.** | The one rule built has net in the thousands. But the rule is right: phase 2’s wrong action (net 2 on a tie) is exactly this risk biting. Experiment 3: hold out a validation subset …”
+Claim attacked: no validation split means chance acceptance.
+Why it fails: the author says phase 2’s wrong action is exactly this risk biting. “Did not bite in phase 1” is true but misleading; the finding materialised in the phase that produced the headline construction result.
+Verdict change: “Valid as a risk; did not bite in phase 1” → “Valid, serious; it bit in phase 2.”
+Fix: mark phase 2’s wrong-action result invalid for this reason; hold out validation in any rerun.
+
+---
+
+**24. D4 #8: B’s objective mismatch is a confound, not just “another asymmetry.”**
+Quote: “| 8 | (cut off) B’s fitness optimises overall accuracy, not collision-step fidelity. | Valid as far as it goes. | B’s fitness is the overall exposure fitness; C’s records are collision-dominated. Another asymmetry for experiment 3’s equal-access design.”
+Claim attacked: B is optimising a different objective from the one being measured.
+Why it fails: this directly confounds any C/B comparison on collision-step fidelity. If B is judged on overall accuracy while C’s records are collision-dominated, B’s poorer collision performance may be an objective mismatch, not a process difference.
+Verdict change: “Valid as far as it goes” → “Valid, serious for all C/B comparisons.”
+Fix: rerun B with a collision-step objective or restrict the comparison to overall accuracy.
+
+---
+
+**25. D5 #6: the gauge-equivalence finding is downgraded while its conclusion is conceded.**
+Quote: “| 6 | “Invisible law” privileges the simulator’s hidden identity as the real law; under the contract, bounce and pass-through are gauge-equivalent. | **Partly valid.** | The world does have identities and the translated-edit test is exactly how file 10 says a finer contract shows up. But “invisible law” should read “identity is underdetermined by occupancy” …”
+Claim attacked: “invisible law” is the wrong description.
+Why it fails: the author concedes the wording must change and that C’s rule is a correct representative of the equivalence class. That is a valid finding, not a partial one.
+Verdict change: “Partly valid” → “Valid.”
+Fix: rename F3 as underdetermination by occupancy and withdraw “invisible law” as a result.
+
+---
+
+**26. D5 #11: the risky test is deferred, so F3 remains a triviality.**
+Quote: “| 11 | What would make F3 genuine: make identity observable … | **Accepted for experiment 3.** | That is the risky prediction; the one made was not risky.”
+Claim attacked: F3 as run is not a genuine risky result.
+Why it fails: accepting the future test concedes the current F3 is not genuine. The current finding must be withdrawn, not kept as a finding pending experiment 3.
+Verdict change: “Accepted for experiment 3” → “Valid, fatal to F3 as a result.”
+Fix: remove F3 from the findings; state it as a known limitation and a prediction for future work.
+
+---
+
+**27. D8 #10: “operational core” is an analogy, not file 10’s translated edit.**
+Quote: “| 10 | “Thing identities through translated edits” are not translated edits in file 10’s sense (no transport t, no τ). | **Partly valid.** | M3 does apply the same change to world and predictor, which is the operational core of a translated edit; but no transport was written down, so the τ is implicit.”
+Claim attacked: M3 does not instantiate file 10’s translated edit.
+Why it fails: file 10’s fidelity is defined via a transport t and τ. The author concedes no transport was written down. “Operational core” is an informal similarity. D8 #1 already says no formal objects were instantiated.
+Verdict change: “Partly valid” → “Valid.”
+Fix: state that M3 is not a file 10 fidelity test; either write down t and τ or rename the metric.
+
+---
+
+**28. A1 change list omits ruled findings.**
+Quote A1 #12 — “| 12 | **Declared provenance is meta-linguistic, not physical.** | **Valid, minor.** | Dec is an annotation meaning “no selected or constructed witness”. Say so.” Quote A1 #16 — “| 16 | **“Controlled-action interpretation” and “resources” in Θ smuggle agency.** | **Partly valid.** | … Fix: control = an intervention repertoire in Θ.” Quote change list — “**What changes in file 10 from A1:** … state Γ, O_p, Lic/Scope/Live, scope S as declared data (1, 2, 8, 15); state the fidelity-selection premise (13); constrain grains (5).”
+Claim attacked: the change list is the operative adjudication.
+Why it fails: A1 #12 and #16 are ruled Valid/Partly valid but do not appear in the change list. If the change list is what will be carried, these findings are effectively dropped. A1 #7 is also omitted.
+Verdict change: the omitted findings must be marked “carried” or explicitly rejected.
+Severity: serious for “Valid” findings; minor for #7.
+Fix: add every non-invalid finding to the change list or state why it is not carried.
+
+---
+
+**29. A5 change list omits ruled findings.**
+Quote A5 #8 — “| 8 | A kind-label is needed to choose the anchor λ … | Partly valid. | … Either cashes out.” Quote A5 #12 — “| 12 | Recorded exclusion is not an answer. | Partly valid. | … Say it at this spot.” Quote change list — “**What changes in file 10 from A3–A5:** … two kinds of kind, forward and historical … (A5.1, 2, 5); Derivation 1’s corollary narrowed … (A5.6); Derivation 10 scoped … (A5.7); dispositions as finer forward contracts (A5.3).”
+Claim attacked: the change list is complete.
+Why it fails: A5 #8, #9 and #12 are ruled on but omitted. A5 #8 and #12 are not obviously covered by A5.1/2/5.
+Verdict change: mark them carried or explicitly reject them.
+Severity: serious if the change list is authoritative.
+Fix: add the omitted A5 items or state why they need no change.
+
+---
+
+**30. Section 0.1 is promised and never delivered.**
+Quote: “3. **Atria 401.** The key lists models and answers small requests; every harness call returned “Invalid API key.” Diagnosed in section 0.1 below once found.”
+Claim attacked: the Atria failure is diagnosed.
+Why it fails: there is no section 0.1 in the document. This is exactly a finding mentioned and never ruled on.
+Verdict change: mark as unresolved, not diagnosed.
+Severity: serious for the completeness of the cross-examination.
+Fix: add the diagnosis or delete the promise and state that Atria’s replies are unavailable.
+
+---
+
+**31. Missing sections are admitted, so the adjudication is incomplete.**
+Quote: “*(A8, B1, B3, D1, D2, D7 follow when the rerun lands; then the Atria witness.)*”
+Claim attacked: the cross-examination is adjudicated.
+Why it fails: seven sections are absent, including an entire second witness. Findings in those sections have no verdicts. The count of findings and the change list cannot be complete.
+Verdict change: “in progress” is not a verdict; it is an admission of missing adjudication.
+Severity: serious.
+Fix: complete those sections before making any claim that the hostile findings have been answered.
+
+---
+
+**32. B4 #5 defers to experiment 2, but experiment 2 also does not test the definition.**
+Quote: “| 5 | **“The kind is just a parameter value.”** … | **Valid for the headline; already conceded by your point 1.** | Experiment 1 shows point 3 in its weakest sense — history picks among latent kinds — and nothing about kinds not being inputs. That question is experiment 2’s.”
+Claim attacked: experiment 1 cannot bear on whether kinds are inputs or outputs.
+Why it fails: the author defers the stronger question to experiment 2. But D8 #1 rules that experiment 2 never instantiates file 10’s formal objects: “no D, E, p, t … no (F1), (F2), (A).” So experiment 2 cannot answer it either.
+Verdict change: “Valid for the headline” → “Valid, fatal to the stronger headline; neither experiment tests kinds as inputs/outputs.”
+Severity: serious.
+Fix: state that the stronger claim is untested by both experiments.
+
+---
+
+**33. A5 #3: the document gap is conceded but the verdict stays “partly.”**
+Quote: “| 3 | Dispositions … are not captured when C excludes the trigger. | **Partly valid; invalid as a refutation.** | A disposition’s trigger is a physically admitted edit … What file 10 must add is one sentence saying so.”
+Claim attacked: file 10 does not state the disposition caveat.
+Why it fails: “invalid as a refutation” may be true of the stronger claim, but the row itself concedes that file 10 must add a sentence. That part is Valid, not Partly.
+Verdict change: “Partly valid; invalid as a refutation” → “Valid (minor) as a document gap; the refutation claim is separate.”
+Fix: add the sentence and state the refutation issue separately.
+
+---
+
+**34. A1 #7: the adjudication does not check whether “relevant” is load-bearing.**
+Quote: “| 7 | **“Relevant” does undefined work.** | **Partly valid, minor.** | “Question-relevant” in the opening is informal; the formal content is Account. Fix: say so at first use.”
+Claim attacked: “relevant” is undefined.
+Why it fails: the author asserts it is informal but does not list its occurrences. If “relevant” appears inside the formal Account or question-finding conditions, an undefined term there is not minor.
+Verdict change: “Partly valid, minor” → “Valid” if it occurs in formal clauses; otherwise minor is acceptable.
+Severity: depends on occurrences.
+Fix: cite every occurrence and define or delete it.
+====================================================================================================
+E1_adjudication_leniency | deepseek_audit | sample 2 | finish stop | 20039 chars | error None
+====================================================================================================
+**Audit of leniency in `15_adjudication`.** The following are places where the author’s verdict is too soft, the “Why” evades the finding, a concession leaves the original claim standing, or a finding is mentioned but never ruled on.
+
+---
+
+**1. Global: the adjudication does not apply its own verdicts.**
+- Quote: “**Status: in progress.** Sections are added as replies land and are checked. Nothing here has yet been carried into files 10–14; the change list at the end is what will be carried.” Also: “The frozen files 11 and 12 are not edited.”
+- Attacked claim: The adjudication’s concessions.
+- Why it fails: Valid, serious findings are recorded but not carried into the texts that contain the false claims. A concession in an adjudication file does not withdraw the original claim in files 10–14. The original claims quietly survive.
+- Seriousness: **fatal to the adjudication as an adjudication.**
+- Fix: apply the changes to files 10–14, or add errata that explicitly withdraw each false claim in the original files.
+
+---
+
+**2. Findings mentioned but never ruled on: A8, B1, B3, D1, D2, D7, and Atria.**
+- Quote: “*(A8, B1, B3, D1, D2, D7 follow when the rerun lands; then the Atria witness.)*”
+- Attacked claim: The completeness of the adjudication.
+- Why it fails: These are listed as future sections. They are findings tables mentioned but never adjudicated. The Atria witness is promised and absent.
+- Seriousness: **serious.**
+- Fix: rule on them or mark them unresolved and do not count them as adjudicated.
+
+---
+
+**3. D4 is cut off at the eighth finding and the remainder is unruled.**
+- Quote: “D4 — Failure modes the results file missed (one complete sample, two empty; the complete one was cut off at its eighth finding)” and row 8: “(cut off) B's fitness optimises overall accuracy, not collision-step fidelity.”
+- Attacked claim: The D4 adjudication.
+- Why it fails: The author rules on eight rows but the witness was cut off. Further findings exist and are not ruled on.
+- Seriousness: **serious.**
+- Fix: obtain the full D4 reply and adjudicate it.
+
+---
+
+**4. A2 is truncated after Derivation 2; later derivation findings are unruled.**
+- Quote: “A2 — The derivations (sample 0, truncated after Derivation 2; samples 1–2 pending)”
+- Attacked claim: The A2 adjudication.
+- Why it fails: Derivations 3–10 are not adjudicated from A2. Some are touched elsewhere, but the A2 findings are not ruled on.
+- Seriousness: **serious.**
+- Fix: complete A2, or state explicitly which derivations remain unadjudicated.
+
+---
+
+**5. A1, row 5: “Grain is an unconstrained truth-changing index.”**
+- Quote: “| 5 | **Grain is an unconstrained truth-changing index.** | **Partly valid.** | ... the witness is right that nothing constrains *admissible* grains, so a claim can be rescued by grain-shopping ... Fix: admissible grains are coarsenings ... |”
+- Attacked claim: The adjudication’s verdict on grain.
+- Why it fails: The author concedes nothing constrains admissible grains and that claims can be rescued by grain-shopping. That is a falsifiability defect, not a minor scope correction. “Explicit relativity” does not constrain admissibility.
+- Seriousness: **serious.**
+- Fix: verdict should be **Valid, serious**; add the coarsening constraint and state that without it grain-shopping is possible.
+
+---
+
+**6. A1, row 8: “O_p appears in every question, so the normative primitive is pervasive.”**
+- Quote: “| 8 | **O_p appears in every question, so the normative primitive is pervasive, not occasional.** | **Partly valid.** | Conflates two things: obligations ... and the normative relation 𝒩 ... O_p is an index; 𝒩 is a primitive. Fix: say O_p is declared data ... |”
+- Attacked claim: The adjudication’s verdict on O_p.
+- Why it fails: Distinguishing O_p from 𝒩 does not answer the finding that O_p appears in every question. If O_p is declared data in every question, the normative apparatus is pervasive; the fix concedes this.
+- Seriousness: **serious.**
+- Fix: change to **Valid**; either show O_p does not invoke 𝒩 or admit the normative primitive is pervasive.
+
+---
+
+**7. A1, row 15: “Lic, Scope, Live are undefined.”**
+- Quote: “| 15 | **Lic, Scope, Live are undefined.** | **Partly valid, minor.** | They are the appraisal's declared data ... Say so. |”
+- Attacked claim: The adjudication’s verdict on undefined terms.
+- Why it fails: Declared data still need definition. If they do work in appraisal, undefined terms are a serious defect. “Say so” is a concession, not a rebuttal.
+- Seriousness: **serious.**
+- Fix: change to **Valid, serious**; define them or remove them from formal work.
+
+---
+
+**8. A1, row 16: “Controlled-action interpretation” smuggles agency.**
+- Quote: “| 16 | **"Controlled-action interpretation" and "resources" in Θ smuggle agency.** | **Partly valid.** | Constructor theory defines tasks and resources physically; "controlled action" is an interpretation. Fix: control = an intervention repertoire in Θ. |”
+- Attacked claim: The adjudication’s verdict on agency in Θ.
+- Why it fails: If Θ is the physical module, an interpretation is not physical. The author’s fix replaces it, conceding the finding. “Partly valid” is too soft.
+- Seriousness: **serious.**
+- Fix: change to **Valid**; state control as an intervention repertoire in Θ or remove it from Θ.
+
+---
+
+**9. A1, row 20: “(O) and (Q) ‘depend on nothing’ so they are primitives too.”**
+- Quote: “| 20 | (sample 2) **(O) and (Q) "depend on nothing" so they are primitives too.** | **Invalid.** | (O) and (Q) are definitions of a schema, not predicates about the world ... But the document should say this. |”
+- Attacked claim: The adjudication’s Invalid verdict.
+- Why it fails: In formal systems, undefined schema terms are primitives. The distinction between “asserted predicates” and “defined schema” changes the subject. The author admits “the document should say this,” so the finding has bite.
+- Seriousness: **serious.**
+- Fix: change to **Partly valid/Valid**; either define (O) and (Q) or count them as primitives.
+
+---
+
+**10. A3, row 5: “Non-vacuity is satisfied trivially.”**
+- Quote: “| 5 | Non-vacuity is satisfied trivially. | Partly valid. | It was never meant to catch this; the decomposition condition is where it belongs. |”
+- Attacked claim: The adjudication’s verdict on non-vacuity.
+- Why it fails: Non-vacuity is one of the four conditions. If a ROM passes it, its stated filtering role is undermined. “Never meant to catch this” changes the subject and promises a new condition.
+- Seriousness: **serious.**
+- Fix: change to **Valid, serious**; either strengthen non-vacuity or state it does not exclude lookup tables.
+
+---
+
+**11. A5, row 3: Dispositions are not captured when C excludes the trigger.**
+- Quote: “| 3 | Dispositions (fragile, tempered, soluble, irritable) are not captured when C excludes the trigger. | **Partly valid; invalid as a refutation.** | ... If the question is about the disposition, C must contain the trigger; the witness's own fix. What file 10 must add is one sentence saying so. |”
+- Attacked claim: The adjudication’s “invalid as a refutation” verdict.
+- Why it fails: The finding is a gap, not a claimed refutation. The author agrees the gap exists and needs a sentence. “Invalid as a refutation” is a strawman verdict.
+- Seriousness: **serious** (affects the kind taxonomy).
+- Fix: change to **Valid**; add the required sentence or show dispositions are forward kinds without requiring the trigger in C.
+
+---
+
+**12. A6, E row 21: “No notion of a good question, so random new contracts count.”**
+- Quote: “| 21 | No notion of a *good* question, so random new contracts count. | **Partly valid.** | The document has no merit function on purpose; "good" here means: a question whose answer repairs an obligation under (P). Say that, and it is not random. |”
+- Attacked claim: The adjudication’s verdict on random contracts.
+- Why it fails: As written, the definition does not require repairing an obligation. “Say that” is a future definition, not a rebuttal. The finding is valid against the current text.
+- Seriousness: **serious.**
+- Fix: change to **Valid**; add the obligation-repair condition or admit random contracts count.
+
+---
+
+**13. A7, row 3: “(F1) does not catch a wrong anchor even when C separates kinds.”**
+- Quote: “| 3 | (F1) does not catch a wrong anchor even when C separates kinds: a decoy with a different signature but the same effect on the queried answer under C passes (F1), (F2), (A). | **Partly valid.** | If the decoy and the real producer differ ... the account fails (A) on C_phys — caught by finding 1's repair. ... |”
+- Attacked claim: The adjudication’s verdict on the wrong-anchor finding.
+- Why it fails: The repair (C_phys) is a new condition, not present in the original account. Against the original account, the finding is valid. “Partly valid” downplays.
+- Seriousness: **serious.**
+- Fix: change to **Valid**; state the original account fails and the C_phys repair is required.
+
+---
+
+**14. A7, row 5: Pole and shadow.**
+- Quote: “| 5 | Pole and shadow when the production contract is unavailable: the reversed calculation is faithful at identification; the document can only say "different question." | **Partly valid; repaired by 1.** | ... On C_phys the reversed calculation fails (F1). So: an account at the identification contract, and *not anchored* as a production account. ... |”
+- Attacked claim: The adjudication’s “Partly valid; repaired by 1” verdict.
+- Why it fails: The finding is valid for the unpatched theory. A later repair is not a reason to downgrade the original finding to Partly valid.
+- Seriousness: **serious.**
+- Fix: change to **Valid** (or Duplicate of A7.1), not Partly valid as if the finding were overstated.
+
+---
+
+**15. A7, row 6: Scientific realism about mechanisms.**
+- Quote: “| 6 | Scientific realism about mechanisms is not representable if kinds are contract-relative. | **Partly valid; repaired by 1 and A5.** | ... |”
+- Attacked claim: The adjudication’s verdict on realism.
+- Why it fails: The finding is valid for contract-relative kinds. The later addition of C_phys and historical kinds is a repair, not a rebuttal of the original finding.
+- Seriousness: **serious.**
+- Fix: change to **Valid** or **Duplicate**, not Partly valid.
+
+---
+
+**16. B2, row 9: Fitness against true occupancy is a normative choice.**
+- Quote: “| 9 | Fitness against true occupancy "makes persistence beneficial under occlusion by construction" and is a normative choice, not a measurement fix. | **Partly valid.** | It is a choice about what selection acts on — the world, not sensation — and the design says why. But the witness is right that it should be stated as the choice that sets the direction of the result. |”
+- Attacked claim: The adjudication’s verdict on the fitness choice.
+- Why it fails: The author concedes it sets the direction of the result. That is a serious interpretive issue. “The design says why” does not make it a measurement fix.
+- Seriousness: **serious.**
+- Fix: change to **Valid, serious**; state explicitly that the result’s direction is set by a normative choice.
+
+---
+
+**17. B4, row 10: §7.3 was not run as a transfer test.**
+- Quote: “| 10 | §7.3's "what you could later do" was not run as a transfer test. | **Invalid.** | M2 is exactly that: fitness on the full contract after exposure to H_neutral. Slot architectures do not learn, so the number is the transfer. |”
+- Attacked claim: The adjudication’s Invalid verdict.
+- Why it fails: If slot architectures do not learn, M2 is zero-shot evaluation, not a transfer test. The author’s own reason contradicts the claim that M2 is a transfer test.
+- Seriousness: **serious.**
+- Fix: change to **Partly valid/Valid**; either show M2 involves transfer or admit it is zero-shot.
+
+---
+
+**18. B5, row 1: The thing-signature test is circular.**
+- Quote: “| 1 | Binding at step 2 requires exact (cell, velocity) equality, which is the very property then tested; "given bound" discards the cases where it fails. | **Partly valid, and the fix is right.** | Two quantities must be reported separately: *bind rate* ... and *tracking given bound* ... M3 tests preservation, not acquisition, and must not be cited for "has thing-kind" under an unconditional definition. ... |”
+- Attacked claim: The adjudication’s Partly valid verdict.
+- Why it fails: The author concedes the conclusion was drawn from the conditional figure and must not be cited for has-thing-kind. That is a serious circularity/selection effect. “Partly valid” downplays.
+- Seriousness: **serious.**
+- Fix: change to **Valid, serious**; report both quantities and withdraw the unconditional has-thing-kind claim.
+
+---
+
+**19. C1, row 6: “A non-trivial version” accepted for experiment 3.**
+- Quote: “| 6 | A non-trivial version: equal access (both get V), same search operator and budget ... Or a deceptive landscape ... | **Accepted as the design of experiment 3.** | Neither exists in file 13. |”
+- Attacked claim: The adjudication’s ruling on the current experiment.
+- Why it fails: The finding is that the current experiment is trivial. Accepting a new design for experiment 3 does not rule on the current claim. It promises a future experiment; the current claim “this is the test” survives.
+- Seriousness: **serious.**
+- Fix: mark **Valid against the current experiment**; withdraw the current claim until experiment 3.
+
+---
+
+**20. C3, row 6: “Faithful with the world’s kind-signature” is an overclaim.**
+- Quote: “| 6 | §12.2 pre-registers that C will build only half the law and carves crossings out of S3; "faithful with the world's kind-signature" is then an overclaim. | **Partly valid.** | The prediction was correct and stated in advance, which is worth something. But all fidelity language must read "on the sensory-visible sub-contract." |”
+- Attacked claim: The adjudication’s Partly valid verdict.
+- Why it fails: The author agrees all fidelity language must be restricted. That means the original claim is false. Being pre-registered does not make an overclaim less overclaiming.
+- Seriousness: **serious.**
+- Fix: change to **Valid**; withdraw the world-kind-signature fidelity claim.
+
+---
+
+**21. C4, row 4: B’s greedy one-rule-per-round search is an asymmetry.**
+- Quote: “| 4 | B searches one rule per round greedily; if the first rule alone is not beneficial, B could fail on an expressible law. | Valid as an asymmetry; did not bite here. | The same-target rule is beneficial alone. Note for experiment 3: give both processes the same sequential protocol. |”
+- Attacked claim: The adjudication’s “did not bite here” mitigation.
+- Why it fails: “Did not bite here” is not a rebuttal to a design asymmetry. The finding is valid and affects the comparison’s validity as a general claim; it should be reported as a confound.
+- Seriousness: **serious for the design**, minor for this run.
+- Fix: change to **Valid, serious as a design flaw**; report the asymmetry in limitations.
+
+---
+
+**22. D3, row 5: Cross-classification controls are needed.**
+- Quote: “| 5 | Cross-classification controls are needed: a selection process that reads itemised records; a construction process that does not. Scramble sensitivity must cluster by concept, not by implementation. | **Accepted for experiment 3.** | One C and one B cannot support a taxonomy. |”
+- Attacked claim: The adjudication’s ruling on the current taxonomy claim.
+- Why it fails: “Accepted for experiment 3” is a promise, not a ruling. The finding is valid against the current taxonomy claim. The current claim survives.
+- Seriousness: **serious.**
+- Fix: mark **Valid against the current experiment**; withdraw the taxonomy claim until experiment 3.
+
+---
+
+**23. D3, row 6: Mediation, not input-dependence.**
+- Quote: “| 6 | Mediation, not input-dependence: instrument C, delete individual records, show specific rule changes. | **Accepted for experiment 3.** | — |”
+- Attacked claim: The adjudication’s ruling on the current mediation claim.
+- Why it fails: Same as finding 22. No ruling is made on the current claim; the finding is valid and distinct from cross-classification.
+- Seriousness: **serious.**
+- Fix: mark **Valid**; withdraw mediation claims or mark them untested.
+
+---
+
+**24. D4, row 2: C has no validation split.**
+- Quote: “| 2 | C builds and accepts on the same exposure records with no internal validation split; a small positive net by chance can be accepted. | **Valid as a risk; did not bite in phase 1.** | The one rule built has net in the thousands. But the rule is right: phase 2's wrong action (net 2 on a tie) is exactly this risk biting. Experiment 3: hold out a validation subset ... |”
+- Attacked claim: The adjudication’s “did not bite in phase 1” mitigation.
+- Why it fails: The author admits phase 2’s wrong action is exactly this risk biting. So it did bite in phase 2. “Did not bite in phase 1” lets the overall experiment off.
+- Seriousness: **serious.**
+- Fix: change to **Valid, serious**; report phase 2 as an instance and add the validation split.
+
+---
+
+**25. D4, row 8: B’s fitness optimises overall accuracy, not collision-step fidelity.**
+- Quote: “| 8 | (cut off) B's fitness optimises overall accuracy, not collision-step fidelity. | Valid as far as it goes. | B's fitness is the overall exposure fitness; C's records are collision-dominated. Another asymmetry for experiment 3's equal-access design. |”
+- Attacked claim: The adjudication’s “Valid as far as it goes” verdict.
+- Why it fails: The finding is complete enough to be a serious confound even if the witness was cut off. It is another asymmetry that undermines the C/B comparison.
+- Seriousness: **serious.**
+- Fix: change to **Valid, serious**; declare process boundaries and match objectives.
+
+---
+
+**26. D5, row 6: “Invisible law” privileges the simulator’s hidden identity.**
+- Quote: “| 6 | "Invisible law" privileges the simulator's hidden identity as the real law; under the contract, bounce and pass-through are gauge-equivalent. | **Partly valid.** | The world does have identities and the translated-edit test is exactly how file 10 says a finer contract shows up. But "invisible law" should read "identity is underdetermined by occupancy"; C's rule is a correct representative of the equivalence class. |”
+- Attacked claim: The adjudication’s Partly valid verdict.
+- Why it fails: The author agrees the phrase should be changed. The fact that the world has identities does not answer the gauge-equivalence point. The finding is valid.
+- Seriousness: **serious** (overclaim).
+- Fix: change to **Valid**; change the wording and withdraw “invisible law” as a finding.
+
+---
+
+**27. D8, row 10: “Thing identities through translated edits” are not translated edits in file 10’s sense.**
+- Quote: “| 10 | "Thing identities through translated edits" are not translated edits in file 10's sense (no transport t, no τ). | **Partly valid.** | M3 does apply the same change to world and predictor, which is the operational core of a translated edit; but no transport was written down, so the τ is implicit. |”
+- Attacked claim: The adjudication’s Partly valid verdict.
+- Why it fails: The author concedes no transport was written down. File 10 defines translated edits with τ; an implicit τ is not an instantiation. The finding is valid against the claim that experiment 2 tests file 10’s definitions.
+- Seriousness: **serious.**
+- Fix: change to **Valid**; either write down τ or admit M3 is an operational proxy.
+
+---
+
+**28. “Valid as far as it goes” and “Accepted for experiment 3” are being used as verdicts.**
+- Quote: examples above: D4 row 8; C1 row 6; D3 rows 5–6; D5 row 11 (“Accepted for experiment 3”).
+- Attacked claim: The adjudication’s use of non-verdicts.
+- Why it fails: These phrases do not answer whether the finding is valid against the current claims. They defer the problem to a future experiment. The current claims survive.
+- Seriousness: **serious.**
+- Fix: replace with one of the defined verdicts and state whether the current claim is withdrawn, qualified, or left standing.

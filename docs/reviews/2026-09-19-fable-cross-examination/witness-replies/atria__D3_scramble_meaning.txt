@@ -1,0 +1,224 @@
+====================================================================================================
+D3_scramble_meaning | atria | sample 0 | finish stop | 13367 chars | error None
+====================================================================================================
+## Direct answers first
+
+**Is there any reading under which the scramble test is about construction vs selection as concepts?** One, and only a weak one. If "construction" and "selection" are *constituted by their input regimes* — construction = itemized relational records, selection = a scalar per candidate — then the scramble is a well-designed differential-intervention: it destroys the state→outcome *pairing* while preserving both marginals, so it lies in the kernel of any aggregate-fitness input map and outside the kernel of any relational one. Under that reading the test says something non-trivial about *regimes*, and the B-arm is not vacuous (a scalar process is invariant to re-pairing because it never possessed the pairings). But this reading requires (i) accepting the stipulative definition from file 10 as constitutive, (ii) a *world-level* intervention rather than a per-process data-structure tweak, and (iii) that the dependency exhibited be *representational tracking*, not mere causal covariation. The actual run satisfies none of these. What was in fact demonstrated is that C's output is a function of the pairing in the V column and B's code does not read that column. That is a fact about two programs' input maps.
+
+**What would have to be added** — see findings 6–12, especially: a world-level intervention, the converse intervention on B, a tracking (redirection) test rather than a breaking test, multiple implementations per regime, and a specificity control against non-constructor V-readers.
+
+---
+
+## Findings
+
+**1. The disavowal is self-refuting.**
+Claim attacked: *"That is not a claim about the code's data flow — it is a demonstration that the two processes' outputs depend on different things"* (results §5).
+Why it fails: the evidence offered in the immediately preceding sentence is *"B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: byte-identical output."* "An argument its code never reads" *is* a data-flow claim. The sentence asserts it is not making the very claim its only evidence instantiates. There is no way to demonstrate differential output dependency without either (a) reading/not-reading structure, or (b) a world-level intervention; the paper chose (a) and then denied it.
+Severity: fatal to the sentence as written.
+Fix: restate as "C's output is a function of the state→outcome pairing in its inputs; B's output is a function of a scalar per candidate and is invariant to that pairing." That claim is about the *functional form of the input dependency*, which is a property of the process-types given their defining regimes, not about these two programs' plumbing — and it does not require the false disavowal.
+
+**2. The B-arm is logically guaranteed, hence evidentially empty.**
+Claim attacked: *"B's output under the scramble is byte-identical to B's without it"* (design §9, S4) and the corresponding results sentence.
+Why it fails: design §5 stipulates *"B never reads a defect record. Its only input is a number per candidate."* Given determinism plus non-reading, byte-identity is true in every possible world. A conjunct that cannot fail has a likelihood ratio of 1 and contributes no evidence. Reporting it as a measured outcome presents a code read as an empirical result. Worse, it is one seed, one re-run — a single sample of a tautology.
+Severity: serious (half the test's advertised weight evaporates).
+Fix: relabel it as a code-level assertion, and run the *converse* intervention (finding 7) so both arms can fail.
+
+**3. The asymmetry is stipulated, not discovered.**
+Claim attacked: *"This is the test that distinguishes the provenances"* (results §5) and design §1: *"remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected. That is the operational content of 'the mapped objection is on an active dependency route.'"*
+Why it fails: the design *builds in* the asymmetry it claims to detect. S4's second conjunct is entailed by the specification of B. The test therefore cannot separate "the concepts differ in this way" from "I coded two processes to differ in this way."
+Severity: fatal for the as-concepts reading.
+Fix: derive both inputs from a common world-level intervention (finding 6), or demonstrate the asymmetry across independently written implementations of each regime (finding 9).
+
+**4. Equivocation on "depend on different things."**
+Claim attacked: the same sentence — *"the two processes' outputs depend on different things."*
+Why it fails: it hovers between (a) different code arguments read and (b) different worldly features tracked. Only (a) is shown. (b) is straightforwardly false: both outputs are the *same rule* about the *same* worldly feature (same-target collisions), as S5 concedes and as the identical fidelity column confirms. The phrasing invites the (b) reading because that is the one that carries conceptual weight.
+Severity: serious.
+Fix: say exactly (a), and note that at the level of worldly dependency the two processes are *identical* — which is the paper's own S5.
+
+**5. Causal dependency ≠ representational dependency — the theory's load-bearing term is untested.**
+Claim attacked: *"The defect representation is on C's route and not on B's"* (results §5), plus design §1's *"produced by operating on a representation of the defect."*
+Why it fails: the test establishes *covariation* of C's output with the pairing. Covariation is cheap — a thermostat's output depends on room temperature, a memoriser's output depends on its training labels. File 10's provenance requires that the process operate on a *representation of the defect*, and the built rule (`n_i == n_j → swap_next_v + hold`) is about the *collision*, not about any defect; the defect is epiphenomenal to the rule's content, which is why B, representing nothing, finds the identical rule. Nothing in M4 tests aboutness.
+Severity: fatal for the provenance claim as modelled.
+Fix: add a *tracking* test — feed C a coherent-but-altered defect relation (a permuted relation that is still jointly realizable by some world) and show C builds machinery correct *for that world*. Redirection, not corruption, is the mark of operating on a representation. The reported run shows only corruption.
+
+**6. The intervention is per-process, not world-level.**
+Claim attacked: *"Give C the exposure half's defect records with the true-field column permuted among the V records"* (design §7, M4).
+Why it fails: the scramble is applied to C's private data structure. B's input is recomputed from the unscrambled world, so B's invariance is guaranteed twice over — by non-reading *and* by the world being untouched. The defect *information* is not absent from B's route; it is aggregated into the scalar. The correct claim is that the intervention lies in the kernel of B's input map *by construction of the permutation*, not by B's nature.
+Severity: serious.
+Fix: permute the state→outcome relation in the *exposure world itself*, then re-derive C's records *and* B's fitnesses from the same scrambled exposure. Then both inputs move, and any residual asymmetry is a property of the regimes.
+
+**7. The converse intervention on B was never run.**
+Claim attacked: the one-sided structure of M4/S4.
+Why it fails: to license "the two processes' outputs depend on different things" as a *comparative* claim, each process's own input must be attacked. Permute the candidate→fitness *pairing* for B (destroy the selection signal, preserve the multiset of fitnesses): a genuine selection process should collapse, and C — which never sees fitness numbers — should be byte-identical. This is the mirror-image test and it is absent.
+Severity: serious.
+Fix: run it. Then the claim is two-sided and both arms are falsifiable.
+
+**8. The interesting result contradicts the headline.**
+Claim attacked: *"Under the scramble C still induced a near-right condition (that step reads only states, which were not scrambled) but solved the wrong action (that step reads outcomes, which were) — it dropped the hold."*
+Why it fails: this says C's *condition-induction stage is provably scramble-invariant* — it reads states only. So "the defect representation is on C's route" is false for half of C. The honest claim is narrower: the *action-solve* stage depends on the outcome pairing. The reported 0.55 drop is attributable to one stage, and that stage's failure mode is a missing `hold`, i.e. a specific action-selection pathology, not a global dependency on defect content.
+Severity: serious.
+Fix: report the two stages separately; restate the finding as stage-local.
+
+**9. No bridge from tokens to types.**
+Claim attacked: the move from "these two programs" to "provenance," plus §11's own *"One world, one rule language, one constructor."*
+Why it fails: six seeds of B vary the RNG, not the regime; they are not independent instances of "selection." n=1 implementation per class licenses no type-level claim, and no invariance argument is offered that the sensitivity profile tracks the regime rather than the implementation.
+Severity: fatal for the as-concepts reading *as achieved*.
+Fix: add at least one further constructor with a different algorithm and the same input regime (a decision-tree learner, a Bayesian updater) and one further selector with a different algorithm and the scalar regime (a (1+1)-ES, a gradient method on a differentiable surrogate). If the profile tracks regime, the type claim begins to earn its keep.
+
+**10. Specificity is untested and M6(ii) is a live counterexample.**
+Claim attacked: *"This is the test that distinguishes the provenances,"* together with §8's *"C counts 'new prediction equals target' as a fix without checking the old one differed."*
+Why it fails: M6(ii) already showed C builds a no-op rule from records with *no defect content* — so C does not depend on defect content, it depends on whatever occupies the outcome column. The scrambled run is the same phenomenon (C fooled by fake defects, building three junk rules with small positive nets), not independent confirmation. §8's reply that the invariant is "guaranteed by how records are collected" is an appeal to the unscrambled run's provenance, not a repair. Also untested: a *non-constructor* V-reader (a lookup that memorises the scrambled records) would be scramble-sensitive too, so scramble-sensitivity does not individuate construction.
+Severity: serious.
+Fix: fix the accounting (require old ≠ new), re-run M6(ii) and M4, and add a memoriser control. If the memoriser's sensitivity profile matches C's, the test does not distinguish construction from rote fitting.
+
+**11. The permutation's stated invariants are asserted, not enforced.**
+Claim attacked: design §7's *"same states, same number of defects, same aggregate; wrong pairings."*
+Why it fails: permuting the true-field column among V records can map a true field onto a record whose *predicted* field equals it, silently converting a defect into a non-defect. "Same number of defects" is not entailed by the permutation; it needs a check. Additionally, the permuted set is jointly *unsatisfiable* — no world realizes those pairings — so the manipulation confounds "wrong pairings" with "inconsistent data."
+Severity: minor-to-serious (interpretive).
+Fix: permute within strata of identical predicted field (preserving individual defecthood), verify and report the post-scramble defect count, and run a second condition using a *jointly realizable* alternative world rather than a random permutation.
+
+**12. The reframing is a goalpost move against the frozen design.**
+Claim attacked: results §5's *"not a claim about the code's data flow"* versus design §1's *"the selecting process — which never read it — is unaffected. That is the operational content of…"*
+Why it fails: the design explicitly frames the B-arm as a non-reading property and calls that the operational content. The design is hashed; the interpretation is not, and it shifted precisely to deflect the objection that the B-arm is a data-flow tautology.
+Severity: serious (rhetorical integrity, not evidential).
+Fix: either restore the design's framing and defend it against finding 2, or record the reframing as a change of interpretation with the design's wording quoted alongside — the honest move, since the design cannot now be edited.
+
+**13. The strongest version of the test is the one the paper never states.**
+Claim attacked: the absence of any statement of *why* the permutation was chosen to preserve marginals.
+Why it fails (as an omission): preserving the number of defects and the aggregate is what makes the intervention informative — it targets exactly the structure the relational regime consumes and the scalar regime discards. This is the genuine design insight, and it is the only thing that could carry the concept-level reading. It is never said, so the reader is left with the tautology instead of the argument.
+Severity: serious but cheap to fix.
+Fix: state it: "the permutation preserves both marginals, so it lies in the kernel of any aggregate-fitness input map and outside the kernel of any relational one; the observed asymmetry is therefore a property of the *input regimes*, not of the implementations." Then back it with findings 6, 7, and 9, because as written that sentence is a promise the run does not keep.
+====================================================================================================
+D3_scramble_meaning | atria | sample 0 | finish stop | 12254 chars | error None
+====================================================================================================
+## The passage under attack
+
+> "That is not a claim about the code's data flow — it is a demonstration that the two processes' outputs depend on different things, which is what 'provenance' means in file 10."
+
+and its supporting text:
+
+> "B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.** The defect representation is on C's route and not on B's."
+
+---
+
+### Finding 1 — The B-half of the test cannot fail; it is a tautology reported as a result
+
+**(1) Claim attacked:** "B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: byte-identical output," presented as one half of "the test that distinguishes the provenances" (design §7, M4).
+
+**(2) Why it fails:** The design stipulates "B never reads a defect record. Its only input is a number per candidate" (design §5). Given that, byte-identical output under perturbation of an unread argument is *guaranteed*. There is no possible observation that would count as failure. A run with no failure mode is not a test — it is a restatement of the code's specification. The pre-registered criterion S4 ("B's output under the scramble is byte-identical to B's without it") bakes the tautology into the pre-registration and then "confirms" it.
+
+**(3) Serious.** §5's entire defense rests on the B-half carrying evidential weight about outputs; it carries none.
+
+**(4) Fix:** Present B's invariance as a *stipulated design property*, verified by code inspection and labelled analytic — or run B as a black box whose inputs are unknown, across a family of perturbations and re-encodings of the defect channel, and report invariance empirically. State explicitly which half of the test is analytic and which is empirical.
+
+---
+
+### Finding 2 — The §5 denial is self-undermining: the B-half *is* a data-flow claim
+
+**(1) Claim attacked:** "That is not a claim about the code's data flow."
+
+**(2) Why it fails:** The sole support for "B's output does not depend on V" is the code fact "its code never reads [it]." The output-level invariance is *derived* from the data-flow fact, not independently observed. The sentence therefore denies the very basis of its own evidence. To make the claim genuinely output-level, the author would need invariance established without appeal to the code's reading behaviour — which one scramble through an unread argument cannot do.
+
+**(3) Serious** (it is the exact sentence under attack, and it is internally incoherent).
+
+**(4) Fix:** Retract the denial, or upgrade the B-half as in Finding 1.
+
+---
+
+### Finding 3 — The C-half shows label-sensitivity, not provenance
+
+**(1) Claim attacked:** "The defect representation is on C's route," supported by the scrambled-C collapse (0.906 → 0.355).
+
+**(2) Why it fails:** C's action solver scores actions by how many records they fix, where "fix" = new prediction equals outcome. Permuting outcomes *necessarily* changes which actions win. Any supervised learner — k-NN, gradient descent, a lookup fitter — breaks identically under permuted labels. The document even concedes the mechanism is this mundane: "Under the scramble C still induced a near-right condition (that step reads only states, which were not scrambled) but *solved* the wrong action (that step reads outcomes, which were)." The empirical residue is the *magnitude* of the drop, not the existence of the dependency.
+
+**(3) Serious.** The C-half is near-analytic too; the test's two halves are a stipulated null and a predictable break.
+
+**(4) Fix:** Add a control process that is label-supervised but is *not* a constructor by file 10's semantics (e.g., a classifier over the same records that emits a rule). If the test places it on C's side of the line, the test does not separate construction from supervised learning and must be restated as separating defect-using from aggregate-using processes.
+
+---
+
+### Finding 4 — M6(ii) directly contradicts §5: C depends on the outcome column, not on *defects*
+
+**(1) Claim attacked:** §5's "the defect representation is on C's route."
+
+**(2) Why it fails:** §6 reports that C **built** `IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i` from records "with the outcome replaced by the prediction (no defect content)," claiming "fixed 671, broken 0." §8 diagnoses: "C's accounting never checks that the old prediction differed." So what C depends on is the *values in the outcome column*, whether or not they constitute defects. The scramble permuted outcomes and C broke — but M6(ii) shows C does not care whether the outcomes *are* defects. §5's stronger claim is not licensed by the two results together, and §5 never reflects §8's own admission.
+
+**(3) Serious** (internal inconsistency between the claim and the reported failure; it is the weakest link in the whole provenance argument).
+
+**(4) Fix:** State §5 as "C's output depends on the outcome pairing"; fix the accounting (require old ≠ new before counting a fix) and re-run M4 and M6(ii) before asserting dependency on *defect content* specifically.
+
+---
+
+### Finding 5 — The test perturbed only one column of a multi-column representation
+
+**(1) Claim attacked:** "The defect representation is on C's route" (the representation = state before step, predicted field, true field).
+
+**(2) Why it fails:** The scramble permuted the true-field column among V records only. Condition induction read the unscrambled state columns and still recovered `n_i == n_j`. So the test covers the outcome column's pairing and leaves the state columns — half the representation — unexamined, while claiming the route for the whole representation.
+
+**(3) Minor-to-serious** (overclaim relative to intervention, easily repaired).
+
+**(4) Fix:** Ablate or permute the state columns as well (permute states among records; permute the state–outcome pairing in both directions; empty the state column) and report each.
+
+---
+
+### Finding 6 — Circularity with file 10: the test is the definition, then is said to demonstrate it
+
+**(1) Claim attacked:** "...which is what 'provenance' means in file 10."
+
+**(2) Why it fails:** Design §1 states: "remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected. **That is the operational content** of 'the mapped objection is on an active dependency route.'" So file 10's distinction is *operationalized by this very test*. Results §5 then says the test demonstrates what provenance means. A criterion that constitutes a definition cannot be evidence for it. What the test *can* show is that C fails to be a constructor (sink K2) — a test of one program. It cannot show that constructors differ from selectors *as classes*, because the selector's invariance is part of the definition.
+
+**(3) Serious** (this is the difference between "we checked our two programs against our definitions" and "we distinguished two provenances").
+
+**(4) Fix:** Exhibit file 10's derivation of the distinction independently of the test — from the semantics of variation-and-survival versus operating-on-a-defect-representation — and downgrade §5 to: the two definitions are jointly satisfiable and operationally separable in this world.
+
+---
+
+### Finding 7 — N=1 per category; the effect is attributable to the interface, not the concept
+
+**(1) Claim attacked:** "the two processes' outputs depend on different things."
+
+**(2) Why it fails:** C and B differ in input channel, search algorithm, determinism, lookahead depth, and simplicity pressure. The intervention targets the one channel only C has. The resulting difference is therefore attributable to the *interface difference*, which is a design choice, not to process *type*. Generalizing from one constructor and one selector to the categories is the overclaim.
+
+**(3) Serious.**
+
+**(4) Fix:** Run a family of constructors (different induction algorithms, different rule languages) and a family of selectors — crucially including a selector whose fitness uses per-candidate defect *counts*, and a genetic-programming variant over records. If a defect-count selector also breaks under scrambling, the contrast is granularity of feedback, not provenance — and the concept must be restated accordingly.
+
+---
+
+### Finding 8 — "Different things" overstates: B's fitness is computed from the same world outcomes, aggregated
+
+**(1) Claim attacked:** "the two processes' outputs depend on different things."
+
+**(2) Why it fails:** B's fitness is the exposure-half fitness of the current architecture — computed by comparing predictions to the true field. That true field is the same data that appears in V's outcome column. B does not depend on different *things*; it depends on the same things in aggregate form. The distinction the test actually isolates is itemized pairing versus scalar aggregate — a formatting difference in the feedback channel. Under that reading "provenance" thins to "granularity of feedback," which is far from "the route from failure to new machinery."
+
+**(3) Serious** (it changes what the concept *is*, not just how well it is supported).
+
+**(4) Fix:** State the contrast as itemized-versus-aggregate and argue in file 10 why that is the route distinction; or redesign B so its fitness provably cannot be derived from defect content, making the channels genuinely different in kind.
+
+---
+
+### Finding 9 — "Byte-identical" as an evidential standard is pseudo-precision
+
+**(1) Claim attacked:** "byte-identical output" / "byte-for-byte unaffected."
+
+**(2) Why it fails:** For a deterministic program given an argument it never reads, byte-identity is certain and carries no information. Presenting it as a measured finding imports the flavour of precision into a analyticity. (The same flavour appears in §3: "same fidelity to 16 digits.")
+
+**(3) Cosmetic**, but it is what makes Findings 1–2 easy to miss.
+
+**(4) Fix:** Report it plainly: deterministic program, unread input, therefore unchanged — and note that this is why it is not evidence.
+
+---
+
+## Direct answers to the two questions
+
+**Is there a reading under which the scramble test speaks to construction versus selection *as concepts*?** One, and only a weak one: the *joint-satisfiability / operational-separability* reading. The test shows that file 10's two definitions are simultaneously instantiable by real programs, that they are separable by an intervention rather than merely by definition, and that C's dependency is not nominal — C could have ignored V or been robust to the pairing, and it was not (0.55 drop). That is a genuine contribution. But it is not "distinguishing the provenances," and it is further undercut by Finding 4 (C depends on outcomes, not defects) and Finding 6 (the selector's invariance is definitional). Under every stronger reading — that the test detects provenance, or that it shows construction differs from selection as a category — the test is about these two programs and their interfaces.
+
+**What would the author have to add to make it more than "C reads V and B does not"?**
+
+1. Make the B-half non-trivial: black-box invariance across a *family* of scrambles and re-encodings, or a derivation in file 10 that any selection process is necessarily V-invariant — converting the tautology into a theorem about the concept.
+2. Show *necessity* on the C side: that the law is not identifiable from states alone or from aggregate counts in this world, so that any process building it from this contract must use the itemized pairing. (M6(i) is a start; M6(ii) destroys it until the accounting is fixed.)
+3. Add a label-supervised non-constructor control to show the test separates construction from supervised learning, or concede it does not.
+4. Vary implementations across both categories and show the invariance pattern tracks *type* rather than code.
+5. Perturb the state columns, not just the outcome column.
+6. Break the circularity with file 10 by deriving the distinction from the process semantics, independent of this test.
+7. Restate §5 honestly: "C's output depends on the outcome pairing (empirical — it could have been robust, and was not); B's does not (stipulated — it could not have been otherwise). The definitions are jointly instantiable and operationally separable here."

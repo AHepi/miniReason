@@ -1,0 +1,187 @@
+# Critique of the contract-adequacy conjunct in *Claude Fable Semantics* (revised)
+
+Method note. I ran the story-critique method on this document as instructed: Parts are scenes, definitions/conditions are characters, stated aims and open limits are the promises of the type. The type here is a formal theory document; its audience's promise (my reading, not a fixed rule) is: every predicate is well-defined, every worked example satisfies the document's own conditions, and every attack listed as open is genuinely open. Where a test does not transfer I say so in one line at the end.
+
+---
+
+## 1. Corrections and confirmations first
+
+Your diagnosis is correct on the page, and one part of it can be sharpened.
+
+The condition is exactly as you state it, in Part V:
+
+> **Contract adequacy.** \(C\) is not **protective** for \(\mathcal E\): there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse. This is the condition that catches a scope drawn to exclude the embarrassing change; a stated exclusion is not thereby a legitimate one.
+
+and it is a conjunct of (E):
+
+> \[\operatorname{Account}(E,p,t,\Gamma)\iff \text{(F1)}\land\text{(F2)}\land\text{(A)}\land\text{NonCircular}\land\text{NonVacuous}\land\text{Adequate}. \tag{E}\]
+
+One sharpening. The range is cleaner than it looks, and this matters for your K question. Part III fixes the form as "\(C=(C_{\mathrm{adm}}\cap S)\cup K\)" and says \(K\) is "a declared set of counterfactual edits — pairs the module does not admit." So \(K\cap C_{\mathrm{adm}}=\varnothing\), and therefore \(C_{\mathrm{adm}}\setminus C=C_{\mathrm{adm}}\setminus S\). Adequacy quantifies over *admitted pairs excluded by the stated scope*, and never over \(K\). That is the good part of the design, and it is what I check below.
+
+But two terms in the condition are not fixed anywhere in the document, and the document's own Part VII proves one of them can fail.
+
+---
+
+## 2. The five passes
+
+### Pass 1 — Scene by scene
+
+**1. "Baseline value" is never fixed.** Part V's condition turns on \(\operatorname{Ans}_p\)'s "baseline value," but the document uses "baseline" two different ways. Part II says "The baseline pairs are excluded on purpose" — plural, meaning \(\{(1,b):b\in B\}\), all identity pairs. Part III says a contract "contains the baseline \((1,b_0)\)" — singular, one pair. The coherence condition in Part III requires only that one pair: "It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\ldots\)" Nothing requires \((1,b)\in C\) for any other \(b\). So the condition has two readings and they behave differently:
+
+- Reading A, baseline \(=\operatorname{Ans}_p(1,b_0)\): for any excluded pair with \(b\neq b_0\), the boundary change alone can make both \(\operatorname{Ans}_p(a,b)\) and \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) differ from the baseline, and the condition passes vacuously. Every excluded pair at another boundary becomes invisible to adequacy. That is a hole, not a feature.
+- Reading B, baseline \(=\operatorname{Ans}_p(1,b)\): sensible, but it presupposes \((1,b)\in C_{\mathrm{adm}}\), which the coherence condition does not guarantee, and it is not the reading Part III's singular "the baseline" points at.
+
+The condition's truth value depends on a choice the page does not make. Job the condition was meant to do: be a fact about \(C\) against the admitted changes. It cannot be a fact until the baseline is a term.
+
+**2. \(\tau\) is undefined at exactly the pairs the condition quantifies over.** The transport is written "\(\tau:A_D\to A_E\)" (function notation), but Part VII treats it as partial, and proves it:
+
+> here \(\tau\) sends the intervention on \(H\) to the edit that replaces the calculation's component assigning \(H\), which the reversed organization has none of, so \(\tau\) is undefined and (F2) fails at that pair
+
+That pair is *admitted*. Adequacy's range is \(C_{\mathrm{adm}}\setminus C\), so it is made of pairs where fidelity is not assumed and where, by Part VII's own showing, \(\tau\) may be undefined. The condition then reads \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) at an input that may not exist. Three conventions are available and the page picks none: undefined counts as "differs from baseline" (then a candidate with no response to a change the target is sensitive to *passes* — the protective case Grievance 4 is worried about); undefined counts as "does not differ" (then such a candidate fails — and so does every candidate that cannot be asked about an irrelevant excluded change); or the condition is simply ill-typed there. The job — catch the candidate that cannot track a real dependence — is not done by a formula that does not say which.
+
+**3. Co-movement is required; agreement is not.** Read the condition literally: it fires only on *asymmetric* deviation from baseline. "\(\operatorname{Ans}_p\) differs \(\ldots\) while \(\operatorname{Ans}_E\ldots\) does not, or the reverse." So if at an excluded pair \(\operatorname{Ans}_p(a,b)=v\neq\) baseline and \(\operatorname{Ans}_E(\tau(a),\sigma(b))=w\neq\) baseline with \(v\neq w\), the condition passes. (A) is required only on \(C\); (F1) and (F2) only on \(C\). Nothing in (E) requires the candidate to *agree* with the target at an excluded admitted pair, only to move when it moves. This is the too-weak direction, and it is not a marginal case: it is the standard case of a decoy that tracks the target's sensitivities but gets the values wrong off-scope.
+
+**4. Part XV's "open" attack is already realized.** Part XV lists:
+
+> **A protective contract the adequacy condition admits.** A stated scope, passing Part V's adequacy condition, that nonetheless excludes exactly the admitted change that would separate the candidate from the target. This shows the adequacy condition is too weak\ldots
+
+Note 3 instantiates this with answer-level disagreement; there is a second instantiation at the decomposition level. Suppose at \((a^\*,b^\*)\in C_{\mathrm{adm}}\setminus C\) the candidate's component relation differs from its anchor's (F1 would fail there) but the assembled answers agree. Then (E) passes — (F1) is checked only on \(C\) — and only the anchored grade's condition 4 catches it:
+
+> Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor: fidelity holds not only on the pairs the contract selected but on every pair the module admits.
+
+So the job stated in Part V's own gloss — "catches a scope drawn to exclude the embarrassing change" — is done by the *anchored* grade for decomposition-level embarrassments and by adequacy only for answer-level asymmetric ones. The condition's stated job is wider than its reach. This should be said in Part V rather than left to Part XV's attack list, because the attack list presents it as open when notes 3–4 show it is settled by the condition's own text.
+
+**5. The reverse clause overrides legitimately stated scopes (the too-strong direction).** The "or the reverse" disjunct fires when the candidate's answer moves at an excluded admitted pair and the target's does not. Part III says the scope is "the declared subset of admitted pairs the claim ranges over, with the reason for each exclusion recorded." So a question may legitimately exclude a change with a recorded reason, and adequacy then falsifies \(\operatorname{Account}\) if the candidate has any answer-level spurious sensitivity there. For a physical organization, \(C_{\mathrm{adm}}\) is fixed by the module: Part XII defines \(A_\Theta(o)\) as "which alterations of the occurrence's state the module permits, stated as a set, since every contract, every grain-admissibility claim and every world-kind claim quantifies over it." The reverse clause therefore requires the candidate's answer-profile sensitivities to match the target's across *every permitted alteration of the occurrence outside the scope*. That is close to requiring answer-level fidelity on all of \(C_{\mathrm{adm}}\) — which is the anchored grade's business, not grade 1's. The forward strength is intended and right; the reverse clause is the overreach.
+
+**6. The \(K\)-escape, and Grievance 4's unqualified promise.** Since \(C_{\mathrm{adm}}\setminus C=C_{\mathrm{adm}}\setminus S\), a pair in \(K\) can never make a contract protective — adequacy is silent on \(K\) by construction. For a *physical* question that is safe, because \(C_{\mathrm{adm}}\) is supplied by the module and cannot be redeclared. For a non-physical question it is not: Part VII states "Adequacy is relative to the declared admission relation," and Part III says the admission relation for such a question is "a **declared admission relation** stated with the question." So a protective author can declare the separating edit non-admitted, place it in \(K\) "with a stated meaning," and adequacy never sees it. Part VII is candid about the consequence for its eliminative case:
+
+> the objectivity condition then ranges over \(C_{\mathrm{adm}}\) only, so what such an account establishes about the world is that no admitted change produces the effect, and what it establishes about the impossibility is relative to the stated meaning of the counterfactual.
+
+Grievance 4 is not candid about it. It promises:
+
+> A contract that quietly excludes such a change is caught by the requirement that exclusions be stated, and then by the adequacy condition, whether or not anyone supplies the change.
+
+"Whether or not anyone supplies the change" is true and is a strength. "Caught \(\ldots\) by the adequacy condition" is not true where the admission relation is a declared parameter, and Grievance 4 carries no qualification to the non-physical case. The fair fix is one clause: the promise holds where \(C_{\mathrm{adm}}\) is module-fixed, and is relative to the declared admission relation otherwise.
+
+**7. Derivation 7's theorem survives; its gloss does not.** The claim itself is safe. With adequacy inside (E), the claim "\(E\) is an account on \(C\)" still carries its index, and Part VIII's historical-index rule applies: "a claim indexed to a contract keeps its identity when a later theory changes the current contract; its truth value at its own index does not change." If an episode narrows \(S\), the new index has a new adequacy condition over a new \(C_{\mathrm{adm}}\setminus C\); both claims may be true. No contradiction.
+
+The consequence paragraph overclaims:
+
+> Goalpost-moving is the act of changing the index without recording the change; the adequacy condition of Part V is what catches a change made to protect a candidate, whether or not it is recorded.
+
+Remove the adequacy condition in your head: an unrecorded index change is still caught by Part III's record requirement ("the record must show the boundary") and by (EK)'s index clause ("A later narrowing of the contract to rescue adequacy is a new claim at a new index, and does not retroactively satisfy (EK)."). Keep adequacy and it still does not catch an index *change*, recorded or not — it is a condition evaluated at one index. What it catches is a *narrowed scope that leaves an answer-asymmetric separation outside*, and only that. The catching of retroactive rescues belongs to (EK) and the record; adequacy's name is attached to a job it does not do.
+
+**8. Grievance 4's two-index framing is now stale, not wrong.** Grievance 4's structure is: "'Faithful on C' is a fact within C. 'C is not protective' is a fact about C against the physically admitted changes\ldots An objectivity claim is the conjunction." With adequacy a conjunct of (E), the conjunction is no longer two separable claims: you cannot have \(\operatorname{Account}(E,p)\) without non-protectiveness. That is the intended strengthening and it makes Grievance 4's *answer* stronger. What is stale is the *picture*: "two claims, two indices" describes a separation the revision removed. Grievance 4 should be restated as: objectivity is now inside grade 1, and it costs a candidate its answer-profile freedom across the whole admitted set.
+
+**9. Part 0 and Part I no longer describe (E).** Part 0's gloss of the first grade is:
+
+> An **account at a contract** is a candidate whose components and assembled organization are faithful to their anchors under every change the contract admits, that answers the question asked, that does not restate the answer, and whose contract is stated.
+
+Four clauses; adequacy is not among them, and adequacy is the one conjunct that ranges outside the contract. Part I says "Account at a contract is what a question can assess," and Part V itself says "Every conjunct is a condition on how supplied relations behave under changes" — but adequacy's changes are \(C_{\mathrm{adm}}\setminus C\), not \(C\). These are gloss errors, not structural ones; a reader who trusts Part 0 will mis-predict (E).
+
+**10. The reversed calculation is the stress test, and the page does not settle it.** Part VII asserts:
+
+> The reversed calculation is faithful under the identification contract\ldots it is an account at that contract, and not anchored as a production account, because on the production edits — admitted, and outside the identification contract — its one component is not of one forward kind with the assignment of \(L\).
+
+The production edits are in \(C_{\mathrm{adm}}\setminus C\) for that question. Under an intervention on \(H\), the target's answer moves. \(\tau\) is undefined there — Part VII says so, in the passage quoted in note 2. So whether the reversed calculation still satisfies (E) depends entirely on the undefined-\(\tau\) convention that note 2 says the document does not fix. Under "undefined counts as differing," it passes (both differ from baseline) and Part VII's claim survives, but then so does any candidate with no response at all to a change the target is sensitive to. Under "undefined counts as not differing," Part VII's own example fails (E) and the document loses its illustration of "account at a contract, not anchored." The document's flagship example for the two-grade distinction is now conditional on an unstated convention.
+
+**11. Remove and swap, on the condition's design choices.**
+
+| Try this | What happens | Mark |
+|---|---|---|
+| Remove adequacy from (E) | A scope excluding the separating pair yields \(\operatorname{Account}\) for a decoy; Part XV's attack is wide open; Grievance 4's answer loses its second conjunct | The condition is doing work. **Protect it** |
+| Swap "differs from baseline" for "equals \(\operatorname{Ans}_p(a,b)\)" (agreement) | Closes the co-movement gap (note 3); begins to duplicate anchored condition 4's job at answer level; still needs the definedness clause | Agreement is the right fix, with the baseline stated |
+| Swap baseline \((1,b_0)\) for \((1,b)\) | Removes the boundary-conflation of note 1; presupposes \((1,b)\in C_{\mathrm{adm}}\), which coherence does not give | Reading B is better and must be **stated** |
+| Restrict the range to \(\{a:(a,b_0)\in C_{\mathrm{adm}}\setminus C\}\) | Baseline becomes \(\operatorname{Ans}_p(1,b_0)\), well-defined; boundary-conflation gone; loses excluded pairs at other boundaries — which are arguably other questions' territory | The cheapest repair; name what it costs |
+| Drop the reverse clause | Legitimately scoped questions stop failing on candidate-side spurious sensitivities (note 5); spurious sensitivities still caught by anchored condition 4 at signature level | **Two routes to one job** — adequacy forward + world-kind is enough; the reverse clause is the weaker duplicate |
+| Swap answer-profile for signature in adequacy | Becomes anchored condition 4; the two grades collapse | The answer-level/split is what **holds** the two-grade distinction in place |
+
+**12. A version that does more jobs at once.** State it as: for every \((a,b)\in C_{\mathrm{adm}}\setminus C\), if \(\tau(a)\) is defined then \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\) (agreement, not co-movement); if \(\tau(a)\) is undefined then \(\operatorname{Ans}_p(a,b)=\operatorname{Ans}_p(1,b_0)\) (a candidate may not be unable to be asked about a change the target answers to); with the range restricted to the question's own baseline boundary, and with \((1,b_0)\) named as the baseline. That does four jobs the present text leaves undone: it fixes the baseline, it types the undefined case in the right direction, it closes the disagreement gap, and it stops overriding recorded exclusions — while leaving signature-level work to the anchored grade, which is where the document already put it.
+
+### Pass 2 — Sequences and the chain of questions
+
+**13. The chain breaks at Part VII.** The reader's chain is: Part 0 promises two grades → Part III fixes the contract form → Part V states (E) → Part VII exhibits the reversed calculation as "an account at that contract" → Part XV lists protective contracts as an open attack. The link from Part V to Part VII is the condition under test, and by note 10 it does not carry the example it was written to carry. The link from Part V to Part XV is also broken, in the other direction: Part XV presents the protective-contract case as open, and notes 3–4 show it is already decided by the condition's wording. Two links, one in each direction.
+
+**14. Planted and never collected.** "Baseline value" is planted in Part V and defined nowhere. The two uses of "baseline" in Part II and Part III are collected into the same word and never reconciled. This is the smallest defect in the document and the one that makes the largest predicate undecidable.
+
+**15. Cause versus label.** Part V labels the condition: "This is the condition that catches a scope drawn to exclude the embarrassing change." Remove the cause — the asymmetric-baseline structure — and substitute agreement, and the catching improves; substitute signature, and the catching improves further. The label is doing more work than the condition. Likewise Derivation 7's "the adequacy condition of Part V is what catches a change made to protect a candidate" (note 7): the cause of that catching is (EK)'s index clause and the record requirement.
+
+**16. A lucky escape for the candidate.** In the non-physical case the candidate gets a lucky escape the document does not flag as one: declaring the admission relation so that the separating edit lands in \(K\) removes it from adequacy's range entirely (note 6). Part VII's relativity clause is honest; Grievance 4's blanket promise is where the luck is hidden.
+
+### Pass 3 — People and conditions, and the choice test
+
+**17. The choice test on the placement.** The real options were: (i) adequacy as a conjunct of (E) — chosen; (ii) adequacy as a conjunct of the anchored grade only; (iii) adequacy as an external predicate alongside \(\operatorname{Account}\), as Grievance 4's "conjunction" literally describes; (iv) no condition. Option (i) is **held** by the job "make objectivity non-optional at grade 1, so that Part XV's attack is not wide open at the weaker grade." That is a real job and it is the right option. But the choice scene in Part V does not show the alternatives: the sentence "a stated exclusion is not thereby a legitimate one" argues for *some* condition, not for this placement, this strength, or this range. The weight is missing, and the cost of (i) — stale glosses (notes 8–9), a conditional example (note 10), and the reverse clause's overreach (note 5) — is not acknowledged anywhere.
+
+**18. Flip the choice.** Had the document chosen (ii), Grievance 4's answer would fail at grade 1 and Part XV's attack would be open exactly where the document says objectivity matters. Had it chosen (iii), \(\operatorname{Account}\) would be a within-contract predicate and objectivity would be optional — the thing Grievance 4 exists to deny. So the placement is not idle; it is a true choice with a true cost, and the cost is felt in the places notes 8–10 name.
+
+**19. The cost test.** The price of (i) should be visible in something concrete. It is: Part 0's four-clause gloss no longer matches (E); Grievance 4's "two claims" are one; Part VII's reversed-calculation claim is convention-dependent; and any candidate with a spurious answer-sensitivity anywhere in \(A_\Theta(o)\times B\setminus C\) loses account-hood. The document states none of these as costs.
+
+**20. Every condition needs a job; two routes.** Adequacy (answer level, on \(C_{\mathrm{adm}}\setminus C\)) and anchored condition 4 (signature level, on all of \(C_{\mathrm{adm}}\)) are two routes to the job "catch a decoy that differs from the target on an admitted change." Each has a second job — adequacy underwrites Grievance 4 at grade 1, world-kind defines mechanism-hood — so both should be kept. But the reverse clause (note 5) is the one element without a second job of its own: it duplicates world-kind's spurious-sensitivity catching at the wrong grade. That is the element to cut.
+
+### Pass 4 — Theme as a pattern
+
+**21. The central question, stated plainly.** "What may a contract exclude, and still be an explanation?" The pattern count of who meets it:
+
+- (F1), (F2), (A): silent on excluded pairs — nothing is required there.
+- Adequacy: answer-profile co-movement on \(C_{\mathrm{adm}}\setminus C\).
+- Anchored condition 4: signature agreement on all of \(C_{\mathrm{adm}}\).
+- \(K\): nothing required; meaning stipulated.
+- (EK)'s index clause: a later narrowing does not count retroactively.
+- Part III's record requirement and Derivation 7: index discipline.
+
+Six answers, which is healthy. The pattern breaks in two places: adequacy and world-kind disagree about *level* without the document saying why the split is where it is; and \(K\)'s answer ("nothing") is never challenged by adequacy, though Grievance 4's promise implies it would be (note 6).
+
+**22. The fair mirror test, applied to the reverse clause.** The condition treats "target moves, candidate does not" and "candidate moves, target does not" as the same fault. Lay them side by side. The first: the scope protects the candidate from a dependence the target really has — this undermines the objectivity claim, and the candidate should fail. The second: the candidate has a dependence the target lacks, at a pair the question legitimately excluded with a recorded reason — this is a decomposition defect, and the anchored grade already catches it at signature level. Did both have options? The first did not (the candidate cannot respond); the second did (the scope was legitimately drawn). Did both gain? The first gains a protected account; the second gains nothing. Treating them as one fault is an unequal mirror, and it is the concrete form of the too-strong direction.
+
+**23. The ending the type promises.** A formal document promises that its open-attack list is correctly calibrated. Part XV's protective-contract entry is mis-calibrated — it is listed as a defeat waiting to happen when the condition's own text already admits two such contracts (notes 3–4). Part XV should be updated, because a reader who takes the list as a research programme will be looking for a case the document already contains.
+
+### Pass 5 — How it fits
+
+**24. Meeting points.** Adequacy is the one place where Grievance 4's objectivity theme becomes load-bearing inside (E) — a plot event that is also a thematic move. That is the strength of the revision and it should be protected. But the meeting is partial in exactly three respects: co-movement rather than agreement; an unresolved definedness convention; and silence on \(K\) for declared admission relations.
+
+**25. The medium check, adapted.** For every term in a formal predicate, ask where it is defined and what it presupposes. "Baseline value" fails (defined nowhere; two competing uses). \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) at \(C_{\mathrm{adm}}\setminus C\) fails (presupposes \(\tau\) defined where Part VII shows it need not be). Everything else in (E) passes: the set algebra is clean, the condition is external in the sense Part I requires ("Whether a transport is faithful on a contract is independent of whether anyone accepts it"), and it inspects no label, which fits the document's central anti-label commitment.
+
+**26. The vanishing test.** Part 0's grade-1 gloss appears nowhere after Part V; the two-grade promise is carried forward by Part V's own "What (E) excludes" discussion and by Part XV, but the gloss that introduces it to the reader is now wrong. A reviser should repair Part 0 and Part I in the same pass as Part V.
+
+---
+
+## 3. How it fits together
+
+The revision is structurally sound and locally broken. Putting adequacy inside (E) is the right placement: it is what makes Grievance 4's answer more than a hope, what closes the most obvious route to a protective contract at the weaker grade, and what keeps the two-grade distinction doing real work (adequacy at answer level for grade 1, world-kind at signature level for grade 2 — two routes to one job, each with a second job). What does not fit is the condition's text: two of its terms are undefined or ill-typed at exactly the pairs it quantifies over, its co-movement structure admits the disagreement Part XV lists as an open attack, its reverse clause reaches beyond the contract Part 0 says grade 1 is about, and three surrounding passages (Grievance 4, Derivation 7's gloss, Part 0/Part I) were not updated to match it. The document's own example in Part VII — the reversed calculation as an account at the identification contract — now depends on an unstated convention about undefined \(\tau\), and can go either way.
+
+---
+
+## 4. The faults that matter most, ranked
+
+**1. The predicate is not well-defined as written.** "Baseline value" is unspecified, with two competing uses of "baseline" in the document (Part II's plural "baseline pairs," Part III's singular "the baseline \((1,b_0)\)"), and \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) is evaluated at pairs where Part VII itself shows \(\tau\) can be undefined. Until both are fixed, \(\operatorname{Account}(E,p)\) has no determinate truth value for any question with a non-total \(\tau\) and a non-vacuous \(C_{\mathrm{adm}}\setminus C\). Fix: name the baseline, restrict the range to the question's own baseline boundary, and add the definedness clause from note 12.
+
+**2. It is simultaneously too weak and too strong.** Too weak: co-movement suffices, so a candidate that disagrees with the target at an excluded admitted pair passes, and a decomposition-level separation with answer agreement passes — Part XV's "protective contract the adequacy condition admits" is realized twice over by the condition's wording. Too strong: the reverse clause falsifies \(\operatorname{Account}\) for any answer-level spurious sensitivity anywhere in \(A_\Theta(o)\times B\setminus C\), overriding legitimately recorded scopes and doing at grade 1 the job the anchored grade already does at signature level. Fix: require agreement, and drop or narrow the reverse clause.
+
+**3. Three surrounding passages were not updated.** Grievance 4's "two claims, two indices" is stale (the conjuncts are no longer separable) and its promise to catch quiet exclusions is unqualified for non-physical questions, where a separating edit can be declared into \(K\) and removed from adequacy's range entirely. Derivation 7's theorem survives but its gloss assigns to adequacy a catching job that belongs to Part III's record requirement and (EK)'s index clause. Part 0 and Part I describe a four-clause grade 1 that (E) no longer matches.
+
+**What to protect.** The placement (adequacy inside (E), not outside it); the set algebra that keeps \(K\) out of adequacy's range; the answer-level/split against signature-level, which is what holds the two grades apart; and the condition's externality — it is about answer values under changes, not about anyone's beliefs, and it inspects no label.
+
+---
+
+## 5. What I am unsure of
+
+- Which baseline the document intends. I read the page and it does not decide; Part II's plural usage and Part III's singular point in different directions, and the condition's truth value turns on it.
+- Whether \(\tau\) is meant to be total on \(A_D\). The function notation in Part IV says yes; Part VII's "so \(\tau\) is undefined and (F2) fails at that pair" says no. This single ambiguity decides whether Part VII's reversed calculation still satisfies (E), and I have not picked a winner because the page does not.
+- Whether the reverse clause is intended to range over all of \(A_\Theta(o)\times B\setminus C\) or only over pairs the question deems relevant. The text gives no restriction, and my too-strong verdict assumes the unrestricted reading.
+- Notes 3–4 (that Part XV's attack is already realized) are read from the condition's text alone. If the intended convention is that "differs from baseline" presupposes definedness and that undefined \(\tau\) is protective whenever the target moves, note 3 survives but note 4's answer-agreement case does not — because under that convention a candidate with a defined but *wrong* answer at an excluded pair still passes. I have not assumed the convention; the document should state it.
+
+---
+
+## 6. One next step
+
+Rewrite the adequacy condition in Part V as: for every \((a,b)\in C_{\mathrm{adm}}\setminus C\) with \(b=b_0\), if \(\tau(a)\) is defined then \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\), and if \(\tau(a)\) is undefined then \(\operatorname{Ans}_p(a,b)=\operatorname{Ans}_p(1,b_0)\) — then, in the same pass, re-check the reversed calculation in Part VII against the repaired condition, update Part XV's protective-contract entry from "open attack" to "closed by the repair, with these two residual cases," and add the missing qualification to Grievance 4 and the missing clause to Part 0 and Part I.
+
+---
+
+### Tests that did not transfer, one line each
+
+- The horror and science-fiction promise lists do not transfer; I used the "any other type" procedure instead and named the promise as my own reading.
+- "The final fight in a place that seemed safe," "the second ending," and rising-pressure counting do not transfer (no dread to manage).
+- Pacing notes do not transfer (unperformed prose).
+- The camera/prose medium check transfers only in the adapted form used in note 25 (who can evaluate the term, not who can see the mark).
+- "Lucky meetings" transferred in adapted form (note 16, the \(K\)-escape); "stock ideas" transferred as label-versus-condition (note 15).

@@ -1,0 +1,734 @@
+====================================================================================================
+S9_against_previous | rev2_deepseek | sample 0 | finish stop | 21354 chars | error None
+====================================================================================================
+# Findings
+
+## A. Audit of the sixteen items in 21 §4
+
+### 1. Item 1 — Five conjuncts and adequacy moved to objectivity
+**Claim attacked:** 22 Part V: “and \(\operatorname{Account}(E,p,t,\Gamma)\) holds exactly when the following **five** conditions hold, each a condition on supplied relations under the changes in \(C\), and none a condition on anything outside \(C\).”  
+**Why it fails:** The five conditions include **Non-vacuity**, which says: “every admitted pair excluded from \(C\) is excluded by the stated scope \(S\), not silently.” That is precisely a condition on pairs in \(C_{\mathrm{adm}}\setminus C\), i.e. outside \(C\). So the sentence “none a condition on anything outside \(C\)” is false of 22’s own list. Also Part 0 Grievance 4 still says: “then by the adequacy condition,” although 22 removed adequacy from (E) and renamed the second index “objectivity.”  
+**Severity:** serious.  
+**Fix:** delete “and none a condition on anything outside \(C\),” or restrict it to F1–F2–A–NonCircular; replace “adequacy condition” in Grievance 4 with “objectivity condition.”
+
+### 2. Item 2 — Ownership derived from retained realization; Can free of ownership
+**Claim attacked:** 22 Part X: “A subhistory is **owned** by \(s\) when every process occurrence in it is an execution, from a state of \(s\)'s substrate, of a protocol for which that substrate holds a retained realization (Part XII, (CT1)), under \(s\)'s continuity and resource contract \((\Omega,\beta)\).”  
+**Why it fails:** (CT1) is \(\operatorname{RetReal}(\pi,T,C;\chi)\), not \(\operatorname{RetReal}(\pi)\). A “protocol for which that substrate holds a retained realization” does not specify the task \(T\), the constructor attribute \(C\), or the enabling conditions \(\chi\). The cycle is removed, but the replacement is under-typed.  
+**Severity:** serious.  
+**Fix:** define ownership relative to an explicit \(\operatorname{RetReal}(\pi,T,C;\chi)\), carrying \(T,C,\chi\) in the ownership predicate.
+
+### 3. Item 3 — Active route on instantiated inputs; operative condition outside anchored grade
+**Claim attacked:** No finding. The repair is present: Part IX defines the active route as joining “an occurrence that instantiates the input organization (Part IV, Inst),” and Part V moves actuality into “An operative condition, openly historical.”  
+**Severity:** none.  
+**Fix:** none.
+
+### 4. Item 4 — Anchored grade: properness, deletion of condition 3, world-kind, extensional statement, attack (A)
+**Claim attacked:** Part V world-kind: “fidelity holds not only on the pairs the contract selected but on every pair the module admits, **where the translation is defined**.”  
+**Why it fails:** The escape clause “where the translation is defined” lets an anchored candidate avoid comparison on admitted edits for which \(\tau\) or \(\sigma\) is undefined. A decoy can then have no response at exactly the admitted change that would separate it, and condition 3 is supposed to check every admitted change.  
+**Severity:** serious.  
+**Fix:** either require \(\tau,\sigma\) defined on all of \(C_{\mathrm{adm}}\) for anchored account-hood, or treat undefined translation as a failure of world-kind.
+
+**Claim attacked:** Part V Non-circular dependence: “removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\),” followed by “The one-component candidate that repackages \(\operatorname{Sol}_D\) for a target with several components satisfies (E): its single commitment is removable, so non-circular dependence has its witness.”  
+**Why it fails:** If \(\Gamma\) has one element, there is no nonempty proper sub-block \(B\subsetneq\Gamma\). The text explicitly adds: “Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing.” So the single-commitment candidate cannot satisfy NonCircular as written. This is the unresolved half of 21 §1.6.  
+**Severity:** fatal to the claim that the one-component repackaging satisfies (E).  
+**Fix:** change the witness to remove a nonempty sub-block, proper only when \(|\Gamma|>1\), or supply a separate witness for singletons.
+
+### 5. Item 5 — Kind identity excludes only \((1,b_0)\); forward kind for subnetworks
+**Claim attacked:** No finding. Part II defines the relation for “Two subnetworks \(U,U'\)” and excludes only \(C\setminus\{(1,b_0)\}\).  
+**Severity:** none.  
+**Fix:** none.
+
+### 6. Item 6 — One provenance definition for contents via (R); components and questions inherit it
+**Claim attacked:** No finding. Part IV gives: “The **provenance of a content's occurrence** is the provenance of the transport that witnesses (R) for it; where several do, the earliest.” Part II and Part III explicitly inherit it.  
+**Severity:** none.  
+**Fix:** none, though “earliest” should be indexed to the same \(\prec_h\).
+
+### 7. Item 7 — Sel fixes, Build defect record, earliest producing witness
+**Claim attacked:** Part XII still says the selection witness includes “causal responsibility.”  
+**Why it fails:** 21 §1.11 required replacing causal responsibility with a difference-making clause in module terms. Part IV does this, but Part XII still lists “causal responsibility” as part of the selection witness. That reintroduces the primitive 21 ruled against.  
+**Severity:** serious.  
+**Fix:** replace “causal responsibility” in Part XII with the difference-making clause of Part IV.
+
+**Claim attacked:** Part IV Selected: “**Non-triviality:** no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”  
+**Why it fails:** \(H\) is a finite set of edit–boundary pairs, and the survival condition is a predicate on members. Neither is an organization or content, so “an organization held to \(H\)” remains ill-typed. 21 §1.11 flagged this; 22 changed the wording but not the type error.  
+**Severity:** serious.  
+**Fix:** define non-triviality over contents/organizations explicitly, e.g. no event instantiates an organization that faithfully transports the selection history or the survival condition.
+
+**Claim attacked:** Part IV: “provenance of the **earliest** witness in \(\prec_h\) whose events produced the occurrence that carries \(t\).”  
+**Why it fails:** If a construction modifies or builds a new transport relation on a carrier occurrence that already existed from selection, the earliest producing witness of the occurrence is selection, not construction. The rule can therefore assign selected provenance to a constructed transport that reuses a selected carrier, undermining “Construction is not selection.”  
+**Severity:** serious.  
+**Fix:** distinguish the occurrence of the carrier from the occurrence of the transport relation; provenance should track the witness that produced the transport relation, not merely the carrier occurrence.
+
+### 8. Item 8 — Merit condition withdrawn; Derivation 5 sketch; question-finding open
+**Claim attacked:** No finding. Part X says: “The semantics has **no condition** separating a question worth finding from a re-parameterisation,” and Derivation 5 lists its gaps.  
+**Severity:** none.  
+**Fix:** none.
+
+### 9. Item 9 — Surprise, coherence, C_adm typing, Ans_E, arity slips, parenthetical deletion
+**Claim attacked:** Part IV: “A transport also carries the query,” while Part IV earlier defines “A transport from an organization \(D\) to an organization \(E\) is \(t=(\pi,\tau,\sigma,\lambda)\).”  
+**Why it fails:** The tuple is not updated to include the query, yet definitions of \(\operatorname{Ans}_E\) and \(\operatorname{Ans}_S\) now depend on the transport carrying it. The data model is inconsistent.  
+**Severity:** minor.  
+**Fix:** either add the query to the transport tuple or say the query translation is derived from \(p\) and \(t\), not carried as transport data.
+
+### 10. Item 10 — Derivation 6 restricted; informal-term list; β, Ω; (I3)
+**Claim attacked:** Part XIV “Derived” still lists “Understanding, construction, newness, origin, repair, knowledge, capability, recursion, universality — from those,” but no predicate for Understanding is defined.  
+**Why it fails:** 21 §1.27 ruled this valid: “understanding” is listed as derived and never defined. 22 did not fix it.  
+**Severity:** serious for the “all predicates defined” claim; minor for exposition.  
+**Fix:** define Understanding or move it to the informal-terms list and stop calling it derived.
+
+**Claim attacked:** Part XIV “Informal terms, listed” omits terms used formally elsewhere, e.g. `CreativeCriticalEpisode` in (EK), “operative result” in Part IX, and “epistemic obligation” in Part XI.  
+**Why it fails:** 21 §1.21 required an explicit list of informal terms. The list is incomplete, so Derivation 6’s restriction is still overbroad.  
+**Severity:** serious.  
+**Fix:** add every undefined term used in Parts IX–XIII, or define them.
+
+### 11. Item 11 — Derivation 3 equivalence and population type; Derivation 8 solution preservation
+**Claim attacked:** No finding. Derivation 3 states the survival condition as “exactly when it is faithful on \(H\),” and Derivation 8 states “solution preservation, which for a bijection of the organization data is a hypothesis, not a consequence.”  
+**Severity:** none.  
+**Fix:** none.
+
+### 12. Item 12 — Grain admissibility relative to C_adm; “touched” defined
+**Claim attacked:** No finding. Part II: “every component of that organization is touched by some admitted pair: some \((a,b)\in C_{\mathrm{adm}}\) changes its relation.”  
+**Severity:** none.  
+**Fix:** none.
+
+### 13. Item 13 — Part XV open cases re-sorted
+**Claim attacked:** Part 0 attack (B): “Four cases are open and are listed in Part XV.” Part XV says only symmetry is “**open**”; artefact is “**closable, not done**”; impossibility is “**scoped by design**”; mathematics is “**relative, not open**.”  
+**Why it fails:** The re-sorting was done in Part XV but not propagated to Part 0. The document now contradicts itself about how many cases are open.  
+**Severity:** serious.  
+**Fix:** update Part 0 (B) to say one open, one closable, one scoped, one relative.
+
+**Claim attacked:** Part VII: “Neither has a construction in this document,” referring to symmetry and the selection-artefact case. Part XV now says the artefact case is “closable,” missing only “a provenance clause on the target’s own components.”  
+**Why it fails:** 22a itself admits: “Part VII was not re-sorted to match and should be.”  
+**Severity:** serious.  
+**Fix:** re-sort Part VII or delete the sentence.
+
+### 14. Item 14 — Fidelity over K defined
+**Claim attacked:** No finding. Part III declares that each \(K\)-pair comes “together with the component relations \(L_j(a,b)\) it imposes,” so \(\operatorname{Sol}_D\) is defined on \(K\).  
+**Severity:** none.  
+**Fix:** none.
+
+### 15. Item 15 — Consequence about selected transport representation added
+**Claim attacked:** Part IV: “what it represents by (R) is the content on the largest contract it is in fact faithful on, which may be smaller than the contract declared for the content.”  
+**Why it fails:** (R) requires faithfulness on \(c\)’s contract. If the transport is faithful only on a smaller contract, it does not represent the declared content \(c\); it may represent a different content \(c'\) with that smaller contract. The sentence blurs content identity with contract size.  
+**Severity:** minor.  
+**Fix:** say the transport represents a content whose contract is the largest faithful contract, or that (R) fails for the declared content.
+
+### 16. Item 16 — Part 0 dichotomy as conjecture; attack (A) restated
+**Claim attacked:** No finding. Part 0 now says the dichotomy “is the analysis-of-kinds conjecture (Part XV), not a theorem,” and attack (A) requires satisfying “Origin (Part X).”  
+**Severity:** none.  
+**Fix:** none.
+
+---
+
+## B. Valid defects from 21 that survive in 22
+
+### S1. Non-circularity still excludes single-commitment candidates
+**Claim attacked:** Part V: “removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\)” versus “its single commitment is removable, so non-circular dependence has its witness.”  
+**Why it fails:** Same as Item 4 above. 21 §1.6 ruled this valid; 22 did not implement the fix.  
+**Severity:** fatal to the claim that the one-component repackaging satisfies (E).  
+**Fix:** allow removal of any nonempty sub-block, proper only when \(|\Gamma|>1\).
+
+### S2. “Causal responsibility” survives in Part XII
+**Claim attacked:** Part XII: “population, applied variation operator, encountered history, eliminating survival condition, causal responsibility.”  
+**Why it fails:** 21 §1.11 ruled causal responsibility a primitive in disguise and required replacement. Part IV replaced it; Part XII did not.  
+**Severity:** serious.  
+**Fix:** replace with the difference-making clause.
+
+### S3. Non-triviality remains ill-typed
+**Claim attacked:** Part IV: “no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”  
+**Why it fails:** \(H\) and the survival condition are not organizations. 21 §1.11 ruled the clause ill-typed; 22’s rewording does not fix the type.  
+**Severity:** serious.  
+**Fix:** type the clause over contents/organizations.
+
+### S4. “Adequacy condition” survives as an orphan
+**Claim attacked:** Grievance 4: “then by the adequacy condition.”  
+**Why it fails:** 21 §1.7 moved adequacy out of (E). 22 removed the term from Part V but left it in Grievance 4.  
+**Severity:** minor.  
+**Fix:** say “objectivity condition.”
+
+### S5. Informal terms still omitted; Understanding still undefined
+**Claim attacked:** Part XIV “Derived” lists Understanding; Part XIV “Informal terms, listed” omits `CreativeCriticalEpisode`, “operative result,” and “epistemic obligation.”  
+**Why it fails:** 21 §1.21/1.27 ruled these valid.  
+**Severity:** serious for the well-founded-order claim.  
+**Fix:** define or list.
+
+### S6. Part V cites Derivation 1 without injectivity
+**Claim attacked:** Part V: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract.”  
+**Why it fails:** Derivation 1 requires \((\tau,\sigma)\) injective on \(C\). Part V omits that hypothesis.  
+**Severity:** minor/serious.  
+**Fix:** add “with \((\tau,\sigma)\) injective on \(C\).”
+
+---
+
+## C. New defects introduced by 22, not present in 20
+
+### N1. “None outside C” contradicts Non-vacuity
+**Claim attacked:** Part V: “none a condition on anything outside \(C\).”  
+**Why it fails:** Non-vacuity quantifies over \(C_{\mathrm{adm}}\setminus C\).  
+**Severity:** serious.  
+**Fix:** delete or qualify.
+
+### N2. World-kind escape clause
+**Claim attacked:** Part V: “every pair the module admits, where the translation is defined.”  
+**Why it fails:** It lets an anchored candidate avoid admitted edits with undefined translation.  
+**Severity:** serious.  
+**Fix:** require total translation on \(C_{\mathrm{adm}}\), or count undefined as failure.
+
+### N3. Earliest-witness rule can collapse construction into selection
+**Claim attacked:** Part IV: “provenance of the **earliest** witness in \(\prec_h\) whose events produced the occurrence that carries \(t\).”  
+**Why it fails:** If construction modifies an existing selected carrier, the earliest producing witness of the occurrence is selection.  
+**Severity:** serious.  
+**Fix:** track provenance of the transport relation, not merely the carrier occurrence.
+
+### N4. Sel now requires survival iff fidelity on \(H\)
+**Claim attacked:** Part IV: “a survival condition that holds of a member exactly when it is faithful on \(H\) (fidelity on \(H\) is necessary and sufficient for survival).”  
+**Why it fails:** This is far stronger than ordinary selection and conflicts with Grievance 9’s weaker description. It also makes Derivation 3’s “hypothesis” part of the definition of selection.  
+**Severity:** serious.  
+**Fix:** keep the equivalence as a hypothesis only in Derivation 3, not in the definition of Sel.
+
+### N5. Part 0 and Part XV disagree on open cases
+**Claim attacked:** Part 0: “Four cases are open”; Part XV: only symmetry is open.  
+**Why it fails:** Direct contradiction.  
+**Severity:** serious.  
+**Fix:** propagate the Part XV sorting to Part 0.
+
+### N6. Part VII and Part XV disagree on the artefact case
+**Claim attacked:** Part VII: “Neither has a construction in this document”; Part XV: artefact is “closable, not done.”  
+**Why it fails:** Direct contradiction, admitted in 22a.  
+**Severity:** serious.  
+**Fix:** re-sort Part VII.
+
+### N7. Part XV protective-contract attack is self-contradictory
+**Claim attacked:** Part XV: “A stated scope, passing Part V's objectivity condition, that nonetheless excludes an admitted change on which the candidate is evaluable and wrong.”  
+**Why it fails:** By Part V’s definition, passing objectivity means \(C\) is not protective; a scope that excludes such a change is protective. The described object cannot exist.  
+**Severity:** serious.  
+**Fix:** state the attack as a scope that passes while being wrong on a change on which the candidate is silent but should count, or redefine the condition.
+
+### N8. Enabling condition type error
+**Claim attacked:** Part XIII: “the states \(\chi\) requires include an occurrence that instantiates ... an organization held to \(c\).”  
+**Why it fails:** \(\chi\) is a set of states and resources; states do not include occurrences. 20 said \(\chi\) “contains, as a component at the declared grain, a deployment of \(c\) or an organization held to \(c\).”  
+**Severity:** serious.  
+**Fix:** restore the organization/deployment condition.
+
+### N9. Derivation 10 omits Build’s new defect-record requirement
+**Claim attacked:** Derivation 10: “If \(S_1\) was built by an owned subhistory containing a nontrivial binding construction required for the use ... and \(S_1\) is not in the prior repertoire, then (G) holds.”  
+**Why it fails:** 22 Part X Build now also requires “an **itemised defect representation** ... on an active route to the binding.” The scenario’s sufficient condition omits it.  
+**Severity:** serious for the scenario.  
+**Fix:** add the defect-record condition or say the scenario does not check it.
+
+### N10. Ownership under-typed
+**Claim attacked:** Part X Ownership uses “a protocol for which that substrate holds a retained realization.”  
+**Why it fails:** RetReal needs task, constructor attribute, and enabling conditions.  
+**Severity:** serious.  
+**Fix:** specify them.
+
+### N11. Transport query not in the transport tuple
+**Claim attacked:** Part IV: “A transport also carries the query,” while \(t=(\pi,\tau,\sigma,\lambda)\).  
+**Why it fails:** The data model is inconsistent.  
+**Severity:** minor.  
+**Fix:** add query translation to the tuple or define it as derived.
+
+### N12. Part XV’s “condition that separates a found question” is not a defeat
+**Claim attacked:** Part XV: “A condition that separates a found question from a re-parameterisation. The semantics has none.”  
+**Why it fails:** A missing repair is not a defeater of the class; it is an open gap already listed under attack (E).  
+**Severity:** minor.  
+**Fix:** move it to the gaps list, not “What defeats this class.”
+
+### N13. Grievance 4 uses orphaned “adequacy condition”
+**Claim attacked:** Grievance 4: “then by the adequacy condition.”  
+**Why it fails:** Adequacy was moved to objectivity.  
+**Severity:** minor.  
+**Fix:** rename.
+
+### N14. Part V’s “proper sub-block” contradiction with single commitment
+**Claim attacked:** Part V: “removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\)” and “its single commitment is removable.”  
+**Why it fails:** No proper nonempty sub-block exists when \(|\Gamma|=1\).  
+**Severity:** fatal to the stated example.  
+**Fix:** revise the witness condition.
+
+---
+
+## D. Severity ranking
+
+1. **Fatal:** Non-circularity contradiction with single-commitment candidate (Item 4, S1, N14).  
+2. **Serious:** World-kind escape clause “where the translation is defined” (Item 4, N2).  
+3. **Serious:** Earliest-witness rule can collapse construction into selection (Item 7, N3).  
+4. **Serious:** Part XII still contains “causal responsibility” (Item 7, S2).  
+5. **Serious:** Sel now requires survival iff fidelity on \(H\) (N4).  
+6. **Serious:** Part 0 (B) and Part XV contradict on open cases (Item 13, N5).  
+7. **Serious:** Part VII and Part XV contradict on artefact case (Item 13, N6).  
+8. **Serious:** Ownership under-typed through RetReal (Item 2, N10).  
+9. **Serious:** Non-triviality remains ill-typed (Item 7, S3).  
+10. **Serious:** Part XIV informal list incomplete; Understanding still undefined (Item 10, S5).  
+11. **Serious:** Enabling condition type error (N8).  
+12. **Serious:** Derivation 10 omits Build’s defect-record requirement (N9).  
+13. **Serious:** Part XV protective-contract attack self-contradictory (N7).  
+14. **Serious:** “None outside C” contradicts Non-vacuity (Item 1, N1).  
+15. **Minor/serious:** Part V cites Derivation 1 without injectivity (S6).  
+16. **Minor:** Transport query not in tuple (Item 9, N11).  
+17. **Minor:** Grievance 4 orphaned “adequacy condition” (S4, N13).  
+18. **Minor:** Item 15’s “largest contract” wording blurs content identity.  
+19. **Minor:** Part XV “condition that separates” is not a defeat (N12).
+====================================================================================================
+S9_against_previous | rev2_deepseek | sample 1 | finish stop | 22923 chars | error None
+====================================================================================================
+# Audit — file 22 against file 21 §4
+
+## A. The sixteen items
+
+I take the list in 21 §4 literally. "Done" means the repair is present and does what §4 said; "partial" means present but incomplete or self-defeating.
+
+| # | Verdict |
+|---|---|
+| 1 | **Done**, with one overclaim (see F2). |
+| 2 | **Done.** "Can" no longer mentions ownership; "Ownership" is now from RetReal. |
+| 3 | **Done** in Parts V and IX; one stale reference survives (F1). |
+| 4 | **Partial.** Properness and condition 3 fixed; the non-circularity half of 1.6 is not, and the new sentence in "What (E) excludes" contradicts the definition it is meant to demonstrate (F3). |
+| 5 | **Done.** |
+| 6 | **Done as written, but breaks the declared class** (F5). |
+| 7 | **Done.** Earliest witness, difference-making, typed non-triviality, blindness conjunct, aggregate exemption, Build defect record — all present. |
+| 8 | **Done.** |
+| 9 | **Done** in substance; see F7 for the "none a condition on anything outside \(C\)" overclaim and F8 for "where the translation is defined". |
+| 10 | **Partial.** "Understanding" is still listed as derived and still never defined (F6); the informal terms are not individually marked as 21 §4.10 asked. |
+| 11 | **Done.** |
+| 12 | **Done.** |
+| 13 | **Partial.** Part XV re-sorted; Part 0 (B) not (F4). |
+| 14 | **Done.** |
+| 15 | **Done.** |
+| 16 | **Done** as far as 22 is checkable. |
+
+## B. Findings
+
+### Surviving defects from 21
+
+**F1 (survives 1.3).** 22 Part VI "Redundant routes": "the semantics represents the difference, and the **anchored grade's active-route condition** uses it."
+*Why it fails.* Item 3 moved actuality of route out of the anchored grade into the "operative condition, openly historical" of Part V. The anchored grade now has three conditions (Properness, Resolution, World-kind); none mentions active routes. The reference is to a condition that no longer exists in the anchored grade.
+*Severity.* Minor (a dangling reference; does not affect the claim).
+*Fix.* Change to "the operative condition of Part V uses it", or delete.
+
+**F2 (survives 1.3/§4 item 3).** 22 Part V: "the following **five** conditions hold, each a condition on supplied relations under the changes in \(C\), **and none a condition on anything outside \(C\).**"
+*Why it fails.* (F1) is a condition on \(\operatorname{Sol}_{\lambda(k)}(a,b)\) — i.e. on the anchor subnetwork \(\lambda(k)\subseteq D\) — and (F2) is a condition on \(\operatorname{Sol}_D(a,b)\). \(D\) and \(\lambda\) are not in \(C\); they are the target and transport data. (A) is now defined via a transported query whose evaluation refers to the anchors. 20 had the weaker, correct phrasing ("each a condition on supplied relations under the changes in \(C\)"); the added clause is an overclaim.
+*Severity.* Minor-to-serious (it is the wording that anchors "account-hood at \(C\) is assessable within the question", which the document needs; as written it is false).
+*Fix.* Say "each a condition on the supplied target, transport and relations under the changes in \(C\); none a condition on provenance, history, or the module in force".
+
+**F3 (survives 1.6, second half — the repair 22a marks Done not done).** 22 Part V "Non-circular dependence": "there exists an edit \(\tau(a)\) on \(E\ldots\) that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\)… Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing."
+21 1.6's fix required the witness to "remove a nonempty sub-block, **proper when |Γ| > 1**". The "proper" qualifier was not relaxed. The result is that 22's own Part V then asserts: "The one-component candidate that repackages \(\operatorname{Sol}_D\) for a target with several components satisfies (E): its single commitment is removable, so non-circular dependence has its witness."
+If \(\Gamma=\{c\}\), no nonempty proper \(B\subsetneq \Gamma\) exists; the only nonempty \(B\) is \(\Gamma\), and the previous sentence says that witnesses nothing. The claim that non-circular dependence *has its witness* is therefore inconsistent with the definition on the same page.
+*Severity.* **Fatal** to (a) the example, and (b) the sentence "That is the honest statement of what (E) alone can do, and why the second grade exists", which is cashed out by the example.
+*Fix.* Adopt 21's fix: "a nonempty sub-block \(B\subseteq\Gamma\), proper when \(|\Gamma|>1\); where \(|\Gamma|=1\) the witness is deletion of that commitment". Delete or rewrite the "single commitment is removable" sentence accordingly.
+
+**F4 (survives 1.25 in Part 0).** 22 Part 0 (B): "**Four cases are open** and are listed in Part XV: elimination of a physically impossible rival; explanation by symmetry; explanation of an effect as a selection artefact; and mathematical explanation under an admission relation that has to be declared."
+22 Part XV: "(i) **open** — explanation by symmetry … (ii) **closable, not done** … (iii) **scoped by design** … (iv) **relative, not open** …".
+*Why it fails.* Item 13's resort was not propagated. Part 0 says four are open; Part XV says one is. Two of the four are said in Part XV to be closable or already handled, and none of that reaches Part 0's summary.
+*Severity.* Serious (the document's own attack list is internally inconsistent; a reader picking the shorter Part 0 will be misdirected).
+*Fix.* Either propagate the re-sort to Part 0 (B) or drop "open".
+
+**F5 (survives 1.10's fix, in a new form).** 22 Part IV after (R): "The **provenance of a content's occurrence** is the provenance of the transport that witnesses (R) for it; where several do, the earliest. This is the one definition of provenance for contents, and questions (Part III) and the histories of components (Part II) use it."
+22 (R): "\(\operatorname{Rep}_\ell(o,c)\iff\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\)."
+22 Part III: "A **declared** question is stipulated by the modeller."
+*Why it fails.* (R) requires selected or constructed provenance. A declared transport does not witness (R), so a content whose only transport is declared has **no** "provenance of a content's occurrence" under the new one definition. But 22 Part III still classifies questions into declared/selected/constructed, and Part IV lists **Declared** as a provenance class. 22a's item 6 fix therefore destroys the declared case it was meant to unify. (20 did not have this problem: each class carried its own witness.)
+*Severity.* **Serious** (a whole provenance class is defined out under the new wording).
+*Fix.* Extend the definition: "the provenance of a content's occurrence is that of the earliest transport by which an occurrence represents it under (R); where the modelling author entered the only such transport with no witness, the occurrence's provenance is declared."
+
+**F6 (survives 1.27, item "understanding").** 22 Part XIV "Derived": "Understanding, construction, newness, origin, repair, knowledge, capability, recursion, universality — from those, with the definitions of \(\equiv_\ell\), ownership, binding, ProducedBy, ProducesVia, Result, Lic/Scope/Live, Enable and question-begging given where they are first used."
+*Why it fails.* "Understanding" is listed as derived; it is not defined anywhere in 22, and it is not on the new "Informal terms, listed" list in Part XIV either. The fix from 21 1.27 was either to define it or to remove it.
+*Severity.* Minor.
+*Fix.* Define "understanding" (presumably as Deploy with a non-trivial use respect) or delete the word from the Derived list.
+
+**F7 (survives 1.25 in Part VII).** 22 Part VII "Explanations that remove structure": "Two further families are **not treated** here and are listed under attack (B): explanation by symmetry … and explanation of an apparent effect as a selection artefact …".
+22 Part XV now sorts the artefact case as "closable, not done" — i.e., there is present machinery to close it (the "provenance clause on the target's own components").
+*Why it fails.* Part VII says the artefact case has no construction here; Part XV says it is closable by the historical kinds of Part II. The two descriptions do not match. 22a itself flags this ("Part VII was not re-sorted to match and should be").
+*Severity.* Minor (acknowledged in 22a; a misdescription in the body).
+*Fix.* Update Part VII's paragraph to match Part XV's re-sort.
+
+### New defects introduced by 22
+
+**F8 (new).** 22 Part XV "A protective contract the objectivity condition admits": "A stated scope, **passing** Part V's objectivity condition, that **nonetheless excludes an admitted change on which the candidate is evaluable and wrong**."
+22 Part V "Objectivity: the second index": "\(C\) is **not protective** for \(\mathcal E\). \(C\) is protective when there is an admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) on which the candidate is *evaluable* … and on which the candidate's pulled-back answer differs from the target's."
+*Why it fails.* Objectivity **is** the condition that no such excluded pair exists. "Passing" and "excludes an admitted change on which the candidate is evaluable and wrong" are therefore mutually exclusive: the attack cannot be demonstrated anywhere. The attack line "A protective contract the adequacy condition admits" in 20 was at least logically coherent, because 20's adequacy compared each side to its own baseline; the 22 replacement has no coherent content. The trailing caveat ("A scope that excludes a change on which the candidate is silent is a stated limit and not a counterexample") concedes that the only remaining case is silence, which the objectivity condition was explicitly designed not to catch. So the whole entry is empty.
+*Severity.* **Fatal** to that entry in Part XV; the attack list is one of the places the document's testability resides.
+*Fix.* Either define an "admitted change" that is excluded but on which the candidate is *not* technically evaluable yet still observably wrong, or delete the entry.
+
+**F9 (new).** 22 Part V "Properness": "An anchor may be the whole target only when \(D\) has one component."
+*Why it fails.* Combined with the preceding clause, the anchor map is injective on the cover, and "no touched component of \(D\) lies outside every anchor". If \(D\) has one component \(c\), the only nonempty subnetwork of \(D\) is \(\{c\}\), so every anchor equals \(\{c\}\), and injectivity forces \(|\text{active components of }E|=1\). That defeats the whole point of having both a base grade and an anchored grade for one-component targets, and 21 1.6's fix was to *allow* the whole-target anchor, not to make it the whole story.
+*Severity.* Serious (the fix collapses a case the earlier text was trying to repair).
+*Fix.* Say explicitly that for one-component \(D\), several distinct anchors are permitted, each equal to (a subnetwork of) the single component, distinguished only by the binding—i.e. substitute "no two active components may have the same anchor unless \(D\) has one component" for the current injectivity clause.
+
+**F10 (new).** 22 Part V condition 3 (world-kind): "fidelity holds not only on the pairs the contract selected but on every pair the module admits, **where the translation is defined**."
+*Why it fails.* 20's condition 4 did not have the qualifier. If \(\tau\) is partial (as 22 Part IV's "on the stated scope" and 21 1.7's own diagnosis both allow), the world-kind claim becomes vacuous on every admitted pair whose edit has no \(\tau\)-image. The whole purpose of condition 3 — comparing the component to its anchor under *every* admitted change, not just those the contract selected — is defeated by making the quantifier range over \(\operatorname{dom}\tau\cap C_{\mathrm{adm}}\) rather than \(C_{\mathrm{adm}}\).
+*Severity.* Serious (a definitional slide that makes the central anchoring condition weaker than the attack it is meant to answer).
+*Fix.* Require \(\tau\) to be total on \(C_{\mathrm{adm}}\) for any anchored account, with non-evaluable pairs declared (as in the objectivity condition) rather than skipped.
+
+**F11 (new).** 22 Part 0 attacks have shifted what the sufficiency claim **is** without saying so. 20 (A): "a candidate that satisfies the anchored grade … and that plainly explains nothing. This would show change-fidelity plus proper anchoring is not enough." 22 (A): "a candidate that satisfies the anchored grade … **that satisfies Origin (Part X)** … This would show that change-fidelity, proper anchoring and origination together are not enough."
+*Why it fails.* Item 4 (§4 references 1.5) was to state "the sufficiency claim is for the conjunction". But 22 has not merely stated the move; it has *added* the additional conjunct (Origin) to the attacked predicate. A candidate that is anchored, new, built and deployed but fails to explain now counts against the class where before it counted against the anchored grade only. This is a moved goalpost, precisely the pattern Part VIII's own historical-index paragraph forbids. The move is 21's, so 22 is faithful to 21, but the audit must record it.
+*Severity.* Serious (a claim of the class has been narrowed by adding a conjunct; the attack no longer tests what it tested).
+*Fix.* Either leave (A) as 20 had it (anchored grade alone, explaining nothing) or explicitly state: "(A) has been moved; the class's sufficiency claim is now anchored-grade-plus-Origin; the narrower claim is not defended."
+
+**F12 (new).** 22 Part V "The one-component candidate …" (quoted in F3): "its single commitment is removable, so non-circular dependence has its witness."
+*Why it fails.* Even ignoring the proper/non-proper contradiction, the sentence is circular: the one-component repackaging is *supposed* to be the case where (E) is satisfied trivially and the anchored grade is what rules it out; the sentence instead asserts it satisfies (E) by claiming its commitment is removable. Nothing in 20 asserted this; 20 only said "the one-component candidate … satisfies (E). It is an account at \(C\) and not anchored." The new justification is a new claim without support.
+*Severity.* Serious.
+*Fix.* Delete the sentence, or replace with the honest report: "the one-component repackaging satisfies (E) by making \(\Gamma\) a singleton; deletion of that singleton is not a witness, and (E) is satisfied here only because it does not require a witness for \(\Gamma=\emptyset\) on the empty restriction; this is why the anchored grade exists." As written, the sentence cannot be true under 22's own definition.
+
+**F13 (new, or newly stale).** 22 Part V "Two grades" — the extensional statement about the target's own copy and the modular table is present, and Part 0 (F) says: "A decoy that shares a world-kind with the mechanism on *every* admitted change is not excluded and is not meant to be: at that index it is the mechanism. Showing that such a decoy nonetheless fails to explain where the mechanism succeeds would count under (C)."
+*Why it fails.* This narrows (F) by removing 20's second disjunct ("or admit a decoy that shares a world-kind with the mechanism on every physically admitted change"). 21 1.5 and the §4 item 4 fix mandated the wording, but the audit must record that the attack has been pre-empted by the semantics' own statement that the decoy *is* the mechanism. That is a tautology at the chosen index: if the decoy shares every admitted change, then by definition it has the same world-kind, and by the semantics' convention identical world-kind = same mechanism at this index. So (F) is not a test; it is a statement that (F) cannot be a test.
+*Severity.* Minor-to-serious (a load-bearing attack line has been converted into an analytic truth).
+*Fix.* Either accept the narrowing and delete (F) from the attack list, or ask for a *finer module* claim: "Show that a decoy identical under \(C_{\mathrm{adm}}\) fails to explain and the mechanism succeeds, without a module extension" — which the semantics will refuse, but which states honestly what is at stake.
+
+**F14 (new, surface).** 22 Part IV "Transports": "the translated query on \(E\) is \(\mathcal Q_E(E,\tau(a),\sigma(b)):=\mathcal Q\) evaluated on \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) and the components \(\lambda\) anchors".
+*Why it fails.* "and the components \(\lambda\) anchors" is not well-defined: \(\mathcal Q\)'s domain is \((D, \text{solutions}, \text{component structure})\), but the clause does not say which structure of \(E\) the query is evaluated on (its own component set, the hidden/visible split, or the anchors). It also does not say how \(\mathcal Q\) reacts when \(\pi^{-1}[\operatorname{Sol}_E]\) is empty — 20 gave no definition of \(\operatorname{Ans}_E\) at all, but the new definition is not complete either, and it carries the whole weight of (A) in 22.
+*Severity.* Minor (fixable by tightening the clause).
+*Fix.* "\(\operatorname{Ans}_E(\tau(a),\sigma(b))=\mathcal Q(E, \pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))], \ \text{the E-components } \lambda\text{ places})\)", with a line on the empty case.
+
+**F15 (new, surface).** 22 Part V: "each a condition on supplied relations under the changes in \(C\), and none a condition on anything outside \(C\)" (also in F2 above). The same phrasing creates a second problem: the sentence that follows in Part V "Interpretation of the five (none inspects a label)" is unchanged, so the added overclaim stands without its own justification.
+*Severity.* Cosmetic to minor; folded into F2.
+
+**F16 (new).** 22 Part V "Non-vacuity": "every admitted pair excluded from \(C\) is excluded by the stated scope \(S\), not silently."
+*Why it fails.* By construction \(C=(C_{\mathrm{adm}}\cap S)\cup K\), so every pair in \(C_{\mathrm{adm}}\setminus C\) is already not in \(S\). The clause is a tautology given the definition of \(C\) and checks nothing. 20 had the same clause; item 1's fix was to move the substantive check to objectivity, so the residue is now only decorative.
+*Severity.* Minor (a clause that reads as a substantive condition but is a syntactic consequence of the formula above it).
+*Fix.* Replace with "every excluded pair is listed in \(S\)'s record or in \(K\) with its meaning, and the record is part of the question", or delete the clause.
+
+**F17 (new, caused by item 9's fix).** 22 Part IX "Histories" defines the active route on "an occurrence that instantiates the input organization (Part IV, Inst)". But 22 Part XI's ProducedBy still uses "an active route from occurrences of \(\Delta\)" and Deploy still uses "integrated into problem-directed activity" — both of which reach into the informal terms list at Part XIV. That is 21's 1.21 fix acknowledged, but the consequences for the Chapter XI / XIII predicates (RC, UU, UC) are not drawn: RC quantifies over "admitted target chains" which are unspecified.
+*Severity.* Minor (acknowledged in Part XIV, but RC and U1–U3 are stated as if they were defined).
+*Fix.* Either restrict RC/U1–U3 to the base class of the defined parameters and say the informal terms are Part XIV declared data, or move RC/U1–U3 to the informal list.
+
+**F18 (new, caused by item 4's fix).** 22 Part V "What (E) excludes": "it is excluded by properness if it is one component anchored to a target with several, and by nothing if it is a faithful decomposition — in which case it is an account".
+*Why it fails.* (E) is the *account at C* predicate and contains no properness conjunct. The sentence in the section titled "What (E) excludes" attributes exclusion to properness, which is a condition of the anchored grade. The correct sentence would be "it is not excluded by (E); it is excluded by the anchored grade's properness condition if it is one component anchored to a target with several, and by nothing at either grade if it is a faithful decomposition". 20 had the same confusion; the new "anchored to a target with several" makes it worse by adding a condition that is not a conjunct of (E).
+*Severity.* Minor.
+*Fix.* Rewrite the sentence to name the grade that actually excludes.
+
+**F19 (new, from item 3's fix).** 22 Part IV "Constructed": "the organization \(t\) runs from (its \(D\)) is instantiated by an occurrence in the episode's history before \(e\), in the module's sense of Inst, not in the sense of the representation predicate below." And 22 Part IV paragraph after Select/Constructed/Declared: "What keeps the two apart **is one thing**, and it is in both definitions: a selection witness is blind … and a construction witness requires one on the route to the binding (Part X)."
+*Why it fails.* Constructed requires more than one thing (the target instantiated before \(e\), the episode, the witness). The "one thing" framing is true only of the separator clause; as written it appears to claim that the only difference between the two definitions is blindness/defect-record, whereas Constructed also requires the prior target and the episode.
+*Severity.* Cosmetic.
+*Fix.* "What keeps the two apart is one clause that appears with opposite signs in the two definitions: …".
+
+## C. Ranking
+
+**Fatal (the argument in question no longer works as written):**
+
+1. **F8** — Part XV's objectivity attack is self-contradictory under the definition it attacks.
+2. **F3/F12** — Non-circular dependence alternates between requiring a *proper* \(B\subsetneq\Gamma\) and asserting that the one-component repackaging has such a witness.
+3. **F5** — Declared provenance is defined out by the unification of provenance via (R).
+
+**Serious (a claim has moved or a condition has been weakened):**
+
+4. **F9** — Properness for one-component targets collapses the multiplicity of anchors it was supposed to permit.
+5. **F10** — "where the translation is defined" weakens world-kind to a subset of \(C_{\mathrm{adm}}\) that can be shrunk by choice of \(\tau\).
+6. **F11** — Sufficiency claim moved to anchored + Origin without the label change 21 asked for.
+7. **F4** — Part 0 (B) says four cases are open; Part XV says one.
+8. **F2** — "none a condition on anything outside \(C\)" is false as written.
+
+**Minor (surface or acknowledged):**
+
+9. **F6** — "understanding" in the Derived list, undefined, absent from the informal list.
+10. **F1** — Part VI's "the anchored grade's active-route condition" refers to a condition that has been moved.
+11. **F7** — Part VII's "two further families are not treated" against Part XV's re-sort.
+12. **F16** — Non-vacuity's exclusion clause is a tautology of the formula above it.
+13. **F13** — (F) has been partly converted into a tautology at the module's index.
+14. **F18** — "What (E) excludes" attributes exclusion to properness, which is not an (E) conjunct.
+15. **F14** — the transported query is not sharply defined.
+16. **F17** — RC/UU/UC stated as if defined, but resting on the informal terms.
+17. **F19** — "is one thing" misdescribes the selection/construction separator.
+18. **F15** — folded into F2.
+====================================================================================================
+S9_against_previous | rev2_deepseek | sample 2 | finish stop | 24716 chars | error None
+====================================================================================================
+# Audit findings
+
+## A. The sixteen-item audit
+
+| # | Item from 21 §4 | Present in 22? | Does what 21 said? | Finding(s) |
+|---|---|---|---|---|
+| 1 | Five conjuncts; adequacy moved to objectivity | Yes | Mostly yes | Depends on flawed `Ans_E` (F3) |
+| 2 | Ownership derived from retained realization; `Can` free of ownership | Yes | Yes | — |
+| 3 | Active route on `Inst`; operative condition outside anchored grade | Yes | Yes | — |
+| 4 | Anchored grade: properness, condition 3 deleted, world-kind, extensional statement, attack (A) | Yes | Yes, except attack (A) misstates `Origin` | F15 |
+| 5 | Kind identity excludes only `(1,b₀)`; forward kind for subnetworks | Yes | Yes | — |
+| 6 | One provenance definition via (R); components and questions inherit | Yes | Partly; question provenance rests on a sketch and historical-kind wording is ill-typed | F10, F11 |
+| 7 | `Sel` difference-making, typed non-triviality, blindness conjunct, Build defect record, earliest witness | Yes | Partly; non-triviality still ill-typed, earliest witness not unique, Build route to binding ill-typed | F1, F8, F9, F12 |
+| 8 | Merit condition withdrawn; Derivation 5 sketch; question-finding open | Yes | Yes, but Part III uses the sketch as if closed | F10 |
+| 9 | Surprise reshaped; coherence fixed; `C_adm` typed; `Ans_E` defined; arity fixed; parenthetical deleted | Yes | Partly; `Ans_E` definition is broken and third surprise consequence contradicts (R) | F3, F5 |
+| 10 | Derivation 6 restricted; informal-term list; β/Ω defined; (I3) listed | Yes | Partly; “Understanding” still listed as derived but undefined, so Derivation 6 remains false | F4 |
+| 11 | Derivation 3 equivalence hypothesis and single population; Derivation 8 solution-preservation | Yes | Partly; equivalence is put into the definition of `Sel`, not only the hypothesis | F17 |
+| 12 | Grain admissibility relative to `C_adm`; “realizes” defined | Yes | Yes | — |
+| 13 | Part XV open cases re-sorted | Yes | Yes in Part XV, but Part VII was not re-sorted and now conflicts | F18 |
+| 14 | Fidelity over `K` defined | Yes | Partly; `Sol_D` is defined on `K`, but `τ,σ` are not guaranteed defined there | F2 |
+| 15 | Selected transport represents on contract faithful on | Yes | But the stated consequence contradicts (R) | F5 |
+| 16 | Part 0 dichotomy as conjecture; attack (A) restated; 20a rows corrected | Yes | Partly; attack (A) misstates `Origin`; 22a overclaims “Done” | F15, F20 |
+
+---
+
+## B. Surviving defects from 21 under the new wording
+
+### F1. Non-circularity still requires a proper sub-block, contradicting the single-commitment claim
+
+**Claim attacked.** 22 Part V says: “The witness: there exists an edit \(\tau(a)\) on \(E\), translated from some \((a,b)\in C\), that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\) while preserving the other boundary conditions… Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing.”
+
+**Why it fails.** 21 §1.6 ruled that the witness must be repaired so that when \(|\Gamma|=1\) it still has a witness. 22 did not make that repair. Worse, 22 then says: “The one-component candidate that repackages \(\operatorname{Sol}_D\) for a target with several components satisfies (E): its single commitment is removable, so non-circular dependence has its witness.” If \(\Gamma\) is a singleton, there is no nonempty proper \(B\subsetneq\Gamma\). Removing the single commitment is removing all of \(\Gamma\), which the same paragraph says “witnesses nothing.” The claim that the one-component candidate satisfies (E) is therefore inconsistent with the stated witness condition.
+
+**Severity.** Fatal to Part V’s self-consistency and to the claim that (E) alone admits the one-component repackaging.
+
+**Fix.** Change the witness to “removes or replaces a nonempty sub-block \(B\subseteq\Gamma\), proper when \(|\Gamma|>1\)”, and state separately that removing all of \(\Gamma\) is not a witness.
+
+---
+
+### F2. Fidelity over \(K\) is still not well-defined because \(\tau,\sigma\) are not defined on \(K\)
+
+**Claim attacked.** 22 Part III says: “\(K\) is a declared set of **counterfactual edits** — pairs with \(K\cap C_{\mathrm{adm}}=\varnothing\) — each declared together with the component relations \(L_j(a,b)\) it imposes, which is what its “stated meaning” is; so \(\operatorname{Sol}_D\) is defined on \(K\) by (O) and fidelity is well-defined there.”
+
+**Why it fails.** (F1) requires \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)] = L_k(\tau(a),\sigma(b))\). For \((a,b)\in K\), the text supplies \(L_j(a,b)\), so \(\operatorname{Sol}_D(a,b)\) can be defined. But it does not supply \(\tau(a)\) or \(\sigma(b)\). Part IV still defines \(\tau:A_D\to A_E\) and \(\sigma\) as boundary translation. If \(a\notin A_D\) or \(b\notin B\), \(\tau(a)\) and \(\sigma(b)\) are undefined. Thus (F1) and (F2) are not well-defined on \(K\), contrary to “fidelity is well-defined there.”
+
+**Severity.** Fatal to any account whose contract includes nonempty \(K\), i.e. exactly the eliminative/mathematical cases the semantics wants to handle.
+
+**Fix.** State that every \(K\)-pair comes with translations \(\tau(a),\sigma(b)\) and target relations \(L_j(a,b)\), or restrict (F1)/(F2) to pairs where translations are defined and make that restriction explicit in the contract form.
+
+---
+
+### F3. The new `Ans_E` definition is ill-defined and can break (A) for non-injective transports
+
+**Claim attacked.** 22 Part IV: “A transport also carries the query: for a question \(p\) on \(D\) with query \(\mathcal Q\), the translated query on \(E\) is \(\mathcal Q_E(E,\tau(a),\sigma(b)):=\mathcal Q\) evaluated on \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) and the components \(\lambda\) anchors, and \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\mathcal Q_E(E,\tau(a),\sigma(b))\).”
+
+**Why it fails.** \(\mathcal Q\) is originally “a specified set-theoretic operation on \(D\), its solutions, and its component structure.” Evaluating it “on \(\pi^{-1}[\operatorname{Sol}_E]\) and the components \(\lambda\) anchors” is not the same operation. If \(\pi\) is non-injective, \(\pi^{-1}[\operatorname{Sol}_E(\tau(a),\sigma(b))]\) can be strictly larger than \(\operatorname{Sol}_D(a,b)\) even when (F2) holds. Then \(\mathcal Q\) on that larger set need not equal \(\operatorname{Ans}_p(a,b)\). So (A) can fail for perfectly legitimate abstracting transports. The repair does not do what 21 §1.18 said: “\(\operatorname{Ans}_E(\tau(a),\sigma(b)) := \mathcal Q(E,\tau(a),\sigma(b))\) with \(\mathcal Q\) read through \(\pi\).”
+
+**Severity.** Fatal to the core Account for non-injective transports; abstractions are not accidental in this semantics.
+
+**Fix.** Define a query \(\mathcal Q_E\) on \(E\) directly, with an explicit relation to \(\mathcal Q\): e.g. require \(\mathcal Q_E(E,\tau(a),\sigma(b))=\mathcal Q(D,a,b)\) whenever (F2) holds, or require \(\pi\) to be injective on the solution set and state that as a condition.
+
+---
+
+### F4. “Understanding” is still listed as derived but never defined, so Derivation 6 remains false
+
+**Claim attacked.** 22 Part XIV: “**Derived.** … Understanding, construction, newness, origin, repair, knowledge, capability, recursion, universality — from those…”
+
+**Why it fails.** There is no definition of “understanding” as a predicate anywhere in Parts II–XIII. Part X has Deploy, Build, Origin, New, etc., but no `Understand`. Part XIV’s “Informal terms, listed” does not list “understanding” either. Derivation 6 says: “Every *defined* predicate in Parts II–XIII is defined from…”. If “Understanding” is listed as derived, it is claimed to be defined. It is not. 21 §1.27 already ruled this valid.
+
+**Severity.** Serious: it falsifies the completeness claim of Derivation 6 and Part XIV’s derived list.
+
+**Fix.** Either define `Understand` explicitly (e.g. as a form of Deploy plus successful use) or move “understanding” into the informal-terms list and stop calling it derived.
+
+---
+
+### F5. The new “selected transport represents on the largest faithful contract” contradicts (R)
+
+**Claim attacked.** 22 Part IV, third consequence: “since a selected transport is guaranteed faithful only on \(H\), what it represents by (R) is the content on the largest contract it is in fact faithful on, which may be smaller than the contract declared for the content: a selected representation is representation of less than was claimed, exactly as far as it was never tested.”
+
+**Why it fails.** (R) says:
+
+\[
+\operatorname{Rep}_\ell(o,c)\iff\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))].
+\]
+
+Here \(C_c\) is the contract of the content \(c\). If \(t\) is faithful only on \(H\subsetneq C_c\), then \(\operatorname{Faithful}_{C_c}(t:c\to D)\) is false, so \(t\) does not witness `Rep(o,c)`. The consequence says it “represents by (R)” a content on the smaller contract \(H\). But that is a different content \(c'\) with contract \(H\), not \(c\) with contract \(C_c\). The sentence treats content as contract-parameterised in a way (R) does not.
+
+**Severity.** Serious: it is either a contradiction with (R) or a silent redefinition of content identity.
+
+**Fix.** Either redefine `Rep` to allow representation of “the content restricted to the largest faithful sub-contract,” or state the consequence as: “the transport represents the content \(c'\) whose contract is that faithful sub-contract, not the originally declared \(c\).”
+
+---
+
+### F6. Part V cites Derivation 1 without its injectivity hypothesis
+
+**Claim attacked.** 22 Part V: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract…”
+
+**Why it fails.** Derivation 1 explicitly assumes: “let \((\tau,\sigma)\) be injective on \(C\).” Without injectivity, the map between signatures need not be a bijection on the first two coordinates. 21 §1.27 already flagged this. 22 fixed Derivation 10’s citation (“with \((\tau,\sigma)\) injective on that contract”) but left Part V’s citation unqualified.
+
+**Severity.** Serious: the formal claim in Part V is unsupported as written.
+
+**Fix.** Add “with \((\tau,\sigma)\) injective on \(C\)” to the Part V sentence, or weaken the conclusion to the non-injective case.
+
+---
+
+### F7. The construction-witness list in Part X still omits items Part IV requires
+
+**Claim attacked.** 22 Part X: “A construction witness identifies the controlled processes, the incoming carriers, the bindings constructed, and the resulting organization.”
+
+**Why it fails.** Part IV’s `Con` also requires that “the organization \(t\) runs from (its \(D\)) is instantiated by an occurrence in the episode’s history before \(e\),” and Build now requires “an itemised defect representation… on an active route to the binding.” The Part X list does not include either the instantiated target or the itemised defect representation. 21 §1.27 ruled this valid.
+
+**Severity.** Minor to serious: the witness specification is incomplete relative to Part IV.
+
+**Fix.** Add both items to the list of what a construction witness identifies.
+
+---
+
+### F8. The non-triviality clause remains ill-typed
+
+**Claim attacked.** 22 Part IV: “**Non-triviality:** no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”
+
+**Why it fails.** “Held to” is defined in the orientation rule as a relation between an organization \(E\) and a target \(D\), with the transport running from target to \(E\). Here the objects are \(t\) (a transport), \(H\) (a finite set of edit–boundary pairs), and “the survival condition” (a condition). None is an organization or a content in the sense required by “held to.” 21 §1.11 said to type the clause; this typing is still not well-formed.
+
+**Severity.** Serious: the definition of selection contains a category error.
+
+**Fix.** Say what is actually meant: “no event of \(\Sigma_h\) instantiates an organization that faithfully represents \(t\)’s target, the history \(H\), or the survival condition,” or define representation for these objects first.
+
+---
+
+### F9. The earliest-witness rule assumes a unique earliest witness in a partial order
+
+**Claim attacked.** 22 Part IV: “the provenance of the **earliest** witness in \(\prec_h\) whose events produced the occurrence that carries \(t\) — constructed if that witness is a construction witness, selected if it is a selection witness.”
+
+**Why it fails.** \(\prec_h\) is described in Part IX as “the acyclic precedence \(\prec_h\) supplied by the physical module.” Acyclic precedence is a partial order, not a linear order. If two producing witnesses are incomparable in \(\prec_h\), there is no unique earliest witness. Then provenance can be undefined. 21 §1.12 asked for “provenance by the earliest producing witness”; 22 implements it without handling incomparability.
+
+**Severity.** Serious: provenance is central to `Sel`, `Con`, `Rep`, and the earliest-witness rule.
+
+**Fix.** Define a linear extension, or require all producing witnesses to be comparable, or define provenance as the set of earliest witnesses and add a rule for when they disagree.
+
+---
+
+### F10. Question provenance rests on a construction that 22 itself downgrades to a sketch with gaps
+
+**Claim attacked.** 22 Part III: “Its witness is the one Part IV gives for the provenance of any content’s occurrence: the provenance of the transport by which an occurrence represents the question-organization of Derivation 5.”
+
+**Why it fails.** Derivation 5 now says: “The construction below is a sketch: its gaps are listed after it, and until they are closed, question-finding is representable *conditionally* on closing them.” The gaps include that \(b_0\), \(O_p\), and \(\rho_p\) are not ports of \(D_p\), that coherence is not a local component, and that the domain of \(u_K\) is not written out. If the question-organization is not fully constructed, the definition of question provenance is not well-defined for all questions. Part III does not carry the caveat.
+
+**Severity.** Serious: it makes the provenance of questions—and therefore `Origin` for questions—conditional on an acknowledged open construction.
+
+**Fix.** State explicitly that question provenance is defined only where Derivation 5’s gaps are closed, or complete the construction before using it in Part III.
+
+---
+
+### F11. Historical kind applies the provenance of a content’s occurrence to a binding
+
+**Claim attacked.** 22 Part II: “A **historical kind** is a predicate on the history that produced an occurrence of a component — selected, constructed, descended from, copied from — with the witness that Part IV requires for the provenance of a content's occurrence, applied to the binding that realizes the component.”
+
+**Why it fails.** Part IV’s provenance of a content’s occurrence is the provenance of a transport by which an occurrence represents a content. A binding is an assignment \(\lambda(k)\) of a component to a subnetwork. It is not a content-occurrence, and “applied to the binding” does not specify what plays the role of the transport or the content. 21 §1.10 asked for this inheritance, but the wording remains loose.
+
+**Severity.** Minor to serious: the historical-kind definition is not fully typed.
+
+**Fix.** Say directly: “the history of the binding occurrence that realizes the component,” and define what makes such a binding occurrence selected or constructed.
+
+---
+
+### F12. Build requires the defect record on “an active route to the binding,” but active routes join occurrences to operative results
+
+**Claim attacked.** 22 Part X: “contains an **itemised defect representation** — an occurrence instantiating a record pairing a state at which some prior transport of \(s\) failed fidelity with what would have held — on an active route to the binding.”
+
+**Why it fails.** Part IX defines an active route as “a connected subnetwork of actual occurrences joining an occurrence that instantiates the input organization… to an operative result.” A binding is an assignment \(\lambda(k)\), not an occurrence or an operative result. So “an active route to the binding” is not well-typed under the semantics’ own definition.
+
+**Severity.** Serious: it is a central conjunct of `Build`, hence of `Origin` and `(G)`.
+
+**Fix.** Define the route as ending at an occurrence that realizes the binding, or replace “binding” with the process occurrence that constructs the binding.
+
+---
+
+### F13. The survival condition is now “exactly when faithful on \(H\),” which is stronger than 21 asked for and may overrestrict `Sel`
+
+**Claim attacked.** 22 Part IV: “a survival condition that holds of a member exactly when it is faithful on \(H\) (fidelity on \(H\) is necessary and sufficient for survival).”
+
+**Why it fails.** 21 §1.22 asked to state the equivalence as a hypothesis needed by Derivation 3, not necessarily to build it into the definition of selection. Putting it into `Sel` means any selection process in which survival depends on any other factor—resource, luck, other traits—does not count as selection. That is a substantive and likely unintended narrowing of the selection predicate.
+
+**Severity.** Serious: it makes `Sel` nearly empty for realistic cases.
+
+**Fix.** Keep the equivalence as an explicit hypothesis of Derivation 3, and restore `Sel` to requiring only that fidelity on \(H\) is necessary for survival (plus the difference-making and blindness clauses).
+
+---
+
+### F14. Attack (A) and Part XV misstate `Origin` as including Deploy
+
+**Claim attacked.** 22 Part 0: “that satisfies Origin (Part X) — it is new to the repertoire, built, and deployed.” Part XV repeats: “satisfying Origin (new, built, deployed).”
+
+**Why it fails.** `Origin` is defined as `Attempt ∧ New ∧ Build`. It does not include `Deploy`. `Deploy` is a separate predicate. The parenthetical is false to the text.
+
+**Severity.** Minor to serious: it misstates the sufficiency attack and the claim the attack is supposed to refute.
+
+**Fix.** Say “satisfies `Origin` and `Deploy`” if that is intended, or correct the parenthetical to “new and built.”
+
+---
+
+### F15. Part XV’s “condition that separates a found question” is not a defeat condition
+
+**Claim attacked.** 22 Part XV: “A condition that separates a found question from a re-parameterisation. The semantics has none (Part X). Supplying one that is neither trivial under declaration of the obligation sets nor stronger than genuine question-finding allows would close the gap; showing that none can be stated in this vocabulary would count against attack (E).”
+
+**Why it fails.** Part XV is “What defeats this class.” This entry does not state a counterexample to the class; it states an open problem and a challenge to supply a condition. It is not a defeat condition. It belongs under open problems, not under “What defeats this class.”
+
+**Severity.** Minor: organizational, but it muddles the defeat list.
+
+**Fix.** Move it to a separate “Open problems” section, or restate it as a counterexample: “A genuine finding of a question that satisfies `Origin` but is plainly a mere re-parameterisation.”
+
+---
+
+### F16. Part VII and Part XV now disagree about the artefact case
+
+**Claim attacked.** 22 Part VII: “Two further families are **not treated** here and are listed under attack (B): explanation by symmetry… and explanation of an apparent effect as a selection artefact… Neither has a construction in this document.” 22 Part XV: “(ii) **closable, not done** — explanation of an apparent effect as a selection artefact: what is missing is not a second target but a provenance clause on the target’s own components… the construction is not written.”
+
+**Why it fails.** Part VII still groups the artefact case as “not treated,” while Part XV now says it is “closable” and identifies exactly what is missing. 22a itself admits: “Part VII was not re-sorted to match and should be.” This is an internal inconsistency introduced by the second revision.
+
+**Severity.** Minor to serious: it is a visible disagreement about the status of a case in the necessity attack.
+
+**Fix.** Re-sort Part VII to match Part XV, or state explicitly that “not treated” means “no construction written” and does not contradict “closable.”
+
+---
+
+### F17. 22a’s ledger overclaims “Done” for items not actually done
+
+**Claim attacked.** 22a table: every row is marked “Done.”
+
+**Why it fails.** F1, F2, F3, F5, F6, F7, F10, F12, F13, F14, F15, F16 above show multiple items are only partial, contradictory, or ill-typed. For example, item 6 is marked “Done” but question provenance depends on Derivation 5’s acknowledged gaps; item 7 is marked “Done” but non-triviality remains ill-typed and earliest witness is not unique; item 9 is marked “Done” but `Ans_E` is broken; item 14 is marked “Done” but `τ,σ` are not defined on `K`.
+
+**Severity.** Serious: the ledger is the audit trail, and it is false for several rows.
+
+**Fix.** Change the status column to “Partial” for the affected items and cite the outstanding defects.
+
+---
+
+## C. New defects introduced in 22 that 20 did not have
+
+### F18. The query-carrying transport is new and breaks type discipline
+
+**Claim attacked.** 22 Part IV: “A transport also carries the query…”
+
+**Why it fails.** In 20, `Ans_E` was simply used; 22 makes the query part of transport data. But a transport can be used in (R) for any content \(c\), including contents with no question. Then there is no \(\mathcal Q\) to carry. The definition makes all transports depend on a question that may not exist.
+
+**Severity.** Serious: it contaminates the definition of transport used by `Rep`, `Deploy`, and `Build`.
+
+**Fix.** Make the query translation a separate component only for question-directed transports, or define `Ans_E` only relative to a specified question \(p\).
+
+---
+
+### F19. The “closable” artefact construction is new and unbacked
+
+**Claim attacked.** 22 Part XV: “what is missing is not a second target but a provenance clause on the target’s own components (that the effect’s component was selected by the data-gathering, not by the population), which the historical kinds of Part II can carry.”
+
+**Why it fails.** This is a new claim. It asserts that historical kinds can carry a provenance clause on the target’s own components. But historical kinds are predicates on the history that produced a component occurrence. It is not shown how they distinguish “selected by the data-gathering” from “selected by the population,” nor how that repairs the necessity attack. The construction is not written.
+
+**Severity.** Minor to serious: it adds an unproven optimism to Part XV.
+
+**Fix.** Write the construction or mark it explicitly as a conjecture rather than a “closable” case.
+
+---
+
+### F20. “Understanding” is still in the derived list, so the restricted Derivation 6 is still false
+
+This is the new wording consequence of F4. In 20, Derivation 6 was unrestricted and false. In 22, Derivation 6 is restricted to “defined predicates,” but “Understanding” remains in the derived list without definition. The restriction therefore does not save the claim.
+
+**Severity.** Serious.
+
+**Fix.** As F4.
+
+---
+
+## D. Ranked severity
+
+**Fatal**
+1. F3 — `Ans_E` definition via \(\pi^{-1}[\operatorname{Sol}_E]\) makes (A) ill-defined/unsatisfiable for non-injective transports.
+2. F2 — `K` fidelity is not well-defined because \(\tau,\sigma\) are not defined on \(K\).
+3. F1 — Non-circularity requires a proper sub-block, contradicting the claim that the one-component candidate satisfies (E).
+4. F10 — Question provenance rests on a construction 22 itself calls a sketch with gaps.
+
+**Serious**
+5. F5 — Third surprise consequence contradicts (R).
+6. F4 — “Understanding” listed as derived but undefined; Derivation 6 false.
+7. F6 — Part V cites Derivation 1 without injectivity.
+8. F9 — Earliest-witness rule not unique in a partial order.
+9. F8 — Non-triviality clause ill-typed.
+10. F12 — `Build` requires defect record on “active route to the binding,” a category error.
+11. F13 — Survival condition “exactly when faithful” overrestricts `Sel`.
+12. F14 — `Origin` misstated as including `Deploy`.
+13. F17 — 22a overclaims “Done” for multiple items.
+14. F18 — Query-carrying transport is type-broken for non-question contents.
+
+**Minor**
+15. F7 — Construction-witness list omits two items.
+16. F11 — Historical kind applies content provenance to a binding without typing.
+17. F16 — Part VII and Part XV disagree about the artefact case.
+18. F15 — Part XV entry is not a defeat condition.
+19. F19 — “Closable” artefact claim is unbacked.
+20. F20 — Same as F4 at the level of Derivation 6.

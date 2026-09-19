@@ -1,0 +1,481 @@
+====================================================================================================
+S7_questions_limits | rev2_deepseek | sample 0 | finish stop | 17817 chars | error None
+====================================================================================================
+## A. The merit withdrawal
+
+**1. The withdrawal is overstated: “random new contract” does not satisfy (G).**
+Attacked claim: “The semantics has **no condition** separating a question worth finding from a re-parameterisation: a random new contract that is new to the repertoire and built satisfies (G) as written.”
+Why it fails: (G) is defined as “\(\operatorname{Origin}_{\beta,\ell}(s,c,p,h,e)\iff\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}.\)” A contract is not the content \(c\). To satisfy (G) for a question, \(c\) must be the question-organization, and it must satisfy Attempt, New, and Build. Build requires an owned subhistory, a faithful transport, a nontrivial binding construction required for that transport, an itemised defect representation on an active route to the binding, and non-compositionality. Attempt requires a coherently posed \(p\) and a failing obligation in \(O_p\). So not any random new contract counts; only a built, used, coherent question-organization with the right defect record and binding does.
+Severity: serious.
+Fix: state the exact class of random coherent contracts that survives (G), or show how an arbitrary coherent contract can be given a Build witness.
+
+**2. “Coherently posed” and “some obligation … fails” do merit-like filtering.**
+Attacked claim: “where \(p\) is a coherently posed question … and some obligation in \(O_p\) fails at the state before \(e\)”
+Why it fails: These are conditions on the question’s admissibility and on its relation to a failing obligation. They are not called merit, but they exclude contracts that are incoherent or that address no declared failure. Because \(O_p\) is declared, the condition can be trivialised, but it is not “no condition.”
+Severity: minor to serious.
+Fix: distinguish formal admissibility/address conditions from substantive merit, and say exactly which one is absent.
+
+**3. \(\rho_p\) and Build are left ambiguous, possibly circular.**
+Attacked claim: “A claim that an episode *found* a question requires \(\rho_p=\text{constructed}\) with the witness.” / “When it is a question, the originative act is the finding of a question.”
+Why it fails: \(\rho_p\) is defined as the provenance of the transport by which an occurrence represents the question-organization of Derivation 5. Build is a construction witness for the content \(c\). The document never says whether (G) for a question entails \(\rho_p=\text{constructed}\), or whether \(\rho_p\) is a separate condition, or whether Build merely supplies the same witness under another name. If \(\rho_p\) must be represented inside the question content, it becomes the provenance of the representation of that same content, which is circular.
+Severity: serious.
+Fix: define the entailment relation between Build and \(\rho_p\), or eliminate one in favour of the other.
+
+**4. “New contract” is ill-typed under Newness.**
+Attacked claim: “a random new contract that is new to the repertoire”
+Why it fails: Newness (N) is defined for contents: “\(\operatorname{New}(s,c,h,e)\iff\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c.\)” A contract \(C\) is a component of a question tuple, not a content in the repertoire. The phrase conflates contract with content.
+Severity: serious.
+Fix: say “a question whose question-organization is new and built,” or define newness for contracts and explain how it relates to content-newness.
+
+## B. The four gaps in Derivation 5
+
+**5. The gaps omit the central gap: a solution is not a content.**
+Attacked claim: “Its solutions are candidate questions on \(D\); a particular question is a particular solution, and an occurrence carries that question when its instantiated organization is \(D_p\) with its ports fixed at that solution.”
+Why it fails: A solution of (O) is a valuation. A content is “an organization together with its contract-relative commitments.” Fixing the ports at a valuation yields a state or boundary condition, not an organization-with-contract. The construction never explains how a question tuple becomes a content that (R) and Build can operate on.
+Severity: fatal or serious for Derivation 5.
+Fix: define an encoding of the question tuple as an organization with its own contract-relative commitments, not merely a valuation.
+
+**6. The gaps omit the contract of \(D_p\).**
+Attacked claim: “A question \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\) determines an organization \(D_p\) in the sense of (O) whose solutions include the question”
+Why it fails: Build requires “a transport faithful on \(c\)’s contract.” If \(c=D_p\), then \(D_p\) must have a contract-relative commitment. Derivation 5 supplies admitted edits for \(D_p\), but never says what \(c\)’s contract is, nor how it relates to the target’s contract \(C\).
+Severity: serious.
+Fix: state the contract carried by the question-organization and how it is determined by \(p\).
+
+**7. Gap (ii) mishandles \(\rho_p\).**
+Attacked claim: “(ii) \(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed; adding \(b_0\) as a port with domain \(B\) and \(O_p\) as a port with domain the subsets of the declared obligations is straightforward and not done.”
+Why it fails: \(\rho_p\) is not an independent parameter like \(b_0\) or \(O_p\). It is the provenance of the transport by which an occurrence represents the question-organization. Adding it as a port of \(D_p\) would make the represented content include the provenance of its own representation, creating circularity or redundancy. Calling this “straightforward” is false.
+Severity: serious.
+Fix: either define \(\rho_p\) externally from the Build witness and remove it from the represented content, or give a non-circular encoding.
+
+**8. Gap (i) mislocates coherence.**
+Attacked claim: “(i) Coherence … is a global condition on \(D\) and is not a local component of \(D_p\); the solutions of \(D_p\) include incoherent questions unless a component encoding it is supplied, and none is here.”
+Why it fails: Some coherence clauses are relations among port values and can be local components: \(S\subseteq C_{\mathrm{adm}}\), \(K\cap C_{\mathrm{adm}}=\varnothing\), and “\(\mathcal Q\) is defined on every pair in \(C\).” The clause \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\) is fixed once \(D\) and \(b_0\) are boundary-fixed, so it can be handled by a boundary condition or an unsatisfiable component. The gap list misdescribes what is global versus what is merely unfinished.
+Severity: minor to serious.
+Fix: separate local coherence clauses from fixed boundary facts, and supply components for the local ones.
+
+**9. Gap (iv) is not a side question; it is a precondition of the claim.**
+Attacked claim: “(iv) Whether Inst licenses an organization whose ports range over edits of another organization is a question for the physical module and is not argued.”
+Why it fails: The construction’s ports range over queries, scopes, and sets of pairs-with-relations of another organization. If the module does not license such meta-ports, \(D_p\) is not an organization at all. The claim “A question … determines an organization \(D_p\)” is asserted unconditionally, but it depends on this unargued licensing assumption.
+Severity: serious.
+Fix: make the claim explicitly conditional on a module that licenses meta-ports, or restrict it to mathematical/modelled organizations with stipulated data.
+
+**10. The gaps are not all closable in the same sense.**
+Attacked claim: “until they are closed, question-finding is representable *conditionally* on closing them”
+Why it fails: (i) and (iii) look like notational/local omissions. (ii) contains the \(\rho_p\) circularity. The valuation-to-content gap and the contract gap are structural. (iv) cannot be closed by semantics alone. So “conditionally on closing them” is too optimistic and flattens substantive gaps into a list of unfinished details.
+Severity: serious.
+Fix: classify gaps as notational, definitional, or module-dependent; downgrade the claim until the structural ones are solved.
+
+## C. Relocating the concept-creation limit to module fixity
+
+**11. The relocation is unstable because the document allows later modules.**
+Attacked claim: “The limit is the module’s fixity, not the semantics’ vocabulary”
+Why it fails: Part V says “a later module with a larger \(A_\Theta\) makes it a new claim at a new index.” If modules can change, then the limit is not the module’s fixity but the semantics’ inability to represent module revision as a construction. The relocation assumes a fixed module per episode, which is not stated as an invariant and conflicts with the later-module clause.
+Severity: serious.
+Fix: state explicitly that module revision is outside the constitutive conjecture and counts as a potential counterexample, or add a meta-level construction for extending the module.
+
+**12. The relocation conflicts with the constitutive conjecture.**
+Attacked claim: “The invention of a dimension of variation that the physical module does not license … is not a question found in the sense above, and not a construction either”
+Why it fails: Part 0 says: “A genuine explanatory achievement that these four cannot represent counts against the conjecture.” If inventing a non-licensed dimension can be a genuine explanatory achievement, the document’s own rule makes it a counterexample. Relocating the limit to the module does not save the conjecture; it just names the source of failure.
+Severity: serious.
+Fix: argue that no genuine explanatory achievement requires a non-licensed dimension, or weaken the constitutive conjecture explicitly.
+
+**13. “Build covers it” does not follow from licensing.**
+Attacked claim: “Where the module does license the dimension at some grain, its introduction is the construction of a new organization attribution and Build covers it.”
+Why it fails: Licensing a dimension supplies an organization in the module’s space. Build additionally requires an owned subhistory, an itemised defect representation on an active route to the binding, a nontrivial binding construction required for the transport, and non-compositionality. Licensing alone implies none of these.
+Severity: serious.
+Fix: prove that any licensed new organization attribution can meet Build, or weaken the claim to “may be covered if the Build conditions are met.”
+
+## D. The artefact case
+
+**14. Part VII and Part XV contradict each other.**
+Attacked claim: “what is missing is not a second target but a provenance clause on the target’s own components … which the historical kinds of Part II can carry”
+Why it fails: Part VII says the opposite: “explanation of an apparent effect as a selection artefact, which needs two targets (the data organization and the population organization) and a transport for each.” Both passages cannot be correct.
+Severity: serious.
+Fix: decide whether the explanation is a one-target provenance claim or a two-target transport claim, and retract or revise the other passage.
+
+**15. Historical kinds do not supply the artefact contrast.**
+Attacked claim: “which the historical kinds of Part II can carry”
+Why it fails: A historical kind is “a predicate on the history that produced an occurrence of a component.” Recording that the effect’s component was selected by data-gathering does not by itself show that the apparent effect is an artefact. The explanatory force requires a contrast with what would hold under the population process or under a different contract. A predicate on one component’s history does not encode that contrast.
+Severity: serious.
+Fix: add a contrast or transport between the data organization and the population organization, or define an enriched historical kind that encodes the consequence for fidelity.
+
+**16. Provenance for bindings is undefined.**
+Attacked claim: “with the witness that Part IV requires for the provenance of a content’s occurrence, applied to the binding that realizes the component.”
+Why it fails: Part IV’s provenance witness is for a transport between organizations or for a content’s occurrence. A binding \(\lambda(k)\) is a datum of a transport, not an occurrence with its own physical history. Applying a content-occurrence witness to a binding is not defined.
+Severity: serious.
+Fix: define provenance for bindings/components, or show how a binding is an occurrence in the physical module.
+
+**17. The data-gathering selection may not satisfy Part IV’s survival condition.**
+Attacked claim: Part IV’s selection witness requires “a survival condition that holds of a member exactly when it is faithful on \(H\).”
+Why it fails: A data-gathering filter typically survives members that fit the sample, not members that are faithful to the population target. If the target is the sample, the witness might apply; if the target is the population, it does not. The artefact case needs this disambiguation, and the document does not provide it.
+Severity: serious.
+Fix: specify the target and the survival condition for the data-gathering selection, and show that the witness’s fidelity clause is satisfied.
+
+## E. Symmetry
+
+**18. (F2) is a global condition and may well constrain symmetry explanations.**
+Attacked claim: “whose force is an entailment among the components of \(E\) that neither (F1), a per-component condition, nor (F2), an assembly condition, constrains”
+Why it fails: (F2) is \(\pi[\operatorname{Sol}_D(a,b)]=\operatorname{Sol}_E(\tau(a),\sigma(b))\) for every \((a,b)\in C\). If \(C\) includes the symmetry edits—rotations, reflections, swaps—and the query asks for the invariant quantity, (F2) directly constrains the account’s solution set under those edits. A component relation that is not invariant under the symmetry will fail (F2). The document gives no proof that symmetry entailments cannot be encoded as solution-set invariance.
+Severity: serious.
+Fix: either provide a concrete symmetry explanation that fails (F1) and (F2), or withdraw the “open” classification.
+
+**19. (F1) is not merely per-component in the relevant sense.**
+Attacked claim: “neither (F1), a per-component condition … constrains”
+Why it fails: (F1) compares a component relation to \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]\), the projection of an anchor subnetwork’s solution set. A symmetry entailment can be the projection of a subnetwork that includes the symmetry constraints. The charge that (F1) is merely per-component ignores that its right-hand side is a global constraint on that subnetwork.
+Severity: serious.
+Fix: show why the relevant symmetry entailment is not the projection of any anchored subnetwork, or drop the claim that (F1) cannot capture it.
+
+**20. “None is known” is not a proof of impossibility.**
+Attacked claim: “no construction exists here and none is known to follow from present machinery”
+Why it fails: The necessity attack requires an explanation without a faithful transport. “None is known” is an appeal to ignorance, not a demonstration that no such transport exists. The document has not established that symmetry explanations are beyond the machinery.
+Severity: minor to serious.
+Fix: prove impossibility, or mark the case as unclassified rather than open.
+
+## F. The other re-sorted necessity cases
+
+**21. “Impossibility scoped by design” may be unnecessary or wrong.**
+Attacked claim: “**scoped by design** — elimination of a physically impossible rival, handled through a declared counterfactual set with declared relations; what it establishes about the impossibility is relative to those declarations and no more.”
+Why it fails: If the rival is physically impossible, the explanation of its impossibility is a negative existential over \(C_{\mathrm{adm}}\)—an obstruction result—not a counterfactual claim about \(K\). The document conflates representing the rival with explaining its impossibility. If \(C_{\mathrm{adm}}\) already excludes the rival, the counterfactual set is not doing the explanatory work.
+Severity: serious.
+Fix: distinguish negative-existential explanation from counterfactual explanation, and show which one the semantics cannot handle.
+
+**22. Mathematics is relativised, not closed.**
+Attacked claim: “**relative, not open** — mathematical explanation falls under a declared admission relation; it is closed relative to that declaration and does not fall under this attack’s quantifier over admitted contracts at all.”
+Why it fails: The necessity attack’s quantifier is over admitted contracts. A declared admission relation is the admitted contract for the mathematical organization. So the case does fall under the quantifier; the semantics simply stipulates the admission relation. That is relativisation, not closure. The document has not shown that a transport exists for every genuine mathematical explanation under its declared relation; it has only moved the question into the declaration.
+Severity: serious.
+Fix: include declared mathematical admission relations in the quantifier and supply the transport, or admit that mathematical explanation is not covered by the necessity attack.
+
+**23. The odd-order skew-symmetric non-circularity witness is misdescribed.**
+Attacked claim: “Non-circular dependence is witnessed by \(I_3\) under removal of skewness and by \(\begin{pmatrix}0&1\\-1&0\end{pmatrix}\) under removal of oddness, each removing a proper sub-block.”
+Why it fails: Non-circular dependence requires an edit \(\tau(a)\) on \(E\) that removes or replaces a nonempty proper sub-block \(B\subsetneq\Gamma\) while preserving the other boundary conditions, under which the answer profile changes. The cited witnesses are matrices/family changes, not edits on the account \(E\) that remove a proper sub-block of \(\Gamma\). This is a category error.
+Severity: serious.
+Fix: specify the edit on \(E\) and the proper sub-block of \(\Gamma\) that the edit removes, and show the answer profile changes as required.
+====================================================================================================
+S7_questions_limits | rev2_deepseek | sample 1 | finish stop | 20709 chars | error None
+====================================================================================================
+All quotations are from the document. I attack the four relocations in order.
+
+## A. The merit withdrawal for found questions
+
+**Finding 1. Hidden merit-work remains in (G) through Attempt and Deploy.**
+Claim attacked: Part X: “The semantics has **no condition** separating a question worth finding from a re-parameterisation: a random new contract that is new to the repertoire and built satisfies (G) as written.”
+Why it fails: `Origin` is not just `New ∧ Build`. It is `Attempt ∧ New ∧ Build`, where `Attempt(s,c,p,h,e)` requires that “\(c\) is actually used, on an active route, to address \(p\) — where \(p\) is a coherently posed question … and some obligation in \(O_p\) fails at the state before \(e\)”. `Deploy` adds “integrated into problem-directed activity and supporting the declared use task \(U\) as a retained capability”. Those are relevance/use conditions. If \(O_p\) and \(U\) are constrained, they do merit-work; if they are freely declarable, merit is not withdrawn but relocated to declaration.
+Severity: serious.
+Fix: Either state explicitly that (G) imposes no worth-finding condition but does impose relevance-to-declared-obligation and deployability, or remove `Attempt`/`Deploy` from the question case and say what remains.
+
+**Finding 2. “A random new contract counts” is overbroad.**
+Claim attacked: Part X: “a random new contract that is new to the repertoire and built satisfies (G) as written.”
+Why it fails: `Build` requires a “nontrivial binding construction required for that transport” and “an itemised defect representation … on an active route to the binding”. A merely random new contract does not automatically have either. It also requires `Deploy`, `New`, and `Attempt`. The concession is therefore false as stated.
+Severity: serious.
+Fix: Say “a random new contract that happens to satisfy Build, New, Attempt, and Deploy counts; no further worth-finding condition is added.”
+
+**Finding 3. Merit can be stipulated through the obligation and use-task parameters.**
+Claim attacked: Part X: “That place is empty, as the place for a merit function is empty in Part XI.”
+Why it fails: Part XI says of obligations: “‘Claimed’ and ‘protected’ are declared: they say which obligations the comparison is about, not that the claims are true”. If any new question can be paired with a declared failing obligation in \(O_p\) and a declared use task \(U\), then the modeller can stipulate the very relevance that the withdrawal claims not to represent. The place is not empty; it is filled by declaration.
+Severity: serious.
+Fix: Either constrain \(O_p\) and \(U\) independently of the candidate, or explicitly classify them as declared merit-substitutes.
+
+**Finding 4. The withdrawal is ambiguous between “no merit condition” and “no worth-finding condition”.**
+Claim attacked: Part III: “Whether a constructed question was worth finding — whether it is a finding rather than a re-parameterisation — is not decided by this semantics”.
+Why it fails: The document never separates “worth finding” from “relevant to a declared failing obligation” and “deployable in a declared use task”. If those are part of (G), then the semantics does decide some merit-like questions. If they are not, (G) is weaker than stated.
+Severity: serious.
+Fix: Define the distinction precisely and show which of `Attempt`, `Deploy`, and obligation-failure are merit conditions and which are not.
+
+## B. Derivation 5 and its four listed gaps
+
+**Finding 5. The four gaps are not the right gaps: the construction conflates a valuation with a content.**
+Claim attacked: Derivation 5: “Its solutions are candidate questions on \(D\); a particular question is a particular solution, and an occurrence carries that question when its instantiated organization is \(D_p\) with its ports fixed at that solution.”
+Why it fails: In (O), a solution is a valuation of ports. In Part IV, a content is “an organization together with its contract-relative commitments”. `New`, `Build`, `Deploy`, and `Origin` are predicates on contents. A valuation is not a content. The construction never makes a particular question a content with its own contract.
+Severity: fatal to the claim that question-finding is representable.
+Fix: Define how a valuation becomes a content, or make each question a distinct organization with its own commitments.
+
+**Finding 6. The construction breaks `New`.**
+Claim attacked: Part X: “\(\operatorname{New}(s,c,h,e)\iff\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c\).”
+Why it fails: If \(c\) is a question “through its question-organization \(D_p\)”, and \(D_p\) is the same organization for all questions on \(D\), then `New` compares \(D_p\), not the question. If \(D_p\) is already in the repertoire, no new question can be new; if \(D_p\) is new, every question on \(D\) is new. The particular contract, \(\mathcal Q\), \(S\), and \(K\) are solutions, not organizations.
+Severity: fatal.
+Fix: Define question identity as an organization, not a solution, or define \(\equiv_\ell\) for questions independently of \(D_p\).
+
+**Finding 7. The representing transport is likely identity, so `Build` cannot yield a constructed question.**
+Claim attacked: Part III: “A claim that an episode *found* a question requires \(\rho_p=\text{constructed}\) with the witness.”
+Why it fails: The witness is “the provenance of the transport by which an occurrence represents the question-organization of Derivation 5.” If an occurrence instantiates \(D_p\) and carries the question as a solution, the transport from the question-content to \(D_p\) is identity/relabelling. `Build` requires a “nontrivial binding construction” that is “not a composition of content-preserving transfers.” Identity binding fails both.
+Severity: fatal to the question-finding claim.
+Fix: Specify a nontrivial representing transport for the question, or change `Build` to allow identity/relabelling for question contents.
+
+**Finding 8. Gap (ii) mishandles \(\rho_p\) and hides a circularity.**
+Claim attacked: Derivation 5, gap (ii): “\(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed; adding \(b_0\) as a port with domain \(B\) and \(O_p\) as a port with domain the subsets of the declared obligations is straightforward and not done.”
+Why it fails: \(\rho_p\) is the provenance of the transport by which an occurrence represents the question-organization. If \(\rho_p\) is a port value inside \(D_p\), then the solution of \(D_p\) includes its own provenance, which depends on the transport that represents \(D_p\). That is circular. The gap list treats only \(b_0\) and \(O_p\) as straightforward and omits \(\rho_p\) from the fix.
+Severity: serious.
+Fix: Do not put \(\rho_p\) inside \(D_p\); treat it as external metadata, and explain how the question content includes provenance without self-reference.
+
+**Finding 9. The closure condition excludes legitimate scopes.**
+Claim attacked: Derivation 5: “if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined”.
+Why it fails: Part III defines \(S\subseteq C_{\mathrm{adm}}\) as a stated scope with no factor-closure requirement. A legitimate question can select a non-factor-closed scope. The closure condition makes such questions incoherent in \(D_p\).
+Severity: serious.
+Fix: Remove the factor-closure condition, or restrict it to \(C_{\mathrm{adm}}\) and argue that every legitimate scope is factor-closed.
+
+**Finding 10. The component relations \(L_j\) are never defined.**
+Claim attacked: Derivation 5: “Components: the closure conditions — the baseline port reads ‘in’; …”
+Why it fails: (O) requires for each component \(j\) a relation \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\). The sketch gives informal closure conditions, not \(L_j\). Without \(L_j\), \(D_p\) is not an organization in the sense of Part II.
+Severity: serious.
+Fix: Write the \(L_j\) for each component, or say the construction is only an informal description.
+
+**Finding 11. Gap (iv) is understated; it is load-bearing.**
+Claim attacked: Derivation 5, gap (iv): “Whether Inst licenses an organization whose ports range over edits of another organization is a question for the physical module and is not argued.”
+Why it fails: The entire claim that question-finding is a physical construction depends on `Inst` licensing ports whose values are queries, scopes, and edits of another organization. If `Inst` is a decomposition oracle for physical lumps, it is not a minor gap to say it can license abstract meta-linguistic states. No argument is given.
+Severity: fatal in practice.
+Fix: Either show the module can supply such organizations, or retract the physical status and treat \(D_p\) as a mathematical organization with declared admission.
+
+**Finding 12. Gap (i) is shallow and closable by a single component.**
+Claim attacked: Derivation 5, gap (i): “Coherence … is a global condition on \(D\) and is not a local component of \(D_p\); the solutions of \(D_p\) include incoherent questions unless a component encoding it is supplied, and none is here.”
+Why it fails: (O) permits a component with an arbitrary relation on its footprint. A single component whose relation is the set of coherent valuations can encode the global condition. The gap is an omission, not a structural obstacle.
+Severity: minor.
+Fix: Add the component and remove gap (i).
+
+**Finding 13. Gap (iii) is a typing exercise, not a construction gap.**
+Claim attacked: Derivation 5, gap (iii): “‘Add a pair to \(K\)’ requires the pair’s declared relations as a port value; the domain of \(u_K\) must be the set of pairs-with-relations, and it is not written out.”
+Why it fails: This is a straightforward domain specification. It does not threaten the construction.
+Severity: minor.
+Fix: Write the domain explicitly and remove the gap.
+
+## C. Relocating the limit to the physical module’s fixity
+
+**Finding 14. The line between \(K\) and “a dimension the module does not license” is not drawn.**
+Claim attacked: Part X: “The invention of a dimension of variation that the physical module does not license … is not representable at all”; Part III: “\(K\) is how a question can ask about a structure that is not a possibility at all”.
+Why it fails: Part III lets \(K\) contain declared counterfactual edits with declared relations, with only \(K\cap C_{\mathrm{adm}}=\varnothing\). It never says \(K\subseteq A\times B\). If \(K\) can declare edits and relations outside \(A\), then \(K\) already represents structures not physically possible. The boundary between “not a possibility at all” and “a dimension the module does not license” is asserted, not formalised.
+Severity: serious.
+Fix: State \(K\)’s domain. If \(K\subseteq A\times B\), explain why that is not an arbitrary vocabulary restriction; if not, the relocation is false.
+
+**Finding 15. The question tuple fixes the target \(D\), so target-fixity is a second limit.**
+Claim attacked: Part X: “The limit is the module’s fixity, not the semantics’ vocabulary”.
+Why it fails: Part III: “A question is \(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\).” The target \(D\) has a fixed port set \(V\). Inventing a new dimension within a question would require changing \(V\), which no question can represent because \(D\) is a parameter. Even if the module licenses the dimension, the question must be a new question on a new target \(D'\). The limit is not only module fixity; it is the semantics’ question individuation.
+Severity: serious.
+Fix: Acknowledge the target-fixity limit, or define question transformations that change \(D\).
+
+**Finding 16. “Build covers it” is asserted without argument.**
+Claim attacked: Part X: “Where the module does license the dimension at some grain, its introduction is the construction of a new organization attribution and Build covers it.”
+Why it fails: `Build` requires a transport faithful on \(c\)’s contract, a nontrivial binding, an itemised defect representation, and “not a composition of content-preserving transfers”. Introducing a new dimension might be a content-preserving recoding, or might fail the nontrivial-binding requirement. The document does not show that any module-licensed new dimension satisfies `Build`.
+Severity: serious.
+Fix: Show that any module-licensed new dimension yields a `Build` witness, or weaken to “may be covered when Build is satisfied.”
+
+## D. Part XV’s re-sorted necessity cases
+
+### D.1 Symmetry
+
+**Finding 17. (F2) does constrain inter-component entailments.**
+Claim attacked: Part XV: “(i) open — explanation by symmetry, whose force is an entailment among the components of \(E\) that neither (F1), a per-component condition, nor (F2), an assembly condition, constrains”.
+Why it fails: (F2) constrains the assembled solution set of \(E\): \(\pi[\operatorname{Sol}_D(a,b)]=\operatorname{Sol}_E(\tau(a),\sigma(b))\). Inter-component entailments are realized in the joint solution set. A symmetry that forces independence changes that joint set. The document does not prove that no transport can encode the symmetry in \(\tau\) or in the joint solution set; it asserts non-constraint.
+Severity: serious.
+Fix: Prove that no transport can capture symmetry, or reclassify as “not yet constructed” rather than “beyond present machinery.”
+
+**Finding 18. Symmetry may be representable as an edit-invariance condition.**
+Claim attacked: Part XV: “no construction exists here and none is known to follow from present machinery.”
+Why it fails: The formalism already quantifies over edits \(A\) and translates them via \(\tau\). A symmetry is an invariance property of the edit set. A component invariant under those edits has that in its signature (K). The missing piece is a condition that \(\tau\) commute with the symmetry group. That is an addition to transport, not a refutation of the machinery.
+Severity: serious.
+Fix: State the missing equivariance condition precisely and note it is a possible extension.
+
+### D.2 Selection artefact
+
+**Finding 19. A provenance clause on the target does not replace the second target.**
+Claim attacked: Part XV: “(ii) closable, not done — explanation of an apparent effect as a selection artefact: what is missing is not a second target but a provenance clause on the target’s own components (that the effect’s component was selected by the data-gathering, not by the population)…”
+Why it fails: An artefact explanation requires contrasting the data organization with the population organization. A provenance clause on the data component says it was selected, but does not represent the population’s lack of the effect. The explanatory force is the contrast. A second target—the population or the selection process—is needed.
+Severity: serious.
+Fix: Either construct the two-target transport, or admit the case is not closable with historical kinds alone.
+
+**Finding 20. Historical kinds are not account conditions.**
+Claim attacked: Part XV: “which the historical kinds of Part II can carry”.
+Why it fails: Part II: “A historical kind is a predicate on the history that produced an occurrence of a component”. Part V: “(E) carries **no provenance condition**”; anchoring is “history-free”. Adding a provenance clause would be a new condition on explanation, not an application of existing historical kinds.
+Severity: serious.
+Fix: Define the additional provenance condition and show it integrates with (E) without making anchoring history-dependent.
+
+**Finding 21. Historical kinds may not apply to abstract data targets.**
+Claim attacked: Part XV: “which the historical kinds of Part II can carry”.
+Why it fails: A historical kind is a predicate on the history that produced an occurrence of a component. If the target is a model or data organization not physically instantiated, its components may have no occurrence history. The document does not require the target to be a physical occurrence.
+Severity: serious.
+Fix: Restrict the artefact case to physically instantiated targets, or explain how historical kinds apply to abstract data organizations.
+
+**Finding 22. The artefact case is misclassified as a necessity counterexample.**
+Claim attacked: Part XV: “An explanation without a faithful transport… (ii) closable, not done — explanation of an apparent effect as a selection artefact”.
+Why it fails: If the case is closable by adding a provenance clause, then the transport can be faithful; the missing piece is an extra condition on the account, not a failure of transport fidelity. That is a sufficiency issue, not a necessity issue.
+Severity: serious.
+Fix: Move the artefact case to the sufficiency attack, or explain why no faithful transport exists.
+
+### D.3 Impossibility
+
+**Finding 23. \(\tau\) is not defined on \(K\).**
+Claim attacked: Part V: “Fidelity conditions range over all of \(C\)”; Part IV: “\(\tau:A_D\to A_E\) translates edits”; Part III: “\(K\) is a declared set of counterfactual edits — pairs with \(K\cap C_{\mathrm{adm}}=\varnothing\)”.
+Why it fails: If \(K\not\subseteq A_D\), then \(\tau(a)\) is undefined for \(a\in K\), so (F1) is not well-defined on \(K\). The document says “fidelity is well-defined there” without showing \(\tau\) extends to \(K\).
+Severity: serious.
+Fix: Specify that \(K\subseteq A\) (or extend \(\tau\) to \(K\)) and explain how counterfactual edits are translated.
+
+**Finding 24. Physical impossibility is not represented, only declared impossibility.**
+Claim attacked: Part XV: “(iii) scoped by design — elimination of a physically impossible rival, handled through a declared counterfactual set with declared relations”.
+Why it fails: The scoping is honest, but the case is not an elimination of a physically impossible rival; it is elimination under a declared counterfactual meaning. The physical impossibility itself—that no admissible organization has the rival structure—is not represented.
+Severity: serious.
+Fix: Rename to “declared-impossibility elimination” and state that physical impossibility is outside.
+
+### D.4 Mathematics
+
+**Finding 25. Mathematics is immunised by declaration.**
+Claim attacked: Part XV: “(iv) relative, not open — mathematical explanation falls under a declared admission relation; it is closed relative to that declaration and does not fall under this attack’s quantifier over admitted contracts at all.”
+Why it fails: The declared admission relation is a free parameter. Any mathematical explanation can be made faithful by choosing the right declaration. That is not a solution; it relocates the problem to the declaration. The necessity attack for mathematics is not closed; it is scoped out by fiat.
+Severity: serious.
+Fix: Give constraints on admissible declarations for mathematical organizations, or admit that the necessity attack is not closed for mathematics but scoped out.
+
+**Finding 26. The Part VII example is asserted, not verified.**
+Claim attacked: Part VII: “The full Leibniz expansion with skewness substituted satisfies (F1) and (F2): every intermediate product is a determinant suborganization whose hidden ports project away.”
+Why it fails: The document does not write \(D\), \(E\), \(\Gamma\), \(\lambda\), \(\tau\), or \(\sigma\), and does not check the conditions. The claim that the case is “closed relative to that declaration” depends on this unverified assertion.
+Severity: serious.
+Fix: Actually write the organization and check (F1)–(F2), or mark the example as unverified.
+
+## E. Additional cross-cutting findings
+
+**Finding 27. The question-finding claim is vacuous until the unlisted gaps are closed.**
+Claim attacked: Part III: “A claim that an episode *found* a question requires \(\rho_p=\text{constructed}\) with the witness.”
+Why it fails: The witness is the provenance of the transport representing the question-organization. Derivation 5 does not construct that transport, and its identity/relabelling form likely fails `Build`. Until the gaps in Findings 5–8 are closed, no question can satisfy \(\rho_p=\text{constructed}\).
+Severity: serious.
+Fix: Close the content/solution, `New`, identity-transport, and \(\rho_p\)-circularity gaps, or retract the claim that question-finding is representable even conditionally.
+
+**Finding 28. The “empty place” for question merit is not empty if \(O_p\) is declared.**
+Claim attacked: Part X: “That place is empty, as the place for a merit function is empty in Part XI”.
+Why it fails: Part XI already permits declared obligations: “‘Claimed’ and ‘protected’ are declared”. If \(O_p\) is a declared obligation set, then the modeller can declare an obligation that the new question addresses. The semantics does not represent merit, but it permits merit to be stipulated. That is not an empty place.
+Severity: serious.
+Fix: Distinguish “represented merit” from “declarable merit”, and state which one the document claims to lack.
+====================================================================================================
+S7_questions_limits | rev2_deepseek | sample 2 | finish stop | 18652 chars | error None
+====================================================================================================
+1. **Claim attacked:** “The semantics has **no condition** separating a question worth finding from a re-parameterisation: a random new contract that is new to the repertoire and built satisfies (G) as written.” (Part X)  
+   **Why it fails:** (G) is not just `New ∧ Build`; it is `Origin ↔ Attempt ∧ New ∧ Build`. `Attempt` requires that “\(c\) is actually used, on an active route, to address \(p\) — where \(p\) is a coherently posed question whose question-organization some occurrence of \(s\) instantiates before \(e\), and some obligation in \(O_p\) fails at the state before \(e\).” `Build` requires “a **nontrivial binding construction required for that transport**,” “an **itemised defect representation** … on an active route to the binding,” and that it “is not a composition of content-preserving transfers.” A random new contract that is merely new and built does not satisfy these clauses.  
+   **Seriousness:** Serious / fatal to the stated withdrawal.  
+   **Fix:** Either remove `Attempt`/`Build` for question-contents, or stop saying “a random new contract counts.” State explicitly that relevance, use, defect-record, and nontrivial-binding conditions are still doing work.
+
+2. **Claim attacked:** The withdrawal is honest because there is “no condition” on merit.  
+   **Quote:** `Attempt` requires “some obligation in \(O_p\) fails at the state before \(e\).”  
+   **Why it fails:** Obligation-failure is a problem-relevance condition. Even if \(O_p\) is a declared parameter and can be gerrymandered, it still filters found questions toward those that address a recognized failure. That is merit-work under another name, or at least relevance-work that the prose does not count.  
+   **Seriousness:** Serious.  
+   **Fix:** Define “merit” narrowly and state whether obligation-failure counts. If it does, the concession “no condition” is false. If it does not, say why not.
+
+3. **Claim attacked:** There is no condition separating worth-finding from re-parameterisation.  
+   **Quote:** `Build` requires “a **nontrivial binding construction required for that transport**,” “an **itemised defect representation** … on an active route to the binding,” and “is not a composition of content-preserving transfers.”  
+   **Why it fails:** These are exactly the conditions that separate a creative construction from a mere recoding or re-parameterisation. If a new contract is just a new valuation of an existing question-organization, it need not involve a nontrivial binding. If it does require one, then `Build` is doing the separation the text says is absent.  
+   **Seriousness:** Serious.  
+   **Fix:** Reconcile `Build` with the claim that no condition separates worth from re-parameterisation; if the empty place is only ranking or aesthetics, say that.
+
+4. **Claim attacked:** “a random new contract counts.”  
+   **Quote:** Part III: “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), \(S\subseteq C_{\mathrm{adm}}\), and \(K\cap C_{\mathrm{adm}}=\varnothing\).”  
+   **Why it fails:** An incoherent random contract does not count. The concession is overbroad at best.  
+   **Seriousness:** Minor.  
+   **Fix:** Qualify “random” as “coherent and used to address a failing obligation,” or admit that coherence is a condition.
+
+5. **Claim attacked:** Derivation 5 represents question-finding as a construction.  
+   **Quote:** “so that an occurrence carrying \(D_p\) with the question as its solution can be the content \(c\) in (G).”  
+   **Why it fails:** This conflates carrier and content. (R) defines representation as \(\exists D\,\exists t\,[\operatorname{Inst}_\ell(o,D)\land\operatorname{Faithful}_{C_c}(t:c\to D)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\). Here \(c\) is the content, and \(D\) is the carrier organization that the occurrence instantiates. `Build` prepares “an organization that some occurrence of \(s\) instantiates and that is held to \(c\) by a transport faithful on \(c\)’s contract.” So the construction must distinguish the question-content \(c\) from the carrier organization that represents it. The sentence instead makes the occurrence carrying \(D_p\) “the content \(c\),” which is a type error. No listed gap covers this.  
+   **Seriousness:** Fatal to Derivation 5.  
+   **Fix:** State what the content is, what the carrier organization is, and what transport \(t:c\to D\) is built. Then show `Build` applies to the carrier, not to the content by identity.
+
+6. **Claim attacked:** The sketch represents “a particular question” as a particular solution.  
+   **Quote:** “Its solutions are candidate questions on \(D\); a particular question is a particular solution, and an occurrence carries *that* question when its instantiated organization is \(D_p\) with its ports fixed at that solution.”  
+   **Why it fails:** If all questions on \(D\) are solutions of the same \(D_p\), then different questions differ by valuation, not by organization. `New` compares contents by \(\equiv_\ell\). After the first question, \(D_p\) is already in the repertoire; later questions may be re-parameterisations of it. If the solution is fixed by boundary conditions, the sketch does not say so; if it is not, `Build`’s “nontrivial binding construction” is likely not required per question. So the sketch may reduce question-finding to re-parameterisation rather than construction.  
+   **Seriousness:** Serious / potentially fatal.  
+   **Fix:** Specify how a solution becomes a distinct content, and show that each new question requires a nontrivial binding construction.
+
+7. **Claim attacked:** Gap (i) is correctly described as a non-local gap.  
+   **Quote:** “(i) Coherence … is a global condition on \(D\) and is not a local component of \(D_p\); the solutions of \(D_p\) include incoherent questions unless a component encoding it is supplied, and none is here.”  
+   **Why it fails:** (O) allows each component \(j\) to have “a footprint \(V_j\subseteq V\),” with no locality restriction. A global coherence condition can be encoded as a component whose footprint covers the relevant ports. The problem is that no such component is written, not that it cannot be local.  
+   **Seriousness:** Minor / serious.  
+   **Fix:** Add the coherence component; call the gap “unwritten,” not “not a local component.”
+
+8. **Claim attacked:** Gap (ii) correctly lists \(b_0\) as not a port.  
+   **Quote:** Construction says “Boundary: the target \(D\) and \(b_0\), held fixed.” Gap (ii) says “\(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed.”  
+   **Why it fails:** \(b_0\) is already in the organization as a boundary condition. The real issue is whether \(b_0\) can vary as an edit/port or whether different \(b_0\) yield different organizations. The gap as worded misdescribes the construction.  
+   **Seriousness:** Minor.  
+   **Fix:** Clarify whether baseline variation is represented as an edit or only as a new boundary.
+
+9. **Claim attacked:** Adding \(\rho_p\) as a port is “straightforward.”  
+   **Quote:** Gap (ii): “adding \(b_0\) as a port with domain \(B\) and \(O_p\) as a port with domain the subsets of the declared obligations is straightforward and not done.” Part III says \(\rho_p\) “attaches to the whole tuple \(p\) … Its witness is … the provenance of the transport by which an occurrence represents the question-organization of Derivation 5.”  
+   **Why it fails:** \(\rho_p\) is provenance of the transport that represents the question-organization. If \(\rho_p\) is made a port of the represented question-organization itself, then the content includes the provenance of its own representation. That risks circularity in (R) and the provenance order. It is not a straightforward port to add.  
+   **Seriousness:** Serious.  
+   **Fix:** Keep \(\rho_p\) outside \(D_p\); attach it to the representing occurrence/transport, not to the represented content.
+
+10. **Claim attacked:** Gap (iii) is the right gap for \(K\).  
+    **Quote:** Gap (iii): “‘Add a pair to \(K\)’ requires the pair’s declared relations as a port value; the domain of \(u_K\) must be the set of pairs-with-relations, and it is not written out.” Part III requires \(S\subseteq C_{\mathrm{adm}}\), \(K\cap C_{\mathrm{adm}}=\varnothing\), \(C=(C_{\mathrm{adm}}\cap S)\cup K\), and “with the reason for each exclusion recorded.”  
+    **Why it fails:** The gap omits the admission relation, the disjointness condition, the exact contract composition, and the recorded exclusion reasons. The construction has no port for \(C_{\mathrm{adm}}\) and no representation of exclusion reasons.  
+    **Seriousness:** Serious.  
+    **Fix:** Add ports/components for the admission relation, disjointness, contract composition, and exclusion reasons.
+
+11. **Claim attacked:** The four gaps are complete.  
+    **Quote:** Part III: “for a mathematical or modelled organization, a **declared admission relation** stated with the question.” Derivation 5’s ports are \(u_{(a,b)}\), \(u_{\mathcal Q}\), \(u_S\), \(u_K\).  
+    **Why it fails:** There is no port for the declared admission relation. The sketch cannot represent two questions on the same \(D\) with different admission relations. This is a missing gap, not a listed one.  
+    **Seriousness:** Serious.  
+    **Fix:** Add the admission relation to the question tuple and to \(D_p\).
+
+12. **Claim attacked:** Gap (iv) is a specific gap in Derivation 5.  
+    **Quote:** “(iv) Whether Inst licenses an organization whose ports range over edits of another organization is a question for the physical module and is not argued.” Part II says “Values of ports may be paths, functions, fields, proofs, or histories.”  
+    **Why it fails:** The physical module is already the primitive that licenses every organization. Any representation of abstract content depends on the module licensing abstract ports. Calling this a gap in Derivation 5 either assumes a specific module or restates the primitive.  
+    **Seriousness:** Minor.  
+    **Fix:** State it as a module assumption or remove it from the gap list.
+
+13. **Claim attacked:** “The limit is the module’s fixity, not the semantics’ vocabulary.” (Part X)  
+    **Quote:** Part XIV: “the stratification of Part IV (targets are *instantiated*, not *represented*, in a construction witness) is what keeps this order well-founded.”  
+    **Why it fails:** The semantics’ own stratification prevents constructing a new target dimension. `Build` constructs a carrier organization held to a content, not a new target attribution. Even if the module licenses the dimension, the invention of it on the target is a new `Inst` attribution, not a construction. The limit is partly the semantics’ architecture.  
+    **Seriousness:** Serious.  
+    **Fix:** Acknowledge the semantic contribution; define construction of target attributions or state the limit as module-relative.
+
+14. **Claim attacked:** The relocation of the limit protects the constitutive conjecture.  
+    **Quote:** Part 0: “A genuine explanatory achievement that these four cannot represent counts against the conjecture.” Part X: “The invention of a dimension of variation that the physical module does not license … is not a question found in the sense above, and not a construction either.”  
+    **Why it fails:** If such invention is a genuine explanatory achievement, it counts against the conjecture by Part 0’s own criterion. Saying it is “outside the semantics altogether” is not a defense; it either restricts the conjecture’s scope or makes it unfalsifiable on this point.  
+    **Seriousness:** Serious / fatal to the stated scope.  
+    **Fix:** Either count it as a counterexample or explicitly restrict the constitutive conjecture to a fixed physical module and say so.
+
+15. **Claim attacked:** “Where the module does license the dimension at some grain, its introduction is the construction of a new organization attribution and Build covers it.” (Part X)  
+    **Quote:** Part XIV: “targets are *instantiated*, not *represented*, in a construction witness.”  
+    **Why it fails:** If the dimension is licensed, the new target \(D'\) is instantiated, not represented. `Build` requires preparing an organization held to \(c\) by a transport. It does not cover constructing the target attribution \(D'\). The creative act of introducing the dimension on the target is not represented by `Build`.  
+    **Seriousness:** Serious.  
+    **Fix:** Provide a construction witness for new target attributions or revise the claim.
+
+16. **Claim attacked:** The artefact case is “closable, not done” by a provenance clause.  
+    **Quote:** Part VII: “explanation of an apparent effect as a selection artefact, which needs two targets (the data organization and the population organization) and a transport for each. Neither has a construction in this document.” Part XV: “what is missing is not a second target but a provenance clause on the target’s own components … which the historical kinds of Part II can carry; the construction is not written.”  
+    **Why it fails:** These are flatly contradictory. Part VII says two targets and two transports are needed; Part XV says no second target is needed. The re-sorting is not reflected in Part VII.  
+    **Seriousness:** Fatal / serious.  
+    **Fix:** Resolve the contradiction. If a provenance clause suffices, update Part VII and give the construction.
+
+17. **Claim attacked:** Historical kinds can carry the artefact explanation.  
+    **Quote:** Part V: “(E) carries **no provenance condition**: any modelled candidate, including one whose transport is declared, can be assessed for account-hood, because a modeller must be able to assess an account without settling its history.” Part II: “A **historical kind** is a predicate on the history that produced an occurrence of a component.”  
+    **Why it fails:** Historical kinds are predicates on component histories, but (E) and the anchored grade are history-free. A provenance clause on a component cannot make an organization an account or supply the transport/contrast needed for the artefact explanation. If the explanation’s force is provenance, (E) does not represent it.  
+    **Seriousness:** Fatal to the claim of closability.  
+    **Fix:** Either add a provenance condition to the anchored grade or show the artefact explanation is an account without it.
+
+18. **Claim attacked:** A provenance clause on the target’s own components is enough to explain an apparent effect as a selection artefact.  
+    **Quote:** Part IV `Selected`: “a population \(\mathcal T\) … a variation operator … a survival condition … and **eliminated at least one member** that differed from \(t\) …”  
+    **Why it fails:** “Selected by the data-gathering, not by the population” requires contrasting at least two selection histories: the data-gathering selection and the population selection. A historical kind on the target’s component does not supply the population organization, the data-gathering selection witness, or a transport showing the effect follows from that selection.  
+    **Seriousness:** Serious.  
+    **Fix:** Construct both organizations/transports or define the provenance clause precisely and show it does explanatory work.
+
+19. **Claim attacked:** The artefact case is closable now.  
+    **Quote:** Part XV: “the construction is not written.”  
+    **Why it fails:** Attack (B) asks for a genuine explanation whose organization no transport can preserve. Until a construction is written, closability is a promissory note; the case remains open for necessity.  
+    **Seriousness:** Minor / serious.  
+    **Fix:** Write the construction.
+
+20. **Claim attacked:** “explanation by symmetry” is beyond present machinery.  
+    **Quote:** Part XV: “whose force is an entailment among the components of \(E\) that neither (F1), a per-component condition, nor (F2), an assembly condition, constrains; no construction exists here and none is known to follow from present machinery.” Part V gives (F2) as \(\pi[\operatorname{Sol}_D(a,b)]=\operatorname{Sol}_E(\tau(a),\sigma(b))\).  
+    **Why it fails:** (F2) is an assembly condition on the whole solution set. Any entailment among components that restricts solutions is constrained by \(\operatorname{Sol}_E\). The text asserts that (F2) does not constrain such entailments without argument.  
+    **Seriousness:** Serious.  
+    **Fix:** Give a concrete symmetry explanation and prove that no transport satisfies (F1)/(F2), or reclassify it as “no construction attempted,” not “beyond present machinery.”
+
+21. **Claim attacked:** Symmetry cannot be handled by declaring symmetry transformations as admitted edits.  
+    **Quote:** Part II: “\(A\) is a set of admitted edits, closed under a partial associative composition with identity \(1\).”  
+    **Why it fails:** If the symmetry group is a set of edits—permutations or relabelings—invariance under it is already in the signature (K). The document does not exclude this. So the claim that present machinery cannot constrain symmetry explanations is unsupported.  
+    **Seriousness:** Serious.  
+    **Fix:** Specify why symmetry explanations cannot be represented as admitted edits or component relations.
+
+22. **Claim attacked:** The four gaps are the right gaps.  
+    **Quote:** Gaps (i)–(iv).  
+    **Why it fails:** The list omits the carrier/content type error (Finding 5), the solution/content distinction (Finding 6), the admission relation (Finding 11), and exclusion reasons (Finding 10). It includes a non-gap about \(\rho_p\) (Finding 9) and a general module condition (Finding 12). So the gap list is neither complete nor clean.  
+    **Seriousness:** Serious.  
+    **Fix:** Rewrite the gap list around the type error, content individuation, admission relation, and contract composition; demote \(\rho_p\) and gap (iv) to assumptions or separate issues.
+
+23. **Claim attacked:** There is no condition separating a found question from a re-parameterisation.  
+    **Quote:** Part XV: “A condition that separates a found question from a re-parameterisation. The semantics has none.” Part X `Build`: “is not a composition of content-preserving transfers.”  
+    **Why it fails:** “Not a composition of content-preserving transfers” and “nontrivial binding construction” are precisely conditions that distinguish construction from re-parameterisation. The document contradicts itself.  
+    **Seriousness:** Serious.  
+    **Fix:** Reconcile the two passages. Either those clauses are not meant to separate worth, in which case say what work they do, or the claim that no condition exists is false.

@@ -1,0 +1,158 @@
+====================================================================================================
+D5_F3_invisible_law | atria | sample 0 | finish stop | 11998 chars | error None
+====================================================================================================
+## Verdict on F3
+
+**(a) is correct at the core; (b) is correct about how F3 is *reported*; (c) is not supported — with one real caveat about the success criteria.**
+
+The invisibility is not a quirk of the 6-cell world or of C's algorithm. For two indistinguishable things on a line, an elastic collision and a pass-through generate the *same multiset* of (position, velocity) at every future step, walls included — so no contract lacking thing-identity can separate them, even with velocity and full history. And §6's expressibility check confirms the rule *language* can express the crossing rule, so the barrier is the contract, not the grammar. That is a real result about contracts and kinds. But the "finding" as logged is a pre-run derivation filed where it could not fail, and the S3 carve-out means C is judged only against the visible half of the law.
+
+---
+
+## Findings
+
+**1. F3 was never an outcome; it was an amendment with no failure condition.**
+Design §9 lists "Findings either way" as F1 and F2 only. F3 is created inside §12 item 2: "pairs with a post-change crossing are reported separately as **F3 — the invisible law**, and are expected to fail M3 for A0+C while passing for A0 + hand-built rules." Results §9 then records "F3 ✓ (section 4)."
+*Claim attacked:* that F3 is a finding the experiment adjudicated.
+*Why it fails:* nothing F3 could have failed. If C had built the crossing rule, no sink would have fired; if it had not, none fires. A proposition with no pre-registered failure mode carries no evidential weight, and the "✓" is a category error.
+*Seriousness:* serious.
+*Fix:* either give F3 a sink (e.g., "if C builds any rule whose condition is true on crossing steps, Derivation 2's contract-relativity claim is mis-stated") or present it purely as a measurement with no checkmark.
+
+**2. The invisibility itself is a priori, not something the run established.**
+Design §12 item 2: "the constructor should build exactly the kinds its contract can see. … Had this not been written down now it would have looked like an excuse later." Results §1: "because crossings are invisible to sensation, exactly as written down before running."
+*Claim attacked:* that the run showed crossings are invisible.
+*Why it fails:* the invisibility was derived before any code ran; the run could only confirm it. Pre-registration here is purely defensive (it blocks the excuse reading) — it adds no information. The only empirical content of F3 is the M3 measurement.
+*Seriousness:* serious (epistemic status), not fatal.
+*Fix:* separate the two: state the invisibility as a lemma (see Finding 3), and report only the M3 counts as measurement.
+
+**3. The general lemma is asserted but never stated or proved.**
+Design §12 item 2 covers only "when two things meet head-on in adjacent cells." Results §4 generalises to "because crossings are invisible to sensation" across 230 pairs, including crossings adjacent to walls.
+*Claim attacked:* the claim that *all* crossings are invisible, in every configuration, forever.
+*Why it fails:* the adjacent head-on case is one instance; the reported scope is all 230 evaluation pairs. The covering fact is multiset-invariance for identical things under elastic collision and reflecting walls, which is true but absent from both files.
+*Seriousness:* serious for generality; the reported numbers cover only the evaluation half.
+*Fix:* state and prove the lemma, or verify it exhaustively on all 135 configurations × horizon 9 before invoking it.
+
+**4. S3's threshold was moved to exclude exactly the sub-class that fails, and the checkmark does not show the restriction.**
+Design §12 item 2: "S3's threshold applies to pairs with **no crossing after the change step**." Results §9: "✅ **S3 faithful** — 0.974 and 0.973 given bound on non-crossing pairs (threshold 0.9), from 0.000 for A0. Crossing pairs 0.000, as pre-registered under F3."
+*Claim attacked:* that S3 "faithful" means the built machinery is faithful to the world's collision law.
+*Why it fails:* the built rule set provably lacks the crossing clause — it is not the law the §6 expressibility check hand-built. "Faithful" here means faithful on the visible sub-class. The pre-registration makes the carve-out legitimate; the green checkmark makes it look like the machinery is the law.
+*Seriousness:* serious.
+*Fix:* restate S3 as "faithful on the contract-visible sub-class; provably unfaithful on the invisible sub-class," and put the restriction in the classification row, not a parenthetical.
+
+**5. The hand-built row is correct-by-construction, so the 1.000-vs-0.000 contrast is not a comparison of architectures.**
+Results §4: "A0 + hand-built pair … **1.000 (9)**," and the text "the hand-built crossing rule gets all 221 bound pairs."
+*Claim attacked:* that this row demonstrates something about the hand-built architecture.
+*Why it fails:* the hand-built crossing rule *is* the identity-preserving behaviour M3 tests for. Scoring 1.000 confirms the author implemented it; it cannot fail. The informative content is entirely on the A0+C side (0 of 221 bound pairs).
+*Seriousness:* minor-to-serious (framing).
+*Fix:* label the row "correct by construction under the identity-including contract" and make A0+C's 0/221 the headline number.
+
+**6. A sharper, checkable fact is omitted: C is not merely unable to build the crossing rule, it is actively penalized for it.**
+Design §5: C scores conditions by "(number of V states it is true on) − (number of N states it is true on)."
+*Claim attacked:* the reported explanation — "there are no defects from crossings" — is the whole story.
+*Why it fails:* the crossing condition `n_i == c_j AND n_j == c_i` is true exactly on crossing steps, and those steps are all in N (pass-through is sensorily correct there). Its condition score is therefore *negative*, and any action applied to those records would break them, giving negative net. C would reject the crossing rule if offered it. This is a much stronger statement of contract-relativity than "no defect," and it is directly verifiable from the frozen code.
+*Seriousness:* minor (omission), but it is the strongest available evidence for the (a) reading.
+*Fix:* run the diagnostic — offer C the crossing condition and report its score and net.
+
+**7. "Builds only what its contract can see" conflates two different limits.**
+Results §10, failure mode 4: "**Builds only what its contract can see.** No sensory defect, no rule: the crossing law is never built (F3)." Results §2: "1,266 defects remain; no condition–action pair has positive net; C stops."
+*Claim attacked:* that F3 illustrates the sole limit on what C builds.
+*Why it fails:* 1,266 residual defects are contract-*visible* and still unbuilt — because no compressible positive-net rule covers them. So the reachable set is limited by contract visibility *and* by compressibility. The "exactly" in "builds exactly the kinds its contract can see" is not established.
+*Seriousness:* serious for the general claim; minor for F3 per se.
+*Fix:* state the two limits separately and drop "exactly."
+
+**8. The design's stated rationale for the two-rule structure was falsified, and it is not flagged.**
+Design §4: "The world's collision law needs two rules in this language … That is deliberate: building it takes two rounds." Results §1: A0+C's one rule reaches 0.906 on collision steps, and the hand-built *pair* reaches the identical 0.906.
+*Claim attacked:* that the experiment's round structure (K = 3, multi-round construction) was testing the law's actual structure.
+*Why it fails:* at the sensory level one rule is complete; the second rule changes nothing observable. So "building it takes two rounds" was false for the contract being measured, and C stopping at one rule (F2) is not C falling short — it is the design's premise being wrong.
+*Seriousness:* minor-to-serious.
+*Fix:* record that the two-round premise held only for the identity-including contract, not the sensory one, and that phase 1 therefore tested single-rule construction.
+
+**9. The M3 table's parenthetical semantics are ambiguous, and failure mode 13's discard rate contradicts it.**
+Results §4 header: "Given-bound fractions (unbound = the predictor was not tracking both things exactly at step 2; shown as count)." Results §10, failure mode 13: "discards 2–18% of pairs in M3."
+*Claim attacked:* the reported fractions and the reported discard rate.
+*Why it fails:* if the parenthetical numbers are unbound counts (as the "221 bound pairs" text requires), then A0 alone's same-target column shows 99 unbound — roughly 40% of that column, not 2–18%. If they are denominators, several cells (e.g. 0.974 with 13) are non-integral. One of the two statements is wrong.
+*Seriousness:* minor, but it is a checkable arithmetic inconsistency in a headline table.
+*Fix:* publish per-column totals and per-cell pass counts, and restate failure mode 13's range.
+
+**10. The 0-vs-221 comparison may be over different pair sets.**
+Results §4: A0+C crossing column "0.000 (9)"; hand-built "1.000 (9)"; text: "all 221 bound pairs."
+*Claim attacked:* that the two rows are measured on the same pairs.
+*Why it fails:* both rows show 9 unbound, but nothing states it is the *same* 9. If binding failure correlates with crossing geometry, the contrast is mildly biased.
+*Seriousness:* cosmetic-to-minor.
+*Fix:* report the intersection set, or publish the per-pair pass/fail vector.
+
+**11. M3's finer contract is the world's own implementation ontology, which no agent in the experiment could access.**
+Design §7, M3: "bind slots to things at step 2 … check every slot tracks its thing's (position, velocity)." Design §9, out of scope: "the binding of sensation to slots is fixed."
+*Claim attacked:* that F3 exposes a gap the experiment's own machinery could register.
+*Why it fails:* M3's ground truth comes from the simulation's thing indices. So F3 measures the distance between the world's bookkeeping and the contract's kinds, verified by an observer holding the source code. That is a legitimate external measurement, but it is not a gap any fitness signal in the experiment could reward or penalize. Both files talk as though M3 were simply a stronger test; it is a change of ontology.
+*Seriousness:* minor, but it is the reason F3 reads as both interesting and slightly hollow.
+*Fix:* say explicitly that M3 is an out-of-contract measurement by an external observer, and that under the contract's own ontology the crossing clause is not a law of the contract's world at all.
+
+**12. The converse is untested, so the contract-relativity claim is one-sided.**
+Design §9, out of scope: "Constructing new **representations** (the binding of sensation to slots is fixed)."
+*Claim attacked:* results §10 failure mode 4's "kinds visible only at a finer contract are unreachable from sensory defects."
+*Why it fails:* the experiment shows the unreachable direction only. Whether giving C identity lets it build the crossing rule is deferred, so "the constructor builds exactly the kinds its contract can see" is supported as a limit, not as an equivalence.
+*Seriousness:* minor (the docs do not claim the converse — but the phrasing invites it).
+*Fix:* state that the converse is untested and is the required next experiment.
+
+---
+
+### On the (c) charge
+
+Not supported. The sensory contract is inherited, not chosen for this world (design §3: "same sensory field (occupancy, no identity, no velocity)"); the law was tuned for *expressibility* by the §6 check, which is what makes a world testable at all; the F3 expectation predates the run; and the file reports its own failures (M6(ii), the phase-2 confound, 19 failure modes) rather than hiding them. The real caveat is narrower than (c): the *success criteria* were shaped by the contract — S3's threshold excludes the sub-class where C's machinery is provably wrong — so C's "faithful" is faithfulness to the visible half. That is the theory's own point, and Finding 4 is the cost of it being made in a checkmark.
+====================================================================================================
+D5_F3_invisible_law | atria | sample 0 | finish stop | 9640 chars | error None
+====================================================================================================
+**Verdict: (b), with a defensible core of (a) that the documents never articulate, and (c) wrong as stated but right about two specific choices that do favour C.** The outcome was entailed by the defect definition, could not have come out otherwise, and is therefore a demonstration, not a test. The genuinely non-trivial version — contract-relative completeness ≠ world-relative correctness — is real but is also entailed here, and the world contains nothing for which the invisible law matters. And (c) fails as a charge about the *contract* (it is inherited from experiment 1, design §3: "same sensory field (occupancy, no identity, no velocity)") but lands as a charge about the *defect granularity* and the *S3 reclassification*.
+
+---
+
+**Finding 1 — S3's threshold was moved by the F3 pre-registration, and the move is load-bearing for the headline.**
+(1) Attacked: design §12 change 2 — "S3's threshold applies to pairs with **no crossing after the change step**; pairs with a post-change crossing are reported separately as F3" — and the results headline "Phase 1 held on every supporting outcome but one clause."
+(2) Why it fails: S3 as pre-registered in design §9 reads "M3 given-bound for A0+C ≥ 0.9 **on collision-containing pairs**." Crossing pairs are collision-containing. A0+C scores **0.000** on them (results §4). 0.000 < 0.9. S3 as written fails. Reclassifying the failing subset into "Findings either way" preserves a rewritten S3 and keeps the headline at "one clause," where the one clause is M6(ii). The goalpost is recorded and honestly flagged (results §10 item 12), but it is still moved and still load-bearing.
+(3) Serious.
+(4) Report S3 as failed-as-written and passed-as-rewritten, or delete S3's rationale "the built rules are components with the collision's signature, not a fix for the observed cases" — that rationale is exactly what falsifies on crossing pairs.
+
+**Finding 2 — F3's outcome was entailed by the defect definition; no run could have falsified it.**
+(1) Attacked: results §4 — "the constructor built exactly the kinds its sensory contract could see" — and design §12 change 2 — "C … is expected not to build the crossing rule, because there are no defects from crossings."
+(2) Why it fails: Given (i) V/N are defined by predicted-field vs true-field equality (design §5), and (ii) bounce and pass-through yield identical occupancy at every step (this is arithmetically correct for the only crossing case, adjacent head-on: n_i = c_j, n_j = c_i), a crossing is necessarily a *correct* prediction, so the crossing condition is necessarily absent from V and present in N. Given A0's default is pass-through kinematics and the built condition n_i == n_j is necessarily false at a crossing, the rule necessarily does not fire and binding necessarily diverges. Both halves of F3 — no rule, and 0.000 — were entailed before the run. Confirmation of an entailment is not evidence for the claim it illustrates.
+(3) Serious (as support for Derivation 2).
+(4) Move F3 from "Findings either way" to "consistency check," and state that Derivation 2's substantive content is untested here; or change the defect record to include velocity-state mismatch (see Finding 3) and show that C *then* builds the crossing rule — which converts the tautology into a real result about granularity.
+
+**Finding 3 — The defect granularity is a design choice, not a contract fact; the architecture already represents velocity.**
+(1) Attacked: design §5, "defect records V = {(slot state before the step, predicted field, true field)}," combined with design §4, "Terms: … `c_i, v_i, n_i, w_i`," and design §7 M3, "check every slot tracks its thing's (position, velocity)."
+(2) Why it fails: The architecture carries velocity internally; the rule language reads it; M3 grades on it. A crossing produces zero field error but a *velocity-state* error. So crossings are unobservable in the *field-level record*, not in the architecture. "No defects from crossings" is a property of the bookkeeping. M3 operates at exactly the granularity the constructor is denied, which is what makes C complete on M1/M2 and incomplete on M3.
+(3) Serious.
+(4) Define "defect" explicitly as field-level, say so is a choice, and run the velocity-level-defect variant. Without it, F3 cannot separate "contract limit" from "bookkeeping limit."
+
+**Finding 4 — Crossings are not unseen; they are recorded as *correct*, so C accumulates positive evidence for the wrong law.**
+(1) Attacked: design §12 change 2 — "the identity swap is invisible to sensation" — and results §10 item 4 — "No sensory defect, no rule."
+(2) Why it fails: At a crossing the prediction matches, so the state lands in **N**, not outside the data. The crossing condition (n_i == c_j AND n_j == c_i) is true on that N record and therefore contributes **−1** to its own score. C is not merely blind to crossings; it is actively penalized from inducing the condition that would handle them. "Invisible" understates a bias — the constructor is trained to treat pass-through as correct.
+(3) Serious.
+(4) Replace "invisible to sensation" with "recorded as correct, so the crossing condition scores negative." This also makes the velocity-level fix concrete: moving crossings from N to V makes the crossing condition score positive.
+
+**Finding 5 — "C's single rule reproduces the hand-built pair exactly" equivocates between the sensory level and the kind level.**
+(1) Attacked: results §1 — "C's single rule reproduces the hand-built pair exactly, because the crossing rule adds nothing at the sensory level."
+(2) Why it fails: It reproduces the pair's *sensory function*. On M3's identity contract the two differ maximally (0.000 vs 1.000 on crossing pairs). The world's law is elastic collision, comprising both same-target and crossing cases; C built a strict sub-kind. The sentence invites the reading that C recovered the world's law.
+(3) Serious (overclaim).
+(4) Write: "reproduces the hand-built pair's sensory predictions exactly, but not its collision kind — on crossing pairs the built rule does not fire and binding diverges (0.000 vs 1.000)."
+
+**Finding 6 — F3 has no demonstrated consequence: the invisible law is invisible to everything in the experiment except M3.**
+(1) Attacked: results §4 framing of F3 as revealing "what it could not" see; placement under "Findings either way" (design §9).
+(2) Why it fails: A0+C and A0+hand-built are identical on **every** M1 column (0.835 / 0.906 / 0.819). The world has no identity-dependent process — nothing downstream of a collision reads which thing is which. The divergence is real in the world's dynamics and inert in the experiment. So F3 cannot separate "a real property the contract cannot detect" from "an unobservable property is unobservable," and the (a) case collapses into (b).
+(3) Serious (interest overclaim).
+(4) Add a world process in which identity is load-bearing (a tagged thing later probed; a per-thing target) and show the divergence costs a measurable outcome — or state plainly that F3 is a limit without a consequence in this world.
+
+**Finding 7 — The pre-registration's evidential weight is overstated and its timing unverifiable.**
+(1) Attacked: design §12 change 2 — "A pre-registered expectation added after thinking the world through, **before any code ran**" — and the headline "the crack it exposed was pre-registered."
+(2) Why it fails: Changes 3 and 4 in the same list were made *after* seeing numbers ("As first coded…"; "The best G0 architecture on collision steps turned out to be the lookup table at 0.819"), so the list mixes pre- and post-result revisions; change 2's "before any code ran" is asserted, not evidenced. And the change's own stated purpose is presentational: "Had this not been written down now it would have looked like an excuse later." Pre-registering an entailment of one's own defect definition insulates a limitation rather than predicting one.
+(3) Minor (integrity of the claim, not the science).
+(4) Drop the claim that F3's pre-registration is evidentially weighty; the finding stands or falls on its logic, which is Finding 2's problem.
+
+**Finding 8 — The design's "two rounds" rationale is contradicted by the result, and the hand-built crossing rule is never stated.**
+(1) Attacked: design §4 — "The world's collision law needs two rules in this language … **That is deliberate: building it takes two rounds**" — versus results §2, "Round 2: 1,266 defects remain; no condition–action pair has positive net; C stops."
+(2) Why it fails: The deliberate two-round structure is never exercised; the second rule is unreachable, by Finding 2's entailment. The design reads as if C will build both laws. Separately, the hand-built "cross" rule that carries the entire F3 contrast is never written out in either file, so the reader cannot verify it is the world's law rather than an artifact.
+(3) Minor.
+(4) Reword the design's rationale to "expressing the full law takes two rules; the constructor can reach only the visible one," and print the hand-built crossing rule beside C's in results §7.
+
+**On (c) specifically:** the sensory contract was inherited, not chosen for C, and the collision world was chosen to be *pairwise* so G0 would be closed to it (design §3: "Nothing in G0 has one: every G0 slot updates independently") — a choice aimed at making G0 look bad, not C look good. But two choices do favour C and are the correct home for the suspicion: the field-level defect record (Finding 3), and the S3 reclassification (Finding 1). Together they make C complete and protected at the field level, with its one real incompleteness reclassified as a finding.

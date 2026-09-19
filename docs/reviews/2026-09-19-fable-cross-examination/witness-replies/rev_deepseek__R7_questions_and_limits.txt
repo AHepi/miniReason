@@ -1,0 +1,432 @@
+====================================================================================================
+R7_questions_and_limits | rev_deepseek | sample 0 | finish stop | 17859 chars | error None
+====================================================================================================
+**Findings**
+
+**1. The merit condition is not well-defined: it uses a counterfactual repair predicate that the document only defines for actual episodes and actual states.**
+Attacked passage (Part X): “the found question \(p'\) counts as found, rather than re-parameterised, only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P), with \(o\) failing at the state before \(e\).”
+Why it fails: (P) is defined in Part XI as
+\[
+\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\iff\exists o\in O[\neg o(\xi)\land o(\xi')]\land\forall r\in P[r(\xi)\Rightarrow r(\xi')]\land\operatorname{ProducedBy}(\Delta,\xi,\xi';O).
+\]
+This is a predicate of an actual episode \(\Delta\) and actual states \(\xi,\xi'\). At the moment a question is found, there is no account, no end state, and no episode producing the repair. “Would repair” is not defined. Worse, “deployable account” invokes Deploy, which by Part X requires (R), hence a selected or constructed transport. So the merit condition presupposes a construction history for the account in order to certify the construction history of the question.
+Severity: fatal for the claim that the merit condition can be evaluated at question-finding time.
+Fix: define a prospective predicate with explicit hypothetical episode, account, and end state, or replace the condition with an actual relation between the found question and independently specified obligations.
+
+**2. The merit condition is trivial under the document’s own declaration of obligation sets.**
+Attacked passage (Part XIV): “the obligation sets \(O,P,O_p\)” are listed among the “Declared parameters.”
+Attacked passage (Part X): the merit condition requires “there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P), with \(o\) failing at the state before \(e\).”
+Why it fails: Since \(O_p\) is declared with the question, the constructor of \(p'\) can declare \(o\) to be “there is a deployable account of \(p'\).” Before \(e\), that obligation fails because \(p'\) has not been found or answered. Any deployable account of \(p'\) repairs it. The condition is therefore self-certifying. If \(O\) is external, it can still be gerrymandered to include the answer to any answerable question. Nothing in the text forbids an obligation that is created by the same question-finding it is supposed to license.
+Severity: fatal. The merit condition fails to distinguish finding from relabelling.
+Fix: require the obligation \(o\) to be specified independently of \(p'\), present in the obligation set before \(p'\) is constructed, and not satisfiable merely by having any account of \(p'\).
+
+**3. The merit condition is too strong: it makes genuine question-finding parasitic on repairing a pre-existing failing obligation.**
+Attacked passage (Part X): same merit condition; and Part III: “a re-parameterisation of an old question that repairs no obligation is a constructed question and not a found one.”
+Why it fails: A genuinely found question can be valuable by opening a new line of inquiry, making a new obligation visible, changing the protected obligations \(P\), or making an intractable problem tractable. The condition demands that some obligation already be failing before \(e\) and that a deployable account of \(p'\) would repair it. That excludes question-finding whose value is not repair of an existing failure. It also excludes a question that is excellent but not yet answerable, since “deployable account” requires an account already in prospect.
+Severity: serious. It risks rejecting the very creative question-finding the document wants to represent.
+Fix: allow merit to include creation or transformation of obligations, or state a broader merit relation not tied to repair of a pre-existing failure.
+
+**4. Derivation 5 does not represent a question; it represents the space of questions, so New fails for any second question on the same target.**
+Attacked passage (Derivation 5): “one port \(u_{\mathcal Q}\) with domain the set of queries admissible on \(D\); one port \(u_S\) with domain the stated scopes and one \(u_K\) with domain the declared counterfactual sets with meanings. … Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning. Its solutions are exactly the coherently posed questions on \(D\).”
+Attacked passage (Part X): \(\operatorname{New}(s,c,h,e)\iff\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c.\)
+Why it fails: If \(D_p\) contains all admissible \(\mathcal Q\), \(S\), and \(K\) as editable values, then two different questions \(p\) and \(p'\) on the same target \(D\) share the same question-organization \(D_p\). If any prior question on \(D\) is already in the repertoire, its organization is \(D_p\). Then \(p'\) is not new under (N). The construction cannot represent a particular new question as a new content, because it abstracts away the parameters that distinguish questions. The consequence that “Finding the right question is a creative act on the same footing as answering one” fails at the New conjunct.
+Severity: fatal for Derivation 5’s consequence.
+Fix: either fix \(\mathcal Q,S,K\) as boundary conditions or commitments of a particular \(D_p\), so different questions have different organizations, or redefine content identity for questions so that the specific valuation and commitments are part of the content and not erased by \(\equiv_\ell\). But then edits altering \(\mathcal Q,S,K\) cannot be admitted edits of \(D_p\).
+
+**5. Derivation 5 omits \(O_p\), \(\rho_p\), and treats \(b_0\) as fixed, so its solutions cannot be the questions of Part III.**
+Attacked passage (Part III): \(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\).
+Attacked passage (Derivation 5): “Ports: one port \(u_{(a,b)}\) for each \((a,b)\in A\times B\) of the target … one port \(u_{\mathcal Q}\) … one port \(u_S\) … one \(u_K\) … Boundary: the target \(D\) and \(b_0\), held fixed.”
+Why it fails: \(O_p\) and \(\rho_p\) are part of the question tuple but no port represents them. The merit condition depends on \(O_p\), and provenance is \(\rho_p\). The construction fixes \(b_0\), so it cannot represent questions with a different baseline boundary. The claim “Its solutions are exactly the coherently posed questions on \(D\)” is false as stated.
+Severity: serious.
+Fix: add ports for \(O_p\) and \(\rho_p\), and either a port or an explicit parameter for \(b_0\), with components specifying how they enter the solution conditions.
+
+**6. “Add a pair to \(K\) with a meaning” is not a well-defined edit of an organization in the sense of Part II.**
+Attacked passage (Derivation 5): “Admitted edits: … add a pair to \(K\) with a meaning.”
+Attacked passage (Part III): “\(K\) is a declared set of **counterfactual edits** — pairs the module does not admit — each with a stated meaning.”
+Attacked passage (Part II): “\(A\) is a set of admitted edits, closed under a partial associative composition with identity \(1\). For each \(j\), edit \(a\), and boundary \(b\), the interpretation supplies \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\).”
+Why it fails: An edit must be an element of \(A\) with a specified effect on component relations. “Add a pair to \(K\) with a meaning” changes the question’s contract, i.e., a commitment of the content, not a relation among \(D_p\)’s ports. The “meaning” is not a value in any domain specified in Derivation 5; Part XIV lists “the counterfactual set \(K\) with meanings” as a declared parameter. Moreover, \(K\) pairs are by definition not in \(A\times B\), so they have no \(u_{(a,b)}\) port. At best this is an edit to \(u_K\)’s value, but then the closure conditions and the claim that solutions are questions are not established.
+Severity: serious.
+Fix: define the domain of \(u_K\) precisely (e.g., finite sets of pairs with formal annotations), define the edit as setting that port, and show how the meaning enters the component relations; or remove it from the admitted edits and treat it as a change of content.
+
+**7. Derivation 5 does not enforce the coherence condition it claims to capture.**
+Attacked passage (Derivation 5): “Components: the closure conditions — the baseline port reads ‘in’; if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined; \(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III. … Its solutions are exactly the coherently posed questions on \(D\).”
+Attacked passage (Part III): “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other’s complements as stated.”
+Why it fails: The stated components check only closure of “in” ports and some consistency of \(S\) and \(K\). They do not check \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\) — that is a property of the fixed boundary \(D\), not a component — and do not check that \(\mathcal Q\) is defined on every pair in \(C\). The “exactly” claim is unproven and false as stated.
+Severity: serious.
+Fix: add explicit components for the coherence conditions, including a component that evaluates \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\) and the domain condition on \(\mathcal Q\), or weaken the claim to “subsets of questions satisfying the stated closure conditions.”
+
+**8. The edit set of \(D_p\) conflates the question with the space of questions and is under-specified.**
+Attacked passage (Derivation 5): “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning.”
+Attacked passage (Part III): “An assessment is an event at a fixed \((C,\mathcal Q)\); any change to either ends that assessment and begins another, and the record must show the boundary.”
+Why it fails: If altering \(\mathcal Q\) or \(S\) is an admitted edit of \(D_p\), then \(D_p\) can transition between what Part III calls different questions within one organization. Then \(D_p\) is not the organization of a question; it is the organization of a question-space. The provenance \(\rho_p\) is supposed to attach to the whole tuple \(p\), but \(D_p\)’s edits change that tuple. The text never says how an edit to \(u_{\mathcal Q}\) translates into a change in the answer profile or component relations of \(D_p\).
+Severity: serious.
+Fix: separate the question-space organization from the question content, or make \(\mathcal Q,S,K\) boundary conditions fixed for a given \(D_p\) and treat changes to them as changes of content, not admitted edits.
+
+**9. Part III attaches a provenance to questions “with the witness required by Part IV,” but Part IV defines witnesses only for transports.**
+Attacked passage (Part III): “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\) attaches to the whole tuple \(p\), not to its contract alone, with the witness required by Part IV.”
+Attacked passage (Part IV): “\(\operatorname{Sel}(t;\mathcal T,\mu,H,\Sigma_h)\) holds when …” and “\(\operatorname{Con}(t;h,e)\) holds when …”
+Why it fails: Part IV defines selection and construction only for a transport \(t\). There is no \(\operatorname{Sel}(p)\) or \(\operatorname{Con}(p)\). Derivation 5 later tries to make the question-organization a content, but it does not define how a question is selected or constructed. The phrase “with the witness required by Part IV” is a category mistake.
+Severity: serious.
+Fix: define selection and construction predicates for questions directly, or show how a question’s provenance is the provenance of a transport to or from its question-organization.
+
+**10. The stated limit on new dimensions is not a limit of the semantics if \(\operatorname{Inst}\) plus a new grain can cover it; it is a limit on the physical module.**
+Attacked passage (Part X): “The invention of a new dimension of variation — a port the target organization did not have, a respect in which nothing was previously varied — is not a question found in the sense above, because the question-organization of Derivation 5 is built over an existing \(A\times B\). It is a change to the target organization itself, and this document has no witness for it.”
+Attacked passage (Part IV): “one occurrence may instantiate several organizations at one grain (a mechanical one, a thermodynamic one, a computational one), and nothing here assumes uniqueness.”
+Attacked passage (Part II): “Claims can be rescued by moving to a grain only if the new grain is admissible, and the move is a new claim at a new index.”
+Why it fails: If the physical module’s \(\operatorname{Inst}_\ell\) supplies an organization with the new port at some admissible grain, then the new dimension is already in the primitive. The system can move to that grain and build a new \(D_p\) over the new target’s \(A\times B\) using Derivation 5. The document’s machinery covers that. The limit only applies when no admissible \(\operatorname{Inst}\) supplies the port. But then the limit is a limit on the physical module’s decomposition oracle, not on the semantics’ concept creation. The document mislocates the limit.
+Severity: serious.
+Fix: state the limit as “the semantics cannot create a physical decomposition not supplied by \(\Theta\)” rather than “the semantics cannot represent invention of a new dimension”; or specify an additional condition forbidding rescue by \(\operatorname{Inst}\) and grain change.
+
+**11. The four open cases in Part XV are inconsistently classified: some can be closed with the document’s existing resources, while one cannot.**
+Attacked passage (Part XV): “Four cases are open … (i) elimination of a physically impossible rival, handled only through a declared counterfactual set whose meaning is stipulated; (ii) explanation by symmetry, whose force is an entailment among the components of \(E\) that neither (F1) nor (F2) constrains, with no construction here; (iii) explanation of an apparent effect as a selection artefact, which needs two targets and has no construction here; (iv) mathematical explanation, which falls under a declared admission relation and not under the physical quantifier of this attack.”
+
+- **(i) Impossibility: partially closable.** Part VII already says: “what such an account establishes about the world is that no admitted change produces the effect.” That is an account on \(C_{\mathrm{adm}}\). The \(K\)-set is needed only to name the rival’s structure. If the impossibility is a fact about \(A_\Theta\), the document has the resources. The open part is only the stipulated meaning of \(K\).
+- **(ii) Symmetry: potentially closable.** Part II admits any alteration as an edit. A symmetry operation can be an admitted edit. Then (F1) requires each component’s relation under that edit to match its anchor, and (F2) requires the assembled organization to match. If the explanatory force is invariance under that edit, the existing conditions do constrain it. The claim that “neither (F1) nor (F2) constrains” is not established.
+- **(iii) Selection artefact: not closable with the current machinery.** Part V defines \(\operatorname{Account}(E,p,t,\Gamma)\) with a single target \(D\) and a single transport \(t:D\to E\). An artefact explanation needs a data organization and a population organization, and a transport for each. The document has no multi-target account or product-target construction.
+- **(iv) Mathematics: already closable for the example.** Part VII gives an account under a declared admission relation: “The expansion is an account at that contract.” Part III explicitly permits a declared admission relation for mathematical organizations. The only open part is that the admission relation is declared, which is a parameter, not a missing construction.
+
+Severity: serious. The document’s own list of open cases is inconsistent with its own treatments.
+Fix: either remove (i), (ii), and (iv) from the open list if they are closable, or state precisely what additional condition fails in each; for (iii), add a formal multi-target or product-target account before claiming it is merely open.
+
+**Direct answers to the four questions**
+
+- **Is the merit condition trivial or too strong?** It is both. It is trivial because \(O_p\) is a declared parameter and can be gerrymandered to make any account of \(p'\) a repair. It is too strong because it requires a pre-existing failing obligation and a deployable account already in prospect, excluding genuine question-finding that creates or transforms obligations. It is also ill-defined because “would repair under (P)” is not defined for a future account.
+- **Does the question-organization’s edit set admit exactly the changes needed?** No. It omits \(O_p\) and \(\rho_p\), fixes \(b_0\), does not enforce coherence, and conflates edits to \(\mathcal Q,S,K\) with edits of a single question. “Add a pair to \(K\) with a meaning” is not a well-defined edit in the sense of Part II; it is at best a change to a port value whose semantics and effect on \(L_j\) are unspecified.
+- **Is the stated limit on concept creation actually a limit?** Not as stated. If \(\operatorname{Inst}\) plus an admissible new grain supplies an organization with the new port, the document’s existing machinery can build a new \(D_p\) for that organization. The limit is only on dimensions not supplied by the physical module, which is a limit on \(\Theta\), not on the semantics’ concept creation.
+- **Which of the four open cases could be closed with what the document already has?** (i) Impossibility is partially closable for the physically grounded case; (ii) symmetry is potentially closable by treating symmetry as an admitted edit; (iv) mathematics is already closable under a declared admission relation. (iii) selection artefact cannot be closed without adding a multi-target account; the current \(\operatorname{Account}\) is single-target.
+====================================================================================================
+R7_questions_and_limits | rev_deepseek | sample 1 | finish stop | 31094 chars | error None
+====================================================================================================
+I attack the four requested areas. All quotations are from the supplied document.
+
+## A. The merit condition in Part X
+
+**1. The obligation set is ambiguous between \(O\) and \(O_p\), and this changes the condition from substantive to trivial.**
+- **Claim attacked:** “the found question \(p'\) counts as found, rather than re-parameterised, only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P), with \(o\) failing at the state before \(e\).”
+- **Why it fails:** Part III defines a question \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\) with its own obligation set \(O_p\). Part X’s attempted definition of origin for questions says “some obligation in \(O_p\) fails at the state before \(e\).” The merit condition then switches to \(o\in O\), which in Part XI is the global claimed-obligation set used by \(\operatorname{Repair}_{O,P}\). If \(O\) is global, then a new question can count as found because it would repair *any* claimed obligation anywhere, not because it addresses the obligations of *this* question. If it should be \(O_{p'}\), the text is inconsistent.
+- **Seriousness:** serious.
+- **Fix:** State exactly which obligation set is used: \(O_{p'}\), \(O_p\), or a pre-existing fixed \(O\). Require the obligation to be one the question is addressed to, not any obligation in the global set.
+
+**2. The merit condition is trivially satisfiable by declaring the obligation set to fit the question.**
+- **Claim attacked:** “This is the only merit condition in the semantics, and it is stated so that a random new contract does not count.”
+- **Why it fails:** \(O\), \(P\), and \(O_p\) are declared parameters (Part XIV: “the obligation sets \(O,P,O_p\)”). Nothing in the merit condition requires the obligation to be fixed before the question is constructed, independently recognized, or not itself introduced with the new question. If a modeller can declare \(O_{p'}\) to contain an obligation that a deployable account of \(p'\) would repair, then every constructed question can satisfy the merit condition by carrying its own justifying obligation.
+- **Seriousness:** serious, bordering on fatal for the claimed line between finding and re-parameterising.
+- **Fix:** Require the obligation to be drawn from a set fixed before the episode, as Part XII does for \(J_p\) in \(\operatorname{CanAdv}\): “specified by a record fixed before the candidate is assessed.” Add an independence condition on \(O\).
+
+**3. “Would repair \(o\) under (P)” is ill-typed: (P) requires an episode, states, and a produced change that the merit condition does not supply.**
+- **Claim attacked:** “a deployable account of \(p'\) would repair \(o\) under (P)…”
+- **Why it fails:** \(\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\) is defined only relative to an episode \(\Delta\), start and end states \(\xi,\xi'\), and \(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\), which requires every change of obligation value to lie on an active route from occurrences of \(\Delta\). The merit condition mentions only \(p'\), \(o\), and \(e\). There is no \(\Delta\), no \(\xi,\xi'\), no produced change, and no active route. “Would repair” is therefore undefined.
+- **Seriousness:** serious.
+- **Fix:** Either define a separate counterfactual merit predicate with explicit states and possible account, or require the subsequent episode to satisfy (P) and make the merit condition prospective.
+
+**4. The merit condition is too strong: it demands a deployable account of \(p'\) at the moment the question is found.**
+- **Claim attacked:** “a deployable account of \(p'\) would repair \(o\) under (P)…”
+- **Why it fails:** \(\operatorname{Deploy}_{\beta,\ell}(s,c,\xi;U)\) is state-indexed: “\(s\) at \(\xi\) holds a representation of \(c\) — by (R), a faithful transport with selected or constructed provenance.” A question can be found before any account of it exists. Requiring a deployable account of \(p'\) conflates the merit of the question with the merit of an answer, and may make genuine question-finding fail the condition simply because the answer has not yet been built.
+- **Seriousness:** serious.
+- **Fix:** Require that a deployable account of \(p'\) *would*, if built, repair \(o\), not that such an account is already deployable at the finding episode.
+
+**5. The condition allows a constructed question to include the very obligation it repairs.**
+- **Claim attacked:** “only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\)… with \(o\) failing at the state before \(e\).”
+- **Why it fails:** If \(p'\) is constructed, its tuple includes \(O_{p'}\). Nothing prevents the construction from introducing a new obligation \(o\) into \(O_{p'}\) and then claiming that an account of \(p'\) repairs it. The condition says the obligation fails before \(e\), but if \(o\) is introduced with \(p'\) at \(e\), it did not exist before \(e\).
+- **Seriousness:** serious.
+- **Fix:** Require \(o\) to be in the obligation set of the system at the pre-\(e\) state, not in the newly constructed question’s own \(O_{p'}\).
+
+**6. The merit condition is not the “only merit condition” in the semantics, even for questions, because (P) itself is a merit condition for episodes.**
+- **Claim attacked:** “This is the only merit condition in the semantics…”
+- **Why it fails:** Part XI defines \(\operatorname{Repair}_{O,P}\) as a condition on episodes, and \(\operatorname{CreateEK}\) requires it. That is a merit condition on epistemic repair, whether or not it is called one. The sentence overstates the isolation of the question merit condition.
+- **Seriousness:** minor/cosmetic.
+- **Fix:** Say “the only merit condition for found questions” rather than “in the semantics.”
+
+## B. Derivation 5’s question-organization and its edit set
+
+**7. Derivation 5’s construction is not an organization in the sense of (O) because it never supplies the component relations \(L_j(a,b)\).**
+- **Claim attacked:** “A question \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\) determines an organization \(D_p\) in the sense of (O)… Its solutions are exactly the coherently posed questions on \(D\).”
+- **Why it fails:** (O) requires a set of components \(J\), footprints \(V_j\), and for each edit \(a\) and boundary \(b\), an interpretation \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\). Derivation 5 gives ports and informal “closure conditions” but never gives the \(L_j(a,b)\) relations for its admitted edits. Without those, “solutions are exactly…” is unsupported.
+- **Seriousness:** serious.
+- **Fix:** Write out the components and their \(L_j(a,b)\) relations explicitly, or prove that the informal closure conditions determine them uniquely.
+
+**8. Part X’s “content may be … a question” contradicts Part IV’s definition of content as an organization.**
+- **Claim attacked:** “The content \(c\) may be an organization, a transport, or a question.”
+- **Why it fails:** Part IV says: “A **content** is an organization together with its contract-relative commitments.” (R) is typed \(t:c\to D\), requiring \(c\) to be an organization with ports, domains, components, and admitted edits. If \(c\) is a question or a transport, \(X_c\) and \(C_c\) are undefined. Derivation 5 tries to repair this by making \(D_p\) an organization, but then either the content is \(D_p\) and not the question \(p\), or the transport is ill-typed.
+- **Seriousness:** serious.
+- **Fix:** Define a single content type as organizations, with questions and transports represented by their associated organizations. Or extend (R) to non-organizational contents with explicit domains and contracts.
+
+**9. The construction witness for a new question is circular: the target must be instantiated before \(e\), but if the target is the new question, that contradicts novelty.**
+- **Claim attacked:** “\(\operatorname{Con}(t;h,e)\) holds when there is an episode … whose construction witness prepares \(t\), and in which the organization \(t\) targets is instantiated by an occurrence in the episode’s history before \(e\).” Combined with “When it is a question, the originative act is the finding of a question…”
+- **Why it fails:** For \(t:c\to D\), the organization \(t\) targets is \(c\), the content. If \(c\) is the new question \(p'\), then \(p'\) must be instantiated before the variation \(e\). But \(p'\) is supposed to be new. If instead the target instantiated before \(e\) is the subject-matter organization \(D\), then the construction witness is for an organization about \(D\), not for the new question itself. The document never resolves this.
+- **Seriousness:** serious.
+- **Fix:** State explicitly that for question-finding, the target instantiated before \(e\) is the subject-matter organization \(D\), and explain why the constructed content is the question-organization rather than merely a new contract over \(D\).
+
+**10. The edit set omits \(b_0\), \(O_p\), \(\rho_p\), removal or alteration of \(K\), and reasons for \(S\).**
+- **Claim attacked:** “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning. Its solutions are exactly the coherently posed questions on \(D\).”
+- **Why it fails:** A question tuple is \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\). Derivation 5 has ports for target, \(\mathcal Q\), \(S\), and \(K\), but not for \(b_0\), \(O_p\), or \(\rho_p\). It fixes \(b_0\) as “Boundary: the target \(D\) and \(b_0\), held fixed.” It allows adding to \(K\) but not removing from \(K\) or altering a meaning. Part III requires that \(S\) record “the reason for each exclusion,” but the edit “alter \(S\)” does not say it alters the recorded reasons. Therefore it does not generate all coherently posed questions.
+- **Seriousness:** serious.
+- **Fix:** Include ports and edits for \(b_0\), \(O_p\), and the provenance record; allow removal and meaning-revision in \(K\); require edits to \(S\) to carry reasons.
+
+**11. The closure condition “if the composite is in, its factors are in” is an extra axiom not present in Part III and it restricts the represented contracts.**
+- **Claim attacked:** “if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined.”
+- **Why it fails:** Part III defines \(C=(C_{\mathrm{adm}}\cap S)\cup K\) as an arbitrary stated scope plus counterfactuals. It does not require that if a composite edit is in the contract, its factors are also in the contract. Derivation 5’s condition excludes legitimate contracts where someone asks about a composite change but not its factors.
+- **Seriousness:** serious.
+- **Fix:** Either justify the closure condition from the definition of \(A\) or remove it. If it is intended, it must appear in Part III as a condition on contracts.
+
+**12. “Toggle a pair” is ill-formed with respect to \(C=(C_{\mathrm{adm}}\cap S)\cup K\) and the requirement that every \(K\)-pair have a stated meaning.**
+- **Claim attacked:** “Admitted edits: toggle a pair; alter \(S\); add a pair to \(K\) with a meaning.”
+- **Why it fails:** An admitted pair \((a,b)\in C_{\mathrm{adm}}\) can be included or excluded only through \(S\). A counterfactual pair must be in \(K\) with a meaning. “Toggling a pair” does not say whether it edits \(S\) for admitted pairs, whether it adds or removes a \(K\)-pair, or how it supplies the required meaning. Toggling a \(K\)-pair without a meaning violates Part III.
+- **Seriousness:** serious.
+- **Fix:** Define separate edits: add/remove an admitted pair to/from \(S\) with a reason; add/remove a counterfactual pair to/from \(K\) with a meaning.
+
+**13. “Add a pair to \(K\) with a meaning” is not an edit in the sense of Part II.**
+- **Claim attacked:** “Admitted edits: … add a pair to \(K\) with a meaning.”
+- **Why it fails:** Part II defines an edit \(a\) by its interpretation \(L_j(a,b)\) for each component \(j\) and boundary \(b\). It varies component relations under boundaries. “Adding a pair to \(K\) with a meaning” changes the represented question’s declared counterfactual set and its semantic annotation. That is a meta-level operation. Derivation 5 supplies no \(L_j(a,b)\) for it, no composition rule, and no statement that the physical module licenses it. If \(D_p\) is physical, \(A_\Theta\) must admit it; if mathematical, it must be in the declared admission relation.
+- **Seriousness:** serious.
+- **Fix:** Either make \(D_p\) a mathematical organization whose declared admission relation explicitly includes these meta-edits, with their \(L_j\), or define a separate meta-edit algebra and say how it composes.
+
+**14. There is no removal from \(K\), while \(S\) can be altered, so the edit set is asymmetrical and cannot represent correcting a counterfactual.**
+- **Claim attacked:** “alter \(S\); add a pair to \(K\) with a meaning.”
+- **Why it fails:** A question can drop a counterfactual or correct its meaning. The edit set allows addition to \(K\) but not removal or alteration. This is not justified by the formalism and makes the question-organization unable to represent a whole class of question changes.
+- **Seriousness:** minor/serious.
+- **Fix:** Allow removal and alteration of \(K\)-pairs and their meanings, with the same consistency conditions as \(S\).
+
+**15. “Alter \(\mathcal Q\)” conflates the object-level query with a meta-level edit on the question-organization.**
+- **Claim attacked:** “Admitted edits: … alter \(\mathcal Q\)…”
+- **Why it fails:** \(\mathcal Q\) is part of the question tuple \(p\), an object-level operation on the target \(D\). The admitted edits of \(D_p\) are meta-level operations on the representation of \(p\). The notation does not distinguish \(A_D\) from \(A_{D_p}\). The same problem occurs for “alter \(S\)” and “add to \(K\).”
+- **Seriousness:** serious.
+- **Fix:** Explicitly separate object-level \(A_D\times B_D\) from meta-level \(A_{D_p}\) and state which predicates quantify over which.
+
+**16. “Its solutions are exactly the coherently posed questions on \(D\)” is false: the construction does not encode the other coherent-posing conditions.**
+- **Claim attacked:** “Its solutions are exactly the coherently posed questions on \(D\).”
+- **Why it fails:** Part III defines coherently posed as requiring \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) defined on every pair in \(C\), and \(S\) and \(K\) disjoint from each other’s complements as stated. Derivation 5 has only a baseline port reading “in” and a vague “\(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.” It does not encode nonemptiness of \(\operatorname{Sol}_D(1,b_0)\), definedness of \(\mathcal Q\) on all of \(C\), or the exact disjointness conditions.
+- **Seriousness:** serious.
+- **Fix:** Add components enforcing each condition, or weaken the claim to “a subset of coherently posed questions whose remaining conditions must be checked separately.”
+
+**17. The nontrivial binding condition in Part X is not satisfied for the question-organization as constructed.**
+- **Claim attacked:** “A **binding** is an assignment \(\lambda(k)\) of a component of the built organization to a subnetwork of its target; a binding construction is **nontrivial** when the binding is neither a relabelling … nor obtainable from the incoming carriers by \(\equiv_\ell\); it is **required for the use** when deleting the binding breaks (F1) or (A) for \(c\).”
+- **Why it fails:** Derivation 5 builds \(D_p\) from ports and closure conditions, but never says what the target of \(D_p\) is, what its components are anchored to, or which binding is nontrivial. If the target is \(D\), the components of \(D_p\) are closure conditions over the question tuple, not components about \(D\), so there is no obvious \(\lambda(k)\subseteq D\). If the target is \(p\), then the circularity of Finding 9 applies. Therefore the construction may not satisfy \(\operatorname{Build}\).
+- **Seriousness:** serious.
+- **Fix:** Define the target of a question-organization and its bindings, or exempt question-construction from the nontrivial binding requirement with a separate witness.
+
+**18. If \(K\) can introduce structure outside \(A\times B\), Derivation 5 has no port for it; if it cannot, Part III overclaims what \(K\) can do.**
+- **Claim attacked:** Part III: “\(K\) is how a question can ask about a structure that is not a possibility at all.” Derivation 5: “one port \(u_{(a,b)}\) for each \((a,b)\in A\times B\) of the target.”
+- **Why it fails:** If a “structure that is not a possibility at all” requires a new port or a new edit not in \(A\times B\), then the question-organization has no port \(u_{(a,b)}\) for it and cannot represent the question. If \(K\) is restricted to \(A\times B\), then it cannot represent a structure that requires a new dimension, contradicting Part III’s claim about \(K\).
+- **Seriousness:** serious.
+- **Fix:** State whether \(K\subseteq A\times B\) or whether \(K\) can extend the target’s ports. If the latter, extend Derivation 5’s port set accordingly. If the former, weaken Part III.
+
+**19. \(b_0\) is held fixed, but \(b_0\) is part of the question tuple, so the construction cannot represent questions with different baselines.**
+- **Claim attacked:** “Boundary: the target \(D\) and \(b_0\), held fixed.”
+- **Why it fails:** A question is \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\). Fixing \(b_0\) as a boundary means the question-organization can only represent questions with that baseline. But baseline choice is part of question formulation. The claim that it represents coherently posed questions on \(D\) is therefore too broad.
+- **Seriousness:** serious.
+- **Fix:** Make \(b_0\) a port and include an edit for changing it, with the coherence condition \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\).
+
+## C. The stated limit on concept creation
+
+**20. The stated limit directly contradicts the constitutive conjecture’s “fully characterized” claim.**
+- **Claim attacked:** Part 0: “The **constitutive conjecture** is this: explanatory creativity is fully characterized by (i) organizations and the changes they admit, (ii) transports … (iii) the provenance … and (iv) their physical realization.” Part X: “The invention of a new dimension of variation … is not a question found in the sense above … this document has no witness for it.”
+- **Why it fails:** If inventing a new dimension of variation is an explanatory achievement, then by Part 0’s own criterion it “counts against the conjecture.” The document simultaneously says the conjecture fully characterizes explanatory creativity and that a recognized form of creativity is not represented. That is an internal contradiction unless “fully characterized” is weakened or the new-dimension case is shown not to be an explanatory achievement.
+- **Seriousness:** fatal for the constitutive conjecture as stated.
+- **Fix:** Either weaken the constitutive conjecture to exclude invention of new dimensions, or show how such invention is represented by organizations, transports, provenance, and physical realization (for example, as construction of a new target organization or a new grain). The document cannot both claim full characterization and concede this limit.
+
+**21. The limit may be partly covered already by \(\operatorname{Inst}\) plus a new admissible grain.**
+- **Claim attacked:** “The invention of a new dimension of variation — a port the target organization did not have … is not a question found in the sense above, because the question-organization of Derivation 5 is built over an existing \(A\times B\).”
+- **Why it fails:** Part IV says: “one occurrence may instantiate several organizations at one grain” and “A grain is **admissible** for an occurrence \(o\) when the physical module licenses an organization at that grain … and every component of that organization has a signature that some physically admitted edit realizes.” If the new port corresponds to a physically admitted edit, the module can license a new organization \(D'\) at a new grain \(\ell'\) with that port. Derivation 5 can then be run over \(D'\) with its \(A'\times B'\). What is missing is not representation of the new dimension as a question, but a witness for choosing or constructing the grain. The document declares grains as parameters, so it has no witness for that choice.
+- **Seriousness:** serious.
+- **Fix:** Distinguish: (a) new port physically admitted and licensed at a new grain — covered by \(\operatorname{Inst}\) plus a new question-organization; (b) new port not admitted by the module — see Finding 22; (c) new grain not licensed — a real limit. State which one the limit is about.
+
+**22. If the new dimension is not admitted, \(K\) may already cover it as a counterfactual, depending on the scope of \(K\).**
+- **Claim attacked:** “this document has no witness for it” combined with Part III: “\(K\) is how a question can ask about a structure that is not a possibility at all.”
+- **Why it fails:** If a new dimension of variation is not physically admitted, then an edit introducing it is a counterfactual edit. Part III permits \(K\) to contain pairs the module does not admit, each with a stated meaning, precisely for structures that are not possibilities. Derivation 5 permits “add a pair to \(K\) with a meaning.” So if \(K\) can carry the new dimension, the document already has a representation of the question about it. The stated limit is inconsistent with Part III/Derivation 5 unless \(K\) is restricted to existing ports.
+- **Seriousness:** serious.
+- **Fix:** State explicitly whether \(K\)-pairs are restricted to the existing \(A\times B\). If yes, Part III overclaims. If no, Part X/XV underclaim the reach of \(K\).
+
+**23. If the new dimension is physically admitted but omitted from \(D\), \(\operatorname{Build}\) may already cover constructing a new target organization \(D'\) as content.**
+- **Claim attacked:** “It is a change to the target organization itself, and this document has no witness for it.”
+- **Why it fails:** Part X says: “The content \(c\) may be an organization, a transport, or a question.” A new target organization \(D'\) with the new port is an organization. \(\operatorname{Build}\) can in principle construct an organization for explanatory use of \(c\), with a nontrivial binding construction. The document does not show why constructing \(D'\) fails \(\operatorname{Build}\). The limit is then only that the act is not classified as *question-finding*; it may still be represented as construction of an organization.
+- **Seriousness:** serious.
+- **Fix:** Clarify that \(\operatorname{Build}\) can represent constructing the new target organization, and that the limit is only on classifying the act as finding a question. Or show why such construction fails \(\operatorname{Build}\).
+
+**24. The claim “this document has no witness for it” is asserted, not proved.**
+- **Claim attacked:** “this document has no witness for it.”
+- **Why it fails:** The document gives no argument that any construction witness for a new dimension must fail \(\operatorname{Build}\) or \(\operatorname{Con}\). It does not consider, for example, the binding of a new explanatory component to a newly admitted subnetwork of the target. Until such cases are ruled out, the limit is a stipulation.
+- **Seriousness:** serious.
+- **Fix:** Prove that invention of a new dimension either lacks a target instantiated before variation, is a relabelling, or fails the discrimination requirement. Otherwise state that the limit is a concession, not a theorem.
+
+## D. The four open cases in Part XV
+
+**25. Case (i), impossibility: the admitted-rival subcase is already handled; the physically impossible-rival subcase cannot be closed without either accepting scoped counterfactuals as sufficient or adding a physical impossibility predicate.**
+- **Claim attacked:** “elimination of a physically impossible rival, handled only through a declared counterfactual set whose meaning is stipulated.”
+- **Why it fails:** Part VII already handles the case “Where the introducing edit is admitted, an account is faithful when introducing those components changes the answer in \(E\) as it does in \(D\), and their absence leaves both unchanged… the anchor is proper because the deleted subnetwork is not the whole target.” That is the admitted-rival case. For the physically impossible rival, the introducing edit is not admitted, so it goes to \(K\), and the document itself says “what it establishes about the impossibility is relative to the stated meaning of the counterfactual.” Thus the open case is only the non-admitted case, and it remains open if “why impossible?” demands more than “no admitted change produces the effect.”
+- **Seriousness:** serious.
+- **Fix:** Either declare the scoped \(K\)-treatment sufficient for the class and remove the case from the open list, or add a condition on \(K\)-meanings that makes the impossibility claim non-arbitrary. Existing tools do not supply the latter.
+
+**26. Case (ii), symmetry: the document overstates the gap, but the specific “entailment among components” is still not constrained.**
+- **Claim attacked:** “explanation by symmetry, whose force is an entailment among the components of \(E\) that neither (F1) nor (F2) constrains.”
+- **Why it fails:** (F2) is not merely an assembly condition; it equates \(\pi[\operatorname{Sol}_D(a,b)]\) with \(\operatorname{Sol}_E(\tau(a),\sigma(b))\). If the symmetry is an admitted edit in \(C\), then (F1) for each component under that edit constrains its signature, and (F2) constrains the assembled solution set under the symmetry edit. Some symmetry explanations may therefore already be accounts. What (F1) and (F2) do not constrain is a meta-level entailment among components that is not itself represented as a component relation with an anchor. The document conflates these two.
+- **Seriousness:** serious.
+- **Fix:** Distinguish symmetry as an admitted edit (partly covered by (F1)/(F2)) from symmetry as an internal entailment among components (not covered). If the latter is the open case, add a condition relating signatures to each other or representing the entailment as a component with an anchor.
+
+**27. Case (iii), artefact: “needs two targets” is not forced; the real gap is that (E) has no provenance condition, so a selection-artefact explanation cannot be captured by Account alone.**
+- **Claim attacked:** “explanation of an apparent effect as a selection artefact, which needs two targets (the data organization and the population organization) and a transport for each.”
+- **Why it fails:** Part II allows an organization to contain multiple subnetworks. One could define a composite target \(D\) with a data subnetwork and a population subnetwork and one transport \(D\to E\). The claim that two targets are needed is not a consequence of the formalism. The actual gap is that an artefact explanation’s force is historical/causal: the data are biased because of a selection history. \(\operatorname{Account}(E,p)\) explicitly “carries no provenance condition.” Even a composite target would not capture the selection provenance unless a provenance-sensitive condition is added.
+- **Seriousness:** serious.
+- **Fix:** Identify the missing condition: a provenance-sensitive account condition for selection artefacts, or a requirement that the population’s selection history be represented in the transport. The number of targets is a red herring.
+
+**28. Case (iv), mathematics: the case is already closed for the class as defined, but only by stipulation of the admission relation; it cannot close the general necessity gap.**
+- **Claim attacked:** “mathematical explanation, which falls under a declared admission relation and not under the physical quantifier of this attack.”
+- **Why it fails:** Part III explicitly permits “for a mathematical or modelled organization, a **declared admission relation** stated with the question.” Part VII works an example and says: “Adequacy is relative to the declared admission relation, and the background components (arithmetic, the determinant) are anchored to themselves under the identity translation, which is stated rather than assumed.” If declared admission relations are allowed, mathematical explanation is already within the class. The case is not open for the class; it is open only if one demands that the admission relation be independently constrained. The example’s anchoring of background components “to themselves under the identity translation” is especially suspicious: it closes the case by stipulating that the background is already anchored.
+- **Seriousness:** serious.
+- **Fix:** If the class permits declared admission relations, state that (iv) is closed for the class and remove it from the open list. If the open issue is independence of the admission relation, state constraints on admissible mathematical admission relations and show the example satisfies them.
+
+**29. The four open cases are not disjoint, and the document does not say which closures would close others.**
+- **Claim attacked:** “Four cases are open, and the document’s treatment of each is stated as a limit rather than a solution: (i) … (ii) … (iii) … (iv) …”
+- **Why it fails:** (i) and (iv) both rely on \(K\) or declared admission. (ii) can be a mathematical or physical explanation. (iii) is tied to selection provenance, which is central to Part IV and Part XII. A solution to one may solve another, or a failure of one may not be independent. The document presents them as a clean list without stating dependencies.
+- **Seriousness:** minor.
+- **Fix:** State the relationships and dependencies among the four cases.
+
+**30. The document says “Four cases are open” even though Part VII already treats two of them as scoped successes.**
+- **Claim attacked:** “Four cases are open and are listed in Part XV…”
+- **Why it fails:** Part VII handles the admitted-rival impossibility case and gives a full mathematical example under a declared admission relation. Those are not open in the same sense as symmetry and artefact. The word “open” masks the difference between “not represented at all” and “represented only under a stipulation.”
+- **Seriousness:** minor/cosmetic.
+- **Fix:** Replace “open” with a graded classification: fully represented, represented under stipulation, not represented.
+
+**Summary of the four cases:**
+- (i) Impossibility: the admitted-rival subcase is already closed. The physically impossible-rival subcase cannot be fully closed with what the document has; it is scoped by stipulated \(K\)-meanings.
+- (ii) Symmetry: cannot be fully closed with existing tools. If the symmetry is an admitted edit, parts are covered; the internal entailment among components is not.
+- (iii) Selection artefact: cannot be closed with \(\operatorname{Account}(E,p)\) as it stands, because (E) has no provenance condition. It needs a provenance-sensitive condition, not merely two targets.
+- (iv) Mathematics: already closed for the class under declared admission relations, but only by stipulation. It cannot close the general necessity gap if the admission relation is free to be chosen to fit the account.
+====================================================================================================
+R7_questions_and_limits | rev_deepseek | sample 2 | finish stop | 17687 chars | error None
+====================================================================================================
+## Findings
+
+### Merit condition
+
+**1. “Repair \(o\) under (P)” is ill-typed.**
+Claim attacked: “the found question \(p'\) counts as found, rather than re-parameterised, only when there is an obligation \(o\in O\) such that a deployable account of \(p'\) would repair \(o\) under (P), with \(o\) failing at the state before \(e\).”
+Why it fails: (P) is not a predicate on one obligation \(o\) and a counterfactual account. It is \(\operatorname{Repair}_{O,P}(\xi,\xi';\Delta)\), requiring an episode \(\Delta\), start and end states, and \(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\). There is no defined counterfactual repair predicate “would repair \(o\) under (P).”
+Severity: serious.
+Fix: define a separate counterfactual repair relation, or require an actual episode/deployment and make the merit condition depend on it.
+
+**2. The merit condition is circular through \(O_p\).**
+Claim attacked: Part III says “\(O_p\) is the set of obligations being addressed or protected,” and Part X says the merit condition requires “an obligation \(o\in O\)” that a deployable account of \(p'\) would repair.
+Why it fails: if \(O=O_{p'}\), then \(p'\) is “found” because it addresses an obligation that is defined as an obligation \(p'\) addresses. That is tautological. If \(O\) is some larger fixed set, the text never says so.
+Severity: fatal to the claimed non-triviality of the merit condition.
+Fix: require \(O\) to be fixed independently of \(p'\), and explicitly exclude obligations whose content is “answer \(p'\).”
+
+**3. The merit condition is too weak: it filters usefulness, not finding-versus-reparameterisation.**
+Claim attacked: “a re-parameterisation of an old question that repairs no obligation is a constructed question and not a found one.”
+Why it fails: the condition is existential: any one obligation repaired by a deployable account of \(p'\) suffices. A trivial variant of an old question can inherit the old account, repair the old obligation, and therefore count as found. The condition does not require that \(p'\) itself be necessary for the repair, nor that no old question already repairs the same obligation. It therefore admits exactly the inherited-account reparameterisations it says it excludes.
+Severity: serious.
+Fix: require that the repair depend on \(p'\) on an active route, and that no pre-existing deployable account of an old question already repairs \(o\).
+
+**4. The merit condition is too strong for question-finding that discovers a new obligation.**
+Claim attacked: the found question “counts as found” only if there is an obligation \(o\in O\) failing before \(e\) and a deployable account of \(p'\) would repair it.
+Why it fails: a genuine act of finding a question can consist in discovering that an obligation exists, or in making an inarticulate difficulty tractable, before any deployable account of \(p'\) exists. The condition requires an already-failing obligation and a counterfactual account, so it rejects question-finding prior to answer-construction.
+Severity: serious.
+Fix: separate question-merit from answer-merit. Let a found question count if it makes an obligation assessable, locates a failure, or is required for a later repair, not only if an account already repairs it.
+
+**5. “Provenance attaches to the whole question” is type-confused.**
+Claim attacked: “\(\rho_p\in\{\text{declared},\ \text{selected},\ \text{constructed}\}\) attaches to the whole tuple \(p\), not to its contract alone, with the witness required by Part IV.” Derivation 5 says provenance attaches “to the whole question through this organization.”
+Why it fails: Part IV’s witnesses, \(\operatorname{Sel}(t;\dots)\) and \(\operatorname{Con}(t;h,e)\), are defined for a transport \(t\), not for a question-organization. Derivation 5 supplies a question-organization \(D_p\), but no transport from a content to \(D_p\). So “provenance attaches through this organization” never says which transport is selected or constructed.
+Severity: fatal to the formal definition of selected/constructed questions.
+Fix: either define selection/construction directly for question-organizations, or supply the missing transport and state its target and fidelity condition.
+
+**6. A single \(\rho_p\) erases internal provenance heterogeneity.**
+Claim attacked: “\(\rho_p\) attaches to the whole tuple \(p\), not to its contract alone.”
+Why it fails: \(D\), \(C_{\mathrm{adm}}\), \(S\), \(K\), \(\mathcal Q\), \(O_p\), and \(b_0\) can have different histories. A target may be physically given, a scope declared, a query constructed, and a counterfactual set merely stipulated. A single provenance label cannot represent that mixture.
+Severity: serious.
+Fix: make provenance componentwise with a stated precedence rule, as Part IV does for transports.
+
+**7. The merit condition lacks a non-accidentality condition.**
+Claim attacked: “This is the only merit condition in the semantics, and it is stated so that a random new contract does not count.”
+Why it fails: a random new contract that accidentally repairs some obligation satisfies the existential condition. Nothing requires the question’s construction to be aimed at the obligation, nor that the obligation be relevant to the episode’s difficulty.
+Severity: serious.
+Fix: require the obligation to be in the episode’s recognized difficulty or connected by an active route to the construction of \(p'\).
+
+### Question-organization of Derivation 5
+
+**8. “Its solutions are exactly the coherently posed questions on \(D\)” is false.**
+Claim attacked: “Its solutions are exactly the coherently posed questions on \(D\).”
+Why it fails: Part III defines a question as \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\). Derivation 5 supplies ports for \((a,b)\), \(\mathcal Q\), \(S\), and \(K\). It supplies no port for \(b_0\), \(O_p\), \(\rho_p\), or \(C_{\mathrm{adm}}\). Two questions differing only in \(O_p\), \(\rho_p\), or admitted relation \(C_{\mathrm{adm}}\) are not distinguished by the organization. It therefore cannot have exactly the coherently posed questions as its solutions.
+Severity: fatal to the “exactly” claim.
+Fix: add ports/components for \(b_0\), \(O_p\), \(\rho_p\), and \(C_{\mathrm{adm}}\), or weaken the claim to “solutions are a proper subclass of coherently posed questions.”
+
+**9. The organization imposes a closure condition not present in Part III.**
+Claim attacked: “if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined.”
+Why it fails: Part III defines \(C\) as an arbitrary set of admitted edit-boundary pairs in the form \((C_{\mathrm{adm}}\cap S)\cup K\). It does not require that if a composite edit is in \(C\), its factors are in \(C\). The closure condition over-restricts the question-organization and breaks the “exactly” claim.
+Severity: serious.
+Fix: remove the closure condition, or add composition-closure to Part III’s definition of coherently posed questions and accept that not all Part III questions are solutions.
+
+**10. “Add a pair to \(K\) with a meaning” is not a well-defined organization edit.**
+Claim attacked: “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning.”
+Why it fails: Part II edits require \(L_j(a,b)\) relations. Part III says \(K\) is a set of “pairs the module does not admit.” If \(a\notin A\), then \(L_j(a,b)\) is undefined. “With a meaning” is natural-language annotation, not a relation in the organization data. So the edit cannot be evaluated within (O).
+Severity: fatal to the treatment of \(K\) in Derivation 5 and Part III.
+Fix: represent \(K\)-meanings as explicit declared relations/components, or restrict \(K\) to pairs that have a formal interpretation in \(L\).
+
+**11. “Toggle a pair” conflates membership in \(C\) with the \(S/K\) partition.**
+Claim attacked: “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning.”
+Why it fails: Part III distinguishes admitted pairs in \(C_{\mathrm{adm}}\cap S\) from counterfactual pairs in \(K\). A pair can be in \(C\) because it is in \(S\) or because it is in \(K\). Toggling the \(u_{(a,b)}\) port does not by itself move a pair between \(S\) and \(K\), nor alter \(C_{\mathrm{adm}}\). The edit set therefore does not admit exactly the changes needed to change a question’s contract status.
+Severity: serious.
+Fix: add separate edits for moving a pair among \(C_{\mathrm{adm}}\), \(S\), and \(K\), and for altering the declared admission relation.
+
+**12. Part III’s coherence condition is logically garbled.**
+Claim attacked: “It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other’s complements as stated.”
+Why it fails: in a common universe \(U\), “\(S\) is disjoint from the complement of \(K\)” means \(S\subseteq K\), and “\(K\) is disjoint from the complement of \(S\)” means \(K\subseteq S\). Together they imply \(S=K\). But \(S\) is admitted scoped pairs and \(K\) is non-admitted counterfactuals, so they should normally be disjoint, not equal.
+Severity: fatal as written.
+Fix: state \(S\cap K=\varnothing\), \(S\subseteq C_{\mathrm{adm}}\), and \(K\cap C_{\mathrm{adm}}=\varnothing\), or whatever the intended condition is.
+
+**13. Fidelity over \(K\) is undefined.**
+Claim attacked: “Fidelity conditions range over all of \(C\); the objectivity condition of Part V ranges over \(C_{\mathrm{adm}}\); a pair in \(K\) enters non-vacuity only through its stated meaning.”
+Why it fails: \(C\) includes \(K\), but \(K\) consists of “pairs the module does not admit.” (F1), (F2), and (A) require \(L_k(\tau(a),\sigma(b))\) and \(\operatorname{Sol}_D(a,b)\) for every \((a,b)\in C\). If \(a\) is not admitted, those relations are not supplied. A “stated meaning” is not a solution set.
+Severity: fatal to the use of \(K\) in fidelity.
+Fix: extend the organization interpretation to \(K\)-pairs, or exclude \(K\) from (F1), (F2), and (A) and give a separate semantics for counterfactual meaning.
+
+**14. Derivation 5’s question-as-content move is a category error.**
+Claim attacked: “The content \(c\) may be an organization, a transport, or a question. When it is a question, the originative act is the finding of a question…”
+Why it fails: (G) and (EK) require \(\operatorname{Build}\) and \(\operatorname{Account}(c,p_c)\). If \(c\) is a question \(p'\), then \(\operatorname{Account}(c,p_c)\) assesses the question-organization as an explanatory account of \(p_c\). A question is not an answer or explanation. Derivation 5 conflates the content “question” with the organization that represents the question.
+Severity: fatal to the claim that question-finding is represented by (G) without further machinery.
+Fix: introduce a separate predicate for finding questions, or make the originative content the answer-organization that deploys the question, not the question itself.
+
+### Limit on inventing a new dimension of variation
+
+**15. The stated limit is overbroad: Inst plus a new admissible grain can cover some “new dimensions.”**
+Claim attacked: “The invention of a new dimension of variation — a port the target organization did not have, a respect in which nothing was previously varied — is not a question found in the sense above, because the question-organization of Derivation 5 is built over an existing \(A\times B\).”
+Why it fails: Part IV says “one occurrence may instantiate several organizations at one grain.” Part II allows a grain if the physical module licenses an organization at that grain and every component has a signature some physically admitted edit realizes. If the “new dimension” is already licensed by \(\operatorname{Inst}\) at an admissible grain, then there is an organization \(D'\) with the new port and new admitted edits. Derivation 5 can be applied to \(D'\), and the question over \(D'\) is representable. The unrepresented case is not merely adding a port; it is changing the physical module or extending \(A_\Theta\)/\(\operatorname{Inst}\).
+Severity: serious overclaim.
+Fix: state the limit as “invention of a new admissible organization/decomposition not already licensed by \(\operatorname{Inst}\), or extension of \(A_\Theta\),” not “a port the target organization did not have.”
+
+**16. The limit understates the real unrepresented case.**
+Claim attacked: “It is a change to the target organization itself, and this document has no witness for it.”
+Why it fails: Derivation 5 can be reapplied to a different target \(D'\) if \(D'\) is instantiated before the construction event. What the semantics cannot represent is the event of bringing \(D'\) into the module’s admissible decompositions, or adding a new physically admitted edit, because the physical module is primitive and supplies \(A_\Theta\) and \(\operatorname{Inst}\). The text does not say this precisely.
+Severity: serious.
+Fix: distinguish (a) finding a question over an already-instantiated finer organization, which is representable, from (b) inventing or extending the physical module’s admissible decompositions, which is not.
+
+### The four open cases in Part XV
+
+**17. Impossibility of a physically impossible rival cannot be closed with what the document already has.**
+Claim attacked: “elimination of a physically impossible rival, handled only through a declared counterfactual set whose meaning is stipulated.”
+Why it fails: the treatment depends on \(K\)-pairs whose meanings are stipulated and whose relations are not in \(L\). The objectivity condition of Part V ranges only over \(C_{\mathrm{adm}}\), so it cannot validate the counterfactual meaning. What is established is “no admitted change produces the effect,” not why the rival is impossible. The explanatory force of the impossibility claim is not captured.
+Severity: serious.
+Fix: derive \(K\)-meanings from the physical module’s laws or represent them as explicit relations/components subject to fidelity; otherwise the impossibility explanation remains stipulated.
+
+**18. Symmetry could be closed in principle with existing resources, but the document’s reason for calling it open is false.**
+Claim attacked: “explanation by symmetry, whose force is an entailment among the components of \(E\) that neither (F1) nor (F2) constrains, with no construction here.”
+Why it fails: if symmetry transformations are admitted edits and the invariance-to-independence entailment is encoded as a component relation in \(E\), then (F1) and (F2) can constrain the component, and (A) can constrain the answer profile if the entailment affects the answer. The open case is therefore a missing construction, not a necessity failure. If the entailment is supposed to float free of every component relation and every answer profile, then it is not part of the account being assessed.
+Severity: serious misclassification.
+Fix: give the construction, or show that the symmetry force cannot be represented as a component relation without circularity and cannot affect (A).
+
+**19. Selection artefact could be partially closed with existing vocabulary if the single-target schema is relaxed.**
+Claim attacked: “explanation of an apparent effect as a selection artefact, which needs two targets and has no construction here.”
+Why it fails: the semantics already has populations, variation, survival, histories, organizations, and transports. A joint organization with a data subnetwork and a population subnetwork can in principle be instantiated if the physical module licenses the decomposition. The real obstacle is Part III’s single target \(D\) and the single transport \(t:D\to E\), not a missing primitive. If the selection history must be represented as a component relation, the existing (O), (F1), (F2), and (A) can constrain it.
+Severity: serious.
+Fix: either provide a product-target or multi-target account, or state exactly why selection histories cannot be represented as component relations under (O).
+
+**20. Mathematical explanation cannot be closed as an objective necessity test; it is scoped away.**
+Claim attacked: “mathematical explanation, which falls under a declared admission relation and not under the physical quantifier of this attack.”
+Why it fails: for a mathematical organization, \(C_{\mathrm{adm}}\) is declared. Part V’s adequacy condition ranges over \(C_{\mathrm{adm}}\), so a protective declaration can exclude exactly the edits that would separate the candidate from the target. The semantics then has no non-arbitrary condition on mathematical admission. Saying “every claim is relative to that declaration” is not a solution; it makes the necessity claim vacuous for mathematics.
+Severity: fatal to the necessity claim if mathematical explanation is genuine and objective.
+Fix: require mathematical admission relations to be fixed independently of the explanation, or explicitly restrict the necessity claim to physical contracts and stop listing mathematics as a treated case.
+
+**21. Part XV mislists mathematics as an open case under attack (B).**
+Claim attacked: “Four cases are open… (iv) mathematical explanation, which falls under a declared admission relation and not under the physical quantifier of this attack.”
+Why it fails: attack (B) is explicitly about “any transport satisfying component fidelity under any admitted contract.” For mathematics, the admitted contract is declared, not physical. Listing it as an open case inflates the open cases while simultaneously excluding it from the attack’s quantifier.
+Severity: minor to serious depending on how the open-case list is used.
+Fix: move (iv) to the scope limitations, and state that the necessity claim is conditional on physical or independently declared admission.

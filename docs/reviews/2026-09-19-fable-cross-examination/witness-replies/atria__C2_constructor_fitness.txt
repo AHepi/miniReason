@@ -1,0 +1,152 @@
+====================================================================================================
+C2_constructor_fitness | atria | sample 0 | finish stop | 17548 chars | error None
+====================================================================================================
+## Referee findings
+
+### 1. "C never computes an aggregate fitness" is false as stated, and the falsity is not cosmetic
+
+**Claim attacked:** "**C never computes an aggregate fitness. Its only inputs are itemised records.**"
+
+**Why it fails.** Two separate errors.
+
+(a) *The decision rule is an aggregate.* C "score[s] every condition in the language by (number of V states it is true on) − (number of N states it is true on)" and likewise "count the V records it fixes … minus the N records it breaks." Both are finite sums over the exposure record set, i.e. scalar objective values. The *input* is itemised; the *choice* is aggregated. The sentence conflates the two. Worse for the claim: the condition score is exactly (records the rule gets right) − (records it gets wrong) on the exposure half, an affine transform of per-rule accuracy. That *is* a fitness function over the rule space. And the stopping rule "Repeat until no V remain" is a fitness threshold (zero residual). C computes fitness at rule granularity and terminates on a fitness criterion.
+
+(b) *B is not defect-unrepresenting either.* "fitness = exposure-half fitness of the current architecture plus the candidate rule." To produce that number, B's evaluation function must, for every exposure configuration, compute the predicted field and the true field and compare them. The per-record mismatch — the defect — is *generated inside B* and then summed away. So the contrast is not "represents the defect vs. receives a number"; it is "retains and exploits the itemisation vs. aggregates it at the point of use."
+
+**Seriousness:** serious for the conceptual claim; harmless for the arithmetic.
+
+**Fix:** Replace the sentence with: "C's inputs are itemised records; it aggregates them into per-rule coverage scores but never into an architecture-level scalar. B's evaluation generates the same per-record mismatches and aggregates them immediately." Then state the real contrast: *residual-indexed objective at rule granularity* vs *absolute objective at architecture granularity*.
+
+---
+
+### 2. The C-vs-B contrast is a 2×2 design with two cells missing, so "distinct from selection" cannot be attributed to the defect representation
+
+**Claim attacked:** Section 5 defines C as exhaustive scoring of all 3,136 conditions × 16 actions, truncated to the top 20, versus "B — blind selection over the meta-grammar … mutation–selection over single rules (population 32, elitism 4, 60 generations, seeds 0–5)." Section 9 then offers "S5 — provenance is not output. B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route."
+
+**Why it fails.** Two factors vary simultaneously between C and B: search operator (exhaustive-with-truncation vs. mutation) and objective (defect-labelled residual vs. architecture accuracy). If C beats B, that is consistent with "exhaustive search beats a 32×60 mutation budget on a 50,176-rule space," which is unsurprising and says nothing about the defect representation. If B matches C — which S5 *pre-registers as the expected outcome* — then the output-equivalence the design itself anticipates is exactly what an efficiency-only difference predicts. Either way the defect representation is not the identified cause. The design contains no exhaustive-but-defect-blind search and no mutation-but-defect-informed search, so the two factors are not separated anywhere.
+
+**Seriousness:** fatal for the "distinct from selection" limb of the Supports heading; the "needed" and "on-the-route" limbs survive.
+
+**Fix:** Add two controls before freezing: **B″** — enumerate all 50,176 rules, score by exposure-half architecture accuracy (defect-blind, exhaustive); **B′** — the existing mutation loop with fitness recomputed as accuracy on the *current residual set* (defect-informed, stochastic). If B′ ≈ C, the constructor's advantage is the residual indexing, not "construction"; if B″ ≈ C, it is the exhaustiveness. Only a pattern where C ≈ B′ ≫ B″ would license reading the defect representation as the operative variable.
+
+---
+
+### 3. The scramble test (M4) provably cannot reach C's condition-induction step, so it tests half of what it advertises
+
+**Claim attacked:** M4: "Give C the exposure half's defect records with the **true-field column permuted** among the V records … Build. Measure M1." Presented as "**This is the test that distinguishes the provenances.**"
+
+**Why it fails.** Per the section-5 spec, the condition score is "(number of V states it is true on) − (number of N states it is true on)" where the "state" is "the slot state before the step." The true field does not enter this expression at all. A defect-preserving permutation of the true-field column therefore leaves the V/N partition, the states, and hence *every condition score and the entire top-20 set* byte-identical. The scramble's entire effect on C enters through the action step ("count the V records it fixes … prediction now equals the true field"). So M4 is a test of action-selection sensitivity, not of whether the representation that identifies *what kind of thing went wrong* — the condition, the part that carries the structure of the defect — is on the route. The philosophical claim is that the representation "states, which predictions, what actually happened" lies on the route; the perturbation touches only the third, and only one of the two decision steps reads it.
+
+**Seriousness:** serious. It does not invalidate M4 as a dependency test, but it invalidates its scope.
+
+**Fix:** Either (i) restate M4 as testing the action step only, and add **M4b**: perturb V/N *membership* (move records between V and N while holding states and true fields fixed, preserving counts) — C's induced conditions must change, and this is the test that the structural part of the representation is on the route; or (ii) permute the *state* column among V records, which does hit condition induction. Report which step each perturbation reaches.
+
+---
+
+### 4. "Same states, same number of defects, same aggregate" is not entailed by the described permutation
+
+**Claim attacked:** "with the **true-field column permuted** among the V records (same states, same number of defects, same aggregate; wrong pairings)."
+
+**Why it fails.** A record is in V because its predicted field differs from its true field. Permuting true-field values among V records can send a value that *equals* that record's predicted field into it, at which point the record is no longer a defect and the V/N partition changes. Nothing in "permute the column" guarantees preservation. If the partition does change, M4 confounds "wrong pairings" with "different defect count," and the comparison is not the intended one. (If the partition is preserved by fiat, then finding 3 applies and the condition step is untouched.)
+
+**Seriousness:** serious, easily fixed.
+
+**Fix:** Specify the permutation as a *defect-preserving* bijection on the true-field column (predicted ≠ true for every V record after permutation), verify the constraint in code, and report the realised V count. Define "same aggregate" explicitly — as written it cannot mean B's fitness, which is not invariant under this perturbation.
+
+---
+
+### 5. The B-half of S4 cannot fail and is therefore not evidence
+
+**Claim attacked:** S4: "B's output under the scramble is byte-identical to B's without it," preceded by "Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run."
+
+**Why it fails.** Under the natural reading, B is run on the unscrambled world with the same seeds; identity then follows from determinism and is guaranteed by construction, not discovered. Under the other reading, B is run on the scrambled world, in which case the world has changed and identity is not to be expected. A pre-registered conjunct that is true by construction inflates the apparent severity of the test: half of "the test that distinguishes the provenances" is an unfalsifiable clause.
+
+**Seriousness:** serious for S4's evidential weight; cosmetic for the code.
+
+**Fix:** Demote the conjunct to an implementation audit reported separately, and let S4 rest solely on "scrambled-V construction is worse than unscrambled on collision steps by at least 0.1." Alternatively, and better: run B′ (finding 2) under the scramble — a defect-informed selector *would* be affected, and that is the informative comparison.
+
+---
+
+### 6. Section 1's provenance claim and section 9's F1/S5 concession are in direct tension
+
+**Claim attacked:** Section 1: "Two processes can produce the same rule. The semantics says they still differ, and that the difference is checkable." Versus F1: "C and B reach the same fidelity with structurally different rules. By Derivation 2 they are **one kind on this contract**," and S5, which pre-registers B reaching C's fidelity in ≥4/6 seeds.
+
+**Why it fails.** If same-fidelity-different-rules implies one kind on this contract, then the kind-level provenance distinction is *not* modelled as real here, and no measurement in section 7 can establish it — S4 establishes a dependency of C's output on its input, not a difference in kind. Meanwhile section 1 asserts the difference is real and checkable. The design thus pre-registers, as a *supporting* outcome, the very equivalence that dissolves the distinction section 1 asserts.
+
+**Seriousness:** serious; it is an internal inconsistency about what the experiment is for.
+
+**Fix:** State the scope explicitly. If the claim on this contract is only "the record content is causally on C's route," say so, and change the Supports heading from "construction is real, needed, and distinct from selection" to "…needed, and its route is record-dependent." Reserve "distinct in kind" for a contract where the record access is not freely transferable to the selector.
+
+---
+
+### 7. The answer to the question you were asked: is there a non-efficiency sense in which C "operates on a representation of the defect" that B does not?
+
+One, and only one, and it is weaker than the document needs.
+
+C's objective is **indexed to the identity of the current failure set**: the V/N partition is recomputed each round from what the present machinery actually gets wrong, and the condition ranking is a function of *which* states are defective. B's trajectory is a function of the induced accuracy landscape over the rule space, which is invariant under any relabelling of records that preserves per-candidate scores. So there exist world-pairs in which B's fitness landscape is identical but C's residual structure differs (a rule that fixes defect d₁ and breaks d₂ has the same net score as one that fixes d₃ and breaks d₄; B cannot distinguish them, C's action step can). That is genuine content-sensitivity, not mere speed, and it is exactly what M4's action step detects.
+
+But it does not survive as a *kind* difference, for three reasons that the document itself supplies:
+
+1. **It is a property of the loss function, and losses are transferable.** A mutation loop with residual-indexed fitness is still selection. Nothing in the shared, fixed meta-grammar or the shared exposure half forbids the transfer; the model *stipulates* B's blindness rather than discovering it. Section 1's "the selecting process — which never read it" is a design choice, not a fact about selectors.
+2. **B already represents the defect internally** (finding 1b); it aggregates and discards. "Operates on a representation of the defect" is true of both; C additionally *exploits the structure*. Exploiting structure that another process discards is efficiency plus content-sensitivity.
+3. **The design concedes output-equivalence in advance** (S5, F1). A difference that is checkable, makes no difference to the output, and could be transferred at no cost is an implementation difference.
+
+So the honest restatement of the C/B contrast is the one in your question: **exhaustive-ish, residual-informed search over the meta-grammar vs. mutation search over the same grammar with an absolute objective.** The "construction vs. selection" dichotomy is not modelled; what is modelled is informed vs. uninformed search, plus a dependency test of narrow scope.
+
+**Seriousness:** fatal as a defence of the section-1 semantics; benign as a description of two algorithms.
+
+**Fix:** See findings 1, 2, 6.
+
+---
+
+### 8. S3's "kind-signature of the built component" is a signature of the sensory contract, not of the world, and B would carry it too
+
+**Claim attacked:** "(iii) whether that extension is a faithful component with the world's kind-signature, not a patch," and S3's threshold. But section 12 item 2 pre-registers that "the constructor should build exactly the kinds its contract can see," with F3 — "the invisible law" — expected to fail M3 for A0+C.
+
+**Why it fails.** The collision law has two disjuncts (same-target and crossing). The pre-registration establishes that C *cannot* build the crossing disjunct because crossings are sensorially indistinguishable from bounces. The built machinery is therefore faithful on the visible half and structurally blind on the invisible half. Any process under the same sensory contract — including B, including exhaustive defect-blind search — is guaranteed the same half-signature, since it is fixed by the sensory field, not by the route. So S3 distinguishes *contracts*, not *provenances*; it cannot support "distinct from selection."
+
+**Seriousness:** serious for S3's interpretive role; the measurement itself is fine and the pre-registration is to the author's credit.
+
+**Fix:** Retitle S3 as "faithful to the visible contract" and state that the kind-signature result is a property of the sensory field, common to all processes on it. Do not count it toward provenance distinctness.
+
+---
+
+### 9. K3 is confounded with the top-20 truncation and the K=3 cap
+
+**Claim attacked:** "keep the top 20," "An architecture may carry up to **K = 3** rules," "The world's collision law needs two rules in this language … building it takes two rounds," and K3: "C's collision fidelity stays below 0.7 × the collision-step ceiling while B's reaches it. … Kills this constructor, not the concept."
+
+**Why it fails.** C is greedy with breadth 20 and depth 3. If C fails, the failure is consistent with (i) the defect route being inferior, (ii) the correct condition ranking outside the top 20 in some round, or (iii) three rounds being insufficient once one round is consumed by a non-collision residual. K3's stated conclusion "kills this constructor" is not separable from "kills this budget."
+
+**Seriousness:** serious for interpreting a negative result; irrelevant if C succeeds.
+
+**Fix:** Log, per round, the rank of the hand-built rule's condition in the full 3,136-condition score list, and the residual defect count by cause (F2 already asks for the latter). If the correct condition ever ranks above 20, report K3 as a truncation result. Run one sweep at top-50 and K=5 as a sensitivity check before freezing, or state that K3 will be re-run at higher budget before the "kills the constructor" reading is adopted.
+
+---
+
+### 10. M6's expected outcome is close to analytic
+
+**Claim attacked:** M6: "Give C V with the true field replaced by the predicted field (no defect content). It must build nothing or rules with zero net."
+
+**Why it fails.** With true = predicted, the action that leaves the state unchanged scores +1 on every V record by construction, and any state-changing action must do worse unless it is a no-op on all of them. The predicted outcome is largely forced by the scoring arithmetic, so the check demonstrates the arithmetic rather than a dependency.
+
+**Seriousness:** minor.
+
+**Fix:** Use a non-degenerate corruption instead: permute true fields *between* V and N (preserving counts), or replace a random subset of true fields with fields drawn from other configurations. That keeps the defect count fixed while destroying the state↔outcome pairing, and is the informative version of the same test.
+
+---
+
+### 11. Two undefined terms in M4
+
+**Claim attacked:** "(same states, same number of defects, same aggregate; wrong pairings)" and "Give B the same world."
+
+**Why it fails.** "Same aggregate" is never defined and cannot mean B's fitness (which is not invariant under the perturbation). "The same world" is ambiguous between the scrambled and unscrambled world, and the ambiguity changes S4 from vacuous to false (finding 5).
+
+**Seriousness:** minor, but it sits inside a pre-registered outcome.
+
+**Fix:** Define "same aggregate" as the V-count (and state it as such), and replace "the same world" with "the unscrambled world; B's run is unchanged by construction and is reported as an implementation audit, not as part of S4."
+
+---
+
+### Bottom line for the section as a whole
+
+The experiment can establish: G0 closure (S1), protection (S2), visible-contract faithfulness (S3, relabelled), that C's *action choice* depends on record content (S4, narrowed), recoding invariance and empty-input ablation (S6), and accumulation (S7). It cannot establish that construction is distinct in kind from selection, because the only C/B contrast it contains varies the search operator and the objective simultaneously, pre-registers their output-equivalence as a *supporting* outcome, and withholds from B a piece of information that nothing in the shared contract forbids B to have. The "never computes an aggregate fitness" line should be deleted; the honest line is "aggregates at rule granularity over itemised records, indexed to the current residual."

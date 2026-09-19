@@ -1,0 +1,429 @@
+====================================================================================================
+D3_scramble_meaning | deepseek | sample 0 | finish stop | 15090 chars | error None
+====================================================================================================
+**Direct answer to the question:** There is one reading under which the scramble test could bear on construction vs selection *as concepts*: a causal-role/functional-role reading. Define **construction** as a process whose novel output is causally downstream of a representation of the defect (state, prediction, outcome, and their pairing), and **selection** as a process whose novel output is causally downstream only of variation plus scalar survival. Under that reading, scrambling the defect representation is an intervention on a constitutive variable, and asymmetric output dependence is evidence. But the results do not establish that reading; they presuppose it. As written, the test is a token-level input-dependence result: **C’s action solver reads the true-field column; B’s code ignores a variable.** The sentence under attack even concedes the mechanism by reporting that B was given “an argument its code never reads.” That is exactly a code-data-flow fact. To make it concept-level, the author must add the bridge principles below.
+
+---
+
+**Finding 1 — The sentence is self-defeating: the B arm *is* a code-data-flow claim.**
+- **Claim attacked:** “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.** … That is not a claim about the code's data flow — it is a demonstration that the two processes' outputs depend on different things…”
+- **Why it fails:** The only reason byte-identity is observed is that B’s code does not read the argument. The result is entailed by the code’s data flow, not by a conceptual property of selection. “The two processes’ outputs depend on different things” is still a claim about the implemented input–output functions. To reach construction/selection as concepts, the data-flow fact must be a premise in an explicit bridge argument; that argument is absent.
+- **Severity:** Fatal to the quoted sentence; serious for S4’s B clause.
+- **Fix:** Either drop “not a claim about the code’s data flow,” or state the bridge: concept definitions, a mapping from code variables to concept variables, and an argument that B’s non-reading of V follows from selection’s constitutive role rather than from this implementation’s interface.
+
+---
+
+**Finding 2 — The B “test” is tautological and cannot fail.**
+- **Claim attacked:** “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**”
+- **Why it fails:** Any program that ignores an argument returns identical output for any value of that argument. The test would also be passed by a trivial program that ignores all inputs. It cannot distinguish B from a dead-argument stub, let alone establish that B is selection as a concept. It is also reported for seed 0 only while S4 generalises to “B’s output.”
+- **Severity:** Fatal to the B clause as a test; minor as a reporting gap for seeds.
+- **Fix:** Replace with a manipulation on an input B actually uses — e.g., scramble the true fields used to compute B’s fitness, or permute candidate ranks while holding the candidate set fixed — and show B changes. If the byte-identity is kept, label it an implementation sanity check, not a provenance test.
+
+---
+
+**Finding 3 — The scramble does not ablate “the defect representation”; it scrambles one column, leaving the condition-inducing part intact.**
+- **Claim attacked:** “The defect representation is on C's route and not on B's.”
+- **Why it fails:** The results themselves say: “Under the scramble C still *induced* a near-right condition (that step reads only states, which were not scrambled) but *solved* the wrong action (that step reads outcomes, which were).” The novel condition — the rule’s `n_i == n_j` machinery — was still built from unscrambled defect states. The test isolates the action solver’s dependence on outcome labels, not the construction route’s dependence on a representation of the defect as a whole.
+- **Severity:** Serious.
+- **Fix:** Ablate state, predicted field, true field, and their pairings factorially. Report which component of the built rule is lost under each. If only action selection depends on the scrambled column, restate the claim accordingly.
+
+---
+
+**Finding 4 — The scrambled V set may no longer be a set of defect records.**
+- **Claim attacked:** “Defect records handed to C with the *outcome* column permuted among them: same states, same 2,830 records, wrong pairings.” Design: “same states, same number of defects, same aggregate; wrong pairings.”
+- **Why it fails:** Permuting the true-field column among V records can pair a record’s predicted field with a true field that equals it, turning a defect into a non-defect. The design asserts “same number of defects” and “same aggregate,” but the results do not report the post-scramble per-record mismatch count or whether any V record ceased to be a defect. If some did, C was fed a corrupted V set, not a scrambled representation of the same defects. The degradation could then be generic label corruption, not loss of defect content. Also, C’s action solver uses per-record net fixes, so aggregate invariance is the wrong invariance for the component being tested.
+- **Severity:** Serious.
+- **Fix:** Report the post-scramble defect count and mismatch distribution. Construct a scramble that provably keeps each V record a defect (e.g., constrain permutations so the new true field differs from the predicted field) and preserves relevant marginals. Or model label noise explicitly and compare.
+
+---
+
+**Finding 5 — The test distinguishes supervised learning from black-box optimisation, not construction from selection, unless a further argument is supplied.**
+- **Claim attacked:** “This is the test that distinguishes the provenances.”
+- **Why it fails:** C is defined as an error-driven learner using labelled V/N records and per-record fix counts. B is defined as mutation–selection on scalar fitness. That is a supervised-vs-optimiser distinction. Selection also depends on outcomes through differential fitness; it just uses a scalar/rank summary instead of itemised labels. Unless the author argues that itemised defect representation is the constitutive difference between construction and selection, the scramble test is a demonstration about two algorithms.
+- **Severity:** Fatal to the concept-level claim as written; serious to the project.
+- **Fix:** State and defend concept-level definitions. If the distinction is “structured defect representation vs scalar outcome signal,” run a 2×2 for both processes: itemised defect content (intact/scrambled) × aggregate outcome/fitness signal (intact/scrambled). Predicted pattern: C depends on itemised, not aggregate; B depends on aggregate, not itemised. That would begin to isolate the concept.
+
+---
+
+**Finding 6 — B’s actual route does depend on outcome information; the test leaves B’s real outcome signal untouched.**
+- **Claim attacked:** “The defect representation is on C's route and not on B's.”
+- **Why it fails:** B’s fitness is computed from exposure-half performance against the world’s true fields. Scrambling V does not scramble the true fields used to compute B’s fitness. So the correct statement is “B does not read this V variable,” not “B’s route is independent of defect information.” A global scramble of the outcome data used for B’s fitness would likely change B. The asymmetry is between itemised and aggregated representations of the same outcomes, not between construction and selection.
+- **Severity:** Serious.
+- **Fix:** Define “defect representation” so that a scalar fitness derived from outcomes does not count, and defend that definition. Then run the outcome-scramble on B’s fitness and show the asymmetry is format-specific. Alternatively, compare C’s sensitivity to itemised vs aggregate and B’s to aggregate vs itemised.
+
+---
+
+**Finding 7 — The B result is circular: the design stipulates B’s blindness, then the results verify it.**
+- **Claim attacked:** Design: “B never reads a defect record. Its only input is a number per candidate.” Results: B’s byte-identical output.
+- **Why it fails:** The design defines B’s interface. The result then checks that the implementation matches the definition. It cannot empirically establish that selection as a concept is blind to defect records. It can only fail if B violates its own code. This is not a test of provenance; it is an implementation assertion.
+- **Severity:** Serious.
+- **Fix:** Stop reporting B’s invariance as an empirical test. If a concept-level claim is wanted, derive it from an independent definition of selection and show B satisfies that definition structurally. Even then, the non-reading is analytic, not experimental.
+
+---
+
+**Finding 8 — “Different things” is too weak; provenance is not equivalent to any input-dependence difference.**
+- **Claim attacked:** “…it is a demonstration that the two processes' outputs depend on different things, which is what ‘provenance’ means in file 10.”
+- **Why it fails:** Any two non-identical programs depend on different things — one may use a seed, another an input order. Provenance as a route requires a typed causal graph: defect representation, variation, fitness, candidate generation, etc. The sentence equates provenance with arbitrary input-dependence difference. It also appeals to file 10’s definition without quoting it, so the reader cannot check whether M4 operationalises that definition.
+- **Severity:** Serious.
+- **Fix:** Quote file 10’s definition of provenance. Formalise it as a causal-graph schema. Show C’s graph contains a node representing the defect and B’s does not. Show the intervention targets that node. Show other input-dependence differences are irrelevant. Only then is “different things” a claim about the right kind of thing.
+
+---
+
+**Finding 9 — The intervention is not common across the two processes, so the asymmetry is confounded by design.**
+- **Claim attacked:** The scramble test as “the test that distinguishes the provenances.”
+- **Why it fails:** C gets its actual inputs corrupted; B gets a dead argument. B is invariant only because the experimenter chose an input B does not use. A proper comparative intervention would corrupt the input each process actually uses, or apply the same environmental manipulation to both and measure differential sensitivity. As written, the manipulation is nested inside C’s architecture and absent from B’s.
+- **Severity:** Serious.
+- **Fix:** Use a common intervention. For example, scramble the causal link between error and candidate generation for both: for C, scramble V; for B, scramble the fitness-to-reproduction mapping or the outcome signal used for fitness. Then compare. Or use the 2×2 in Finding 5.
+
+---
+
+**Finding 10 — M6(ii) directly undermines the claim that C’s route constitutively requires defect content.**
+- **Claim attacked:** “The defect representation is on C's route…”
+- **Why it fails:** The results report: “Defect records with the outcome replaced by the prediction (no defect content) → **built** `IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i`, three times, claiming ‘fixed 671, broken 0.’” If C can build a rule with no defect content when its accounting is fooled, then the scramble test’s C failure cannot be read as “no defect content, no construction.” It may be “inconsistent labels break the action scorer.” The author admits the accounting bug but still uses the scramble test as the provenance distinguisher.
+- **Severity:** Serious.
+- **Fix:** Fix the accounting bug, rerun M6(ii), and show that with corrected accounting C builds nothing from no-defect records. Then rerun the scramble test. Until then, the claim that C’s route is defect-driven is undermined by C’s own behaviour.
+
+---
+
+**Finding 11 — The only concept-level reading is a conditional functional-role reading, and the paper does not supply its conditions.**
+- **Claim attacked:** The implicit claim that M4 tells us about construction vs selection as concepts.
+- **Why it fails:** Under a functional-role reading, the test could be evidence for a concept-level distinction. But that reading requires at least: (i) concept definitions independent of C and B; (ii) a bridge from code variables to concept variables; (iii) evidence that the intervention targets the defect *qua* defect, not just a label column; (iv) an argument that B’s scalar fitness is not a competing representation of the defect; (v) type-level generalisation across multiple implementations; (vi) controls showing that scrambling irrelevant content does not hurt C. The paper supplies none of these. It remains a token-level result about this C and this B.
+- **Severity:** Serious/fatal to the concept-level claim.
+- **Fix:** Add the bridge. At minimum: independent definitions, a formal causal graph for each process, a 2×2 intervention on itemised defect content vs aggregate outcome signal, placebo scrambles, and multiple constructors/selectors. Without these, the test is only “C reads V and B does not.”
+
+---
+
+**Finding 12 — What the author would have to add to make it more than “C reads V and B does not.”**
+- **Claim attacked:** “It is a demonstration that the two processes' outputs depend on different things.”
+- **Why it fails:** The demonstration shows one C changes under one scramble and one B ignores one dead argument. It does not show the dependence pattern is stable, type-level, or concept-relevant. The B result is guaranteed by code; the C result may be specific to C’s action solver and its buggy accounting.
+- **Severity:** Serious.
+- **Fix:** The author must add:
+  1. **Independent concept definitions** of construction and selection, with necessary/sufficient conditions and no reference to C’s or B’s implementation.
+  2. **A bridge mapping** from code variables to concept variables, showing that V is the concept’s constitutive defect representation and that B’s absent V is not an implementation accident.
+  3. **A common intervention design:** corrupt the input each process actually uses, not a dead argument. For B, that means fitness/outcome signal; for C, that means defect records.
+  4. **A 2×2 or factorial test:** itemised defect content (intact/scrambled) × aggregate outcome signal (intact/scrambled), for both processes. Predict the asymmetry.
+  5. **Placebo scrambles:** scramble a column C should ignore and show no effect on C, to rule out generic data corruption.
+  6. **Type-level generalisation:** multiple independently implemented constructors and selectors with the same concept roles, all showing the same dependence pattern.
+  7. **An explicit argument about format:** show that scalar fitness is not a representation of the defect in the relevant sense, or concede that the distinction is format-based and defend that as the concept-level difference.
+  8. **Corrected M6(ii):** demonstrate C does not build from no-defect records once the accounting bug is fixed.
+- **Severity:** These are the minimum additions for a concept-level reading; without them, the test remains exactly what the author denies: a demonstration that C reads V and B does not.
+====================================================================================================
+D3_scramble_meaning | deepseek | sample 1 | finish stop | 14000 chars | error None
+====================================================================================================
+Target quotation: **“That is not a claim about the code’s data flow — it is a demonstration that the two processes’ outputs depend on different things, which is what ‘provenance’ means in file 10.”**
+
+**1. Self-contradiction: the sentence denies the only thing it demonstrates.**
+- **Claim attacked:** “not a claim about the code’s data flow” but “outputs depend on different things.”
+- **Why it fails:** “Outputs depend on different things” is a claim about causal input dependence — i.e. data flow. The scramble test shows that permuting V changes C’s output and does not change B’s. That is exactly a fact about which variables enter each program’s input-output function.
+- **Severity:** fatal to the sentence as written.
+- **Fix:** Say: “This is a claim about input dependence. I argue that this input dependence is the right operationalisation of provenance.” Then defend that argument separately.
+
+**2. The scramble test is a tautological manipulation check, not a conceptual test.**
+- **Claim attacked:** M4 “distinguishes the provenances.”
+- **Why it fails:** C is defined as reading V; B is defined as not reading V. Scramble V; C changes; B does not. Given the design, no other result was possible. This is a check that the code implements the declared input sets.
+- **Severity:** fatal to S4 as conceptual support.
+- **Fix:** Cross-classify. Add a selection-like process that reads itemised defect records. Add a construction-like process that does not. If scramble sensitivity tracks V-reading rather than construction/selection, both will behave like V-readers.
+
+**3. The B half of M4 is a no-op.**
+- **Claim attacked:** “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: byte-identical output.”
+- **Why it fails:** Passing an unread argument to a deterministic program cannot change its output. This is not an empirical test of B’s independence from defect information. B’s actual input is fitness, which is computed from true fields. Scramble those and B will change.
+- **Severity:** serious; fatal to the B half of S4.
+- **Fix:** Manipulate B’s actual fitness signal — permute the true outcomes used to score candidates. If B still finds the law, then B is insensitive to defect content in the relevant sense. If B changes, B also uses defect information.
+
+**4. B’s scalar fitness is already a compressed representation of defect.**
+- **Claim attacked:** B “never reads a defect record” therefore has a different provenance without defect representation.
+- **Why it fails:** B receives a number per candidate computed from errors. That number is a function of which predictions were wrong. It is a compressed representation of defect. The test distinguishes itemised versus scalar defect information, not presence versus absence.
+- **Severity:** serious.
+- **Fix:** Define “representation of defect” independently of the itemised/scalar format. Justify why a scalar error count and the resulting fitness landscape do not count. Or give B itemised defects and see whether it can use them.
+
+**5. C’s action solver uses true labels and V-membership, not demonstrated defect content.**
+- **Claim attacked:** scrambling the true-field column shows “the defect representation is on the route.”
+- **Why it fails:** C’s action solver counts V records “it fixes” by applying an action and checking whether the new prediction equals the true field. The predicted-field column is never manipulated. A generic supervised learner keyed on V-membership and paired true labels would break under the same permutation. The test does not show C diagnoses the mismatch.
+- **Severity:** serious.
+- **Fix:** Manipulate defect content while holding true labels fixed: scramble the predicted-field column among V records; replace the true field with a different wrong field preserving mismatch; give V records with correct true fields. See whether C changes for defect-content reasons rather than label-fitting reasons.
+
+**6. M6(ii) directly undercuts the route claim.**
+- **Claim attacked:** S4 “on the route” is supported.
+- **Why it fails:** M6(ii) reports that C built a rule from records with the outcome replaced by the prediction, i.e. no defect content. Even if this is caused by the accounting bug, it shows the route can fire without defect content. That contradicts the claim that defect representation is necessary on the route.
+- **Severity:** serious.
+- **Fix:** Fix the accounting bug and rerun M6(ii). If C then builds nothing, M4 is cleaner. If C still builds something, retract the “defect representation is on the route” claim for this constructor.
+
+**7. “Which is what ‘provenance’ means in file 10” is an overclaim.**
+- **Claim attacked:** input dependence equals provenance.
+- **Why it fails:** File 10’s provenance is a route from failure to new machinery, not merely different input dependencies. Two selection processes can differ in inputs. Two construction processes can share inputs. Input dependence is at best necessary, not sufficient.
+- **Severity:** serious.
+- **Fix:** Add route-level evidence: order of operations, intermediate defect states, counterfactual mediation, transfer to new defects, or explanation/justification of the built rule.
+
+**8. One C and one B cannot support a claim about construction versus selection as concepts.**
+- **Claim attacked:** M4 tells us about the concepts, not just these programs.
+- **Why it fails:** An existence proof about two implementations cannot establish a conceptual taxonomy. A different constructor may not use itemised defects. A different selector may use them. There is no variation across implementations.
+- **Severity:** serious; fatal if the paper claims conceptual generality.
+- **Fix:** Instantiate multiple constructors and selectors, including adversarial ones that cross the input boundary. Show that scramble sensitivity clusters by concept, not by implementation.
+
+**9. The argument is circular.**
+- **Claim attacked:** “This is the test that distinguishes the provenances.”
+- **Why it fails:** Construction is operationally defined as operating on a representation of the defect. M4 manipulates that representation. C breaks. The conclusion — construction is distinct from selection — is already contained in the premise. The test checks the definition, not the concept.
+- **Severity:** fatal to the conceptual claim.
+- **Fix:** Define construction and selection independently of whether the process reads V. Predict scramble sensitivity from the independent definition. Or present M4 openly as a manipulation check, not a conceptual test.
+
+**10. The scramble may create impossible records.**
+- **Claim attacked:** the scramble isolates dependence on defect content.
+- **Why it fails:** Permuting the true-field column among V records may produce state-outcome pairings consistent with no possible world. C’s break could be inconsistency detection or label-noise overfitting. A non-construction process that reads V would also break.
+- **Severity:** serious.
+- **Fix:** Use scrambles that remain consistent with some alternative world. Compare C against a non-construction process that reads the same V records.
+
+**11. The scramble effect is confounded by admitted bugs.**
+- **Claim attacked:** the scramble effect reflects defect representation.
+- **Why it fails:** Section 8 admits fragile defect accounting, one-step lookahead, and arbitrary tie-breaking. The scrambled run built three junk rules with small positive nets. The measured destruction of C may be an artefact of these bugs rather than a property of defect-driven construction.
+- **Severity:** serious.
+- **Fix:** Fix the accounting invariant, tie-break rule, and lookahead. Rerun M4. Show the scramble effect persists.
+
+**12. “Same aggregate” is misleading.**
+- **Claim attacked:** “same states, same number of defects, same aggregate; wrong pairings.”
+- **Why it fails:** The manipulation preserves marginals, not the state-outcome pairings. B’s fitness aggregate is untouched because B does not read V. The phrase suggests a controlled comparison that was not run.
+- **Severity:** minor to serious.
+- **Fix:** Specify exactly which aggregates are invariant — state marginals, outcome marginals, count of V records — and report the pairing statistics that are destroyed.
+
+**13. “Different things” is unspecified and unfalsifiable.**
+- **Claim attacked:** “outputs depend on different things.”
+- **Why it fails:** Any two programs depend on different things. The phrase does not name the construction-relevant dependency. It cannot be falsified unless “things” is replaced by a specific causal graph.
+- **Severity:** serious.
+- **Fix:** State the causal graph. C’s output depends on V’s state-outcome pairing. B’s output depends on scalar fitness only. Then defend why that difference maps onto provenance.
+
+**14. B’s byte-identical output is used as empirical support in S4, but it is a code invariant.**
+- **Claim attacked:** S4 includes “B’s output under the scramble is byte-identical to B’s without it.”
+- **Why it fails:** Since B never reads V, this is guaranteed by the code. It cannot support an empirical outcome. Including it inflates the apparent support.
+- **Severity:** serious.
+- **Fix:** Remove it from S4. Report it as an implementation check. Replace it with a non-tautological manipulation of B’s actual input.
+
+**15. There is no positive control that B is selection as a concept.**
+- **Claim attacked:** M4 shows B’s provenance is selection.
+- **Why it fails:** B is a GA with fitness. M4 only shows B ignores V. It does not show B’s route is variation-and-survival without any representation of defect. B could be any program that ignores an unused variable.
+- **Severity:** serious.
+- **Fix:** Give B itemised defect records. Give B an internal error model. See whether it uses them. If it does, the scramble test no longer distinguishes selection.
+
+**16. There is no negative control that C’s construction requires defect representation.**
+- **Claim attacked:** M4 shows construction as a concept requires defect records.
+- **Why it fails:** A constructor with a grammar prior, domain theory, or structural axioms could build the collision law without V and be unaffected by scramble. M4 cannot show that defect representation is necessary for construction.
+- **Severity:** serious.
+- **Fix:** Add a C-minus-V constructor or a domain-theory constructor. If it builds the law and is scramble-invariant, M4 is not a construction test.
+
+**17. Causal necessity of V does not show V is used as a representation.**
+- **Claim attacked:** because C’s output changes when V is scrambled, the defect representation is on the route.
+- **Why it fails:** A lookup table keyed on V would also change under scramble. Necessity of an input does not show the input is used as a representation rather than as a key or training set.
+- **Severity:** serious.
+- **Fix:** Use mediation or process tracing. Show an intermediate state carries defect properties and that intervening on that intermediate state changes the built rule.
+
+**18. One scramble permutation is not enough.**
+- **Claim attacked:** the single scrambled run supports S4.
+- **Why it fails:** One permutation could be lucky. C’s behaviour under different scrambles is unreported.
+- **Severity:** minor.
+- **Fix:** Run multiple scrambles. Report the distribution and effect size, not one number.
+
+**19. “The route is detectable by ablation” is not established.**
+- **Claim attacked:** the one-paragraph summary says ablation detects the route.
+- **Why it fails:** The ablation detects V dependence. It does not detect a route. B’s route is not ablated; an unused variable is passed to it.
+- **Severity:** serious.
+- **Fix:** Ablate route components symmetrically: C’s defect induction, C’s action solving, B’s fitness, B’s variation operator. Show which ablations disrupt which process.
+
+**Direct answer: is there any reading under which the scramble test tells us about construction versus selection as concepts?**
+Only a stipulative one. If “construction” is defined as any process whose output is causally sensitive to an itemised defect representation, and “selection” is defined as any process insensitive to it, then M4 is a valid manipulation check for that definition. That is not a reading under which the test discovers something about the concepts. It is a reading under which the concepts have been replaced by the operationalisation. The test cannot rule out a selection process that reads itemised defects or a construction process that does not.
+
+**What the author would have to add to make it more than “C reads V and B does not”:**
+1. **Cross-classification controls:** a selection process that reads V; a construction process that does not. If scramble sensitivity tracks V-reading rather than construction/selection, the conceptual claim collapses.
+2. **Symmetric input manipulation:** scramble B’s actual fitness signal, not an unread argument. Give B V and see whether it can use it.
+3. **Independent definition of “representation of defect”:** justify why B’s scalar fitness does not count. Otherwise B also has a compressed defect representation.
+4. **Defect-content manipulations:** scramble the predicted field; replace the true field with a different wrong field preserving mismatch; use scrambles consistent with alternative worlds. Show C’s rule changes because of defect content, not because labels were permuted.
+5. **Process tracing or mediation:** show an internal defect state is an intermediate cause between failure and rule. Input-output dependence alone is too weak.
+6. **Multiple implementations per concept:** several constructors and several selectors, including ones that cross the input boundary. One C and one B cannot support a conceptual taxonomy.
+7. **Route-level measures:** transfer to new defects, counterfactual sensitivity to individual defect components, sample efficiency, and invariance under reformatting. These are what could turn an input ablation into evidence about provenance.
+====================================================================================================
+D3_scramble_meaning | deepseek | sample 2 | finish stop | 16060 chars | error None
+====================================================================================================
+**Finding 1 — The only reading is a stipulative, circular interface reading, not a conceptual test.**
+
+Attacked claim: “That is not a claim about the code's data flow — it is a demonstration that the two processes' outputs depend on different things, which is what ‘provenance’ means in file 10.”
+
+Why it fails: The only reading under which M4 tells us anything about construction versus selection *as concepts* is this: define construction as “a process whose transition function depends on an itemised defect representation” and selection as “a process whose transition function depends only on a scalar per-candidate score.” Under that reading, M4 is a unit test that C satisfies the construction interface and B satisfies the selection interface. But C and B were written to satisfy those interfaces. It is circular. It does not show that C's dependence is on defect *content* rather than on an arbitrary column, nor that selection as a class cannot use itemised defects, nor that construction as a class must use them. It is exactly “C reads V and B does not.”
+
+Seriousness: Fatal to the conceptual claim.
+
+Fix: See Finding 18 for the required additions.
+
+**Finding 2 — The denial is false: it is a claim about code data flow.**
+
+Attacked claim: “That is not a claim about the code's data flow.”
+
+Why it fails: The evidence given is “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**” That is literally a statement about whether an argument is read. C's output changes when the outcome column is permuted; that is data flow. The sentence tries to convert a code-level fact into a provenance-level claim by assertion.
+
+Seriousness: Fatal for the stated framing.
+
+Fix: Concede that M4 is a code-level ablation, then supply the abstraction that would make it bear on provenance.
+
+**Finding 3 — B's byte-identical output is tautological.**
+
+Attacked claim: “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**”
+
+Why it fails: If a deterministic program never reads an argument, byte-identical output is guaranteed by implementation. This result has zero power to detect anything about selection. It would hold for any deterministic code, including a random-number generator that ignores V.
+
+Seriousness: Serious. The B half of S4 is vacuous.
+
+Fix: Feed the scrambled information through B's actual fitness/selection path, or state it as a code inspection and remove it from the evidential support for the conceptual claim.
+
+**Finding 4 — “The defect representation is on C's route and not on B's” is false under the natural reading.**
+
+Attacked claim: “The defect representation is on C's route and not on B's.”
+
+Why it fails: B's fitness is computed from the same exposure half and the same world's true fields: “fitness = **exposure-half** fitness of the current architecture plus the candidate rule” (design section 5). That fitness is an aggregate of the same true outcomes. If “defect representation” means the true outcomes, B reads them through the fitness function. The test only shows B does not receive the *itemised* V records. The claim overreaches.
+
+Seriousness: Serious. It conflates itemised versus aggregate access with presence versus absence of a defect representation.
+
+Fix: Distinguish “itemised defect representation” from “aggregate defect signal.” State the claim as “itemised defect records are on C's route and not on B's,” or show B's fitness is computed without true outcomes.
+
+**Finding 5 — Provenance is misdefined as sensitivity to one input column.**
+
+Attacked claim: “which is what ‘provenance’ means in file 10.”
+
+Why it fails: File 10 defines provenance as the route from failure to new machinery. M4 shows a causal dependency on one column. It does not show that the representation lies on the route for the specific rule built. A process can be sensitive to an input without that input being on the failure-to-machinery route (e.g., a random seed). Conversely, a process can use a defect representation but be insensitive to scrambling if it has a redundant route.
+
+Seriousness: Serious.
+
+Fix: Do causal mediation: instrument C, delete or alter the specific defect records that the built rule fixes, show the rule changes or disappears, and show that an equivalent defect representation yields the same rule.
+
+**Finding 6 — The comparison is confounded by asymmetric inputs.**
+
+Attacked claim: “Defect records handed to C with the *outcome* column permuted among them... B, seed 0, re-run with the scrambled records passed in as an argument its code never reads...”
+
+Why it fails: C is given itemised records. B is given a scalar fitness. The scramble perturbs the itemised records. B's output cannot change because it never receives them. The result therefore demonstrates that the input interfaces differ, not that the provenances differ.
+
+Seriousness: Serious.
+
+Fix: Match inputs: give B the same itemised records and let it aggregate; or give C only scalar fitness. Then see whether the provenance distinction survives.
+
+**Finding 7 — Selection as a concept can read itemised defects.**
+
+Attacked claim: “B never reads a defect record. Its only input is a number per candidate.”
+
+Why it fails: Selection is variation plus survival. Its feedback can be any representation. Multi-objective selection, novelty search on error vectors, Bayesian optimization with per-instance losses, and selection of hypotheses by likelihood over data all use itemised defect information. The test rules out only one B that does not. It does not establish a conceptual separation.
+
+Seriousness: Serious.
+
+Fix: Implement selection processes that use itemised defects. Show whether the scramble affects them as the concept predicts.
+
+**Finding 8 — Construction as a concept can avoid itemised defects.**
+
+Attacked claim: “The defect representation is on C's route and not on B's.”
+
+Why it fails: A construction process can build from a world model, a problem specification, a proof, or a generative model, without itemised defect records. Under the interface reading, such a constructor would be misclassified as selection because it is invariant to the scramble. The test does not carve the concepts.
+
+Seriousness: Serious.
+
+Fix: Implement construction variants that do not use V. Show that the concept-level property is not tied to this one column.
+
+**Finding 9 — C itself uses scoring and ranking, i.e., selection, so the distinction collapses or shifts.**
+
+Attacked claim: “C — construction... B — blind selection over the meta-grammar.”
+
+Why it fails: C's algorithm scores every condition and keeps the top 20; it solves an action by taking the best (condition, action). That is selection over hypotheses. The test therefore does not distinguish construction from selection; it distinguishes itemised-score selection from scalar-fitness selection. The conceptual distinction is not cleanly instantiated.
+
+Seriousness: Serious.
+
+Fix: Define selection narrowly enough to exclude C's internal ranking, or admit that the real contrast is itemised versus aggregate feedback and test that contrast directly.
+
+**Finding 10 — M6(ii) undermines the interpretation of M4.**
+
+Attacked claim: the scrambled run's failure shows C is using the true field as a representation of what went wrong.
+
+Why it fails: M6(ii) shows C built a rule from records with no defect content: “Defect records with the outcome replaced by the prediction (no defect content) → **built** ... **M6(ii) ✗.**” Section 8 says: “C's accounting never checks that the old prediction differed. ... the accounting is fragile and the stopping rule can be fooled.” If C can build from no defect content, then its sensitivity to the scrambled true-field column in M4 does not by itself prove it is using the true field as a defect representation. It may be sensitive to arbitrary features of the column and fooled by the same accounting bug. The scrambled run built three junk rules with small positive nets.
+
+Seriousness: Serious.
+
+Fix: Fix the accounting to require that the old prediction differed; rerun M4. Add a control that scrambles the true field while preserving defect status, e.g., permute true fields among records with identical predicted fields.
+
+**Finding 11 — “Same aggregate” is undefined and pre-ordains B's invariance.**
+
+Attacked claim: “same states, same number of defects, same aggregate; wrong pairings.”
+
+Why it fails: If “same aggregate” means the scalar fitness is preserved, then any scalar-fitness selector is invariant by definition. The B result is pre-ordained. If it means only the marginal distribution of true-field values is preserved, it does not establish the conceptual point. The invariant is doing crucial work and is not specified.
+
+Seriousness: Serious.
+
+Fix: Define the invariant precisely. Show the scramble is a pure item-level perturbation that preserves every scalar summary available to a selection process. Then the invariance is a theorem, not an experiment.
+
+**Finding 12 — Only the outcome column is scrambled, so the claim about “the defect representation” is too broad.**
+
+Attacked claim: “The defect representation is on C's route and not on B's.”
+
+Why it fails: The scramble only permutes the true-field column among V records. It leaves states, predicted fields, record order, non-defect records, and the condition-induction input intact. It cannot show the entire defect representation is on C's route; it shows only that the outcome column is causally relevant to action selection.
+
+Seriousness: Serious.
+
+Fix: Ablate each component of the defect representation separately. Or narrow the claim to “the outcome column is on C's route.”
+
+**Finding 13 — There are no positive controls.**
+
+Attacked claim: “Scrambling the defect records' outcomes while keeping their number destroys C (0.906 → 0.355 on collisions); the blind process B, which never reads them, is byte-for-byte unaffected...”
+
+Why it fails: There is no positive control showing that a known construction process with a different defect representation is affected by an equivalent scramble, nor a known selection process that uses itemised defects is affected. Without positive controls, the differential is uninterpretable.
+
+Seriousness: Serious.
+
+Fix: Add positive controls: a selection process whose fitness is computed from the scrambled records; a construction process that receives an equivalent non-scrambled representation. Show the expected pattern.
+
+**Finding 14 — The process boundary is unspecified.**
+
+Attacked claim: “B never reads V. Its only input is a number per candidate.” / “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads...”
+
+Why it fails: The fitness evaluator reads the world's true fields and computes the number. If the evaluator is part of the selection process, B does read defect information in aggregate. If it is not, then C's record collection is also external and the comparison is unfair. The test does not say where the process ends.
+
+Seriousness: Serious.
+
+Fix: Define process boundaries explicitly. Either include the fitness evaluator in B and test its sensitivity to scrambled defects, or exclude it from B and exclude C's record collector from C.
+
+**Finding 15 — B's invariance is a null result with no power, and only seed 0 is reported.**
+
+Attacked claim: “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.**”
+
+Why it fails: A null result where the independent variable is disconnected from the process cannot falsify any hypothesis about selection. It is not evidence for selection's invariance to defect representation. Only seed 0 is reported, though the code fact would apply to all seeds.
+
+Seriousness: Serious.
+
+Fix: Replace with a test where B's output could change if selection uses defect representation; e.g., scramble the records used to compute B's fitness. If the result is a code fact, state it as such and remove it from the support criteria.
+
+**Finding 16 — The C/B contrast is confounded by many other differences.**
+
+Attacked claim: “the two processes' outputs depend on different things, which is what ‘provenance’ means.”
+
+Why it fails: C and B differ in search algorithm, input format, rule construction, tie-breaking, population mechanics, and stopping rules. The scramble manipulates only one difference. Any differential result could be due to any of the others. The claim that it distinguishes provenances is confounded.
+
+Seriousness: Serious.
+
+Fix: Match processes on all other dimensions and vary only the presence/absence of the defect representation. Or use within-process manipulations: give B itemised records; give C scalar fitness.
+
+**Finding 17 — The “wrong action” interpretation is circular.**
+
+Attacked claim: “Under the scramble C still *induced* a near-right condition (that step reads only states, which were not scrambled) but *solved* the wrong action (that step reads outcomes, which were) — it dropped the `hold`.”
+
+Why it fails: The author knows C's condition step reads only states and its action step reads outcomes from the code. The scramble test does not independently reveal that division of labour; it is read off the code. The interpretation is circular: C's output changed because the code uses the outcome column—that is the fact to be explained. It does not show a conceptual difference.
+
+Seriousness: Serious.
+
+Fix: Instrument C to log which records are used at each step. Or specify a process-level causal model and test it independently of the code's known structure.
+
+**Finding 18 — What would have to be added to make M4 more than “C reads V and B does not.”**
+
+Attacked claim: “That is not a claim about the code's data flow — it is a demonstration that the two processes' outputs depend on different things, which is what ‘provenance’ means in file 10.”
+
+Why it fails: As above, M4 is currently a code-level manipulation with no conceptual reach.
+
+Seriousness: Fatal to the conceptual claim.
+
+Fix: Add all of the following:
+1. A formal definition of construction and selection as classes of processes, independent of C and B, with an invariance property for selection and a causal-route property for construction.
+2. Multiple implementations per class, including adversarial cases: selection processes that use itemised defects (multi-objective, novelty, Bayesian optimization with per-instance losses), and construction processes that do not use itemised defects (world-model, specification, proof, generative model).
+3. Positive controls: scramble the true-field column for a selection process whose fitness is computed from it; show it changes. Provide a construction process with a semantically equivalent defect representation; show it builds the same rule.
+4. Causal mediation/tracing: instrument C to show which defect records caused which condition and action; delete individual records and show specific rule changes; show the built rule's condition matches the defect states and its action fixes those defects.
+5. Targeted scrambles that isolate defect content from column identity: permute true fields among records with identical predicted fields (defect status unchanged); replace the true field with a defect bit; supply an equivalent defect representation; show the rule changes only when defect content changes, not when the column changes arbitrarily.
+6. A demonstration that the M4 effect is not due to the M6(ii) accounting bug. Fix the “fixed” criterion to require that the old prediction differed, then rerun M4.
+7. A replacement for the B invariance clause. B's byte-identical output is guaranteed by an unused argument and has no power. Use a test where B's output could change if selection uses defect representation, or prove the invariance as a theorem for all scalar-fitness selectors and demote the B run to an illustration.
+8. Explicit process boundaries: say whether the fitness evaluator and record collector are inside or outside each process, and make the comparison symmetric.

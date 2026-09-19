@@ -1,0 +1,797 @@
+====================================================================================================
+S2_derivations | rev2_deepseek | sample 0 | finish stop | 26520 chars | error None
+====================================================================================================
+The following findings are against Part XVI and its cross-citations.
+
+## Derivation 1
+
+**1. Part II’s “one forward kind” has no edit-boundary translation, but Derivation 1 proves a translated relation.**
+Quoted claim: “every active component \(k\) of \(E\) has, on \(\tau[C]\), the signature that its anchor subnetwork \(\lambda(k)\) has on \(C\), up to the port translation.”
+Part II defines forward kind as: “their signatures coincide on \(C\setminus\{(1,b_0)\}\)” for two subnetworks \(U,U'\) on the same \((\ell,C)\). There is no \(\tau,\sigma\) in that definition. Derivation 1 compares signatures indexed by \(C\) in \(D\) to signatures indexed by \(\tau[C]\) in \(E\). Therefore it does not establish the Part II relation as written; it establishes a translated variant. Part V condition 3 and Derivation 10 then cite it as if it were the defined relation.
+**Seriousness:** fatal for the claim that (F1) entails “one forward kind” under Part II’s definition.
+**Fix:** extend Part II’s forward-kind definition to include an edit-boundary translation, or define a separate relation “one forward kind up to \(t\)” and use that name in Part V and Derivation 10.
+
+**2. Part V cites Derivation 1 without Derivation 1’s injectivity hypothesis.**
+Quoted Part V: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract.”
+Derivation 1’s claim requires: “let \((\tau,\sigma)\) be injective on \(C\).” Part V’s (E) does not contain that hypothesis. (F2) only requires \(\tau(1)=1\) and \(\tau(a_2a_1)=\tau(a_2)\tau(a_1)\), not injectivity.
+**Seriousness:** serious. The cited entailment is not available from the stated hypotheses.
+**Fix:** add injectivity of \((\tau,\sigma)\) on \(C\) to (E)/(F1) or explicitly weaken the Part V citation to “image of the signature under \((\tau,\sigma)\).”
+
+**3. Derivation 1 assumes the anchor’s visible ports are exactly the \(\lambda\)-image of \(V_k\).**
+Quoted proof: “the visible ports of the anchor being those \(\lambda\) translates to \(V_k\).”
+Part II says a subnetwork’s visible ports are “a declared subset \(V_U^{\mathrm{vis}}\) of its ports.” Part IV says \(\lambda\) assigns a subnetwork “with a port translation.” It does not say the subnetwork’s declared visible ports equal the translated image of \(V_k\). If the anchor has extra visible ports, or hidden ports not matching \(V_k\), (F1)’s projection to \(V_k\) need not equal the Part II subnetwork signature.
+**Seriousness:** serious.
+**Fix:** define \(\lambda(k)\)’s visible ports to be the translated image of \(V_k\), or state that as an extra hypothesis in Derivation 1 and Part V.
+
+**4. Derivation 1 does not establish the domain-carrying bijection required for forward kind.**
+Quoted Derivation 1: “up to the port translation.”
+Part II’s forward kind requires “a bijection of their visible ports, carrying value domains onto value domains.” F1 equating relations as subsets presupposes some value alignment, but Derivation 1 never states that \(\lambda\)’s port translation carries domains bijectively.
+**Seriousness:** serious if the conclusion is meant to be forward kind, not mere relation equality.
+**Fix:** require the port translation to be a domain-respecting bijection, or weaken the conclusion.
+
+**5. Part V’s citation drops “active.”**
+Quoted Part V: “every component of \(E\) has the signature...”
+Derivation 1’s claim says “every active component \(k\) of \(E\).” (F1) is only for active components. Inactive components are not covered.
+**Seriousness:** minor but checkable.
+**Fix:** say “every active component” in Part V.
+
+**6. \(\tau[C]\) need not be a contract.**
+Derivation 1 speaks of \(\operatorname{sig}_{\tau[C]}(k)\). Part II defines signatures for a contract \(C\subseteq A\times B\). Derivation 1 does not require \(\tau[C]\) to contain a baseline or to be closed as a contract; Part V also does not require \(\sigma(b_0)=b_0\).
+**Seriousness:** minor formal gap.
+**Fix:** define signatures for arbitrary subsets of \(A\times B\), or require \(\tau[C]\) to be a contract.
+
+## Derivation 2
+
+**7. The definition of account-equivalence uses \(\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b)\), mixing \(E\)-ports into a \(D\)-solution.**
+Quoted definition: “the anchored relations \(\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b)\) coincide.”
+\(V_k\) is a port set of component \(k\) in \(E\); \(\operatorname{Sol}_{\lambda(k)}\) is over ports in \(D\). Unless the port translation is explicitly applied and is a bijection onto the anchor’s visible ports, the expression is ill-typed.
+**Seriousness:** serious notation/type gap.
+**Fix:** write the projection to the anchor’s visible ports, or explicitly translate \(V_k\) through \(\lambda\)’s port translation.
+
+**8. The claim is nearly tautological and does not use (F2).**
+Quoted claim: “If \(\mathcal E\) and \(\mathcal E'\) both satisfy (F1), (F2) and (A) on \(C\), have the same anchor map up to that bijection, and \(\Gamma\) corresponds to \(\Gamma'\), then they are account-equivalent on \(C\).”
+Account-equivalence is defined by coincidence of anchored relations and pulled-back answer profiles. If the anchor maps are the same up to the bijection, the anchored relations already coincide. (F2) is unused. The proof’s step that “(F1) for each gives the anchored relations as the component relations” confuses anchored relations with component relations under translated edits.
+**Seriousness:** minor; the result is true but misdescribed.
+**Fix:** either define account-equivalence in terms of component relations under translations, or state the trivial consequence without invoking F1/F2.
+
+**9. The claim does not show “account-equivalence” is an equivalence relation.**
+Quoted heading: “Account-equivalence.”
+The definition is not proved reflexive, symmetric, or transitive, nor related to the truth value of \(\operatorname{Account}(E,p)\).
+**Seriousness:** minor.
+**Fix:** prove the equivalence-relation properties and link it to (E), or rename it.
+
+**10. The account-equivalence definition omits the port bijection needed for comparing projections.**
+Quoted definition: “under which ... the anchored relations ... coincide.”
+It says there is a bijection between active components, but not a bijection between the relevant port sets that makes the two projections comparable.
+**Seriousness:** minor.
+**Fix:** specify the port bijection and its commutation with \(\lambda,\lambda'\).
+
+## Derivation 3
+
+**11. The proof assumes off-\(H\) translated pairs are disjoint from translated \(H\)-pairs.**
+Quoted proof: “Survival on \(H\) constrains only the relations at pairs in \(H\). The altered pair agrees with \((E,t)\) on \(H\), hence survives.”
+If \((\tau,\sigma)\) is not injective, an off-\(H\) pair \((a,b)\) can have \((\tau(a),\sigma(b))=(\tau(a'),\sigma(b'))\) for some \((a',b')\in H\). Then changing \(L_j(\tau(a),\sigma(b))\) changes the relation used at the \(H\)-pair, so the altered pair need not survive.
+**Seriousness:** serious.
+**Fix:** require \((\tau,\sigma)\) injective on \(C\), or require \((\tau,\sigma)[C\setminus H]\) disjoint from \((\tau,\sigma)[H]\).
+
+**12. The closure hypothesis is not literally “off \(H\)” if the translation collapses pairs.**
+Quoted hypothesis: “closed under pointwise alteration off \(H\): for each \((a,b)\in C\setminus H\), each component \(j\) of \(E\), and each relation \(L'\ldots\)”
+This only alters \(L_j\) at the translated pair \((\tau(a),\sigma(b))\). If that translated pair is also the image of an \(H\)-pair, the alteration is not off \(H\) in the organization \(E\)’s edit space.
+**Seriousness:** serious, same root as Finding 11.
+**Fix:** define closure after translating \(H\), on \((\tau,\sigma)[H]\), and require disjointness.
+
+**13. The consequence “selection data do not determine the survivor off \(H\)” is stronger than the existential proof.**
+Quoted consequence: “Under the closure hypothesis, the selection data do not determine the survivor off \(H\): selection provides no guarantee of fidelity where it did not test.”
+The proof shows there exists another pair in \(\mathcal T\) that survives on \(H\) and differs. It does not show that the full selection history — including \(\mu\), lineage, and parametrisation — fails to determine \(t\)’s off-\(H\) behavior. The derivation later concedes that a parametric population may determine the survivor off \(H\).
+**Seriousness:** serious overclaim.
+**Fix:** phrase the conclusion as “survival on \(H\) alone does not determine off-\(H\) behavior,” or add that \(\mu\) and lineage are excluded.
+
+**14. Part XV attack (D) misstates Derivation 3.**
+Quoted Part XV: “A selection history \(H\subsetneq C\), in a population closed under pointwise alteration of component relations off \(H\), whose survivor is determined on \(C\setminus H\). This refutes Derivation 3 under its hypothesis.”
+Derivation 3 does not claim the survivor is undetermined. It claims there is another pair in \(\mathcal T\) that survives on \(H\) and differs from \(E\)’s solution set. A determined survivor is compatible with that unless “survivor” means unique, in which case the contradiction is with Part IV’s “necessary and sufficient” survival condition, not with Derivation 3.
+**Seriousness:** serious cross-citation error.
+**Fix:** clarify whether “survivor” means unique selected \(t\). If so, attack Part IV’s survival condition rather than Derivation 3.
+
+## Derivation 4
+
+**15. “No transport” should be “no selected transport.”**
+Quoted remark: “That a system with no transport is never surprised...”
+Part IV defines surprise only for “Let \(t\) be selected on \(H\) with contract \(C\).” A system with a declared or constructed transport but no selected transport also has no surprise by that definition.
+**Seriousness:** minor precision issue.
+**Fix:** say “no selected transport.”
+
+## Derivation 5
+
+**16. The main claim that solutions “include the question” is false as constructed.**
+Quoted claim: “A question \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\) determines an organization \(D_p\ldots\) whose solutions include the question.”
+The construction omits \(O_p\), \(\rho_p\), and (unless boundary-fixed) \(b_0\). It also omits \(C_{\mathrm{adm}}\), the reasons for \(S\), and the component relations \(L_j\). A solution of \(D_p\) as described is at best a partial tuple \((C,\mathcal Q,S,K)\), not the question \(p\).
+**Seriousness:** serious overclaim against the stated gaps.
+**Fix:** weaken the claim to “partial question-organization,” or close all listed and unlisted gaps before claiming solutions include \(p\).
+
+**17. Missing \(C_{\mathrm{adm}}\) port or parameter.**
+Quoted construction: “one port \(u_S\) with domain the stated scopes and one \(u_K\) with domain the declared counterfactual sets with meanings” and “\(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.”
+Part III requires \(S\subseteq C_{\mathrm{adm}}\), \(K\cap C_{\mathrm{adm}}=\varnothing\), and \(C=(C_{\mathrm{adm}}\cap S)\cup K\). Without a representation of \(C_{\mathrm{adm}}\), the consistency component cannot be evaluated.
+**Seriousness:** serious; not listed in the gaps.
+**Fix:** add a port or boundary for \(C_{\mathrm{adm}}\) or for the declared admission relation.
+
+**18. Missing reasons for \(S\) exclusions.**
+Quoted construction: “\(u_S\) with domain the stated scopes.”
+Part III requires \(S\) to have “the reason for each exclusion recorded.” A domain of bare scopes omits the reasons.
+**Seriousness:** serious; not listed in the gaps.
+**Fix:** make the domain scopes-with-reasons, or list this as a gap.
+
+**19. The construction never specifies the component relations \(L_j(a,b)\).**
+Quoted construction: “Components: the closure conditions — the baseline port reads ‘in’; if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors...”
+Part II’s (O) requires, for each component \(j\), edit \(a\), boundary \(b\), a relation \(L_j(a,b)\). The sketch describes constraints informally but never gives \(L_j\) under the admitted edits. Thus \(\operatorname{Sol}_{D_p}\) is not defined.
+**Seriousness:** fatal for the formal construction as written.
+**Fix:** write out \(L_j(a,b)\) for every edit and boundary, or add this as the first gap.
+
+**20. The closure-under-factors condition is not in Part III.**
+Quoted construction: “if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined.”
+Part III defines \(C=(C_{\mathrm{adm}}\cap S)\cup K\) and requires \(S\subseteq C_{\mathrm{adm}}\), \(K\cap C_{\mathrm{adm}}=\varnothing\). It does not require \(C\) or \(S\) to be closed under factors. This extra condition excludes legitimate questions.
+**Seriousness:** serious.
+**Fix:** remove the closure condition or justify it as an additional declared restriction.
+
+**21. Putting the target \(D\) into the boundary of \(D_p\) is a type error.**
+Quoted construction: “Boundary: the target \(D\) and \(b_0\), held fixed.”
+Part II’s \(B\) is a set of boundary conditions \(b\), and \(L_j(a,b)\) depends on \(b\). \(D\) is an organization, not a boundary condition. The construction has not defined a boundary condition that encodes \(D\).
+**Seriousness:** serious type issue.
+**Fix:** parameterize \(D_p\) by \(D,b_0\) rather than placing \(D\) in \(B\), or define an encoding of \(D\) as a boundary value.
+
+**22. Type confusion between content, organization, and solution.**
+Quoted construction: “an occurrence carries that question when its instantiated organization is \(D_p\) with its ports fixed at that solution.”
+In (R)/(G), content \(c\) is an organization together with commitments, and representation uses a transport \(t:c\to D\). Fixing ports gives a valuation/boundary, not an organization. The construction does not show how the question itself becomes \(c\) rather than \(D_p\).
+**Seriousness:** serious.
+**Fix:** clarify whether \(c=D_p\), or \(c=(D_p,\text{fixed valuation})\), and define the faithful transport accordingly.
+
+**23. Gap (ii) is incomplete: it does not say how to add \(\rho_p\).**
+Quoted gap: “\(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed; adding \(b_0\) as a port with domain \(B\) and \(O_p\) as a port with domain the subsets of the declared obligations is straightforward and not done.”
+It names \(\rho_p\) but does not propose a domain or encoding for it.
+**Seriousness:** minor.
+**Fix:** add a port with domain \(\{\text{declared},\text{selected},\text{constructed}\}\), or list it as an unfilled gap.
+
+**24. Gap (iv) is too narrow.**
+Quoted gap: “Whether Inst licenses an organization whose ports range over edits of another organization is a question for the physical module and is not argued.”
+The construction also has ports whose values are queries, scopes, counterfactual pairs-with-relations, reasons, obligations, and provenance labels. Whether \(\operatorname{Inst}\) licenses those is equally unargued.
+**Seriousness:** minor to serious.
+**Fix:** broaden the gap or argue for all port-value types.
+
+**25. The edit algebra of \(D_p\) is not specified.**
+Quoted construction: “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning.”
+Part II requires \(A\) to be closed under a partial associative composition with identity \(1\), and \(L_j(a,b)\) for every \(a,b\). The sketch does not define composition, identity, or component relations under these edits.
+**Seriousness:** serious.
+**Fix:** specify the edit algebra and relations, or list as a gap.
+
+## Derivation 6
+
+**26. The overall claim is false because \(\equiv_\ell\) depends on Derivation 8, which is outside the stated base.**
+Quoted claim: “Every defined predicate in Parts II–XIII is defined from the physical module..., the declared parameters and the informal terms listed in Part XIV, by the dependence order there, and that order has no cycle.”
+Part X defines \(\equiv_\ell\) using “the structure-preserving bijections of Derivation 8, applied to contents.” Derivation 8 is in Part XVI, not in Part XIV’s base. Therefore the dependence order is not closed as claimed.
+**Seriousness:** serious.
+**Fix:** include Derivation 8’s \(\phi\)-notion in the base, or define \(\equiv_\ell\) independently in Part X.
+
+**27. Origin uses “question-organization,” which is not in Part XIV’s informal list.**
+Quoted Part X: “\(\operatorname{Attempt}(s,c,p,h,e)\) ... where \(p\) is a coherently posed question whose question-organization some occurrence of \(s\) instantiates before \(e\).”
+“Question-organization” is supplied only by Derivation 5, a sketch. Part XIV’s informal-terms list does not include it. Derivation 6 therefore cannot claim well-founded definition for Origin from the listed base.
+**Seriousness:** serious.
+**Fix:** add question-organization to the base/informal list, or move Derivation 5 before the dependence claim.
+
+**28. Bearing (K1) does not define its named inputs.**
+Quoted Part IX: “A criticism \(c\) has target \(z\), alleged defect \(\delta\), grounds \(g\), and a connection. Let \(p_\delta\) be the question about the defect and \(E_c\) the organization the criticism supplies. Then \(\operatorname{Bearing}(c,z,p_\delta)\iff\operatorname{Account}(E_c,p_\delta)\).”
+The definition does not say how \(p_\delta\) or \(E_c\) are determined from \(c,z,\delta,g\), or the connection. Derivation 6’s claim that “each definition names its inputs at first use” fails here.
+**Seriousness:** serious.
+**Fix:** define \(p_\delta\) and \(E_c\) as functions of the criticism data, or mark them as informal.
+
+**29. Non-cycle (iii) is not established because “operative result” is undefined.**
+Quoted proof: “the active route is defined on instantiated inputs, not represented ones, so the operative condition of Part V does not pass through (R).”
+Part IX defines an active route as joining an occurrence “to an operative result.” “Operative result” is not defined. If it depends on Deploy or problem-directed activity, then active route may depend on (R), creating the cycle Derivation 6 denies.
+**Seriousness:** serious.
+**Fix:** define “operative result” without Deploy/(R), or list it as an informal term and admit the possible dependence.
+
+**30. Non-cycles (i) and (ii) are correct as far as they go.**
+No separate finding: Con does not use (R); Can does not mention ownership.
+
+**31. Part XIV’s dependence order says Build depends on (E), but Build’s definition only uses Faithful (F1)/(F2).**
+Quoted Part XIV: “Build depends on histories, ownership, bindings and (E).”
+Part X’s Build requires “a transport faithful on \(c\)’s contract,” which Part IV defines as (F1) for components and (F2) on \(C\), not full Account (E). This is not a cycle, but it makes Derivation 6’s appeal to “the dependence order there” inaccurate.
+**Seriousness:** minor.
+**Fix:** correct Part XIV’s dependence order or show where Build uses full (E).
+
+## Derivation 7
+
+**32. It cites Derivation 5 as support although Derivation 5 is only a sketch.**
+Quoted proof: “The episode is a history in which a question-organization with contract \(C'\) is built (Derivation 5) and takes over operative use.”
+Derivation 5 lists gaps and is conditional. Derivation 7’s claim that both assessments and the episode are representable is therefore stronger than what Derivation 5 establishes.
+**Seriousness:** serious over-citation.
+**Fix:** state Derivation 7 conditionally on closing Derivation 5’s gaps, or assume a construction witness without citing Derivation 5 as proof.
+
+**33. “\(E\) is an account on \(C\)” is ill-typed.**
+Quoted proof: “The claim ‘\(E\) is an account on \(C\)’ and the claim ‘\(E\) is not an account on \(C'\)’ are claims at different indices...”
+Part V’s predicate is \(\operatorname{Account}(E,p)\), not \(\operatorname{Account}(E,C)\). Part III says two questions with the same \(D\) and different \((C,\mathcal Q)\) are different questions. Changing \(C\) changes \(p\).
+**Seriousness:** minor but formal.
+**Fix:** write \(\operatorname{Account}(E,p)\) and \(\operatorname{Account}(E,p')\).
+
+**34. “Failure of the record” is not a defined predicate.**
+Quoted consequence: “Goalpost-moving is the act of changing the index without recording the change; it is a failure of the record.”
+Part III requires a record for assessments, but “failure of the record” is not defined and is doing normative work not licensed by the formalism.
+**Seriousness:** minor.
+**Fix:** either define a record predicate or mark this as informal commentary.
+
+## Derivation 8
+
+**35. The preservation list omits \(\operatorname{Exec}\), tasks, resources, and retained realization.**
+Quoted claim: “\(\phi\) preserves the physical module’s admission (\(A_\Theta\), Inst, \(\prec\))...”
+Build uses ownership \(\to\) RetReal \(\to\) Exec. Deploy uses CT1. If \(\phi\) does not preserve \(\operatorname{Exec}\), tasks, resources, and RetReal, preservation of (G), Deploy, and (EK) does not follow.
+**Seriousness:** serious.
+**Fix:** require \(\phi\) to preserve all of \(\Theta\), including \(\operatorname{Exec}\), tasks, and resources.
+
+**36. The preservation list omits \(\Gamma\).**
+Quoted list: “carriers, organizations..., transports..., histories..., contracts, obligations and the normative relation.”
+(E) and anchoring depend on the identified active set \(\Gamma\). A bijection on organizations does not by itself state how \(\Gamma\) is carried, or whether active status is preserved.
+**Seriousness:** serious.
+**Fix:** include \(\Gamma\) and active-status preservation in the transported data.
+
+**37. The preservation list omits connections actually instantiated.**
+Quoted list: “histories with their events and precedence.”
+Part IX’s history includes “process occurrences, their ports, and the connections actually instantiated.” Active routes, blindness, and provenance depend on those connections. Preserving only events and precedence is insufficient.
+**Seriousness:** serious.
+**Fix:** require preservation of process connections and active routes.
+
+**38. The solution-preservation hypothesis is underspecified or redundant.**
+Quoted claim: “carries \(\operatorname{Sol}\) to \(\operatorname{Sol}\) (solution preservation, which for a bijection of the organization data is a hypothesis, not a consequence).”
+If \(\phi\) is a pointwise structure-preserving bijection of ports, domains, components, relations, edits, and boundaries, \(\operatorname{Sol}\) preservation is normally automatic. If it is not automatic, the definition of \(\phi\) is too weak. The proof then needs projection preservation for (F1), which is not stated.
+**Seriousness:** serious definitional gap.
+**Fix:** define \(\phi\) as a structure-preserving bijection and prove \(\operatorname{Sol}\) preservation, or add projection preservation as an explicit hypothesis.
+
+**39. The preservation list omits episodes, Result, and use tasks.**
+Quoted claim: “preserves (E), anchoring, (R), (G), (P), (EK).”
+(G) uses Build and Attempt; (EK) uses \(\operatorname{Result}(\Delta)\), Deploy, and ProducesVia. The list does not mention episodes, Result, use tasks \(U\), or problem-directed activity.
+**Seriousness:** serious.
+**Fix:** include episodes, Result, use tasks, and Deploy data in the transported structure.
+
+## Derivation 9
+
+**40. The result is trivial and the examples are not checked against the definitions.**
+Quoted claim: “If \(M_0,M_1\) have the same input–output projection and differ on an account claim, no function of the projection agrees with the claim on both.”
+This is pure extensionality. It does not show that \(M_0,M_1\) can differ on \(\operatorname{Account}(E,p)\) while having the same projection under the semantics. “Parallel and priority wiring” is an illustration, not a checked instance.
+**Seriousness:** minor.
+**Fix:** give a specific \(p,C,\Gamma\) and show the account claim differs, or label it an extensionality remark.
+
+## Derivation 10
+
+**41. The claim “then (G) holds” omits Attempt and parts of Build.**
+Quoted scenario: “If \(S_1\) was built by an owned subhistory containing a nontrivial binding construction required for the use ... and \(S_1\) is not in the prior repertoire, then (G) holds.”
+(G) requires \(\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}\). The scenario supplies New and part of Build, but not Attempt. Build also requires an “itemised defect representation ... on an active route to the binding” and “is not a composition of content-preserving transfers.” The scenario supplies neither.
+**Seriousness:** fatal for the conditional claim as written.
+**Fix:** add Attempt, the defect representation, and the non-composition clause, or weaken to “then part of (G) holds.”
+
+**42. “One forward kind on any contract containing the swap” is false.**
+Quoted scenario: “Under (K), with the swap supplying the footprint bijection, the two persistence components are of one forward kind on any contract containing the swap.”
+Forward kind requires signature coincidence on \(C\setminus\{(1,b_0)\}\). If \(C\) contains an asymmetric edit, e.g. “displace thing 1” but not symmetrically “displace thing 2,” the two components’ signatures differ at that pair. The swap edit alone does not make them one kind on every contract containing it.
+**Seriousness:** serious.
+**Fix:** restrict to contracts closed under the swap / symmetric under the footprint bijection, or state only that the swap pair itself does not separate them.
+
+**43. Derivation 10 uses Derivation 1 as if it established forward kind, without checking domain and baseline conditions.**
+Quoted scenario: “by Derivation 1, with \((\tau,\sigma)\) injective on that contract (which it is, since the translation is a relabelling), the persistence components are of one forward kind...”
+Derivation 1 gives signature equality under (F1); forward kind additionally needs the port-domain bijection and the baseline-exclusion convention to line up. The scenario asserts “relabelling” but does not check those conditions.
+**Seriousness:** minor to serious.
+**Fix:** state the domain bijection and baseline handling explicitly.
+
+**44. The scenario does not specify \(\tau(\text{swap})\) in \(S_1\).**
+Quoted scenario: “The swap edit is invisible in the sensory field... Under (K), with the swap supplying the footprint bijection...”
+If swap is an admitted edit of \(P\), (F1) requires a translated edit \(\tau(\text{swap})\) on \(S_1\). The scenario does not say what edit of \(S_1\) the swap translates to.
+**Seriousness:** serious for the kind claim.
+**Fix:** specify \(S_1\)’s swap edit and the translation.
+====================================================================================================
+S2_derivations | rev2_deepseek | sample 1 | finish stop | 33006 chars | error None
+====================================================================================================
+**Findings against Part XVI and its citations.**
+
+**1. Derivation 1: (F1) is type-incorrect as written.**
+- Claim attacked: “\(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]=L_k(\tau(a),\sigma(b)).\) (F1)”
+- Why it fails: \(\operatorname{Sol}_{\lambda(k)}(a,b)\) is a subset of valuations on the ports of the anchor subnetwork in \(D\); \(V_k\) is a set of ports of the component \(k\) in \(E\). Projecting the former onto the latter is not well-defined unless \(\lambda\)’s port translation is stipulated to be a bijection from \(V_k\) onto the visible ports \(V_{\lambda(k)}^{\mathrm{vis}}\). Derivation 1 silently assumes this: “the visible ports of the anchor being those \(\lambda\) translates to \(V_k\).” That is not in the transport definition or in (F1).
+- Seriousness: serious.
+- Fix: state in the transport definition that each \(\lambda(k)\) comes with a bijection \(V_k\to V_{\lambda(k)}^{\mathrm{vis}}\) carrying domains, and rewrite (F1) using that bijection.
+
+**2. Derivation 1: “up to the port translation” omits edit-boundary translation.**
+- Claim attacked: “has, on \(\tau[C]\), the signature that its anchor subnetwork \(\lambda(k)\) has on \(C\), up to the port translation.”
+- Why it fails: the proof compares \(\operatorname{sig}_C(\lambda(k))\) with \(\operatorname{sig}_{\tau[C]}(k)\), so the correspondence on the first two coordinates is \((\tau,\sigma)\), not the port translation. The conclusion is a signature isomorphism under both the port translation and the edit-boundary translation. Calling it merely “up to the port translation” understates what is being assumed and what the result delivers.
+- Seriousness: serious, because Part V and Derivation 10 then read this as a forward-kind claim on the same contract.
+- Fix: state “up to the port translation and the edit-boundary translation \((\tau,\sigma)\)”, or define forward kind up to transport translation.
+
+**3. Derivation 1 is cited in Part V without the injectivity hypothesis.**
+- Claim attacked: Part V: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract.”
+- Why it fails: Derivation 1 requires \((\tau,\sigma)\) injective on \(C\). The five conditions of \(\operatorname{Account}(E,p,t,\Gamma)\) do not require injectivity. If \(\tau\) or \(\sigma\) identifies two pairs of \(C\), the map between signatures is not a bijection on the first two coordinates; the proof’s final step fails. The component’s signature on the translated contract can collapse distinct anchor pairs, or can omit distinctions the anchor signature carries.
+- Seriousness: serious.
+- Fix: either add injectivity of \((\tau,\sigma)\) on \(C\) to the account conditions, or restrict the Part V citation to transports that satisfy it.
+
+**4. Part V overgeneralises from active components to every component.**
+- Claim attacked: Part V: “every component of \(E\) has the signature of its anchor subnetwork.”
+- Why it fails: Derivation 1 is about “every active component \(k\) of \(E\),” and (F1) in (E) is also only for active components in \(\Gamma\). Non-active components need not have anchors or signatures in the sense used.
+- Seriousness: minor.
+- Fix: say “every active component.”
+
+**5. Derivation 1’s “one forward kind” conclusion does not match the definition of forward kind.**
+- Claim attacked: “a faithful component is of one forward kind, on \(C\), with its anchor subnetwork.”
+- Why it fails: Part II defines two subnetworks as of one forward kind on \((\ell,C)\) when their signatures coincide on \(C\setminus\{(1,b_0)\}\). Derivation 1 gives coincidence only between a signature on \(\tau[C]\) and a signature on \(C\). Unless \(\tau,\sigma\) are treated as identifying edit labels, this is not the same contract, and the definition of forward kind has no clause for edit relabelling.
+- Seriousness: serious.
+- Fix: either define forward kind up to a transport translation, or require \(\tau,\sigma\) to be identity on the contract labels when using the term “forward kind.”
+
+**6. Part V’s anchored condition 3 inherits the same undefined cross-contract kind relation.**
+- Claim attacked: Part V: “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor subnetwork (Part II defines the relation for subnetworks): fidelity holds not only on the pairs the contract selected but on every pair the module admits, where the translation is defined.”
+- Why it fails: Part II does not define forward kind “where the translation is defined.” It defines it for signatures on the same \(C\). The parenthetical is an attempted patch, not a definition.
+- Seriousness: serious.
+- Fix: add a definition of forward kind relative to a transport translation, or state condition 3 as signature isomorphism under \((\tau,\sigma)\).
+
+**7. Derivation 1’s use in Derivation 10 overstates the forward-kind conclusion.**
+- Claim attacked: “then by Derivation 1, with \((\tau,\sigma)\) injective on that contract (which it is, since the translation is a relabelling), the persistence components are of one forward kind, on that contract, with the continuity subnetworks of things.”
+- Why it fails: Derivation 1 gives a signature correspondence between \(C\) and \(\tau[C]\). A “relabelling” is not identity on the contract labels, and Part II’s forward-kind definition has no edit-relabelling parameter. So the scenario asserts a forward-kind claim that Derivation 1, as stated, does not deliver.
+- Seriousness: serious.
+- Fix: either define forward kind up to relabelling, or require the translation to be the identity on the contract.
+
+**8. Derivation 2’s account-equivalence definition lacks a port bijection.**
+- Claim attacked: “the anchored relations \(\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b)\) coincide, and the pulled-back answer profiles coincide.”
+- Why it fails: \(\operatorname{proj}_{V_k}\) and \(\operatorname{proj}_{V_{k'}}\) are projections onto different port sets unless a bijection between the visible ports of \(k\) and \(k'\) is supplied. The definition says only that there is a bijection between active components; it does not say it carries ports and domains. Without that, “the anchored relations coincide” is not well-formed across candidates.
+- Seriousness: serious.
+- Fix: require the component bijection to extend to a bijection of visible ports carrying value domains, and define the anchored relation through \(\lambda\)’s port translation.
+
+**9. Derivation 2’s proof uses a stronger hypothesis than the definition needs, and does not address the port gap.**
+- Claim attacked: “have the same anchor map up to that bijection … then they are account-equivalent on \(C\).”
+- Why it fails: if the anchor map is literally the same up to the component bijection, the left-hand anchored relation is the same subnetwork, but the projection targets \(V_k\) and \(V_{k'}\) still need to be identified. The proof says “the shared anchor map and the bijection give coincidence” without proving that the component bijection is a port bijection.
+- Seriousness: serious.
+- Fix: prove the port bijection explicitly as part of “same anchor map up to that bijection,” or redefine account-equivalence on anchored subnetworks rather than projected component relations.
+
+**10. Derivation 3: the proof’s key sentence fails if \((\tau,\sigma)\) is not injective.**
+- Claim attacked: “Survival on \(H\) constrains only the relations at pairs in \(H\).”
+- Why it fails: survival on \(H\) constrains relations at translated pairs \((\tau(a),\sigma(b))\) for \((a,b)\in H\). If an off-\(H\) pair \((a',b')\in C\setminus H\) has the same translated pair as some \((a,b)\in H\), then altering \(L_j(\tau(a'),\sigma(b'))\) also alters \(L_j(\tau(a),\sigma(b))\), hence can change fidelity on \(H\). The derivation never assumes injectivity or disjointness of \(\tau[C\setminus H]\) from \(\tau[H]\).
+- Seriousness: fatal for the claim as stated.
+- Fix: add \((\tau,\sigma)\) injective on \(C\), or at least \(\tau[C\setminus H]\cap \tau[H]=\varnothing\).
+
+**11. Derivation 3’s closure hypothesis is ill-defined without injectivity.**
+- Claim attacked: “\(\mathcal T\) contains a pair agreeing with \((E,t)\) everywhere except that \(L_j(\tau(a),\sigma(b))=L'\).”
+- Why it fails: if the same translated slot \((\tau(a),\sigma(b))\) is also the slot for some pair in \(H\), then changing it does not leave the pair agreeing with \((E,t)\) on \(H\). The phrase “everywhere except that \(L_j(\tau(a),\sigma(b))\)” presupposes that the slot belongs only to the chosen off-\(H\) pair.
+- Seriousness: serious.
+- Fix: require injectivity or index component relations by the original edit–boundary pairs, not only by their translated images.
+
+**12. Derivation 3’s consequence overclaims from “there exist other surviving members” to “selection data do not determine the survivor.”**
+- Claim attacked: “Under the closure hypothesis, the selection data do not determine the survivor off \(H\): selection provides no *guarantee* of fidelity where it did not test.”
+- Why it fails: the proof constructs other members of \(\mathcal T\) that are faithful on \(H\) and differ off \(H\). That shows the survival condition on \(H\) does not eliminate off-\(H\) differences. It does not show that the actual selection history, including the applied variation operator and lineage, does not determine the actual survivor. The derivation later admits this: “Where the population is parametric and not closed under pointwise alteration, the survivor may be determined off \(H\) by its parametrisation.” But closure does not by itself exclude determination by the history.
+- Seriousness: serious.
+- Fix: weaken the conclusion to “the survival condition on \(H\) alone does not determine the survivor off \(H\),” and distinguish that from the full selection history.
+
+**13. Part XV’s attack (D) contradicts Derivation 3’s own caveat.**
+- Claim attacked: Part XV: “A selection history \(H\subsetneq C\), in a population closed under pointwise alteration of component relations off \(H\), whose survivor is determined on \(C\setminus H\). This refutes Derivation 3 under its hypothesis.”
+- Why it fails: Derivation 3 explicitly says: “It does not follow that the survivor *is* unfaithful there — it may be faithful on all of \(C\) — and nothing here says the survivor will fail.” A determined survivor is exactly such a case. If Derivation 3 only claims “no guarantee,” a determined but faithful survivor does not refute it. If Derivation 3 claims “selection data do not determine the survivor,” then the proof does not establish that claim. Either way, the Part XV refutation and Derivation 3 are inconsistent.
+- Seriousness: serious.
+- Fix: either weaken Derivation 3 to a claim about the survival condition alone, or strengthen its proof and remove the caveat; then align Part XV.
+
+**14. Derivation 3 ignores that the altered pairs need not be reachable by the selection history.**
+- Claim attacked: “there is a pair in \(\mathcal T\) that survives on \(H\).”
+- Why it fails: “survives on \(H\)” is only the survival condition. Part IV’s selected predicate also includes an applied variation operator, an eliminated rival, and t being the member that survived in the actual history. The closure hypothesis populates \(\mathcal T\) with altered pairs, but does not say they were produced by \(\mu\) in \(\Sigma_h\). So the derivation shows something about the survival filter, not about the selection history as a whole.
+- Seriousness: serious.
+- Fix: distinguish “is faithful on \(H\)” from “is selected”; state the result for the filter only.
+
+**15. Derivation 4: “a system whose history exhausts its contract” is impossible if the contract contains \(K\).**
+- Claim attacked: “that a system whose history exhausts its contract is never surprised.”
+- Why it fails: Part III allows \(C=(C_{\mathrm{adm}}\cap S)\cup K\), where \(K\) contains counterfactual edits not in \(C_{\mathrm{adm}}\). Part IV requires each pair of the selection history \(H\) to occur as an event of \(\Sigma_h\). If \(K\) is nonempty and counterfactual pairs cannot occur, no selection history can exhaust \(C\). The remark’s second unpacking is then vacuous or applies only to the admitted part.
+- Seriousness: minor.
+- Fix: say “history exhausts \(C_{\mathrm{adm}}\cap S\),” or state the condition only for contracts without counterfactual edits.
+
+**16. Derivation 5’s claim that \(D_p\)’s solutions include the question is false for the full question tuple.**
+- Claim attacked: “A question \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\) determines an organization \(D_p\) in the sense of (O) whose solutions include the question.”
+- Why it fails: the construction does not represent \(O_p\), and it explicitly admits that \(\rho_p\) is not a port. The gap list also says \(O_p\) and \(\rho_p\) are missing. A valuation of \(D_p\) cannot be the full tuple \(p\) if \(O_p\) and \(\rho_p\) are absent. At best it represents \((D,C,b_0,\mathcal Q)\)-data, and even that only modulo the other gaps.
+- Seriousness: serious.
+- Fix: weaken the claim to “solutions include candidate question-contracts and queries,” and state separately that \(O_p\) and \(\rho_p\) are not internal to \(D_p\).
+
+**17. Derivation 5’s gap (ii) misidentifies \(b_0\) as a missing port.**
+- Claim attacked: “(ii) \(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed; adding \(b_0\) as a port with domain \(B\) … is straightforward and not done.”
+- Why it fails: the construction already says “Boundary: the target \(D\) and \(b_0\), held fixed.” So \(b_0\) is represented as a boundary condition of \(D_p\), not missing. Making \(b_0\) a port would make it variable among solutions, which is not obviously what the question tuple wants.
+- Seriousness: minor.
+- Fix: remove \(b_0\) from the gap list, or explain why a fixed boundary is insufficient and a port is needed.
+
+**18. Derivation 5’s gap (ii) treats \(\rho_p\) as a missing port, which is a category error.**
+- Claim attacked: “\(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed.”
+- Why it fails: Part III says \(\rho_p\) attaches to the whole question tuple and “its witness is the one Part IV gives for the provenance of any content’s occurrence: the provenance of the transport by which an occurrence represents the question-organization of Derivation 5.” \(\rho_p\) is provenance of the representing transport, not a value inside the represented organization. It should not be a port of \(D_p\).
+- Seriousness: serious conceptually.
+- Fix: remove \(\rho_p\) from the port-gap list and state that the missing item is a witness for the representing transport, not a port.
+
+**19. Derivation 5 omits a gap for \(C_{\mathrm{adm}}\).**
+- Claim attacked: “Components: the closure conditions — the baseline port reads ‘in’; if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined; \(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.”
+- Why it fails: Part III defines \(C=(C_{\mathrm{adm}}\cap S)\cup K\). The construction has ports for \(S\) and \(K\) and “in/out” markers for pairs, but no port or boundary for \(C_{\mathrm{adm}}\). Without \(C_{\mathrm{adm}}\), the conditions \(S\subseteq C_{\mathrm{adm}}\) and \(K\cap C_{\mathrm{adm}}=\varnothing\) cannot be encoded, and the “in” markers do not determine \(C\).
+- Seriousness: serious.
+- Fix: add \(C_{\mathrm{adm}}\) as declared fixed data or as a port, and add components enforcing Part III.
+
+**20. Derivation 5’s “closure conditions” are implications, not characterisations.**
+- Claim attacked: “if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors.”
+- Why it fails: these implications do not force the “in” ports to correspond to a set \(C\) of the Part III form. Solutions can include arbitrary “in” markings that satisfy the implications but do not determine any \(C\), or include pairs in \(C\) that should be “out.” The sketch does not give biconditionals or an explicit solution set.
+- Seriousness: serious.
+- Fix: write the component relations \(L_j\) explicitly, or define \(\operatorname{Sol}_{D_p}\) directly as the set of candidate question data.
+
+**21. Derivation 5 omits a gap for the edit monoid.**
+- Claim attacked: “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning.”
+- Why it fails: Part II requires \(A\) to be closed under a partial associative composition with identity. “Toggle a pair” and “alter \(\mathcal Q\)” do not specify identity, inverses, composition, or partiality. The construction is not an organization in the sense of (O) until \(A\) is specified as such.
+- Seriousness: serious.
+- Fix: specify \(A_{D_p}\) as a partial monoid generated by those operations, with identity and composition.
+
+**22. Derivation 5 omits the Build-witness gap.**
+- Claim attacked: “Finding a question is representable as a creative act on the same footing as answering one.”
+- Why it fails: (G) requires \(\operatorname{Build}\), which requires an owned subhistory, a nontrivial binding construction required for the transport, an itemised defect representation on an active route to the binding, and that the construction is not a composition of content-preserving transfers. Derivation 5 supplies none of these. It only sketches an organization \(D_p\). So even if \(D_p\) existed, it would not show question-finding satisfies (G).
+- Seriousness: fatal for the consequence as stated.
+- Fix: add this as a listed gap and restrict the consequence to “the question can be represented as an organization,” not “question-finding is a creative act under (G).”
+
+**23. Derivation 5’s gap (i) is imprecise about what is global.**
+- Claim attacked: “(i) Coherence … is a global condition on \(D\) and is not a local component of \(D_p\).”
+- Why it fails: only \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\) and “\(\mathcal Q\) is defined on every pair in \(C\)” are naturally global. \(S\subseteq C_{\mathrm{adm}}\) and \(K\cap C_{\mathrm{adm}}=\varnothing\) could be local relational constraints if \(C_{\mathrm{adm}}\) were represented. The gap list does not separate these.
+- Seriousness: minor.
+- Fix: split coherence into global and local parts, and add the missing \(C_{\mathrm{adm}}\) representation if local encoding is intended.
+
+**24. Derivation 5 does not show that \(D_p\) is an organization under (O).**
+- Claim attacked: “determines an organization \(D_p\) in the sense of (O).”
+- Why it fails: the sketch never writes the component relations \(L_j\), the boundary set \(B\), or the edit monoid \(A\). It describes ports and informal closure conditions. (O) requires supplied data \((V,X,J,B,A,L)\). Without those, the object is not an organization under the cited definition.
+- Seriousness: serious.
+- Fix: write the tuple \((V,X,J,B,A,L)\) for \(D_p\), or call it a candidate organization sketch rather than an organization in the sense of (O).
+
+**25. Derivation 6 has a cycle via “repertoire.”**
+- Claim attacked: “Every *defined* predicate in Parts II–XIII is defined … by the dependence order there, and that order has no cycle.”
+- Why it fails: \(\operatorname{Build}\) says “a binding construction is **nontrivial** when the binding is neither a relabelling of a binding already in the repertoire nor obtainable from the incoming carriers by \(\equiv_\ell\).” The repertoire \(R_{\beta,\ell}(s,\xi)\) is defined in Deployment as the set of contents deployable, and Deployment uses (R). (R) uses \(\operatorname{Con}\), and \(\operatorname{Con}\) uses \(\operatorname{Build}\). So there is a cycle: Build → repertoire → Deploy → (R) → Con → Build.
+- Seriousness: fatal for Derivation 6 as stated.
+- Fix: either define a separate binding repertoire that does not use Deploy/(R), or remove the “already in the repertoire” clause from Build, or break the cycle by stratification.
+
+**26. Derivation 6’s named non-cycle (i) is false.**
+- Claim attacked: “Con requires an *instantiated* target, and (R) is used inside no provenance witness.”
+- Why it fails: if “repertoire” in Build is the Deployment repertoire, then (R) is used inside a provenance witness indirectly: Build → repertoire → Deploy → (R). The proof’s explicit denial is false under that reading.
+- Seriousness: fatal.
+- Fix: resolve the ambiguity of “repertoire”; if it is the Deployment repertoire, withdraw the non-cycle claim.
+
+**27. Part XIV’s dependence order omits Build’s dependence on repertoire/Deploy and \(\equiv_\ell\).**
+- Claim attacked: “Build depends on histories, ownership, bindings and (E).”
+- Why it fails: Build also uses “binding already in the repertoire” and “obtainable from the incoming carriers by \(\equiv_\ell\).” Neither is listed. If “repertoire” is Deployment’s \(R_{\beta,\ell}\), the order is wrong and cyclic.
+- Seriousness: serious.
+- Fix: update the dependence order, or declare “repertoire” an informal term and stop claiming the defined order is well-founded.
+
+**28. Derivation 6’s proof is not exhaustive.**
+- Claim attacked: “Three places could have produced a cycle and do not.”
+- Why it fails: the Build/repertoire/Deploy/(R)/Con cycle is a fourth place. Checking three named places does not establish no cycles.
+- Seriousness: serious.
+- Fix: either prove closure of the dependence order for all defined predicates, or state the result as a partial check, not a well-foundedness theorem.
+
+**29. Derivation 7 depends on the unclosed Derivation 5 sketch.**
+- Claim attacked: “The episode is a history in which a question-organization with contract \(C'\) is built (Derivation 5) and takes over operative use.”
+- Why it fails: Derivation 5 is explicitly a sketch with listed gaps and no Build witness. Derivation 7 uses it to establish the episode half of the consistency claim. If the construction is not closed, Derivation 7 is conditional on unclosed gaps.
+- Seriousness: serious.
+- Fix: assume a construction witness explicitly as a hypothesis, or wait until Derivation 5 is closed.
+
+**30. Derivation 7’s “failure of the record” is undefined.**
+- Claim attacked: “Goalpost-moving is the act of changing the index without recording the change; it is a failure of the record.”
+- Why it fails: no predicate defines what a record is, what it means for a record to include an index change, or what “failure of the record” consists in. It is a normative gloss inside a derivation.
+- Seriousness: minor.
+- Fix: mark it as a gloss, or define record admissibility in Part III or IX.
+
+**31. Derivation 8’s solution-preservation hypothesis is either redundant or inconsistent with “genuine recoding.”**
+- Claim attacked: “carries \(\operatorname{Sol}\) to \(\operatorname{Sol}\) (solution preservation, which for a bijection of the organization data is a hypothesis, not a consequence).”
+- Why it fails: if \(\phi\) is a bijection of the organization data that preserves ports, domains, components, relations, edits and boundaries pointwise, then \(\operatorname{Sol}\) preservation is a consequence of the definition of \(\operatorname{Sol}\): \(z\in\operatorname{Sol}_D(a,b)\) iff every component relation holds, and \(\phi\) carries each component relation to its image. If solution preservation must instead be assumed, then \(\phi\) need not preserve component relations pointwise, so it is not the structure-preserving recoding of Part X. The parenthetical is therefore either false or signals that the maps are weaker than advertised.
+- Seriousness: serious.
+- Fix: either derive \(\operatorname{Sol}\) preservation from the structure-preserving bijection, or define the weaker class explicitly and stop calling it “genuine recoding.”
+
+**32. Derivation 8 omits queries and answer profiles from the hypotheses.**
+- Claim attacked: “Transporting all data along \(\phi\) preserves (E), anchoring, (R), (G), (P), (EK).”
+- Why it fails: (E) includes (A), and anchoring includes resolution, both of which use \(\mathcal Q\) and \(\operatorname{Ans}_p\). The hypothesis mentions “contracts, obligations and the normative relation” but not queries, answer profiles, or the operation \(\mathcal Q\). A bijection of organizations and transports does not by itself carry \(\mathcal Q\) to the corresponding query on the image.
+- Seriousness: serious.
+- Fix: add that \(\phi\) carries \(\mathcal Q\) to \(\mathcal Q'\) with \(\operatorname{Ans}_{\phi(p)}(\phi(a),\phi(b))=\phi(\operatorname{Ans}_p(a,b))\).
+
+**33. Derivation 8 omits selection and construction witnesses.**
+- Claim attacked: “each of its inputs — including the events that make a witness selected or constructed, since histories are carried with their events — is carried along.”
+- Why it fails: (R) requires \(\operatorname{Sel}\lor\operatorname{Con}\). Selection involves a population \(\mathcal T\), a variation operator \(\mu\), a survival condition, an eliminated rival, non-triviality, and blindness. Construction involves Build, ownership, bindings, defect representations, and repertoire. The hypothesis lists carriers, organizations, transports, histories, contracts, obligations, and \(\mathcal N\). It does not list populations, operators, survival conditions, ownership, retained realization, or build witnesses. Carrying histories with events does not carry those predicates.
+- Seriousness: fatal for the claim that (R) is preserved.
+- Fix: add preservation clauses for all selection and construction witness data, or restrict the theorem to (E) and anchoring.
+
+**34. Derivation 8 omits tasks, retained realization, and use tasks.**
+- Claim attacked: “preserves … (G), (P), (EK).”
+- Why it fails: (G) depends on ownership and Build; ownership depends on \(\operatorname{RetReal}\) and \(\operatorname{Exec}\); (EK) depends on Deploy, which depends on retained capability and use task \(U\). None of these are in the hypothesis. A bijection on organizations and histories does not automatically preserve execution families, protocols, resources, continuity \(\Omega\), boundary \(\beta\), or tasks.
+- Seriousness: fatal for the claim as stated.
+- Fix: either add all these data and their preservation conditions, or weaken the result to (E) and anchoring under the listed hypotheses.
+
+**35. Derivation 8 omits active routes, process connections, and state values.**
+- Claim attacked: “preserves … (P), (EK).”
+- Why it fails: (P) uses \(\operatorname{ProducedBy}\), which uses active routes; active routes use “connections actually instantiated” and “operative result” from Part IX. (P) also evaluates obligations at states \(\xi,\xi'\). The hypothesis does not mention process connections, active routes, physical states, or obligation values.
+- Seriousness: fatal for the claim as stated.
+- Fix: add preservation of the physical interpretation, active-route structure, and obligation values, or restrict the claim.
+
+**36. Derivation 8’s proof is an assertion, not a proof.**
+- Claim attacked: “Each is a conjunction of equalities and existence claims over the transported data, and each of its inputs … is carried along.”
+- Why it fails: for (R), (G), (P), and (EK), the “inputs” are not all in the hypothesis. The proof does not show that transporting the listed data preserves the unlisted predicates. It assumes exactly what it needs.
+- Seriousness: serious.
+- Fix: do a case-by-case proof for each predicate, listing and preserving every input.
+
+**37. Derivation 8’s pole/shadow example is too quick.**
+- Claim attacked: “a recoding that would change what a component is anchored to — the pole-height port carried to the shadow-length port — is not among the permitted \(\phi\), since it does not preserve \(D\)’s structure.”
+- Why it fails: the semantics repeatedly says labels fix nothing; roles are derived from admitted edits and signatures. If pole-height and shadow-length have different signatures under the admitted edits, then the swap fails solution preservation, so it is excluded by the hypotheses. If they have the same signature at the index, the swap is a genuine recoding at that index, and the semantics would call them one forward kind. The proof cannot rule it out by fiat as “not preserving \(D\)’s structure.”
+- Seriousness: minor to serious depending on use.
+- Fix: state the separation condition: the recoding is excluded only when the two ports are separated by admitted edits or by the anchor structure.
+
+**38. Derivation 9: the parallel/priority example may not satisfy the antecedent.**
+- Claim attacked: “Parallel and priority wiring are an instance.”
+- Why it fails: the claim assumes \(M_0\) and \(M_1\) have the same input–output projection. Priority wiring can differ in output under simultaneous conflicting inputs. Unless the projection is restricted to conflict-free inputs, they are not an instance.
+- Seriousness: minor.
+- Fix: specify the input class on which the projection is taken, or remove the example.
+
+**39. Derivation 10 asserts (G) from insufficient conditions.**
+- Claim attacked: “If \(S_1\) was built by an owned subhistory containing a nontrivial binding construction required for the use — the binding of a persistence component to a continuity subnetwork, which deleting would break (F1) — and \(S_1\) is not in the prior repertoire, then (G) holds.”
+- Why it fails: (G) is \(\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}\). Build requires an itemised defect representation on an active route to the binding, and that the construction is not a composition of content-preserving transfers. The scenario supplies none of those. Attempt requires \(c\) actually used on an active route to address a coherently posed question, with an obligation in \(O_p\) failing before \(e\). The scenario does not supply \(p\) or the obligation failure. So (G) does not follow.
+- Seriousness: fatal for that inference.
+- Fix: enumerate and check all (G) clauses, or weaken to “some ingredients of (G) are stipulated.”
+
+**40. Derivation 10’s “not in the prior repertoire” is insufficient for New.**
+- Claim attacked: “and \(S_1\) is not in the prior repertoire, then (G) holds.”
+- Why it fails: \(\operatorname{New}(s,c,h,e)\) requires \(\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c\). It is not enough that \(S_1\) itself is absent from the repertoire; some distinct \(d\equiv_\ell S_1\) may be present.
+- Seriousness: serious.
+- Fix: state that no prior deployable content is \(\equiv_\ell\)-equivalent to \(S_1\).
+
+**41. Derivation 10’s “nontrivial binding” conclusion is not established.**
+- Claim attacked: “containing a nontrivial binding construction required for the use.”
+- Why it fails: nontrivial means the binding is neither a relabelling of a binding already in the repertoire nor obtainable from incoming carriers by \(\equiv_\ell\). \(S_1\)’s not being in the prior repertoire does not establish either disjunct about the binding.
+- Seriousness: serious.
+- Fix: add the two nontriviality conditions explicitly.
+
+**42. Derivation 10’s swap-based forward-kind claim is underargued.**
+- Claim attacked: “Under (K), with the swap supplying the footprint bijection, the two persistence components are of one forward kind on any contract containing the swap.”
+- Why it fails: forward kind requires a bijection of visible ports carrying value domains under which the two component signatures coincide on \(C\setminus\{(1,b_0)\}\). The swap edit is an admitted edit, not automatically a port bijection between the two components. The scenario does not exhibit the bijection or prove signature coincidence.
+- Seriousness: serious.
+- Fix: exhibit the port bijection and check the signatures, or state the claim as a stipulation conditional on that check.
+
+**43. Derivation 10 asserts the analysis-of-kinds conjecture as “correct.”**
+- Claim attacked: “the correct report is that identity, at this grain and contract, is exhausted by trajectory.”
+- Why it fails: Part XV explicitly labels the analysis-of-kinds conjecture a conjecture: “That kind-labels are eliminable in favour of signatures and histories is the **analysis-of-kinds conjecture**, and it is a conjecture.” A scenario may illustrate the conjecture, but calling the report “correct” without proof overclaims.
+- Seriousness: minor.
+- Fix: say “the semantics’ report, conditional on the analysis-of-kinds conjecture,” or mark it as a scenario gloss.
+
+**44. Derivation 10’s “violation off \(H_0\)” may attach the violation to the wrong pair.**
+- Claim attacked: “the occlusion pair is in \(S_0\)’s contract though not in \(H_0\). … That is a violation off \(H_0\) within the contract: surprise by definition.”
+- Why it fails: under occlusion, \(S_0\) predicting from recent occupancy may expect nothing and be correct while the cell is blank. The stated violation occurs “when the thing re-emerges,” which is a different edit–boundary pair. The scenario does not explicitly state that the re-emergence pair is in the contract.
+- Seriousness: minor.
+- Fix: specify that the contract contains the re-emergence pair, or locate the violation at the occlusion pair if that is intended.
+====================================================================================================
+S2_derivations | rev2_deepseek | sample 2 | finish stop | 23441 chars | error None
+====================================================================================================
+## Findings
+
+### Derivation 1
+
+**1. Overclaim from signature equality to forward kind.**  
+Quoted: “It shows that fidelity on a contract preserves signature on that contract: a faithful component is of one forward kind, on \(C\), with its anchor subnetwork.”  
+Claim attacked: that (F1) plus injectivity yields forward-kind identity.  
+Why it fails: Part II’s forward-kind relation requires a bijection of visible ports carrying value domains onto value domains, and comparison of signatures on \(C\setminus\{(1,b_0)\}\). Derivation 1’s proof establishes only equality of the third coordinates of the two signature sets under \((\tau,\sigma)\). It does not establish the required port bijection, domain preservation, or the baseline-exclusion clause.  
+Severity: serious.  
+Fix: either state the port translation as an explicit hypothesis—\(\lambda(k)\) has visible ports exactly the \(\lambda\)-preimage of \(V_k\), and the translation is a bijection carrying domains—or weaken the conclusion to signature equality, not forward kind.
+
+**2. Unstated hypothesis about the anchor’s visible ports.**  
+Quoted: “the visible ports of the anchor being those \(\lambda\) translates to \(V_k\).”  
+Claim attacked: that (F1) alone determines the relevant visible-port set of \(\lambda(k)\).  
+Why it fails: Part II defines \(V_U^{\mathrm{vis}}\) as a declared subset of the subnetwork’s ports. (F1) writes \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]\), which presupposes that \(V_k\) is the visible-port set of \(\lambda(k)\) under the transport’s port translation. That is not stated in the definition of a transport, nor in (F1).  
+Severity: serious.  
+Fix: add the hypothesis that \(\lambda(k)\)’s visible ports are exactly the ports translated to \(V_k\), and that the port translation is a bijection onto \(V_k\).
+
+**3. Part V cites Derivation 1 while dropping its injectivity hypothesis and the “active” restriction.**  
+Quoted in Part V: “By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract.”  
+Claim attacked: that (F1) alone entails the signature result.  
+Why it fails: Derivation 1 explicitly assumes \((\tau,\sigma)\) injective on \(C\) and concludes only for active components. Part V drops both. If \((\tau,\sigma)\) is not injective, multiple source pairs can collapse to the same translated pair, so \(\tau[C]\) need not have the same signature cardinality as \(C\).  
+Severity: serious.  
+Fix: insert “active” and “when \((\tau,\sigma)\) is injective on \(C\)” into the Part V sentence, or prove a separate quotient-signature version for non-injective translations.
+
+**4. Derivation 10 uses Derivation 1 to infer forward kind, which Derivation 1 does not establish.**  
+Quoted: “then by Derivation 1, with \((\tau,\sigma)\) injective on that contract … the persistence components are of one forward kind, on that contract, with the continuity subnetworks of things.”  
+Claim attacked: that Derivation 1 licenses the forward-kind conclusion.  
+Why it fails: Derivation 1 gives signature equality on \(\tau[C]\), not forward kind. Forward kind also requires the Part II port bijection carrying domains and the \(C\setminus\{(1,b_0)\}\) comparison. The scenario does not check these.  
+Severity: serious.  
+Fix: separate the two claims: D1 gives translated signature equality; forward-kind identity requires additional verified conditions.
+
+**5. The swap claim in Derivation 10 is false as stated.**  
+Quoted: “with the swap supplying the footprint bijection, the two persistence components are of one forward kind on any contract containing the swap.”  
+Claim attacked: that containing the swap edit is sufficient for forward-kind identity on every contract containing it.  
+Why it fails: Forward kind requires signature coincidence for every \((a,b)\) in the contract minus the baseline. A contract containing the swap may also contain an edit that treats the two components asymmetrically—e.g., an edit displacing one thing and not the other. The swap alone does not force the whole signature to be swap-invariant.  
+Severity: serious.  
+Fix: require the contract to be closed under the swap and the organization to be swap-symmetric, or restrict the claim to contracts whose every edit is swap-invariant.
+
+### Derivation 2
+
+**6. Misdescription of what (F1) supplies.**  
+Quoted: “(F1) for each gives the anchored relations as the component relations.”  
+Claim attacked: that (F1) identifies anchored relations with component relations.  
+Why it fails: (F1) says the anchored relation on \(D\) at \((a,b)\) equals the component relation on \(E\) at \((\tau(a),\sigma(b))\). The anchored relation is a projection of \(\operatorname{Sol}_{\lambda(k)}(a,b)\) on \(D\); the component relation is \(L_k(\tau(a),\sigma(b))\) on \(E\). They are related by translation, not identical. The account-equivalence definition compares anchored relations, so the shared anchor map already gives coincidence there.  
+Severity: minor, but it obscures what is actually proved.  
+Fix: rewrite the proof to say that shared anchors give anchored-relation coincidence directly, and that (A) gives profile coincidence.
+
+**7. The claim is nearly tautological and does not use (F2).**  
+Quoted: “If \(\mathcal E\) and \(\mathcal E'\) both satisfy (F1), (F2) and (A) on \(C\), have the same anchor map up to that bijection, and \(\Gamma\) corresponds to \(\Gamma'\), then they are account-equivalent on \(C\).”  
+Claim attacked: that the stated hypotheses do substantive work.  
+Why it fails: once the anchor maps are the same up to the component bijection, the anchored relations coincide by definition, and (A) gives both pulled-back profiles equal to \(\operatorname{Ans}_p\). (F2) is unused. The result is valid but weaker than the framing suggests.  
+Severity: minor.  
+Fix: state the claim as a trivial sufficient condition, or define account-equivalence in terms of translated component relations so that (F1) does real work.
+
+### Derivation 3
+
+**8. Missing injectivity/disjointness hypothesis.**  
+Quoted: “Survival on \(H\) constrains only the relations at pairs in \(H\).”  
+Claim attacked: that altering relations off \(H\) cannot affect fidelity on \(H\).  
+Why it fails: if \((\tau,\sigma)\) is not injective on \(C\), an edit–boundary pair \((a,b)\in C\setminus H\) can translate to the same \((\tau(a),\sigma(b))\) as some pair in \(H\). Then altering \(L_j(\tau(a),\sigma(b))\) changes fidelity on \(H\), so the altered pair need not survive.  
+Severity: serious.  
+Fix: add the hypothesis that \((\tau,\sigma)\) is injective on \(C\), or at least that \((\tau,\sigma)[C\setminus H]\cap(\tau,\sigma)[H]=\varnothing\).
+
+**9. Closure hypothesis can be inconsistent under non-injective translation.**  
+Quoted: “for each \((a,b)\in C\setminus H\), each component \(j\) of \(E\), and each relation \(L'\) … \(\mathcal T\) contains a pair agreeing with \((E,t)\) everywhere except that \(L_j(\tau(a),\sigma(b))=L'\).”  
+Claim attacked: that the closure condition is well-posed as written.  
+Why it fails: if two different pairs in \(C\setminus H\) map to the same \((\tau(a),\sigma(b))\), the condition demands pairs with two different values of \(L_j\) at the same translated pair, which is impossible for a single population member unless the values agree.  
+Severity: serious.  
+Fix: formulate closure on translated edit–boundary pairs, or require injectivity of \((\tau,\sigma)\) on \(C\).
+
+**10. “Changes that solution set” is ambiguous.**  
+Quoted: “whenever some admissible \(L'\) changes that solution set.”  
+Claim attacked: that the proof establishes a differing solution set.  
+Why it fails: the phrase can mean the component relation’s solution set or the whole organization’s solution set at \((\tau(a),\sigma(b))\). The closure hypothesis only gives a pair with a changed component relation. If the changed component is redundant, or boundary conditions force the same values, the global solution set may not differ.  
+Severity: serious ambiguity.  
+Fix: disambiguate and require that the alteration changes the global \(\operatorname{Sol}_E(\tau(a),\sigma(b))\).
+
+**11. The survival equivalence is not shown to apply to the altered pair in the actual selection history.**  
+Quoted: “The altered pair agrees with \((E,t)\) on \(H\), hence survives.”  
+Claim attacked: that membership in \(\mathcal T\) plus faithfulness on \(H\) entails that the pair survived in \(\Sigma_h\).  
+Why it fails: Part IV defines a survival condition that holds of a member exactly when it is faithful on \(H\), but it does not explicitly say every member of \(\mathcal T\) was present in the selection history and subjected to the survival condition. The closure hypothesis says \(\mathcal T\) contains the altered pair; it does not say that pair was a candidate in the actual elimination process.  
+Severity: serious.  
+Fix: strengthen the closure hypothesis to require that the altered pairs occur in \(\Sigma_h\) and are subject to the survival condition, or define \(\mathcal T\) as the set of pairs actually present in \(\Sigma_h\).
+
+### Derivation 4
+
+No finding. The remark is correctly labeled as a remark and does not overclaim.
+
+### Derivation 5
+
+**12. “Solutions include the question” is overbroad.**  
+Quoted: “A question \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\) determines an organization \(D_p\) … whose solutions include the question.”  
+Claim attacked: that a solution of \(D_p\) is the question \(p\).  
+Why it fails: in the construction, \(D\) and \(b_0\) are boundary; \(O_p\) and \(\rho_p\) are not ports; \(C_{\mathrm{adm}}\) is not represented at all. A solution of \(D_p\) assigns values to \(u_{(a,b)}\), \(u_{\mathcal Q}\), \(u_S\), \(u_K\), not to the full tuple \(p\).  
+Severity: serious.  
+Fix: restate the claim as a construction of a question-organization conditioned on \(D,b_0,C_{\mathrm{adm}}\), etc., and list every component of \(p\) that is not encoded.
+
+**13. No port or component for \(C_{\mathrm{adm}}\).**  
+Quoted: “\(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.”  
+Claim attacked: that the construction can enforce the Part III contract form.  
+Why it fails: Part III defines \(C=(C_{\mathrm{adm}}\cap S)\cup K\). Without a representation of \(C_{\mathrm{adm}}\), the consistency condition cannot be encoded or checked.  
+Severity: serious.  
+Fix: add a port for \(C_{\mathrm{adm}}\) or the declared admission relation, and a component enforcing \(C=(C_{\mathrm{adm}}\cap S)\cup K\).
+
+**14. Gap (i) omits two coherence conditions.**  
+Quoted: “(i) Coherence (\(\operatorname{Sol}_D(1,b_0)\neq\varnothing\); \(\mathcal Q\) defined on \(C\)) is a global condition on \(D\) and is not a local component of \(D_p\).”  
+Claim attacked: that the listed gap covers the coherence conditions.  
+Why it fails: Part III also requires \(S\subseteq C_{\mathrm{adm}}\) and \(K\cap C_{\mathrm{adm}}=\varnothing\). These are global conditions and are not encoded in the sketch.  
+Severity: serious.  
+Fix: add both conditions to the listed gaps or encode them as components.
+
+**15. Gap (ii) is internally inconsistent about \(b_0\), and treats \(\rho_p\) as an internal port when it is not.**  
+Quoted: “(ii) \(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed.”  
+Claim attacked: that \(b_0\) and \(\rho_p\) are missing ports.  
+Why it fails: the construction already says “Boundary: the target \(D\) and \(b_0\), held fixed.” If \(b_0\) is a boundary, it is not a port and cannot simply be added as one without changing the construction. Moreover, Part III says \(\rho_p\) attaches to the whole tuple \(p\) as the provenance of the representing transport; it is not naturally an internal port of \(D_p\).  
+Severity: serious.  
+Fix: clarify whether \(b_0\) is boundary or port; treat \(\rho_p\) as external provenance of the transport, not as a missing port.
+
+**16. The construction does not enforce the contract form.**  
+Quoted: “Admitted edits: toggle a pair; alter \(\mathcal Q\); alter \(S\); add a pair to \(K\) with a meaning.”  
+Claim attacked: that toggling a pair yields a valid candidate question.  
+Why it fails: toggling a pair changes the “in/out” valuation directly, but the closure conditions only enforce baseline “in” and composition closure. They do not enforce that the “in” set is exactly \((C_{\mathrm{adm}}\cap S)\cup K\). A solution may therefore be an arbitrary composition-closed subset, not a valid contract.  
+Severity: serious.  
+Fix: add a component enforcing the exact union form, with \(C_{\mathrm{adm}}\) represented.
+
+**17. The “components” are global conditions, not specified components with footprints and relations.**  
+Quoted: “Components: the closure conditions — the baseline port reads ‘in’; if \(u_{(a_2a_1,b)}\) reads ‘in’ then so do its factors where the composition is defined; \(u_S\) and \(u_K\) are consistent with the ‘in’ ports in the form of Part III.”  
+Claim attacked: that these are components in the sense of (O).  
+Why it fails: Part II requires each component \(j\) to have a footprint \(V_j\subseteq V\) and a relation \(L_j(a,b)\subseteq\prod_{v\in V_j}X_v\). The sketch gives no footprints or relations for these closure conditions; “where the composition is defined” and “consistent with the ‘in’ ports” are global conditions, not local component relations.  
+Severity: serious.  
+Fix: write out the component footprints and relations explicitly, or list this as a gap.
+
+**18. Unlisted gaps in representation of \(\mathcal Q\), baseline membership in \(S\), and admissibility of infinite port sets.**  
+Quoted: “one port \(u_{\mathcal Q}\) with domain the set of queries admissible on \(D\).”  
+Claim attacked: that the listed gaps are the right and complete gaps.  
+Why it fails: the sketch does not specify how arbitrary set-theoretic operations \(\mathcal Q\) are represented as port values; it does not enforce \((1,b_0)\in S\) when \((1,b_0)\in C_{\mathrm{adm}}\); and it does not address whether \(A\times B\) may be infinite or whether the physical module licenses an organization with one port per edit–boundary pair.  
+Severity: serious.  
+Fix: add these to the gap list or provide the missing encoding.
+
+### Derivation 6
+
+**19. The three named non-cycles are not shown to be exhaustive.**  
+Quoted: “Three places could have produced a cycle and do not.”  
+Claim attacked: that checking these three places establishes the no-cycle claim for every defined predicate in Parts II–XIII.  
+Why it fails: the proof does not justify that these are the only possible cycles. For example, the active-route definition uses “operative result” and “declared contrasts,” which are not defined in Part XII or listed among the informal terms in Part XIV. If those terms implicitly depend on Deploy or representation, the claimed non-cycle (iii) fails.  
+Severity: serious.  
+Fix: provide an explicit dependency graph for all defined predicates, or list and check every potential cycle.
+
+**20. Part XIV’s informal-term list is incomplete relative to Derivation 6’s reliance on it.**  
+Quoted: “Following the order of Part XIV from each defined predicate reaches the base.”  
+Claim attacked: that the base includes all needed informal terms.  
+Why it fails: “operative result” (Part IX) and “declared contrasts” (Part IX) are used in the active-route definition but are not in Part XIV’s list of informal terms. Derivation 6’s claim that defined predicates are defined from the listed informal terms is therefore unsupported.  
+Severity: serious.  
+Fix: add the missing informal terms to Part XIV or define them.
+
+### Derivation 7
+
+**21. It relies on Derivation 5 as if the construction were complete.**  
+Quoted: “a question-organization with contract \(C'\) is built (Derivation 5).”  
+Claim attacked: that Derivation 5 supplies the required construction witness.  
+Why it fails: Derivation 5 is explicitly a sketch with listed gaps, and it does not supply a construction witness with a defect record on an active route. Derivation 7’s proof is therefore conditional on gaps that are not closed.  
+Severity: serious.  
+Fix: add the explicit condition that Derivation 5’s gaps are closed, or weaken Derivation 7 to a conditional statement.
+
+### Derivation 8
+
+**22. Solution preservation is a consequence, not a hypothesis, for the stated \(\phi\).**  
+Quoted: “carries \(\operatorname{Sol}\) to \(\operatorname{Sol}\) (solution preservation, which for a bijection of the organization data is a hypothesis, not a consequence).”  
+Claim attacked: that solution preservation is an independent hypothesis.  
+Why it fails: Part II defines \(\operatorname{Sol}_D(a,b)\) as the set of valuations satisfying all component relations \(L_j(a,b)\). A bijection on organization data that carries ports, domains, components, edits, boundaries, and component relations pointwise automatically carries solutions to solutions. The parenthetical is false.  
+Severity: serious mathematical misstatement.  
+Fix: either remove the hypothesis as redundant, or explicitly say \(\phi\) need not preserve component relations pointwise—in which case it is not a bijection on organization data as claimed.
+
+**23. Missing preservation of the query \(\mathcal Q\).**  
+Quoted: “\(\phi\) preserves the physical module’s admission \((A_\Theta,\operatorname{Inst},\prec)\), carries \(\operatorname{Sol}\) to \(\operatorname{Sol}\) … preserves stated scopes and the relations declared for counterfactual pairs, and preserves \(\mathcal N\).”  
+Claim attacked: that the listed hypotheses suffice to preserve (E), anchoring, (R), (G), (P), (EK).  
+Why it fails: (A) is \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_p(a,b)\), and \(\operatorname{Ans}_p=\mathcal Q(D,a,b)\). Anchoring resolution also uses \(\operatorname{Ans}_p\). If \(\phi\) does not preserve \(\mathcal Q\), these conditions need not be preserved.  
+Severity: serious.  
+Fix: add preservation of \(\mathcal Q\) and of its action on solutions and component structure.
+
+**24. The list of transported data is incomplete for Deploy, ProducesVia, and (EK).**  
+Quoted: “each of its inputs … is carried along.”  
+Claim attacked: that the listed \(\phi\) inputs cover all inputs to (E), anchoring, (R), (G), (P), (EK).  
+Why it fails: Deploy uses problem-directed activity and use tasks \(U\); (EK) uses creative-critical episodes, achievement predicates, \(C_I\), resources, and Exec; ProducesVia uses active routes. The claim does not mention preserving Exec, resources, accuracy grades, \(\Gamma\), \(U\), problem-directed activity, role bindings, or the operative deliberative rule.  
+Severity: serious.  
+Fix: extend the transported data and hypotheses to include every input used by the predicates whose preservation is claimed.
+
+**25. The pole-height/shadow-length example is circular or unclear.**  
+Quoted: “a recoding that would change what a component is anchored to — the pole-height port carried to the shadow-length port — is not among the permitted \(\phi\), since it does not preserve \(D\)’s structure.”  
+Claim attacked: that this example identifies a prohibited \(\phi\).  
+Why it fails: if \(\phi\) is a bijection on \(D\)’s ports, it can map the pole-height port to the shadow-length port while preserving abstract structure; the transported anchor is then \(\phi(\lambda(k))\). The example conflates failure to preserve a semantic role with failure to preserve formal structure.  
+Severity: minor.  
+Fix: state the formal condition \(\phi(\lambda(k))=\lambda'(\phi(k))\) or remove the example.
+
+**26. The exclusion of “maps that do not preserve solutions” is redundant or incoherent.**  
+Quoted: “The result does not apply to … maps that do not preserve solutions.”  
+Claim attacked: that this is a meaningful exclusion for the stated \(\phi\).  
+Why it fails: if \(\phi\) is a bijection on organization data preserving component relations, solution preservation is automatic. If it does not preserve solutions, it is not such a bijection.  
+Severity: minor.  
+Fix: align the definition of \(\phi\) with the exclusion, or remove the exclusion.
+
+### Derivation 9
+
+**27. The side remark about emitted text and delivery logs is unsupported by the proof.**  
+Quoted: “The same holds for attribution from emitted text and for use inferred from delivery logs.”  
+Claim attacked: that the same argument applies to those cases.  
+Why it fails: the proof applies to any function of the input–output projection. Emitted text may include internal states not in the projection; delivery logs may contain more than the projection. Unless those are functions of the projection, the argument does not carry over.  
+Severity: minor.  
+Fix: restrict the remark to cases where the evidence is a function of the input–output projection.
+
+### Derivation 10
+
+**28. Derivation 10 repeats the D1 forward-kind overclaim.**  
+Quoted: “then by Derivation 1 … the persistence components are of one forward kind.”  
+Claim attacked: that D1 supports forward-kind identity.  
+Why it fails: as in finding 4, D1 gives translated signature equality under its own hypotheses, not the full Part II forward-kind relation.  
+Severity: serious.  
+Fix: verify the port bijection, domain preservation, and baseline-exclusion conditions explicitly, or weaken the scenario’s conclusion to signature equality.
+
+**29. The swap claim is already false as stated.**  
+Quoted: “with the swap supplying the footprint bijection, the two persistence components are of one forward kind on any contract containing the swap.”  
+Claim attacked: that containing the swap is sufficient for forward-kind identity.  
+Why it fails: as in finding 5, other edits in the contract may treat the components asymmetrically, breaking signature coincidence.  
+Severity: serious.  
+Fix: require the contract to be swap-invariant and the organization to be symmetric under the swap.
+
+**30. “Relabelling” does not by itself establish the needed injectivity on the extended contract.**  
+Quoted: “with \((\tau,\sigma)\) injective on that contract (which it is, since the translation is a relabelling).”  
+Claim attacked: that a relabelling guarantees injectivity.  
+Why it fails: a relabelling is injective only if it is a bijection on the relevant edit–boundary set. The scenario does not specify that the relabelling is bijective on the extended contract.  
+Severity: minor.  
+Fix: state explicitly that the relabelling is a bijection on the extended contract’s edit–boundary pairs.
+
+### Cross-cutting finding
+
+**31. Part V’s anchored-grade world-kind condition is not well-defined as written.**  
+Quoted: “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor subnetwork.”  
+Claim attacked: that Part II’s forward-kind relation applies directly across organizations.  
+Why it fails: Part II defines forward kind for subnetworks’ signatures on a contract \(C\), not for a component of \(E\) and a subnetwork of \(D\) whose edits live in different edit sets. Comparing them requires a translation \((\tau,\sigma)\). Part V adds “where the translation is defined,” but Part II’s relation itself does not include translation. Derivation 1 only supplies translated signature equality under extra hypotheses.  
+Severity: serious.  
+Fix: define a cross-organization forward-kind relation with an explicit translation, or restate condition 3 entirely in terms of translated signatures.

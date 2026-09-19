@@ -1,0 +1,142 @@
+====================================================================================================
+D7_phase2_rerun | atria | sample 0 | finish stop | 17202 chars | error None
+====================================================================================================
+# Referee report: the phase‑2 confound and its replacement
+
+## Part 1 — Findings on the phase‑2 design and results
+
+**1. The remedies proposed in the results document are not expressible in the frozen rule language.**
+> 14 §10, item 10: "Needs a second law that *extends* (e.g. a third thing, or a one-way gate)."
+
+A third thing breaks the pairwise `(i, j)` evaluation of every rule (13 §4: "checked on the slot pair (i, j) in both orders") and the frozen base organism `slots=2` (13 §2) — that is a change of *architecture*, not a rule addition, so the meta‑grammar cannot express it. A one‑way gate requires cell constants, which change #3 explicitly removed ("the two constants removed"). **Serious.** Fix: the replacement must be a pairwise law over the eight terms `{c,v,n,w}_{i,j}` with no constants. Part 2 supplies one.
+
+**2. The sticky wall is inconsistent by construction, not merely "confounded."**
+> 13 §3: "a thing whose kinematic next-state would flip its velocity (a wall hit) instead stays at its cell with velocity 0."
+
+This overrides the reflecting‑wall kinematics that 13 §2 fixes as A0's motion and that 13 §3's own collision law presupposes ("by the same reflect-and-move rule as before"). It edits the *kinematic* layer. The only consistent extension surface in this world is the *pairwise* layer — the layer the collision law occupies. **Fatal for phase 2 as an accumulation test.** Fix: leave wall kinematics untouched; extend the pairwise layer only.
+
+**3. The sticky law is per‑thing, but the language is pairwise and fires once per step.**
+> 14 §8: "The natural per-slot rule `stop_i + hold` scores only 540 because a rule fires once per step in the first matching order, so when both things hit walls at once it can stop only one."
+
+So *no* exactly correct rule exists for the sticky law in this language. The phase‑2 target was unattainable by construction, and S7's clause "a wall rule is built" could never have been satisfied properly. **Fatal for interpreting S7.** Fix: the replacement law's trigger must be *asymmetric*, so exactly one of the two orderings matches on any step.
+
+**4. The `hold`/`move` and per‑slot action semantics are under‑specified, and the two readings give opposite verdicts.**
+> 13 §4: "Action: one of `swap_next_v`, … each with `hold` (do not move this step) or `move`."
+
+If `hold` binds both slots, `stop_i + hold` wrongly freezes the non‑wall‑hitting thing on *every single* wall hit. If `hold` is per‑slot, the collision rule's symmetric condition requires both orderings to fire, which contradicts 14 §10 item 7 ("fires once per step, first matching order"). The frozen code's behaviour is unverifiable from the documents. **Serious.** Fix: pin in writing, before re‑freezing, (a) whether `hold`/`move` is per‑slot or pair‑wide, (b) whether `move` uses the pre‑rule `n` or re‑derives motion from the post‑rule velocity.
+
+**5. The phase‑2 "collision" bucket is contaminated, so S7's key clause is unmeasurable.**
+> 14 §7, footnote `*`: "In phase 2 this bucket includes wall-stop steps, so it is not comparable to phase 1's collision column."
+
+Yet S7 requires "collision fidelity after phase 2 within 0.01 of before," and 14 §9 compares 0.893 (mixed bucket) to 0.906 (pure bucket). That comparison is invalid; the 0.013 "miss" is not a measurement of anything. **Serious.** Fix: separate buckets — collision / new‑law / wall / free — in the rerun.
+
+**6. The "back on the original world" column is an unregistered measurement used as a defence.**
+> 14 §7: "…collapse everything else on the original world (0.835 → 0.431)… That is not a failure of construction."
+
+Design 13 §10 forbids adding a measurement after freezing. It is honestly logged as failure mode 10/12, but it is *deployed* as evidence. **Minor→serious** (the conclusion is correct; the procedure is not). Fix: pre‑register the cross‑world control as an outcome (Part 2 does this).
+
+**7. The hand‑built reference for the new law is unreported where it matters most.**
+> 14 §7, table row "A0 + phase-1 + hand-built wall rule", column "Sticky, wall-stop steps only": "—".
+
+The section‑6.1 gate ("Hand-build … confirm fidelity … at or near the sensory ceiling") was never run for the phase‑2 law. Combined with finding 3, phase 2 ran without its own precondition checked. **Serious.** Fix: the rerun must pass §6 for the new law, all buckets reported, before any construction run.
+
+**8. Even in phase 1 the hand‑built rules did not reach the ceiling, and the gap is unexplained.**
+> 14 §1: hand-built collision steps 0.906 vs sensory ceiling 0.923.
+
+13 §6.1 required "at or near the sensory ceiling"; "near" is doing unexamined work. The 0.017 gap is never decomposed — it may be the change‑step/co‑location residuals (14 §2) or it may be the signature of finding 4 (an asymmetric velocity exchange). **Minor→serious.** Fix: decompose the residual by cause; require the hand‑built reference to *reach* the ceiling with documented residuals.
+
+**9. Phase 2 was run despite a failed gate.**
+> 13 §11, step 5: "Phase 2 only if S1–S6 hold." 14 §9: "⚠️ S6 … M6(ii) ✗."
+
+**Minor procedurally, but it is exactly the slip the freeze was meant to prevent.** Fix: re‑freeze with an explicit gate statement.
+
+**10. The phase‑1 action choice was itself a silent tie — the phase‑2 failure is the same bug surfacing later.**
+> 14 §2: "Action solved: `swap_next_v + hold` — fixed 820, broke 0."
+
+Under the stated one‑step‑ahead solver and *either* reading of `hold`, several actions on a same‑target collision produce the identical next field (both things stay): `swap_next_v+hold`, `swap_v+hold`, `reverse_both+hold`, `stop_both+hold`. A unique winner is inconsistent with 13 §5 as written — unless the tie was broken by the free tie‑break parameter ("Free, fixed in code and hashed", 13 §10) and not reported, or the solver looks deeper than one step. **Serious.** Fix: report the tie set; make the solver's lookahead explicit.
+
+**11. Half the action space has never been exercised.**
+Every rule chosen by C and all six of B's rules in phase 1 use `hold`; no `move` variant was ever selected. The `move` branch's implementation is unverified. **Minor now, fatal for the replacement if unexamined** (see Part 2, gate item G1).
+
+**12. A structural constraint the document misses:** under *pre‑computed‑`n`* move semantics (finding 4b), the achievable next fields per step are only {c_i,n_i}×{c_j,n_j} — four patterns — so the velocity op is *never* identifiable at one step, and every action choice is a 4‑ to 8‑way tie. Under that reading, **no** replacement law can be both visible and one‑step action‑identifiable, and phase 2 of this design cannot work at all. The rerun therefore requires post‑rule‑velocity `move` semantics (or a two‑step lookahead). This must be decided before the law is chosen.
+
+---
+
+## Part 2 — A replacement law that genuinely extends the world
+
+### Design criteria (each one is a lesson from a finding above)
+
+A compatible second law must be: (i) **pairwise**, not per‑thing (finding 3); (ii) expressed over the eight terms with **no constants** (finding 1); (iii) **disjoint in trigger** from wall hits and from both collision cases, so it contradicts no existing law (finding 2); (iv) **asymmetric in its trigger**, so exactly one of the two rule orderings matches per step — no both‑slots workaround, no once‑per‑step penalty (finding 3); (v) **visible** at the occupancy level, unlike the crossing law (F3), or C has nothing to build from; (vi) **one‑step action‑identifiable** under post‑rule‑velocity `move` semantics, so the action choice is not decided by the free tie‑break (findings 10–12).
+
+### The law — call it the *no‑draft* law (or "the rebound")
+
+Added to the collision world, after kinematics and after the collision law:
+
+> **L2.** Compute reflecting‑wall kinematics `(n, w)` for both things. Then: (i) the elastic collision law applies exactly as before where `n_1 = n_2` or (`n_1 = p_2` and `n_2 = p_1`); (ii) **otherwise**, if for one ordering of the pair `n_i = c_j` — thing *i*'s next cell is thing *j*'s current cell — then thing *i*'s velocity is **reversed**, and the step's motion then proceeds under the reversed velocity (wall reflection still applying).
+
+Hand‑built rule, appended *after* the phase‑1 rule:
+
+```
+IF n_i == c_j THEN reverse_i + move
+```
+
+One atom; one action; fires in exactly one ordering per step.
+
+### Why it is consistent with every existing law
+
+- **Walls.** A wall‑hitting *i* has `n_i = c_i`, so `n_i == c_j` would force `c_i = c_j` — impossible (distinct positions). A wall‑hitting *j* has `n_j = c_j`, and with `n_i == c_j` that gives `n_i == n_j`, i.e. a same‑target collision — so the collision law takes precedence instead. The trigger therefore **never coincides with a wall hit**; the kinematic layer is untouched. (The reversal may send a thing *into* a wall, where reflection still applies — consistently.)
+- **Collisions.** The non‑collision part of the trigger is disjoint from same‑target and from crossing, given collision precedence. The world's shape is unchanged: "kinematics, then pairwise rules on the kinematic next‑states."
+- **Distinct positions.** Drafts require the pair to be adjacent with equal non‑zero velocity (shown: any other `n_i == c_j` case is a collision). With `v_i = v_j = v` and `c_j = c_i + v`, the retreat target `c_i − v` equals neither `c_i`, `c_j`, nor `c_j + v` unless `v = 0`; the wall‑adjacent cases resolve by reflection or by collision precedence. So no co‑location ever arises.
+- **Sensory contract.** The trailer retreats instead of advancing, so occupancy differs from the base world — the law is *visible*, unlike the crossing law.
+- **"Consistent" must mean this, and no more:** no new law can leave behaviour unchanged. The criterion is *no existing law is contradicted*, i.e. the trigger is disjoint from every event class already governed by a non‑kinematic law and the wall law is left intact. The sticky wall fails this; L2 satisfies it. It is a genuine extension: draft events occurred in the original world and were left to free kinematics; L2 is the first law about them.
+
+### Why the language can express it exactly
+
+Condition `n_i == c_j` is one of the 56 atoms. Action `reverse_i + move` is in the 16‑action set. Asymmetry of the trigger gives exactly one matching ordering per step, so "fires once per step, first matching order" is *structurally* satisfied rather than worked around. The architecture needs two rules (collision first, draft second), within `K = 3`.
+
+### Gate checks before any construction run (these are the §6 checks phase 2 skipped)
+
+- **G1.** Pin and *verify in code* the `move` semantics as post‑rule‑velocity with wall reflection (findings 4, 11, 12). If the frozen code uses pre‑computed `n`, L2 is inexpressible and must be redesigned — and under that reading no viable law exists without a two‑step lookahead.
+- **G2.** Hand‑build both rules; confirm fidelity **reaches the ceiling** on draft‑type, collision‑type, wall‑type and free steps separately, with the residual decomposed by cause (finding 8). Report the **event frequencies** of each class — the lesson of change #3's 16 % surprise. Require draft events ≥ ~5 % of steps, or the defect mass is too small for C to learn from.
+- **G3.** Verify by enumeration that `reverse_i + move` is the **unique** action among all 16 producing the correct next field on draft events. If it is not unique, either extend the solver to two steps or change the law — otherwise the outcome is decided by the hashed tie‑break (finding 10).
+- **G4.** Verify formally that the hand‑built rules never violate distinct positions (some candidate actions do, e.g. `reverse_j + hold` co‑locates).
+
+---
+
+## Part 3 — What shows "what was built became latent," and what shows it did not
+
+Run C from **A0 + the retained phase‑1 rule** (kept, not re‑induced) on the new world's exposure half, up to 2 further rounds. Buckets reported separately: collision / draft / wall / free. Architectures: A0; A0 + phase‑1 only; A0 + C's phase‑2 rules; A0 + hand‑built pair; A0 + B's phase‑2 rules; best‑of‑G0 (closedness must be re‑checked *on draft steps* — the lookup memoriser will again approximate "two adjacent blobs moving together → one stays").
+
+**"What was built became latent" — all of:**
+1. C's phase‑1 rule is retained **byte‑identically** — not rebuilt, not modified, not re‑induced.
+2. In C's first phase‑2 round, **collision‑class defect records are ≈ 0** (< 1 % of records): the old machinery generates no defects on the new world; it has become background. (This is the sharpest latency signal, and it is not a fidelity number.)
+3. Collision‑step fidelity on the new world is within **0.01** of the old world's, with buckets now matched (collision‑type only — fixing finding 5).
+4. C builds a draft rule with condition `n_i == c_j` (or an equivalent) and action `reverse_i + move`, reaching draft‑step fidelity within **0.01** of the hand‑built reference.
+5. Total fidelity of A0 + C on the new world beats A0 + phase‑1‑only by ≥ **0.05**.
+6. M3 thing‑signature **through draft events** ≥ 0.9 (A0 alone should fail here, as it did on collisions).
+7. Scrambled phase‑2 records drop draft‑step fidelity by ≥ **0.1**; B's output is byte‑identical under the scramble.
+8. M6 builds nothing from empty or no‑content records — **with the accounting fixed**: "fixed" must require *old prediction ≠ true field* and *new prediction = true field* (14 §8's diagnosis), and the "positive net" stopping rule must use the same corrected count.
+9. **Pre‑registered cross‑world control (P9):** run the accumulated architecture on the *original* world. With a compatible law the loss must be **confined to draft‑type steps**; fidelity elsewhere holds. This is the measurement the original phase 2's "back on the original world" column was trying to be.
+
+**"It did not become latent" — any of:**
+- The phase‑1 rule is rebuilt or modified (the machinery was not stable).
+- Collision‑class defects reappear in round 1 (> 1 %) — the old machinery was not latent, merely untested.
+- Collision fidelity drops > 0.01.
+- No draft rule built, or a rule with the wrong condition or wrong action. **Because G3 verified uniqueness, a wrong action now indicts the solver rather than being attributable to a tie** — this is what makes the test informative either way.
+- Total fidelity ≤ A0 + phase‑1‑only on the new world.
+- M3 through drafts low (a patch for observed cases, not a component with the law's signature).
+- P9 shows collapse *beyond* draft‑type steps — i.e. the new machinery interferes with the old.
+
+**Expected difficulty, stated honestly:** the draft condition is a single atom and, on the residual defect set after the phase‑1 rule is in place, it is perfectly separable (`n_i == c_j` is true exactly on drafts), so a functioning C should build the law in one round. That is deliberate — phase 2 tests *accumulation*, not difficulty. A sterner variant (a law needing a two‑atom condition, or the third rule slot) is a reasonable phase 2b, but it should not be the first test.
+
+---
+
+## Part 4 — Verdict: the original phase 2 is not salvageable as evidence about accumulation; it must be rerun
+
+**Withdraw S7; do not reclassify it as "⚠️ partial support."** The accumulation question requires a world in which the phase‑1 machinery *can* remain correct. In the sticky world it cannot: the world the collision rule was built for is replaced (finding 2), the correct rule for the new law may not exist in the language (finding 3), the bucket behind the "0.013" miss is not comparable (finding 5), and the hand‑built reference that would establish the confound is unreported where it matters (finding 7). S7 is untestable in that world, not partially met.
+
+**Two by‑products survive reinterpretation, and are worth keeping as documented diagnostics rather than as outcomes:**
+1. **A negative control,** runnable on the already‑frozen code with no construction run: hand‑build the sticky rule, report *all* buckets including wall‑stop steps, and confirm that the hand‑built architecture also collapses on the original world. That would establish that the confound is in the world, not the constructor — which the current table asserts with a "—" in the one cell that matters.
+2. **Mechanism findings about C,** which 14 §8 already reports correctly and which do not depend on the world being compatible: condition induction generalises to a new event class (C induced `v_j != w_j` from phase‑2 records); the action‑solver has a one‑step‑lookahead/tie‑break bug; the defect accounting never checks that the old prediction differed.
+
+**The rerun is a new frozen experiment, not a patch.** It requires re‑freezing after: the `move`/`hold` semantics are pinned and verified (G1); the M6 accounting is fixed (item 8 above); the tie‑break or the lookahead is made explicit (G3, finding 10); the §6 gate is run for the new law with all buckets and event frequencies (G2); and the cross‑world control is pre‑registered (P9, fixing finding 6). Phase 1's outcomes (S1–S5, and S3's F3 caveat) stand and do not depend on phase 2; S6's M6(ii) failure stands as a real, if non‑fatal, weakness of the constructor's bookkeeping.

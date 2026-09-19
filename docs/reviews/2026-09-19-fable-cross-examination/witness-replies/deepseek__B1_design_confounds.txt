@@ -1,0 +1,296 @@
+====================================================================================================
+B1_design_confounds | deepseek | sample 0 | finish stop | 22082 chars | error None
+====================================================================================================
+All four of your specific questions identify real failures. I number them first, then list additional confounds. Each finding states the claim attacked, why it fails, severity, and fix.
+
+---
+
+**Finding 1 — H_neutral is not neutral; it is merely blind to the τ mechanism.**
+- **Claim attacked:** “H_neutral is the kind-neutral history: one thing, never occluded, no crossings — nothing in its content distinguishes a thing-tracker from a cell-tracker.” (Design §2.7)
+- **Why it fails:** The one-thing, no-occlusion world contains no event that can exercise the τ gene. A slot with τ=∞ never has an unconfirmed slot that is not immediately re-bound, because there is always exactly one occupied cell and the persist rule re-binds the same slot. The exact tie is a logical consequence of the event set, not a finding about neutrality. The M2 table itself shows the same architectures differ by a factor of two on occlusion (τ=0: 0.535; τ=∞: 1.000), which that history never contains. “Lacks the events that would separate the architectures” is not the same as “neutral”: the former is an uninformative control, the latter would require showing that the kind makes no difference even when its mechanism is triggered.
+- **Severity:** serious.
+- **Fix:** Distinguish “uninformative” from “neutral.” State the conclusion as “this history provides no selection differential for τ,” and add a positive control showing that the same architectures can be separated by an event the history does contain (e.g., the j gene, which H_neutral does separate).
+
+**Finding 2 — “The τ family ties exactly” does not establish “persistence is not selected for.”**
+- **Claim attacked:** “On H_neutral, the best architecture for every persistence value ties (within 0.01): the history cannot tell a thing-tracker from a cell-tracker.” (Design §4; results §2: “all four values tie exactly”)
+- **Why it fails:** The tie shows only that this fitness function, on this history, cannot see persistence. It does not show that persistence is not selected for in general, nor that the architectures are one kind. The design’s own H_full selects τ=∞. The phrase “cannot tell” conflates “the fitness function is insensitive on this data” with “the kinds are identical.” They are not identical: the same architectures diverge on held-out occlusion. The exact tie is a null result by construction, not an empirical discovery.
+- **Severity:** serious.
+- **Fix:** Reword to “H_neutral yields no positive selection differential for τ.” Report that the τ mechanism is not triggered, and do not infer ontological identity from a fitness tie.
+
+**Finding 3 — The exposure/evaluation split by configuration index is not a clean generalisation test.**
+- **Claim attacked:** “Configurations are split by index: even-index configurations are the exposure half, odd-index the evaluation half.” (Design §2.5)
+- **Why it fails:** The predictor sees sensory fields, not configurations. Many different configurations share sensory sub-sequences. A lookup table keyed by the last k sensory fields can use continuations learned from exposure half prefixes that also occur in the evaluation half. The split guarantees unseen configurations, not unseen sensory prefixes. The claim “instances not seen” is therefore misleading. The design’s own diagnosis (change 17) confirms leakage: train=test lookup scored 0.820 on H_full, held-out 0.656—lower, but not zero. The remaining 0.656 is partly shared-prefix transfer. The ordering of configurations for the index split is also not specified in the design document, only in code, so the split is not reproducible from the text.
+- **Severity:** serious.
+- **Fix:** Report overlap of k-prefixes between exposure and evaluation halves. Use a prefix-level split (hold out sensory prefixes, not configurations) or cross-validate over configurations and report variance. Specify the configuration ordering in the design.
+
+**Finding 4 — For slot architectures, the exposure/evaluation split does nothing; the evaluation half is the selection set.**
+- **Claim attacked:** “Every fitness figure is on the evaluation half. This is fitness in the same environment on instances not seen — what selection actually acts on.” (Design §2.5)
+- **Why it fails:** Slot rules are fixed; they do not learn from exposure. Only the lookup pathway uses exposure. Selection is exhaustive: the selected set is the set of architectures with maximal fitness on the evaluation half. For slot architectures, therefore, the evaluation half is exactly the data on which they are selected. Reporting their fitness on that same half is not held-out performance; it is the selection criterion. The split prevents lookup memorisation, but it does not prevent selection overfitting for slots. The claim “what selection actually acts on” is true but not a generalisation test.
+- **Severity:** serious.
+- **Fix:** Split into three sets: exposure (for lookup memory), selection (for choosing architectures), and test (for reporting). Or use cross-validation over configurations and report mean test performance.
+
+**Finding 5 — The sensory ceiling comparison does almost no work and is misleading.**
+- **Claim attacked:** “It is an in-sample bound (it has seen the prefixes it predicts) and is reported for scale, not as a pass/fail threshold.” (Design §2.5)
+- **Why it fails:** Because it is in-sample, it is an oracle that uses evaluation labels. Comparing architectures that did not see evaluation labels to an oracle that did is not a fair benchmark. It cannot support statements like “98% of ceiling” as evidence that the architecture is near-optimal in any learnable sense. The prefix length is also unspecified: if the ceiling uses the full sensory history, it is a more powerful predictor class than k ≤ 3 architectures, making the comparison even less meaningful. The design admits it is not pass/fail, but the results still use it rhetorically.
+- **Severity:** serious as used in the results; minor if purely descriptive.
+- **Fix:** Compute an out-of-sample ceiling: estimate the majority continuation on the exposure half and apply it to the evaluation half. Match the ceiling’s prefix length to each architecture’s k. Report the in-sample number only as “in-sample maximum,” never as a target.
+
+**Finding 6 — The M3 thing-kind definition was moved after the fact.**
+- **Claim attacked:** Design §3: “A slot architecture **has thing-kind** when this holds for every configuration and every change.” Results §4: “The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on.”
+- **Why it fails:** The design requires every configuration and every change. The results table shows the selected architecture passes only 0.801 of all pairs. The 1.000 figure is conditional on a binding existing at step 2. That is a different, weaker criterion. The pre-registered outcome “those have thing-kind under M3” is therefore not met by the design’s own definition. This is a moved goalpost.
+- **Severity:** fatal for that pre-registered outcome.
+- **Fix:** Either redefine thing-kind as “conditional on binding” in the design, or admit the selected architecture fails the original definition and report the all-pairs fraction as the primary result.
+
+**Finding 7 — The underpowered threshold is still in the frozen design but ignored in the results.**
+- **Claim attacked:** Design §4: “Underpowered: No slot architecture reaches 0.95 × the sensory ceiling on H_full. Then the grammar … is revised and re-frozen, and this attempt is recorded as failed.” Change 18: “The 0.95-of-ceiling adequacy threshold is dropped.”
+- **Why it fails:** The frozen document still lists the 0.95 threshold as a pre-registered outcome. The results report top fitness 0.8009 against ceiling 0.909, which is 0.88—below 0.95. If the threshold were active, the underpowered condition would fire and the attempt would be a failure. The results say “Underpowered — did not fire” because adequacy was redefined to an ordering. This is an internal inconsistency and a moved goalpost.
+- **Severity:** serious.
+- **Fix:** Remove the 0.95 threshold from §4 if it was dropped, or explain explicitly in §4 that it is descriptive and not a pass/fail condition. Report the 0.88 ratio as a descriptive fact, not a silent exemption.
+
+**Finding 8 — The pre-registration claim is false; the design was revised after preliminary runs.**
+- **Claim attacked:** “Nothing was run before that moment except the control check in section 8, step 2.” (Status header)
+- **Why it fails:** Change 17 reports a preliminary diagnosis: “on train = test the k = 3 lookup scored 0.820 on H_full and 0.656 on held-out configurations.” Change 18: “the ceiling … was exceeded by real architectures.” Change 19: “τ = 0, 2, 5, ∞ tied exactly on H_neutral and rebind sat 0.026 below.” These are results from runs that are not the two named controls. Change 8 says “Pre-registered outcomes rewritten to match.” The design was therefore informed by data before freezing. The final run is confirmatory only in a weak, post hoc sense.
+- **Severity:** fatal.
+- **Fix:** Report the preliminary runs as exploratory. Pre-register a genuinely new experiment on a new world, new grammar, or new held-out data, and label the current run as exploratory.
+
+**Finding 9 — The neutrality control is the same test as the H_neutral main outcome, run before freezing.**
+- **Claim attacked:** Design §5: “Neutrality (H_neutral): the best architecture for each persistence value τ = 0, 2, 5, ∞ all within 0.01 of each other.” Design §4: “On H_neutral, the best architecture for every persistence value ties (within 0.01).”
+- **Why it fails:** The control is identical to the pre-registered main outcome for H_neutral. It was run before freezing. The final run merely repeats a result already known. This is not independent confirmation; it is a control that has been promoted to a finding.
+- **Severity:** serious.
+- **Fix:** Separate control data from main evaluation data. If the control must be on the same history, do not report the main outcome as independently confirmed.
+
+**Finding 10 — The evolutionary search is not a meaningful reachability test.**
+- **Claim attacked:** “This measures which architectures a blind search actually lands on — the reachability and search-bias question.” (Design §2.9)
+- **Why it fails:** The search space is the same 208 architectures. Mutation can reach any architecture in a few steps because the space is tiny. The search converging to the exhaustive optima is not evidence that reachability is not a problem in a larger or more realistic space. It only shows that on this trivial landscape, a small search finds the optima.
+- **Severity:** minor.
+- **Fix:** Run the evolutionary search on a larger grammar or a much larger architecture space, or explicitly state that it only tests search on this finite 208-architecture space.
+
+**Finding 11 — Last-writer-wins lookup is arbitrary and order-dependent.**
+- **Claim attacked:** “The table is filled by exposure: one pass over the history, recording what actually followed each key (last-writer-wins).” (Design §2.6)
+- **Why it fails:** For any key that appears multiple times with different continuations, the prediction depends on the arbitrary order of exposure examples. The design says this order is “free, fixed in code and hashed” (Design §7). That makes the lookup’s performance a function of an arbitrary choice. The comparison between lookup-only and slot-only is therefore confounded by the memory update rule, not just by “object model versus none.”
+- **Severity:** serious for the lookup-vs-slot comparison.
+- **Fix:** Use majority continuation, or report the distribution of lookup performance over multiple random exposure orders, or pre-register the order and justify it as the best available policy.
+
+**Finding 12 — The 3-cell occlusion window does not guarantee hiding for at least three steps.**
+- **Claim attacked:** “A 3-cell window hides it for at least three steps, beyond k = 3.” (Design change 2)
+- **Why it fails:** A thing at the edge of the occluded window can leave the window in one step. For example, window 0–2, thing at cell 2 moving +1: next step cell 3 is visible. The window does not guarantee hiding beyond k=3 for all positions and velocities. This weakens the rationale for choosing a 3-cell window and may allow k=3 lookup to learn some occlusion patterns.
+- **Severity:** minor to serious.
+- **Fix:** Either use a window that provably hides any thing within it for at least k+1 steps given the kinematics, or correct the rationale and acknowledge that some occlusions are shorter.
+
+**Finding 13 — Swap is a no-op for sensory prediction but is included in fitness.**
+- **Claim attacked:** “swap | 1 | 0 | exchange the two things’ identities; the sensory field is unchanged at every step.” (Design §2.3)
+- **Why it fails:** Prediction is from sensation. If the sensory field is unchanged, swap cannot affect M1 or M2. It only matters in M3, where the change is manually applied to the slot state. Including swap in the fitness computation adds sequences that are identical to identity, diluting the change set and potentially affecting selection. It does no work for the main prediction task.
+- **Severity:** minor.
+- **Fix:** Exclude swap from M1/M2 fitness, or report it separately as a component-fidelity test only.
+
+**Finding 14 — The post hoc j-gene finding lacks support.**
+- **Claim attacked:** “7.1 A second kind was selected by history, in opposite directions.” (Results §7.1)
+- **Why it fails:** This was not pre-registered. No fitness difference between j=yes and j=no is reported. No significance test or robustness check is provided. The selection of j=yes on H_neutral and j=no on the two-thing worlds could be due to tie-breaking, finite-sample noise on the evaluation half, or a real effect. The text presents it as a finding without the evidence needed to distinguish these.
+- **Severity:** minor to serious.
+- **Fix:** Report the fitness difference for j=yes vs j=no on each history, bootstrap over configurations, or pre-register a follow-up test for this gene.
+
+**Finding 15 — Selection on H_full is fragile: τ=∞ beats τ=5 by 0.003.**
+- **Claim attacked:** “On H_full, the top architectures all have persisting slots (τ > 0), and those have thing-kind under M3.” (Design §4; results §2: selected architecture is τ=∞)
+- **Why it fails:** Results §7.2 reports: “τ=5 and τ=∞ are separated by 0.003 in prediction fitness (0.798 vs 0.801).” Selection is by exact maximum on a finite evaluation half. A 0.003 difference could be due to a few configurations. The claim that history selected infinite persistence over finite persistence is not robust to minor changes in the evaluation set. No significance test or cross-validation is reported.
+- **Severity:** serious.
+- **Fix:** Bootstrap over configurations, report confidence intervals for the fitness difference, or use a threshold that acknowledges ties within a pre-specified margin.
+
+**Finding 16 — The definition of the kind under test is inconsistent.**
+- **Claim attacked:** Design §2.6: “The kind under test is persistence — the τ gene and the `rebind` rule.” Change 19: “rebind is reported beside them but is not in the check: it differs from τ = 0 in re-inferring velocity from scratch every step, which is a velocity-memory difference, not a persistence difference.”
+- **Why it fails:** If the kind under test includes rebind, excluding it from the neutrality check is arbitrary. If rebind is not persistence, then the definition in §2.6 is wrong. This confusion affects what the neutrality control tests and what the sinking condition (“excludes all non-persisting architectures (rebind, τ=0)”) means.
+- **Severity:** serious.
+- **Fix:** Define the kind under test as the τ gene only, or include rebind in the neutrality check and explain why. Align the definition with the sinking condition.
+
+**Finding 17 — The ceiling may be a more powerful predictor class than the architectures.**
+- **Claim attacked:** “for every sensory prefix, predict the most common continuation.” (Design §2.5)
+- **Why it fails:** The architectures use at most k=3 sensory fields. If the ceiling uses the full sensory history up to the prediction point, it has unbounded memory and is strictly more powerful. The comparison then says nothing about whether the architectures are near the best achievable within their own information class.
+- **Severity:** serious.
+- **Fix:** Specify the prefix length used by the ceiling. Compute the ceiling separately for k=1, k=2, k=3, and compare each architecture to the ceiling for its own k.
+
+**Finding 18 — M3 is not independent of the architecture’s definitions and gives oracle knowledge of changes.**
+- **Claim attacked:** “if a match exists, apply the **translated** change to the slot state … then continue on the post-change sensory sequence and check …” (Design §3)
+- **Why it fails:** The test manually applies the correct change to the slot state at step 2. It therefore does not test whether the predictor can infer the change from sensation; it tests whether the slot update rules preserve the state once given the answer. The high M3 for τ=∞ is partly tautological: τ=∞ is defined as “never forgets,” so under occlusion (where the translated change does nothing) it keeps the slot alive. The test confirms the labels rather than providing independent evidence of thing-kind.
+- **Severity:** serious for interpreting M3 as evidence of kind.
+- **Fix:** Distinguish component fidelity (given oracle-translated changes) from inference from sensation. Report both. Do not present M3 as evidence that the architecture infers thing-kind from observation.
+
+**Finding 19 — “No sampling; every number is exact” is misleading.**
+- **Claim attacked:** “Everything is small enough to enumerate exhaustively. No sampling; every number is exact.” (Design §2)
+- **Why it fails:** Exhaustive enumeration of the finite configuration set does not eliminate sampling error for the underlying distribution of worlds or for the split between exposure and evaluation. Selection on the evaluation half is still selection on a finite subset. The exact numbers are conditional on that subset. A different split could yield a different selected architecture.
+- **Severity:** serious.
+- **Fix:** Cross-validate over configurations, report variance across splits, or state clearly that “exact” means “exact on this finite evaluation half,” not “exact for the world.”
+
+**Finding 20 — The conclusion overgeneralises from one kind to all kinds.**
+- **Claim attacked:** “History determined which kind got expressed, exactly as the diagnosis said.” (Results, one-paragraph answer)
+- **Why it fails:** Only persistence (and post hoc j) was tested. The diagnosis in Design §1 concerns object, cause, rule, and persistence. The experiment cannot support a claim about kinds in general from a test of one kind.
+- **Severity:** serious.
+- **Fix:** Restrict the conclusion to persistence. State explicitly that object, cause, and rule were not tested.
+
+**Finding 21 — The rival correspondence view is not actually tested.**
+- **Claim attacked:** “The rival (the correspondence view): kinds are prior. A faithful predictor has kind-preserving structure regardless of history, because kinds are there to be matched.” (Design §1)
+- **Why it fails:** The experiment compares predictors selected on different histories. The rival is about faithful predictors, not selected predictors. A predictor selected on H_neutral is not a faithful predictor of a world with occlusion. The experiment therefore does not test whether a faithful predictor has kind-preserving structure regardless of history. It tests whether selection on a narrow history produces a predictor with persistence. Those are different questions.
+- **Severity:** serious.
+- **Fix:** Clarify the operationalisation. Either test a faithful predictor directly, or restrict the claim to “selection on this history does not produce persistence,” not “the correspondence view is refuted.”
+
+**Finding 22 — The first “ceiling” was exceeded, which shows the ceiling concept was never a bound on generalisation.**
+- **Claim attacked:** “A first version of the ceiling counted every ambiguous prefix as unachievable and was exceeded by real architectures; it was corrected to the majority-continuation predictor, which is the true bound.” (Design change 11)
+- **Why it fails:** If a quantity called a “ceiling” can be exceeded by real architectures, it was not a ceiling. The corrected version is the in-sample maximum for deterministic predictors on the evaluation half. It is a tautological upper bound for that half, not a bound on what can be learned from exposure. The fact that it needed correction after seeing architectures exceed it shows it was being used as a benchmark before it was properly defined.
+- **Severity:** serious.
+- **Fix:** Call it “in-sample maximum,” not “ceiling.” Compute an out-of-sample benchmark from the exposure half if the goal is to assess generalisation.
+
+**Finding 23 — The H_neutral “tie” is presented as a discovery but is a trivial consequence of the event set.**
+- **Claim attacked:** “A world where nothing is ever hidden did not select for persistence at all — trackers that forget and trackers that never forget tied to the last decimal.” (Results, one-paragraph answer)
+- **Why it fails:** With one thing and no occlusion, the persist rule never has an unconfirmed slot that is not immediately re-bound. The tie is forced by the grammar and the event set. It is not an empirical result about selection; it is a demonstration that the history is uninformative for τ. The result is correct but not probative.
+- **Severity:** minor.
+- **Fix:** Present it as a manipulation check: “the history does not exercise the τ mechanism,” not as evidence about history’s role in selecting kinds.
+
+---
+
+If you want, I can now turn this into a referee report with a recommended decision and a minimal set of experiments that would actually separate the diagnosis from the rival.
+====================================================================================================
+B1_design_confounds | deepseek | sample 1 | finish stop | 21382 chars | error None
+====================================================================================================
+Hostile referee report. Numbered findings only. I quote the exact passage attacked. I do not praise or summarise.
+
+## A. The “neutral” world and the τ tie
+
+**1. Claim attacked:** “H_neutral is the kind-neutral history: one thing, never occluded, no crossings — nothing in its content distinguishes a thing-tracker from a cell-tracker.”
+**Why it fails:** H_neutral is not neutral in any strong sense. It contains `displace` and `set_velocity`, and its content does distinguish architectures: `rebind` is separated from `τ=0`, and the τ family is separated from itself as soon as occlusion is added. What H_neutral lacks is precisely the event—prolonged non-confirmation—that makes persistence matter. A history that merely lacks the event that would separate architectures is not the same as a history that is indifferent between them. The former is an uninformative null; the latter is a genuine tie under a contract that could distinguish them.
+**Seriousness:** fatal to the claim that H_neutral is “kind-neutral.” At best it is “untestable for persistence.”
+**Fix:** Redefine neutrality as “no differential selection among architectures when the relevant event is present,” or add a history that contains occlusion but no other changes. State explicitly that H_neutral is a limit case, not evidence of indifference.
+
+**2. Claim attacked:** “A world where nothing is ever hidden did not select for persistence at all — trackers that forget and trackers that never forget tied to the last decimal.”
+**Why it fails:** The tie establishes only that the chosen fitness function—next-step true occupancy on H_neutral—cannot see τ. It does not establish that persistence is not selected for in the history. The same τ values differ on occlusion: the M2 table shows H_neutral-selected τ=0 at 0.535 and τ=∞ at 1.000 on occlude. The design itself admits in 7.2 that “prediction fitness is a coarse signal for kind.” The correct inference is “this fitness function is blind to τ on H_neutral,” not “persistence is not selected for.”
+**Seriousness:** serious. The central positive claim rests on a null result from an insensitive metric.
+**Fix:** Report the result as insensitivity of M1 to τ on H_neutral. Add a different contract on H_neutral (longer horizon, identity tracking, or M3) to test whether the components differ even when M1 does not.
+
+**3. Claim attacked:** “rebind is reported beside them but is not in the check: it differs from τ = 0 in re-inferring velocity from scratch every step, which is a velocity-memory difference, not a persistence difference.”
+**Why it fails:** If the kind under test is the thing-tracker / cell-tracker distinction, `rebind` is the pure cell-tracker. Excluding it because it lacks velocity memory narrows the test to the τ gene within a family that already has velocity memory. The neutrality check then becomes almost definitional: H_neutral has no occlusion, so τ does not matter within a velocity-memory family. The broader claim that “nothing in its content distinguishes a thing-tracker from a cell-tracker” is false for the architecture space as a whole.
+**Seriousness:** serious. It is a moved goalpost: the check was narrowed after the wrong pair was found.
+**Fix:** Include `rebind` in the neutrality check, or state clearly that the experiment tests only “persistence within a velocity-memory family,” not the full cell-tracker/thing-tracker distinction.
+
+**4. Claim attacked:** Results table: “H_neutral | 0.8931 … 12: slots ∈ {1,2,3} × τ ∈ {0, 2, 5, ∞}, all r=5, all j=yes | all four values tie exactly.” One-paragraph answer: “Only the world with occlusion selected the tracker that keeps a thing alive when it can’t see it.”
+**Why it fails:** The τ=∞ tracker is in H_neutral’s selected set. “Selected” is defined as fitness-maximal. Therefore H_neutral also selected the tracker (tied with others). The word “only” is false unless “selected” means “uniquely selected.” The design repeatedly slides between “in the selected set” and “the unique maximum.”
+**Seriousness:** serious. It is a terminological overclaim that changes the conclusion.
+**Fix:** Distinguish “in the selected set” from “uniquely selected.” Restate: only H_full uniquely selected the tracker; H_neutral selected it as part of a tie.
+
+**5. Claim attacked:** Design 4: “Written before any code was run, and not changed after.” Design 9 change 16: “the first control run had already shown τ = 0 winning H_neutral and τ = ∞ winning H_full, which is the supporting outcome.”
+**Why it fails:** These cannot both be true in the relevant sense. The control run is part of the experiment; it was run before freezing; it already produced the main supporting outcome; the neutrality check was then changed to compare the τ family. The frozen run is therefore not an independent test of a pre-specified hypothesis. It is a confirmation run after the main result was observed and after the check was reshaped.
+**Seriousness:** fatal to the pre-registration claim.
+**Fix:** Report the control run as exploratory. Pre-register a genuinely independent replication on fresh histories and fresh architecture samples, with no prior observation of the target contrast.
+
+**6. Claim attacked:** Results 7.3: “history did not select between them; which one you got was luck.” One-paragraph answer: “History determined which kind got expressed, exactly as the diagnosis said.”
+**Why it fails:** In H_neutral, history does not determine which kind is expressed; it leaves τ undetermined. The experiment’s own post hoc note says luck decides. That contradicts the strong determinism of diagnosis point 3 and the one-paragraph answer. The correct statement is weaker: history determines whether there is selection pressure; absent pressure, drift decides.
+**Seriousness:** serious. The headline conclusion is stronger than the data.
+**Fix:** Rewrite the conclusion as “history determines the selection pressure; when pressure is absent, the kind is left undetermined.”
+
+## B. Exposure/evaluation split
+
+**7. Claim attacked:** “Configurations are split by index: even-index configurations are the exposure half, odd-index the evaluation half. … Every fitness figure is on the evaluation half. This is fitness in the same environment on instances not seen.”
+**Why it fails:** The lookup pathway’s keys are the last k sensory fields. Splitting by configuration index does not make sensory prefixes disjoint. With 6 cells, short k, and many configurations, the same k-length prefix appears in both exposure and evaluation halves from different configurations. The lookup table can have memorised the continuation from an exposure configuration and then apply it to an evaluation configuration sharing that prefix. This is cross-instance leakage, not generalisation to unseen instances.
+**Seriousness:** serious. The held-out lookup scores are not a clean generalisation measure.
+**Fix:** Split by sensory prefix or by full sensory trajectory. Report prefix overlap between halves. Use leave-one-prefix-out evaluation. If the split cannot be made prefix-disjoint, say so and stop calling it held-out generalisation.
+
+**8. Claim attacked:** “Without it a bounded-memory table memorises the local patterns of the very sequences it is scored on, and is selected everywhere for that reason alone.”
+**Why it fails:** The split reduces but does not remove memorisation of shared prefixes. The diagnosis itself reports lookup at 0.656 on held-out configurations—far above the empty-prediction baseline, which is exactly what leakage would produce. The split is not sufficient to support the claim that the lookup was prevented from memorising.
+**Seriousness:** serious. The comparison between lookup and slots remains confounded by leakage.
+**Fix:** Quantify prefix overlap and re-run with a prefix-disjoint split. Report lookup performance on truly novel prefixes.
+
+**9. Claim attacked:** “Configurations are split by index: even-index configurations are the exposure half, odd-index the evaluation half.”
+**Why it fails:** Even/odd by enumeration order is arbitrary unless balance is checked. If the enumeration order correlates with position, velocity, or co-location, the halves differ systematically. No balance table is reported.
+**Seriousness:** minor to serious depending on the ordering.
+**Fix:** Randomise the split with a recorded seed and report balance on position, velocity, co-location, and change type. Or split by a property that is irrelevant to the architecture.
+
+## C. The sensory ceiling
+
+**10. Claim attacked:** “It is an in-sample bound (it has seen the prefixes it predicts) and is reported for scale, not as a pass/fail threshold.”
+**Why it fails:** An in-sample oracle on the evaluation half is not a fair upper bound for architectures that only saw the exposure half. The ceiling has access to the evaluation prefixes; the architectures do not. Comparing held-out architectures to an in-sample oracle is apples-to-oranges. The percentages “98% of ceiling,” “91% of ceiling,” “88% of ceiling” are therefore misleading: they mix generalisation performance with oracle access.
+**Seriousness:** serious. The ceiling does no comparative work; it only creates a false impression of adequacy.
+**Fix:** Compute the ceiling from the exposure half and apply it to the evaluation half, or drop the ceiling comparison entirely. If retained, report it as a descriptive oracle only and do not cite percentages in arguments.
+
+**11. Claim attacked:** Design 9 change 18: “The 0.95-of-ceiling adequacy threshold is dropped. … Adequacy is now the ordering, slot-only > lookup-only, on held-out configurations.”
+**Why it fails:** Under the original pre-registered threshold, H_full would have failed: 0.8009 / 0.909 ≈ 0.881 < 0.95. Dropping the threshold after seeing the result converts a failed adequacy test into a weak ordering test. “Slot-only beats a handicapped lookup-only” does not establish that the grammar can express an adequate predictor. It establishes only that the lookup is worse.
+**Seriousness:** serious. This is a classic goalpost move.
+**Fix:** Pre-register a non-oracle absolute threshold, or admit that the grammar is not shown to be adequate in absolute terms. Report the original threshold and the failure.
+
+**12. Claim attacked:** “The 0.95-of-ceiling adequacy threshold is dropped. It was a guess, and the diagnosis showed the ceiling is an in-sample bound.”
+**Why it fails:** If the ceiling is in-sample and therefore not a valid absolute benchmark, the correct response is not to replace it with a weaker comparative check. It is to build a valid held-out ceiling. The current adequacy criterion is almost impossible to fail as long as slots are better than an empty-default lookup.
+**Seriousness:** serious. The adequacy control is close to vacuous.
+**Fix:** Build a held-out ceiling: estimate the majority continuation from the exposure half and apply it to the evaluation half. Use that as the scale. Then set an absolute threshold or report the gap honestly.
+
+## D. M3 thing-signature and pre-registration
+
+**13. Claim attacked:** Design 3: “A slot architecture has thing-kind when this holds for every configuration and every change.”
+**Why it fails:** The selected H_full architecture scores “Passing, all pairs 0.801” on M3. It does not hold for every configuration and every change. Under the pre-registered definition, it does not have thing-kind. The results then reinterpret the test as “Passing, given bound” and claim 100%. That is not the pre-registered test.
+**Seriousness:** fatal to the claim “those have thing-kind under M3.”
+**Fix:** Either report that the architecture fails the pre-registered M3, or pre-register a conditional M3 in a new experiment. Do not call the conditional result “thing-kind” under the old definition.
+
+**14. Claim attacked:** Results 4: “Passing, given bound”; Results 6: “passes M3 on 100% of bound pairs.”
+**Why it fails:** The unbound pairs are not random noise; they are configurations where the architecture failed to track both things at step 2, mostly co-located starts. The design’s M3 definition did not exempt them. Conditioning on binding changes the quantity being measured from “does it have thing-kind” to “does it maintain thing-kind once it has already locked on.” That is a different and much weaker property.
+**Seriousness:** fatal. This is the central overclaim of the results.
+**Fix:** Report both unconditional and conditional M3. Call the conditional result “persistence under binding,” not “thing-kind.”
+
+**15. Claim attacked:** Design 3: “apply the translated change to the slot state (displace → set that slot’s cell; set_velocity → set that slot’s velocity; occlude → nothing, it is a sensor edit; swap → exchange the binding)”
+**Why it fails:** M3 gives the architecture the true change. It does not test whether the architecture can infer the change from sensation. The M2 table shows the H_full-selected architecture scores only 0.708 on displace and 0.838 on set_velocity in actual prediction. The claim that its “components respond to every allowed change exactly as a thing does” is therefore an oracle-injected component claim, not a claim about the predictor.
+**Seriousness:** serious. It conflates component fidelity given the answer with inference from sensation.
+**Fix:** Keep M3 as a component test but state explicitly that it injects the true change. Do not use it to support claims about the architecture’s ability to handle changes in prediction. Report M2 breakdowns alongside every M3 claim.
+
+**16. Claim attacked:** Results 4 table: τ=∞ has “816 / 4,104” unbound; τ=0 has “624” unbound.
+**Why it fails:** The conditional pass rates are computed on different subsets. The τ=∞ architecture is evaluated on 3,288 pairs; the τ=0 architecture on 3,480 pairs. Comparing “1.000 given bound” to “0.837 given bound” as if they were the same test is invalid. The architectures are not compared on the same pairs.
+**Seriousness:** serious. The M3 ranking is confounded by different denominators.
+**Fix:** Evaluate all architectures on a fixed set of configurations where every architecture can bind, or report only unconditional rates. If such a set cannot be constructed, report the overlap and do not compare conditional rates directly.
+
+**17. Claim attacked:** Results 4: “The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on.”
+**Why it fails:** The table reports only six architectures, while the design says 51 slot-only architectures were put through the test. “The only one” is not supported by the displayed data. Other architectures may also pass conditionally.
+**Seriousness:** serious. Missing data.
+**Fix:** Report all 51 architectures or a summary distribution. If “the only one” is true, show the full table or a reproducible filter.
+
+**18. Claim attacked:** Results 2: H_kinematic selected “slots=3, τ=0, r=5, j=no.” Results 4 M3 table: “slots=2, τ=0, r=5, j=no (selected on H_passive, H_kinematic).”
+**Why it fails:** The M3 row does not test the architecture selected on H_kinematic. It tests a different slot count. The claim that “the architectures H_passive and H_kinematic selected fail the thing-signature test” is therefore not supported for the actual selected architecture.
+**Seriousness:** serious. It is a factual mismatch.
+**Fix:** Run and report M3 for the exact selected architectures. Do not label a slots=2 row as the H_kinematic selected architecture when H_kinematic selected slots=3.
+
+## E. Other confounds in selection and interpretation
+
+**19. Claim attacked:** Results 2: H_full selected “slots=2, τ=∞, r=5, j=no”; H_kinematic selected “slots=3, τ=0, r=5, j=no”; H_neutral selected “all r=5, all j=yes.”
+**Why it fails:** Histories differ in multiple architecture parameters at once. The selection difference is not just τ. H_full differs from H_kinematic in τ and slot count. H_neutral differs from both in j. Attributing the result to “persistence” alone is not licensed by a design that selects whole architectures.
+**Seriousness:** serious. The kind under test is confounded with slot count and the j gene.
+**Fix:** Report factorial or held-fixed analyses. At minimum, compare best architectures with the same slot count and j across histories. State that the selected package, not τ alone, is what history selects.
+
+**20. Claim attacked:** Results 7.2: “τ=5 and τ=∞ are separated by 0.003 in prediction fitness (0.798 vs 0.801), but by 0.39 on the thing-signature occlusion test.”
+**Why it fails:** The selection on H_full is based on M1. A 0.003 margin is a very weak selection pressure. The claim that the world with occlusion “selected the tracker” overstates the strength of the evidence. It selected τ=∞ by a hair, and the design itself admits prediction fitness is coarse. The sharp M3 difference is not what selection saw.
+**Seriousness:** serious. The effect size is too small to support the strong selection language.
+**Fix:** Report exact numbers of differing predictions, confidence intervals or bootstrap over configurations, and a sensitivity analysis. Treat τ=5 vs τ=∞ as unresolved by M1. If the claim is only “τ>0 was selected over τ=0,” say that.
+
+**21. Claim attacked:** Results 5: “H_neutral | τ = 2, ∞, 2, 5, 2, 5 … no bias toward or away from persistence.”
+**Why it fails:** None of the six seeds landed on τ=0, which is in the tied maximum. That is at least a candidate bias toward persistence. The claim of “no bias” is unsupported by the seed outcomes. The search may have a mutation-operator bias toward persisting slots.
+**Seriousness:** serious. The pre-registered search-bias outcome may have fired and was dismissed.
+**Fix:** Run more seeds, test the mutation operator’s bias directly, and report the distribution over τ. If τ=0 is systematically missed, report it as a search-bias finding. Do not say “no bias” from six seeds that all landed on τ>0.
+
+**22. Claim attacked:** Design 4 search bias: “converges on slot architectures (or on lookup) in most seeds.” Results 5: “did not fire.”
+**Why it fails:** All six H_neutral seeds converged on slot architectures. The pre-registered condition arguably fired. The results dismiss it because the exhaustive table also selects slots. But that is exactly the point: the search shape and the content both favour slots. The search-bias outcome was not cleanly tested.
+**Seriousness:** serious. The classification is inconsistent with the reported seeds.
+**Fix:** Clarify what “search bias” was supposed to contrast against. If the exhaustive and evolutionary searches agree, say so and drop the bias claim. If they disagree on τ, report the disagreement.
+
+**23. Claim attacked:** Design 2.3: “swap | 1 | 0 | exchange the two things’ identities; the sensory field is unchanged at every step.”
+**Why it fails:** Since fitness is agreement with true occupancy, and swap leaves occupancy unchanged, swap cannot affect M1. Including it in H_full inflates the change count and makes the history look more comprehensive than it is for prediction. It matters only for M3, where the true change is injected.
+**Seriousness:** minor.
+**Fix:** Note explicitly that swap is null for prediction fitness and report it separately. Do not count it as a selection-relevant change in H_full.
+
+**24. Claim attacked:** Design 2.7 table: H_neutral is 1-thing; H_full is 2-thing.
+**Why it fails:** The H_neutral vs H_full contrast is confounded by the number of things. H_kinematic (2-thing, no occlusion) is the proper control for the occlusion effect. Using H_neutral as the main evidence for “no occlusion” conflates “no occlusion” with “one thing.”
+**Seriousness:** moderate.
+**Fix:** Base the occlusion contrast on H_kinematic vs H_full. Treat H_neutral as a separate one-thing limit case, not as the primary neutral control.
+
+**25. Claim attacked:** Results M2 table: H_neutral-selected τ=∞ scores 1.000 on occlude; H_full-selected τ=∞ scores 0.941 on occlude.
+**Why it fails:** The world with occlusion did not select the best occlusion tracker. It selected a package that is worse at occlusion than an architecture selected on a history without occlusion. The claim that H_full selected “the tracker that keeps a thing alive when it can’t see it” is not clean: it selected a compromise across all changes, and that compromise is worse on occlusion than an available alternative.
+**Seriousness:** serious. It undermines the causal story that occlusion drove the selection of τ=∞.
+**Fix:** Compare exact architectures. Report the trade-off. If occlusion did not select the best occlusion tracker, say so and explain what else drove the selection.
+
+**26. Claim attacked:** One-paragraph answer: “had components that respond to every allowed change exactly as a thing does, in every case where it had managed to lock on.”
+**Why it fails:** M2 shows the same architecture scores 0.708 on displace and 0.838 on set_velocity in actual prediction. The M3 pass on those changes is obtained by injecting the true change into the slot state. The architecture does not respond to those changes “exactly as a thing does” from sensation; it responds that way when given the answer.
+**Seriousness:** serious. It conflates oracle component fidelity with inference.
+**Fix:** Separate the claims: “given the true change, the components maintain thing-kind” versus “the predictor can infer the change.” Report M2 and M3 side by side.
+====================================================================================================
+B1_design_confounds | deepseek | sample 2 | finish length | 0 chars | error None
+====================================================================================================
+(empty)

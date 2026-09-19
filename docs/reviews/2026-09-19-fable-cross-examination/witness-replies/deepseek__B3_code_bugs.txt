@@ -1,0 +1,714 @@
+====================================================================================================
+B3_code_bugs | deepseek | sample 0 | finish stop | 11746 chars | error None
+====================================================================================================
+1. **Count is not reset when a slot is confirmed, so finite tau values expire prematurely.**
+   - **Claim attacked:** The persistence mechanism implements “keep a slot for tau steps without confirmation.” The code says `if s is not None and not confirmed[i]: s["count"] += 1` and later `if s["count"] > tau: self.slots[i] = None`.
+   - **Why it fails:** A slot’s `count` is only reset to 0 in the matching branch (`s["count"] = 0`). If a slot is unconfirmed for, say, two steps (`count=2`), then becomes visible and stays confirmed for ten steps, its `count` remains 2. A single later occlusion increments it to 3 and, for `tau=2`, `3 > 2` removes the slot. The intended semantics should allow two consecutive misses every time, not two total misses ever. This makes finite tau strictly worse and favours `tau=inf`, which never prunes.
+   - **Seriousness:** Fatal for the comparison of persistence values.
+   - **Fix:** Add `s["count"] = 0` in the branch where `confirmed[i]` is true, or otherwise reset the miss counter on every confirmation.
+
+2. **Radius 5 covers the whole 6-cell world, so persistence is irrelevant on the one-thing world.**
+   - **Claim attacked:** “on a one-thing world with no occlusion, persistence values tau=0,2,5,inf tie exactly.”
+   - **Why it fails:** `READ_IN_RULES` includes `radius in (2, 5)`, and `num_cells=6`. The maximum possible distance between any two cells is 5. In `reconcile_slots`, `candidates = ... abs(s["cell"] - c) <= radius`. With `radius=5`, any unconfirmed slot can match any new occupied cell. On one-thing no occlusion, the single thing is always visible, so whenever a slot is unconfirmed there is exactly one new occupied cell to match; it always matches, resets `count`, and is never pruned. The tie is a mathematical necessity of the world size and the allowed radius, not an empirical finding about persistence.
+   - **Seriousness:** Fatal for the neutrality claim.
+   - **Fix:** Use a world larger than `2*radius+1`, or restrict radius to values strictly less than `num_cells-1`, or remove `radius=5` from the grammar for the one-thing test.
+
+3. **Occlusion is permanent for the rest of the sequence, not a momentary event.**
+   - **Claim attacked:** “on a two-thing world with occlusion, tau=inf uniquely wins.”
+   - **Why it fails:** In `generate_sequence`, `occluded = set()` is initialised once, then at `if t == CHANGE_STEP: things, occluded = apply_change_to_world(things, change)`. After that point `occluded` is never reset or updated. For an `"occlude"` change, the chosen window is zeroed for every subsequent time step `3..9`. This creates a fixed blind spot, not a transient occlusion. A slot for a thing that remains in that blind spot can stay alive forever and keep tracking perfectly, which strongly favours `tau=inf` and penalises finite tau that must recreate the slot. If the design intended a one-step or moving occlusion, this is a bug.
+   - **Seriousness:** Serious; it confounds the persistence comparison.
+   - **Fix:** Decide whether occlusion is transient or permanent and encode it accordingly. If transient, reset or update `occluded` at each time step according to the intended schedule.
+
+4. **`thing_signature` manually injects the change into the predictor’s state for displace and set_velocity, making those cases tautological.**
+   - **Claim attacked:** “the tau=inf architecture passes the 'thing_signature' test on 100% of bound pairs.”
+   - **Why it fails:** `apply_translated_change` directly edits the predictor’s slots:
+     ```python
+     elif kind == "displace":
+         _, i, c = change
+         s = predictor.slots[inverse[i]]
+         s["cell"] = c
+         s["prev_cell"] = c
+     elif kind == "set_velocity":
+         _, i, v = change
+         predictor.slots[inverse[i]]["vel"] = v
+     ```
+     For these change types, the test sets the slot’s cell/velocity to exactly the post-change true state. Any architecture that already tracked perfectly at `t=2` will then track perfectly by construction. The test does not ask whether the architecture can infer the displacement or velocity change from the sensory stream. The 100% pass is therefore not evidence of “thing-like” tracking; it is largely a consistency check of the test’s own state injection.
+   - **Seriousness:** Fatal for the thing_signature claim.
+   - **Fix:** Do not edit the predictor’s state for displace/set_velocity. Feed only the changed sensory stream and check whether the architecture can re-acquire or maintain tracking without being told the new latent state.
+
+5. **`thing_signature` only tests pairs where the predictor was already perfectly tracking both things at t=2.**
+   - **Claim attacked:** “passes the 'thing_signature' test on 100% of bound pairs.”
+   - **Why it fails:** The binding step does:
+     ```python
+     if not ok or len(binding) != len(things):
+         unbound += 1
+         continue
+     ```
+     It skips any pair where a slot is `None`, where a slot’s `(cell, vel)` does not exactly match a distinct thing, or where the number of matched slots does not equal the number of things. So the test only runs on the subset of cases where the architecture is already a perfect tracker before the change. It measures maintenance of an already-correct state, not acquisition or recovery. The reported 100% is over this pre-filtered subset.
+   - **Seriousness:** Serious; the claim is narrower than it appears.
+   - **Fix:** Report the unbound fraction separately, and interpret the pass rate as conditional on perfect pre-change tracking. If acquisition is the target, do not require exact matching at `t=2`.
+
+6. **The sensory ceiling is computed on the evaluation half and then scored on the same half.**
+   - **Claim attacked:** The ceiling is described as “the best deterministic predictor from sensation on this history, and an upper bound for every architecture.”
+   - **Why it fails:** In `main`:
+     ```python
+     results["ceilings"] = {name: dict(zip(("fitness", "by_type"), sensory_ceiling(split[name][1]))) for name in built}
+     ```
+     and in `run_controls`:
+     ```python
+     _, evaluation = split_history(h, 6, nt)
+     out[f"ceiling_{hname}_evaluation_half"] = sensory_ceiling(evaluation)[0]
+     ```
+     `sensory_ceiling` builds its prefix→continuation counts from the same set it later scores. This is an in-sample oracle on the evaluation half, not a ceiling on what can be learned from the exposure half. It is an upper bound for any predictor evaluated on that half, but it is not a meaningful benchmark for an architecture trained only on exposure. Comparing a trained model to this oracle is misleading.
+   - **Seriousness:** Serious methodological flaw.
+   - **Fix:** Compute the ceiling from the exposure half and evaluate it on the evaluation half, or clearly label it as an in-sample oracle on the test set.
+
+7. **`swap` does not change true occupancy, so it does not affect the main prediction fitness.**
+   - **Claim attacked:** The H_full history includes `swap` as a meaningful change.
+   - **Why it fails:** In `apply_change_to_world`, `elif kind == "swap": things[0], things[1] = things[1], things[0]`. The set of occupied cells is unchanged, so `occupancy_bits(things, num_cells)` is identical to the identity case. Since `evaluate` scores `p.predict() == seq[t+1]["true"]`, the `swap` change cannot affect the main fitness. It only affects the `thing_signature` test, which tracks identity labels. Including it in H_full inflates the number of change types without testing the main prediction task.
+   - **Seriousness:** Minor to serious depending on what H_full is claimed to test.
+   - **Fix:** Either remove `swap` from the main fitness history, or explicitly state that it only matters for the M3 identity-tracking test.
+
+8. **`infer_velocity` returns 0 when the previous field is occluded, penalising finite tau.**
+   - **Claim attacked:** The architecture comparison fairly tests persistence.
+   - **Why it fails:** `infer_velocity` uses only `previous_field`. When a thing reappears after being occluded, the previous field has its cell zeroed, so `infer_velocity` returns 0. A finite-tau architecture that has pruned the old slot must create a new slot at the reappearance cell with velocity 0, causing an immediate miss. `tau=inf` kept the old slot with the correct velocity, so it predicts correctly. This confounds the persistence comparison: finite tau is punished not for forgetting per se, but because the architecture has no mechanism to recover velocity from an occluded history.
+   - **Seriousness:** Serious; it biases the result in favour of `tau=inf`.
+   - **Fix:** Allow velocity inference from older fields or from the change in position over multiple steps, or evaluate the persistence comparison in a setting where reappearance is not confounded with velocity loss.
+
+9. **The `run_controls` neutrality check is trivial given finding 2.**
+   - **Claim attacked:** “Neutrality: on H_neutral, the best architecture for each persistence value (rebind, tau=0, 2, 5, inf) all within 0.01 of each other.”
+   - **Why it fails:** As shown in finding 2, on the one-thing no-occlusion world with `radius=5`, all persistence values behave identically because every unconfirmed slot always matches the single new occupied cell and resets its count. The best architecture for each tau will choose `radius=5`, and the fitness values will be exactly equal. The neutrality check `out["neutrality_check_passes"] = (max(tau_vals) - min(tau_vals)) <= 0.01` is therefore guaranteed to pass. It is not an empirical test of neutrality.
+   - **Seriousness:** Serious; the check gives false confidence.
+   - **Fix:** Remove `radius=5` from the grammar for this control, or use a larger world so that radius cannot cover the whole space.
+
+10. **`thing_signature` by-type fractions include unbound pairs, while the overall claim is over bound pairs.**
+    - **Claim attacked:** The reported 100% pass rate on bound pairs is consistent with the code’s stored metrics.
+    - **Why it fails:** In `thing_signature`:
+      ```python
+      by_type[ct][1] += 1
+      ...
+      if not ok or len(binding) != len(things):
+          unbound += 1
+          continue
+      ...
+      if tracking:
+          passed += 1
+          by_type[ct][0] += 1
+      ```
+      The returned `by_type` fractions are `v[0] / v[1]`, i.e. over all pairs including unbound ones. The overall `fraction` is `passed / total`, also including unbound as failures. The reported “100% of bound pairs” must be computed externally as `passed / (total - unbound)`. The code does not store that directly. This makes the reported metric inconsistent with the code’s own by-type outputs.
+    - **Seriousness:** Minor, but it can mislead readers checking the JSON.
+    - **Fix:** Store `passed / (total - unbound)` for the overall bound-pair fraction and compute by-type fractions over bound pairs only, or report all metrics over all pairs consistently.
+
+11. **`lookup_key` is a suffix, not a prefix, despite the comment.**
+    - **Claim attacked:** “longest available prefix, at most k fields.”
+    - **Why it fails:** `observe` keeps the last `k` fields in `self.buffer`:
+      ```python
+      self.buffer.append(field)
+      if len(self.buffer) > self.a["k"]:
+          self.buffer.pop(0)
+      ```
+      Then `lookup_key` returns `tuple(self.buffer)`. After `k` steps this is a suffix of the most recent fields, not a prefix from the start of the sequence. The comment is misleading. The implementation is internally consistent between exposure and evaluation, so this is not a bug in itself, but the naming is wrong.
+    - **Seriousness:** Cosmetic.
+    - **Fix:** Rename to “last k fields” or change the implementation if a true prefix was intended.
+====================================================================================================
+B3_code_bugs | deepseek | sample 1 | finish stop | 11667 chars | error None
+====================================================================================================
+## Findings
+
+### 1. The tie among `tau` values on H_neutral is a mathematical necessity of the code, not an empirical finding
+**Claim attacked:** “on a one-thing world with no occlusion, persistence values tau=0,2,5,inf tie exactly”.
+
+**Why it fails:**  
+In `reconcile_slots`, an unconfirmed slot is immediately offered to any occupied cell within `radius`:
+```python
+candidates = [(abs(s["cell"] - c), i) for i, s in enumerate(self.slots)
+              if s is not None and not confirmed[i] and abs(s["cell"] - c) <= radius]
+if candidates:
+    ...
+    s["cell"] = c
+    s["count"] = 0
+```
+The drop condition is:
+```python
+if tau != "inf":
+    for i, s in enumerate(self.slots):
+        if s is not None and s["count"] > tau:
+            self.slots[i] = None
+```
+On H_neutral there is one thing and no occlusion. For `num_cells=6`, the grammar allows `radius=5`, which covers the entire line. Any displacement can therefore be immediately re-bound in the same reconcile step, resetting `count` to 0 before the drop condition is ever checked. `tau` never sees `count > 0`. The tie is forced by the code and parameter range, not by a property of the world.
+
+**Severity:** serious — the neutrality check is vacuous.
+
+**Fix:** Use a world where `radius` cannot cover the maximum displacement (e.g. larger `num_cells` or a smaller maximum radius), or include occlusion in the neutrality history, or explicitly state that the tie is a trivial consequence of immediate rebinding.
+
+---
+
+### 2. `thing_signature` manually injects the change into the predictor, making `tau=inf` pass trivially
+**Claim attacked:** “the tau=inf architecture passes the 'thing_signature' test on 100% of bound pairs”.
+
+**Why it fails:**  
+The test applies the change directly to the predictor’s slots:
+```python
+binding = apply_translated_change(p, change, binding)
+```
+and inside `apply_translated_change`:
+```python
+if kind == "displace":
+    _, i, c = change
+    s = predictor.slots[inverse[i]]
+    s["cell"] = c
+    s["prev_cell"] = c
+elif kind == "set_velocity":
+    _, i, v = change
+    predictor.slots[inverse[i]]["vel"] = v
+elif kind == "swap":
+    binding = {slot: 1 - thing for slot, thing in binding.items()}
+```
+The architecture is therefore told the new cell, velocity, or identity permutation. It never has to infer the change from the changed sensory stream. For `tau=inf`, slots are never dropped, and the reconcile logic cannot corrupt a correctly bound slot when all things are tracked: every occupied cell is already matched by a confirmed slot, so no unconfirmed slot can steal another cell. Once binding is established at `t=2`, tracking is a mathematical consequence of the persistence rule, not a finding about thing-kind.
+
+**Severity:** fatal — the test does not test what it claims to test.
+
+**Fix:** Apply the change only to the world, not to the predictor’s internal state. Let the architecture infer the change from `changed[t]["sensory"]`. Or explicitly reframe the test as a persistence test, not a thing-signature test.
+
+---
+
+### 3. `thing_signature` returns overall pass fraction, not “pass fraction among bound pairs”
+**Claim attacked:** “passes the 'thing_signature' test on 100% of bound pairs”.
+
+**Why it fails:**  
+The function returns:
+```python
+return {"fraction": passed / total, "by_type": ..., "unbound_pairs": unbound, "total_pairs": total}
+```
+If any pairs are unbound, `fraction` is strictly less than `passed / (total - unbound)`. The reported “100% of bound pairs” is not the value returned as `fraction`; it is a conditional metric that the code provides the ingredients for but does not output directly. If the report cites `fraction` as 100%, it is misreading the output. If it cites the conditional, the code does not return that number.
+
+**Severity:** minor/serious depending on how the result is reported.
+
+**Fix:** Add `"bound_fraction": passed / (total - unbound) if total > unbound else None` to the returned dict, or rename `fraction` to make the denominator explicit.
+
+---
+
+### 4. Binding establishment in `thing_signature` selects only already-perfect cases and ignores spare slots
+**Claim attacked:** the thing-signature test establishes bindings in a way that guarantees passing.
+
+**Why it fails:**  
+Binding is established by exact match at `t=2`:
+```python
+for si, st in enumerate(p.slot_states()):
+    if st is None:
+        continue
+    found = None
+    for ti, th in enumerate(things):
+        if ti not in used and tuple(th) == st:
+            found = ti
+            break
+    if found is None:
+        ok = False
+        break
+    binding[si] = found
+    used.add(found)
+if not ok or len(binding) != len(things):
+    unbound += 1
+    continue
+```
+This conditionally evaluates tracking only on pairs where the predictor was already exact up to `t=2`. Architectures that fail early are simply counted as unbound and excluded from the pass fraction. Also, any slot that is `None` is skipped; the test does not require all slots to correspond to things. An architecture with an extra `None` slot can still pass if the bound slots track.
+
+**Severity:** minor — it is a selection effect, but it is arguably a necessary precondition for testing tracking.
+
+**Fix:** Report both conditional and unconditional metrics. If spare slots are allowed, say so explicitly; otherwise require every non-`None` slot to be bound.
+
+---
+
+### 5. The lookup “longest available prefix” is not implemented — exact key or zero, no backoff
+**Claim attacked:** the lookup uses the “longest available prefix”.
+
+**Why it fails:**  
+`lookup_key` returns only the current buffer:
+```python
+def lookup_key(self):
+    if not self.a["use_lookup"] or not self.buffer:
+        return None
+    return tuple(self.buffer)  # longest available prefix, at most k fields
+```
+and `predict` does:
+```python
+key = self.lookup_key()
+if key is not None:
+    bits |= self.table.get(key, 0)
+```
+If the exact full-length key is absent from the table, the code contributes 0. It never falls back to a shorter prefix that might be present. For `k=3`, many 3-field keys will be unseen in the exposure half, and the lookup will return 0 even when a 2-field or 1-field key was learned. This unfairly penalizes lookup architectures, especially as `k` grows, and can make slot-only appear better in the adequacy comparison.
+
+**Severity:** serious — it biases the lookup-vs-slot comparison.
+
+**Fix:** Implement true backoff: try the full buffer, then drop the oldest field and retry, until a key is found or the buffer is empty. For example:
+```python
+key = tuple(self.buffer)
+while key:
+    if key in self.table:
+        bits |= self.table[key]
+        break
+    key = key[1:]
+```
+
+---
+
+### 6. The adequacy check in `run_controls` is incomplete
+**Claim attacked:** “Adequacy: on H_full, best slot-only > best lookup-only and >= 0.95 * ceiling”.
+
+**Why it fails:**  
+The code only checks the first condition:
+```python
+out["adequacy_check_passes"] = f_s > f_l
+```
+The ceiling threshold is computed as `H_full_best_slot_fraction_of_ceiling` but is never used in the boolean. The adequacy check can pass even if slot-only is far below 95% of the ceiling.
+
+**Severity:** serious — the reported adequacy result is weaker than claimed.
+
+**Fix:**  
+```python
+out["adequacy_check_passes"] = (
+    f_s > f_l and f_s >= 0.95 * out["ceiling_H_full_evaluation_half"]
+)
+```
+
+---
+
+### 7. The neutrality check excludes `rebind`
+**Claim attacked:** “best architecture for each persistence value (rebind, tau=0, 2, 5, inf) all within 0.01 of each other”.
+
+**Why it fails:**  
+The code explicitly filters out `rebind`:
+```python
+tau_vals = [v["fitness"] for pv, v in out["H_neutral_best_per_persistence"].items() if pv != "rebind"]
+```
+So if `rebind` differs from the tau values, the neutrality check will still pass. The docstring says all five should be within 0.01; the code only checks four.
+
+**Severity:** minor — a mismatch between docstring and implementation.
+
+**Fix:** Include `rebind` in the list, or update the docstring to say the check is only for tau values.
+
+---
+
+### 8. The sensory ceiling is computed in-sample on the evaluation half
+**Claim attacked:** the ceiling is “the best possible prediction from sensation alone on this history” and is used as an upper bound for the architectures.
+
+**Why it fails:**  
+`sensory_ceiling` builds its counts and chooses its best next state from the same history it later evaluates on:
+```python
+for _, _, seq in history:
+    for t in range(RUN_LENGTH):
+        key = tuple(s["sensory"] for s in seq[:t + 1])
+        counts.setdefault(key, defaultdict(int))[seq[t + 1]["true"]] += 1
+best = {key: max(c.items(), key=lambda kv: (kv[1], -kv[0]))[0] for key, c in counts.items()}
+...
+for _, change, seq in history:
+    ...
+    ok = best[key] == seq[t + 1]["true"]
+```
+It is an oracle that sees the evaluation half. It is a valid upper bound for any predictor on that half, but it is not the “best possible from sensation alone” for a predictor trained only on the exposure half. The fraction `f_s / ceiling` is therefore conservative, but the ceiling is not a held-out generalization bound. If interpreted as a generalization ceiling, it is misleading.
+
+**Severity:** minor/serious depending on how the ceiling is used in the prose.
+
+**Fix:** Compute the ceiling on the exposure half and evaluate on the evaluation half, or clearly label it as an in-sample upper bound.
+
+---
+
+### 9. Off-by-one in the scoring window: none found
+I checked `FIRST_SCORED_STEP = 2`, `CHANGE_STEP = 3`, and the loops:
+```python
+for t in range(RUN_LENGTH):
+    p.observe(seq[t]["sensory"])
+    if t + 1 >= FIRST_SCORED_STEP:
+        ok = p.predict() == seq[t + 1]["true"]
+```
+`range(RUN_LENGTH)` is `0..8`, so `t+1` runs from `1..9`. With `FIRST_SCORED_STEP = 2`, the scored predictions are for time points `2..9`. The change is applied before recording `t=3`, so the first post-change prediction is for `t=3`, made at `t=2`. This is correct. No off-by-one.
+
+---
+
+### 10. Exposure/evaluation split leaking: none found
+The split is by configuration parity:
+```python
+even = {tuple(c) for i, c in enumerate(confs) if i % 2 == 0}
+exposure = [s for s in history if tuple(s[0]) in even]
+evaluation = [s for s in history if tuple(s[0]) not in even]
+```
+The lookup table is built only on `exposure` and evaluated on `evaluation`. No evaluation true states are used in training. No leakage.
+
+---
+
+### 11. The reconcile logic does not accidentally favour one `tau` beyond the persistence mechanism
+The only way `tau` matters is through the drop condition after unconfirmed observations. The matching logic is greedy but symmetric across `tau` values. The unique win of `tau=inf` on H_full is a direct consequence of occlusion making a thing unobservable for longer than finite `tau`, which is the intended design. No separate accidental favouring was found, but see Finding 1 for why the tie on H_neutral is trivial.
+
+---
+
+### 12. `mutate` can be a no-op
+**Claim attacked:** the evolutionary secondary uses a mutation-selection search.
+
+**Why it fails:**  
+```python
+elif choice == "k" and a["use_lookup"]:
+    a["k"] = rng.choice([1, 2, 3])
+...
+elif choice == "rule" and a["num_slots"]:
+    a["rule"] = rng.choice(READ_IN_RULES)
+```
+If the chosen `choice` is `"k"` but `use_lookup` is `False`, or `"rule"` but `num_slots` is `0`, the function does nothing. The effective mutation rate is lower than intended. This does not bias the result, but it reduces the efficiency of the search.
+
+**Severity:** minor.
+
+**Fix:** Fall back to a different mutation branch when the selected branch is inapplicable, or restructure the mutation operator so every choice always changes the architecture.
+====================================================================================================
+B3_code_bugs | deepseek | sample 2 | finish stop | 26460 chars | error None
+====================================================================================================
+# Findings
+
+All line references are to `12a_exp1_code`. I attack the code, not the prose.
+
+---
+
+## 1. `thing_signature` writes the world's answer into the model, so passing is a fixpoint property, not a measurement (fatal)
+
+**(1) Claim attacked.** The reported result "the tau=inf architecture passes the 'thing_signature' test on 100% of bound pairs", which is offered as evidence that the selected architecture contains a thing-kind.
+
+**(2) Why it fails.** The test's "translated edit" is applied *to the predictor's own state*, not to the predictor's input:
+
+```
+def apply_translated_change(predictor, change, binding):
+    if kind == "displace":
+        s = predictor.slots[inverse[i]]
+        s["cell"] = c
+        s["prev_cell"] = c
+    elif kind == "set_velocity":
+        predictor.slots[inverse[i]]["vel"] = v
+```
+
+The slot is teleported to the exact post-change cell and given the exact post-change velocity. The predicate then checked is
+
+```
+if states[si] is None or states[si] != tuple(changed[t]["things"][ti]):
+```
+
+i.e. exact `(cell, velocity)` equality with the hidden world state. Since the slot and the thing are subsequently advanced by the *same function* (`step_kinematics` is called both in `generate_sequence` and in `advance_slots`/`predict`), and `reconcile_slots` cannot perturb a confirmed slot for `tau=inf` (no removal, snapping is restricted to `not confirmed[i]`, and creation is skipped because every occupied cell is already `in matched`), the slots remain in lockstep by construction. The test therefore does not measure "the model infers the change and keeps hold of the thing"; it measures "a state that is already exactly right is not corrupted by the update rule". The model is never asked to detect the change from sensation.
+
+**(3) Severity.** Fatal for the evidential value of M3.
+
+**(4) Fix.** Apply the change only to the world and feed the model the changed sensory stream; never mutate `p.slots` or the binding. Rework the criterion into something the model could fail: does the model's *prediction* place a hypothesis on the occluded/displaced thing's true cell (compare `predict()` against `changed[t+1]["things"]`), with a negative control (e.g. `rebind`, `tau=0`) shown to fail. As written, the test's only discriminating power is `rebind` vs. `persist` and `tau=0` vs. `tau>gap`.
+
+---
+
+## 2. The binding rule is a precondition that guarantees the subsequent pass (fatal)
+
+**(1) Claim attacked.** Same 100% pass claim.
+
+**(2) Why it fails.** Binding is only attempted on pairs where the model was *already* exactly right on every slot before the edit:
+
+```
+for si, st in enumerate(p.slot_states()):
+    if st is None: continue
+    ...
+    if ti not in used and tuple(th) == st:
+    ...
+if not ok or len(binding) != len(things):
+    unbound += 1
+    continue
+```
+
+Every non-`None` slot must equal a distinct thing's `(cell, velocity)` exactly and the number of bound slots must equal the number of things. Pairs where the model is wrong are not failures — they are removed from the denominator. Conditional on that precondition, and given finding 1, `tau=inf` passes as a theorem (I traced all five change types: identity, displace, set_velocity, occlude, swap; in each case the post-edit state is exact and `reconcile_slots` leaves it exact). The reported "100%" is therefore a statement about a self-selected subpopulation on which success is analytically guaranteed.
+
+**(3) Severity.** Fatal as evidence for a thing-kind; the number is not a measurement.
+
+**(4) Fix.** Bind using only observables, or report `unbound/total` per architecture alongside `passed/(total-unbound)`, and state the pass rate as conditional. Crucially, report a rule that is *known* to fail (a control) so the reader can see the test is not vacuous.
+
+---
+
+## 3. The reported denominator is not the denominator the code computes (serious)
+
+**(1) Claim attacked.** "passes … on 100% of **bound** pairs."
+
+**(2) Why it fails.** The function returns
+
+```
+return {"fraction": passed / total, "by_type": {k: v[0] / v[1] for k, v in by_type.items()}, ...}
+```
+
+and `by_type[ct][1] += 1` is executed *before* the binding check, so both the overall `fraction` and every `by_type` value use `total` (= 171 × 24 = 4104), not `total - unbound`, as the denominator. `passed/(total-unbound)` is never computed anywhere. So the number quoted in the design cannot be read off the JSON unless `unbound == 0`, which is not reported as a claim.
+
+**(3) Severity.** Serious (reporting/verification failure: the headline number is not the quantity the code emits).
+
+**(4) Fix.** Emit `passed`, `unbound`, `total`, and both ratios explicitly.
+
+---
+
+## 4. The one-thing tie is (very likely) a mathematical necessity of the code, not a result about the world (fatal for the neutrality claim)
+
+**(1) Claim attacked.** "on a one-thing world with no occlusion, persistence values tau=0,2,5,inf tie exactly", used as the neutrality result.
+
+**(2) Why it fails.** The only place `tau` can act is
+
+```
+if tau != "inf":
+    for i, s in enumerate(self.slots):
+        if s is not None and s["count"] > tau:
+            self.slots[i] = None
+```
+
+and `count` is reset to 0 in the snap branch (`s["count"] = 0`) and in the creation branch (`"count": 0`). With `READ_IN_RULES` containing `radius in (2, 5)` and `num_cells = 6`, radius 5 means `abs(s["cell"] - c) <= radius` holds for **every** pair of cells in the world (max distance 5). In the one-thing world exactly one slot is ever created (creation happens only for an *unmatched* occupied cell, and the single occupied cell is either matched by the confirmed slot or snaps to the unconfirmed one), so at every reconcile either `count` is reset to 0 or the incrementing slot is always a snap candidate. Result: `count > tau` is never satisfied, for any `tau ≥ 0`, and the rules `persist(0,5,F)`, `persist(2,5,F)`, `persist(5,5,F)`, `persist(inf,5,F)` (and their `jump_keeps=True` twins) are **bit-identically** the same function. If the per-persistence argmax picks `radius=5` — which the exact tie strongly suggests — the tie is a property of the grammar, not of the world. `H_neutral` has no `occlude` in its change set (`{"identity", "displace", "set_velocity"}`), and the `displace` targets are all within radius 5, so nothing rescues the tau path.
+
+**(3) Severity.** Fatal for the neutrality check as stated.
+
+**(4) Fix.** Instrument the removal line (count how often `s["count"] > tau` fires per persistence value on `H_neutral`) and report it. Report the argmax `(num_slots, radius, jump_keeps)` per persistence value, not just the name. If the argmax radius is 5, say so and either restrict the grammar to `radius=2` (where `count` can exceed `tau`, since 3-cell displacements exceed 2) or delete the neutrality claim.
+
+---
+
+## 5. The neutrality check silently drops `rebind`, contradicting its own docstring (serious — moved goalpost)
+
+**(1) Claim attacked.** `"""Neutrality: on H_neutral, the best architecture for each persistence value (rebind, tau=0, 2, 5, inf) all within 0.01 of each other."""`
+
+**(2) Why it fails.**
+
+```
+tau_vals = [v["fitness"] for pv, v in out["H_neutral_best_per_persistence"].items() if pv != "rebind"]
+out["neutrality_check_passes"] = (max(tau_vals) - min(tau_vals)) <= 0.01
+```
+
+`rebind` is computed (it is in the loop over `("rebind", "tau=0", ...)`) and then excluded from the test. The criterion as designed cannot fail for the reason the design gives. The comment at the top of the function, `"""Section 5 / section 8 step 2 of the design (as amended)"""`, is an unattributable appeal: the amendment is not in the file or the design text I can check.
+
+**(3) Severity.** Serious (the check is weaker than advertised).
+
+**(4) Fix.** Either include `rebind` or state, in the design document, the amended criterion and why `rebind` is excluded.
+
+---
+
+## 6. The adequacy criterion is half-implemented (serious)
+
+**(1) Claim attacked.** `"""Adequacy: on H_full, best slot-only > best lookup-only and >= 0.95 * ceiling."""`
+
+**(2) Why it fails.** The code computes
+
+```
+out["adequacy_check_passes"] = f_s > f_l
+out["H_full_best_slot_fraction_of_ceiling"] = f_s / out["ceiling_H_full_evaluation_half"]
+```
+
+The 0.95 clause is never evaluated; a ratio of, say, 0.4 would still emit `"adequacy_check_passes": true`. A design criterion can be loosened only openly.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Compute and record both booleans, or retract the 0.95 clause in the design document.
+
+---
+
+## 7. "Best lookup-only" is a structurally crippled baseline, so `f_s > f_l` is guaranteed a priori (serious confound)
+
+**(1) Claim attacked.** The "object-model axis" (`best slot-only > best lookup-only`) and the comparison of lookup fitness to the ceiling.
+
+**(2) Why it fails.** Four independent handicaps are stacked on the lookup:
+
+- It is a *suffix*, not a prefix, and mislabelled: `return tuple(self.buffer)  # longest available prefix, at most k fields`. `self.buffer` holds the last `k` fields.
+- No back-off: if the `k`-tuple is unseen, the query does not fall back to shorter keys, even though the table contains keys of every length 1..k.
+- The default is a constant zero: `bits |= self.table.get(key, 0)`. For these worlds a zero field is never the correct continuation, so every unseen key is a guaranteed error. A fairer baseline would default to the marginal/majority continuation.
+- Training is `table[key] = seq[t + 1]["true"]` (last-writer-wins) for keys that collide across change types, whereas `sensory_ceiling` uses a majority vote with a different tie-break (`max(c.items(), key=lambda kv: (kv[1], -kv[0]))`). The two are compared as if they were the same learner.
+
+**(3) Severity.** Serious: the "lookup loses to object model" result is an artefact of the baseline's construction.
+
+**(4) Fix.** Add back-off, a majority-vote table, and a non-degenerate default; report the fraction of evaluation keys unseen. Then compare.
+
+---
+
+## 8. The sensory ceiling is an in-sample oracle on the evaluation half, and the comparison mixes protocols (serious)
+
+**(1) Claim attacked.** `"""...This is the best deterministic predictor from sensation on this history, and an upper bound for every architecture."""` and its use as the denominator of the adequacy ratio.
+
+**(2) Why it fails.** It is a valid upper bound *for the evaluation half*, but it is fitted on the same data it is scored on:
+
+```
+for _, _, seq in history:
+    for t in range(RUN_LENGTH):
+        key = tuple(s["sensory"] for s in seq[:t + 1])
+        counts.setdefault(key, defaultdict(int))[seq[t + 1]["true"]] += 1
+best = {key: max(c.items(), ...) ...}
+...
+    ok = best[key] == seq[t + 1]["true"]
+```
+
+whereas the architectures' tables are fitted on the *exposure* half (`expose_lookup(a, exposure, num_cells)`). Also, in `main` it is computed as `sensory_ceiling(split[name][1])`, i.e. only on the odd half, which is the same half used for model selection (finding 11). Finally, the ceiling is a full-prefix memoriser while the lookup is a ≤k-window model, so the "object-model axis" is contaminated by a memory-capacity difference. Whether the resulting bias is conservative (oracle high) or not, the two numbers are not on the same footing and the ratio has no clean interpretation.
+
+**(3) Severity.** Serious for the "fraction of ceiling" and adequacy claims.
+
+**(4) Fix.** Report (a) the eval-half oracle (current number, labelled as an oracle), (b) a ceiling learnt on the exposure half and scored on the eval half, and (c) the step-wise breakdown. State explicitly that the ceiling has unbounded memory.
+
+---
+
+## 9. `M2` for `H_full` is literally `M1` for `H_full` (serious — duplicated metric presented as a second measure)
+
+**(1) Claim attacked.** The two metrics `M1` and `M2`, and the "contract generalisation" reading of `M2`.
+
+**(2) Why it fails.**
+
+```
+"H_full": (6, 2, {"identity", "displace", "set_velocity", "occlude", "swap"}),
+...
+full_contract = {1: build_history(6, 1, {"identity", "displace", "set_velocity", "occlude"}),
+                 2: build_history(6, 2, {"identity", "displace", "set_velocity", "occlude", "swap"})}
+```
+
+`full_contract[2]` is built with exactly the change set of `H_full`, and the same `enumerate_changes`/`enumerate_configurations` order, so `full_eval[2]` is content-identical (and order-identical) to `split["H_full"][1]`. In the row loop the *same* `table` object is used for both:
+
+```
+table = expose_lookup(a, exposure, num_cells)
+m1, _ = evaluate(a, table, evaluation, num_cells)
+m2, m2_by_type = evaluate(a, table, full_eval[num_things], num_cells)
+```
+
+Hence `M1["H_full"] == M2["H_full"]` exactly, including `by_type`. This is verifiable in `results.json`. Any text that treats M1 and M2 as two lines of evidence for the 2-thing case is double-counting one number.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Deduplicate (report once), or give `M2` a contract whose change set and configuration set genuinely differ from `H_full`.
+
+---
+
+## 10. Model selection and the evolutionary "confirmation" both run on the evaluation half (serious — selection-on-test)
+
+**(1) Claim attacked.** "We then ask which architectures each history selects" and "whether a blind mutation-selection search lands on the same architectures", with `results["protocol"] = "exposure on even-index configurations; every fitness is on the odd-index half"`.
+
+**(2) Why it fails.** The exposure/evaluation split protects only the lookup table. The architecture is chosen by maximising on the *same* odd half that the reported fitness is computed from:
+
+```
+best = max(r["M1"][hname] for r in table_rows)
+selected[hname] = {"max_fitness": best, "architectures": [...]}
+```
+
+and the evolutionary loop optimises the same quantity:
+
+```
+exposure, evaluation = split_history(history, num_cells, num_things)
+def fitness(a): ... fitness_cache[key] = evaluate(a, table, evaluation, num_cells)[0]
+```
+
+So "best of 208 architectures on the odd half" and "the search lands on the same architecture" are not independent facts; the search's objective *is* the reported statistic. There is no third split.
+
+**(3) Severity.** Serious.
+
+**(4) Fix.** Three-way split (exposure / selection / confirmation) or nested CV; report selection-half and confirmation-half fitness separately, and report the selection-half max alongside the winner's confirmation-half fitness.
+
+---
+
+## 11. `swap` is observationally identical to `identity` (serious — one of the five conditions tests nothing)
+
+**(1) Claim attacked.** The inclusion of `"swap"` as a change condition, and any reported `by_type["swap"]` accuracy or `thing_signature` swap pass.
+
+**(2) Why it fails.**
+
+```
+elif kind == "swap":
+    things[0], things[1] = things[1], things[0]
+```
+
+`occupancy_bits` ORs the cell bits (order-independent) and `step_kinematics` is applied per element, so the multiset of thing states evolves identically after a swap. The `sensory` and `true` sequences for a `swap` change are therefore bit-for-bit identical to the `identity` sequence for the same configuration. Consequences: (a) `by_type["swap"] == by_type["identity"]` for every architecture — check it in the JSON; (b) the `H_full` history contains each identity sequence twice, so the "do nothing" condition is double-weighted in every aggregate metric; (c) in `thing_signature` the swap case flips the binding by bookkeeping only (`binding = {slot: 1 - thing for slot, thing in binding.items()}`) while the slot states are untouched, so the swap case passes for any rule that passes identity — the advertised "identity tracking" evidence is vacuous.
+
+**(3) Severity.** Serious (a whole condition is a no-op, presented as one of the contract's discriminators).
+
+**(4) Fix.** Make swaps observable (e.g. a per-thing sensory feature, or an order-sensitive observable like a labelled occupancy), or drop the `swap` condition from the change set and from the M3 report. Either way, delete the duplicate weighting.
+
+---
+
+## 12. The `tau=inf` "unique win" rests on a one-step margin, set by two arbitrary constants (serious for the interpretation)
+
+**(1) Claim attacked.** "on a two-thing world with occlusion, tau=inf uniquely wins."
+
+**(2) Why it fails.** The removal fires when `s["count"] > tau`, i.e. on the `(tau+1)`-th consecutive unconfirmed step. With `RUN_LENGTH = 9` and `CHANGE_STEP = 3`, a persistent occlusion (`occluded` is set once at t=3 and never cleared) gives at most 6 observes after the change, so a slot can accumulate at most `count = 6`. Therefore `tau=5` can only ever differ from `tau=inf` on sequences where a bound slot's thing is unseen at t=3,4,5,6,7,8 — and even then the difference is a single scored prediction (the t=9 one), because removal only happens at t=8. A `tau=6` would tie with `inf`; a run two steps shorter would let `tau=5` tie. The uniqueness is a property of the (run length, tau grid) pair, not clearly of the world. Note also that `tau=inf` retains slots whose thing has left the occluded region and whose velocity estimate has gone stale; on the one-thing world I argued in finding 4 that this cannot bite, but on the two-thing world the win may be partly "no removal path at all" rather than "object permanence".
+
+**(3) Severity.** Serious for the word "uniquely"; the direction of the effect is probably right.
+
+**(4) Fix.** Report the fitness gap between `tau=5` and `tau=inf` (not just the argmax), the distribution of maximum consecutive-unseen runs per change type, and extend the tau grid to include a value ≥ the run length (e.g. `tau=10`) so the reader can see the boundary. If `tau=10` also wins, the honest claim is "any persistence long enough to span the occlusion".
+
+---
+
+## 13. "Longest available prefix" is a misnomer and the key never falls back — and it hides the sequence's start (moderate)
+
+**(1) Claim attacked.** `return tuple(self.buffer)  # longest available prefix, at most k fields`.
+
+**(2) Why it fails.** `self.buffer` is a sliding window of the *most recent* `k` fields, not a prefix. Two consequences the design text should not paper over: (i) the lookup cannot see the initial configuration, which is precisely where the identity/velocity of the things is established; (ii) at long t it is the *hardest* key (length k) that is always used, with no fallback. The exposure table is built with the same key function, so the code is self-consistent, but the architecture is misdescribed.
+
+**(3) Severity.** Moderate (mislabelling + the unfairness in finding 7).
+
+**(4) Fix.** Rename to "last-k-fields key", and decide explicitly whether the design intends a prefix memoriser (then fix the implementation) or a fixed-order Markov model (then fix the label and add back-off).
+
+---
+
+## 14. The exposure/evaluation split is not stratified; for the one-thing world it is a cell/velocity checkerboard (moderate)
+
+**(1) Claim attacked.** `"""Exposure half = even-index configurations; evaluation half = odd-index."""` used as a neutral held-out split.
+
+**(2) Why it fails.** `states = [(c, v) for c in range(num_cells) for v in (-1, 0, 1)]` and `even = {tuple(c) for i, c in enumerate(confs) if i % 2 == 0}`. For `num_things=1` the index is `3c + (v+1)`; `i` even means `v+1 ≡ c (mod 2)`, so the exposure half receives `v = ±1` only on even cells and `v = 0` only on odd cells, and the complement for evaluation. The two halves are systematically different in the joint distribution of (position parity, speed), which is exactly what a k-gram table keys on. For `num_things=2` the parity depends on the `combinations_with_replacement` enumeration order, which is opaque. This is not a leak, but it is an uncontrolled split that can make the lookup's generalisation either artificially easy or artificially hard.
+
+**(3) Severity.** Moderate.
+
+**(4)** Report the composition of both halves (velocity histogram, boundary-adjacent counts) and use a stratified split, or use `i % 2` on a shuffled-but-fixed enumeration and report the seed.
+
+---
+
+## 15. The scored window includes a guaranteed-wrong step, which compresses all fitness differences (moderate)
+
+**(1) Claim attacked.** `FIRST_SCORED_STEP = 2   # predictions for time points 2..9 are scored`, and the use of the aggregate fitness as the comparison statistic.
+
+**(2) Why it fails.** `CHANGE_STEP = 3` applies the change *before* recording time point 3, so the prediction of time point 3 (issued from `seq[2]`) cannot be right for any deterministic function of the sensory prefix: the pre-change prefix is identical across change types for the same configuration. Every architecture, and the ceiling, eats that error, which deflates absolute fitness and the ratio-to-ceiling by a constant and hides architecture differences. There is no off-by-one in the window itself (I checked `evaluate`, `expose_lookup`, `sensory_ceiling` and `thing_signature`; indices `t+1` and `t ∈ range(RUN_LENGTH)` are consistent, `seq[t+1]` with `t+1 ≤ 9` is in range, and `range(CHANGE_STEP, RUN_LENGTH + 1)` covers t=3..9 as intended); the problem is *what* is inside it, not where it is.
+
+**(3) Severity.** Moderate.
+
+**(4) Fix.** Report per-predicted-time-point accuracy, or exclude the change-crossing prediction from the aggregate and report it separately as an un-predictable baseline.
+
+---
+
+## 16. The world's dynamics and the model's dynamics are the same function (serious overclaim about "emergence")
+
+**(1) Claim attacked.** The framing that a thing-kind "emerges from selection".
+
+**(2) Why it fails.** `step_kinematics` is called in `generate_sequence` for the world and again in `advance_slots` and `predict` for the slots. The hypothesis class therefore contains the ground truth *exactly*: a one-slot rule with the right velocity is a perfect predictor of an occluded thing, because the world and the model bounce off the same walls with the same formula. Given that, the selection result is close to analytic: the un-forgetting variant of a true-dynamics tracker must win whenever occlusion lasts longer than a competing `tau`. Nothing about "responsiveness to change" is being discovered.
+
+**(3) Severity.** Serious for the interpretation, not for the code's correctness.
+
+**(4) Fix.** Either state the claim much more weakly ("the grammar contains a perfect tracker and selection finds it"), or make the model's dynamics a distinct estimate (unknown reflection behaviour, a learned bounce rule) so that winning is informative.
+
+---
+
+## 17. The evolutionary secondary is a near-exhaustive search of a 208-point space (moderate — "blind search" overclaim)
+
+**(1) Claim attacked.** "a blind mutation-selection search lands on the same architectures".
+
+**(2) Why it fails.** `population_size=32, elite=4, generations=40` over `enumerate_architectures()` (208 architectures), with the top 4 copied verbatim into every generation and a shared deterministic `fitness_cache`. That is ≥ 1280 evaluations across a 208-point space with monotone elitism; hitting the global optimum is near-certain and tells you nothing about the structure of the fitness landscape. The "agreement" with the exhaustive selection is also the same statistic (finding 10).
+
+**(3)** Moderate.
+
+**(4)** Report the number of *distinct* architectures evaluated, and measure the search against a held-out confirmation fitness so that "lands on the same architecture" is not the same number as the selection criterion.
+
+---
+
+## 18. `thing_signature`'s `unbound` counter conflates three different failures, making architectures incomparable (moderate)
+
+**(1) Claim attacked.** `"unbound_pairs": unbound` and `"fraction": passed / total` as a per-architecture score.
+
+**(2) Why it fails.** `if not ok or len(binding) != len(things)` is reached both when the model has too few slots (`num_slots=1` in a two-thing world can never bind, so it reports `fraction = 0` with `unbound = total` by construction) and when the model is merely not tracking yet. Aggregate numbers across the M3 table therefore mix "cannot represent the situation" with "has not converged". Any statement of the form "architecture X passes 100%" needs the `num_slots ≥ num_things` qualifier, which the code does not attach.
+
+**(3)** Moderate.
+
+**(4)** Break `unbound` into `insufficient_slots`, `state_mismatch_at_bind_time`, and `tracking_lost`, and report the three separately.
+
+---
+
+## 19. Minor/cosmetic items
+
+- The comment `"""Section 5 / section 8 step 2 of the design (as amended)"""` is unauditable from this file; if the design text says otherwise, the code is the only record of the amendment (cosmetic / moved-goalpost risk).
+- `run_controls` rebuilds two histories and their splits that `main` already built (`h_neutral`, `h_full`), and its ceiling keys (`ceiling_H_neutral_evaluation_half`) are unused except for `H_full`; duplicated computation invites divergence (cosmetic).
+- `results["protocol"] = "exposure on even-index configurations; every fitness is on the odd-index half"` is false for M3, which is run on `enumerate_configurations(6, 2)` — all configurations, including the exposure ones (minor accuracy of a claimed protocol).
+- The tie in the `count > tau` boundary is written as `count > tau`, so `tau` labels the number of consecutive unseen steps tolerated, not the number at which removal occurs; the design should state the convention explicitly, otherwise "tau=5" can be read one step off (minor).
+
+---
+
+## 20. Things I checked that did *not* turn up a bug (stated so you do not have to re-audit them)
+
+- **Off-by-one in the scoring window:** none. `expose_lookup` (`t ∈ 0..8`, target `t+1`), `evaluate` (`t+1 ≥ FIRST_SCORED_STEP`), `sensory_ceiling` (same guard) and `thing_signature` (`range(CHANGE_STEP, RUN_LENGTH+1)`) are all mutually consistent with their docstrings.
+- **Buffer/state leaking across sequences:** none. `reset()` clears `buffer`, `previous_field` and `slots`, and it is called per sequence in `expose_lookup`, per sequence in `evaluate`, and per change in `thing_signature`.
+- **Exposure/evaluation table leak:** none. The table is only ever written from `exposure` and only read in `evaluate`; `split_history` keys on the whole configuration so a configuration never straddles the halves.
+- **A "confirmed slot with a stale `count` gets deleted" bug:** not reachable. After every reconcile all surviving slots satisfy `count ≤ tau`, so a slot that is confirmed at the next reconcile cannot have `count > tau`. The `tau != "inf"` guard therefore does not by itself advantage `inf` through this path (the advantage comes from occlusion, finding 12).

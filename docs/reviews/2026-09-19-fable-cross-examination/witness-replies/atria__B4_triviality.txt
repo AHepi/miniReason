@@ -1,0 +1,148 @@
+====================================================================================================
+B4_triviality | atria | sample 0 | finish stop | 19912 chars | error None
+====================================================================================================
+## Part 1 — The case that the headline is trivial
+
+The slogan you propose is: *a parameter that only matters under occlusion is only selected under occlusion.* As stated, its premise is **false for this experiment**, and a referee should say so before accepting it. τ is *not* occlusion-only in its effects: H_passive and H_kinematic contain no occlusion, yet τ is strictly selected there (τ = 0 only). Persistence has large fitness consequences without anything ever being hidden — because a slot can be unconfirmed while *wrong*, not only while hidden. So the crude triviality argument dies immediately, and the results document's §7.4 is exactly the counterexample to it.
+
+The *repaired* triviality argument runs on the positive direction only, and it is strong:
+
+The kind under test is τ, the drop threshold for **unconfirmed** slots (design 2.6). A slot is unconfirmed when its predicted cell reads empty. Under the grammar, the only ways this can happen are (a) the thing is hidden, (b) the slot is misbound after a crossing or an uncorrected velocity change. The fitness target is true occupancy, chosen so that "a persisting slot would be *penalised* for tracking the hidden thing" is false (design change 3). Occlusion is a 3-cell window chosen to be "beyond k = 3" so the lookup pathway cannot absorb it (design change 2). Therefore: **occlusion present ⇒ unconfirmed-but-correct slots exist ⇒ τ = ∞ beneficial** is close to a theorem of the grammar plus the scoring rule, not an empirical finding about kinds. The one history containing occlusion selects the one architecture that never drops a slot. The surprise content is roughly zero.
+
+Worse for the headline, the *discriminating* case is the tie, and the tie is a case where history determines **nothing**. On H_neutral the four τ values are indistinguishable to the very history that is supposed to be doing the determining. So "history determined which kind got expressed" is supported by the near-definitional contrast (H_kinematic → H_full) and *falsified as a universal* by the neutral case, where the document itself concedes (7.3) that the answer was luck.
+
+## Part 2 — The case that it is non-trivial
+
+Three things are not entailed by the design, and they carry the real weight.
+
+**(X1) Strict selection *against* persistence in a change-free world.** H_passive is two things, *identity only*, no admitted changes at all — and it selects τ = 0 strictly. Nothing in the grammar or the scoring rule says persistence must *cost*; it could have been free, in which case the selected set would contain both kinds. The unchanged baseline dynamics (crossings, shared cells) plus OR-composition make a stale slot a spurious bit. That persistence is actively penalised by a world with no edits whatsoever is a genuine result and it is the pre-registered bullet the document under-uses.
+
+**(X2) Exact neutrality with asymmetric downstream consequences.** The tie is exact, and the two tied kinds differ by 0.465 on occlusion they never saw (0.535 vs 1.000). So a kind-neutral history leaves the kind *undetermined* while the kind's consequences are large. This is a real complication to diagnosis point 3 (it inserts chance) and it is not derivable from the design.
+
+**(X3) Contract coincidence.** The M2-maximal and M3-maximal architectures on H_full coincide; the pre-registration anticipated dissociation. But see finding 7 — this is weaker than it looks.
+
+## Part 3 — Which is stronger
+
+Against the **headline as literally written** ("History determined which kind got expressed, exactly as the diagnosis said"), the repaired triviality argument wins. The positive direction is near-analytic given design changes 2 and 3, the decisive contrast is one change type, and the discriminating case is a tie, i.e. a failure of determination.
+
+Against the **experiment as a whole**, non-triviality wins — but the non-trivial content sits in X1/X2, i.e. in the *negative* selection result and the drift result, neither of which is the headline. The abstract sells the definitional direction and buries the interesting one.
+
+## Part 4 — Does section 7 rescue non-triviality?
+
+Partially, and unevenly. **7.4 is the strongest and is the least post-hoc**: its core (τ = 0 on H_passive/H_kinematic) is pre-registered; only the "against, not merely not-for" strengthening is post hoc, and it is verifiable from data already computed. **7.3** is strong but its central claim ("which one you got was luck") is unverified and partly contradicted by §5's own numbers. **7.1 is post-hoc storytelling as written, and it misattributes its own cause** — see finding 8. **7.2 is largely a metric artifact with the one number it needs missing.**
+
+So: section 7 rescues non-triviality about halfway, via 7.4 and (conditionally) 7.3. It does not rescue the headline. The honest move is to re-headline the negative result and freeze 7.4 and a corrected 7.1 as the next pre-registered test.
+
+---
+
+## Findings
+
+**1. The headline result is near-tautological with respect to the operationalisation.**
+*Claim attacked:* "History determined which kind got expressed, exactly as the diagnosis said" (results, "The answer in one paragraph").
+*Why it fails:* τ changes behaviour only via unconfirmed slots. The only history containing unconfirmed-but-correct slots is H_full, the only history with occlusion. That H_full selects τ = ∞ follows from the grammar plus the true-occupancy target, not from anything discovered.
+*Seriousness:* serious — it is the paper's lead sentence.
+*Fix:* restate as "the fitness consequences of persistence are confined to hidden-or-misbound conditions, and selection tracks those conditions," and put X1 forward as the finding.
+
+**2. The decisive contrast is a single change type, and it is the one the design built the demand into.**
+*Claim attacked:* design change 2 ("A 3-cell window hides it for at least three steps, beyond k = 3") and change 3 ("Selection pressure must come from the world"), together with results §2's H_kinematic→H_full step.
+*Why it fails:* swap is sensory-invisible by construction (design 2.3), so H_kinematic and H_full differ *only* by occlusion. n = 1 change type, and the window size and the fitness target were both chosen to make occlusion unabsorbable by the alternative pathway.
+*Seriousness:* serious.
+*Fix:* replicate over window sizes/positions, occlusion in the 1-thing world, and random subsets of the 24 changes, so the occlusion↔persistence correlation is measured over many histories instead of one crafted step.
+
+**3. The rival was never given a prediction it could fail.**
+*Claim attacked:* "Supports the diagnosis — all three bullets hit" (§6), and design §1's "Under the rival, it appears regardless."
+*Why it fails:* on H_neutral, τ = ∞ *is* fitness-maximal (it is in the tied set). So the rival's operationalised prediction ("kind-preserving structure appears regardless of history") is satisfied on H_neutral. The tie is equally compatible with both views; the only outcome that would have sunk the rival (exclusion of τ = 0) is the sinking condition, and it did not fire. Worse, the M2/M3 generalisation data (1.000 vs 0.535 on never-seen occlusion) are exactly what a correspondence theorist would cite: kind-structure is what fidelity across edited contracts *requires*. The two views are about different things (expression vs fidelity) and the design does not force a choice.
+*Seriousness:* serious.
+*Fix:* either keep the §8 "relative-consistency witness" framing and drop the refutational language in §6, or add a manipulation where the views diverge — e.g. a history in which kind-structure is *costly* yet fidelity-requiring.
+
+**4. The selecting factor is a property of the sensor, not of the world's history.**
+*Claim attacked:* "History determined which kind got expressed"; design 2.5's "selection pressure comes from the world, not from sensation matching itself."
+*Why it fails:* occlusion is a sensor edit (design 2.3: "reads 0 in the sensory field … whatever is there"). What selects persistence is a gap in the sensory interface, converted into selection by the world-facing fitness target. "History" is the wrong word for it.
+*Seriousness:* serious (conceptual), cheap to fix.
+*Fix:* restate as "the sensory interface's occlusions, scored against world state, determined the kind," and discuss what that implies for the diagnosis.
+
+**5. Only one of the four kinds in the diagnosis was tested.**
+*Claim attacked:* The diagnosis lists object, cause, rule, persistence (design §1); the headline says "which kind."
+*Why it fails:* the kind under test is persistence (design 2.6); the j gene is post hoc and is the only other axis examined. "Which kind got expressed" generalises from 1 (pre-registered) of 4.
+*Seriousness:* serious framing.
+*Fix:* "which persistence-kind" in the headline; reserve "kinds" plural for when object/cause/rule axes are frozen tests.
+
+**6. The exact tie on H_neutral is a control, not a discriminating observation.**
+*Claim attacked:* "On H_neutral, the best architecture for every persistence value ties (within 0.01). *They tie exactly*" (§6, first bullet) offered as support.
+*Why it fails:* with one always-visible thing, every slot is confirmed every step, so τ is inert by construction. The tie confirms the history has no power; it does not discriminate the diagnosis from the rival (finding 3). Its exactness is a fact about the world's simplicity.
+*Seriousness:* minor-to-serious.
+*Fix:* present the tie as the *neutrality control passing*, and move the discriminating load to M2/M3 on never-seen changes.
+
+**7. The M2/M3 coincidence on H_full is close to definitional, and M3's 1.000 is guaranteed by shared kinematics.**
+*Claim attacked:* "The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on" (§4) and §6's "fidelity and kind come apart — did not fire."
+*Why it fails:* slots advance by "the same reflecting kinematics as the world" (design 2.6), so a correctly bound slot that is never rebound or dropped tracks its thing by construction; τ = ∞ never drops, and occlusion causes no rebound. So M3-occlude = 1.000 for τ = ∞ is largely guaranteed. The informative content is the *failure* column (rebind 0.01, τ = 0 occlude 0.02). And since occlusion demands τ = ∞ and τ = ∞ is by construction the thing-tracker, M2-best = M3-best is what the design predicts, not a happy coincidence.
+*Seriousness:* serious (this was the strongest candidate for non-triviality).
+*Fix:* report M3 as a *dissociation test whose positive arm is near-definitional*, and rely on the failure arms for content.
+
+**8. 7.1 misattributes its own cause: the variable is crossings, not thing count.**
+*Claim attacked:* "whether 'displacement' exists as a kind distinct from 'velocity change' was decided by how many things there were. Nobody declared that; the history did" (7.1).
+*Why it fails:* H_passive is two things with *identity only* — no displace, no set_velocity, no occlusion — and it selects j = no. Crossings in the unchanged baseline alone generate the >1-cell mismatches that make "keep the old velocity" wrong. So the selecting variable is the *source of jumps* (admitted displacement vs crossing-induced misbinding), which correlates with thing count in this design but is not it; H_passive already isolates crossings. The document's own data refute its stated explanation.
+*Seriousness:* serious — a misdescribed finding, and the corrected version is more informative.
+*Fix:* restate 7.1 in terms of jump source; note H_passive as the discriminating case; freeze a test with 1-thing-with-occlusion and 2-thing-without-crossings (things barred from sharing a cell).
+
+**9. 7.1's mechanism is untested though the data to test it already exist.**
+*Claim attacked:* "With two things, a big mismatch is usually a slot that lost track across a crossing, and keeping the old velocity is wrong" (7.1).
+*Why it fails:* M4 (failure structure, design §3) was computed per architecture per history; the fraction of j-relevant mismatches occurring at crossings vs at displacements is derivable and is not reported.
+*Seriousness:* serious (post-hoc storytelling while the check is free).
+*Fix:* run the breakdown before freezing 7.1 as a candidate.
+
+**10. 7.2 compares aggregate M2 to conditional M3 and omits the number it needs.**
+*Claim attacked:* "On H_full, τ = 5 and τ = ∞ are separated by 0.003 in prediction fitness (0.798 vs 0.801), but by 0.39 on the thing-signature occlusion test" (7.2).
+*Why it fails:* the 0.003 is *aggregate* fitness over 24 change types × 8 scored steps; occlusion is 4 of 24 changes, and τ = 5 vs ∞ differ only after >5 unconfirmed steps, so dilution is by construction. M3-conditional scores exact (cell, velocity) at every step — maximally sensitive. Apples to oranges. And the fair comparison — τ = 5's M2 **occlude** score — is not in the M2 table (only selected architectures are listed). The M2 occlusion column that *is* reported (0.535 / 0.760 / 0.979 / 1.000 across τ) already shows disaggregated prediction fitness is sharp, contradicting "prediction fitness is a coarse signal."
+*Seriousness:* serious.
+*Fix:* report τ = 5's M2-occlude; restate 7.2 as "aggregate fitness dilutes; per-change-type fitness does not," and note that the "demanding history" framing is really about hidden-duration distributions set by window = 3 and run = 9.
+
+**11. 7.3's "luck" claim is unverified, and §5's "no bias" contradicts its own numbers.**
+*Claim attacked:* §5: H_neutral seeds "τ = 2, ∞, 2, 5, 2, 5 … **no bias toward or away from persistence**"; 7.3: "which one you got was luck."
+*Why it fails:* τ = 0 is in the tied selected set (12 architectures = slots {1,2,3} × τ {0,2,5,∞}, r = 5, j = yes), yet **0 of 6 seeds** ended at τ = 0. Under neutral drift over 12 equally fit architectures, ~25% is expected; 0/6 is a point estimate of bias, not of absence of bias. If final populations were mixed including τ = 0, the frequencies are not reported. And if a bias exists, the pre-registered **search-bias outcome did fire** ("kind-structure can be expressed by the shape of the search alone, with no pressure from content"), which would qualify diagnosis point 3 — exactly the outcome §6 declares "did not fire."
+*Seriousness:* serious — internal inconsistency plus a missed qualification of the thesis.
+*Fix:* report per-seed, per-generation population frequencies across all 12 tied architectures; test against uniform expectation; if τ = 0 is under-represented, reinstate the search-bias finding and amend point 3 to include search structure.
+
+**12. 7.4's "selected against" strictness is asserted without the number.**
+*Claim attacked:* "H_passive and H_kinematic selected τ = 0 *strictly* — persisting slots did worse" (7.4).
+*Why it fails:* §2's tables list only selected architectures. Strictness requires the best τ > 0 fitness on H_passive and H_kinematic, which is not reported anywhere.
+*Seriousness:* minor-to-serious (this is the strongest non-trivial claim and it is one number away from established).
+*Fix:* report best-per-τ fitness on both histories.
+
+**13. "The search found what the table found" overstates the neutral case.**
+*Claim attacked:* §5, H_neutral row and "Reachability (your point 2) did not bite in this world."
+*Why it fails:* on H_neutral the search converged on 3 of the 12 tied optima, not "the same places." And ease of search in a 208-architecture space with population 32 × 40 generations is a fact about this space, not evidence about reachability in general.
+*Seriousness:* minor.
+*Fix:* state that 3 of 12 tied optima were found, and restrict the reachability claim to this space.
+
+**14. Selected-set cardinalities are not decomposable under the stated enumeration.**
+*Claim attacked:* §2's counts (H_neutral: 12; H_passive: 8, "with or without a lookup that adds nothing") against design 2.6's "lookup on/off × k × slot count × rule … 208."
+*Why it fails:* 2.6 treats lookup k ∈ {1,2,3} as a dimension (4 lookup states), so "with or without a lookup" must mean one specific k, unnamed. 12 = 3 slots × 4 τ with lookup presumably off; if any lookup variant tied, the set would be 24 or 48. The convention is unstated, so the "every number is exact" claim cannot be checked here. Related: design §9 item 6 says "**112** architectures can be enumerated" against 208 elsewhere.
+*Seriousness:* serious (bookkeeping, on a paper whose selling point is exactness).
+*Fix:* state the lookup-k convention, list which k is meant in H_passive's 8, and correct "112" → 208.
+
+**15. The pre-registration was shaped by three rounds of pilot results.**
+*Claim attacked:* design §4 "Written before any code was run, and not changed after"; results §9 "None of the revisions touched what the pre-registered outcomes are about."
+*Why it fails:* design changes 8 ("Pre-registered outcomes rewritten to match"), 16, and 19 (neutrality check "restricted to the τ family" after rebind sat 0.026 below) all followed control runs; change 16 concedes the first control run already showed the supporting outcome. So the frozen run confirms a pilot-seen pattern on held-out configurations; it is not a novel prediction test. Narrowing the neutrality control to exclude rebind after seeing its deficit is a post-hoc exclusion criterion — defensible (rebind differs in velocity-memory, not persistence) but post-hoc.
+*Seriousness:* serious for confirmatory weight, not for honesty (it is documented).
+*Fix:* mark which outcomes predate any pilot data; locate the confirmatory value in the single frozen run plus the exposure/evaluation split, and say so.
+
+**16. M2 is per-world, so cross-history generalisation numbers are not comparable.**
+*Claim attacked:* 7.3's "generalises perfectly to occlusion (1.000)" beside the H_full-selected architecture's 0.941 on occlude (§3).
+*Why it fails:* M2 is "the full contract of *its world*" (design §3). The 1.000 is 1-thing-world occlusion (one hidden slot, nothing to misbind); the 0.941 is 2-thing-world occlusion, strictly harder. The within-world comparison in 7.3 (1.000 vs 0.535, both 1-thing) is legitimate; the juxtaposition invites the reader to compare incomparable numbers.
+*Seriousness:* minor.
+*Fix:* label every M2 number with its world; add the 1-thing-with-occlusion architecture's score on the 2-thing contract if cross-world comparison is intended.
+
+**17. The exposure/evaluation split is a no-op for 51 of 208 architectures.**
+*Claim attacked:* design 2.5's rationale, "Without it a bounded-memory table memorises the local patterns of the very sequences it is scored on."
+*Why it fails:* slot architectures have no exposure-dependent parameters (rules fixed, enumerated); the split constrains only the lookup pathway. The control is real for lookup and vacuous for slots.
+*Seriousness:* minor.
+*Fix:* state that the split binds the lookup pathway only.
+
+**18. Two unrelated quantities both round to 0.801.**
+*Claim attacked:* §2 "The best lookup-only on H_full scored 0.674 against the tracker's 0.801" and §4's M3 "Passing, all pairs … 0.801" for the same architecture.
+*Why it fails:* H_full top fitness (0.8009) and M3 all-pairs passing (0.80117) are different measures that coincide numerically here, inviting conflation.
+*Seriousness:* cosmetic.
+*Fix:* one more decimal place, or a distinguishing label.
+
+*Verification note, since exactness is claimed:* I recomputed the weighted averages from the per-change-type M2 columns using the change counts in design 2.3 and the sequence counts in results §1 — H_full (0.801), H_neutral-on-its-own-changes (0.893), H_kinematic (0.818), H_passive (0.974) all reconcile with the reported top fitnesses, and the exposure/evaluation splits (90/90, 86/85, 1634/1615, 2064/2040) are exactly the even/odd *configuration*-index splits of 18, 171, 171, 171 configurations. The arithmetic is sound; the problems above are in design, inference, and reporting.

@@ -1,0 +1,391 @@
+====================================================================================================
+R3_sufficiency_anchored | rev_deepseek | sample 0 | finish stop | 14414 chars | error None
+====================================================================================================
+I take attack (A). I can construct the candidate. It satisfies all six conjuncts of (E) and all four anchored conditions, with a non-declared transport, and it plainly explains nothing. The document itself concedes the essential move.
+
+## The candidate
+
+Let the target \(D\) be a finite function \(f:\{0,1\}\to\{0,1\}\) with \(f(0)=0\), \(f(1)=1\). Write ports \(x,y\), with \(X_x=X_y=\{0,1\}\). Let \(J=\{j_0,j_1\}\). Define
+
+\[
+L_{j_0}=\{(x,y):x\neq 0\text{ or }y=0\}=\{(0,0),(1,0),(1,1)\},
+\]
+\[
+L_{j_1}=\{(x,y):x\neq 1\text{ or }y=1\}=\{(0,0),(0,1),(1,1)\}.
+\]
+
+Then
+
+\[
+\operatorname{Sol}_D=\{(0,0),(1,1)\}.
+\]
+
+The question \(p\) reads \(y\), so \(\operatorname{Ans}_p(a,b)=y\). Let \(C=C_{\mathrm{adm}}\) be all admitted edit–boundary pairs, including the baseline and edits setting \(x=0\) and \(x=1\). Let \(E=D\), \(\Gamma=\{j_0,j_1\}\), and let the transport \(t:D\to E\) be the identity: \(\pi=\mathrm{id}\), \(\tau=\mathrm{id}\), \(\sigma=\mathrm{id}\), with \(\lambda(j_0)=\{j_0\}\), \(\lambda(j_1)=\{j_1\}\). Make \(t\) non-declared by a selection witness: a population \(\{t,t'\}\) where \(t'\) maps \((0,0)\) to \((0,1)\) and agrees on \((1,1)\); history \(H=\{(a_{\text{set }0},b_0)\}\); survival condition requiring fidelity on \(H\), which eliminates \(t'\) and leaves \(t\). Stipulate the environment’s filtering is causally responsible for \(t\).
+
+Check (E):
+
+- (F1): \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]=L_k(\tau(a),\sigma(b))\) — identity on the single-component subnetworks.
+- (F2): \(\pi[\operatorname{Sol}_D(a,b)]=\operatorname{Sol}_E(\tau(a),\sigma(b))\) — identity.
+- (A): \(\operatorname{Ans}_E=\operatorname{Ans}_p\) — both read \(y\).
+- Non-circular dependence: delete the proper sub-block \(\{j_0\}\). Then at \(x=0\), the answer changes from \(y=0\) to \(y\in\{0,1\}\) — it ceases to be determined in the claimed way.
+- Non-vacuity: \(\operatorname{Sol}_D(1,b_0)=\{(0,0),(1,1)\}\neq\varnothing\).
+- Contract adequacy: \(C=C_{\mathrm{adm}}\), \(S=\varnothing\), so no admitted pair is excluded.
+
+Check the four anchored conditions:
+
+1. Properness: each anchor is the single-component subnetwork \(\{j_0\}\) or \(\{j_1\}\), proper because \(D\) has two components; they cover \(D\).
+2. Resolution: \(j_0\) and \(j_1\) can be separately varied with distinct effects on \(\operatorname{Ans}_p\); they lie in distinct anchors.
+3. No global relation: \(L_{j_0}\neq \operatorname{Sol}_D\), \(L_{j_1}\neq \operatorname{Sol}_D\), and neither is a projection of \(\operatorname{Sol}_D\).
+4. World-kind: since \(E=D\) and anchors are the components themselves, the signatures coincide on all of \(C_{\mathrm{adm}}\). If the physical module supplies a history, stipulate \(j_0,j_1\) are active routes; if not, the active-route clause is vacuous.
+
+Yet this is a two-entry lookup table. The components are two arbitrary conditionals: “if \(x=0\) then \(y=0\)” and “if \(x=1\) then \(y=1\)”. There is no shared structure, no reason why the function is this way, and no compression. The target’s answer for each input is directly encoded in a component. It plainly explains nothing.
+
+---
+
+## Findings
+
+### Finding 1 — The anchored grade admits a multi-component lookup table. (Fatal)
+
+**Claim attacked.** The anchored grade is supposed to separate a mechanism from a repackaging. The document says:
+
+> “The one-component candidate whose single relation is \(\operatorname{Sol}_D\) satisfies (E) on every contract and fails conditions 1 and 3; … a decoy with the same signature on \(C\) but a different response to some admitted edit fails 4.”
+
+and elsewhere:
+
+> “A table that genuinely encodes an organization's response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component, and by nothing if it is a faithful decomposition — in which case it is an account.”
+
+**Why it fails.** The first quotation only rules out the one-component repackaging. The second explicitly admits that a multi-component faithful decomposition of a lookup table is an account. My construction is exactly that: a two-component faithful decomposition. Properness is satisfied because each anchor is a proper subnetwork. No-global-relation is satisfied because neither \(L_{j_0}\) nor \(L_{j_1}\) is \(\operatorname{Sol}_D\). Non-circular dependence is satisfied because deleting a component changes the answer. World-kind is satisfied by identity. The anchored grade therefore does not exclude it. If the author says it is an account, then “account” has been weakened to include a lookup table.
+
+**Severity.** Fatal for sufficiency of the anchored grade.
+
+**Fix.** Add a condition that the components must do explanatory work beyond encoding the answer for a fibre. For example: for every active component and every input on which it is non-vacuous, there must be an admitted change that alters the component’s relation without altering the target answer, or the component must be shared across distinct inputs/queries. A mere decomposition into one component per input must be excluded by name.
+
+---
+
+### Finding 2 — The non-circular dependence witness does not detect direct encoding. (Serious)
+
+**Claim attacked.** The non-circular dependence condition says:
+
+> “The target's answer does not appear, at the declared grain, as an unanalysed boundary input or as a component; moving an assertion from an input slot into a component named ‘law’ does not discharge this. The witness: there exists an edit \(\tau(a)\) on \(E\), translated from some \((a,b)\in C\), that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\) while preserving the other boundary conditions, under which the answer profile changes or ceases to be determined in the claimed way.”
+
+**Why it fails.** The only formal witness is that some proper sub-block is necessary for the answer. My lookup table satisfies this: deleting \(j_0\) changes the answer at \(x=0\). The verbal prohibition on “the target’s answer … as a component” is not operationalized. A component that encodes “if \(x=0\) then \(y=0\)” is exactly the target’s answer for that input moved into a component. But the witness cannot see this.
+
+**Severity.** Serious. The condition cannot exclude the simplest repackaging.
+
+**Fix.** Strengthen the witness. Require that no component’s relation is the graph of the answer on a fibre of \(\mathcal Q\), or require that for each component there is an admitted edit that changes its relation while leaving the answer unchanged, so that the component is not merely a lookup entry.
+
+---
+
+### Finding 3 — Properness excludes genuine symmetry/global explanations. (Serious)
+
+**Claim attacked.** The properness condition says:
+
+> “**Properness.** Every anchor \(\lambda(k)\) is a proper subnetwork of \(D\), and the anchors of the active components refine a cover of \(D\)'s components: no anchor is the whole target, and no component of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches lies outside every anchor.”
+
+**Why it fails.** The document itself lists explanation by symmetry as an open genuine case under attack (B):
+
+> “explanation by symmetry, whose force is an entailment among \(E\)'s components … neither (F1) nor (F2) constrains”
+
+A symmetry explanation often uses a global constraint on all ports — e.g., a conservation law or invariance condition that is not decomposable into proper subnetworks. Such a component would be the whole target, or would not refine a cover of \(D\)’s components. Properness forbids it. If symmetry explanation is genuine, the anchored grade excludes it by fiat.
+
+**Severity.** Serious. This is a false negative admitted by the document’s own list of open cases.
+
+**Fix.** Allow global components under a declared symmetry contract, or state that symmetry explanations are not intended to be captured by the anchored grade. Do not claim the anchored grade is a general account of “the actual mechanism” while excluding a class of genuine mechanisms by properness.
+
+---
+
+### Finding 4 — World-kind excludes coarse-grained genuine mechanisms if \(C_{\mathrm{adm}}\) contains fine-grained edits. (Serious)
+
+**Claim attacked.** The world-kind condition says:
+
+> “**World-kind.** Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor: fidelity holds not only on the pairs the contract selected but on every pair the module admits.”
+
+**Why it fails.** Suppose the physical module admits edits at a finer grain than the explanation’s grain. A coarse-grained genuine mechanism — say, a fluid-dynamical explanation of a wave — will not have the same signature as its molecular anchor under molecular edits. The fluid component may correctly answer the coarse-grained question, but under a molecular edit that is physically admitted, its relation will differ from the molecular subnetwork’s relation. World-kind then fails. The document’s grain-admissibility condition does not fully resolve this because \(C_{\mathrm{adm}}\) is the module’s admitted edit set, not obviously the grain-relative edit set.
+
+**Severity.** Serious. It threatens to exclude every coarse-grained mechanistic explanation.
+
+**Fix.** Index \(C_{\mathrm{adm}}\) to the grain \(\ell\), or require world-kind only on the edits admissible at the grain, with the grain’s admissibility licensing exactly which edits are in play. State the relation between \(A_\Theta\), \(A\), and \(C_{\mathrm{adm}}\) precisely.
+
+---
+
+### Finding 5 — The active-route condition is vacuous for mathematical or modelled organizations. (Serious)
+
+**Claim attacked.** The active-route clause says:
+
+> “Where the physical module supplies a history for \(D\), each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically.”
+
+**Why it fails.** For a mathematical organization, or any organization not attributed through \(\operatorname{Inst}\), the physical module may not supply a history. Then the clause is vacuous. The anchored grade reduces to properness, resolution, no-global-relation, and world-kind. My lookup-table candidate can be a mathematical organization, so it satisfies the anchored grade trivially with respect to active routes. The document claims anchoring is what “the model is about the actual mechanism” means, but for mathematical organizations there is no actual-mechanism condition.
+
+**Severity.** Serious. It undermines the universality of the anchored grade.
+
+**Fix.** Require a declared history or admission relation for mathematical organizations, or state explicitly that anchoring for mathematical organizations is weaker and does not carry the actual-mechanism claim.
+
+---
+
+### Finding 6 — Selection provenance is trivial to satisfy. (Minor)
+
+**Claim attacked.** The selection definition says:
+
+> “Selection is a physical history: a population with more than one member, a variation operator that was applied, a survival condition that eliminated at least one candidate, and a sequence of events causally responsible for the survivor's presence.”
+
+**Why it fails.** In my candidate, the selection witness is a population of two: the identity transport and a strawman that fails on one edit. The identity survives. This is enough to make the transport non-declared. The condition does not require the eliminated candidate to be a serious rival, nor the population to be closed under any interesting variation. Therefore the “non-declared” requirement in attack (A) is easily met and does not add substantive strength.
+
+**Severity.** Minor for the specific attack, but it weakens the provenance distinction.
+
+**Fix.** Require the selection history to be non-trivial in a stronger sense: e.g., the population must be closed under a variation operator that includes the identity, or the eliminated candidates must be non-strawman alternatives. At minimum, state that a one-edit elimination with a single failing rival does not count.
+
+---
+
+### Finding 7 — The document’s own text concedes the counterexample. (Fatal)
+
+**Claim attacked.** The document says:
+
+> “A table that genuinely encodes an organization's response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component, and by nothing if it is a faithful decomposition — in which case it is an account.”
+
+**Why it fails.** This is the counterexample. A faithful multi-component decomposition of a lookup table is admitted as an account. The attack (A) asks for exactly such a candidate that plainly explains nothing. The author has already said it is not excluded. Either the author must argue that a lookup table explains something, or the anchored grade is insufficient.
+
+**Severity.** Fatal for the sufficiency claim.
+
+**Fix.** The fix is not a small patch. The semantics needs a substantive condition distinguishing a decomposition that explains from a decomposition that merely lists. Candidates: require invariance under some admitted change that leaves the answer unchanged; require the components to be shared across distinct queries; require that no component is a graph of the answer on a fibre; or require a non-trivial unification/compression condition. None is present.
+
+---
+
+## Which condition blocks which attempt
+
+- **One-component repackaging:** blocked by properness and no-global-relation.
+- **Two-component split of it:** not blocked. Properness passes because each anchor is proper. No-global-relation passes because neither component is \(\operatorname{Sol}_D\).
+- **Lookup with a proper decomposition:** not blocked. Same as the two-component split, generalized to \(n\) components.
+- **Decoy with the same world-kind on \(C_{\mathrm{adm}}\):** not a decoy. If it has the same world-kind on every admitted change, it is the same forward kind as the anchor. If it differs on some admitted change, world-kind blocks it. So world-kind blocks only decoys that are distinguishable by an admitted change.
+
+The four anchored conditions therefore do not exclude a genuine mechanism? They exclude some genuine mechanisms: properness excludes global/symmetry explanations; world-kind may exclude coarse-grained explanations if \(C_{\mathrm{adm}}\) contains fine-grained edits; active-route is vacuous for mathematical organizations. They do not exclude the lookup table. That is the asymmetry that defeats the sufficiency claim.
+====================================================================================================
+R3_sufficiency_anchored | rev_deepseek | sample 1 | finish stop | 13288 chars | error None
+====================================================================================================
+I can construct a counterexample. It is the target’s own decomposition, transported by an isomorphism. It satisfies all six conjuncts of (E) and all four anchored conditions, with a selected (non-declared) transport, and it plainly explains nothing beyond the target’s own components. Below I give the candidate, then attack each attempt and the anchored conditions.
+
+---
+
+## 1. Counterexample: the target’s own decomposition
+
+Take the following target organization \(D\).
+
+- Ports: \(V=\{x,y\}\), \(X_x=X_y=\{0,1\}\).
+- Components: \(J=\{1,2\}\).
+- Boundary: \(B=\{b_0\}\).
+- Edits: \(A=\{1,a_1,a_2\}\), where \(a_1\) replaces component 1 and \(a_2\) replaces component 2.
+- Component relations:
+  \[
+  L_1(1,b_0)=\{(x,y):x=0\},\qquad L_1(a_1,b_0)=\{(x,y):x=1\},\qquad L_1(a_2,b_0)=L_1(1,b_0),
+  \]
+  \[
+  L_2(1,b_0)=\{(x,y):y=0\},\qquad L_2(a_2,b_0)=\{(x,y):y=1\},\qquad L_2(a_1,b_0)=L_2(1,b_0).
+  \]
+- So
+  \[
+  \operatorname{Sol}_D(1,b_0)=\{(0,0)\},\quad
+  \operatorname{Sol}_D(a_1,b_0)=\{(1,0)\},\quad
+  \operatorname{Sol}_D(a_2,b_0)=\{(0,1)\}.
+  \]
+
+Let \(C=C_{\mathrm{adm}}=\{(1,b_0),(a_1,b_0),(a_2,b_0)\}\). Let the question \(p\) have \(\mathcal Q(x,y)=x-y\). Then
+\[
+\operatorname{Ans}_p(1,b_0)=\{0\},\quad
+\operatorname{Ans}_p(a_1,b_0)=\{1\},\quad
+\operatorname{Ans}_p(a_2,b_0)=\{-1\}.
+\]
+
+Now take \(E\) to be an isomorphic copy of \(D\): ports \(x',y'\), components \(k_1,k_2\), with \(L_{k_1}\) copying \(L_1\) and \(L_{k_2}\) copying \(L_2\). Let \(\pi(x,y)=(x',y')\), let \(\tau(a_1)\) replace \(k_1\), let \(\tau(a_2)\) replace \(k_2\), let \(\sigma\) be the identity on boundaries, and let
+\[
+\lambda(k_1)=\{j_1\},\qquad \lambda(k_2)=\{j_2\}.
+\]
+Let \(\Gamma=\{k_1,k_2\}\).
+
+For provenance, stipulate a selection history: population of transports \(\{t,t'\}\), where \(t'\) differs by setting \(k_1\) to \(x'=1\) at the baseline. Variation operator flips the relevant component relation. History \(H=\{(1,b_0),(a_1,b_0)\}\). Survival condition requires fidelity on \(H\). The variant \(t'\) fails at \((1,b_0)\), so it is eliminated; \(t\) survives. Thus \(\operatorname{Sel}(t)\) holds. The transport is non-declared.
+
+### Check (E)
+
+- **(F1)** For \(k_1\), anchor \(\{j_1\}\). \(\operatorname{Sol}_{\{j_1\}}(a,b)=L_1(a,b)\), and projection onto \(V_{k_1}\) is \(L_1(a,b)=L_{k_1}(\tau(a),\sigma(b))\). Same for \(k_2\). Holds.
+- **(F2)** Since \(E\) is an isomorphic copy and \(\pi\) is the isomorphism, \(\pi[\operatorname{Sol}_D(a,b)]=\operatorname{Sol}_E(\tau(a),\sigma(b))\). Holds.
+- **(A)** \(\operatorname{Ans}_E(\tau(a),\sigma(b))=x'-y'=x-y=\operatorname{Ans}_p(a,b)\). Holds.
+- **Non-circular dependence** Remove the proper sub-block \(B=\{k_1\}\) from \(\Gamma\). Deleted \(k_1\) imposes the full relation on \(\{x',y'\}\), so
+  \[
+  \operatorname{Sol}_{E'}=\{(x',y'):y'=0\},
+  \]
+  and \(\operatorname{Ans}_{E'}=\{x'-0:x'\in\{0,1\}\}=\{0,1\}\), which differs from the baseline \(\{0\}\). Thus there is a proper sub-block removal that changes the answer profile. Holds.
+- **Non-vacuity** \(\operatorname{Sol}_D(1,b_0)=\{(0,0)\}\neq\varnothing\), and \(C=C_{\mathrm{adm}}\) with no silent exclusions. Holds.
+- **Contract adequacy** \(C=C_{\mathrm{adm}}\), so \(C_{\mathrm{adm}}\setminus C=\varnothing\). Holds.
+
+### Check the four anchored conditions
+
+1. **Properness** \(\lambda(k_1)=\{j_1\}\) and \(\lambda(k_2)=\{j_2\}\) are proper subnetworks because \(D\) has two components. They cover both components touched by \(C_{\mathrm{adm}}\). No anchor is the whole target. Holds.
+2. **Resolution** \(j_1\) and \(j_2\) can be separately varied by \(a_1,a_2\), and their effects on \(\operatorname{Ans}_p\) are distinct (\(\{1\}\) versus \(\{-1\}\)). They lie in distinct anchors \(\{j_1\},\{j_2\}\). Holds.
+3. **No global relation** At \((1,b_0)\), \(L_{k_1}=\{(x',y'):x'=0\}\), while \(\operatorname{Sol}_D(1,b_0)=\{(0,0)\}\) and its projection onto \(\{x,y\}\) is \(\{(0,0)\}\). So \(L_{k_1}\) is not the projection. Similarly for \(k_2\) and for the other edits. Holds.
+4. **World-kind** On \(C_{\mathrm{adm}}\), the signature of \(k_1\) under \(\tau(a),\sigma(b)\) is \(L_1(a,b)\), exactly the signature of anchor \(\{j_1\}\). Same for \(k_2\). The anchors are the actual components \(j_1,j_2\) on the route to the answer, so they are active routes, not backups. Holds.
+
+So this candidate satisfies all six conjuncts of (E) and all four anchored conditions, with a non-declared transport.
+
+And it plainly explains nothing. It is a relabeling of the target. The “explanation” of \(x-y\) is “\(x=0\) and \(y=0\),” which is exactly the target’s own two components. No new dependency is introduced. The anchored grade cannot distinguish this from a genuine explanation. This is a fatal counterexample to sufficiency.
+
+---
+
+## 2. The specific attempts and what blocks them
+
+### Finding 1: One-component repackaging is blocked, but multi-component identity is not
+
+The document says:
+
+> “The one-component candidate whose single relation is \(\operatorname{Sol}_D\) satisfies (E) on every contract and fails conditions 1 and 3.”
+
+That is true for the one-component case. Properness blocks it because its single anchor is the whole target. No global relation blocks it because the component relation is \(\operatorname{Sol}_D\). But the document does not consider the multi-component case where \(E\) is an isomorphic copy of \(D\) with anchors to \(D\)’s own components. That case passes properness, resolution, no-global-relation, and world-kind. It is a trivial restatement, yet it satisfies the anchored grade. The one-component exclusion does not generalize.
+
+### Finding 2: Two-component split of the one-component repackaging
+
+If \(D\) has only one component, then any proper subnetwork of \(D\) cannot include that component. Properness requires that no component of \(D\) touched by \(C_{\mathrm{adm}}\) lies outside every anchor. So any split into two components with proper anchors fails properness: the touched component cannot be covered. Thus the two-component split is blocked by properness only when \(D\) has one component. If \(D\) has two or more components, the “split” is just a decomposition of \(D\) into its own components, and it passes as in Finding 1. So the condition does not block the general two-component case.
+
+### Finding 3: Lookup with a proper decomposition is not blocked
+
+The document concedes:
+
+> “A table that genuinely encodes an organization’s response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component, and by nothing if it is a faithful decomposition — in which case it is an account.”
+
+This is an admission that a faithfully decomposed lookup table satisfies the anchored grade. If we take a lookup table with multiple rows and make each row a component, with anchors to proper subnetworks, and design the rows so that no row relation equals a projection of \(\operatorname{Sol}_D\), then condition 3 is satisfied. Properness is satisfied if there is more than one row. World-kind is satisfied if the rows respond to edits as their anchors do. So the anchored grade admits a faithfully decomposed lookup table. If lookup tables explain nothing, this is another counterexample to sufficiency. The document bites the bullet by calling it an account, but that is exactly the overclaim.
+
+### Finding 4: A decoy with the same world-kind is not blocked
+
+Condition 4 requires each active component of \(E\) to be of one forward kind with its anchor on \(C_{\mathrm{adm}}\). If a decoy responds identically to every admitted change, it is of one forward kind with the anchor by definition. The only extra clause is the active-route condition:
+
+> “Where the physical module supplies a history for \(D\), each anchor is an active route (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically.”
+
+This excludes a backup. It does not exclude an active decoy that is behaviorally identical on every admitted change. Such a decoy may have a different history, but history enters only historical kinds, not the anchored grade. So condition 4 does not block a decoy with the same world-kind. It only blocks a decoy whose response differs on some admitted edit, which is already blocked by fidelity on \(C_{\mathrm{adm}}\).
+
+---
+
+## 3. Do the four anchored conditions exclude genuine mechanisms?
+
+### Finding 5: Resolution excludes some genuine integrative mechanisms
+
+Condition 2 says:
+
+> “Whenever two components of \(D\) can be separately varied by pairs in \(C_{\mathrm{adm}}\) with distinct effects on \(\operatorname{Ans}_p\), they lie in distinct anchors. The decomposition of \(E\) is at least as fine as the dependencies the question asks about.”
+
+Suppose \(D\) has two components \(j_1,j_2\) that are separately variable with distinct effects on the answer, and a genuine mechanism \(E\) has one component \(k\) whose relation is a joint constraint coupling \(j_1\) and \(j_2\). For (F1) to hold, \(\lambda(k)\) must be a subnetwork of \(D\) whose projection equals that joint constraint. If the joint constraint is implicit only in the intersection of \(j_1\) and \(j_2\), then \(\lambda(k)=\{j_1,j_2\}\). But then \(j_1\) and \(j_2\) lie in the same anchor, violating condition 2. So condition 2 forces a finer decomposition than the mechanism. It can exclude a genuine joint constraint. The fix would be to allow an anchor to contain multiple independently variable \(D\)-components when the component’s relation is a non-projection joint function of them, or to apply resolution only to components of \(E\) that are not themselves the joint constraint.
+
+### Finding 6: No global relation excludes genuine global constraints
+
+Condition 3 says:
+
+> “No active component’s relation is, on \(C\), definable as \(\operatorname{Sol}_D(a,b)\) or a projection of it: a component whose relation is the target’s own solution set is the explanandum repackaged as a law, and it is excluded by name.”
+
+Some genuine explanations consist in a global conservation law, a symmetry principle, or a holistic constraint that is exactly a relation on all ports. The document already concedes that explanation by symmetry is not treated. Condition 3 makes it impossible to treat such cases at all, because any such global constraint is either \(\operatorname{Sol}_D\) or a projection. So the anchored grade is too strong: it excludes a class of genuine mechanisms by name. The fix would be to distinguish a global constraint that is the mechanism from a mere repackaging by requiring independent support or by allowing global anchors when they are the only proper locus.
+
+### Finding 7: Properness excludes holistic explanations
+
+Condition 1 says:
+
+> “Every anchor \(\lambda(k)\) is a proper subnetwork of \(D\)… no anchor is the whole target.”
+
+If a genuine mechanism is a global state or whole-system property, and no proper subnetwork carries it, then properness excludes it. For example, explaining local uniformity by global thermodynamic equilibrium. The document might reply that one can always decompose, but that is an assumption, not a consequence. Properness is too strong for holistic mechanisms.
+
+### Finding 8: World-kind excludes redundant mechanisms
+
+Condition 4’s active-route clause says:
+
+> “A backup that would have responded identically is not on the active route; the difference between the two is a difference in \(h\), not in signature, and it is what the anchored grade’s fourth condition uses.”
+
+In many genuine mechanisms, a standby or backup component is part of the mechanism’s reliability and disposition. The condition excludes it from anchoring because it is not on the active route. That can exclude a genuine mechanism whose function depends on redundancy. The fix would be to allow backups to be part of the anchor when their presence is part of the mechanism’s function, not merely an alternative route.
+
+---
+
+## 4. Minor and structural findings
+
+### Finding 9: The provenance requirement in attack (A) is orthogonal to the anchored grade
+
+The attack asks for a non-declared transport. But the anchored grade itself does not require a non-declared transport. (E) explicitly carries no provenance condition, and the anchored conditions add only properness, resolution, no-global-relation, and world-kind. World-kind uses history only through the active-route clause. So a declared transport can satisfy the anchored grade. The non-declared requirement is therefore not a constraint that blocks the counterexample; it is just an extra feature we can stipulate via a selection history. The counterexample works either way.
+
+### Finding 10: Part V says “five” conditions but (E) lists six conjuncts
+
+The text says:
+
+> “\(\operatorname{Account}(E,p,t,\Gamma)\) holds exactly when the following **five** conditions hold”
+
+but then (E) has six conjuncts: (F1), (F2), (A), NonCircular, NonVacuous, Adequate. This is cosmetic, but it matters for checking “all six conjuncts” against the stated conditions.
+
+---
+
+The upshot: the anchored grade admits the target’s own decomposition as an account, with a selected transport, and it explains nothing. It also excludes genuine holistic, global, and integrative mechanisms by conditions 1–3. The sufficiency claim for the anchored grade fails.
+====================================================================================================
+R3_sufficiency_anchored | rev_deepseek | sample 2 | finish stop | 11966 chars | error None
+====================================================================================================
+I cannot construct a candidate that satisfies all conditions and is unambiguously non-explanatory under the document’s own definitions, because the conditions are designed to exclude the classic attempts. However, I can construct a candidate that satisfies all conditions and is trivial: the identity account \(E=D\), and in particular a decomposed ROM lookup table. Here are the findings.
+
+**1. The document contradicts itself on whether the one-component repackaging satisfies (E).**
+(1) Claim attacked: “The one-component candidate whose single relation is \(\operatorname{Sol}_D\) satisfies (E) on every contract and fails conditions 1 and 3” and “The one-component candidate that repackages \(\operatorname{Sol}_D\) satisfies (E). It is an account at \(C\) and not anchored.”
+(2) Why it fails: the NonCircular conjunct of (E) requires “an edit \(\tau(a)\) on \(E\), translated from some \((a,b)\in C\), that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\) while preserving the other boundary conditions, under which the answer profile changes or ceases to be determined in the claimed way. Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing.” If \(E\) has one active component, then \(\Gamma=\{k\}\), which has no nonempty proper subset. So no such \(B\) exists, and NonCircular fails. The one-component repackaging therefore does not satisfy (E), contrary to the text.
+(3) Seriousness: serious. It undermines the stated motivation for the second grade and shows the conditions are not as advertised.
+(4) Fix: either revise NonCircular to allow replacing part of a single component’s relation, or delete the claim that the one-component repackaging satisfies (E).
+
+**2. The identity account \(E=D\) satisfies all six conjuncts of (E) and all four anchored conditions.**
+(1) Claim attacked: the anchored grade is supposed to exclude trivial repackaging and admit only genuine mechanisms.
+(2) Why it fails: let \(D\) be any target with at least two components, e.g. \(j_1\): \(y=x\), \(j_2\): \(z=y\). Let \(E=D\), with identity transport \(t:D\to D\), and \(\Gamma=\{k_1,k_2\}\) corresponding to \(j_1,j_2\). Anchors: \(\lambda(k_1)=\{j_1\}\), \(\lambda(k_2)=\{j_2\}\). Check: (F1) and (F2) hold by identity; (A) holds; NonCircular holds because deleting \(k_1\) changes the answer profile; NonVacuous and Adequate hold. Properness holds because each anchor is a proper subnetwork (D has two components). Resolution holds because \(j_1,j_2\) can be separately varied with distinct effects. No global relation holds because neither \(k_1\) nor \(k_2\) is \(\operatorname{Sol}_D\) or a projection of it. World-kind holds trivially. If \(D\) is physical and its components are on the active route, the active-route clause is satisfied. If a selection history is stipulated in which a swapped transport is eliminated and the identity survives, the transport is non-declared. This candidate is an account of \(D\) by \(D\)’s own components. It plainly explains nothing when \(D\) is a bare constraint set or lookup table.
+(3) Seriousness: fatal to the sufficiency claim.
+(4) Fix: add a condition that \(E\) is not isomorphic to \(D\) or that anchors cannot be the target’s own components, though this risks circularity.
+
+**3. A decomposed ROM lookup table satisfies all conditions and plainly explains nothing.**
+(1) Claim attacked: the anchored grade excludes lookup tables.
+(2) Why it fails: concrete candidate. Let \(D\) be a ROM with ports \(A\in\{1,2\}\), \(Y\in\{a,b\}\). Components: \(j_1\): if \(A=1\) then \(Y=a\); \(j_2\): if \(A=2\) then \(Y=b\). Admitted edits: set \(A=1\), set \(A=2\). Question: why is \(Y=f(A)\)? Candidate \(E=D\), identity transport, anchors \(\lambda(k_1)=\{j_1\}\), \(\lambda(k_2)=\{j_2\}\). Properness: each anchor is proper. Resolution: \(j_1,j_2\) separately variable with distinct effects on the answer profile. No global relation: neither component is \(\operatorname{Sol}_D\). World-kind: trivially satisfied. Actuality: if the contract includes both addresses, each component is an active route on some edit. NonCircular: deleting \(j_1\) leaves \(Y\) unconstrained for \(A=1\), so the answer changes. This candidate is a lookup table. It says \(Y=a\) when \(A=1\) because the cell for \(A=1\) says \(Y=a\). That is circular and explains nothing.
+(3) Seriousness: fatal.
+(4) Fix: clarify the active-route condition to require that every active component be on the active route for the specific \((a,b)\in C\) under assessment. This would block the ROM, but it may over-exclude genuine mechanisms with input-specific components.
+
+**4. The active-route condition is ambiguous and therefore does not block the ROM lookup table.**
+(1) Claim attacked: “Where the physical module supplies a history for \(D\), each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically.”
+(2) Why it fails: the condition does not say whether “each anchor” must be an active route for every \((a,b)\in C\), for the history as a whole, or for the particular question. In the ROM candidate, \(j_2\) is not on the active route for \(A=1\), but it is on the active route for \(A=2\). Under the per-history reading, the ROM passes; under a per-edit reading, it fails. The text does not settle this.
+(3) Seriousness: serious.
+(4) Fix: state explicitly that for every \((a,b)\in C\), every anchor of an active component must lie on the active route for that pair, or state the weaker per-history reading and accept the consequence.
+
+**5. A two-component split of \(\operatorname{Sol}_D\) is blocked only in its naive projection form.**
+(1) Claim attacked: the anchored grade excludes two-component repackaging of \(\operatorname{Sol}_D\).
+(2) Why it fails: if the two components have relations that are projections of \(\operatorname{Sol}_D\), condition 3 excludes them: “No active component's relation is, on \(C\), definable as \(\operatorname{Sol}_D(a,b)\) or a projection of it.” But if each component is anchored to a proper subnetwork of \(D\), and its relation is \(\operatorname{Sol}_{\lambda(k)}\), then it is not a projection of \(\operatorname{Sol}_D\). The candidate is simply \(E=D\) with a partition of \(D\)’s components. It satisfies all anchored conditions if \(D\) has a proper decomposition. This is the identity account again.
+(3) Seriousness: serious.
+(4) Fix: the condition needs to exclude not only projections of \(\operatorname{Sol}_D\) but also any account whose components are just a repartition of the target’s own components.
+
+**6. A decoy with the same world-kind is not blocked if it is on the active route.**
+(1) Claim attacked: “a decoy with the same signature on \(C\) but a different response to some admitted edit fails 4.”
+(2) Why it fails: if a decoy has the same world-kind on every physically admitted change, then by condition 4 it is of one forward kind with its anchor on \(C_{\mathrm{adm}}\). If it is not on the active route, the active-route clause excludes it. But if it is on the active route and shares world-kind, then under the semantics it is not a decoy; it is a genuine component. The only way to call it a decoy is to appeal to a finer contract or a history, which the semantics represents as a new question or a historical kind. The four anchored conditions cannot exclude an active component that shares world-kind on all admitted changes.
+(3) Seriousness: serious.
+(4) Fix: none within the current vocabulary; the attack must be framed with a finer contract or a history.
+
+**7. The four anchored conditions exclude explanation by symmetry, a genuine mechanism.**
+(1) Claim attacked: the anchored grade is adequate for mechanisms.
+(2) Why it fails: the document itself concedes: “Two further families are **not treated** here and are listed under attack (B): explanation by symmetry, whose force is an entailment among \(E\)’s components …; and explanation of an apparent effect as a selection artefact.” A symmetry explanation often uses a global invariant or an entailment among components that is not a proper decomposition into subnetworks each anchored to a proper part. Properness and no-global-relation exclude such a component.
+(3) Seriousness: serious.
+(4) Fix: either develop a separate condition for global invariants or explicitly restrict the anchored grade to non-symmetry explanations.
+
+**8. The four anchored conditions exclude dormant capacities and dispositions.**
+(1) Claim attacked: “each anchor is an **active route** … and not a backup that would have responded identically.”
+(2) Why it fails: many genuine mechanisms are not currently active. A repair mechanism in a cell, a dormant immune response, or a safety system explains what would happen if activated, but has no active route in the current history. The anchored grade requires an active route, so it excludes these explanations.
+(3) Seriousness: serious.
+(4) Fix: allow anchors that are retained realizations or potential routes under an enabling condition, not only actually active routes.
+
+**9. The four anchored conditions exclude selection-artefact explanations.**
+(1) Claim attacked: the anchored grade handles explanations of apparent effects.
+(2) Why it fails: the document concedes that explanation of an apparent effect as a selection artefact “needs two targets (the data organization and the population organization) and a transport for each. Neither has a construction in this document.” The anchored grade is defined for a single target \(D\). So it cannot represent this genuine explanatory form.
+(3) Seriousness: serious.
+(4) Fix: extend the anchored grade to multi-target explanations, or concede the limit explicitly under attack (F).
+
+**10. Condition 3 may exclude legitimate effective components that are projections of the global solution set.**
+(1) Claim attacked: “No active component's relation is, on \(C\), definable as \(\operatorname{Sol}_D(a,b)\) or a projection of it.”
+(2) Why it fails: in systems with hidden connections, the effective local relation of a subsystem can be exactly the projection of the global solution set onto its visible ports. Such a component can be a genuine explanatory component at a coarse grain. Condition 3 excludes it by name, even when it passes properness and world-kind.
+(3) Seriousness: minor to serious.
+(4) Fix: restrict the exclusion to components that are the whole target’s solution set or that fail properness, and allow projections when they are the correct effective relation of a proper subnetwork with hidden ports.
+
+**11. The anchored grade has no provenance condition, so “non-declared transport” is not part of it.**
+(1) Claim attacked: attack (A) asks for a candidate satisfying the anchored grade “with a non-declared transport.”
+(2) Why it fails: the text states: “The stronger grade, **anchored account-hood**, adds four conditions on the anchor map.” None of the four conditions mentions \(\operatorname{Sel}\) or \(\operatorname{Con}\). (E) itself “carries **no provenance condition**.” So the anchored grade alone does not require a non-declared transport. The attack as stated cannot be assessed against the anchored grade without adding a condition that is not in Part V.
+(3) Seriousness: minor to serious.
+(4) Fix: add a provenance condition to the anchored grade if that is what is intended, or restate attack (A) as targeting the anchored grade plus (R) or (EK).
+
+**12. The count of conditions is inconsistent.**
+(1) Claim attacked: “An \(\operatorname{Account}(E,p,t,\Gamma)\) holds exactly when the following **five** conditions hold” followed by (E) containing six conjuncts: (F1), (F2), (A), NonCircular, NonVacuous, Adequate.
+(2) Why it fails: the text says five conditions, but Component fidelity contains two separate conjuncts and (E) has six. This is a bookkeeping error.
+(3) Seriousness: cosmetic.
+(4) Fix: say six conjuncts or group (F1) and (F2) as one condition consistently.

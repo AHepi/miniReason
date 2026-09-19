@@ -1,0 +1,143 @@
+====================================================================================================
+C5_preregistration | atria | sample 0 | finish stop | 15224 chars | error None
+====================================================================================================
+**Audit of Section 12, Change 2 and Change 4**
+
+---
+
+**Finding 1 — The "pre-registered" label is unsupported by the document's own freeze protocol.**
+
+> "A pre-registered expectation added after thinking the world through, before any code ran."
+
+> "2. Section 6 checks. Stop and revise if either fails. 3. Fingerprint this file and the code together; record in file 14."
+
+1. Claim attacked: that Change 2 is a pre-registration in any binding sense.
+2. Why it fails: Section 11 fingerprints the file *after* the section-6 checks. Change 4 quotes section-6 results (0.819, 0.906, 0.923). So the file's content at hash time is already post-data. No hash predates the numbers, therefore nothing distinguishes Change 2's claimed timing from Change 4's admitted post-check timing. The protocol's "before freezing" window is post-data, so "pre-registered" here means only "written before some later experiment," not "committed before the relevant information existed." The sentence "Had this not been written down now it would have looked like an excuse later" is an admission that the timing claim is unverifiable and is being asked on trust.
+3. Serious — fatal for the word "pre-registered," not for the mathematical point.
+4. Fix: hash sections 1–9 in a separate file *before* running section 6; record that hash in file 14 with a timestamp; or drop "pre-registered" and present the crossing carve-out as a derivable corollary, which needs no timing claim at all.
+
+---
+
+**Finding 2 — Change 2's expectation is a theorem of the design, not a risky prediction; its fulfilment is then used as support for the theory it was deduced from.**
+
+> "So C, which builds from sensory defects, is expected not to build the crossing rule, because there are no defects from crossings; only same-target collisions (things would land on one cell) produce visible defects. This is Derivation 2 in the construction setting: the constructor should build exactly the kinds its contract can see."
+
+1. Claim attacked: that the expected non-construction of the crossing rule is a predictive test of Derivation 2.
+2. Why it fails: given occupancy-only sensation and distinct positions, bounce and pass-through induce identical occupancy fields at every step — so C *cannot* acquire a crossing defect. The only failure mode is a bug (identity leaking into records). A prediction whose sole failure mode is "the code is broken" is a manipulation check with zero confirmatory value. Worse, the corollary is deduced from Derivation 2 and then exhibited as evidence for it. The live tests of Derivation 2 are S4/M5/M6, not F3.
+3. Serious for the epistemic framing; the carve-out itself is required and correct.
+4. Fix: label F3 explicitly as a consistency check with no confirmatory weight, and state that Derivation 2 stands or falls on the scramble and recoding tests.
+
+---
+
+**Finding 3 — Change 2 reclassifies a Fixed outcome and adds a measurement, and this is permitted only because the freeze point is post-data.**
+
+> "S3's threshold applies to pairs with no crossing after the change step; pairs with a post-change crossing are reported separately as F3 — the invisible law"
+
+> "Not permitted after freezing: changing anything fixed; adding a measurement; reclassifying an outcome."
+
+1. Claim attacked: that section 10's freeze discipline protects the outcomes.
+2. Why it fails: S3 as written in section 9 applies to "collision-containing pairs." Change 2 moves a class of pairs out of S3 into a new category expected to fail. That is outcome reclassification and measurement addition by another name. It survives only because freezing has not happened — but freezing happens after the checks. The protocol therefore protects nothing exactly where protection matters.
+3. Serious.
+4. Fix: freeze sections 7–9 *before* section 6; route any carve-out through a logged amendment against a pre-amendment hash; or restore S3 to all collision-containing pairs and report the crossing-subset failure as a deviation from prediction rather than a pre-registered exemption.
+
+---
+
+**Finding 4 — Change 4 is a moved goalpost: the threshold's domain was renamed after the statistic failed.**
+
+> "As first written it applied a 0.1 margin to any G0 architecture on collision steps. The best G0 architecture on collision steps turned out to be the lookup table at 0.819 (hand-built rules: 0.906; ceiling: 0.923) — a memoriser of local patterns, not machinery. The margin was meant for machinery."
+
+1. Claim attacked: that the split is a fair restatement rather than a rescue.
+2. Why it fails: the pre-existing operationalisation was "any G0 architecture." The lookup is a G0 architecture, and 0.819 vs 0.906 is a gap of 0.087 — the check failed. "Machinery" is defined nowhere in sections 1–6; it is introduced here, after the number, to exclude the winner by name. The sentence itself concedes the re-specification was driven by the result. The test of a fair restatement is whether it would have been proposed had the lookup scored 0.5. It would not have been.
+3. Fatal for the closedness claim as stated.
+4. Fix: either keep the original check and report that G0 is *not* closed to the law's visible effects (downgrading to "G0 contains no pairwise machinery"), or pre-define machinery operationally — e.g. best-of-G0 must pass M3's translated-edit test on the collision world — and decide closure by that criterion applied to the lookup before any threshold is set.
+
+---
+
+**Finding 5 — The post-split check is unfalsifiable: the structural part tests a design assumption, and the overall part is diluted to a near-guaranteed pass.**
+
+> "The check now has a structural part (slot-only G0 on collision steps) and an overall part (any G0, all steps); the lookup's collision figure is reported as is."
+
+> "Structural: the best slot-only architecture in G0 is below A0 + hand-built rules on collision steps by at least 0.1 — no G0 machinery can do what a pairwise rule does."
+
+1. Claim attacked: that "both parts pass" is an informative result.
+2. Why it fails: slot-only architectures have, by section 2's construction, no access to the other slot's state; scoring them on collision steps tests the setup, not a hypothesis. A0 alone is 0.352, best slot-only 0.366, hand-built 0.906 — the structural part passes by 0.54 against a 0.1 margin and cannot fail. The overall part mixes in non-collision steps, where hand-built's advantage is absent, shrinking the gap by the collision-step fraction: with a 0.087 collision-step gap and collisions at fraction *f*, the overall gap is ≈0.087·*f* ≪ 0.1 for any plausible *f*. The split inverts the check's informativeness: the part that can fail is the part that failed.
+3. Fatal — the closedness check no longer tests closure.
+4. Fix: report the overall figures and the collision-step fraction; restore collision-step closure as the load-bearing criterion over *any* G0 architecture; if the lookup is excluded, exclude it by a pre-stated testable criterion, not by category.
+
+---
+
+**Finding 6 — The 0.1 margin discarded in Change 4 is the same scale on which S1's entire "needed" claim rests, and S1 has no margin at all.**
+
+> "S1 — needed. A0+C > best-of-G0 on collision steps. The closed grammar could not do it; extending it did."
+
+1. Claim attacked: the calibration consistency between the closedness check and S1.
+2. Why it fails: best-of-G0 is the lookup at 0.819. A0+C's realistic collision-step score is bounded by the 0.923 ceiling and loses nothing to crossings (they are field-invisible), so S1's effect is a gap of roughly 0.1 over a 0.82 baseline, with a bare ">". If 0.087 was within memorisation noise for the closedness check, it is within noise for S1. The document removes the 0.1 margin where it failed and omits a margin where it is needed. Relatedly, K3's sink threshold is 0.7 × 0.923 = 0.646, which sits *below* the lookup's 0.819 — so K3 can essentially only fire if C is worse than a G0 memoriser; it is a sink that cannot sink.
+3. Serious.
+4. Fix: give S1 an explicit margin justified by the same noise reasoning used to dismiss the closedness margin, state the expected A0+C collision-step figure, and reframe "needed" as needed for the kind-signature (M3) rather than for collision-step fidelity — which is the claim the lookup leaves standing.
+
+---
+
+**Finding 7 — The reader cannot tell whether 0.819 predates or postdates Change 3's redefinition of the world.**
+
+> "The best G0 architecture on collision steps turned out to be the lookup table at 0.819 (hand-built rules: 0.906; ceiling: 0.923)"
+
+1. Claim attacked: the traceability of the numbers justifying the split.
+2. Why it fails: Change 3 redefined walls and absorbed a 16%-of-collision-events edge case after a section-6 check. The hand-built and ceiling figures look post-Change-3, but the lookup's 0.819 is not dated. If it is an old-world figure, the split may be neutralising a stale failure; if new-world, the failure is live and the split is a rescue of a real result. The run order is not stated.
+3. Serious (reproducibility).
+4. Fix: state per number which world definition produced it, confirm the closedness check was re-run on the redefined world, and give seed/configuration counts.
+
+---
+
+**Finding 8 — The hand-built reference (0.906) is below the stated ceiling (0.923) with no explanation, yet every threshold is calibrated against these two figures.**
+
+> "Hand-build the two collision rules in the language, add them to A0, and confirm fidelity on collision-type steps is at or near the sensory ceiling for those steps."
+
+1. Claim attacked: the adequacy of the reference implementation used to set margins.
+2. Why it fails: if the hand-built rules express the law, they should reach the ceiling on collision steps. A 0.017 shortfall is unaccounted for. S3 (0.9), K3 (0.7×ceiling) and the closedness margins are all set relative to these numbers, so an unexplained gap between the reference and the ceiling propagates into every threshold.
+3. Serious.
+4. Fix: account for the 0.906 vs 0.923 gap before freezing (scoring from time point 2? residual edge cases? the definition of "ceiling"?); if the ceiling is unattainable by construction, say so and recalibrate thresholds against the hand-built figure.
+
+---
+
+**Finding 9 — Change 2's stated rationale is wrong about C's input space, and the error generalises to phase 2.**
+
+> "So C, which builds from sensory defects, is expected not to build the crossing rule, because there are no defects from crossings"
+
+> "same sensory field (occupancy, no identity, no velocity)"
+
+> "collect defect records V = {(slot state before the step, predicted field, true field)}"
+
+> "(A wall hit is v_i != w_i, so phase 2's law is expressible without constants.)"
+
+1. Claim attacked: that crossings are excluded because they are "sensorily invisible" and that C "builds from sensory defects."
+2. Why it fails: the sensory field excludes velocity, but C's records contain the slot state, which includes velocity (conditions are scored over c, v, n, w). So the crossing *precondition* (adjacency + approach) is fully available to C; only the crossing *outcome difference* is absent, because it is invisible in the field. The operative reason C will not build the crossing rule is that crossings generate no defect records — indeed the crossing condition scores negatively, being true on non-defect records. The conclusion survives, but the stated reason does not, and it mispredicts phase 2: S7 expects C to build a wall rule whose condition is `v_i != w_i`, i.e. velocity-conditioned — impossible under the "builds from sensory defects" characterisation.
+3. Serious (the load-bearing justification for F3 is mis-stated).
+4. Fix: state C's actual input space (slot state including velocity, plus predicted and true fields), drop "sensory" from the description of C's inputs or restrict it to the field columns, and re-derive F3 from field-level equivalence of bounce and pass-through rather than from sensory invisibility.
+
+---
+
+**Finding 10 — S4's scramble may be near-identity, making its 0.1 margin unachievable for reasons of test construction.**
+
+> "Scrambled-V construction is worse than unscrambled on collision steps by at least 0.1"
+
+> "Give C the exposure half's defect records with the true-field column permuted among the V records (same states, same number of defects, same aggregate; wrong pairings)."
+
+1. Claim attacked: that S4 is a live test.
+2. Why it fails: condition induction scores conditions by V/N membership only and never reads the true field; only action-solving does. If the exposure half's V records carry near-homogeneous true occupancy fields — plausible for same-target collisions on a 6-cell line, which differ only in *which* cells remain occupied — the permutation is near-identity and the chosen action barely changes, so S4 fails by construction rather than by provenance. If the true fields are all distinct the test is live. The document does not report the column's diversity.
+3. Minor, potentially serious for S4.
+4. Fix: pre-check and report the number of distinct true-field values among V records and the effective permutation distance; if diversity is low, permute across a genuinely varied quantity (e.g. across both V and N, or across collision subtypes) and re-set the margin.
+
+---
+
+**Finding 11 — F3 is filed as a "finding either way" but is directional and entailed.**
+
+> "F3 — the invisible law, and are expected to fail M3 for A0+C while passing for A0 + hand-built rules."
+
+1. Claim attacked: F3's classification.
+2. Why it fails: "Findings either way" should be informative under both outcomes; F3's expected branch is deduced (Finding 2) and its unexpected branch would signal a bug. It is a one-sided manipulation check in the wrong list.
+3. Minor.
+4. Fix: move F3 to a "manipulation checks" list and state that only its unexpected branch is informative.
+
+---
+
+**The principled line.** It is not temporal. A change is legitimate if it is *entailed by the design's pre-existing commitments with the results column blanked* — derivable from the world and contract as written, without reference to any observed statistic — and if it *weakens* the author's own hypothesis. Change 2 passes the entailment test (bounce/pass-through equivalence is a theorem of occupancy-only sensation) and passes the weakening test (A0+C is now predicted to fail M3 on a whole class of pairs). It fails the riskiness test, which is why it is a carve-out rather than a prediction. Change 4 fails entailment outright: "machinery" existed nowhere in sections 1–6, and the slot-only/any-G0 split appears only after 0.819 arrived; it also *strengthens* the hypothesis by deleting a falsifier, and its revised criteria cannot fail (Finding 5). The cleanest separator: blank out every number in the document and ask whether each change would still have been proposed. Change 2 would; Change 4 would not — and the honest repair for Change 4 is not the split but accepting what the numbers show: G0 is closed to pairwise *machinery* and open to the law's *visible effects* via memorisation — which is the same phenomenon the experiment's own S5 concedes one level up, where B reaches C's fidelity by selection. That result belongs in the argument, not in a quarantine.

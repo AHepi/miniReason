@@ -1,0 +1,166 @@
+====================================================================================================
+B1_design_confounds | atria | sample 0 | finish stop | 27822 chars | error None
+====================================================================================================
+## Direct answers to your four questions
+
+**Q1 — Is H_neutral neutral, or merely lacking separating events?** It is the latter, and by construction: §2.7 *defines* neutrality as "nothing in its content distinguishes a thing-tracker from a cell-tracker." Worse, the tie is guaranteed by the grammar, not the world: with exactly one always-visible thing, every unconfirmed slot is re-bound/corrected by the reconciliation clause, so τ can never determine a prediction. The only non-analytic test on H_neutral was the sinking condition (does the *task itself* force persistence?), and it did not fire.
+
+**Q2 — Does "the τ family ties exactly" establish "persistence is not selected for"?** No. It establishes that this fitness function *cannot see* τ on this content. The paper says this itself in §7.2/§7.3 but forgets it in the headline and in §6: a tie is not "absence of expression" under point 3, it is "expression undetermined." H_neutral cannot distinguish the diagnosis from the rival at all; only H_full's unique selection of τ=∞ does work.
+
+**Q3 — Is the index split a real generalisation test?** Half a test. It holds out *initial configurations*, not sensory patterns; lookup keys overlap freely across halves, and the design's own diagnostic (0.820 → 0.656) shows the split removes only part of the memorisation advantage. The sound generalisation axis is change-type novelty in M2 (occlusion absent from three training histories) — a different thing, which the rhetoric "instances not seen — what selection actually acts on" conflates.
+
+**Q4 — Does the ceiling do any work?** None. It is in-sample (labels of the half it is scored on), therefore unachievable by any generalising predictor by construction; the single threshold built on it (0.95×) was removed at exactly the moment the corrected ceiling showed the grammar falling short (0.801 vs 0.864); the replacement adequacy test is a within-grammar ordering that cannot detect grammar inadequacy; and the "% of ceiling" column survives in the results as pure rhetoric.
+
+---
+
+## Findings
+
+**1. "Neutrality" is analytic, not empirical.**
+Claim attacked: §2.7 — "H_neutral is the kind-neutral history: one thing, never occluded, no crossings — nothing in its content distinguishes a thing-tracker from a cell-tracker"; and §4 — "On H_neutral, the best architecture for every persistence value ties (within 0.01): the history cannot tell a thing-tracker from a cell-tracker."
+Why it fails: the second sentence is a restatement of the first, and both are true by construction. With one always-visible thing, a slot whose predicted cell is wrong is unconfirmed, and the reconciliation clause re-binds "the nearest unconfirmed slot within distance r" — so the slot is corrected regardless of τ. τ only governs how long an unconfirmed slot survives when *no* occupied cell can re-bind it, which in a one-thing world never happens. The tie is a theorem of world+grammar, not a finding.
+Severity: serious. The H_neutral arm is presented as half of the answer ("A world where nothing is ever hidden did not select for persistence at all") when it carries no empirical content.
+Fix: report the tie as a consistency check, and state that H_neutral's only empirical test was the sinking condition (which did not fire). Drop "neutrality" as a label; call it "τ-inert by construction."
+
+**2. The τ tie is equivocal between "not selected for" and "invisible to this fitness function," and the paper takes both readings at once.**
+Claim attacked: §6 — "✅ On H_neutral, the best architecture for every persistence value ties (within 0.01). *They tie exactly.*" classified under "Supports the diagnosis (point 3)"; versus §7.2 — "Prediction fitness is a coarse signal for kind; component-fidelity is sharp" and §7.3 — "history did not select between them; which one you got was luck."
+Why it fails: point 3 says history determines *which* kind becomes expressed. A four-way tie is not a determination; it is a failure to determine. §7.2/7.3 concede the fitness function cannot see the difference, then §6 counts that same invisibility as support. Under the rival (kinds are prior), a tie is equally predicted.
+Severity: serious.
+Fix: classify the H_neutral tie as "null w.r.t. the rivalry," and let only H_full's *unique* selection of τ=∞ support point 3.
+
+**3. H_neutral is not neutral — it selects strictly on r and j.**
+Claim attacked: §2.7's "nothing in its content distinguishes a thing-tracker from a cell-tracker"; §2 results — the H_neutral selected set is "12: slots ∈ {1,2,3} × τ ∈ {0, 2, 5, ∞}, all r=5, all *j*=yes."
+Why it fails: r=5 and j=yes are *required*, so the content does distinguish architectures on two axes. `displace` moves a thing up to five cells, so r=2 loses; a teleport must preserve velocity, so j=no loses. The world is τ-neutral only.
+Severity: minor, but it inflates the "neutral world" rhetoric.
+Fix: say "τ-neutral" everywhere; report r and j selection on H_neutral as a finding in its own right.
+
+**4. The purest cell-tracker is strictly worse on the "neutral" world, and its exclusion rests on an unverified mechanism.**
+Claim attacked: §5 — "(`rebind` is reported beside them but is not in the check: it differs from τ = 0 in re-inferring velocity from scratch every step, which is a velocity-memory difference, not a persistence difference.)"; and change 19 — "rebind's deficit is that it cannot keep velocity through a teleport, which is not the kind under test."
+Why it fails: §2.6 itself calls `rebind` "(A cell-tracker.)" — it is the pole of the very axis under test, and it is 0.026 below the tie on H_neutral. That is direct evidence H_neutral is *not* indifferent to the cell-tracker/think-tracker distinction. The dismissal asserts where rebind's losses occur without measuring it; M4 was designed for exactly this and is never reported (see 10).
+Severity: serious. The control's subject set was narrowed after a control run, and the narrowing removes the disconfirming architecture.
+Fix: report rebind's H_neutral fitness and its per-step failure locus (M4); if its losses are concentrated at teleport steps, the exclusion becomes an argued scope limit, not an assertion.
+
+**5. The M=1 portion of the H_neutral tie is an artifact of the re-bind-unconfirmed clause.**
+Claim attacked: §2.6 — "Each occupied cell not matched by a confirmed slot re-binds the nearest unconfirmed slot within distance r, else binds a free slot"; §2 results, H_neutral selected set includes slots=1.
+Why it fails: with one slot and τ=∞, a displaced thing leaves the sole slot unconfirmed; it survives only because that same clause re-binds (corrects) it. A grammar that bound only *free* slots would let τ=∞ with M=1 drift permanently wrong on H_neutral and break the tie. So for the M=1 members of the selected set, the tie is grammar-relative in a load-bearing way.
+Severity: minor-to-serious (affects 3 of the 12 selected architectures).
+Fix: report the tie stratified by slot count, and note the dependency; or add a "no-correction" variant to show the tie is not an artifact.
+
+**6. The one-paragraph answer gives H_neutral evidential weight it does not have.**
+Claim attacked: §"The answer in one paragraph" — "A world where nothing is ever hidden did not select for persistence at all — trackers that forget and trackers that never forget tied to the last decimal."
+Why it fails: per 1–2, this sentence reports a constructional guarantee. The evidential content of H_neutral is the *non-firing* of the sinking condition (the prediction task does not force persistence), which is a different and weaker claim.
+Severity: serious (it is the document's opening claim).
+Fix: lead with H_full/H_passive/H_kinematic; state H_neutral's contribution as the null on task-forcing only.
+
+**7. The rival's "faithful predictor" is never operationalised, and the design contains a stronger refutation it reports as a defect.**
+Claim attacked: §1 — "**The rival (the correspondence view):** kinds are prior. A faithful predictor has kind-preserving structure regardless of history, because kinds are there to be matched."; and change 17 — "on train = test the *k* = 3 lookup scored 0.820 on H_full and 0.656 on held-out configurations, while the tracker scored 0.801 on both. The lookup was memorising 2,398 local patterns."
+Why it fails: "faithful" is ambiguous between in-sample and out-of-sample, and the ambiguity is decisive. Under the in-sample reading, the kind-free lookup (0.820) *beats* the thing-tracker (0.801) on the occluding world — i.e. the faithful predictor on H_full has no thing-kind at all, which refutes the rival far more directly than anything in §2–§4. The paper reports this number only as a methodological embarrassment about memorisation. Under the out-of-sample reading the rival loses too (0.674 vs 0.801) — so the rivalry is never stated precisely enough to be at issue.
+Severity: serious. The central comparison is framed against a claim that is never pinned down, and the sharpest available result is buried.
+Fix: state the rival as "any predictor that is fitness-maximal *under the generalisation protocol* has kind structure"; then note the in-sample lookup as the limiting counterexample that forces the protocol clause. Also reconcile 0.656 (change 17) with 0.674 (§2) — presumably different k, but the reader cannot tell.
+
+**8. The sensory ceiling does no work, and the one threshold built on it was removed when it would have fired.**
+Claim attacked: §2.5 — "It is an in-sample bound (it has seen the prefixes it predicts) and is reported for scale, not as a pass/fail threshold"; change 18 — "The 0.95-of-ceiling adequacy threshold is dropped. It was a guess, and the diagnosis showed the ceiling is an in-sample bound"; §1 results table reporting "98% of ceiling," "88%," etc.
+Why it fails: arithmetic. H_full ceiling 0.909 × 0.95 = 0.864; best slot-only on H_full is 0.8009. The pre-registered "Underpowered" condition *did* observe its firing, and the criterion was deleted before the frozen run rather than the attempt being recorded as failed. The replacement ("Adequacy: best slot-only > best lookup-only") is a within-grammar ordering that cannot detect a too-weak grammar in principle, so it is near-unfalsifiable. Meanwhile "% of ceiling" is retained in the headline table with no caveat, inviting 88–98% to be read as near-optimality.
+Severity: serious. The experiment's only absolute adequacy check was replaced by one that cannot fail informatively, at the point where the data failed it.
+Fix: either reinstate an *out-of-sample* adequacy bar (e.g. a ceiling computed on the exposure half and applied to the evaluation half, or a held-out-change-type ceiling) and report whether the grammar passes, or explicitly record that absolute adequacy is untested and drop all "% of ceiling" figures.
+
+**9. The stated reason for dropping the threshold is internally inconsistent.**
+Claim attacked: change 18 — "the tracker's gap to it is the change step itself and co-located starts, which no sensory predictor without a thing-count prior can see."
+Why it fails: the ceiling *is* a sensory predictor without a thing-count prior, and it does see them — that is what 0.909 means. The defensible version of the sentence is "no sensory predictor that must *generalise* can be right at an unannounced change step," which is a different claim and would have justified replacing (not deleting) the bar.
+Severity: serious (it is the load-bearing justification for the only removed check).
+Fix: rewrite as the generalisation argument and, per 8, supply a fair out-of-sample bound.
+
+**10. M4 is declared, computed, and never reported — and it is the measurement the post-hoc claims need.**
+Claim attacked: §3 — "**M4 — failure structure**: for every architecture on every history, which change types fail on M2"; §8 step 4 — "Run the exhaustive table on all four histories, M2 and M4 for all…"; the results document contains no M4.
+Why it fails: §7.1's causal story ("a big mismatch is usually a slot that has lost track across a crossing") and change 19's rebind dismissal are both mechanism claims that only M4 can ground. The frozen design promises M4; the results silently omit it.
+Severity: serious.
+Fix: publish the M4 table, or state that it was computed and is in 12c, and use it to adjudicate 4 and the §7.1 mechanism.
+
+**11. Table 4 misattributes an architecture to H_kinematic.**
+Claim attacked: §4 results table, row "slots=2, **τ=0**, r=5, *j*=no *(selected on H_passive, H_kinematic)*"; §2 results, H_kinematic selected set = "1: slots=3, τ=0, r=5, *j*=no."
+Why it fails: H_kinematic selected exactly one architecture and it has **three** slots; the M3 row shown is a two-slot architecture that H_kinematic did not select. The claim immediately following — "The architectures H_passive and H_kinematic selected fail the thing-signature test on essentially every occlusion" — is verified for a H_passive winner and merely asserted for the H_kinematic winner, whose slot count changes the reconciliation.
+Severity: serious.
+Fix: add the M3 row for slots=3, τ=0, r=5, j=no (it was computed; 51 architectures went through M3).
+
+**12. The uniqueness claim in §4 is unsupported by the displayed data.**
+Claim attacked: §4 — "The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on."
+Why it fails: the table shows 6 of 51 slot-only architectures, all 2-slot. Three-slot architectures (including the H_passive/H_kinematic winners) have no rows, and a free third slot changes what "bound" and "passing" mean. "The only one" is a claim over 51 architectures evidenced by 6.
+Severity: serious.
+Fix: show the full 51-row M3 table, or at minimum all 3-slot architectures and all architectures that achieve ≥0.95 given-bound.
+
+**13. M3's "given bound" conditioning is τ-dependent, so cross-τ M3 numbers are not like-for-like.**
+Claim attacked: §4 results table — τ=∞: 816 unbound, 1.000 given bound; τ=0: 624 unbound, 0.837 given bound; and the text "Unbound = the predictor was not tracking both things exactly at step 2 (mostly two things starting in one cell…)."
+Why it fails: co-located starts are architecture-independent (≈36/171 configs ≈ 21%, matching 816), so the 192-pair gap between 816 and 624 is *architecture-dependent*: τ=0 recovers from pre-step-3 crossings by dropping slots, τ>0 does not. So τ=∞'s 1.000 is computed over a set that excludes ~192 harder pairs that τ=0 was scored on. The table proves the confound internally: on all-pairs τ=0 (0.710) beats τ=2 (0.676), while on given-bound τ=0 (0.837) loses to τ=2 (0.844) — the two rankings disagree because the denominators differ.
+Severity: serious. The qualitative conclusion (τ=0 slots stop tracking hidden things) survives on mechanism, but the 1.000 / 0.02 contrast is inflated.
+Fix: recompute M3 on the intersection of pairs bound by *all* architectures, and report both that and the per-architecture bound-set sizes.
+
+**14. The exposure/evaluation split holds out configurations, not sensory patterns.**
+Claim attacked: §2.5 — "Configurations are split by index: even-index configurations are the **exposure** half, odd-index the **evaluation** half… This is fitness in the same environment on instances not seen — what selection actually acts on."
+Why it fails: the lookup memorises sensory-prefix → occupancy mappings, and deterministic dynamics with crossing things mean evaluation trajectories re-enter prefix regions seen in exposure. The design's own numbers show the split has only partial teeth: 0.820 (train=test) → 0.656 (held out) for k=3, i.e. roughly half the memorisation advantage survives. "Instances not seen" is true of initial configurations, not of the table's keys. And "what selection actually acts on" conflates a methodological device with an object-level claim — real selection acts on the lived stream, exposure included.
+Severity: serious for the rhetoric, minor for the ordering result (lookup-only is never selected on any history, so the slot>lookup conclusion is robust).
+Fix: report the sensory-prefix overlap between halves (fraction of evaluation keys seen in exposure), and/or add a prefix-disjoint split as a robustness check; drop the "what selection actually acts on" sentence.
+
+**15. The parameter that defines the split is not in the fixed/hashed list.**
+Claim attacked: §7 — "**Free, fixed in code and hashed:** tie-breaking order in the lookup table's last-writer-wins; slot iteration order in reconciliation; the exact mutation operator in 2.9."
+Why it fails: the even/odd split is defined by the *configuration enumeration order*, which determines every fitness figure in the paper and is neither declared fixed nor hashed. A different enumeration permutes which architectures are in which half.
+Severity: serious for reproducibility (the document's entire warrant is pre-freeze completeness).
+Fix: add the enumeration order to §7 and record it in the fingerprint, or define the split by a canonical property (e.g. sorted (position,velocity) pairs) rather than list index.
+
+**16. The architecture space is not reconstructable from the frozen document, which also contains a contradictory count.**
+Claim attacked: §2.6 — "Seventeen read-in rules. With lookup on/off × *k* × slot count × rule, there are **208 distinct architectures**"; §9.6 — "Primary selection is exhaustive, not evolutionary. **112 architectures** can be enumerated"; §9.14 — "Grammar now 208 architectures."
+Why it fails: the stated cross-product does not yield 208 — lookup-off gives 3 slot counts × 17 rules = 51 (which matches "51 slot-only architectures" in the results, so that part is right), and lookup-on with k∈{1,2,3} × M∈{0,1,2,3} × 17 gives 204, i.e. 255 total, or 207 after collapsing the M=0 rule-duplicates. Neither is 208, and §9.6's "112" is stale and was never corrected in a document that claims three rounds of revision.
+Severity: serious (reproducibility). The run is presumably correct; the *specification* is not.
+Fix: give the exact enumeration rule (which combinations are invalid or deduplicated) and correct §9.6.
+
+**17. `swap` is a no-op presented as a test.**
+Claim attacked: §2.3 — "swap | 1 | 0 | exchange the two things' identities; the sensory field is unchanged at every step"; §3 results table's swap column (0.974 / 0.968); §4 M3 — "swap → exchange the binding"; and the summary "had components that respond to every allowed change exactly as a thing does."
+Why it fails: swap leaves both the sensory field and true occupancy identical to identity, so no M2 predictor can fail it — its column is a copy of the identity column by construction. In M3, exchanging bindings of two slots that both match their things is a permutation of an equal set, trivially satisfied. So one of the 24 changes contributes 171 sequences that are exact duplicates of the identity sequences and carries no information.
+Severity: minor (inflates "all 24 changes" and "every allowed change").
+Fix: either drop swap from M2/M3 reporting with a note that it is uninformative by construction, or make swap detectable (e.g. things with distinct signatures) if the intent was to test identity tracking.
+
+**18. "Persistence is selected against" is downstream of two unstated grammar choices.**
+Claim attacked: §7.4 — "With two things crossing and sharing cells, a slot that persists through non-confirmation is usually a slot that has lost its thing, and dropping it is right. So persistence is not a free good that history merely fails to reward; in some worlds it costs."
+Why it fails: two design choices manufacture that cost. (a) Prediction is "bitwise OR of the pathways in use," with no gate on confirmation — so an unconfirmed lost slot's wrong cell is OR-ed in as a false positive. Gating output on confirmation would remove most of the cost. (b) Reconciliation is greedy and iteration-order-dependent (§7 lists slot iteration order as free), which is what makes slots *lose* their things at crossings at all; an optimal assignment would eliminate many of the lost-slot cases that make τ>0 lose on H_passive/H_kinematic. The finding is real under this grammar; the grammar is not neutral.
+Severity: serious. §7.4 is presented as a discovery about worlds, not about the OR/greedy choices.
+Fix: run one variant with confirmation-gated output and one with optimal slot–cell matching, and report whether τ=0 still strictly wins on H_passive/H_kinematic.
+
+**19. §7.2 misstates its own finding, and substitutes for a pre-registered outcome that did not fire.**
+Claim attacked: §7.2 — "Prediction fitness is a coarse signal for kind; component-fidelity is sharp. On H_full, τ=5 and τ=∞ are separated by 0.003 in prediction fitness (0.798 vs 0.801)… This is Derivation 2 of file 10 in action"; and §6 — "**Fidelity and kind come apart** — did not fire as stated… *But see 7.2.*"
+Why it fails: the contract *does* separate τ=5 from τ=∞ — §2 shows τ=∞ is the unique maximum on H_full. So fitness is not blind to the difference; it is merely weakly sensitive. Derivation 2, as quoted in §1, is about "two components no admitted change separates are one kind at that contract," and here the contract separates them. The pre-registered dissociation (M2-best ≠ M3-best) genuinely did not fire, and 7.2 is a different, weaker claim offered under the same heading.
+Severity: serious.
+Fix: restate 7.2 as an effect-size observation (0.003 vs 0.39), drop the Derivation-2 gloss, and leave the pre-registered dissociation marked as not fired.
+
+**20. The evolutionary secondary cannot support "no bias," and §5 sits in tension with §7.3.**
+Claim attacked: §5 — "H_neutral | τ = 2, ∞, 2, 5, 2, 5 … **no bias toward or away from persistence**"; §7.3 — "the evolutionary seeds landed on τ = 2, 5, ∞ by drift… which one you got was luck."
+Why it fails: τ=0 appears in 0 of 6 seeds. That is consistent with neutral drift ((3/4)^6 ≈ 0.18), but 6 seeds cannot distinguish drift from a weak bias *toward* persistence — and 0/6 is precisely the direction such a bias predicts. §5's "no bias" and §7.3's "luck" are compatible in principle (no selective bias, drift decides), but 7.3's "luck" needs a demonstrated near-uniform draw over the tie, which 6 seeds do not provide. Separately, the pre-registered search-bias outcome ("kind-structure can be expressed by the shape of the search alone, with no pressure from content") was untestable as written on H_neutral: lookup-only is strictly submaximal there, so convergence on slots is forced by fitness, not by search shape.
+Severity: minor-to-serious. The secondary measures nothing about reachability in any interesting sense (208 architectures, elitism, plateaus) and its one qualitative use in §7.3 is under-powered.
+Fix: run ≥50 seeds and report the distribution over the 12 tied architectures; if it is uniform, "luck" is supported and "no bias" is quantified. Drop the reachability claim or move to a space where reachability can actually bite.
+
+**21. §7.3's "generalises perfectly to occlusion" is the trivial occlusion test.**
+Claim attacked: §7.3 — "A thinker from that world that happened to drift to τ=∞ generalises perfectly to occlusion (1.000) though it never saw one; one that drifted to τ=0 scores 0.535."
+Why it fails: the 1.000 is one-thing occlusion, where a never-forgetting slot cannot fail under true-occupancy scoring — the hidden thing's predicted cell is its true cell, so the OR emits a correct 1. M2 is defined as "the full contract of **its world**," so no H_neutral-trained architecture is ever tested on two-thing occlusion, which is the hard case (H_full's τ=∞ manages only 0.941 there, *with* occlusion in training). The pre-registered cross-world follow-up (7-cell / 3-thing) was gated on a condition that did not fire and was never run as a positive control.
+Severity: serious (§7.3 is one of the two unregistered findings the paper foregrounds).
+Fix: evaluate H_neutral-selected architectures on the 2-thing occlusion contract and on the 7-cell / 3-thing worlds; report those numbers instead of the within-world, single-thing ceiling.
+
+**22. The single most decisive number for the central claim was computed and not shown.**
+Claim attacked: §3 — "**M2** — fitness on the evaluation half of the full contract of its world, after the same exposure, **per architecture**, broken down by change type"; §3 results table shows M2 only for *selected* architectures.
+Why it fails: the claim "the thing-tracker / cell-tracker distinction is selected for only when the history contains occlusion" needs, for H_passive and H_kinematic, the M2-on-full-contract of *each* τ value — above all, how a τ=∞ architecture trained without occlusion does on occlusion. Table 3 supplies that row only for H_neutral. Without it, the result is "τ=0 was selected and fails occlusion," which is weaker and partly trivial (any unexposed architecture fails what it never saw).
+Severity: serious (missing display, not missing data).
+Fix: add the full τ × history M2 matrix; it exists in 12c.
+
+**23. Load-bearing details are left unspecified or unlisted.**
+Claim attacked: §2.5 — "Fitness is agreement with true occupancy, scored at time points 2–9"; §2.6's drop timing — "it is dropped when its count exceeds τ"; §7's fixed/free list.
+Why it fails: (a) "agreement" is not defined — per-field exact match vs per-bit agreement changes what an "exact tie" means and how the 0.01 threshold bites. (b) Whether the unconfirmed-slot count is incremented before or after the re-bind attempt determines whether r matters at all (it is the reason r=5 is required on H_neutral: the slot must be within r *before* it is dropped), yet this ordering is not in §7's fixed/hashed list.
+Severity: minor, but both are reproducibility gaps in a document whose method is exhaustive pre-specification.
+Fix: define the fitness aggregation; add the increment/drop ordering to §7.
+
+**24. The M3 verdict is conditional in a way the summary soft-pedals, and M3 is fully in-sample w.r.t. selection.**
+Claim attacked: §4 — "A slot architecture **has thing-kind** when this holds for every configuration and every change. Reported as a fraction"; §8 — "The thing-signature test could only be applied where the tracker had locked on (80% of pairs…)."
+Why it fails: two things. (a) M3 is run on all 4,104 pairs — the same pairs whose fitness *selected* the architecture — so the 1.000 is not a generalisation result; the design's generalisation discipline (evaluation half) applies to M1/M2 but not M3. (b) The binding at step 2 uses the true things' (cell, velocity) — an oracle binding — so M3 measures *maintenance* of identity under translated edits, not *construction* of identity. Combined with 13, "has thing-kind" is materially weaker than the phrase.
+Severity: serious for the headline, minor for the underlying observation.
+Fix: state M3 as "component fidelity given an oracle binding, on the selection instances"; add a held-out-contract or held-out-world M3 as the generalising version.
+
+**25. The adequacy control, as amended, cannot fail informatively — and §6's "adequacy passed" is therefore empty.**
+Claim attacked: §5 — "**Adequacy** (H_full): best slot-only > best lookup-only on the evaluation half"; §6 — "Underpowered — did not fire: adequacy passed before freezing."
+Why it fails: this is a comparison between two members of the same fixed grammar. If the entire grammar were too weak, slot-only could still beat lookup-only. Combined with 8 (the absolute bar deleted at the point of failure) and 7 (a kind-free in-sample predictor at 0.820 sits above the tracker's 0.801), the claim "the grammar is adequate" has no operational support left.
+Severity: serious.
+Fix: define adequacy against an out-of-sample bound, and report the grammar's absolute shortfall (0.801 vs 0.909 in-class) as a stated limitation rather than as a percentage.

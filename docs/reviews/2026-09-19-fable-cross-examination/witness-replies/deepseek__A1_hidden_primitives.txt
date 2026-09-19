@@ -1,0 +1,258 @@
+====================================================================================================
+A1_hidden_primitives | deepseek | sample 0 | finish stop | 17228 chars | error None
+====================================================================================================
+**Finding 1 — “active commitments” / “active component” is an undefined selector.**
+
+Quote: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda)\) from \(D\) to \(E\), and an identified set \(\Gamma\) of active commitments in \(E\).” Also: “For every active component \(k\) of \(E\) with anchor subnetwork \(\lambda(k)\subseteq D\)…”
+
+Attack: \(\Gamma\) and “active component” are not derived from \(\Theta\) or \(\mathcal N\). “Identified” by whom, and “active” under what criterion? If “active” means all components, it is redundant; if it means a selected subset, it smuggles the very relevance/commitment discrimination the semantics claims to derive. (F1) quantifies over active components, so the account condition depends on this hidden selection.
+
+Severity: serious.
+
+Fix: define active relative to \(C\) and \(\mathcal Q\)—e.g., \(k\) is active iff removing or replacing it can change \(\operatorname{Ans}_E\) on \(C\)—or declare \(\Gamma\) an index with explicit provenance and stop claiming it is derived.
+
+**Finding 2 — “declared scope” / “stated scope” is a record-keeping condition masquerading as a semantic condition.**
+
+Quote: “The contract \(C\) is a declared subset of the physically admitted edits, and every physically admitted edit excluded from \(C\) is excluded by a stated scope, not silently.”
+
+Attack: “stated scope” and “not silently” have no formal definition in the semantics. They are requirements on the modeller’s records and intentions. Non-vacuity is listed as a conjunct of \(\operatorname{Account}\), but this part cannot be checked from (O), (Q), (R), or \(\Theta\). It lets the semantics say an account is defective because an exclusion was not stated, even when the formal relations satisfy every equation.
+
+Severity: serious.
+
+Fix: formalize scope as an explicit index \(S\) with \(C\subseteq A\times B\) and \(C=C_{\text{phys}}\cap S\); put “stated/silent” only in the meta-record, not in \(\operatorname{Account}\).
+
+**Finding 3 — “nontrivial binding construction” and “nontrivial use respect” are the hidden creativity predicate.**
+
+Quote: “\(\operatorname{Build}_{\beta,\ell}(s,c,h,e)\) holds when an actual subhistory owned by \(s\) and delimited at \(e\) prepares a represented organization for explanatory use of \(c\), contains a nontrivial binding construction relevant to that use, and is not a composition of content-preserving transfers.” Also: “The repertoire \(R_{\beta,\ell}(s,\xi)\) is the set of contents deployable in some nontrivial use respect.”
+
+Attack: “nontrivial,” “binding construction,” and “relevant to that use” are undefined. These are exactly the terms doing the work of separating construction from selection and creativity from relay. They are not derived from \(\Theta\), \(\mathcal N\), \(C\), or \(\mathcal Q\). If “nontrivial” is left to the modeller, (G) and (EK) can be triggered or blocked by stipulation.
+
+Severity: fatal for the creativity claim.
+
+Fix: define binding as a new component whose footprint joins ports from distinct incoming carriers and whose relation is not a product of prior component relations; define nontrivial via non-factorizability under \(C\); define use relevance via the declared task \(U\) and \(\mathcal Q\).
+
+**Finding 4 — “content-preserving recoding” presupposes content identity.**
+
+Quote: “sends content-preserving recodings to the same transition, sends content changes to the changes specified by the operative deliberative rule…” Also: “is not a composition of content-preserving transfers.”
+
+Attack: To know a recoding preserves content, one already needs a notion of same content. But content is supposedly an organization plus contract-relative commitments, and representation is derived later via (R). No definition is given of what makes a recoding content-preserving. This smuggles semantic equivalence.
+
+Severity: serious.
+
+Fix: define a content-preserving recoding as a transport or equivariant map between organizations that is faithful on the same contract at the same grain, or replace the phrase with a purely structural condition such as “preserves the signature of every active component.”
+
+**Finding 5 — “grain” is an unconstrained truth-changing index.**
+
+Quote: “Grain \(\ell\), boundary \(\beta\), continuity \(\Omega\), and the contract \(C\) are declared indices. Every claim is relative to them; none is a predicate that could be true or false.” Also: “\(\operatorname{Org}_\ell(o)\): which organization a physical occurrence instantiates at a grain.”
+
+Attack: Grain is not a harmless index. It determines \(\operatorname{Org}_\ell(o)\), hence (R), kinds, representation, construction, and account claims. The document gives no physical constraints on admissible grains. A coarse grain can identify what a finer grain separates; a fine grain can separate what a coarse grain identifies. Calling it “declared” does not remove the hidden degree of freedom.
+
+Severity: serious.
+
+Fix: define admissible grains from \(\Theta\), e.g., as partitions/quotients stable under physically admitted edits, or require grain choice to carry its own provenance and prove results invariant or explicitly dependent on it.
+
+**Finding 6 — \(\operatorname{Org}_\ell(o)\) is a third primitive disguised inside the physical module.**
+
+Quote: “The one thing (R) takes from outside is \(\operatorname{Org}_\ell(o)\): which organization a physical occurrence instantiates at a grain. That is supplied by the physical module, not by the semantics.” Also in Part XIV: “The **physical module** \(\Theta\): substrate state spaces, attributes, admitted processes, controlled-action interpretation, resources, accuracy grades, and \(\operatorname{Org}_\ell\), the organization a physical occurrence instantiates at a grain.”
+
+Attack: \(\operatorname{Org}_\ell\) is an instantiation/representation-like mapping from a physical occurrence to an organization at a grain. Ordinary physics does not supply “which organization an occurrence instantiates.” Including it in \(\Theta\) does not make it physical; it hides a semantic primitive inside the physical primitive. The claim “the semantics has two primitives” then becomes false unless \(\operatorname{Org}_\ell\) is genuinely derived from substrate state spaces, which it is not.
+
+Severity: serious/fatal to the two-primitive claim.
+
+Fix: either derive \(\operatorname{Org}_\ell\) from \(\Theta\)’s state spaces and a formal definition of organization, or count it as a third primitive and stop claiming exactly two.
+
+**Finding 7 — “relevant” does explanatory work without definition.**
+
+Quote: “An explanation is a **question-relevant organization of dependencies**…” Also: “contains a nontrivial binding construction relevant to that use”; “the relevant capability unavailable.”
+
+Attack: “question-relevant” and “relevant” are not defined. Question fidelity (A) fixes answer equality under \(C\), but it does not by itself say which organization of dependencies is “relevant” to the question. The adjective imports a pre-theoretic explanatory or pragmatic relation.
+
+Severity: serious.
+
+Fix: replace “question-relevant” with the formal condition \(\operatorname{Account}(\mathcal E,p)\) or with a defined dependence of \(\operatorname{Ans}_E\) on selected components under \(C\); define “relevant to use” via the declared use task \(U\).
+
+**Finding 8 — “the obligation” makes the normative relation pervasive, not occasional.**
+
+Quote: “\(O_p\) is the set of obligations being addressed or protected.” Also: “For claimed obligations \(O\) and protected obligations \(P\), fixed for the comparison…”
+
+Attack: \(O_p\) appears in the definition of a question itself, and obligations appear in Repair and (EK). But Part XIV says the normative relation \(\mathcal N\) is a primitive only “when a question invokes one.” Every question carries \(O_p\), so either \(\mathcal N\) is invoked by every question—contradicting the “when invoked” framing—or “obligation” is being smuggled as a non-normative primitive.
+
+Severity: serious.
+
+Fix: make \(O_p\) optional and require explicit \(\mathcal N\)-invocation whenever it is nonempty, or derive obligations from \(\mathcal Q\) and declared aims; otherwise admit that normative obligation is primitive throughout.
+
+**Finding 9 — \(\operatorname{ProducedBy}\), \(\operatorname{ProducesVia}\), and \(\operatorname{Result}\) smuggle causal production.**
+
+Quote: “\(\operatorname{ProducedBy}(\Delta,\xi,\xi';O)\)” in (P). Also in (EK): “\(\operatorname{ProducesVia}(\Delta,c,o;\xi,\xi')\)” and “\(c\in\operatorname{Result}(\Delta)\).”
+
+Attack: These are causal/explanatory production relations: \(\Delta\) produced the repair; \(\Delta\) produces \(c\) via \(o\). They are not defined from \(\Theta\) or \(\mathcal N\). The document explicitly claims no predicate secretly means “is a cause” or “explains.” \(\operatorname{ProducedBy}\) and \(\operatorname{ProducesVia}\) are exactly such predicates.
+
+Severity: fatal/serious.
+
+Fix: define them in terms of physical histories/processes in \(\Theta\), or eliminate them and use the already-defined transport/account machinery. Define \(\operatorname{Result}(\Delta)\) explicitly as the set of contents/transports occurring in \(\Delta\).
+
+**Finding 10 — “owned” is an undefined agency/property predicate.**
+
+Quote: “an actual subhistory owned by \(s\) and delimited at \(e\)…” Also: “requires an owned retained realization or an owned, physically admitted, finite construction of one…” Also: “an owned enabling continuation.”
+
+Attack: “owned” is central to Build, Can, and Recursive capacity. It is never defined. It suggests possession, control, or proper attribution, none of which is derived from \(\Theta\) or \(\mathcal N\). A theorist’s description versus the system’s possession is asserted, but possession itself is a hidden primitive.
+
+Severity: serious.
+
+Fix: define owned as a physical invariant/control relation in \(\Theta\)—e.g., a process within \(s\)’s boundary and under \(s\)’s intervention repertoire—or admit it as primitive.
+
+**Finding 11 — Circularity: \(\operatorname{Rep}\) depends on \(\operatorname{Sel}/\operatorname{Con}\), but \(\operatorname{Sel}/\operatorname{Con}\) use “represents”/“represented target.”**
+
+Quote: “**Selected.** … No member of the history represents \(t\), \(H\), or the survival condition.” “**Constructed.** … in which \(t\), or the organization it targets, is available as a represented target.” Then: “\(\operatorname{Rep}_\ell(o,c)\iff\exists t\,[\operatorname{Faithful}_C(t:\operatorname{Org}_\ell(o)\to c)\land(\operatorname{Sel}(t)\lor\operatorname{Con}(t))]\).”
+
+Attack: \(\operatorname{Rep}\) is defined using \(\operatorname{Sel}\) and \(\operatorname{Con}\). But \(\operatorname{Sel}\) and \(\operatorname{Con}\) are defined using “represents” and “represented target.” That is a circle. The claim that representation is derived is not established.
+
+Severity: fatal.
+
+Fix: give non-representational definitions of \(\operatorname{Sel}\) and \(\operatorname{Con}\), e.g., in terms of absence of a transport from history components to \(t/H\)/survival condition, and presence of \(t\) as a component in the episode’s organization. Alternatively, introduce representation earlier and stratify the definitions.
+
+**Finding 12 — “declared” provenance depends on author/model, not physical history.**
+
+Quote: “**Declared.** Neither of the above. The transport is entered into the model by its author. Write \(\operatorname{Dec}(t)\).”
+
+Attack: “author” and “model” are not in \(\Theta\) or \(\mathcal N\). Part IV claims provenance is determined “by its history in the physical module,” but declared provenance is precisely the absence of such a physical history. It is a meta-linguistic annotation, not a physical provenance.
+
+Severity: serious.
+
+Fix: treat \(\operatorname{Dec}\) as a meta-annotation outside the object semantics, or define it formally as “no selected or constructed witness exists” and stop calling it a physical provenance.
+
+**Finding 13 — “survival condition requiring fidelity” hides a functional/normative assumption.**
+
+Quote: “**Selected.** There is a population \(\mathcal T\) of candidate transports, a variation operator \(\mu\) on \(\mathcal T\), a finite history \(H\subseteq C\) of edit–boundary pairs actually encountered, and a survival condition requiring fidelity on \(H\).”
+
+Attack: Biological or physical survival does not automatically require fidelity in the sense of (F1)/(F2). The semantics stipulates that the survival condition is fidelity-based. That is a hidden functional assumption. It also uses “fidelity” before it is formally defined in Part V.
+
+Severity: serious.
+
+Fix: define survival physically—persistence, reproduction, or resource maintenance—and then prove or postulate that it selects for fidelity under the environment; otherwise state the fidelity condition as an additional normative/functional primitive.
+
+**Finding 14 — “active route” uses undefined “operative result” and “applicable relations.”**
+
+Quote: “An **active route** is a connected subnetwork of actual occurrences joining a represented input to an operative result, whose components satisfy the applicable relations and which has nonconstant dependence on the represented distinction under the declared contrasts.”
+
+Attack: “represented input” and “represented distinction” use representation before it is defined; “operative result” and “applicable relations” are undefined. The route notion is therefore not derived.
+
+Severity: serious.
+
+Fix: define an active route as a subnetwork whose component relations satisfy (F1)/(F2) and whose removal changes the relevant answer under \(C\); define “operative result” as the \(\mathcal Q\)-output port.
+
+**Finding 15 — \(\operatorname{Lic}_j(u)\), \(\operatorname{Scope}_j(u)\), and \(\operatorname{Live}_j(d;u)\) are undefined epistemic/normative predicates.**
+
+Quote: “\(\operatorname{Usable}_j(u)\iff\operatorname{Lic}_j(u)\land\operatorname{Scope}_j(u)\land\forall d\in\operatorname{Prem}(u),\operatorname{Live}_j(d;u).\)”
+
+Attack: License, scope, and live premise are not defined from \(\Theta\) or \(\mathcal N\). They smuggle justification, applicability, and premise endorsement into the semantics while claiming standing is derived.
+
+Severity: serious.
+
+Fix: define them via receipts and explicit \(\mathcal N\)-invocation, or remove them until defined.
+
+**Finding 16 — “controlled-action interpretation” and “resources” in \(\Theta\) smuggle agency/normativity into physics.**
+
+Quote: “The **physical module** \(\Theta\): substrate state spaces, attributes, admitted processes, controlled-action interpretation, resources, accuracy grades…”
+
+Attack: “controlled-action” and “resources” are agentive/efficiency notions. If they are in the physical primitive, the semantics has packed agency and normative resource assessment into “physics.” If they are derived from \(\mathcal N\), then \(\mathcal N\) is invoked far more than “when a question invokes one.”
+
+Severity: serious.
+
+Fix: define control as a physical intervention repertoire and resources as physical constraints on tasks; or move them explicitly into the normative primitive.
+
+**Finding 17 — “observation” role is defined using “reporting.”**
+
+Quote: “A port is an **observation** when \(A\) contains an edit that alters the relation reporting it without altering what it reports.”
+
+Attack: “reporting” and “what it reports” presuppose representation. Part II claims roles are derived from admitted edits alone, but this role definition uses a representational idiom before (R).
+
+Severity: minor/serious.
+
+Fix: define observation structurally: an edit changes \(L_j\) but leaves the projection to the other ports invariant, with no appeal to “reporting.”
+
+**Finding 18 — “declared restriction operation” and “named background fixed” are undefined.**
+
+Quote: “Fix \(\mathcal E\) and a declared restriction operation. For \(W\subseteq\Gamma\), let \(E|W\) retain the commitments in \(W\) with the named background fixed.”
+
+Attack: The restriction operation and named background are not defined. Yet \(\mathsf S_{E,p}\), \(\operatorname{CriticalBlock}\), and \(\operatorname{Boundary}\) all depend on them. Varying the restriction operation can change which subsets count as supports.
+
+Severity: serious.
+
+Fix: define restriction as deleting components/constraints in \(\Gamma\) while fixing the boundary \(b\); define the background as the boundary condition or as the non-\(\Gamma\) components held fixed.
+
+**Finding 19 — “independent boundary conditions” is not formalized.**
+
+Quote: “The answer follows by evaluating \(E\) under its independent boundary conditions. The target’s answer does not appear, at the declared grain, as an unanalysed boundary input or as a component…”
+
+Attack: “independent” is doing anti-circularity work, but no formal independence relation is given. Without a precise condition, an account can still encode the target’s answer in boundary conditions that are merely called independent.
+
+Severity: minor.
+
+Fix: define independence as the absence of a faithful transport from the target answer ports into the boundary ports, or state a precise disjointness/orthogonality condition on boundary data.
+====================================================================================================
+A1_hidden_primitives | deepseek | sample 1 | finish length | 4435 chars | error None
+====================================================================================================
+**1. ‘Active commitments’ is smuggled.**  
+Attacked claim: Part V: “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t=(\pi,\tau,\sigma,\lambda)\) from \(D\) to \(E\), and an identified set \(\Gamma\) of active commitments in \(E\).” Also Part VI: “For \(W\subseteq\Gamma\), let \(E|W\) retain the commitments in \(W\) with the named background fixed.”  
+Why it fails: “commitment,” “active,” and “identified” are never defined. \(\Gamma\) is an extra input to \(\operatorname{Account}\) and to support; it is not in the Part XIV dependence order. It does substantive work in non-circular dependence and in \(\mathsf S_{E,p}\). It is therefore a hidden primitive, not derived from \(\Theta\), \(\mathcal N\), or declared indices.  
+Severity: fatal.  
+Fix: define \(\Gamma\) as a derived subset of components, e.g. components whose replacement changes \(\operatorname{Ans}_E\) under \(C\), or admit “active commitment” as an additional primitive.
+
+**2. ‘Declared scope’ is not formalized.**  
+Attacked claim: Part V: “The contract \(C\) is a declared subset of the physically admitted edits, and every physically admitted edit excluded from \(C\) is excluded by a stated scope, not silently.”  
+Why it fails: “stated scope” and the “not silently” requirement are meta-linguistic/normative conditions not in the tuple \(p=(D,C,b_0,\mathcal Q,O_p,\rho_p)\). If it means only that \(C\) is declared, it is redundant; if it requires a justification for excluded edits, that is an extra primitive.  
+Severity: serious.  
+Fix: formalize the excluded edits and their reasons inside \(\rho_p\), or delete the condition.
+
+**3. ‘Nontrivial binding construction’ is undefined.**  
+Attacked claim: Part X: “contains a nontrivial binding construction relevant to that use, and is not a composition of content-preserving transfers.”  
+Why it fails: “nontrivial,” “binding construction,” and “relevant” are not defined from \(\Theta\), \(\mathcal N\), or indices. This phrase is the central discriminator between construction and relay, and it feeds \(\operatorname{Build}\), \(\operatorname{Origin}\), and (EK). It is a hidden primitive.  
+Severity: fatal.  
+Fix: define binding construction as a formal relation among ports, components, and (F1)/(F2), and define “nontrivial” by a change in support or signature.
+
+**4. ‘Content-preserving recoding’ is undefined and circular.**  
+Attacked claim: Part IX: “sends content-preserving recodings to the same transition, sends content changes to the changes specified by the operative deliberative rule”; Part X: “not a composition of content-preserving transfers”; Part XVI Derivation 8: “Equivariance under genuine recoding.”  
+Why it fails: “content-preserving” presupposes a notion of content identity that the document itself defines only via “contract-relative commitments” (itself undefined). It is not derived from fidelity and provenance; it is used to distinguish construction from relay and reason-use from mere delivery.  
+Severity: fatal.  
+Fix: define recoding as a structure-preserving bijection on organizations/contracts that preserves (F1), (F2), and (A), or eliminate the phrase.
+
+**5. ‘Grain’ is not merely an index.**  
+Attacked claim: Part XIV: “Grain \(\ell\), boundary \(\beta\), continuity \(\Omega\), and the contract \(C\) are declared indices. Every claim is relative to them; none is a predicate that could be true or false.”  
+Why it fails: \(\ell\) determines \(\operatorname{Org}_\ell(o)\) and the equivalence \(\equiv_\ell\) in \(\operatorname{New}\). No definition of grain equivalence or coarsening is given. It changes what counts as the same component and the same content. Calling it an index does not make it derived if it carries substantive semantic structure.  
+Severity: serious.  
+Fix: define grain as an explicit equivalence/coarsening relation on organizations, or admit it as primitive structure.
+
+**6. \(\operatorname{Org}_\ell(o)\) is an explicit primitive dressed as physics.**  
+Attacked claim: Part IV: “The one thing (R) takes from outside is \(\operatorname{Org}_\ell(o)\): which organization a physical occurrence instantiates at a grain. That is supplied by the physical module, not by the semantics.” Part XIV lists “\(\operatorname{Org}_\ell\)” inside the physical module.  
+Why it fails: \(\operatorname{Org}_\ell\) supplies the entire organization \(D=(V,(X_v),J,B,A,L)\), including ports, components, admitted
+====================================================================================================
+A1_hidden_primitives | deepseek | sample 2 | finish length | 3553 chars | error None
+====================================================================================================
+**1. (O) and (Q) are ungrounded primitives.**
+- **Claim attacked:** “The semantics has two [primitives]… Everything else is derived.” Part XIV then says: “Dependence order. (O) and (Q) depend on nothing.”
+- **Why it fails:** If (O) and (Q) depend on nothing, they are not derived from the physical module Θ or the normative relation N. They are formal primitives: the organization/solution schema and the query schema. The “two primitives” claim is therefore false by the document’s own dependence order.
+- **Seriousness:** Fatal.
+- **Fix:** Either add the organization/query formalism to the primitive list, or derive (O) and (Q) from Θ (e.g., organizations as physical state-space partitions with admitted controlled transformations).
+
+**2. “Active commitments” / “active component” is undefined and not in the dependence order.**
+- **Claim attacked:** “An explanatory candidate for question \(p\) is an organization \(E\), a transport \(t\), and an identified set \(\Gamma\) of active commitments in \(E\).” And: “For every active component \(k\) of \(E\)…”
+- **Why it fails:** Nothing defines which commitments are “active,” who identifies them, or how they are determined from \(E\), \(C\), or \(\mathcal Q\). If \(\Gamma\) can be chosen by the modeller, Account can be gamed: include a commitment whose removal changes the answer, or exclude inconvenient components as inactive. It is not derived from Θ or N and is not listed as a declared index.
+- **Seriousness:** Fatal.
+- **Fix:** Define active commitments/components from the contract and query: e.g., components that vary under some \((a,b)\in C\) and whose variation affects \(\operatorname{Ans}_p\), or list \(\Gamma\) as primitive data.
+
+**3. “Declared scope” / “stated scope” is a smuggled social/normative primitive.**
+- **Claim attacked:** “The contract \(C\) is a declared subset of the physically admitted edits, and every physically admitted edit excluded from \(C\) is excluded by a stated scope, not silently.”
+- **Why it fails:** “Declared,” “stated,” and “silently” are speech-act, record-keeping, and honesty notions. They are not derived from Θ or N. Non-vacuity also says a contract is not acceptable if it “excludes every change under which the active commitments could matter” without a stated scope. That is a normative requirement on the modeller, not a physical fact.
+- **Seriousness:** Serious.
+- **Fix:** Define declaration as a physical inscription event plus an interpretation, or admit a third primitive (social/linguistic record). Otherwise non-vacuity is not a formal condition.
+
+**4. “Nontrivial binding construction” is smuggled.**
+- **Claim attacked:** “contains a nontrivial binding construction relevant to that use, and is not a composition of content-preserving transfers.”
+- **Why it fails:** “Nontrivial,” “binding,” “construction,” and “relevant” are not defined. “Binding” is not in the organization tuple \(D=(V,(X_v),J,B,A,L)\). “Nontrivial” is evaluative and context-dependent. It is not in the dependence order.
+- **Seriousness:** Fatal to the claim that construction is derived.
+- **Fix:** Define a binding as an explicit map between organizations with stated domain/codomain, and define nontriviality as failure of content-preserving transfer, or as producing a content not in the prior repertoire.
+
+**5. “Content-preserving recoding” is smuggled.**
+- **Claim attacked:** “sends content-preserving recodings to the same transition, sends content changes to the changes specified by the operative deliberative rule.”
+- **Why it fails:** It presupp

@@ -1,0 +1,525 @@
+====================================================================================================
+S6_selection_construction | rev2_deepseek | sample 0 | finish stop | 16776 chars | error None
+====================================================================================================
+## Findings
+
+1. **Selection witness is trivially satisfiable by cherry-picking \(H\) and using an irrelevant \(\mu\).**  
+   **Claim attacked:** “a finite history \(H\subseteq C_t\) … non-empty; a variation operator \(\mu\) … that was applied at least once … and produced a member that differs from its parent at some pair of \(H\); … eliminated at least one member that differed from \(t\) at a pair of \(H\) on which that member failed and \(t\) did not.”  
+   **Why it fails:** Nothing requires \(t\) to descend from \(\mu\), nothing requires the eliminated rival to be produced by \(\mu\), and nothing requires \(H\) to be the entire encountered history or to be fixed before survival. If \(t\) is faithful on one pair, and a broken rival fails on that pair, then \(|T|\ge 2\), non-empty \(H\), an applied variation, and an elimination are all satisfied. This is not the excluded trivial reading (singleton population, empty history).  
+   **Severity:** Fatal.  
+   **Fix:** Require \(t\)’s lineage to be produced by \(\mu\); require the eliminated rival to be produced by \(\mu\) or to be in the same lineage; require \(H\) to be the set of all encountered pairs in \(\Sigma_h\), fixed before survival.
+
+2. **The survival condition is circular: it is defined as fidelity on \(H\).**  
+   **Claim attacked:** “a survival condition that holds of a member exactly when it is faithful on \(H\) (fidelity on \(H\) is necessary and sufficient for survival).”  
+   **Why it fails:** Survival is a physical/environmental event, but here it is defined by the semantics’ own fidelity predicate. The difference-making condition — the rival failed where \(t\) did not — is then tautological. Selection is assumed to discriminate on fidelity rather than shown to do so.  
+   **Severity:** Fatal.  
+   **Fix:** The physical module must supply a survival predicate independently of fidelity. \(H\) is then the set of changes on which survival actually depended; the difference-making condition is derived, not stipulated.
+
+3. **Blindness is mis-scoped: it constrains only the route to \(\mu\), not the route to survival.**  
+   **Claim attacked:** “no itemised representation of a defect … lies on any active route from a failure to an application of \(\mu\).”  
+   **Why it fails:** An itemised defect record used to eliminate failures lies on the route from failure to survival, not necessarily to \(\mu\). A process can therefore use itemised error records to cull members and still satisfy the blindness clause. If \(\mu\) is applied before any failure, the clause is vacuous outright. “Blind” selection can be fully sighted selection.  
+   **Severity:** Fatal.  
+   **Fix:** Forbid itemised defect representations on any active route from failure to variation *or* to survival. Require \(\mu\) to be applied after the failure that affects survival.
+
+4. **The aggregate-summary exemption is not well-defined.**  
+   **Claim attacked:** “an *aggregate* summary — a function of the multiset of failures invariant under permuting which record failed, such as how many and how badly — is explicitly permitted.”  
+   **Why it fails:** Any function of a multiset is already invariant under permutations of the underlying records. The identity function on the multiset of (failed state, what-would-have-held) pairs satisfies the stated condition and is fully itemising. The exemption gives no coarsening or loss requirement.  
+   **Severity:** Serious.  
+   **Fix:** Define an aggregate as a statistic that destroys the pairing between failed state and counterfactual — e.g. cardinality or severity distribution — and explicitly forbid any summary from which the multiset can be recovered.
+
+5. **The itemised-defect definition is too narrow.**  
+   **Claim attacked:** “an occurrence instantiating a record that pairs the state at which fidelity failed with what would have held.”  
+   **Why it fails:** A system can store the failed state and the counterfactual in separate components, in a distributed code, as a correction rather than a counterfactual, or in a format from which both are recoverable. None of these is an occurrence instantiating a single record pairing the two. A sighted system can escape the definition.  
+   **Severity:** Serious.  
+   **Fix:** Define defect representation functionally: any representation from which the failed state and a target/correction can be recovered and which is used in the relevant route.
+
+6. **The blindness/defect-record pair is not a separator.**  
+   **Claim attacked:** “What keeps the two apart is one thing, and it is in both definitions: a selection witness is blind … and a construction witness requires one on the route to the binding. … A process that is blind is not constructing; a process with the defect record on its route is not selecting, whatever else it does.”  
+   **Why it fails:** Blindness forbids an itemised defect on the route from failure to \(\mu\). Construction requires an itemised defect on the route to the binding. These are different routes. A process can have an itemised defect record on the binding route and no itemised defect on the \(\mu\) route. Both \( \operatorname{Sel} \) and \( \operatorname{Con} \) can then hold. The universal claim about “a process” is false for any process with disjoint subhistories.  
+   **Severity:** Fatal.  
+   **Fix:** Make the predicates mutually exclusive on the same transport/route, e.g. \(\operatorname{Sel}(t)\) requires no construction witness for \(t\), and \(\operatorname{Con}(t)\) requires no selection witness for \(t\); or replace the pair with a single provenance predicate over structured aspects.
+
+7. **Construction is gerrymanderable: the defect record need not be relevant to the binding.**  
+   **Claim attacked:** Build “contains an itemised defect representation — an occurrence instantiating a record pairing a state at which some prior transport of \(s\) failed fidelity with what would have held — on an active route to the binding.”  
+   **Why it fails:** “Some prior transport” need not be the transport the binding corrects. A generic error signal that triggers a random new component binding satisfies the clause. The active route only requires causal connectedness, not that the record’s content is used to determine the binding.  
+   **Severity:** Serious.  
+   **Fix:** Require the defect record to represent the failure that the binding corrects; require the binding’s content to counterfactually depend on the record; require improved fidelity relative to that failure.
+
+8. **Non-triviality is ill-typed.**  
+   **Claim attacked:** “no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”  
+   **Why it fails:** \(t\) is a transport, \(H\) is a set of edit–boundary pairs, and a survival condition is a predicate. “Held to” is defined for organizations and contents. \(H\) and the survival condition are not organizations in this semantics. The clause has no well-formed target for “an organization held to \(H\)” or “held to the survival condition.”  
+   **Severity:** Serious.  
+   **Fix:** Define organizations that represent the selection data, or restrict non-triviality to representations of \(t\)’s contract and the selection predicates.
+
+9. **Non-triviality is either too weak or too strong regarding designers/experimenters.**  
+   **Claim attacked:** “no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”  
+   **Why it fails:** A designer or experimenter outside \(\Sigma_h\) can represent \(t\), \(H\), and the survival condition and set up the filter, while no event in \(\Sigma_h\) represents them. The clause permits artificial selection. If the designer is inside \(\Sigma_h\), then any selection process that represents its own criteria fails, which excludes legitimate artificial selection and even some natural cases.  
+   **Severity:** Serious.  
+   **Fix:** Either allow environmental/designer representation of selection criteria, or define non-triviality relative to a specified system boundary and make the boundary explicit.
+
+10. **The population clause is a type error.**  
+    **Claim attacked:** “a population \(\mathcal T\) of realized organization–transport pairs, each instantiated by an occurrence under \(\Theta\).”  
+    **Why it fails:** \(\Theta\) supplies \(\operatorname{Inst}\) for organizations, not transports. A transport is a mathematical tuple \((\pi,\tau,\sigma,\lambda)\). There is no definition of what it is for a transport to be “realized” or for an occurrence to instantiate a transport. The variation operator \(\mu\) then acts on these mathematical objects, but \(\mu\) is also required to be physically admitted.  
+    **Severity:** Serious.  
+    **Fix:** Define the population as occurrences instantiating organizations; define transports as derived from those organizations; define \(\mu\) as a physical process altering occurrences, not transports.
+
+11. **No common descent, reproduction, or heritability is required.**  
+    **Claim attacked:** “a population \(\mathcal T\) of realized organization–transport pairs.”  
+    **Why it fails:** Two unrelated systems suffice. There is no requirement that the members share an ancestor, that variation is heritable, or that survival affects reproduction. This is not selection in any standard sense; it is a filter over a set.  
+    **Severity:** Serious.  
+    **Fix:** Require common descent, heritability of the varied organization/transport, and reproduction or retention across generations.
+
+12. **\(H\) can be cherry-picked.**  
+    **Claim attacked:** “a finite history \(H\subseteq C_t\) … each pair occurring as an event of \(\Sigma_h\), non-empty.”  
+    **Why it fails:** \(H\) need not be all encountered changes. The witness can select a single pair on which \(t\) is faithful and a rival fails. The exclusions of singleton population and empty history do not exclude a two-member population and a one-pair \(H\).  
+    **Severity:** Fatal.  
+    **Fix:** Require \(H\) to be the entire set of encountered pairs in \(\Sigma_h\), or at least fixed independently of \(t\)’s survival.
+
+13. **The survival condition is ill-defined for members other than \(t\).**  
+    **Claim attacked:** “a survival condition that holds of a member exactly when it is faithful on \(H\).”  
+    **Why it fails:** \(H\subseteq C_t\), the contract of \(t\)’s content. Other members have their own organizations, transports, and contracts. Fidelity on \(H\) for a rival is not defined unless \(H\) is translated into the rival’s contract and the relevant anchor map is specified.  
+    **Severity:** Serious.  
+    **Fix:** Define a common target and contract for the population, or define survival for each member relative to its own contract and a common set of encountered changes.
+
+14. **The earliest-witness rule fails when witnesses are incomparable.**  
+    **Claim attacked:** “the provenance of the earliest witness in \(\prec_h\) whose events produced the occurrence that carries \(t\).”  
+    **Why it fails:** \(\prec_h\) is an acyclic precedence order, not necessarily total. Two witnesses may both produce the occurrence and be incomparable. Then there is no “earliest” witness.  
+    **Severity:** Serious.  
+    **Fix:** Require a unique minimal witness, or define provenance as a set/structured object when incomparable witnesses exist.
+
+15. **The earliest-witness rule misclassifies later constitutive construction as maintenance.**  
+    **Claim attacked:** “Later histories are maintenance and do not change provenance.”  
+    **Why it fails:** A later construction episode can change the binding \(\lambda(k)\) and therefore change the transport itself. That is not maintenance. If selection occurred earlier, the rule assigns the modified transport selected provenance, even though its current binding was constructed.  
+    **Severity:** Serious.  
+    **Fix:** Define provenance from the last constitutive event, or as a structured set of contributions; require later construction to produce a new transport token if it is to have constructed provenance.
+
+16. **The production relation in the earliest-witness rule is undefined.**  
+    **Claim attacked:** “whose events produced the occurrence that carries \(t\).”  
+    **Why it fails:** The physical module supplies \(\operatorname{Inst}\), \(\prec\), and \(\operatorname{Exec}\), but not a relation “event \(e\) produced occurrence \(o\).” The rule relies on an undefined causal-production relation.  
+    **Severity:** Serious.  
+    **Fix:** Define production via the process-dependency order or a specified causal ancestry relation in the physical module.
+
+17. **Construction can be rewritten as selection under the stated definitions.**  
+    **Claim attacked:** “A demonstration that every construction witness … can be rewritten as a selection witness satisfying the elimination and blindness clauses of Part IV, without loss.”  
+    **Why it fails:** Let \(t\) be any constructed transport. Choose a pair \((a,b)\) in \(t\)’s contract where \(t\) is faithful. Realize a rival \(r\) that fails at \((a,b)\). Let \(T=\{t,r\}\). Let \(\mu\) be a physically admitted mutation applied to \(r\), producing \(r'\) that still fails at \((a,b)\). Let survival be fidelity on \(H=\{(a,b)\}\). Then \(|T|\ge 2\), \(H\) is non-empty, \(\mu\) was applied, \(r'\) differs from its parent at a pair of \(H\), and \(r'\) is eliminated while \(t\) survives. Blindness holds if no itemised defect record lies on the route from \(r'\)’s failure to \(\mu\); the construction’s defect record can lie on the binding route instead. This satisfies the stated non-trivial reading, not the excluded singleton/empty reading. Thus every constructed transport with a realizable rival is also selected.  
+    **Severity:** Fatal.  
+    **Fix:** Require \(t\) to be produced by \(\mu\); require the eliminated rival to be in \(t\)’s lineage; require \(H\) not to be cherry-picked; make \(\operatorname{Sel}(t)\) and \(\operatorname{Con}(t)\) mutually exclusive.
+
+18. **Selection and construction can overlap.**  
+    **Claim attacked:** “Construction is not selection.”  
+    **Why it fails:** A selection process can contain an itemised defect record on the route to a binding while remaining blind with respect to \(\mu\) and survival. If the other Build conditions hold, \(\operatorname{Con}\) also holds. The predicates are not exclusive because they constrain different routes.  
+    **Severity:** Serious.  
+    **Fix:** Define the predicates so that a transport cannot satisfy both, or replace them with a single provenance predicate with explicit aspects.
+
+19. **The claim that blindness/defect-record is the “only” separator is false.**  
+    **Claim attacked:** “What keeps the two apart is one thing.”  
+    **Why it fails:** Selection additionally requires a population, a variation operator, a survival condition, and an elimination. Construction additionally requires an owned subhistory, a nontrivial binding, and not being a composition of content-preserving transfers. These are further differences. The “one thing” formulation is inaccurate even before the separator fails.  
+    **Severity:** Minor to serious.  
+    **Fix:** State all differences explicitly and stop claiming a single separator.
+
+20. **One process can satisfy both witnesses.**  
+    **Claim attacked:** “A process that is blind is not constructing; a process with the defect record on its route is not selecting, whatever else it does.”  
+    **Why it fails:** A process can have a blind selection subhistory for one transport and a construction subhistory for another, or even for the same carrier if the routes are disjoint. The definitions are route-local; the process-level universal claim is false.  
+    **Severity:** Fatal.  
+    **Fix:** Define selection and construction at the level of a specific transport/route, not at the level of a whole process; or require a single provenance assignment for the process and make it exclusive.
+
+21. **Blindness only checks the current active route, not the causal history.**  
+    **Claim attacked:** “no itemised representation of a defect … lies on any active route from a failure to an application of \(\mu\).”  
+    **Why it fails:** A system can compute an aggregate from itemised defect records and discard the records before \(\mu\). The itemised records are in the causal history of the aggregate, but they do not lie on the current active route. The process is classified blind although it was sighted upstream.  
+    **Severity:** Serious.  
+    **Fix:** Forbid itemised defect representations anywhere in the causal history of the variation, not only on the current active route.
+====================================================================================================
+S6_selection_construction | rev2_deepseek | sample 1 | finish stop | 23742 chars | error None
+====================================================================================================
+**1. The survival condition is circular and stipulative, not a physical selection condition.**
+- **Attacked claim:** “a survival condition that holds of a member exactly when it is faithful on \(H\) (fidelity on \(H\) is necessary and sufficient for survival)”.
+- **Why it fails:** This defines survival as fidelity on the very history \(H\) that the selection witness is supposed to test. Any transport \(t\) that is faithful on some nonempty \(H\) can be placed in a population with a rival that differs on \(H\); the rival is eliminated by definition. Selection no longer reports an independently specified environmental filter; it reports that the model-builder chose \(H\) and defined survival to match it.
+- **Severity:** fatal.
+- **Fix:** Require the survival condition to be specified independently of \(H\) and of the candidate, e.g. environmental task performance; fidelity on \(H\) must be a consequence of survival, not its definition.
+
+**2. \(H\) can be chosen post hoc and need not be the encountered history in any causally relevant order.**
+- **Attacked claim:** “a finite history \(H\subseteq C_t\) of edit–boundary pairs, where \(C_t\) is the contract of \(t\)'s content, each pair occurring as an event of \(\Sigma_h\), non-empty”.
+- **Why it fails:** The definition does not require \(H\) to be fixed before the selection event, nor to be the whole encountered history, nor to be the history against which survival actually acted. One can choose \(H\) as a subset on which \(t\) happens to be faithful and on which a rival happens to fail. That is gerrymandering.
+- **Severity:** serious.
+- **Fix:** Require \(H\) to be the actual encountered change history, fixed independently of the survivor and recorded before the survival outcome is used.
+
+**3. \(t\) need not be produced by the variation operator \(\mu\).**
+- **Attacked claim:** “a variation operator \(\mu\) on \(\mathcal T\), physically admitted, that was applied at least once in the selection history \(\Sigma_h\) and produced a member that differs from its parent at some pair of \(H\)” and “\(t\) is a member that survived”.
+- **Why it fails:** The definition never says that \(t\) or its lineage is the product of \(\mu\). A pre-existing \(t\) can sit in a population while \(\mu\) mutates some other member and the survival condition eliminates some unrelated rival. \(t\) then counts as selected even though selection did not produce it.
+- **Severity:** fatal.
+- **Fix:** Require \(t\)'s occurrence or lineage to be produced by \(\mu\) in \(\Sigma_h\), or to descend from a \(\mu\)-produced member, with a causal route from that variation to \(t\).
+
+**4. The eliminated rival need not be produced by \(\mu\), and the difference-making clause is largely redundant.**
+- **Attacked claim:** “which **eliminated at least one member** that differed from \(t\) at a pair of \(H\) on which that member failed and \(t\) did not”.
+- **Why it fails:** The eliminated rival is not required to be generated by \(\mu\), nor to be the member \(\mu\) produced. Worse, since survival is defined as fidelity on \(H\), if \(t\) is faithful on \(H\), then any rival that differs from \(t\) at a pair in \(H\) automatically fails at that pair. The clause adds almost no constraint beyond “some eliminated rival differs on \(H\).”
+- **Severity:** serious.
+- **Fix:** Require the eliminated rival to be \(\mu\)-generated, require its elimination to be due to the specific failure at the differentiating pair, and make the survival condition independent enough that this is not automatic.
+
+**5. The population need not share a common target or contract, so “faithful on \(H\)” may be ill-typed for other members.**
+- **Attacked claim:** “a population \(\mathcal T\) of realized organization–transport pairs” and “a survival condition that holds of a member exactly when it is faithful on \(H\)”.
+- **Why it fails:** \(H\subseteq C_t\), the contract of \(t\)'s content. Other population members may have different contents, different contracts, and translations undefined on \(H\). The definition does not require a common target, common content, or common contract, so fidelity on \(H\) for other members is undefined or incomparable.
+- **Severity:** serious/fatal.
+- **Fix:** Require all members to share the same target/content contract, or define \(H\) per member with a common target and common translation.
+
+**6. Non-triviality is ill-typed.**
+- **Attacked claim:** “**Non-triviality:** no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”
+- **Why it fails:** \(H\) is a set of edit–boundary pairs; the survival condition is a predicate. Neither is obviously an organization or a content that can be “held to” by a transport. “Held to \(t\)” is also obscure: \(t\) is itself a transport, though Part X later allows transports as contents. As written, the condition is either vacuous, impossible, or dependent on an unstated representation relation.
+- **Severity:** serious.
+- **Fix:** State exactly what organizations/contents represent \(t\), \(H\), and the survival condition, and use the already-defined \(\operatorname{Rep}\) or an explicitly different relation.
+
+**7. Non-triviality does not forbid a faithful representation of the target or of correct answers on \(H\).**
+- **Attacked claim:** “no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport”.
+- **Why it fails:** The condition forbids representing \(t\), \(H\), and the survival condition, but not the target \(D\), its answer profile, or the correct component relations on \(H\). A system can carry an itemised faithful transport of the target’s behavior on \(H\) and use it to guide variation while satisfying non-triviality as written.
+- **Severity:** fatal to the claim that selection is blind.
+- **Fix:** Forbid any faithful transport of the target’s answer profile on \(H\), or of any criterion that determines survival on \(H\), on any active route to \(\mu\).
+
+**8. Blindness forbids itemised defect records, but not itemised correct behavior.**
+- **Attacked claim:** “**Blindness:** no itemised representation of a defect — an occurrence instantiating a record that pairs the state at which fidelity failed with what would have held — lies on any active route from a failure to an application of \(\mu\)”.
+- **Why it fails:** A lookup table of correct target behavior is not a “defect record” unless it is paired with a prior failure. It can nevertheless guide \(\mu\) to the correct relation directly. The definition of blindness leaves this route open.
+- **Severity:** serious/fatal.
+- **Fix:** Extend blindness to any itemised representation of the target’s behavior, answer, or survival criterion on the route to \(\mu\).
+
+**9. The aggregate-summary exemption is not well-defined and swallows blindness.**
+- **Attacked claim:** “an *aggregate* summary — a function of the multiset of failures invariant under permuting which record failed, such as how many and how badly — is explicitly permitted and does not make the process sighted.”
+- **Why it fails:** Any function of a multiset is invariant under permuting the labels of its elements; that clause imposes no restriction. The identity function on the multiset of failures is a “function of the multiset” and returns the full itemised records. With a singleton failure, any function, including the exact record, is trivially permutation-invariant. So the exemption permits exactly what blindness forbids.
+- **Severity:** fatal.
+- **Fix:** Define admissible aggregates as functions factoring through a declared coarse statistic that provably erases the state–correct-value pairing, and explicitly forbid identity, injective, or invertible summaries.
+
+**10. “How badly” leaks target information.**
+- **Attacked claim:** “such as how many and how badly”.
+- **Why it fails:** To compute “how badly” a transport failed, the system generally needs the correct value or target answer at that state. That is itemised target information, even if aggregated over failures.
+- **Severity:** serious.
+- **Fix:** Specify the metric for severity and either forbid access to target values or prove that the aggregate cannot be inverted to recover them.
+
+**11. \(\mu\) can encode the target even without a defect record.**
+- **Attacked claim:** “a variation operator \(\mu\) on \(\mathcal T\), physically admitted”.
+- **Why it fails:** “Physically admitted” does not exclude a mutation operator hardwired to set the relation at pairs in \(H\) to the correct value. Non-triviality does not obviously forbid this, because the operator’s input–output map is not itself an event instantiating an organization held to \(t\), \(H\), or the survival condition.
+- **Severity:** fatal to the blind-selection claim.
+- **Fix:** Require \(\mu\) to be blind to the target’s answer on \(H\), or extend non-triviality to cover the operator’s implemented input–output relation.
+
+**12. “Parent” is undefined.**
+- **Attacked claim:** “produced a member that differs from its parent at some pair of \(H\)”.
+- **Why it fails:** \(\mathcal T\) is described as a set of realized organization–transport pairs. A set has no parent relation. Without a genealogical tree or a defined ancestry relation, “parent” is undefined.
+- **Severity:** serious/minor.
+- **Fix:** Define the population as a genealogical structure with a parent/descent relation over the selection history.
+
+**13. Blindness/defect-record is not the only separator.**
+- **Attacked claim:** “What keeps the two apart is one thing, and it is in both definitions”.
+- **Why it fails:** Selection also contains non-triviality, population, variation, survival, and elimination clauses. Construction also contains owned subhistory, prepares a faithful organization, nontrivial binding required, not a composition of content-preserving transfers, and more. Even if blindness/defect-record were exclusive, these other clauses separate the witnesses.
+- **Severity:** serious.
+- **Fix:** Say it is one necessary contrast, not the only separator.
+
+**14. The blindness/defect-record pair is not a separator: one process can satisfy both.**
+- **Attacked claim:** “A process that is blind is not constructing; a process with the defect record on its route is not selecting, whatever else it does.”
+- **Why it fails:** Selection forbids an itemised defect record on an active route from a failure to an application of \(\mu\). Construction requires an itemised defect record on an active route to the binding. These can be disjoint routes in one process. A process can have a blind variation route and, separately, a binding-construction route with an itemised defect record. It then satisfies both definitions. The sentence is false at the process level.
+- **Severity:** fatal.
+- **Fix:** Define exclusivity at the level of the occurrence/provenance of the transport, not at the level of “the process”, and either forbid the same occurrence from having both witnesses or allow composite provenance explicitly.
+
+**15. Build’s defect record is not required to be causally responsible for the binding.**
+- **Attacked claim:** Build “contains an **itemised defect representation** … on an active route to the binding”.
+- **Why it fails:** “On an active route” is weaker than “used to construct the binding”. A record can sit on a connected subnetwork and be irrelevant to the binding’s actual construction. The definition supplies no counterfactual: remove or alter the record and the binding need not change.
+- **Severity:** fatal.
+- **Fix:** Require that removing or replacing the defect record breaks the binding construction, or that the binding fails (F1) or (F2) without the record, under a contrast fixed independently of the candidate.
+
+**16. “Active route to the binding” is ill-typed.**
+- **Attacked claim:** “on an active route to the binding”.
+- **Why it fails:** An active route is defined in Part IX as a connected subnetwork of actual occurrences joining an occurrence instantiating the input organization to an operative result. A binding is an assignment \(\lambda(k)\) of a component to a subnetwork. An assignment is not an occurrence or an operative result, so a route “to the binding” is not defined by the semantics as written.
+- **Severity:** serious.
+- **Fix:** Define the binding construction as a process occurrence or an operative result, and define the route to that occurrence/result.
+
+**17. Build’s defect record can be unrelated to the content, question, or binding.**
+- **Attacked claim:** “an occurrence instantiating a record pairing a state at which some prior transport of \(s\) failed fidelity with what would have held”.
+- **Why it fails:** “Some prior transport” need not be a transport for the same content \(c\), the same target, or the same question. The record need not be about the defect the binding corrects.
+- **Severity:** serious.
+- **Fix:** Require the prior transport to be for the same target/content/contract, and require the defect record to identify the defect that the binding construction addresses.
+
+**18. The defect record need not be true or faithful.**
+- **Attacked claim:** “a record pairing a state at which some prior transport of \(s\) failed fidelity with what would have held”.
+- **Why it fails:** The definition does not require “what would have held” to be correct, faithful, or warranted. A bogus record satisfies the syntactic condition.
+- **Severity:** serious.
+- **Fix:** Require the record’s content to be faithful to the target at that state, or at least require an account of why the correction is correct, with a stated provenance.
+
+**19. “Deleting the binding” makes (F1) undefined, so the requiredness condition is trivial.**
+- **Attacked claim:** “it is **required for the transport** when deleting the binding breaks (F1) or (F2) for that transport on \(c\)'s contract.”
+- **Why it fails:** A binding is an assignment \(\lambda(k)\). If you delete the assignment, component \(k\) has no anchor, so (F1) cannot be evaluated. That is not “breaking” (F1); it is making the transport ill-formed. Every binding is then “required” in this trivial sense.
+- **Severity:** serious/fatal.
+- **Fix:** Define deletion as removing the component or replacing its relation by the full relation while keeping the transport well-defined, and require (F1) or (F2) to fail as a result.
+
+**20. Nontrivial binding can be gerrymandered by any new arbitrary component.**
+- **Attacked claim:** “a binding construction is **nontrivial** when the binding is neither a relabelling of a binding already in the repertoire nor obtainable from the incoming carriers by \(\equiv_\ell\)”.
+- **Why it fails:** Any arbitrary new component with a new anchor can satisfy “not a relabelling” and “not obtainable by \(\equiv_\ell\)”. The definition does not require the binding to solve the recorded defect or to be necessary for the content.
+- **Severity:** serious.
+- **Fix:** Require the binding to be the construction that corrects the recorded failure and that no prior repertoire element plus content-preserving transfer already supplies.
+
+**21. Build’s “not a composition of content-preserving transfers” is undefined.**
+- **Attacked claim:** “and is not a composition of content-preserving transfers.”
+- **Why it fails:** “Composition” is not defined for construction histories or transfers. Any construction can be described as not such a composition by adding a nontrivial binding step. Conversely, it is unclear what would count as a relay or composition.
+- **Severity:** serious.
+- **Fix:** Define composition of transfers, define the closure of content-preserving transfer operations, and require the Build history not to factor through that closure.
+
+**22. Construction can still be rewritten as selection under the current wording.**
+- **Attacked claim:** Part IV’s claim that selection is blind and construction has the defect record, so the two are separate.
+- **Why it fails:** Selection does not require \(t\) to be produced by \(\mu\). A constructed transport \(t\) can be placed in a population, a blind \(\mu\) can be applied to some other member, a rival can differ on a chosen nonempty \(H\), and survival defined as fidelity on \(H\) eliminates the rival. If the construction’s defect record is on the binding route and not on the failure-to-\(\mu\) route, blindness is untouched. Thus the construction witness can coexist with a selection witness.
+- **Severity:** fatal to the separation.
+- **Fix:** Require selection to produce the occurrence of \(t\), not merely contain \(t\), and make Sel and Con mutually exclusive for the same occurrence.
+
+**23. Selection can still be rewritten as construction under the current wording.**
+- **Attacked claim:** Build requires an itemised defect record on an active route to the binding.
+- **Why it fails:** Build does not require the defect record to be causally responsible for the binding, nor the binding to correct that defect, nor the active route contrasts to be fixed independently. A selected transport can be augmented with a record of some prior failure placed on a gerrymandered active route to a trivial binding, satisfying Build as written.
+- **Severity:** fatal to the separation.
+- **Fix:** Require the defect record to be necessary for the binding, the binding to be necessary for the transport, and the active-route contrasts to be fixed independently of the candidate.
+
+**24. The earliest-witness rule is not well-defined because \(\prec_h\) is not total.**
+- **Attacked claim:** “the provenance of the **earliest** witness in \(\prec_h\) whose events produced the occurrence that carries \(t\)”.
+- **Why it fails:** \(\prec_h\) is an acyclic precedence order, not a total order. There may be multiple minimal producing witnesses incomparable under \(\prec_h\). Then there is no unique earliest witness and provenance is undefined.
+- **Severity:** serious.
+- **Fix:** Require a total order on producing witnesses, or define provenance as a set/lattice when no unique minimum exists.
+
+**25. “Whose events produced the occurrence” is undefined and permits mixed provenance to be mislabelled.**
+- **Attacked claim:** “whose events produced the occurrence that carries \(t\)”.
+- **Why it fails:** If a selected process produced the carrier and a later construction produced the binding, which events “produced the occurrence”? The rule gives no criterion. If the earliest producing event wins, selection may always label a transport built on selected material, defeating construction provenance. If not, the rule is incomplete.
+- **Severity:** serious/fatal.
+- **Fix:** Define the production relation over occurrences and parts, and either allow composite provenance or define occurrence identity so the constructed transport is a new occurrence.
+
+**26. The earliest-witness rule does not prevent a transport from satisfying both Sel and Con.**
+- **Attacked claim:** “the earliest-witness rule says which the resulting transport bears.”
+- **Why it fails:** The rule assigns a provenance label. It does not make \(\operatorname{Con}(t)\) false when \(\operatorname{Sel}(t)\) is true, or vice versa. So (R) can still be witnessed by both, and the semantics can report a selected provenance for a transport that also has a construction witness.
+- **Severity:** serious.
+- **Fix:** Define Sel and Con to be mutually exclusive predicates for the same occurrence, or replace the single-label rule with a provenance lattice and state how (R) uses it.
+
+**27. The earliest-witness rule conflicts with construction on selected material.**
+- **Attacked claim:** “Construction may operate on selected material. Selection may continue to operate beneath construction; the earliest-witness rule says which provenance the resulting transport bears.”
+- **Why it fails:** If selection is earlier and produced the carrier, the earliest-witness rule can label the resulting transport selected, even though the construction introduced the new binding and did the originative work. That undercuts the claim that construction is a separate creative provenance.
+- **Severity:** serious.
+- **Fix:** Define provenance per component or per binding, or allow a constructed transport to override an earlier selected carrier when the construction witness is what produces the new transport occurrence.
+
+**28. The active-route contrasts in Build are declared by the candidate, making dependence trivial.**
+- **Attacked claim:** Build requires the defect representation “on an active route to the binding”.
+- **Why it fails:** Active routes require “nonconstant dependence on the instantiated distinction under the declared contrasts”. Build does not fix those contrasts. A candidate can declare contrasts under which any attached record changes something, making the record “active”.
+- **Severity:** serious.
+- **Fix:** Fix the contrasts independently of the candidate, or require the exact counterfactual: removing the defect record breaks the binding.
+
+**29. “Itemised defect representation” is ambiguous between a syntactic record and the defined representation predicate.**
+- **Attacked claim:** “an **itemised defect representation** — an occurrence instantiating a record pairing a state at which some prior transport of \(s\) failed fidelity with what would have held”.
+- **Why it fails:** The gloss defines an occurrence instantiating a record, not a faithful transport with provenance. If “representation” is meant in the sense of (R), Build is circular or understated; if it is not, then it is not a representation in the semantics’ sense, and the word is doing no work.
+- **Severity:** serious.
+- **Fix:** State which relation is meant. If it is not (R), say so explicitly and define the record’s correctness independently.
+
+**30. The aggregate-summary phrase “invariant under permuting which record failed” is formally incoherent.**
+- **Attacked claim:** “invariant under permuting which record failed”.
+- **Why it fails:** A multiset is already unordered. Permuting the labels of its elements does not change the multiset. The phrase “which record failed” treats records as labeled elements, but the invariance condition is either vacuous or undefined.
+- **Severity:** minor/cosmetic, but it contributes to the exemption being unusable.
+- **Fix:** State the permitted statistic extensionally: a declared function of the unlabeled multiset with a proved loss of the state–correct-value pairing.
+
+**Direct answers.**
+- **Selection trivial/gerrymanderable?** Yes. Survival is defined as fidelity on \(H\), \(H\) and the rival need not be causally tied to \(\mu\), and \(t\) need not be produced by \(\mu\).
+- **Build trivial/gerrymanderable?** Yes. The defect record need not be true, relevant, or causally responsible for the binding; “active route to the binding” is ill-typed; “deleting the binding” makes requiredness trivial.
+- **Is blindness/defect-record the only separator?** No. Many other clauses differ.
+- **Is it a separator?** No. The routes are different, and one process can have a blind variation route and a defect-record binding route.
+- **Aggregate-summary exemption well-defined?** No. It permits the identity function on the multiset, and “how badly” can leak target values.
+- **Does the earliest-witness rule work?** No. It assumes a unique earliest producing witness, leaves “produced” undefined, mishandles mixed provenance, and does not make Sel and Con exclusive.
+- **Can construction be rewritten as selection or vice versa?** Under the current wording, both directions remain open. Construction can coexist with selection via disjoint routes; selection can be augmented with a gerrymandered defect record on an active route to a trivial binding.
+====================================================================================================
+S6_selection_construction | rev2_deepseek | sample 2 | finish stop | 26526 chars | error None
+====================================================================================================
+Findings.
+
+1. **Claim attacked:** “a survival condition that holds of a member exactly when it is faithful on \(H\) (fidelity on \(H\) is necessary and sufficient for survival)”.
+   **Why it fails:** This does not describe a selection pressure; it defines survival as a filter that implements fidelity on \(H\). If \(H\) is chosen after observing which members fail, the “survival condition” is gerrymandered to the data. Nothing in the definition requires \(H\) to be fixed before the population or before the survival events.
+   **Severity:** fatal for treating `Sel` as a non-trivial physical provenance.
+   **Fix:** require \(H\) to be fixed independently of the candidates, or require it to be the encountered history rather than a post hoc subset; add a counterfactual condition that the survival condition was not chosen using knowledge of which members fail.
+
+2. **Claim attacked:** “a finite history \(H\subseteq C_t\) … non-empty”.
+   **Why it fails:** Non-emptiness permits \(H=\{(a,b)\}\) for a single pair. Then selection is just “t was faithful at one pair and a rival was not.” That is almost no constraint.
+   **Severity:** serious.
+   **Fix:** require \(H\) to be representative of the contract in some stated sense, or at least require that the elimination cannot be achieved by a single adversarially chosen pair.
+
+3. **Claim attacked:** “\(H\subseteq C_t\)”.
+   **Why it fails:** \(C_t\) is the contract of \(t\)’s content, which by Part III may contain counterfactual edits \(K\). But the selection witness says each pair in \(H\) occurs as an event of the physical selection history \(\Sigma_h\). Pairs in \(K\) are defined by \(K\cap C_{\mathrm{adm}}=\varnothing\), so they cannot occur as physical events. Thus `Sel` either permits impossible events or silently assumes \(H\subseteq C_{\mathrm{adm}}\), which is not stated.
+   **Severity:** serious.
+   **Fix:** require \(H\subseteq C_t\cap C_{\mathrm{adm}}\), or explicitly restrict selection histories to admitted pairs.
+
+4. **Claim attacked:** “which **eliminated at least one member** that differed from \(t\) at a pair of \(H\) on which that member failed and \(t\) did not”.
+   **Why it fails:** Given the immediately preceding clause that survival holds exactly when faithful on \(H\), if \(t\) survived and some rival was eliminated, the rival failed at some pair in \(H\), while \(t\) did not. So the “difference-making condition” is entailed and adds no constraint. It does not show that the elimination discriminated against the rival *because* of its difference from \(t\).
+   **Severity:** serious.
+   **Fix:** require the rival to have been faithful on \(H\setminus\{p\}\) and differ from \(t\) only at \(p\), or require a pairwise contrast that is not already entailed by survival.
+
+5. **Claim attacked:** “a variation operator \(\mu\) … that was applied at least once … and produced a member that differs from its parent at some pair of \(H\)”.
+   **Why it fails:** `Sel` never requires that \(t\) or an ancestor of \(t\) was produced by \(\mu\). \(t\) can be a pre-existing member that merely survives while \(\mu\) mutates some unrelated rival. Then the provenance is filtering, not variation-and-survival production, contradicting Part 0’s “produced by variation and survival.”
+   **Severity:** serious.
+   **Fix:** require that \(t\), or an ancestor of \(t\)’s current transport structure, was produced by an application of \(\mu\) in \(\Sigma_h\).
+
+6. **Claim attacked:** “no itemised representation of a defect … lies on any active route from a failure to an application of \(\mu\)”.
+   **Why it fails:** In ordinary one-shot selection, variation occurs before failures are observed. Since \(\prec_h\) is acyclic, there can be no route from a later failure back to an earlier application of \(\mu\). Blindness is therefore vacuously satisfied for standard Darwinian selection. It is not a separator in the intended cases.
+   **Severity:** serious.
+   **Fix:** define blindness as no route from a failure to any *subsequent* application of \(\mu\), or to a later use of the variation operator; otherwise it is trivial.
+
+7. **Claim attacked:** “an active route from a failure to an application of \(\mu\)”.
+   **Why it fails:** A failure is defined as a violation, i.e. a fact that fidelity failed at \((a,b)\). Part IX defines an active route as a connected subnetwork of actual occurrences joining an occurrence that instantiates an input organization to an operative result. A failure is not an occurrence, and an application of \(\mu\) is not an operative result in the stated sense. The route condition is ill-typed.
+   **Severity:** serious.
+   **Fix:** define a failure event occurrence that instantiates the failed state, and define the route between event occurrences, not between a fact and an operator application.
+
+8. **Claim attacked:** “**Non-triviality:** no event of \(\Sigma_h\) instantiates an organization held to \(t\), to \(H\), or to the survival condition by a faithful transport.”
+   **Why it fails:** The “held to” relation is defined for organizations: a transport from \(D\) to \(E\) holds \(E\) to \(D\). But \(t\) is a transport, \(H\) is a set of edit–boundary pairs, and the survival condition is a predicate. None is an organization, so none can be the target of “held to” in the defined sense. The clause cannot be evaluated as written.
+   **Severity:** fatal for the non-triviality conjunct.
+   **Fix:** either define explicit contents for \(t\), \(H\), and the survival condition, or replace the clause with typed conditions such as “no event instantiates an organization that is a faithful transport to the content of \(t\)” etc.
+
+9. **Claim attacked:** “a population \(\mathcal T\) of realized organization–transport pairs, each instantiated by an occurrence under \(\Theta\)”.
+   **Why it fails:** \(\operatorname{Inst}_\ell(o,D)\) instantiates an organization \(D\), not an organization–transport pair \((D,t)\). The definition also never says what it is for a transport to be “realized.” A transport is a tuple \((\pi,\tau,\sigma,\lambda)\), not an occurrence.
+   **Severity:** serious.
+   **Fix:** define realization of a transport explicitly, e.g. by occurrences instantiating the source and target organizations plus a physical implementation of the translation and anchor maps, and state that the organization member is what is instantiated.
+
+10. **Claim attacked:** “faithful on \(H\)” in the survival condition.
+   **Why it fails:** Fidelity in Part V is relative to an identified set \(\Gamma\) of active components. `Sel(t;\mathcal T,\mu,H,\Sigma_h)` has no \(\Gamma\). So “faithful on \(H\)” is not well-defined for a member of the population unless a single \(\Gamma\) is fixed for every member, which is not stated.
+   **Severity:** serious.
+   **Fix:** add \(\Gamma\) or a family of active-component sets to the selection witness, or define fidelity for the full organization independently of active commitments.
+
+11. **Claim attacked:** \(H\) can contain the baseline \((1,b_0)\).
+   **Why it fails:** Part II excludes the baseline pair from the forward-kind relation: “the identity edit at the baseline separates nothing.” But the selection witness permits \(H=\{(1,b_0)\}\), so selection can discriminate on a pair that the semantics says separates nothing.
+   **Severity:** serious.
+   **Fix:** exclude \((1,b_0)\) from \(H\), or explain why selection may use a contrast that kinds may not.
+
+12. **Claim attacked:** “encountered history”.
+   **Why it fails:** “Encountered” is not defined. The only formal requirement is that each pair in \(H\) occurs as an event of \(\Sigma_h\). A modeller can stage a single event and call it encountered. Nothing requires the history to be the history the population actually encountered before survival.
+   **Severity:** serious.
+   **Fix:** define encountered history as the set of edit–boundary pairs whose occurrence events lie in \(\Sigma_h\) before the survival events, and require \(H\) to be that set or a declared projection fixed before survival.
+
+13. **Claim attacked:** “That last clause is the difference-making condition, stated in the module’s terms: the filtering discriminated on fidelity between \(t\) and an eliminated rival.”
+   **Why it fails:** As shown in finding 4, the formal clause is automatically satisfied whenever \(t\) survives and any rival is eliminated. The prose claim is stronger than the formal condition.
+   **Severity:** serious.
+   **Fix:** either weaken the prose to match the clause or add a formal pairwise discrimination condition.
+
+14. **Claim attacked:** `Sel` as a whole is trivially satisfiable.
+   **Why it fails:** Choose any transport \(t\) faithful at some pair \(p\in C_{\mathrm{adm}}\). Realize a two-member population containing \(t\) and a rival that fails at \(p\). Let \(\mu\) be applied once, producing a variant that differs at \(p\). Let \(H=\{p\}\), survival exactly fidelity on \(H\). Since \(\mu\) occurs before failure, blindness is vacuous by finding 6. If non-triviality is ignored or satisfied vacuously, `Sel(t)` holds. This is a legitimate reading of the formal definition.
+   **Severity:** fatal for the claim that selection is a substantive provenance.
+   **Fix:** require production of \(t\) by \(\mu\), a non-post-hoc history, a non-vacuous blindness condition, and a typed non-triviality condition.
+
+15. **Claim attacked:** “The aggregate summary … does not make the process sighted.”
+   **Why it fails:** This is a stipulation, not a consequence of the definition. An aggregate summary can be the multiset of failures itself, or a canonical sorted encoding of all failure states, and still be invariant under permutations of which record failed. Such a summary can guide variation as effectively as an itemised record.
+   **Severity:** serious.
+   **Fix:** define an aggregate summary by its informational content or by behavioral counterfactual: variation must be conditionally independent of individual failure identities given the summary, with the summary fixed independently of the failures.
+
+16. **Claim attacked:** “an *aggregate* summary — a function of the multiset of failures invariant under permuting which record failed”.
+   **Why it fails:** Any function whose domain is a multiset is already invariant under permutations of the input records. The condition is either vacuous or ill-posed. It does not distinguish “how many and how badly” from a sorted list of every failure.
+   **Severity:** serious.
+   **Fix:** define the permitted summary by a fixed partition of failure space, or by a bound on the information it carries about individual failure states.
+
+17. **Claim attacked:** “such as how many and how badly”.
+   **Why it fails:** “How badly” can be a multiset of severities, one per failure. That is permutation-invariant but itemised by severity and can be used to target specific failures. It is not obviously blind.
+   **Severity:** minor to serious.
+   **Fix:** specify exactly which statistics are permitted and why they cannot function as itemised defect records.
+
+18. **Claim attacked:** “contains an **itemised defect representation** — an occurrence instantiating a record pairing a state at which some prior transport of \(s\) failed fidelity with what would have held — on an active route to the binding”.
+   **Why it fails:** The record need not be about the defect that the binding corrects, need not be produced before the binding, and need not be used in constructing the binding. Any unrelated prior failure record placed on a broad active route satisfies the literal condition.
+   **Severity:** fatal for `Build` as a creativity predicate.
+   **Fix:** require the record to specify the same contrast/port/failure mode that the binding corrects, to be produced before the binding, and to be causally necessary: removing it prevents or degrades the binding construction.
+
+19. **Claim attacked:** “on an active route to the binding”.
+   **Why it fails:** A binding is an assignment \(\lambda(k)\) of a component to a subnetwork. Part IX defines an active route as a subnetwork of actual occurrences joining an input occurrence to an operative result. A binding assignment is not an occurrence or an operative result. The route condition is ill-typed.
+   **Severity:** fatal for that conjunct.
+   **Fix:** define the route to the occurrence that instantiates the binding construction, or to the component whose relation realizes the binding.
+
+20. **Claim attacked:** “on an active route to the binding” also requires “declared contrasts” from Part IX.
+   **Why it fails:** \(\operatorname{Build}_{\beta,\ell}(s,c,h,e)\) supplies no contrast set. Part IX’s active route requires nonconstant dependence “under the declared contrasts.” Without contrasts, the active-route condition cannot be checked.
+   **Severity:** serious.
+   **Fix:** add the contrast set to `Build`, or define the relevant route relative to the failure-correcting distinction.
+
+21. **Claim attacked:** “neither a relabelling of a binding already in the repertoire”.
+   **Why it fails:** The repertoire \(R_{\beta,\ell}(s,\xi)\) is defined via `Deploy`, which requires a representation by (R). (R) requires `Sel` or `Con`. `Con` requires `Build`. So `Build`’s nontriviality condition refers to a repertoire that depends on `Con`, which depends on `Build`. This is a cycle, contradicting Part XIV’s well-foundedness claim.
+   **Severity:** fatal for the claimed dependence order.
+   **Fix:** define the prior repertoire used for nontriviality without reference to `Con`/`Build`, e.g. by structural prior contents and forward kinds, or stratify strictly by time with an explicit induction.
+
+22. **Claim attacked:** “it is **required for the transport** when deleting the binding breaks (F1) or (F2)”.
+   **Why it fails:** A binding is an assignment \(\lambda(k)\), not a component or constraint. “Deleting the binding” is not defined. Deleting a component is defined by (O), but deleting an anchor assignment is not.
+   **Severity:** serious.
+   **Fix:** define the counterfactual as replacing the binding with the trivial/full relation or removing the corresponding component relation, and state which operation is meant.
+
+23. **Claim attacked:** “**Construction is not selection.** A selection witness is blind; a construction witness has the defect record on its route.”
+   **Why it fails:** This is not a theorem from the definitions. `Sel` forbids an itemised defect record on an active route from a failure to \(\mu\). `Build` requires one on an active route to the binding. These are different routes with different endpoints. A process can have a sighted construction route and a blind selection route.
+   **Severity:** fatal for the separator claim.
+   **Fix:** make the two conditions mutually exclusive by ancestry: `Sel` requires no construction witness for the same transport structure, and `Con` requires no selection witness that produced the same transport structure.
+
+24. **Claim attacked:** “What keeps the two apart is one thing, and it is in both definitions”.
+   **Why it fails:** The definitions differ in many other ways: `Sel` has population, variation, survival, blindness; `Con` has ownership, binding construction, requiredness, non-composition of content-preserving transfers, and episode structure. Even if blindness/defect-record is the intended asymmetry, it is not the only separator.
+   **Severity:** serious.
+   **Fix:** weaken the claim to “the intended asymmetry is…” or make the other conditions identical.
+
+25. **Claim attacked:** “A process that is blind is not constructing; a process with the defect record on its route is not selecting, whatever else it does.”
+   **Why it fails:** A process can be blind with respect to the route from failure to \(\mu\) and sighted with respect to the route to the binding. The sentence is true only if “its route” means the same route, which is not specified.
+   **Severity:** serious.
+   **Fix:** state route-relative blindness/sightedness, and then state whether the same transport can bear both provenance witnesses.
+
+26. **Claim attacked:** “A physical system may exhibit both; the witnesses differ, and the earliest-witness rule of Part IV says which the resulting transport bears.”
+   **Why it fails:** This explicitly allows both `Sel` and `Con` to hold for the same transport. If both can hold, then the blindness/defect-record pair is not a separator. The earliest-witness rule then decides provenance by temporal order, not by the nature of the process.
+   **Severity:** fatal for the claim that the pair separates the provenances.
+   **Fix:** either prohibit both witnesses for the same transport or define a combined provenance and say what it means.
+
+27. **Claim attacked:** “the provenance of the **earliest** witness in \(\prec_h\) whose events produced the occurrence that carries \(t\)”.
+   **Why it fails:** \(\prec_h\) is a partial order on occurrences/events. Witnesses are sets of events. The definition does not say whether a witness’s time is its minimum event, its maximum event, or something else. If two witnesses are incomparable, there is no unique earliest.
+   **Severity:** serious.
+   **Fix:** define a total or well-founded order on witnesses, or require a unique minimal witness under a stated causal-production relation.
+
+28. **Claim attacked:** “whose events produced the occurrence”.
+   **Why it fails:** Precedence is not production. An event can precede an occurrence without causing it. The physical module supplies \(\prec_h\), described as an admitted-process dependency order, but no causal-production relation is defined. The rule cannot be checked without one.
+   **Severity:** serious.
+   **Fix:** define “produced” as a causal responsibility relation in the physical module, or replace “earliest” with a minimal set of events on which the occurrence counterfactually depends.
+
+29. **Claim attacked:** “a witness assembled afterwards from events that did not produce the occurrence is not a witness for it.”
+   **Why it fails:** This only excludes post hoc witnesses made of non-producing events. It does not exclude post hoc assembly from events that did produce the occurrence; it also does not explain how to distinguish “did produce” from “did not” without the missing production relation.
+   **Severity:** serious.
+   **Fix:** specify a production relation and state that a witness is the minimal set of producing events, regardless of when recognized.
+
+30. **Claim attacked:** “A demonstration that every construction witness … can be rewritten as a selection witness satisfying the elimination and blindness clauses of Part IV, without loss.”
+   **Why it fails:** Under the current definitions such a rewriting is easy for many constructions. Take a constructed transport \(t\) faithful at some pair \(p\). Realize a two-member population containing \(t\) and a rival failing at \(p\). Apply a physically admitted \(\mu\) to produce a variant differing at \(p\). Let \(H=\{p\}\), survival exactly fidelity on \(H\). Ensure the itemised defect record used in `Build` is on the route to the binding but not on any active route from failure to \(\mu\). Then `Sel(t)` holds by the literal clauses, even though `Con(t)` also holds. This is not the trivial reading: \(|\mathcal T|=2\) and \(H\neq\varnothing\).
+   **Severity:** fatal for the claim that construction cannot be rewritten as selection.
+   **Fix:** require `Sel` to produce the same transport structure by variation and survival, not merely filter a pre-existing constructed transport; add an ancestry condition excluding constructions.
+
+31. **Claim attacked:** “A rewriting that satisfies only the trivial reading of selection (singleton population, empty history) does not count, because that reading is excluded.”
+   **Why it fails:** The trivial reading is excluded, but the gerrymandered two-member, one-pair reading is not. The attack in finding 30 satisfies the stated non-triviality conditions.
+   **Severity:** serious.
+   **Fix:** strengthen `Sel` beyond mere non-singleton population and non-empty \(H\), e.g. require \(H\) to be the full encountered history and \(t\) to be produced by \(\mu\).
+
+32. **Claim attacked:** “Can construction still be rewritten as selection or vice versa?”
+   **Why it fails:** Construction-to-selection is possible as in finding 30. Selection-to-construction is also possible for any selected transport that already has a nontrivial binding: insert an itemised record of the eliminated rival’s failure on an active route to that binding. `Build` does not require the record to be causally efficacious or to be about the binding’s defect. Thus the pair is not a separator in either direction for a broad class of cases.
+   **Severity:** serious.
+   **Fix:** add causal counterfactuals to both predicates: for `Build`, removing the defect record must prevent the binding construction; for `Sel`, adding a defect record on the route from failure to variation must alter variation in a way that makes the process Lamarckian.
+
+33. **Claim attacked:** `Con(t;h,e)` requires “the organization \(t\) runs from (its \(D\)) is instantiated by an occurrence in the episode’s history before \(e\), in the module’s sense of Inst”.
+   **Why it fails:** For mathematical or modelled organizations, there is no physical module and no \(\operatorname{Inst}\). Yet Part III and Part X say questions can be mathematical or constructed. `Con` therefore cannot apply to mathematical constructions unless a module licenses them, which is not supplied.
+   **Severity:** serious.
+   **Fix:** either restrict `Con` to physically instantiated organizations, or define an instantiation relation for declared admission relations.
+
+34. **Claim attacked:** “the provenance of a content’s occurrence is the provenance of the transport that witnesses (R) for it; where several do, the earliest.”
+   **Why it fails:** Because `Sel` is trivially gerrymanderable, any content with a constructed witness can also be given an earlier trivial selection witness. The earliest-witness rule then masks the construction and labels the content selected.
+   **Severity:** fatal for using provenance to mark creativity.
+   **Fix:** define content provenance by the transport that causally produced the content’s current structure, not by the earliest among all witnesses.
+
+35. **Claim attacked:** “Later histories are maintenance and do not change provenance.”
+   **Why it fails:** If a later construction substantially rebuilds a selected transport’s binding structure, it is not merely maintenance. The rule forbids changing provenance, so originative construction is not recognized.
+   **Severity:** serious.
+   **Fix:** distinguish maintenance from reconstruction that changes the transport structure, and allow the latter to create a new occurrence/transport with construction provenance.
+
+36. **Claim attacked:** “no itemised representation of a defect … lies on any active route from a failure to an application of \(\mu\)” restricts defects to itemised records.
+   **Why it fails:** A process can be sighted via an itemised record that is not on a route from failure to \(\mu\), but instead controls a parameter that later influences \(\mu\). The route condition targets only direct or active-route connection, but “active route” is not shown transitive here. A record can inform an intermediate that sets the variation distribution without the record itself lying on the route.
+   **Severity:** serious.
+   **Fix:** define blindness as no causal dependence of \(\mu\)’s output distribution on itemised failure records, not merely absence of a record on one class of routes.
+
+37. **Claim attacked:** “an occurrence instantiating a record that pairs the state at which fidelity failed with what would have held” is called a “representation.”
+   **Why it fails:** Representation is defined by (R), requiring a faithful transport with selected or constructed provenance. The record occurrence’s relation to the failure may itself need provenance. If it is selected, its own blindness condition may apply; if constructed, its own defect record is required. The definition does not say whether the record must satisfy (R), and if it does, the definitions may recurse.
+   **Severity:** serious.
+   **Fix:** state whether “representation” in the blindness and `Build` clauses is the derived (R) predicate or a weaker informal record relation. If (R), provide the provenance requirement and check for circularity.
+
+38. **Claim attacked:** “an *aggregate* summary … is explicitly permitted and does not make the process sighted.”
+   **Why it fails:** Permitting aggregate summaries creates a loophole for `Build` as well: a process can use a permutation-invariant but information-preserving summary, claim blindness for `Sel`, and still use the same summary to guide binding construction. The distinction between aggregate and itemised is not operational.
+   **Severity:** serious.
+   **Fix:** define aggregate and itemised by a common information measure, or by a behavioral test: can the variation/binding distribution be changed by permuting or relabeling individual failure records?
+
+39. **Claim attacked:** “survival exactly equivalent to fidelity on \(H\)” plus “eliminated at least one member”.
+   **Why it fails:** If the survival condition is a definition rather than an independently described environmental filter, then the “physical module” check reduces to checking that some filter computes fidelity on \(H\). Any modeller can posit such a filter. The selection witness is then a stipulation about the model, not a claim about a physical history.
+   **Severity:** serious.
+   **Fix:** require the survival condition to be described independently of \(H\) and \(t\), and require that its physical realization not embody a representation of \(H\) or \(t\) (which also touches the ill-typed non-triviality clause).
+
+40. **Claim attacked:** “Does the earliest-witness rule work?”
+   **Why it fails:** It does not work in the presence of multiple or overlapping witnesses, partial order, missing production relation, or trivial selection witnesses. It also does not prevent goalpost-moving: one can add an earlier witness to change provenance without changing the transport.
+   **Severity:** fatal for the proposed provenance rule.
+   **Fix:** replace it with a causal-production-based provenance of the transport’s current structure, with explicit uniqueness or overdetermination handling, and with a counterfactual test that the witness is minimal for that structure.

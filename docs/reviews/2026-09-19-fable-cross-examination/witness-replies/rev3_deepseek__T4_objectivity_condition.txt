@@ -1,0 +1,328 @@
+====================================================================================================
+T4_objectivity_condition | rev3_deepseek | sample 0 | finish stop | 17890 chars | error None
+====================================================================================================
+1. **Finding 1 — “touches” is not defined.**  
+   **Claim attacked:** “touches the anchor — changes the relation of some component in it”; properness uses “components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches.”  
+   **Why it fails:** No comparison class is given for “changes the relation.” Is \(L_j(a,b)\neq L_j(1,b_0)\)? Is it change relative to the previous pair? Does a boundary change \(b\neq b_0\) with \(a=1\) count? For a multi-component anchor, is touching any component enough? The touched-component set of \(D\) is never formally defined, yet silence, properness, resolution, and protection all depend on it.  
+   **Severity:** Serious.  
+   **Fix:** Define \(\operatorname{Touch}_D(a,b,j)\) explicitly, e.g. \(L_j(a,b)\neq L_j(1,b_0)\), extend it to subnetworks, state whether boundary changes count, and prove the same notion is used everywhere.
+
+2. **Finding 2 — “silent only when” is one-way, but the objectivity condition uses the converse.**  
+   **Claim attacked:** “A candidate is *silent* on an admitted pair only when that pair touches no anchor of any active component.”  
+   **Why it fails:** “Only when” gives silence \(\Rightarrow\) no anchor touched, not no anchor touched \(\Rightarrow\) silence. The protective clause then says “touches some anchor … so that the candidate is not silent on it,” which needs the converse. As written, a pair can touch an anchor and still be silent.  
+   **Severity:** Serious.  
+   **Fix:** Define silence by biconditional, or define it positively as “the pair does not change any active component’s transported relation,” and then state the anchor condition as a theorem.
+
+3. **Finding 3 — Hidden ports break the identification of “touching anchor” with non-silence.**  
+   **Claim attacked:** “touches the anchor — changes the relation of some component in it”; condition 3 uses anchors with hidden ports, while (F1) only equates a projection.  
+   **Why it fails:** A pair can change a hidden component inside an anchor while leaving the projected relation \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}]\) and hence \(L_k\) unchanged. The candidate is silent on the visible component, but the condition calls the pair non-silent because it “touches the anchor.” This can both misclassify protection and make the anchored grade incoherent.  
+   **Severity:** Serious.  
+   **Fix:** Define silence by change in \(L_k(\tau(a),\sigma(b))\) or in the transported answer, not by change in any hidden component of the anchor; or require anchors’ visible ports to include every port touched by admitted pairs.
+
+4. **Finding 4 — Properness over-covers module-live components, not question-relevant components.**  
+   **Claim attacked:** “The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches.”  
+   **Why it fails:** \(C_{\mathrm{adm}}\) is the whole module’s admitted edit set. Properness therefore forces active anchors for background components that no part of the question’s query or contract reaches. This contradicts Part 0’s description of an anchored account as “a proper decomposition of the target at the resolution the question needs.” It can exclude a genuine mechanism that abstracts from module-live but question-irrelevant components.  
+   **Severity:** Serious.  
+   **Fix:** Relativize properness to components reachable from \(C\) or from \(\operatorname{Ans}_p\), or separate “module-live coverage” from “question-resolution coverage” and require only the latter for anchoring.
+
+5. **Finding 5 — If properness is read as written, silence is almost vacuous and objectivity becomes too strong.**  
+   **Claim attacked:** “by properness an anchored account is silent on no admitted pair that touches a component the question’s contract reaches.”  
+   **Why it fails:** If properness covers every component touched by any pair in \(C_{\mathrm{adm}}\), then every admitted pair that changes any component touches some active anchor. An anchored account is then silent only on pairs that touch no component at all. The objectivity condition would require the candidate’s full transported answer to agree with the target on every admitted pair outside \(C\), even though anchored account-hood only gives component fidelity on touched anchors and does not extend (F2) to all of \(C_{\mathrm{adm}}\).  
+   **Severity:** Serious.  
+   **Fix:** Either weaken properness to question-relevant components, or extend (F2) and question fidelity to all of \(C_{\mathrm{adm}}\) for anchored accounts, so the objectivity condition is testing the same strength as anchoring.
+
+6. **Finding 6 — The objectivity condition is too weak for non-anchored accounts: \(\lambda\) is candidate-controlled.**  
+   **Claim attacked:** “Silence — a pair touching no anchor — is a stated limit of scope, not protection, and it is not under the candidate’s control: it is read off \(\lambda\).”  
+   **Why it fails:** \(\lambda\) is part of the transport supplied by the modeller/candidate. Properness constrains \(\lambda\) only in the *anchored* grade, but the objectivity claim is defined for \(\operatorname{Account}(E,p,t,\Gamma)\), not for anchored account-hood. A candidate can choose a sparse \(\lambda\) that omits target components touched by \(C_{\mathrm{adm}}\); excluded pairs touching those omitted components then touch no anchor, are classified as “silence,” and do not make \(C\) protective. The candidate thus protects itself by not covering what it should answer for.  
+   **Severity:** Fatal for the claimed objectivity condition.  
+   **Fix:** Require anchored account-hood for the objectivity claim, or define protection relative to components of \(D\) touched by \(C_{\mathrm{adm}}\) and relevant to the question, regardless of the candidate’s chosen \(\lambda\). If the candidate omits such a component, that is a failure of objectivity, not silence.
+
+7. **Finding 7 — “Extended to such pairs by \(\lambda\)” is not well-defined; \(\lambda\) does not translate edits.**  
+   **Claim attacked:** “the transport being extended to such pairs by \(\lambda\) (the edit acts on an anchored component, so its translation is the corresponding edit on the anchored component of \(E\)).”  
+   **Why it fails:** \(\lambda\) assigns each component of \(E\) a subnetwork of \(D\) with a port translation. It does not translate edits or boundaries. \(\tau:A_D\to A_E\) and \(\sigma:B_D\to B_E\) do that. If \(\tau,\sigma\) are already total, no extension by \(\lambda\) is needed. If they are not total, \(\lambda\) cannot supply the missing translation.  
+   **Severity:** Fatal.  
+   **Fix:** Require the transport to be defined on all of \(C_{\mathrm{adm}}\), or define an explicit extension operator for \(\tau,\sigma,\mathcal Q_E\) on \(C_{\mathrm{adm}}\setminus C\) and prove it is well-defined. Do not attribute extension to \(\lambda\).
+
+8. **Finding 8 — \(\operatorname{Ans}_E\) is global, but \(\lambda\) is local; the condition conflates actual candidate answer with a modified answer.**  
+   **Claim attacked:** “the candidate’s transported answer … \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq\operatorname{Ans}_p(a,b)\), the transport being extended to such pairs by \(\lambda\).”  
+   **Why it fails:** \(\operatorname{Ans}_E\) depends on the whole assembled solution set \(\operatorname{Sol}_E(\tau(a),\sigma(b))\), including components and boundaries not touched by the anchor. \(\lambda\) alone does not determine how those other components respond. If the condition uses \(E\)’s actual relations at \(\tau(a),\sigma(b)\), then \(\lambda\) is irrelevant and the answer may differ for reasons unrelated to the touched anchor. If it forces anchored components to match the anchor via \(\lambda\), it is evaluating a modified candidate, not the candidate’s transported answer.  
+   **Severity:** Fatal.  
+   **Fix:** Choose one: either evaluate the actual \(E\) under a total transport faithful on \(C_{\mathrm{adm}}\), or define a modified candidate \(E_\lambda\) and say the objectivity condition is about \(E_\lambda\), not \(E\).
+
+9. **Finding 9 — A single admitted edit can touch several anchors, but the text speaks of “the anchored component.”**  
+   **Claim attacked:** “the edit acts on an anchored component, so its translation is the corresponding edit on the anchored component of \(E\).”  
+   **Why it fails:** An edit can change relations in several components of \(D\), hence touch several anchors. A boundary change can also affect many components. Properness requires injectivity of anchors but not disjointness, so anchors may overlap. \(\lambda\) gives no joint translation of a multi-anchor edit and no guarantee that the componentwise translations compose into a single edit of \(A_E\).  
+   **Severity:** Serious.  
+   **Fix:** Require \(\lambda\) to partition the touched components, define \(\tau\) componentwise on that partition, prove consistency with \(A_E\)’s composition and with \(\sigma\), or restrict the objectivity condition to pairs touching exactly one anchor.
+
+10. **Finding 10 — Only target-side definedness is required; candidate-side definedness is not.**  
+   **Claim attacked:** “on which the target’s answer is defined and the candidate’s transported answer differs from it: \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq\operatorname{Ans}_p(a,b)\).”  
+   **Why it fails:** \(\mathcal Q_E\) is only declared with the transport and may not be defined outside \(C\). \(\tau(a)\) may not lie in \(A_E\), and \(\sigma(b)\) may not lie in \(B_E\). If the candidate’s transported answer is undefined, the inequality is not false—it is not a proposition.  
+   **Severity:** Serious.  
+   **Fix:** Require both \(\operatorname{Ans}_p(a,b)\) and \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) to be defined on the excluded pair, and state the domains of \(\mathcal Q_E,\tau,\sigma\) on \(C_{\mathrm{adm}}\).
+
+11. **Finding 11 — Resolution uses \(\operatorname{Ans}_p\) on \(C_{\mathrm{adm}}\), but coherent posing only requires \(\mathcal Q\) on \(C\).**  
+   **Claim attacked:** “Whenever two components of \(D\) can be separately varied by pairs in \(C_{\mathrm{adm}}\) with distinct effects on \(\operatorname{Ans}_p\), they lie in distinct anchors.”  
+   **Why it fails:** Part III’s coherent posing requires \(\mathcal Q\) defined on every pair in \(C\), not on every pair in \(C_{\mathrm{adm}}\). If \(C\) is a proper scope, \(\operatorname{Ans}_p\) may be undefined on \(C_{\mathrm{adm}}\setminus C\), making the resolution condition unevaluable.  
+   **Severity:** Serious.  
+   **Fix:** Require \(\mathcal Q\) to be total on \(C_{\mathrm{adm}}\), or restrict resolution to pairs where \(\operatorname{Ans}_p\) is defined and add the same definedness guard used in the objectivity condition.
+
+12. **Finding 12 — Condition 3 equivocates between forward-kind equality on \(C_{\mathrm{adm}}\) and fidelity only on touching pairs.**  
+   **Claim attacked:** “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\) … : fidelity holds not only on the pairs the contract selected but on every admitted pair that touches the anchor.”  
+   **Why it fails:** Part II’s forward kind on \(C_{\mathrm{adm}}\) requires signature coincidence on all pairs in \(C_{\mathrm{adm}}\) except the baseline, including pairs that do not touch the anchor. The colon instead requires fidelity only on pairs that touch the anchor. These are different conditions. The objectivity condition’s silence definition then uses the weaker “touching” notion, while the anchored grade may have required the stronger one.  
+   **Severity:** Serious.  
+   **Fix:** State exactly whether condition 3 is (K) on \(C_{\mathrm{adm}}\) or (F1) on touching pairs. If it is (K) on \(C_{\mathrm{adm}}\), define silence separately and do not infer it from non-touching.
+
+13. **Finding 13 — Collision with Grievance 4: the two definitions of protection are not equivalent.**  
+   **Claim attacked:** Grievance 4 says “a contract is protective for a candidate when some physically admitted change it excludes would alter the target’s answer and not the candidate’s, or the reverse.” Part V says \(C\) is protective when “the candidate’s transported answer differs from it.”  
+   **Why it fails:** If target and candidate both change but change differently, Part V calls the contract protective; the literal Grievance 4 formula (“alter the target’s answer and not the candidate’s, or the reverse”) does not. Also Grievance 4 says “where the candidate covers the component the change touches,” while Part V formalizes coverage as “touches some anchor of an active component.”  
+   **Severity:** Serious.  
+   **Fix:** Align the two definitions. Either define protection as disagreement at the excluded pair, or as change-relative mismatch, and use the same coverage condition in both places.
+
+14. **Finding 14 — Collision with Derivation 7: the stated necessary condition is incomplete.**  
+   **Claim attacked:** Derivation 7 says “the objectivity condition of Part V answers it only where the candidate is evaluable and wrong on the excluded change.”  
+   **Why it fails:** Part V also requires that the pair touches an anchor, that the target’s answer is defined, and that the transport be extendable to the excluded pair. Derivation 7 omits all of these. If read as a characterization of when the objectivity condition answers, it is false; if read only as a necessary condition, it is incomplete but not false.  
+   **Severity:** Minor to serious.  
+   **Fix:** Restate Derivation 7 with the full Part V conditions, or explicitly say the quoted phrase is only a necessary condition.
+
+15. **Finding 15 — Collision with Part VIII: “account-hood at \(C\) is untouched” is true for Account, but not for anchoring or objectivity.**  
+   **Claim attacked:** “a later module with a larger \(A_\Theta\) makes it a new claim at a new index (Part VIII), and account-hood at \(C\) is untouched by it.”  
+   **Why it fails:** \(C=S\cup K\) is fixed if \(S\) and \(K\) are fixed, so \(\operatorname{Account}(E,p,t,\Gamma)\) at \(C\) is untouched. But the anchored grade uses \(C_{\mathrm{adm}}\) in properness, resolution, and world-kind. A larger \(A_\Theta\) changes the anchored grade, and the objectivity claim is explicitly module-indexed. Part VIII only covers contract-indexed claims.  
+   **Severity:** Minor to serious.  
+   **Fix:** Say that account-hood at \(C\) is untouched, but anchored account-hood and objectivity are new claims at the new module index.
+
+16. **Finding 16 — Collision with \(K\): no direct collision, but the extension mechanism is inconsistent with \(K\).**  
+   **Claim attacked:** “a pair in \(K\) enters non-vacuity only through the relations it declares” versus “the transport being extended to such pairs by \(\lambda\).”  
+   **Why it fails:** \(K\) pairs are outside \(C_{\mathrm{adm}}\), and their transport extension is by declaration of relations. For \(C_{\mathrm{adm}}\setminus C\), no relations are declared; the text instead appeals to \(\lambda\). This is not the same mechanism and does not show that \(\tau,\sigma,\mathcal Q_E\) are defined.  
+   **Severity:** Minor, but it exposes the missing extension definition.  
+   **Fix:** Either declare the relations and translations for excluded admitted pairs as for \(K\), or restrict objectivity to pairs where the transport is already declared.
+
+17. **Finding 17 — Definedness differences are ignored asymmetrically.**  
+   **Claim attacked:** “on which the target’s answer is defined and the candidate’s transported answer differs from it.”  
+   **Why it fails:** If the target’s answer is undefined on an excluded pair, the pair is ignored. If the candidate’s transported answer is undefined, the inequality is not satisfied, so the contract is not protective. A candidate can thus be protected by hiding a pair where it cannot answer.  
+   **Severity:** Serious.  
+   **Fix:** Specify how definedness differences count. For non-protection, require definedness agreement where the target is defined; separately classify candidate undefined where target defined as protection or as failure of objectivity.
+
+18. **Finding 18 — The objectivity claim is not well-defined for \(E\) alone because \(\operatorname{Account}(E,p)\) existentially quantifies \(t,\Gamma\).**  
+   **Claim attacked:** “\(\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma)\)” and “An objectivity claim for \(\mathcal E=(E,p,t,\Gamma)\).”  
+   **Why it fails:** If the candidate is the organization \(E\), there may be multiple transports and active sets witnessing account-hood. One witnessing \(t\) may make \(C\) protective; another may not. The text writes \(\mathcal E=(E,p,t,\Gamma)\) but also speaks of the objectivity claim “for \(E\).” The object of the claim is ambiguous.  
+   **Severity:** Serious.  
+   **Fix:** Define objectivity for the quadruple \((E,p,t,\Gamma)\), or define it for \(E\) by requiring every witnessing transport/active set to be non-protective, or specify a canonical witness.
+
+19. **Finding 19 — “refine a cover” in properness is undefined.**  
+   **Claim attacked:** “The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches.”  
+   **Why it fails:** A cover and a refinement are not specified here. It is unclear whether the anchors themselves are meant to cover the touched components, or whether there is an additional unexplained cover they refine. Injectivity alone permits overlapping anchors, which then causes the multi-anchor translation problem in Finding 9.  
+   **Severity:** Minor to serious.  
+   **Fix:** State directly that the anchors cover the touched components; if refinement is intended, name the cover and define the refinement relation. If disjointness is intended, require it explicitly.
+====================================================================================================
+T4_objectivity_condition | rev3_deepseek | sample 1 | finish stop | 16018 chars | error None
+====================================================================================================
+The objectivity condition in Part V is not well-defined as stated. Findings follow; each quotes the passage attacked.
+
+**Finding 1 — “Touches” has no reference point.**
+- **Claim attacked:** “every admitted pair that **touches** the anchor — changes the relation of some component in it”; “some pair in \(C_{\mathrm{adm}}\) changes its relation.”
+- **Why it fails:** “Changes” relative to what? Baseline \((1,b_0)\)? The previous edit? The same edit at another boundary? If \(a=1\) and \(b\neq b_0\), does the boundary change count as touching the anchor? The definition of structural silence depends on this, and the text never fixes it.
+- **Severity:** Fatal.
+- **Fix:** Define touch explicitly: \((a,b)\) touches anchor \(U\) iff \(L_j(a,b)\neq L_j(1,b_0)\) for some \(j\in U\), with boundary handling stated.
+
+**Finding 2 — Silence is not read off \(\lambda\) alone.**
+- **Claim attacked:** “silence is structural, read off the anchor map, never declared.”
+- **Why it fails:** To know whether a pair touches an anchor you need \(L_j(a,b)\) and \(C_{\mathrm{adm}}\), not just \(\lambda\). The anchor map alone does not tell you whether a component relation changes. Also \(\lambda\) is part of the candidate transport \(t=(\pi,\tau,\sigma,\lambda)\), so it is supplied candidate data, not a fact independent of the candidate.
+- **Severity:** Serious.
+- **Fix:** State silence as a predicate of \((\lambda,D,C_{\mathrm{adm}},L)\), and acknowledge that \(\lambda\) is candidate data.
+
+**Finding 3 — “Only when” is later treated as “if and only if.”**
+- **Claim attacked:** “A candidate is *silent* on an admitted pair only when that pair touches no anchor of any active component”; “Silence — a pair touching no anchor — is a stated limit of scope.”
+- **Why it fails:** “Only when” gives a necessary condition. The later sentence treats “touches no anchor” as sufficient for silence. That is invalid: a pair can touch no anchor while \(\sigma(b)\) changes the boundary and alters the candidate’s answer, or while a shared constraint changes. The candidate may not be silent at all.
+- **Severity:** Serious.
+- **Fix:** Define silence as “candidate’s transported answer is undefined or not determined,” and separately define anchor coverage. Prove the equivalence under stated conditions if intended.
+
+**Finding 4 — Properness is too strong for the question-relative grade.**
+- **Claim attacked:** “The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches… no touched component of \(D\) lies outside every anchor.”
+- **Why it fails:** Properness covers every component touched by *any* admitted pair, not just components touched by the question’s contract \(C\) or relevant to \(\mathcal Q\). An anchored account is therefore forced to anchor physically touchable components that the question never asks about. That is stronger than “a proper decomposition of the target at the resolution the question needs.”
+- **Severity:** Serious.
+- **Fix:** Restrict the cover to components touched by \(C\) or by pairs relevant to \(\mathcal Q\), or state explicitly that the anchored grade is a global physical-model condition.
+
+**Finding 5 — Objectivity borrows silence from a grade it does not require.**
+- **Claim attacked:** “An **objectivity claim** for \(\mathcal E=(E,p,t,\Gamma)\) is the conjunction of \(\operatorname{Account}(E,p,t,\Gamma)\) and … that \(C\) is **not protective**”; “so that the candidate is not silent on it in the structural sense of the anchored grade.”
+- **Why it fails:** Objectivity requires only \(\operatorname{Account}\), i.e. the first grade. Properness is part of the *anchored* grade, not \(\operatorname{Account}\). A candidate can therefore omit anchors, be silent on a relevant admitted change, and avoid protection. The condition is too weak for non-anchored candidates.
+- **Severity:** Serious.
+- **Fix:** Require the anchored grade for objectivity claims, or define silence independently of properness and forbid anchor omission.
+
+**Finding 6 — “Extended to such pairs by \(\lambda\)” is not well-defined.**
+- **Claim attacked:** “the transport being extended to such pairs by \(\lambda\) (the edit acts on an anchored component, so its translation is the corresponding edit on the anchored component of \(E\)).”
+- **Why it fails:** \(\lambda\) maps components of \(E\) to subnetworks of \(D\). It does not translate edits. \(\tau\) already translates edits \(A_D\to A_E\). If \(\tau\) is partial, \(\lambda\) cannot extend it. If an edit touches several anchors or also changes non-anchored components, there is no unique “corresponding edit on the anchored component.”
+- **Severity:** Fatal.
+- **Fix:** Require total \(\tau\) on \(C_{\mathrm{adm}}\) and use \(\tau(a),\sigma(b)\) globally. Delete “by \(\lambda\).”
+
+**Finding 7 — Undefined candidate answers evade protection.**
+- **Claim attacked:** “on which the target's answer is defined and the candidate's transported answer differs from it.”
+- **Why it fails:** \(\mathcal Q_E\) may be undefined on pairs outside \(C\). If the candidate’s transported answer is undefined, there is no difference, so the pair is not protective. A candidate can evade protection by making \(\mathcal Q_E\) partial.
+- **Severity:** Serious.
+- **Fix:** Require \(\mathcal Q_E\) to be defined on every pair considered, or treat undefined as protection/failure.
+
+**Finding 8 — Undefined target answers make the condition vacuous.**
+- **Claim attacked:** “on which the target's answer is defined.”
+- **Why it fails:** Coherently posed requires only that \(\mathcal Q\) is defined on every pair in \(C\). If \(\mathcal Q\) has domain \(C\), then no excluded pair has a target answer, and the objectivity condition never triggers. The condition is then vacuous.
+- **Severity:** Serious.
+- **Fix:** Require \(\mathcal Q\) to be defined on \(C_{\mathrm{adm}}\) or on all pairs touching anchors for an objectivity claim.
+
+**Finding 9 — Grievance 4 states a different protective condition.**
+- **Claim attacked:** Grievance 4: “a contract is protective for a candidate when some physically admitted change it excludes would alter the target's answer and not the candidate's, or the reverse.” Part V: “the candidate's transported answer differs from it.”
+- **Why it fails:** Grievance 4 compares alteration relative to baseline and is one-sided (“or the reverse”). Part V compares the candidate’s and target’s answers at the excluded pair. They are not equivalent. Part V catches cases where both answers alter but differently; Grievance 4, read literally, does not. The “or the reverse” is also redundant if Part V’s inequality is intended.
+- **Severity:** Serious.
+- **Fix:** State one definition. If Part V’s inequality is intended, prove equivalence given baseline agreement and align Grievance 4.
+
+**Finding 10 — Grievance 4 says silence is declared; Part V says it is never declared.**
+- **Claim attacked:** Grievance 4: “Where it does not, the candidate is silent, its scope is a stated limit.” Part V: “silence is structural, read off the anchor map, never declared.”
+- **Why it fails:** One says silence is a declared scope limit. The other says silence is never declared. Direct contradiction.
+- **Severity:** Serious.
+- **Fix:** Distinguish declared scope \(S\) from structural silence. State exactly how they relate.
+
+**Finding 11 — “The target is right about itself” assumes target correctness.**
+- **Claim attacked:** “The target is right about itself by definition, so ‘the candidate is better’ is not a case.”
+- **Why it fails:** Part III explicitly allows that a question may fail to pick out its target or assume incompatible requirements. A target can be wrong about the world. A candidate that is better against the physical module is marked protective under the condition because it differs from the target. The objectivity claim cannot represent the candidate correcting a bad target.
+- **Severity:** Serious.
+- **Fix:** Separate target self-answer from world answer. Allow “candidate better” as a separate case, or stipulate that the target is an oracle for the question.
+
+**Finding 12 — \(C\) is defined via \(C_{\mathrm{adm}}\), so module growth changes the contract.**
+- **Claim attacked:** Part III: “\(C=(C_{\mathrm{adm}}\cap S)\cup K\).” Part V: “a later module with a larger \(A_\Theta\) makes it a new claim at a new index (Part VIII), and account-hood at \(C\) is untouched by it.”
+- **Why it fails:** If \(A_\Theta\) grows, \(C_{\mathrm{adm}}\) grows. Then \(C=(C_{\mathrm{adm}}\cap S)\cup K\) grows unless \(S\) is adjusted. So \(C\) is not untouched. The old contract is a different set. The claim “account-hood at \(C\) is untouched” is false unless \(C\) is fixed independently of \(C_{\mathrm{adm}}\).
+- **Severity:** Serious.
+- **Fix:** Define \(C\) with a fixed admitted set, or make the index explicitly \((C,C_{\mathrm{adm}},\Theta)\) and state how \(S\) adjusts.
+
+**Finding 13 — Derivation 7 does not cover the second index.**
+- **Claim attacked:** Derivation 7: “The assessment is indexed to \(C\); its claim keeps its identity and its truth value at that index.”
+- **Why it fails:** The objectivity claim’s truth value depends on \(C_{\mathrm{adm}}\). A module change can change the truth value at a fixed \(C\). Derivation 7 only discusses contract change, not module change. It is inconsistent with Part V’s second index.
+- **Severity:** Serious.
+- **Fix:** Extend Derivation 7 to include the module index, or restrict the objectivity claim to a fixed module.
+
+**Finding 14 — \(K\) is ignored by objectivity, and module growth can break coherence.**
+- **Claim attacked:** Part III: “\(K\cap C_{\mathrm{adm}}=\varnothing\).” Part V: “admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\).”
+- **Why it fails:** The objectivity condition ranges only over \(C_{\mathrm{adm}}\), so it says nothing about \(K\). For questions whose main contrast is counterfactual, the objectivity claim is silent about the main contrast. Worse, if a later module makes a \(K\) pair admitted, then \(K\cap C_{\mathrm{adm}}\neq\varnothing\), so the question is no longer coherently posed. The old question becomes incoherent, not merely a new index.
+- **Severity:** Serious.
+- **Fix:** State that \(K\) is out of scope for objectivity and specify what happens if module growth admits a \(K\) pair. Or include \(K\) in a declared-relative protection condition.
+
+**Finding 15 — Edits are global, not localized to one anchored component.**
+- **Claim attacked:** “the edit acts on an anchored component, so its translation is the corresponding edit on the anchored component of \(E\).”
+- **Why it fails:** Edits in \(A\) are global: \(L_j(a,b)\) is supplied for every component \(j\). An edit can touch multiple anchors and non-anchored components. There is no single “corresponding edit” on one component.
+- **Severity:** Serious.
+- **Fix:** Use the global \(\tau(a)\). Do not localize edits to one anchor. Handle multi-anchor edits explicitly.
+
+**Finding 16 — \(\mathcal Q_E\) is declared, not constrained outside \(C\).**
+- **Claim attacked:** Part IV: “the **transported query** \(\mathcal Q_E\), an operation on \(E\) of the same type as \(\mathcal Q\), declared with the transport.”
+- **Why it fails:** \(\mathcal Q_E\) is not constrained to be the transport of \(\mathcal Q\) outside \(C\). A difference on an excluded pair may be due to a wrong \(\mathcal Q_E\), not scope protection. A candidate can choose \(\mathcal Q_E\) to avoid differences. The condition conflates query translation with scope protection.
+- **Severity:** Serious.
+- **Fix:** Require \(\mathcal Q_E\) to be the transported query on \(C_{\mathrm{adm}}\), or define transported answer independently of declared \(\mathcal Q_E\).
+
+**Finding 17 — Silence is under the candidate’s control.**
+- **Claim attacked:** “Silence — a pair touching no anchor — is a stated limit of scope, not protection, and it is not under the candidate's control: it is read off \(\lambda\).”
+- **Why it fails:** \(\lambda\) is part of the transport \(t=(\pi,\tau,\sigma,\lambda)\), which is candidate data. The modeller chooses anchors. Even if the transport is selected or constructed, \(\lambda\) is data. A candidate can control silence by omitting anchors.
+- **Severity:** Serious.
+- **Fix:** Require properness for objectivity claims, or make the anchor map not candidate-choosable.
+
+**Finding 18 — “The question’s contract reaches” is undefined.**
+- **Claim attacked:** “by properness an anchored account is silent on no admitted pair that touches a component the question's contract reaches.”
+- **Why it fails:** “Reaches” is not defined. If \(C\) contains only \(K\) pairs touching a component, properness over \(C_{\mathrm{adm}}\) may not cover it, but objectivity ranges over \(C_{\mathrm{adm}}\), so no admitted pair touches it. The clause is either redundant or vacuous.
+- **Severity:** Minor to serious.
+- **Fix:** Define “reaches” as “some pair in \(C\cap C_{\mathrm{adm}}\) changes it,” or delete the clause.
+
+**Finding 19 — Answer-equivalence can hide component infidelity.**
+- **Claim attacked:** “candidate's transported answer differs from it.”
+- **Why it fails:** If the query ignores the port changed, an admitted change touching an anchor may alter a component relation but not the answer. For first-grade \(\operatorname{Account}\), component fidelity outside \(C\) is not required. A candidate can be structurally wrong but answer-equivalent, and the objectivity condition will not catch it.
+- **Severity:** Serious.
+- **Fix:** Require the anchored grade for objectivity, or include component fidelity in the protection condition.
+
+**Finding 20 — The condition can be too strong for anchored candidates if \(F2\) is not extended.**
+- **Claim attacked:** “Anchoring is therefore component fidelity on the full admitted contract, with a proper decomposition at the question's resolution.”
+- **Why it fails:** Condition 3 extends component fidelity to all admitted pairs touching anchors, but it does not explicitly extend the assembled condition (F2) to those pairs. An anchored account can have every active component of the right world-kind and still produce a different assembled answer on an excluded pair because of a lost shared constraint. The objectivity condition will call the contract protective, even though the anchor conditions are met.
+- **Severity:** Serious.
+- **Fix:** Extend (F2) to all admitted pairs touching anchors, or state that objectivity is a separate assembled-fidelity condition.
+
+**Finding 21 — The objectivity condition is not invariant under candidate transport choice.**
+- **Claim attacked:** “\(C\) is **not protective** for \(\mathcal E\).”
+- **Why it fails:** The same organization \(E\) with different transports \(t,t'\) can have different protection status because \(\tau,\sigma,\mathcal Q_E\) differ. The objectivity claim is a property of \(\mathcal E\), but the text sometimes speaks as if it is a property of \(C\) against the module. The candidate can choose a transport to avoid protection.
+- **Severity:** Serious.
+- **Fix:** State explicitly that protection is relative to \(\mathcal E\), or constrain transports so that \(\tau,\sigma,\mathcal Q_E\) are determined by the anchor map and query.
+
+**Finding 22 — Properness may force anchors for components no admitted change can separate from the answer.**
+- **Claim attacked:** “no touched component of \(D\) lies outside every anchor.”
+- **Why it fails:** A component can be touched by an admitted pair but make no difference to \(\operatorname{Ans}_p\). Properness still forces an active anchor for it, and condition 3 then forces world-kind fidelity on every pair touching it. This can exclude otherwise adequate accounts for reasons irrelevant to the question.
+- **Severity:** Serious.
+- **Fix:** Restrict properness to components that make a difference to \(\operatorname{Ans}_p\) under some admitted pair, or state that the anchored grade intentionally requires full physical decomposition.
+====================================================================================================
+T4_objectivity_condition | rev3_deepseek | sample 2 | finish stop | 11764 chars | error None
+====================================================================================================
+I find the following defects. I number each and give the attacked claim, why it fails, severity, and fix.
+
+1. **Structural silence is not well-defined because “touches” has no fixed comparison relation.**  
+   Quoted: “every admitted pair that **touches** the anchor — changes the relation of some component in it.”  
+   Why it fails: “changes the relation” is relative to what? The baseline pair \((1,b_0)\)? The previous pair? Some other pair? The text never fixes the comparison. In (K) the baseline pair is deliberately excluded from kind comparison, so a reader cannot infer that “touches” means “differs from baseline.” Without that, the set of pairs that touch an anchor is ambiguous, and therefore both properness and “silence” are ambiguous.  
+   Severity: serious.  
+   Fix: define explicitly: \((a,b)\) touches anchor \(A\) iff \(\exists j\in A\) such that \(L_j(a,b)\neq L_j(1,b_0)\), with analogous treatment for boundary-only changes, and state that the baseline is the comparison point.
+
+2. **“Silence is structural, read off the anchor map, never declared” is false.**  
+   Quoted: “silence is structural, read off the anchor map, never declared.”  
+   Why it fails: \(\lambda\) is part of the transport \(t=(\pi,\tau,\sigma,\lambda)\), and a transport in a modelled candidate is declared data. The document itself says a declared transport can be assessed for account-hood. The modeller chooses \(\lambda\). Properness constrains \(\lambda\) only for the *anchored* grade, not for the objectivity condition, which is explicitly “outside (E)” and applies to any account. So the candidate can choose a coarse or gerrymandered \(\lambda\) to avoid protection.  
+   Severity: serious.  
+   Fix: either derive \(\lambda\) from \(\operatorname{Inst}\) and the physical module, or require properness for any objectivity claim, or quantify the objectivity claim over all transports satisfying \(\operatorname{Account}(E,p)\).
+
+3. **The objectivity condition is too weak because it is not restricted to anchored accounts.**  
+   Quoted: “An **objectivity claim** for \(\mathcal E=(E,p,t,\Gamma)\) is the conjunction of \(\operatorname{Account}(E,p,t,\Gamma)\) and a claim about \(C\) against the module in force: that \(C\) is **not protective** for \(\mathcal E\).”  
+   Why it fails: \(\operatorname{Account}\) need not satisfy properness. A non-anchored account can omit anchors for components that are touched by admitted pairs. The condition then treats those pairs as “silent” and not protective, even though the question’s contract reaches those components. The text’s hedge “by properness an anchored account is silent on no admitted pair that touches a component the question’s contract reaches” only covers anchored accounts; the objectivity claim is not so restricted.  
+   Severity: serious.  
+   Fix: make properness, or the anchored grade itself, a necessary condition for an objectivity claim. Alternatively define \(C\) as protective whenever an admitted pair outside \(C\) touches any component of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches, regardless of whether the candidate has an anchor for it.
+
+4. **The extension of the transport to excluded pairs “by \(\lambda\)” is not well-defined.**  
+   Quoted: “the transport being extended to such pairs by \(\lambda\) (the edit acts on an anchored component, so its translation is the corresponding edit on the anchored component of \(E\)).”  
+   Why it fails: \(\lambda\) maps components of \(E\) to subnetworks of \(D\). It is not an edit translation from \(D\) to \(E\). The edit translation is \(\tau\). Part IV already defines “\(\tau:A_D\to A_E\) translates edits.” If \(\tau\) is total, no extension is needed and “by \(\lambda\)” is redundant or wrong. If \(\tau\) is not total, \(\lambda\) alone cannot define \(\tau(a)\): it does not say which edit on \(E\) corresponds to an edit on a component of \(D\), especially if the anchor is a multi-component subnetwork, if anchors overlap, or if the edit touches components in several anchors. There is also no guarantee that the “corresponding edit” is in \(A_E\).  
+   Severity: fatal for the stated well-definedness of the objectivity condition.  
+   Fix: either make \(\tau\) total on \(C_{\mathrm{adm}}\) and drop “by \(\lambda\),” or define an explicit translation rule using \(\lambda\) and the port bijection, and require the resulting edit to be an admitted edit of \(E\).
+
+5. **Undefined candidate answers are not treated as protective.**  
+   Quoted: “the candidate’s transported answer differs from it: \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq\operatorname{Ans}_p(a,b)\).”  
+   Why it fails: If \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) is undefined outside \(C\), the inequality is not a well-formed proposition. The condition therefore does not fire, and a candidate can avoid protection by leaving answers undefined on excluded admitted pairs.  
+   Severity: serious.  
+   Fix: require \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) to be defined and unequal, or explicitly count undefinedness as protective.
+
+6. **The transported query \(Q_E\) is not required to be the transport of the same query off \(C\).**  
+   Quoted: “it carries a fifth datum, the **transported query** \(\mathcal Q_E\), an operation on \(E\) of the same type as \(\mathcal Q\), declared with the transport” and “(A) … for every \((a,b)\in C\).”  
+   Why it fails: The objectivity condition compares \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) with \(\operatorname{Ans}_p(a,b)\) on excluded pairs outside \(C\). But \(\operatorname{Ans}_E\) is computed using \(\mathcal Q_E\), and the transport only requires \(\mathcal Q_E\) to agree with \(\mathcal Q\) on \(C\). Off \(C\), \(\mathcal Q_E\) could be a different query. Then the comparison is not a comparison of answers to the same question.  
+   Severity: fatal for the objectivity condition as stated.  
+   Fix: require \(\mathcal Q_E(E,\tau(a),\sigma(b))=\mathcal Q(D,a,b)\) for all \((a,b)\in C_{\mathrm{adm}}\), or define \(\mathcal Q_E\) as the image of \(\mathcal Q\) under the transport for the full admitted contract.
+
+7. **Properness does not ensure the anchors are disjoint, so the “translation by \(\lambda\)” remains ambiguous even for anchored accounts.**  
+   Quoted: “the anchor map is injective on that cover: distinct active components have distinct anchors, and no touched component of \(D\) lies outside every anchor.”  
+   Why it fails: Injectivity of the map from active components to anchors does not forbid two distinct anchors from overlapping on a shared component of \(D\). If an admitted edit touches a shared component, it touches multiple anchors. The text speaks of “the corresponding edit on the anchored component of \(E\)” in the singular. That is not well-defined unless the anchors are disjoint on touched components or the translation is explicitly a simultaneous edit on all components whose anchors contain a touched component.  
+   Severity: serious.  
+   Fix: require the anchors to be disjoint on the touched components, or define \(\tau(a)\) as the simultaneous edit on every active component whose anchor contains a component touched by \(a\).
+
+8. **The claim that properness makes an anchored account silent on nothing it should answer for is true only for anchored accounts and does not repair the objectivity condition.**  
+   Quoted: “by properness an anchored account is silent on no admitted pair that touches a component the question’s contract reaches.”  
+   Why it fails: The statement is correct for anchored accounts: properness covers every component touched by some pair in \(C_{\mathrm{adm}}\), so any admitted pair touching a component touches some active anchor. But the objectivity condition is not restricted to anchored accounts. For a non-anchored account, properness may fail, and the candidate can be silent on admitted pairs touching components it should cover. The objectivity claim can still hold because the condition only looks at pairs that touch an anchor of an active component.  
+   Severity: serious.  
+   Fix: restrict objectivity claims to anchored accounts, or add properness as a conjunct of the objectivity claim.
+
+9. **The phrase “so that the candidate is not silent on it in the structural sense of the anchored grade” imports an anchored-grade notion into a condition that is not conditioned on anchoring.**  
+   Quoted: “touches some anchor of an active component of \(E\) — so that the candidate is not silent on it in the structural sense of the anchored grade.”  
+   Why it fails: The anchored grade’s silence condition is only meaningful in conjunction with properness. Without properness, a pair can touch an anchor of an active component while the candidate remains silent on a component the question’s contract reaches. The parenthetical assumes the anchored-grade setting without requiring it.  
+   Severity: minor to serious depending on how the condition is used.  
+   Fix: either explicitly state that the objectivity condition is intended for anchored accounts, or remove the reference to the anchored grade and define silence directly for the objectivity condition.
+
+10. **Grievance 4 says something slightly different from the formal condition, and the difference matters.**  
+    Quoted: “a contract is protective for a candidate when some physically admitted change it excludes would alter the target’s answer and not the candidate’s, or the reverse.”  
+    Quoted formal condition: “the candidate’s transported answer differs from it: \(\operatorname{Ans}_E(\tau(a),\sigma(b))\neq\operatorname{Ans}_p(a,b)\).”  
+    Why it fails: Given baseline agreement on \(C\), the formal condition also catches cases where both target and candidate alter but to different values. Grievance 4’s “and not … or the reverse” phrasing does not obviously cover that case. Also Grievance 4 says a silent candidate’s “objectivity claim is correspondingly smaller,” but the formal condition is binary; silence does not reduce the claim’s truth value.  
+    Severity: minor.  
+    Fix: align Grievance 4 with the formal condition: protection is any difference at an excluded admitted pair touching an anchor, and silence is binary, not a degree.
+
+11. **No collision with \(K\).**  
+    Since \(K\cap C_{\mathrm{adm}}=\varnothing\) and \(C=(C_{\mathrm{adm}}\cap S)\cup K\), the excluded admitted pairs are exactly \(C_{\mathrm{adm}}\setminus S\). The objectivity condition’s range over \(C_{\mathrm{adm}}\setminus C\) does not include \(K\). This is consistent with the statement that “a pair in \(K\) enters non-vacuity only through the relations it declares.” No finding here.
+
+12. **No formal collision with Derivation 7, but Derivation 7 does not address the \(\lambda\)-change loophole.**  
+    Derivation 7 says the objectivity condition “answers it only where the candidate is evaluable and wrong on the excluded change.” That matches the formal condition. But if a contract is narrowed from \(C\) to \(C'\) and the candidate also changes \(\lambda\) so that the excluded pair no longer touches an anchor, the new objectivity claim at \(C'\) can avoid protection. Derivation 7 treats the candidate as fixed and does not rule this out.  
+    Severity: serious if the intent is to catch goalpost-moving.  
+    Fix: state that an objectivity claim is relative to a fixed tuple \(t,\Gamma\), and that changing \(\lambda\) changes the candidate and requires a new account assessment, not merely a new contract index.
+
+13. **No formal collision with Part VIII.**  
+    Part V explicitly says the objectivity claim is indexed to the module in force, and a later module with larger \(A_\Theta\) makes it a new claim at a new index. That is consistent with Part VIII’s historical index. No finding here.

@@ -1,0 +1,108 @@
+====================================================================================================
+A3_sufficiency | atria | sample 0 | finish stop | 13068 chars | error None
+====================================================================================================
+## Findings
+
+**1. The "monolithic law" candidate satisfies all four conditions of (E) on a physically admitted contract with a non-declared transport, and provides no account.**
+
+(1) Claim attacked: attack point (A) as stated — "The classic attempts — lookup tables, reversed calculations, conclusion-as-premise — all fail one of the four; a new one must fail none," together with (E) itself.
+
+(2) Construction, concretely. Use the document's own pole-and-shadow target. Let \(D\) have ports \(\{H,\theta,L\}\), component \(j_L\) with footprint \(\{H,\theta,L\}\) imposing \(L=H\cot\theta\), boundary \(b_0\), and admitted edits including interventions on \(H\) and on \(\theta\), plus a disabling edit \(a^\dagger\) that replaces \(j_L\) by the full relation. Let \(p\) be the production question: \(\mathcal Q\) reads the \(L\)-value; \(C=\{(1,b_0),(a_H,b_0),(a_\theta,b_0),(a^\dagger,b_0)\}\), physically admitted.
+
+Build \(E\) as follows: ports \(\{H,\theta,L\}\); a **single** component \(k\) with footprint all three ports; relation \(L_k(\tau(a),\sigma(b)):=\operatorname{Sol}_D(a,b)\) for every \((a,b)\in C\). Let \(\lambda(k)=D\) — the whole target network — with the identity port translation; \(\pi=\mathrm{id}\); \(\sigma=\mathrm{id}\); \(\tau\) maps each edit \(a\) of \(D\) to the edit of \(E\) that replaces \(k\) by a component with relation \(\operatorname{Sol}_D(a,b_0)\) (permitted: "A changed rule is a changed component"; "an edit that sets a port replaces the component assigning that port"). \(\Gamma=\{k\}\). Stipulate provenance **selected**: singleton population \(\mathcal T=\{t\}\), identity variation operator, history \(H_{\rm sel}=\{(1,b_0)\}\), survival = fidelity on \(H_{\rm sel}\).
+
+Checks. (F1): \(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]=\operatorname{Sol}_D(a,b)=L_k(\tau(a),\sigma(b))\), by construction, for every \((a,b)\in C\). (F2): \(\pi[\operatorname{Sol}_D(a,b)]=\operatorname{Sol}_D(a,b)=\operatorname{Sol}_E(\tau(a),\sigma(b))\), since \(E\)'s only constraint is \(k\). (A): the production query reads \(L\); \(\operatorname{Sol}_E\) and \(\operatorname{Sol}_D\) coincide, so the answer profiles coincide. Non-circular dependence, formal witness: \((a^\dagger,b_0)\in C\) replaces the block \(\Gamma=\{k\}\) and the answer profile changes. Non-vacuity: \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\).
+
+Why it explains nothing. \(E\) has one component and no dependency structure whatsoever; its single relation *is* the target's own solution graph. It is the explanandum repackaged as a law. It satisfies the letter of (F1)–(A) only because \(\lambda(k)\) is the entire target, which makes component-level fidelity collapse into global fidelity. It is a complete lookup table whose entries happen to respond to interventions. And it is faithful on **every** contract, since \(L_k\) is defined per \((a,b)\) as \(\operatorname{Sol}_D(a,b)\) — so no refinement of \(C\) can separate it from the genuine mechanism.
+
+(3) Fatal for sufficiency. The document itself says in Part XV: "A faithful transport that does not explain. A candidate meeting (E) on a physically admitted contract with a non-declared transport, which plainly provides no account. This refutes sufficiency." This is that candidate.
+
+(4) Fix: add an anchor-adequacy condition — every anchor \(\lambda(k)\) must be a *proper* subnetwork of \(D\), and \(E\)'s component structure must refine a cover of \(D\)'s components; and add a non-triviality condition forbidding a component whose relation is definable as \(\operatorname{Sol}_D(a,b)\) (or its projection) for \((a,b)\in C\). Both must be stated as formal conditions, not glosses.
+
+---
+
+**2. The informal non-circularity clause is directly contradicted by its own formal witness.**
+
+(1) Claim attacked: "The target's answer does not appear, at the declared grain, as an unanalysed boundary input or as a component; moving an assertion from an input slot into a component named 'law' does not discharge this. There exists \((a,b)\in C\) that removes or replaces a nonempty block of \(\Gamma\) while preserving the other boundary conditions, under which the answer profile changes or ceases to be determined in the claimed way."
+
+(2) The candidate in Finding 1 *is* the answer appearing as a component named law — the component's relation is literally the target's solution set, anchored to the whole target with no analysis. Yet the formal witness (an edit that replaces a block of \(\Gamma\) and changes the answer) is satisfied by it. The informal clause is the one that would exclude the candidate; the formal condition, which is the only checkable content of the non-circularity requirement, does not. The witness is in fact close to vacuous: any candidate with nonempty \(\Gamma\) that is answer-relevant satisfies it, which is what non-vacuity is already aiming at.
+
+(3) Serious. The condition that does the work is unenforced; the condition that is enforced does not do the work.
+
+(4) Fix: replace the removal-sensitivity witness with a *decomposition* requirement — for each active component \(k\), the anchor \(\lambda(k)\) must be a proper subnetwork, and \(L_k\) must not be definable from \(\operatorname{Sol}_D\) alone on \(C\).
+
+---
+
+**3. (F1) permits global anchors; "Why there is no anchoring condition" argues only against a same-kind condition, not against this.**
+
+(1) Claim attacked: "A separate condition — 'each component of \(E\) must be tied to a component of \(D\) *of the same kind*' — would be either redundant or unevaluable… There is no third case."
+
+(2) The section considers only a *kind-matching* anchoring condition. It never considers whether an anchor may be the whole target, or whether \(E\)'s decomposition must be at least as fine as the dependencies the question asks about. The global anchor is the exploit: with \(\lambda(k)=D\), (F1) becomes the tautology \(\operatorname{Sol}_D=\operatorname{Sol}_D\). There is a third case, and it is the one that matters.
+
+(3) Serious.
+
+(4) Fix: a properness condition on anchors plus a resolution condition on \(E\) relative to \(\mathcal Q\).
+
+---
+
+**4. Derivation 1 is a tautology and misapplies (K); it therefore blocks nothing.**
+
+(1) Claim attacked: "If a transport satisfies (F1) on \(C\), then every active component \(k\) of \(E\) has the same signature on \(\tau[C]\) as its anchor \(\lambda(k)\) has on \(C\)," with proof "By (K), … (F1) equates the third coordinates pointwise."
+
+(2) (K) defines \(\operatorname{sig}_C(j)\) for a *component* \(j\in J\); Derivation 1 applies it to \(\lambda(k)\), a *subnetwork*, for which no signature is defined. If signatures of subnetworks are read as projected solution relations — which is what (F1) itself uses — then Derivation 1 restates (F1) and proves nothing beyond it. In particular it does not show that kind-preservation has explanatory bite: a global anchor preserves the "signature" trivially, because (F1) forces the equality by construction.
+
+(3) Serious (the corollary "the word 'kind' is therefore eliminable… loses no case" inherits the vacuity).
+
+(4) Fix: define signatures for subnetworks explicitly, and prove the corollary only for anchors that are proper subnetworks.
+
+---
+
+**5. The Derivation-2 remedy ("refine the contract") is unavailable against this candidate.**
+
+(1) Claim attacked: "A claim that two such candidates 'really' differ is a claim that some admitted change separates them, and must supply it," and "Underdetermination of an account by a contract is… the semantics reporting that the contract does not contain the distinction. The remedy is a finer contract, which is a new question."
+
+(2) The monolithic law agrees with the genuine mechanism on the answer profile under *every* edit, at *every* contract, because its relation is defined per edit as the target's solution set. No contract refinement separates them. Moreover Derivation 2 does not even apply: it requires components to be "pairwise of one kind," which needs a bijection of footprints, and one component versus \(n\) admits none. So the semantics *does* represent the difference (different component sets, different kind-classes) while (E) is silent on which of them explains.
+
+(3) Fatal for the document's standing defusal of underdetermination complaints.
+
+(4) Fix: add a condition that \(E\)'s component structure be sufficiently fine relative to \(\mathcal Q\) (e.g., every dependency the query reads must be witnessed by a proper component of \(E\)), so that coarsenings that destroy the queried dependency structure fail (E).
+
+---
+
+**6. The "selected" provenance is trivially satisfiable, so "non-declared transport" filters nothing.**
+
+(1) Claim attacked: the Selected definition — "There is a population \(\mathcal T\) of candidate transports, a variation operator \(\mu\) on \(\mathcal T\), a finite history \(H\subseteq C\)… and a survival condition requiring fidelity on \(H\). The transport \(t\) is a member of \(\mathcal T\) that survived."
+
+(2) No non-triviality is required: the population may be a singleton, \(\mu\) the identity, and \(H=\{(1,b_0)\}\). The monolithic law is faithful on all of \(C\), hence on any \(H\), so it is selected. Combined with Derivation 3 (survivors are unconstrained on \(C\setminus H\)), the provenance requirement imposes no explanatory filter at all. The same holds for "constructed," whose witness requirements (Part X) are satisfied by stipulating an episode that prepares the oracle.
+
+(3) Serious — this closes the obvious escape route that the candidate's transport is "really declared."
+
+(4) Fix: require the population to be non-singleton, \(\mu\) to be non-trivial, and \(H\) to be a proper nonempty subset of \(C\) with at least one answer-changing edit; and require the construction witness to include a *nontrivial binding* construction, which an oracle does not have.
+
+---
+
+**7. The document's explicit reply exists and does not work.**
+
+(1) Claim attacked: "A table of observed answers has no component whose relation is replaced by an intervention; it fails (F1) under any contract containing one. A table that genuinely encodes an organization's response to every admitted change is not a table in that sense and is not excluded."
+
+(2) This concedes the candidate. The monolithic law's entries *do* respond to interventions, so it is the complete table the document declines to exclude. The phrase "encodes an organization's response" silently presupposes that the encoding preserves the organization's *component structure*; nothing in (F1) requires this, because a global anchor makes component fidelity collapse to global fidelity. The reply therefore distinguishes static tables from response-encoding tables but never distinguishes response-encoding *with structure* from response-encoding *without any*. The companion reply, "A less elegant account satisfies (E) as fully as a more elegant one with the same fidelity," also fails: the issue is not elegance but that a one-component organization has no dependencies to organize, contradicting the document's own definition — "An explanation is a **question-relevant organization of dependencies**."
+
+(3) Serious: the two passages the document offers against tables are the only replies, and both are inoperative.
+
+(4) Fix: state explicitly what "encodes an organization's response" requires — preservation of the component decomposition, not merely of the answer image — and add it to (F1) as a condition on anchors.
+
+---
+
+**8. Minor typing note on the strictly abstracted variant.**
+
+(1) Claim attacked: the framework's edit axioms, "An edit that sets a port replaces the component assigning that port; it does not add an equation beside an incompatible one."
+
+(2) A one-port oracle (\(E\)'s ports reduced to \(\{L\}\), \(L_k=\) the answer image) is the sharpest "plainly no account" case, but it requires \(E\)'s edit monoid to contain relation-replacement edits and \(\tau\) to be a homomorphism onto them; the composition law \(\tau(a_2a_1)=\tau(a_2)\tau(a_1)\) is not shown to hold for such translations in general (for pure interventions with last-write-wins it works; in general it does not). The monolithic variant in Finding 1 avoids this entirely, which is why it is the load-bearing construction.
+
+(3) Minor / cosmetic.
+
+(4) Fix: state the required closure properties of \(A_E\) under relation replacement, or restrict the claim to contracts generated by interventions.
+
+---
+
+**Summary of the reply question.** The document has a reply — the table passage in "What (E) excludes," the non-circularity gloss, the "no anchoring condition" section, and the Derivation-2 remedy — and none of them work: the table passage concedes the candidate, the non-circularity gloss is unenforced by its own formal witness, the anchoring section addresses a different condition, and the Derivation-2 remedy cannot apply because no contract separates the two accounts and no component bijection exists. Part XV's concession that such a candidate "refutes sufficiency" is an acknowledgment that sufficiency is unproven, not a defense.

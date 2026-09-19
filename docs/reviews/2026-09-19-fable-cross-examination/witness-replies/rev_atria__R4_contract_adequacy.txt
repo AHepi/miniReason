@@ -1,0 +1,98 @@
+====================================================================================================
+R4_contract_adequacy | rev_atria | sample 0 | finish stop | 17641 chars | error None
+====================================================================================================
+**1. The condition is too weak by construction: a protective scope that changes the *value* of the answer but not its *movement* passes.**
+
+Attacked: "**Contract adequacy.** \(C\) is not **protective** for \(\mathcal E\): there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse. This is the condition that catches a scope drawn to exclude the embarrassing change; a stated exclusion is not thereby a legitimate one."
+
+The guard is a *movement* (co-variation) check, not a *value* check. Let \((a^\*,b^\*)\in C_{\mathrm{adm}}\setminus C\) with \(\operatorname{Ans}_p(a^\*,b^\*)\neq\operatorname{Ans}_p(1,b_0)\) and \(\operatorname{Ans}_E(\tau(a^\*),\sigma(b^\*))\neq\operatorname{Ans}_E(1,\sigma(b_0))\), but with the two values unequal (so (A) would fail were the pair in \(C\)). Adequacy is satisfied. So a scope drawn precisely around a pair at which the candidate is *wrong in value* is invisible to the condition. Part XV lists "A protective contract the adequacy condition admits" as an *open* attack; it is not open, it is realized by this construction. Serious — it defeats the conjunct's stated purpose. Fix: require value agreement, not movement agreement, on \(C_{\mathrm{adm}}\setminus C\) (i.e., extend (A) to \(C_{\mathrm{adm}}\)), or state adequacy as a necessary-not-sufficient screen and stop claiming it "catches a scope drawn to exclude the embarrassing change."
+
+**2. The same gap reaches the anchored grade, because (F2) and (A) are never required on \(C_{\mathrm{adm}}\).**
+
+Attacked: "Anchoring is therefore component fidelity on the full admitted contract, with a proper decomposition at the question's resolution," and condition 4: "Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\), with its anchor."
+
+Condition 4 extends only (F1)-level signature agreement to \(C_{\mathrm{adm}}\). (F2) — which Part V itself says "prevents a set of locally correct pieces from hiding a lost shared constraint" — and (A) are required on \(C\) only. So: take a candidate whose every component relation matches its anchor on all of \(C_{\mathrm{adm}}\) (world-kind holds) but whose assembly loses a shared constraint at an excluded pair, so that \(\pi[\operatorname{Sol}_D(a^\*,b^\*)]\neq\operatorname{Sol}_E(\tau(a^\*),\sigma(b^\*))\) while both answer profiles move. It is anchored, adequate, and wrong exactly where the scope was drawn to hide it. The slogan "component fidelity on the full admitted contract" is thus an overstatement: it is signature fidelity, and the decoy that the anchored grade is advertised to exclude ("a decoy that shares a signature on \(C\) but a different response to some admitted edit fails 4") is replaced by a decoy that shares signatures *everywhere* and assembles wrongly off-scope. Serious. Fix: for the anchored grade require (F1), (F2) and (A) on all of \(C_{\mathrm{adm}}\); adequacy then becomes redundant and Finding 1 closes.
+
+**3. The condition is ill-typed wherever \(\tau\) is not total on \(C_{\mathrm{adm}}\) — and the document's own worked example has such a \(\tau\).**
+
+Attacked: "\(\operatorname{Ans}_E(\tau(a),\sigma(b))\)" in the adequacy conjunct, together with Part VII: "so \(\tau\) is undefined and (F2) fails at that pair" and "The reversed calculation is faithful under the identification contract: it is an account at that contract, and not anchored as a production account, because on the production edits — admitted, and outside the identification contract — its one component is not of one forward kind with the assignment of \(L\)."
+
+\(\tau\) is a partial map (Part VII relies on this). (F1), (F2), (A) quantify over \(C\), so nothing requires \(\tau\) defined off \(C\). For the identification question, the production edits lie in \(C_{\mathrm{adm}}\setminus C\), and adequacy ranges over exactly those. So the adequacy conjunct is not evaluable for the reversed calculation. If "undefined" is read as "does not differ from baseline," the reversed calculation *fails* adequacy (the target's \(L\) moves; the reversed calculation's \(H\) does not) and Part VII's verdict "it is an account at that contract" is false. If undefined is read as ill-typed, the verdict is unsupported. Either way the two sections are inconsistent. Serious. Fix: make totality of \(\tau\) (and \(\sigma\)) on \(C_{\mathrm{adm}}\) an explicit conjunct, or restrict adequacy to pairs where \(\tau\) is defined and say so.
+
+**4. \(\operatorname{Ans}_p\) is likewise not guaranteed defined off \(C\), so the condition can be made vacuous by declaration.**
+
+Attacked: "there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value…", plus Part III's coherence condition: "\(\mathcal Q\) is defined on every pair in \(C\)."
+
+Coherence requires \(\mathcal Q\) on \(C\) only. On \(C_{\mathrm{adm}}\setminus C\), \(\mathcal Q\) may be undefined, so "differs from its baseline value" is again ill-typed; and since the modeller declares \(\mathcal Q\), a protective modeller simply declares \(\mathcal Q\) on \(C\) and nothing beyond. Moderate-to-serious. Fix: extend the coherence condition of Part III to require \(\mathcal Q\) defined on all of \(C_{\mathrm{adm}}\).
+
+**5. The baseline is ambiguous, and the ambiguity changes verdicts.**
+
+Attacked: "at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not."
+
+Part III fixes the question's baseline as \((1,b_0)\). But \(C_{\mathrm{adm}}\subseteq A\times B\) contains pairs with other boundaries, and nothing states whether the comparison baseline for \((a,b)\) is \((1,b_0)\) or \((1,b)\). If it is \((1,b_0)\), then any pair \((1,b)\in C_{\mathrm{adm}}\setminus C\) — a pure boundary change — can trip the condition whenever the answer depends on the boundary and the candidate does not, producing spurious inadequacy. If it is \((1,b)\), the text must say so, and must also guarantee \((1,b)\in C_{\mathrm{adm}}\); the relationship between \(C_{\mathrm{adm}}\) and \(A_\Theta\) (see Finding 11) is not stated, so this guarantee is unavailable. Note the further inconsistency with (K), where "the baseline pairs are excluded on purpose" for *all* \(b\), whereas adequacy uses one baseline pair as its comparison anchor. Serious — the same candidate can be adequate or not depending on an unstated choice. Fix: write the condition as \(\operatorname{Ans}_p(a,b)\neq\operatorname{Ans}_p(1,b)\) and \(\operatorname{Ans}_E(\tau(a),\sigma(b))=\operatorname{Ans}_E(1,\sigma(b))\) (or the reverse), and require \((1,b)\in C_{\mathrm{adm}}\) for every \(b\) appearing in \(C_{\mathrm{adm}}\).
+
+**6. \(\operatorname{Ans}_E\) is undefined notation, and the transport carries no query translation.**
+
+Attacked: "\(\operatorname{Ans}_E(\tau(a),\sigma(b))\)" (Part V, (A) and adequacy), versus Part III, where "\(\operatorname{Ans}_p(a,b)=\mathcal Q(D,a,b)\)" with \(\mathcal Q\) "a specified set-theoretic operation on \(D\)", and Part IV's transport \(t=(\pi,\tau,\sigma,\lambda)\).
+
+The tuple contains valuation, edit, boundary and anchor translations but no translation of the query. So \(\operatorname{Ans}_E\) is never defined; (A) and adequacy both presuppose that \(\mathcal Q\) applies to \(E\), which is neither stated nor licensed. Moderate (easily repaired, but it is a well-definedness failure in the conjunct under attack). Fix: add a query-translation component to the transport, or define \(\operatorname{Ans}_E(a',b'):=\mathcal Q(E,a',b')\) with \(\mathcal Q\) polymorphic over organizations, and say which.
+
+**7. Putting adequacy inside (E) destroys the "two indices" answer of Grievance 4 and makes objectivity identical to account-hood.**
+
+Attacked: Grievance 4: "'Faithful on C' is a fact within C. 'C is not protective' is a fact about C against the physically admitted changes… An objectivity claim is the conjunction, and the second conjunct is a condition in this semantics (Part V), not a hope about future criticism."
+
+Since adequacy is now a conjunct of (E), every account at a contract *already* satisfies the conjunction. There is no second, further fact; "objectivity" adds nothing beyond Account\((E,p)\). The genuinely \(C_{\mathrm{adm}}\)-quantified condition — world-kind — lives in the *anchored* grade, which Grievance 4 never mentions. So the response to "there is no objectivity" is now mis-stated: objectivity is not two indices, it is one grade, and the stronger grade is what does the work. Serious as a misrepresentation of the formalism's structure. Fix: rewrite Grievance 4 around the anchored grade, or move adequacy out of (E) into a separate objectivity predicate.
+
+**8. The base grade is no longer "what can be assessed within a question," and the stated rationale for (E)'s lack of a provenance condition is undermined.**
+
+Attacked: Part 0: "The first grade is what can be assessed within a question," and Part V: "(E) carries **no provenance condition**: any modelled candidate, including one whose transport is declared, can be assessed for account-hood, because a modeller must be able to assess an account without settling its history."
+
+Adequacy quantifies over \(C_{\mathrm{adm}}\), which for a physical organization is the module's entire admitted set (\(A_\Theta\), Part XII) — not the question's stated scope. Assessing the *first* grade now requires settling a module-wide admission relation, which is a strictly harder and more global settle than the provenance question the document declines to impose. The asymmetry is unmotivated. Moderate-to-serious. Fix: either say the first grade requires the module's admission set (and drop the "within a question" claim), or restrict adequacy to pairs the question itself makes evaluable.
+
+**9. Part 0's enumeration of account-at-a-contract omits the new conjunct, and Part V's preamble misdescribes it.**
+
+Attacked: Part 0: "An **account at a contract** is a candidate whose components and assembled organization are faithful to their anchors under every change the contract admits, that answers the question asked, that does not restate the answer, and whose contract is stated," and Part V: "each a condition on supplied relations under the changes in \(C\)."
+
+The Part 0 list has four items and no adequacy; Part V's preamble says the conjuncts are conditions "under the changes in \(C\)" while adequacy ranges over \(C_{\mathrm{adm}}\setminus C\), i.e. changes *outside* \(C\). Cosmetic-to-minor, but checkable and stale after the revision. Fix: update both sentences.
+
+**10. Part V's summary of adequacy overstates it.**
+
+Attacked: "An account whose contract excludes an admitted change that would tell it apart from the target fails adequacy."
+
+Per Finding 1, an excluded change that tells the candidate apart *by value* does not fail adequacy, only one that tells it apart by *movement*. The summary sentence is false as written. Minor but it is the condition's own one-line advertisement. Fix: "…excludes an admitted change at which the target's answer and the candidate's disagree as to whether they move."
+
+**11. The typing of \(C_{\mathrm{adm}}\) against \(A_\Theta\) is unresolved, and the domain of the adequacy quantifier changes with the answer.**
+
+Attacked: Part III: "\(C_{\mathrm{adm}}\subseteq A\times B\) is the set of pairs the module in force admits: for a physical organization, the physically admitted edits \(A_\Theta\) (Part XII)," versus Part XII: "the admitted edit set \(A_\Theta(o)\)."
+
+\(A_\Theta\) is presented as a set of edits, \(C_{\mathrm{adm}}\) as a set of edit–boundary *pairs*. Whether \(C_{\mathrm{adm}}=A_\Theta\times B\), or is a module-supplied subset of pairs, is unstated. If the former, boundary-variation pairs flood the adequacy quantifier (compounding Finding 5); if the latter, the module has an extra undeclared degree of freedom that determines how much bite adequacy has. Moderate. Fix: state \(C_{\mathrm{adm}}=A_\Theta\times B\) (or define the pairing explicitly) and list it as a module-supplied datum.
+
+**12. Adequacy is vacuous whenever \(S\) admits everything, and the mathematical example never exercises it.**
+
+Attacked: Part VII: "Adequacy is relative to the declared admission relation," for the skew-matrix question whose admitted edits are exactly the three presentation alterations in the contract.
+
+There \(C=C_{\mathrm{adm}}\), so \(C_{\mathrm{adm}}\setminus C=\varnothing\) and the conjunct holds vacuously; the example does not test the new condition, and its remark about adequacy is unfalsifiable in that case. More generally, a question with \(S\) universal satisfies adequacy trivially, so the conjunct's strength is optional in the modeller's hands. Minor. Fix: note the vacuity in the example, or add a non-vacuity requirement that \(C_{\mathrm{adm}}\setminus C\) be nonempty where the module admits more than the question asks.
+
+**13. Derivation 7's consequence claims adequacy catches protective index changes; it cannot, and Part XI concedes the case it misses.**
+
+Attacked: Derivation 7: "Goalpost-moving is the act of changing the index without recording the change; the adequacy condition of Part V is what catches a change made to protect a candidate, whether or not it is recorded," and Part XI: "A later narrowing of the contract to rescue adequacy is a new claim at a new index, and does not retroactively satisfy (EK)."
+
+Adequacy at index \(C\) evaluates \(C_{\mathrm{adm}}\setminus C\) at that index; it has no access to any later index \(C'\), recorded or not. What it can catch is a protective *scope at a fixed index*, and only the movement-mismatch kind. Part XI's sentence is the tell: narrowing \(C\) *does* rescue a candidate that fails (A) at a pair where it moves to the wrong value, because the pair then sits in \(C_{\mathrm{adm}}\setminus C\) where only movement is compared (Finding 1). So the rescue is real, and it is blocked only by an index/retroactivity decree, not by the condition's content — which is exactly the opposite of Derivation 7's claim that adequacy "catches a change made to protect a candidate." Serious: the document's answer to Grievance 10 rests on a condition that permits the move it says it catches. Fix: restate Derivation 7's consequence as "adequacy catches protective *scopes* of the no-movement kind only; protective narrowings that preserve movement are caught by nothing in (E) and require the anchored grade extended per Finding 2."
+
+**14. Adequacy inside (E) pollutes the support structure of Part VI, and the critical-block reading is no longer purely explanatory.**
+
+Attacked: Part VI: "\(\mathsf S_{E,p}=\{W\subseteq\Gamma:\operatorname{Account}(E|W,p)\}\)" and "(B) \(\operatorname{CriticalBlock}(B;W,p)\iff W\in\mathsf S_{E,p}\land W\setminus B\notin\mathsf S_{E,p}\)."
+
+Since Account now includes a \(C_{\mathrm{adm}}\)-quantified conjunct, deleting components can break or create *movement* mismatches off-scope with no bearing on the explanatory work \(W\) does: a block can be critical purely because removing it makes \(\operatorname{Ans}_{E|W}\) stop moving where the target moves (or start moving where it does not), or makes the answer undefined off-scope (ill-typing the condition entirely). So (B)'s reading as a contributory-explanatory relation is compromised, and the "hard-to-vary" and Boundary constructions of Part VI inherit the noise. Moderate-to-serious. Fix: define the support structure with respect to a restricted adequacy-free predicate, or state that criticality may be off-scope-induced and give a test to distinguish the two.
+
+**15. The reverse disjunct makes adequacy a cheap refutation instrument over an unbounded domain.**
+
+Attacked: "…or the reverse," plus Part XII's admission that \(A_\Theta\) is "stated as a set" of permitted alterations.
+
+The second disjunct fails any candidate whose answer moves at some admitted pair where the target's does not. Because \(C_{\mathrm{adm}}\) is module-wide and includes edits no one can bring about, such a pair is easy to find for any candidate richer than the question's scope — an auxiliary port, a bookkeeping component, an over-responsive query. The condition punishes over-sensitivity with the same severity as protection, without a stated rationale. Minor-to-moderate. Fix: either restrict the reverse disjunct to pairs in the intervention repertoire \(\mathcal I\), or require that the mismatch be traceable to an active component.
+
+**16. "Contract adequacy" is not a property of the contract, and the K-boundary is self-certifying.**
+
+Attacked: the heading "**Contract adequacy.** \(C\) is not **protective** for \(\mathcal E\)," and Grievance 4's "a contract is protective for a candidate…", together with Part III's "\(K\) is a declared set of **counterfactual edits** — pairs the module does not admit."
+
+The condition is a property of the triple \((C,E,\tau)\), not of \(C\); the naming (and Grievance 4's phrasing) invites the misreading that a scope can be adequate independently of a candidate. Separately, \(K\cap C_{\mathrm{adm}}=\varnothing\) is asserted in prose ("pairs the module does not admit") but is not among Part III's coherence conditions, so the line between "checked against the module" and "checked against a declared meaning" is itself declared, and nothing flags a question whose \(K\) overlaps the module's admissions. Cosmetic and minor respectively. Fix: rename to "candidate-scope adequacy"; add \(K\cap C_{\mathrm{adm}}=\varnothing\) to the coherence predicate of Part III.

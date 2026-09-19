@@ -1,0 +1,371 @@
+====================================================================================================
+D6_construction_vs_search | deepseek | sample 0 | finish stop | 15453 chars | error None
+====================================================================================================
+**Honest conclusion:** C and B are both search over the same fixed meta-grammar. The scramble ablation shows only that C’s output depends on the itemised true-field column while B’s output depends on aggregate exposure fitness. That is a real dependency difference, but it is exactly the difference between informed search and blind search. Nothing about construction, creativity, or explanation follows. Below are the failures.
+
+---
+
+**1. The provenance test is circular.**
+- **Claim attacked:** “The semantics says they still differ, and the difference is checkable: **remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected.**”
+- **Why it fails:** The test is built into the definition. If C is defined as reading V, scrambling V will break it; if B is defined as never reading V, it will be unaffected. The experiment cannot falsify the provenance distinction except by showing C does not read V, which it does. This is not an independent operationalisation; it is a restatement of the implementation.
+- **Severity:** fatal for “provenance” as an empirical claim.
+- **Fix:** Define construction by a property not equivalent to input reading, e.g. OOD generalisation, sample efficiency, or the ability to add a representational primitive not already in the meta-grammar. Then test that.
+
+**2. “C never computes an aggregate fitness” is false.**
+- **Claim attacked:** “**C never computes an aggregate fitness. Its only inputs are itemised records.**”
+- **Why it fails:** It scores conditions by `(number of V states it is true on) − (number of N states it is true on)` and actions by `count V records it fixes ... minus N records it breaks`. Those are aggregates over records. The distinction is not aggregate vs itemised; it is which aggregate, and when.
+- **Severity:** serious.
+- **Fix:** Say “C uses a defect-local surrogate objective,” not “no aggregate fitness.”
+
+**3. The scramble test is tautological.**
+- **Claim attacked:** “B, seed 0, re-run with the scrambled records passed in as an argument its code never reads: **byte-identical output.** ... That is not a claim about the code’s data flow — it is a demonstration...”
+- **Why it fails:** It is exactly a claim about data flow. Passing an argument that code never reads cannot change output. The test shows only that C’s code uses V and B’s does not — already known from the design.
+- **Severity:** fatal for S4 as a provenance proof.
+- **Fix:** Compare processes with identical input interfaces but different computation, or ablate the exposure outcomes that B actually uses.
+
+**4. B is not blind to outcomes, only to itemised defect records.**
+- **Claim attacked:** “B never reads a defect record. Its only input is a number per candidate.”
+- **Why it fails:** That number is exposure-half fitness computed from the true outcomes. If the exposure outcomes are permuted, B changes. Both processes depend on outcomes; C depends on pairings, B on an aggregate. “Blind” is equivocal.
+- **Severity:** serious.
+- **Fix:** Call B “aggregate-fitness search,” not “blind to outcomes,” and ablate exposure outcomes.
+
+**5. “Zero fitness evaluations” is misleading.**
+- **Claim attacked:** “Zero fitness evaluations. B used 1,720–1,788 full-history fitness evaluations per seed to reach the same place.”
+- **Why it fails:** C evaluates 3,136 conditions over 7,608 records, then up to 20 conditions × 16 actions over V records. It computes scores and evaluates hypotheses. It merely does not call the environment’s aggregate fitness function. The cost comparison is apples-to-oranges.
+- **Severity:** serious.
+- **Fix:** Report candidate evaluations, record checks, and wall-clock time for both.
+
+**6. The world and language were tailored to each other.**
+- **Claim attacked:** “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision. The rule language’s terms are the slots’ own kinematic next-states, so world and language have the same shape.”
+- **Why it fails:** The world was redefined after the section-6 check to make the edge case expressible. The language contains the target law’s terms. S1 then tests whether the answer is in the fixed meta-grammar, not whether construction generalises.
+- **Severity:** fatal for external validity.
+- **Fix:** Freeze the language before designing the world, or test laws that were not used to design the language.
+
+**7. `swap_next_v` was added after seeing the edge case.**
+- **Claim attacked:** “One action added (`swap_next_v`); the two constants removed. 50,176 rules instead of 43,904.”
+- **Why it fails:** The action needed for the collision law was added after the check revealed the edge case. This is tailoring the hypothesis space to the target.
+- **Severity:** serious.
+- **Fix:** Freeze the language independently, or show the law is expressible without the added action.
+
+**8. The closedness check was split after seeing the lookup’s number.**
+- **Claim attacked:** “The check now has a structural part (slot-only G0 on collision steps) and an overall part (any G0, all steps)... Recorded with the numbers so the reader can judge whether this is a fair restatement or a moved goalpost”
+- **Why it fails:** The original threshold applied to any G0 architecture on collision steps. The lookup got 0.819 on collision steps against hand-built 0.906 — a gap of 0.087, below the 0.1 margin. Splitting the check after seeing that number lets the lookup escape the threshold. That is a moved goalpost.
+- **Severity:** serious.
+- **Fix:** Retain the original check, report the failure, or justify the structural distinction before seeing data.
+
+**9. S1 “needed” is weakened by the lookup.**
+- **Claim attacked:** “✅ **S1 needed** — 0.906 > 0.819 (best G0, a memoriser) > 0.366 (best structured G0).”
+- **Why it fails:** The best G0 architecture of any kind reaches 0.819 on collision steps, only 0.087 below C. The claim “G0 could not do it” is not supported on the collision metric. The lookup approximates the visible effects without representing the law, but the experiment measures fidelity, not representation. The “memoriser vs machinery” distinction is post hoc.
+- **Severity:** serious.
+- **Fix:** Use a metric where the lookup fails, or define representational closure independently of fidelity.
+
+**10. The collision-step metric cannot detect the crossing error.**
+- **Claim attacked:** “collision steps (a collision occurred in the true world at that step)”
+- **Why it fails:** For a crossing collision, the true law and the pass-through prediction produce the same occupancy fields at the collision step. The difference appears only on later steps. M1’s collision-step fidelity is therefore blind to the crossing failure, and S1 relies on this metric.
+- **Severity:** serious.
+- **Fix:** Use a multi-step or identity-tracking metric for collision correctness, and separate crossing at the collision step.
+
+**11. S3 was narrowed to exclude the cases C fails.**
+- **Claim attacked:** Design S3: “M3 given-bound for A0+C ≥ 0.9 on collision-containing pairs”; Change 2: “S3’s threshold applies to pairs with **no crossing after the change step**”
+- **Why it fails:** The original faithful-component claim covered all collision-containing pairs. C scores 0.000 on crossing pairs. The carve-out is pre-registered, but it still means S3 as originally stated is not met. The results mark S3 ✅ with a caveat.
+- **Severity:** serious.
+- **Fix:** Report S3 as ❌ for full collision-containing pairs, and treat F3 separately as a limit.
+
+**12. F3 is not specific to C.**
+- **Claim attacked:** “the constructor should build exactly the kinds its contract can see.”
+- **Why it fails:** B also uses exposure-half sensory fitness. It also cannot see crossings and builds no crossing rule. F3 shows a limitation of the world’s sensory contract, not a difference between construction and selection.
+- **Severity:** serious.
+- **Fix:** Compare B’s rule on crossing and acknowledge that both fail for the same reason.
+
+**13. M6(ii) is an invalid ablation.**
+- **Claim attacked:** “Defect records with the outcome replaced by the prediction (no defect content) → **built** ... **M6(ii) ✗.**”
+- **Why it fails:** Replacing the outcome with the prediction makes the records not real defects. The old prediction equals the new field, so a no-op rule “fixes” them. This tests C’s missing invariant, not whether defect content is necessary. The document admits the invariant is guaranteed in the real run.
+- **Severity:** serious for S6.
+- **Fix:** Remove V entirely, or randomise outcomes to non-matching values, and fix the accounting before rerunning.
+
+**14. S6 failed, but phase 2 was run anyway.**
+- **Claim attacked:** Design section 11: “Phase 2 only if S1–S6 hold.” Results: “⚠️ **S6 content, not carrier** — ... **M6(ii) ✗**”
+- **Why it fails:** S6 did not hold. Phase 2 was run anyway. This violates the pre-registered stopping rule. The phase-2 results are out-of-contract.
+- **Severity:** fatal for phase-2 claims.
+- **Fix:** Mark phase 2 as exploratory only, or do not classify it against S7/K4.
+
+**15. Phase 2’s second law contradicts the first world.**
+- **Claim attacked:** “A sticky wall and a reflecting wall are contradictory laws about the same event... **I chose a second law that fights the first world rather than extending it. Phase 2 is confounded by the design and must be rerun**”
+- **Why it fails:** The accumulation question is not tested. The collapse on the original world is guaranteed for any correct sticky rule. Yet S7 is classified as ⚠️ and K4 is pronounced “by its letter no.” That is an overclaim.
+- **Severity:** serious.
+- **Fix:** Do not report S7 as supporting; rerun with a law that extends rather than contradicts.
+
+**16. “Wall rule built” is false.**
+- **Claim attacked:** “wall rule built ✓ (right condition, wrong action)”
+- **Why it fails:** A rule with the wrong action is not a wall rule. It improves wall-stop steps from 0.234 to 0.627, but the hand-built wall rule reaches 0.808. The first clause of S7 is not met.
+- **Severity:** serious.
+- **Fix:** Mark S7 ❌.
+
+**17. C’s heuristics are acknowledged but undermine the construction claim.**
+- **Claim attacked:** “**One-step lookahead.** ... **Arbitrary tie-break.** ... **The stopping rule ‘positive net’ is fooled the same way**”
+- **Why it fails:** Phase 1 success depends on these heuristics happening to work. They are search biases, not construction. The phase-2 wrong action is a direct consequence of the arbitrary tie-break.
+- **Severity:** serious.
+- **Fix:** Pre-register robust tie-breaking and lookahead, then test on more than one world.
+
+**18. “C built the right law” is only true for the visible half.**
+- **Claim attacked:** “what it shows is that a process whose only inputs are itemised defects builds the right law”
+- **Why it fails:** The world’s collision law has two parts: same-target and crossing. C builds one and scores 0.000 on crossing in M3. “The right law” is false for the full law.
+- **Severity:** serious.
+- **Fix:** Say “the sensorily visible part of the law.”
+
+**19. “Same machinery” conflates same solution with same process.**
+- **Claim attacked:** “**Same machinery, two routes, and the route is detectable by ablation.**”
+- **Why it fails:** C and B use different algorithms and objectives. They reach the same functional rule on this contract. “Same machinery” equivocates between solution equivalence and process identity.
+- **Severity:** serious.
+- **Fix:** Distinguish “same solution” from “same machinery.”
+
+**20. B’s vacuous atoms are a bias difference, not evidence for C.**
+- **Claim attacked:** “B has no simplicity pressure, so it keeps whatever junk arrived with the law.”
+- **Why it fails:** This is a known difference in search bias. It supports the deflation: blind search finds the law. It does not show that C’s route is special.
+- **Severity:** minor.
+- **Fix:** Treat it as a B bias, not as evidence for construction.
+
+**21. The “sensory ceiling” is in-sample.**
+- **Claim attacked:** “Sensory ceiling (in-sample, for scale) | 0.900 | 0.923 | 0.895”
+- **Why it fails:** Using an in-sample ceiling to judge held-out fidelity is invalid. The evaluation-half ceiling may differ. The gap to ceiling is misestimated.
+- **Severity:** minor.
+- **Fix:** Compute the ceiling on the evaluation half.
+
+**22. “Given bound” conditioning discards 2–18% of M3 pairs.**
+- **Claim attacked:** “**Given bound** conditioning discards 2–18% of pairs in M3”
+- **Why it fails:** The M3 result is conditional on binding success. Unbound cases are omitted, so the faithful-component claim may be biased.
+- **Severity:** minor/serious.
+- **Fix:** Report the full denominator and analyse the unbound cases.
+
+**23. The residual-defect diagnosis is post hoc.**
+- **Claim attacked:** “Those residual defects are the change step itself and co-location ambiguities — no consistent pattern, and C correctly declines to invent one.”
+- **Why it fails:** C stops because no condition–action pair has positive net under its limited language. That is not “correctly declining.” No proof is given that no pattern exists outside that language.
+- **Severity:** minor/serious.
+- **Fix:** Analyse the residuals and report whether any condition–action pair has positive net.
+
+**24. C’s condition scoring is imbalanced.**
+- **Claim attacked:** “score every condition ... by (number of V states it is true on) − (number of N states it is true on)”
+- **Why it fails:** V = 2,830 and N = 4,778. The difference is unnormalised, so the top-20 conditions may be biased. It happened to work here, but it is not principled.
+- **Severity:** minor.
+- **Fix:** Use balanced accuracy, likelihood ratio, or another normalised score.
+
+**25. “Same aggregate” in the scramble is misleading.**
+- **Claim attacked:** “same states, same number of defects, same aggregate; wrong pairings”
+- **Why it fails:** The marginal counts are the same, but C’s scoring aggregate — fixes minus breaks — changes because the pairings change. It is not aggregate-equivalent for C’s objective.
+- **Severity:** minor.
+- **Fix:** Say “same marginal counts; state–outcome correlation destroyed.”
+
+---
+
+**What, if anything, resists the deflation:**
+
+1. **The scramble ablation does establish one real causal fact:** C’s output depends on the true-field column; B’s does not. That is a genuine dependency difference. But it is exactly the deflationary claim: informed search uses itemised outcome pairings, blind search uses an aggregate. It does not show creativity or explanation.
+
+2. **C builds a minimal rule with zero task-fitness evaluations and stops when no defect-fixing rule remains; B needs 1,720–1,788 full-history evaluations and adds vacuous atoms.** This is a sample/computation efficiency and simplicity-bias difference. It resists the claim that C and B are identical in every respect, but not the claim that both are search.
+
+3. **M3 shows C’s rule is a real component for same-target collisions, not merely a lookup.** But B’s rule is functionally identical, and the hand-built pair is identical. So it resists “C’s rule is only a patch” for visible collisions only.
+
+4. **Nothing in the results shows a new representational primitive, a new question, or an explanation.** The crossing failure shows C is limited by its sensory contract, and B shares that limit. The deflation stands.
+====================================================================================================
+D6_construction_vs_search | deepseek | sample 1 | finish length | 0 chars | error None
+====================================================================================================
+(empty)
+====================================================================================================
+D6_construction_vs_search | deepseek | sample 2 | finish stop | 16497 chars | error None
+====================================================================================================
+The honest conclusion is the deflationary one: **C is an informed search over a fixed rule language using itemised error feedback; B is a blind evolutionary search over the same language using scalar fitness feedback. They differ in what they depend on. Nothing about construction, creativity, or explanation follows.** The document’s own results largely confirm this. The findings below identify where the stronger provenance/construction claim fails.
+
+---
+
+### 1. The provenance criterion is circular/definitional
+**Claim attacked:** “remove or scramble the defect representation and the constructing process breaks, while the selecting process — which never read it — is unaffected. That is the operational content of ‘the mapped objection is on an active dependency route.’”
+
+**Why it fails:** This defines “construction” as “depends on a defect representation.” C is then built to read itemised defects; B is built not to. The scramble test cannot fail to produce the intended asymmetry. It verifies the definition, not an independent property of construction.  
+**Seriousness:** fatal to the claim that construction is a discovered kind.  
+**Fix:** define construction independently of the ablation, then test whether that independent property predicts something beyond interface differences.
+
+### 2. The B-control in the scramble test is tautological
+**Claim attacked:** “Give B the same world — it never reads V — and confirm its output is byte-identical to the unscrambled run. This is the test that distinguishes the provenances.”
+
+**Why it fails:** If B’s code never reads V, passing scrambled V cannot change its output. This is code inspection, not an empirical control. It shows the interfaces differ; it does not show the routes differ in any substantive sense.  
+**Seriousness:** fatal to M4 as a provenance discriminator.  
+**Fix:** run a symmetric ablation on B’s actual feedback channel (scramble its fitness values, or give B itemised defects), then compare how each process breaks.
+
+### 3. “C never computes an aggregate fitness” is false
+**Claim attacked:** “C never computes an aggregate fitness. Its only inputs are itemised records.”
+
+**Why it fails:** C scores every condition by `(number of V true) − (number of N true)`, keeps the top 20, and scores actions by `fixes − breaks`. Those are aggregate statistics over records. It does not compute one scalar for the whole architecture, but it absolutely aggregates.  
+**Seriousness:** serious.  
+**Fix:** say C uses itemised error attribution and rule-level aggregate scores, not an architecture-level scalar fitness.
+
+### 4. “B never reads a defect record” creates a false dichotomy
+**Claim attacked:** “B never reads a defect record. Its only input is a number per candidate.”
+
+**Why it fails:** The number is exposure-half fitness, an aggregate of prediction errors. It encodes defect information. The distinction is fine-grained versus coarse-grained error feedback, not presence versus absence of error representation.  
+**Seriousness:** serious.  
+**Fix:** describe B as using scalar error feedback, C as using itemised error feedback.
+
+### 5. The scramble result only shows C uses outcome labels
+**Claim attacked:** “Scrambling the defect records’ outcomes while keeping their number destroys C (0.906 → 0.355 on collisions)”
+
+**Why it fails:** Any supervised learner that reads outcome labels will break when those labels are permuted. This shows C’s action solver reads outcomes. It does not show that “construction” is real. B would also change if its fitness were scrambled.  
+**Seriousness:** serious.  
+**Fix:** reframe as “C depends on fine-grained outcome pairings; B depends on scalar fitness.” Do not treat this as evidence for a distinct construction kind.
+
+### 6. The claim that it is “not about data flow” is exactly a data-flow claim
+**Claim attacked:** “That is not a claim about the code’s data flow — it is a demonstration that the two processes’ outputs depend on different things”
+
+**Why it fails:** It is precisely a data-flow claim. B’s code never reads the scrambled argument, so its output cannot depend on it. The demonstration is trivial from the code architecture.  
+**Seriousness:** serious.  
+**Fix:** admit it is an interface and data-flow difference.
+
+### 7. Convergence supports the deflation, not the construction claim
+**Claim attacked:** “So: same machinery, two routes, and the route is detectable by ablation.”
+
+**Why it fails:** Both processes search the same fixed meta-grammar and find functionally equivalent rules. That is informed search versus blind search over the same hypothesis space. It does not establish construction and selection as distinct kinds.  
+**Seriousness:** serious.  
+**Fix:** say “same fixed hypothesis space, different feedback/search strategy.”
+
+### 8. M6(ii) failure undermines the defect-driven claim
+**Claim attacked:** “Defect records with the outcome replaced by the prediction (no defect content) → **built** … **M6(ii) ✗.**”
+
+**Why it fails:** C built a rule from records with no defect content because it counts “new prediction equals target” as a fix without checking that the old prediction differed. This shows C’s accounting and stopping rule can be fooled. The claim that C is robustly driven by defect content is not supported.  
+**Seriousness:** serious.  
+**Fix:** check that the old prediction differed before counting a fix; rerun M6(ii); do not count S6 as supported until fixed.
+
+### 9. The scrambled run built junk, contradicting “C correctly declines to invent one”
+**Claim attacked:** “C correctly declines to invent one.”
+
+**Why it fails:** The results report that “the scrambled run built three junk rules with small positive nets.” C can invent junk when the feedback is corrupted. The clean-run stopping behaviour is not a general property.  
+**Seriousness:** serious.  
+**Fix:** add noise/robustness analysis and a minimality or validation criterion.
+
+### 10. Phase 2 is confounded and cannot test accumulation
+**Claim attacked:** “S7 (phase 2) — accumulates.”
+
+**Why it fails:** The design admits “Phase 2 is confounded by my own design — the second law I chose contradicts the first world’s walls instead of extending them.” A sticky wall contradicts a reflecting wall, so collapse on the original world is guaranteed for any correct sticky rule, hand-built included. The accumulation question was not tested.  
+**Seriousness:** fatal to S7.  
+**Fix:** rerun phase 2 with a compatible second law (e.g. a third thing or a one-way gate) and do not count S7 from the current run.
+
+### 11. The world and rule language were co-designed to have the same shape
+**Claim attacked:** “The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision. The rule language’s terms are the slots’ own kinematic next-states, so world and language have the same shape.”
+
+**Why it fails:** The target law is explicitly made to match the rule language. This trivialises construction: C is asked to find a rule in a language tailored to the law’s shape.  
+**Seriousness:** serious.  
+**Fix:** freeze the language before designing the world; test on laws not anticipated by the language.
+
+### 12. The exact action needed for the law was added to the action set
+**Claim attacked:** “One action added (`swap_next_v`); the two constants removed.”
+
+**Why it fails:** The law’s action `swap_next_v` was added to the action set. The mitigation “B having the same actions” does not remove tailoring. If the action were absent, C could not build the law.  
+**Seriousness:** serious.  
+**Fix:** pre-register the action set, or show independently that the action is derivable rather than supplied.
+
+### 13. The closedness check was split after seeing the memoriser’s number
+**Claim attacked:** “The check now has a structural part … and an overall part … Recorded with the numbers so the reader can judge whether this is a fair restatement or a moved goalpost: A0 alone 0.352; best slot-only G0 0.366; lookup 0.819; hand 0.906. Both parts pass.”
+
+**Why it fails:** The original check applied a 0.1 margin to any G0 architecture on collision steps. The lookup at 0.819 versus hand-built 0.906 is a difference of 0.087, below 0.1. The original check would have failed. The split moves the threshold away from the memoriser after seeing the number.  
+**Seriousness:** serious.  
+**Fix:** keep the original check and report the failure, or pre-register the split before seeing the lookup number.
+
+### 14. The lookup defeats behavioural closure of G0
+**Claim attacked:** “G0 is genuinely closed to a new feature of the world, so that extending it is needed.”
+
+**Why it fails:** The results show a G0 lookup gets 0.819 on collision steps, about 88.7% of the in-sample ceiling. G0 is not behaviourally closed. The “needed” claim survives only for structured G0 architectures, not for G0 as a whole.  
+**Seriousness:** serious.  
+**Fix:** distinguish behavioural closure from representational closure and report both.
+
+### 15. S1 overclaims “the closed grammar could not do it”
+**Claim attacked:** “S1 needed — 0.906 > 0.819 (best G0, a memoriser) > 0.366 (best structured G0).”
+
+**Why it fails:** The best G0 is 0.819, only 0.087 below C. The closed grammar could do most of it. The sentence “the closed grammar could not do it” is false for G0 as a whole.  
+**Seriousness:** serious.  
+**Fix:** say “structured G0 could not; a lookup approximates the visible effects.”
+
+### 16. M3 thing-signature is not measured for B
+**Claim attacked:** The M3 table reports only A0, A0+C, and hand-built rules. B is absent.
+
+**Why it fails:** M3 is used to argue that C’s built component is faithful. But B finds the same functional rule. Without measuring B, M3 cannot separate construction from blind selection; it only separates rule-added architectures from A0/lookup.  
+**Seriousness:** serious.  
+**Fix:** run M3 for B.
+
+### 17. S3’s scope was narrowed to exclude C’s zero-scoring cases
+**Claim attacked:** “S3’s threshold applies to pairs with **no crossing after the change step**; pairs with a post-change crossing are reported separately as **F3 — the invisible law**”
+
+**Why it fails:** The original S3 referred to “collision-containing pairs.” The threshold now excludes exactly the crossing cases where C scores zero. Although pre-registered, it weakens the unconditional faithfulness claim.  
+**Seriousness:** serious.  
+**Fix:** report both and retract any unconditional “faithful component with the world’s kind-signature” claim.
+
+### 18. In-sample ceiling used for comparison
+**Claim attacked:** “Sensory ceiling (in-sample, for scale) | 0.900 | 0.923” and “0.906 (ceiling 0.923)”
+
+**Why it fails:** Comparing evaluation-half performance to an in-sample ceiling is apples-to-oranges. The relevant out-of-sample ceiling may be lower.  
+**Seriousness:** serious.  
+**Fix:** compute the ceiling on the evaluation half.
+
+### 19. “Zero fitness evaluations” is a unit mismatch
+**Claim attacked:** “Zero fitness evaluations. B used 1,720–1,788 full-history fitness evaluations per seed to reach the same place.”
+
+**Why it fails:** C used 2,830 defect records and 4,778 non-defect records from the exposure half, plus multiple rounds. Those records are derived from the same simulations. Comparing zero to thousands is misleading.  
+**Seriousness:** serious.  
+**Fix:** compare simulations/rollouts or information-theoretic cost, not “fitness evaluations” versus “records.”
+
+### 20. “Same machinery” is ambiguous
+**Claim attacked:** “B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route.”
+
+**Why it fails:** B’s rules contain vacuous extra atoms; C’s rule is minimal. They are functionally equivalent on this contract, not structurally the same. The difference is still a search-bias difference.  
+**Seriousness:** minor-to-serious.  
+**Fix:** say “functionally equivalent on this contract, structurally different.”
+
+### 21. “C correctly declines to invent one” is contradicted
+**Claim attacked:** “C correctly declines to invent one.”
+
+**Why it fails:** M6(ii) and the scrambled run show C can build junk rules. The clean-run stopping behaviour is not a general property.  
+**Seriousness:** serious.  
+**Fix:** remove or heavily qualify the claim.
+
+### 22. “Building it takes two rounds” is false for sensory fidelity
+**Claim attacked:** “The world’s collision law needs two rules in this language … That is deliberate: building it takes two rounds.”
+
+**Why it fails:** Results say “C’s single rule reproduces the hand-built pair exactly, because the crossing rule adds nothing at the sensory level.” One rule suffices for the primary sensory measure. Two rules are needed only for the finer identity-tracking contract.  
+**Seriousness:** serious.  
+**Fix:** state the scope: one rule for sensory fidelity, two for identity tracking.
+
+### 23. Given-bound conditioning may bias M3
+**Claim attacked:** “Given-bound fractions (unbound = the predictor was not tracking both things exactly at step 2; shown as count).” and “discards 2–18% of pairs in M3”
+
+**Why it fails:** Conditioning on being bound can select easier cases. The unbound counts differ across conditions (A0: 18 no collision, 99 same-target, 21 crossing; C: 13, 21, 9), so comparisons on the bound subset may not represent all pairs.  
+**Seriousness:** serious.  
+**Fix:** report intention-to-treat over all pairs, with bound status as an outcome.
+
+### 24. The scramble is only a partial ablation of the defect representation
+**Claim attacked:** “true-field column permuted among the V records (same states, same number of defects, same aggregate; wrong pairings)”
+
+**Why it fails:** Only the outcome column is scrambled. The states and the V/N partition remain intact. C’s condition induction still uses those, which is why the scrambled run still induced a near-right condition. The test does not ablate the whole defect representation.  
+**Seriousness:** serious.  
+**Fix:** also scramble states or the V/N partition, or explicitly acknowledge that only outcome pairing is ablated.
+
+### 25. The document’s own summary is the deflation
+**Claim attacked:** The section title “Supports (construction is real, needed, and distinct from selection).”
+
+**Why it fails:** The document’s own closing sentence says: “The constructor is a version-space learner with a small grammar, not a theory of conjecture; what it shows is that a process whose only inputs are itemised defects builds the right law, and that a process whose only input is a number builds the same law by a route that ablation can tell apart.” That is precisely informed search versus blind search. It does not support “construction is real, needed, and distinct” in any sense beyond input granularity.  
+**Seriousness:** fatal to the strong claim.  
+**Fix:** rewrite the section title to match the deflation: “Supports: informed and blind search differ in feedback dependencies.”
+
+---
+
+## What, if anything, resists the deflation?
+
+Almost nothing.
+
+The only candidate is **M3’s thing-signature result**: A0+C tracks things through same-target collisions at 0.973, while A0 alone scores 0.000. This resists the narrower claim that the learned rule is merely a sensory patch or lookup-table memorisation. It shows the added rule changes the architecture’s internal state tracking, not just its surface predictions.
+
+But this does **not** resist the deflation of the construction-versus-selection claim, because:
+
+- M3 is not measured for B. B finds the same functional rule. Without B in the table, M3 cannot separate C’s route from B’s route.
+- The comparison is rule-added architecture versus A0/lookup, not construction versus selection.
+- The one case where the full law matters—crossings—shows C scores zero while the hand-built crossing rule scores 1.000. That is a limitation of C’s sensory contract, not evidence of a special constructive power.
+
+The pre-registered F3 (“the invisible law”) is a negative result: C cannot build what its sensory contract cannot see. The scramble test shows C depends on fine-grained outcome pairings and B depends on scalar fitness. That is exactly the deflation. Phase 2 is confounded. M6(ii) failed. The rule language was tailored to the world. The closedness check was split after seeing the lookup’s number.
+
+So the honest conclusion stands: **informed search and blind search differ in what they depend on; nothing about creativity or explanation follows.**

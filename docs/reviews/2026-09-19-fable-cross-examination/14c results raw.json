@@ -1,0 +1,509 @@
+{
+ "design": "13 Test design - construction",
+ "code_sha256": "156f3ec2089d902fd215f83065a4cd95ab2d3935987214866aadf08fdf3d4417",
+ "base_code_sha256": "54259a930169556686331c5b1fe50778cf346edab0dce4acfde674f2d22c6d6f",
+ "sizes": {
+  "exposure": 951,
+  "evaluation": 938
+ },
+ "ceiling_evaluation": {
+  "other": 0.8950556647020301,
+  "all": 0.9001865671641791,
+  "collision": 0.9226361031518625
+ },
+ "A0": {
+  "other": 0.7017026850032744,
+  "all": 0.636727078891258,
+  "collision": 0.3524355300859599
+ },
+ "A0_hand": {
+  "rules": [
+   "IF n_i == n_j THEN swap_next_v + hold",
+   "IF (n_i == c_j) AND (c_i == n_j) THEN swap_next_v + hold"
+  ],
+  "fitness": {
+   "other": 0.8185985592665357,
+   "all": 0.8348880597014925,
+   "collision": 0.9061604584527221
+  }
+ },
+ "S0_best_of_G0": {
+  "architecture": "lookup(k=2)",
+  "fitness": {
+   "other": 0.6810740013097577,
+   "all": 0.7066897654584222,
+   "collision": 0.8187679083094556
+  },
+  "top5": [
+   [
+    0.7066897654584222,
+    "lookup(k=2)"
+   ],
+   [
+    0.6596481876332623,
+    "lookup(k=3)"
+   ],
+   [
+    0.6485874200426439,
+    "lookup(k=3) + slots=2:persist(tau=inf,r=5,jump_keeps_v=F)"
+   ],
+   [
+    0.6485874200426439,
+    "lookup(k=3) + slots=2:persist(tau=5,r=5,jump_keeps_v=F)"
+   ],
+   [
+    0.6485874200426439,
+    "lookup(k=3) + slots=2:persist(tau=2,r=5,jump_keeps_v=F)"
+   ]
+  ],
+  "best_slot_only_by_collision": {
+   "architecture": "slots=2:persist(tau=0,r=5,jump_keeps_v=T)",
+   "fitness": {
+    "other": 0.6856581532416502,
+    "all": 0.6261993603411514,
+    "collision": 0.3660458452722063
+   }
+  }
+ },
+ "C": {
+  "rules": [
+   "IF n_i == n_j THEN swap_next_v + hold"
+  ],
+  "rounds": [
+   {
+    "round": 1,
+    "defects": 2830,
+    "non_defects": 4778,
+    "rule": "IF n_i == n_j THEN swap_next_v + hold",
+    "info": {
+     "fixed": 820,
+     "broken": 0,
+     "condition_score": 929
+    }
+   },
+   {
+    "round": 2,
+    "defects": 1266,
+    "non_defects": 6342,
+    "rule": null,
+    "info": {
+     "reason": "no rule with positive net",
+     "best": {
+      "fixed": 0,
+      "broken": 0,
+      "condition_score": -47
+     }
+    }
+   }
+  ],
+  "fitness": {
+   "other": 0.8185985592665357,
+   "all": 0.8348880597014925,
+   "collision": 0.9061604584527221
+  }
+ },
+ "B": [
+  {
+   "seed": 0,
+   "rules": [
+    "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "best": "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.6280231335436383,
+     "evaluations_so_far": 865
+    },
+    {
+     "round": 2,
+     "best": "IF (c_j == n_j) AND (c_j != n_j) THEN swap_v",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.833596214511041,
+     "evaluations_so_far": 1762
+    }
+   ],
+   "evaluations": 1762,
+   "fitness": {
+    "other": 0.8185985592665357,
+    "all": 0.8348880597014925,
+    "collision": 0.9061604584527221
+   }
+  },
+  {
+   "seed": 1,
+   "rules": [
+    "IF (n_i == n_j) AND (c_j != v_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "best": "IF (n_i == n_j) AND (c_j != v_j) THEN swap_next_v + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.6280231335436383,
+     "evaluations_so_far": 882
+    },
+    {
+     "round": 2,
+     "best": "IF c_i == c_j THEN stop_j",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.833596214511041,
+     "evaluations_so_far": 1774
+    }
+   ],
+   "evaluations": 1774,
+   "fitness": {
+    "other": 0.8185985592665357,
+    "all": 0.8348880597014925,
+    "collision": 0.9061604584527221
+   }
+  },
+  {
+   "seed": 2,
+   "rules": [
+    "IF (c_i != w_i) AND (n_i == n_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "best": "IF (c_i != w_i) AND (n_i == n_j) THEN swap_next_v + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.6280231335436383,
+     "evaluations_so_far": 804
+    },
+    {
+     "round": 2,
+     "best": "IF (v_i == n_i) AND (w_i != n_j) THEN stop_i",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.833596214511041,
+     "evaluations_so_far": 1720
+    }
+   ],
+   "evaluations": 1720,
+   "fitness": {
+    "other": 0.8185985592665357,
+    "all": 0.8348880597014925,
+    "collision": 0.9061604584527221
+   }
+  },
+  {
+   "seed": 3,
+   "rules": [
+    "IF (c_i != v_j) AND (n_i == n_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "best": "IF (c_i != v_j) AND (n_i == n_j) THEN swap_next_v + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.6280231335436383,
+     "evaluations_so_far": 889
+    },
+    {
+     "round": 2,
+     "best": "IF (c_i == v_i) AND (c_i == c_j) THEN stop_both",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.833596214511041,
+     "evaluations_so_far": 1757
+    }
+   ],
+   "evaluations": 1757,
+   "fitness": {
+    "other": 0.8185985592665357,
+    "all": 0.8348880597014925,
+    "collision": 0.9061604584527221
+   }
+  },
+  {
+   "seed": 4,
+   "rules": [
+    "IF (v_i != n_i) AND (n_i == n_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "best": "IF (v_i != n_i) AND (n_i == n_j) THEN swap_next_v + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.6280231335436383,
+     "evaluations_so_far": 872
+    },
+    {
+     "round": 2,
+     "best": "IF (c_i == v_i) AND (c_j == n_j) THEN stop_j + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.833596214511041,
+     "evaluations_so_far": 1767
+    }
+   ],
+   "evaluations": 1767,
+   "fitness": {
+    "other": 0.8185985592665357,
+    "all": 0.8348880597014925,
+    "collision": 0.9061604584527221
+   }
+  },
+  {
+   "seed": 5,
+   "rules": [
+    "IF (n_i == n_j) AND (n_i != w_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "best": "IF (n_i == n_j) AND (n_i != w_j) THEN swap_next_v + hold",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.6280231335436383,
+     "evaluations_so_far": 899
+    },
+    {
+     "round": 2,
+     "best": "IF (v_i == v_j) AND (v_i != v_j) THEN reverse_both",
+     "exposure_fitness": 0.833596214511041,
+     "baseline": 0.833596214511041,
+     "evaluations_so_far": 1788
+    }
+   ],
+   "evaluations": 1788,
+   "fitness": {
+    "other": 0.8185985592665357,
+    "all": 0.8348880597014925,
+    "collision": 0.9061604584527221
+   }
+  }
+ ],
+ "M3_A0": {
+  "no_collision_after": {
+   "total": 167,
+   "unbound": 18,
+   "passed": 141,
+   "given_bound": 0.9463087248322147
+  },
+  "same_after": {
+   "total": 541,
+   "unbound": 99,
+   "passed": 0,
+   "given_bound": 0.0
+  },
+  "cross_after": {
+   "total": 230,
+   "unbound": 21,
+   "passed": 0,
+   "given_bound": 0.0
+  }
+ },
+ "M3_A0_C": {
+  "no_collision_after": {
+   "total": 167,
+   "unbound": 13,
+   "passed": 150,
+   "given_bound": 0.974025974025974
+  },
+  "same_after": {
+   "total": 541,
+   "unbound": 21,
+   "passed": 506,
+   "given_bound": 0.9730769230769231
+  },
+  "cross_after": {
+   "total": 230,
+   "unbound": 9,
+   "passed": 0,
+   "given_bound": 0.0
+  }
+ },
+ "M3_A0_hand": {
+  "no_collision_after": {
+   "total": 167,
+   "unbound": 13,
+   "passed": 154,
+   "given_bound": 1.0
+  },
+  "same_after": {
+   "total": 541,
+   "unbound": 21,
+   "passed": 520,
+   "given_bound": 1.0
+  },
+  "cross_after": {
+   "total": 230,
+   "unbound": 9,
+   "passed": 221,
+   "given_bound": 1.0
+  }
+ },
+ "M4_scrambled_C": {
+  "rules": [
+   "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v",
+   "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v",
+   "IF (w_i == w_j) AND (c_j == n_j) THEN swap_next_v + hold"
+  ],
+  "rounds": [
+   {
+    "round": 1,
+    "defects": 2830,
+    "non_defects": 4778,
+    "rule": "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v",
+    "info": {
+     "fixed": 94,
+     "broken": 0,
+     "condition_score": 1255
+    }
+   },
+   {
+    "round": 2,
+    "defects": 2667,
+    "non_defects": 4941,
+    "rule": "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v",
+    "info": {
+     "fixed": 17,
+     "broken": 0,
+     "condition_score": 213
+    }
+   },
+   {
+    "round": 3,
+    "defects": 2615,
+    "non_defects": 4993,
+    "rule": "IF (w_i == w_j) AND (c_j == n_j) THEN swap_next_v + hold",
+    "info": {
+     "fixed": 81,
+     "broken": 0,
+     "condition_score": 56
+    }
+   }
+  ],
+  "fitness": {
+   "other": 0.7280615586116569,
+   "all": 0.6585820895522388,
+   "collision": 0.3545845272206304
+  }
+ },
+ "M4_B_seed0_with_scrambled_records_passed": {
+  "rules": [
+   "IF (c_i == c_j) OR (n_i == n_j) THEN swap_next_v + hold"
+  ],
+  "identical_to_B_seed0": true
+ },
+ "M5_recoding": {
+  "reversed_order_rules": [
+   "IF n_i == n_j THEN swap_next_v + hold"
+  ],
+  "relabelled_rules": [
+   "IF n_i == n_j THEN swap_next_v + hold"
+  ],
+  "reversed_identical": true,
+  "relabelled_identical": true
+ },
+ "M6_ablation": {
+  "empty_V_rules": [],
+  "empty_V_rounds": [
+   {
+    "round": 1,
+    "defects": 0,
+    "non_defects": 4778,
+    "rule": null,
+    "info": {
+     "reason": "no defects"
+    }
+   }
+  ],
+  "no_content_V_rules": [
+   "IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i",
+   "IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i",
+   "IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i"
+  ],
+  "no_content_V_rounds": [
+   {
+    "round": 1,
+    "defects": 2830,
+    "non_defects": 4778,
+    "rule": "IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i",
+    "info": {
+     "fixed": 671,
+     "broken": 0,
+     "condition_score": 929
+    }
+   },
+   {
+    "round": 2,
+    "defects": 2861,
+    "non_defects": 4747,
+    "rule": "IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i",
+    "info": {
+     "fixed": 675,
+     "broken": 0,
+     "condition_score": 675
+    }
+   },
+   {
+    "round": 3,
+    "defects": 2861,
+    "non_defects": 4747,
+    "rule": "IF (n_i == n_j) AND (c_j != n_j) THEN reverse_i",
+    "info": {
+     "fixed": 675,
+     "broken": 0,
+     "condition_score": 675
+    }
+   }
+  ]
+ },
+ "phase2": {
+  "ceiling_evaluation": {
+   "other": 0.9112593828190159,
+   "all": 0.9078108395324124,
+   "collision": 0.8943248532289628
+  },
+  "A0_plus_phase1_rules": {
+   "other": 0.7831526271893244,
+   "all": 0.7124070138150903,
+   "collision": 0.43574690150032613
+  },
+  "C_continued": {
+   "rules": [
+    "IF n_i == n_j THEN swap_next_v + hold",
+    "IF v_j != w_j THEN swap_next_v + hold",
+    "IF (w_i == w_j) AND (c_j != n_j) THEN swap_next_v + hold"
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "defects": 2317,
+     "non_defects": 5315,
+     "rule": "IF v_j != w_j THEN swap_next_v + hold",
+     "info": {
+      "fixed": 979,
+      "broken": 27,
+      "condition_score": 1008
+     }
+    },
+    {
+     "round": 2,
+     "defects": 1940,
+     "non_defects": 5692,
+     "rule": "IF (w_i == w_j) AND (c_j != n_j) THEN swap_next_v + hold",
+     "info": {
+      "fixed": 282,
+      "broken": 87,
+      "condition_score": 235
+     }
+    }
+   ],
+   "fitness": {
+    "other": 0.7879899916597164,
+    "all": 0.7733793836344315,
+    "collision": 0.7162426614481409
+   },
+   "fitness_on_collision_only_world": {
+    "other": 0.325147347740668,
+    "all": 0.43070362473347545,
+    "collision": 0.8925501432664756
+   }
+  },
+  "wall_stop_steps": {
+   "with_phase2_rules": 0.6273764258555133,
+   "phase1_rules_only": 0.2338403041825095
+  }
+ }
+}

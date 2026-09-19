@@ -1,0 +1,410 @@
+====================================================================================================
+E2_errata_sufficiency | deepseek_audit | sample 0 | finish stop | 14544 chars | error None
+====================================================================================================
+Findings follow. Quotations are exact.
+
+**F1. Four pre-registration failures become three.**
+(1) §1 says: “not acceptable as pre-registered — 16, 17, 18, 19.” §14 says: “with three changes a referee would not allow as pre-registered.”
+(2) Four items are named in §1, not three. The final claim silently drops one.
+(3) Minor but real internal inconsistency.
+(4) Either correct §14 to four, or state which of 16–19 is no longer counted and why.
+
+**F2. The original neutrality failure is replaced by the amended τ-only claim.**
+(1) §3 says: “Original definition (rebind included): spread 0.0264 — **fails** the 0.01 tolerance. Amended definition (τ only): spread 0.0000 — passes.” §14 says: “a persistence parameter is inert where nothing is hidden (by definition).”
+(2) The original kind-under-test included `rebind`; under that definition neutrality fails. §14 survives only by switching to the amended τ-only definition and omitting the failing figure.
+(3) Serious. This is the “reworded survival” pattern.
+(4) In §14, state that neutrality of the kind under test as originally defined fails; if claiming τ is inert, label it explicitly as a post-hoc restricted definition and report the 0.0264 spread.
+
+**F3. H_full is underpowered, but §14 still asserts selection for hidden things.**
+(1) §4 says: “Under the frozen-before-pilots criterion, the H_full attempt is recorded as underpowered, and every H_full result in file 12 should be read with that.” §14 says: “selected for where things are hidden (as the grammar’s only mechanism for it).”
+(2) If every H_full result must be read as underpowered, the selected-for claim cannot be presented unqualified as a result.
+(3) Serious.
+(4) State that the H_full selection is only a relative ordering among tested architectures on an underpowered grammar, not evidence of adequacy.
+
+**F4. The H_full “selection” is definitional, not empirical.**
+(1) §8 says: “H_full is the only history with prolonged non-confirmation, and persistence the only mechanism in the grammar for it — ‘the required mechanism is selected when required.’” §14 says: “selected for where things are hidden (as the grammar’s only mechanism for it).”
+(2) §8 concedes this is entailed by the grammar/history definition. Repeating it in §14 as a claim adds no empirical content.
+(3) Serious.
+(4) Mark it as a definitional entailment, not as a finding of experiment 1.
+
+**F5. “Selected” is argmax over a fixed grammar.**
+(1) §13 says: “‘Selection with unlimited reach’ (§2.8) is argmax over a fixed grammar, not variation and selection.” §14 says: “selected against where two visible things interact (empirically), and selected for where things are hidden.”
+(2) If the mechanism is argmax, calling it “selected against/for” misdescribes what happened. The original selection language survives only by re-use.
+(3) Serious.
+(4) Replace “selected against/for” with “has higher/lower best-of fitness under argmax,” or explain what selection operator is actually meant.
+
+**F6. The pilot-direction concession disappears from §14.**
+(1) §1 says: “the first pilot already showed the direction of the final result — but that is a weaker claim than pre-registration and should have been stated as such.” §14 says only: “Frozen after pilots on the same data, with three changes a referee would not allow as pre-registered.”
+(2) The final claim omits that the pilot already showed the result’s direction, which is material to evidential independence.
+(3) Serious.
+(4) Include “the first pilot already showed the direction of the final result” in §14.
+
+**F7. The neutral-tied occlusion claim is not tied to the clean contrast.**
+(1) §10 says: “Thing count and occlusion are confounded in the H_neutral-vs-H_full contrast. The clean contrast is **H_kinematic vs H_full** … The occlusion conclusion stands on that pair. A one-thing-with-occlusion history should have been included.” §14 says: “Tied architectures on the neutral history differ two-fold on occlusion never seen.”
+(2) If the two-fold occlusion difference is measured by putting H_neutral-selected architectures into an occlusion history, it is not obviously the clean H_kinematic-vs-H_full contrast; §14 does not identify the history or rule out the confound.
+(3) Serious.
+(4) Report the clean H_kinematic-vs-H_full contrast as the occlusion evidence, or explain precisely why the neutral-tied comparison is not the confounded contrast.
+
+**F8. The thing-kind falsification is omitted from §14.**
+(1) §6 says: “Under the frozen definition, **no architecture has thing-kind.**” §14 never mentions thing-kind.
+(2) A central negative result is dropped from “What experiment 1 now claims.”
+(3) Serious.
+(4) Add the unconditional failure to §14.
+
+**F9. The corrected conditional headline is omitted from §14.**
+(1) §7 says: “Corrected statement: **history determines the kind when it contains the discriminating change; when it does not, it underdetermines, and drift decides.**” §14 does not state this corrected headline.
+(2) The original unconditional headline is withdrawn, but its replacement does not appear in the final claims.
+(3) Serious.
+(4) Include the corrected conditional statement in §14.
+
+**F10. The occlusion rationale is conceded wrong, but §14 still uses hidden-things selection.**
+(1) §12 says: “**71% of spells are three steps or fewer**, which a k = 3 lookup could in principle bridge.” §14 says: “selected for where things are hidden (as the grammar’s only mechanism for it).”
+(2) The design’s stated reason for why hidden things require persistence is withdrawn; the final claim does not say that the rationale is unsupported.
+(3) Serious.
+(4) Separate the selection result from the occlusion rationale, and state that the original rationale is not established.
+
+**F11. Search-bias caveat is omitted from §14.**
+(1) §11 says: “The run is underpowered to detect bias either way.” §14 does not mention search bias.
+(2) The final claims do not carry the conceded underpowering of the search-bias test.
+(3) Minor to serious.
+(4) Add the search-bias caveat.
+
+**F12. The ceiling is in-sample, but §14 does not say so.**
+(1) §13 says: “Change 11 calls the corrected ceiling ‘the true bound’; §2.5 correctly calls it in-sample. It is in-sample.” §14 says: “Underpowered on H_full under its own original criterion.”
+(2) The 0.881 ratio is against an in-sample ceiling. The final claim does not state that.
+(3) Minor.
+(4) Say “against the in-sample ceiling” where the underpowering figure is used.
+
+**F13. “No global evaluations” contradicts C’s aggregate rankings.**
+(1) §2 says: “C ranks conditions by (defects covered − non-defects covered) and actions by (defects fixed − non-defects broken); both are sums over records used to select the best.” §9 says: “given 2,830 labelled error records and no global evaluations.”
+(2) Summing over records to select the best is an aggregate evaluation, even if it is not a call to the world’s fitness function. As written, §9 contradicts §2.
+(3) Serious.
+(4) Say “no calls to the world’s global fitness function,” and acknowledge the internal aggregate scores.
+
+**F14. The scramble claim survives only in narrowed form.**
+(1) §1 says: “The scramble test does not distinguish provenances … Withdrawn.” §8b says: “The original result (0.906 → 0.355 on one seed) was partly luck. S4 as pre-registered (a drop of at least 0.1) holds in 3 of 5 permutations. A scramble that actually destroys the mapping must permute outcomes *within* groups of identical states or replace each outcome with a different wrong field.” §9 says: “Its output depends on the pairing of states with outcomes rather than on their counts — shown in 3 of 5 scramble permutations, with a placebo that leaves it untouched, and with the defect accounting fixed.”
+(2) §9 omits that two of five permutations produced no degradation, that the original single-seed result was partly luck, and that the scramble did not actually destroy the state→outcome mapping. The claim survives by dropping those concessions.
+(3) Serious.
+(4) State the full 3/5 result, the two no-effect seeds, the “partly luck” concession, and that a proper mapping-destroying scramble is left to experiment 3.
+
+**F15. World fitted to language is omitted from §9.**
+(1) §4 says: “The world was fitted to the language … expressibility was guaranteed by construction. A fair design fixes the world’s law before the language is finalised. The §6.1 expressibility check therefore checked something that could not fail.” §9 says: “built the sensory-visible half of a pairwise law in its minimal form.”
+(2) The final claim presents the building result without the conceded fact that the language/world fit guaranteed expressibility.
+(3) Serious.
+(4) Add that the law’s expressibility was guaranteed by design, so the result is not evidence that the language discovers the law.
+
+**F16. The “minimal form” was hand-matched to the law.**
+(1) §8a says: “The action set contains the law’s exact operation (`swap_next_v`) and the terms include the world’s next-states (`n, w`); the antecedent of the same-target law is a single equality atom. The meta-grammar was written by someone who knew the law. The two-rule depth of the target was matched to the K = 3 budget by design.” §9 says: “built the sensory-visible half of a pairwise law in its minimal form.”
+(2) The minimal depth and relevant terms were pre-designed with knowledge of the law; §9 does not acknowledge that this weakens any “minimal form” discovery claim.
+(3) Serious.
+(4) Say “built a rule of the pre-designed minimal depth using a language that already contained the law’s operation and terms.”
+
+**F17. “Stopped correctly” is not supported without held-out checking.**
+(1) §13 item 4 says: “C builds and accepts rules on the same records, with no held-out check inside the process.” §9 says: “stopped correctly when the residual defects had no consistent pattern.”
+(2) With no held-out check, “correctly” is unvalidated; it may be overfitting or merely stopping at the limit of the error signal.
+(3) Serious.
+(4) Say “stopped according to its internal defect criterion; no held-out check, so correctness of stopping is unverified.”
+
+**F18. “Three weaknesses” undercounts §13.**
+(1) §9 says: “Three weaknesses of the learner were found (one-step lookahead, arbitrary tie-break, fragile defect accounting).” §13 lists additional failure modes, including: “C builds and accepts rules on the same records, with no held-out check inside the process,” the raw condition score ignoring base rates, and the top-20 condition cap.
+(2) The final summary undercounts the conceded weaknesses.
+(3) Serious.
+(4) List all conceded weaknesses, or say “at least three” and include the held-out-check failure.
+
+**F19. “One design confound” undercounts the file.**
+(1) §9 says: “and one design confound (a contradictory second law).” The same errata concedes world-fitting to the language (§4), reclassification of the lookup after its score (§5), phase-2 confounding (§7), the meta-grammar being written by someone who knew the law (§8a), and the absence of per-change hashes (§8a).
+(2) Calling it one confound is internally inconsistent with the rest of the document.
+(3) Serious.
+(4) List the confounds, or say “among other design confounds.”
+
+**F20. The “not an instantiation of file 10” standing statement is omitted from §9.**
+(1) §12 says: “A standing statement: **neither experiment instantiates a definition of file 10 as stated** … Both test proxies that the semantics motivates.” §9 does not include this.
+(2) The final claims describe the learner and results without the conceded proxy status.
+(3) Serious.
+(4) Add the standing statement to §9.
+
+**F21. “With the defect accounting fixed” refers to post-hoc patched code.**
+(1) §8b says: “The accounting bug was real and the fix works: M6(ii) now passes.” §11 says: “The patched accounting in §8b makes M6(ii) pass, but a fix applied after the run does not license a phase that the frozen rule forbade.” §9 says: “with the defect accounting fixed.”
+(2) The frozen experiment did not have the fixed accounting. §9 can be read as claiming the frozen run had it.
+(3) Serious.
+(4) Specify that the fixed-accounting result is a post-hoc diagnostic on patched code, not the frozen experiment.
+
+**F22. Closedness retraction is omitted from §9.**
+(1) §5 says: “The honest closedness figure is the lookup against the ceiling: **0.819 of 0.923** — the old grammar gets 89% of the way on collision steps by memorising local sensory patterns, and the structured part of the old grammar gets 38%.” §9 does not mention closedness.
+(2) A major negative result is absent from “What experiment 2 now claims.”
+(3) Serious.
+(4) Include the closedness failure in §9.
+
+**F23. “Stopped correctly” conflicts with the invisible-crossing-defect concession.**
+(1) §12 says: “what cannot select it is the defect-driven criterion, because crossing steps produce no sensory defects. The limit is in the error signal, not in what the language can say.” §9 says: “stopped correctly when the residual defects had no consistent pattern.”
+(2) If crossing defects produce no sensory defects, the residual defects may be invisible to C’s error signal. Stopping “correctly” then means stopping at the sensory contract’s boundary, not recognizing a complete law.
+(3) Serious.
+(4) Say it stopped at the boundary of the sensory contract; the residual crossing law was invisible to its error signal.
+
+**F24. S3 partial failure is omitted from §9.**
+(1) §12 says: “S3 is now reported as **partly failed**: passes on same-target pairs (0.935 unconditional), fails on crossing pairs (0.000); the original S3 text covered all collision-containing pairs.” §9 reports the numbers but never states S3 partly failed.
+(2) The final claim omits the threshold verdict.
+(3) Minor to serious.
+(4) Add “S3 partly failed” explicitly.
+
+**F25. B’s “same law” comparison is against hand-built rules and a flawed closedness measure.**
+(1) §5 says: “The hand-built rules were written by me from knowledge of the law before either process ran. They were intended as an expressibility check and were then used as the ceiling against which ‘growth’ was measured.” §9 says: “A mutation search with a global scalar found the same law wrapped in vacuous atoms with about 1,750 evaluations.”
+(2) The final claim does not mention that the comparison ceiling was hand-built with knowledge of the law and that the closedness measure was reclassified after the lookup score.
+(3) Serious.
+(4) Qualify the B result with the hand-built ceiling and the closedness retraction.
+====================================================================================================
+E2_errata_sufficiency | deepseek_audit | sample 1 | finish stop | 13340 chars | error None
+====================================================================================================
+## Document 16 — experiment 1 errata
+
+**1. Change count is internally inconsistent.**
+Claim attacked: “with three changes a referee would not allow as pre-registered.”
+Why it fails: §1 lists four: “not acceptable as pre-registered — 16, 17, 18, 19.” The same paragraph also says “Items 3–5 below give the numbers under the criteria as they stood before those three,” which cannot cover items 16–19. If 16 is only a wording error, §1 still lists it as not acceptable.
+Seriousness: serious (audit trail).
+Fix: either say four changes, or explicitly withdraw 16 from that category and explain why “those three” are 17–19.
+
+**2. The neutrality claim survives only by narrowing the kind under test.**
+Claim attacked: “a persistence parameter is inert where nothing is hidden (by definition).”
+Why it fails: §3 concedes the original definition fails: “Original definition (rebind included): spread 0.0264 — **fails** the 0.01 tolerance. Amended definition (τ only): spread 0.0000 — passes.” The final sentence reports only the amended τ-only result. The experiment’s original kind under test included `rebind`, so the neutrality claim as originally defined is withdrawn; the final claim survives by silently dropping `rebind`.
+Seriousness: fatal to the neutrality claim as stated.
+Fix: state that neutrality under the original definition fails; if reporting the τ-only result, label it as the post hoc amended definition.
+
+**3. “Selected for where things are hidden” is retained despite H_full being underpowered/failed and definitional.**
+Claim attacked: “selected for where things are hidden (as the grammar's only mechanism for it).”
+Why it fails: §4 says: “Under the frozen-before-pilots criterion, the H_full attempt is recorded as underpowered, and every H_full result in file 12 should be read with that.” §8 says the H_full mechanism is definitional and that “Those two are the content of experiment 1” — the two being against-selection and the tied-architecture transfer difference. §10 says the H_neutral-vs-H_full contrast is confounded. §12 says the occlusion rationale was wrong. The final sentence still lists selected-for as one of three claims, with only a parenthetical that admits it is “the grammar's only mechanism for it.”
+Seriousness: serious/fatal.
+Fix: remove selected-for from empirical content; report it as definitional and underpowered, or rest it only on the H_kinematic-vs-H_full contrast with the confounds stated.
+
+**4. “Underpowered” rewords “failed.”**
+Claim attacked: “Underpowered on H_full under its own original criterion.”
+Why it fails: §4 quotes the original criterion: “No slot architecture reaches 0.95 × the sensory ceiling on H_full → the grammar cannot express an adequate predictor; record the attempt as failed.” The final substitutes “underpowered,” which is a different, softer diagnosis. The original criterion was a capability failure, not a statistical power problem.
+Seriousness: serious (moved goalpost).
+Fix: say “failed under its original criterion”; if calling it underpowered, specify the new criterion that makes that description true.
+
+**5. The occlusion-transfer claim omits the retracted rationale and search-bias caveat.**
+Claim attacked: “Tied architectures on the neutral history differ two-fold on occlusion never seen.”
+Why it fails: §12 concedes: “The lookups did in fact lose on occlusion (0.36–0.46 against 0.94 for τ = ∞), but not for the reason the design gave; the reason is that the sensory prefix at re-emergence is ambiguous across configurations, which a held-out split exposes.” §11 says the six-seed H_neutral run is “underpowered to detect bias either way.” The transfer difference may survive, but the final states it without the corrected mechanism or the search-bias limitation.
+Seriousness: serious/minor.
+Fix: state the corrected reason for the occlusion result and the search-bias caveat.
+
+## Document 17 — experiment 2 errata
+
+**6. “Stopped correctly” contradicts the frozen S6 failure.**
+Claim attacked: “stopped correctly when the residual defects had no consistent pattern.”
+Why it fails: §11 says: “S6 did not hold: M6(ii) failed.” §8b says the passing M6(ii) is from “A diagnostic on patched code, run after the cross-examination (not the frozen experiment).” §11 adds: “The patched accounting in §8b makes M6(ii) pass, but a fix applied after the run does not license a phase that the frozen rule forbade.” The final claim relies on the post hoc patch while presenting it as what the experiment now claims.
+Seriousness: fatal.
+Fix: remove “stopped correctly” from the frozen claims; report the patched M6(ii) only as a post-hoc diagnostic and state that frozen S6 failed.
+
+**7. “No global evaluations” preserves the retracted aggregate-fitness claim.**
+Claim attacked: “given 2,830 labelled error records and no global evaluations.”
+Why it fails: §2 concedes: “C never computes an aggregate fitness” is false. “C ranks conditions by (defects covered − non-defects covered) and actions by (defects fixed − non-defects broken); both are sums over records used to select the best.” §13.6 says the old comparison of “Zero fitness evaluations” was in different units; C “never called the world's fitness function,” but it did score conditions over records. The final phrase “no global evaluations” is ambiguous enough to keep the retracted claim alive.
+Seriousness: serious.
+Fix: say “no calls to the world's global fitness function; it does compute aggregate condition/action scores over records.”
+
+**8. “Built … in its minimal form” ignores the law-aware rule language.**
+Claim attacked: “built the sensory-visible half of a pairwise law in its minimal form.”
+Why it fails: §4 concedes the world was fitted to the language: “its effect is that expressibility was guaranteed by construction.” §8a adds: “The action set contains the law's exact operation (`swap_next_v`) and the terms include the world's next-states (`n, w`); the antecedent of the same-target law is a single equality atom. The meta-grammar was written by someone who knew the law.” Also: “The two-rule depth of the target was matched to the K = 3 budget by design.” The final presents construction from a neutral language, but the minimal form was pre-encoded.
+Seriousness: serious.
+Fix: state that the language was built with knowledge of the law and contained the law’s exact operation and terms; describe the result as selection from a law-aware grammar.
+
+**9. “With the defect accounting fixed” imports a post-hoc diagnostic into the frozen claim.**
+Claim attacked: “with the defect accounting fixed.”
+Why it fails: §8b explicitly labels the patched run: “A diagnostic on patched code, run after the cross-examination (not the frozen experiment).” §11 says: “a fix applied after the run does not license a phase that the frozen rule forbade.” The final sentence uses the patch as supporting evidence for the frozen experiment.
+Seriousness: serious/fatal.
+Fix: mark this as diagnostic only; do not use it to support what the frozen experiment now claims.
+
+**10. “Output depends on pairing” is stronger than 3-of-5 seed-dependent evidence.**
+Claim attacked: “Its output depends on the pairing of states with outcomes rather than on their counts — shown in 3 of 5 scramble permutations.”
+Why it fails: §8b says: “The scramble effect is seed-dependent: two of five permutations produced no degradation at all, because many records share a state, so permuting outcomes among records leaves the state→outcome mapping largely intact for those states. The original result (0.906 → 0.355 on one seed) was partly luck. S4 as pre-registered (a drop of at least 0.1) holds in 3 of 5 permutations.” It also says: “A scramble that actually destroys the mapping must permute outcomes within groups of identical states or replace each outcome with a different wrong field.” Three of five with two null results does not establish “depends” as a stable property.
+Seriousness: serious.
+Fix: report as “sensitive in 3 of 5 permutations; not robust; the old scramble did not reliably destroy the state→outcome mapping.”
+
+**11. “B's rule does exactly the same” is false for seed 3 and relies on a diagnostic.**
+Claim attacked: “B's rule does exactly the same.”
+Why it fails: §8c reports: “A0 + B, seed 3 | 0.969 | 0.932,” and “seed 3's vacuous extra atom `c_i != v_j` costs it two pairs.” “Exactly” ignores that exception. Also, §8c says: “The frozen run measured M3 … never for A0 + B.” The B comparison is from a diagnostic, not the frozen experiment.
+Seriousness: serious.
+Fix: say “same except seed 3's two-pair deficit”; label the B measurement as diagnostic.
+
+**12. “The same law” overclaims the full law and ignores the B/C asymmetry.**
+Claim attacked: “A mutation search with a global scalar found the same law wrapped in vacuous atoms.”
+Why it fails: §6 says: “C built the same-target rule and not the crossing rule, as pre-registered (change 2).” §8c shows B also scores 0.000 on crossing pairs. So “the same law” can only mean the same-target sub-rule. §13.7 adds: “B's fitness is overall exposure accuracy; C's records are collision-dominated. Another asymmetry to remove in experiment 3.” The two processes did not search or score the same object.
+Seriousness: serious.
+Fix: say “same same-target sub-rule”; note that B’s objective and C’s records are asymmetric.
+
+**13. “Three weaknesses … and one design confound” undercounts the errata’s own concessions.**
+Claim attacked: “Three weaknesses of the learner were found (one-step lookahead, arbitrary tie-break, fragile defect accounting) and one design confound (a contradictory second law).”
+Why it fails: §13 lists seven failure modes, including base-rate-ignoring condition score, top-20 condition cap, two-slot scope, no held-out check, M1 blindness to crossing errors, unit-mismatched “zero fitness evaluations,” and B/C fitness asymmetry. §4, §5 and §8a add further confounds: the world fitted to the language; hand-built rules used as the ceiling; the meta-grammar written by someone who knew the law; the action set containing the exact operation; the target depth matched to K = 3. “One design confound” is false.
+Seriousness: serious.
+Fix: enumerate all conceded weaknesses and confounds, or say “at least the following.”
+
+**14. S3 is split so the overall pre-registered failure is not stated.**
+Claim attacked: “The rule it built keeps its slots tracking their things through same-target collisions (0.935 of pairs, from 0.000 without it) and fails through crossings (0.000).”
+Why it fails: §12 concedes: “S3 is now reported as partly failed: passes on same-target pairs (0.935 unconditional), fails on crossing pairs (0.000); the original S3 text covered all collision-containing pairs.” The final reports the two sub-results but does not say that S3 as pre-registered partly failed. It is not false, but it lets the reader miss the original S3 verdict.
+Seriousness: minor.
+Fix: explicitly state “S3 partly failed; the original S3 text covered all collision-containing pairs.”
+
+**15. The final “identity-through-crossing” claim is presented as substantive despite the loose mapping to definitions.**
+Claim attacked: “so identity-through-crossing is underdetermined by occupancy for both processes.”
+Why it fails: §12 says: “A standing statement: neither experiment instantiates a definition of file 10 as stated… Both test proxies that the semantics motivates. The witnesses of D8 are right that the mapping from S1–S6 to the definitions was never written, and that where it can be reconstructed it is a loose analogy.” The final states a semantic-sounding conclusion without repeating that it is an operational proxy.
+Seriousness: minor/serious.
+Fix: state the operational claim: both architectures fail crossing pairs under the occupancy-only sensory contract, with no claim that this instantiates the file-10 definition.
+
+**16. The “built” claim omits the closedness figures that show the structured part is weak.**
+Claim attacked: “built the sensory-visible half of a pairwise law in its minimal form.”
+Why it fails: §5 concedes: “The honest closedness figure is the lookup against the ceiling: 0.819 of 0.923 — the old grammar gets 89% of the way on collision steps by memorising local sensory patterns, and the structured part of the old grammar gets 38%.” The final claims the structured rule was built but does not report that a memoriser gets most of the collision-step fidelity and the structured part gets 38%. That is a reworded success claim without the conceded closedness failure.
+Seriousness: serious.
+Fix: report the closedness figures alongside the “built” claim, or restrict the claim to the same-target sub-contract and say closedness was not established against the lookup.
+
+**17. The “local-credit-assignment” description is in tension with the conceded aggregate ranking.**
+Claim attacked: “A supervised, local-credit-assignment learner.”
+Why it fails: §2 concedes C “ranks conditions by (defects covered − non-defects covered) and actions by (defects fixed − non-defects broken); both are sums over records used to select the best.” That is per-record signal but a global aggregate score over records. The final keeps the flattering “local-credit” label without the qualification.
+Seriousness: minor/serious.
+Fix: say “per-record-labelled but aggregate-scored learner” or otherwise state the aggregate step.
+====================================================================================================
+E2_errata_sufficiency | deepseek_audit | sample 2 | finish stop | 13492 chars | error None
+====================================================================================================
+I find both errata insufficient. Numbered findings:
+
+1. **Exp1 §14 claim vs. §1 pilot contamination.**  
+   **Claim attacked:** “In one grammar of 208 predictors and four histories: a persistence parameter is inert where nothing is hidden (by definition), selected against where two visible things interact (empirically), and selected for where things are hidden (as the grammar's only mechanism for it).”  
+   **Why it fails:** §1 concedes: “Three control runs were made before freezing, **on the same histories later used for the main run**, and outcomes and checks were amended after them” and “The correct description is **frozen after pilots on the same data**.” The same data informed the design and the outcomes; §14 still states the results as findings.  
+   **Seriousness:** serious to fatal for confirmatory claims.  
+   **Fix:** label all Exp1 results exploratory/pilot-contaminated and re-run on fresh histories before any confirmatory wording.
+
+2. **Exp1 §14 “persistence parameter is inert” survives only by narrowing the kind under test.**  
+   **Claim attacked:** “a persistence parameter is inert where nothing is hidden (by definition).”  
+   **Why it fails:** §3 concedes: “Neutrality under the original definition of the kind under test **fails**”; “Original definition (rebind included): spread 0.0264 — **fails** the 0.01 tolerance. Amended definition (τ only): spread 0.0000 — passes.” The errata admits “it was made after the number.”  
+   **Seriousness:** serious.  
+   **Fix:** state that the original neutrality check failed; if claiming τ is inert, explicitly call the τ-only definition post hoc.
+
+3. **Exp1 §14 uses “selected against/for” after §13 says the process is not selection.**  
+   **Claim attacked:** “selected against where two visible things interact (empirically), and selected for where things are hidden.”  
+   **Why it fails:** §13 concedes: “‘Selection with unlimited reach’ (§2.8) is argmax over a fixed grammar, not variation and selection.” If it is argmax, “selected against/for” is not an empirical selection claim.  
+   **Seriousness:** serious.  
+   **Fix:** replace “selected against/for” with “scored lower/higher under argmax” or justify selection properly.
+
+4. **Exp1 §14 “selected for where things are hidden” is undermined by §4 and §12.**  
+   **Claim attacked:** “selected for where things are hidden (as the grammar's only mechanism for it).”  
+   **Why it fails:** §4 says: “Adequacy under the original criterion: the H_full grammar is **underpowered**” and “every H_full result in file 12 should be read with that.” §12 also concedes: “The lookups did in fact lose on occlusion … but not for the reason the design gave; the reason is that the sensory prefix at re-emergence is ambiguous across configurations.”  
+   **Seriousness:** serious.  
+   **Fix:** qualify the H_full selection-for claim as within an underpowered grammar and replace “hiddenness” with the conceded ambiguity-at-re-emergence mechanism.
+
+5. **Exp1 §14 “Tied architectures” depends on a post hoc definition and an underpowered search.**  
+   **Claim attacked:** “Tied architectures on the neutral history differ two-fold on occlusion never seen.”  
+   **Why it fails:** §3 says the tie only passes under the amended definition: “Amended definition (τ only): spread 0.0000 — passes.” §11 says: “The run is underpowered to detect bias either way”; six seeds none landed on τ = 0.  
+   **Seriousness:** serious.  
+   **Fix:** state the tie is under the amended τ-only definition, report the original failed definition, and note τ = 0 was not sampled by the search.
+
+6. **Exp1 §14 says “three changes”; §1 lists four.**  
+   **Claim attacked:** “with three changes a referee would not allow as pre-registered.”  
+   **Why it fails:** §1 says: “**not acceptable as pre-registered** — 16, 17, 18, 19.” That is four changes.  
+   **Seriousness:** serious for internal consistency.  
+   **Fix:** reconcile the count; if only three, say which one is excluded and why.
+
+7. **Exp1 §1 “verdict on the 21 changes” omits changes 2 and 11.**  
+   **Claim attacked:** “A referee's fair verdict on the 21 changes … acceptable as design choices — 1, 3, 4, 5, 6, 9, 10, 12, 20, 21; acceptable only as pilot-informed — 7, 8, 13, 14, 15; **not acceptable as pre-registered** — 16, 17, 18, 19.”  
+   **Why it fails:** the list contains only 19 changes. §12 says change 2’s “occlusion rationale was wrong in the design”; §13 says change 11’s “corrected ceiling” is in-sample.  
+   **Seriousness:** minor to serious.  
+   **Fix:** include changes 2 and 11 in the verdict or explain their omission.
+
+8. **Exp1 §4 contradicts §1 on when the design was frozen.**  
+   **Claim attacked:** “Under the frozen-before-pilots criterion, the H_full attempt is recorded as underpowered.”  
+   **Why it fails:** §1 says: “The correct description is **frozen after pilots on the same data**.”  
+   **Seriousness:** minor, but it muddles what “original criterion” means.  
+   **Fix:** say “criterion as originally written before the post-pilot changes” or similar.
+
+9. **Exp1 §4’s underpowered conclusion uses an in-sample ceiling.**  
+   **Claim attacked:** “top architecture 0.8009, ceiling 0.9086, ratio **0.881 < 0.95**.”  
+   **Why it fails:** §13 concedes: “Change 11 calls the corrected ceiling ‘the true bound’; §2.5 correctly calls it in-sample. It is in-sample.” If the denominator is in-sample, the ratio against the original criterion is not the true bound.  
+   **Seriousness:** serious.  
+   **Fix:** report out-of-sample ceiling, or both, and state how the ratio changes.
+
+10. **Exp1 §14 omits that “no architecture has thing-kind.”**  
+    **Claim attacked:** §14’s persistence claims, read as supporting the experiment’s thing-kind result.  
+    **Why it fails:** §6 concedes: “Under the frozen definition, **no architecture has thing-kind**.”  
+    **Seriousness:** serious.  
+    **Fix:** state explicitly in §14 that the frozen thing-kind claim is dead; persistence selection does not establish it.
+
+11. **Exp2 §9 “stopped correctly” directly contradicts §11.**  
+    **Claim attacked:** “built the sensory-visible half of a pairwise law in its minimal form, in one round, and stopped correctly when the residual defects had no consistent pattern.”  
+    **Why it fails:** §11 says: “S6 did not hold: M6(ii) failed. I recorded S6 as ‘⚠️ content, not carrier’ and ran phase 2 anyway. That is a breach of the pre-registered stopping rule.” §11 also says: “The patched accounting in §8b makes M6(ii) pass, but a fix applied after the run does not license a phase that the frozen rule forbade.”  
+    **Seriousness:** fatal.  
+    **Fix:** say the frozen M6(ii) failed and the stopping rule was breached; patched M6(ii) is only an exploratory diagnostic.
+
+12. **Exp2 §9 relies on the patched accounting that §11 says cannot license the claim.**  
+    **Claim attacked:** “with the defect accounting fixed.”  
+    **Why it fails:** §11: “a fix applied after the run does not license a phase that the frozen rule forbade.”  
+    **Seriousness:** serious.  
+    **Fix:** separate frozen-result claims from patched-diagnostic claims; do not let “fixed” repair a frozen stopping failure.
+
+13. **Exp2 §9 says B “does exactly the same,” but §8c has a seed exception.**  
+    **Claim attacked:** “B's rule does exactly the same.”  
+    **Why it fails:** §8c table gives A0 + B seed 3 as “0.969 | 0.932 | 0.000 | 0.000,” and §8c says: “seed 3's vacuous extra atom `c_i != v_j` costs it two pairs.”  
+    **Seriousness:** minor but it is an overclaim.  
+    **Fix:** say “B does the same except seed 3, which costs two pairs.”
+
+14. **Exp2 §9 uses a post hoc diagnostic as if it were the frozen experiment.**  
+    **Claim attacked:** “B's rule does exactly the same, so identity-through-crossing is underdetermined by occupancy for both processes.”  
+    **Why it fails:** §8c says: “The frozen run measured M3 … never for A0 + B,” and the section is titled “A second diagnostic, run after D4–D6.”  
+    **Seriousness:** serious.  
+    **Fix:** label the B result as diagnostic-only, not a result of the frozen experiment.
+
+15. **Exp2 §9 “no global evaluations” survives only by redefining “global.”**  
+    **Claim attacked:** “given 2,830 labelled error records and no global evaluations.”  
+    **Why it fails:** §2 says: “C ranks conditions by (defects covered − non-defects covered) and actions by (defects fixed − non-defects broken); both are sums over records used to select the best.” §13 item 6 also says: “‘Zero fitness evaluations’ compared C's cost to B's in different units.”  
+    **Seriousness:** serious.  
+    **Fix:** say “no calls to the world's scalar fitness; it did compute per-record sums for ranking.”
+
+16. **Exp2 §9 “local-credit-assignment” overstates a learner that aggregates sums.**  
+    **Claim attacked:** “A supervised, local-credit-assignment learner.”  
+    **Why it fails:** §2 concedes the rankings are “sums over records used to select the best.” That is aggregate scoring, not purely local credit.  
+    **Seriousness:** serious.  
+    **Fix:** use “per-record score aggregation” or “granular error signal,” not “local-credit-assignment.”
+
+17. **Exp2 §9 “built … in its minimal form” omits the fitted-language confound.**  
+    **Claim attacked:** “built the sensory-visible half of a pairwise law in its minimal form.”  
+    **Why it fails:** §4 says: “the world was fitted to the language … expressibility was guaranteed by construction.” §8a adds: “The meta-grammar was written by someone who knew the law.” §5 also says the honest closedness figure is only “0.819 of 0.923.”  
+    **Seriousness:** serious.  
+    **Fix:** state that the language was tailored to the law and that expressibility is not a result.
+
+18. **Exp2 §9’s scramble-dependence claim is stronger than §8b supports.**  
+    **Claim attacked:** “Its output depends on the pairing of states with outcomes rather than on their counts — shown in 3 of 5 scramble permutations, with a placebo that leaves it untouched, and with the defect accounting fixed.”  
+    **Why it fails:** §8b concedes: “The original result (0.906 → 0.355 on one seed) was partly luck. S4 as pre-registered (a drop of at least 0.1) holds in 3 of 5 permutations. A scramble that actually destroys the mapping must permute outcomes within groups of identical states…” The experiment did not actually destroy the mapping.  
+    **Seriousness:** serious.  
+    **Fix:** say “some sensitivity to outcome labels was observed in 3/5 weak scrambles; stronger scramble needed.”
+
+19. **Exp2 §9 undercounts the conceded weaknesses and confounds.**  
+    **Claim attacked:** “Three weaknesses of the learner were found (one-step lookahead, arbitrary tie-break, fragile defect accounting) and one design confound (a contradictory second law).”  
+    **Why it fails:** §13 lists seven failure modes; §4 concedes the world was fitted to the language; §5 concedes post hoc reclassification; §8a concedes the meta-grammar was written with knowledge of the law.  
+    **Seriousness:** serious.  
+    **Fix:** say “at least” and list the conceded confounds/failure modes, or explain why the others do not count.
+
+20. **Exp2 §9 lacks the §12 proxy caveat.**  
+    **Claim attacked:** “built the sensory-visible half of a pairwise law in its minimal form.”  
+    **Why it fails:** §12 says: “A standing statement: neither experiment instantiates a definition of file 10 as stated… Both test proxies that the semantics motivates… the mapping from S1–S6 to the definitions was never written, and … it is a loose analogy.”  
+    **Seriousness:** serious.  
+    **Fix:** add the proxy caveat directly to §9.
+
+21. **Exp2 §9 compares B’s search without noting the §13 fitness asymmetry.**  
+    **Claim attacked:** “A mutation search with a global scalar found the same law wrapped in vacuous atoms with about 1,750 evaluations.”  
+    **Why it fails:** §13 item 7 says: “B's fitness is overall exposure accuracy; C's records are collision-dominated. Another asymmetry to remove in experiment 3.”  
+    **Seriousness:** serious.  
+    **Fix:** qualify that B’s search used a different fitness landscape and is not directly comparable.
+
+22. **Exp2 §9 “stopped correctly” ignores §13 item 4’s no-held-out-check problem.**  
+    **Claim attacked:** “stopped correctly when the residual defects had no consistent pattern.”  
+    **Why it fails:** §13 item 4 says: “C builds and accepts rules on the same records, with no held-out check inside the process. Phase 2's wrong action (net 2 on a tie) is this biting.”  
+    **Seriousness:** serious.  
+    **Fix:** acknowledge that the stopping criterion was not held out and may be overfit.
+
+23. **Exp2 §9 “in one round” sits badly with §11’s phase 2 breach.**  
+    **Claim attacked:** “in one round.”  
+    **Why it fails:** §11 says phase 2 ran, in breach of the stopping rule, and is “reclassified as exploratory.”  
+    **Seriousness:** minor to serious.  
+    **Fix:** say “phase 1 was one round; phase 2 was run in breach and is exploratory only.”
+
+24. **Exp2 §9’s M3 tracking language omits §12’s “operational” caveat.**  
+    **Claim attacked:** “keeps its slots tracking their things through same-target collisions.”  
+    **Why it fails:** §12 says: “Only M3 is a fidelity test in the semantics' sense, and even that is operational: no transport was written down.”  
+    **Seriousness:** minor to serious.  
+    **Fix:** call it an operational proxy, not semantics-level fidelity.

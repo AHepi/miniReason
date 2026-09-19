@@ -1,0 +1,480 @@
+====================================================================================================
+E3_overcorrection | deepseek_audit | sample 0 | finish stop | 11516 chars | error None
+====================================================================================================
+I find the following over-concessions. For each I quote the row and give the verdict I think is correct.
+
+1. **A4.3 vs A7.1 — incompatible concessions about non-physical edits.**  
+Quote A4.3: “**Impossibility explanations need contracts that are not physically admitted.** … | **Valid, and a regression.** … Fix: a contract’s edits must be *declared and formally specified*; each is either physically admitted or explicitly counterfactual with its meaning stated.”  
+Quote A7.1: “Define **C_phys** = all physically admitted edits, and **world-kind** = signature on C_phys. … C is a *declared subset* of the physically admitted edits.”  
+Why the concession fails: if contracts may contain “explicitly counterfactual” edits, then C is not a subset of C_phys. If C is a subset of C_phys, impossibility explanations cannot have a contract containing the forbidden edit. The author has accepted two repairs that cannot both be true.  
+Correct verdict: A4.3 should be **Partly valid**, not Valid as stated; the real repair must distinguish “contract-admitted” from “physically admitted” and either extend C_phys to include declared counterfactuals or stop using C_phys as the anchoring universe.  
+Severity: serious — it breaks the combined semantics.
+
+2. **C2.1 — “aggregate fitness” is over-conceded.**  
+Quote: “**‘C never computes an aggregate fitness’ is false.** tp − fp over conditions and fixed − broken over actions are sums over records used to rank and select. | **Valid.** | The sentence was doing illegitimate work. The true contrast: **local component-level scores from per-record labels** (C) versus **one global architecture-level scalar** (B).”  
+Why the concession fails: the witness trades on the word “aggregate.” A sum over records for one condition/action is a local score; it is not the global architecture-level fitness B uses. The author already states the correct contrast, which means the original sentence can be qualified, not withdrawn.  
+Correct verdict: **Partly valid**.  
+Severity: serious — it erases the local/global distinction that is the actual difference.
+
+3. **C3.1 — “G0 grew” is not false or vacuous as stated.**  
+Quote: “**‘G0 grew’ is false indexed to the program (every rule was in the fixed meta-grammar from t = 0) and vacuous indexed to G0 (defined to exclude pairwise rules). No third index is supplied.** | **Valid — fatal to the framing.**”  
+Why the concession fails: the fixed meta-grammar is not G0. If G0 is the candidate’s initial rule set, then adding a pairwise rule not in that set is growth of the candidate’s G0 even if the rule was latent in the meta-grammar. The witness conflates the search space with the current grammar. “No third index” is false: index to the candidate’s mutable rule set at t.  
+Correct verdict: **Partly valid** — “G0 grew” needs explicit indexing, but is not fatal to the framing.  
+Severity: serious — it withdraws the experiment’s central claim on a wording/definition issue.
+
+4. **C5.5 — “memoriser” is not an assumption of G0’s closure.**  
+Quote: “**‘Memoriser, not machinery’ assumes the conclusion that G0 is closed.** | **Valid.** | The lookup is a G0 architecture.”  
+Why the concession fails: the lookup’s 0.819 against the ceiling’s 0.923 is evidence that it memorises rather than represents the law. Calling it a memoriser is a conclusion from that gap, not an assumption that G0 is closed. The witness’s charge is circular: any G0 architecture below ceiling could be called a memoriser.  
+Correct verdict: **Invalid** or at most **Partly valid**.  
+Severity: minor/serious.
+
+5. **D3.8 — scoring candidates does not make C “selection” in file 10’s sense.**  
+Quote: “**C itself scores and ranks — it is selection over hypotheses with itemised scores.** | **Valid.** | Duplicate of C2.3; conceded. The contrast is itemised versus scalar feedback.”  
+Why the concession fails: construction can involve search and ranking over candidate rules. File 10’s selected/constructed distinction is about the provenance of the transport/component, not whether candidates are scored. The presence of itemised scores is compatible with construction.  
+Correct verdict: **Partly valid** — C uses selection-like search, but that does not collapse construction into selection.  
+Severity: serious.
+
+6. **A5.2 — transport provenance is not a component kind.**  
+Quote: “**The document’s own selected/constructed distinction is a historical kind.** | **Valid, and the best finding in the set.** | It is. Provenance of a transport is a predicate on h. The document should say so, and then it has no reason to deny the same to components.”  
+Why the concession fails: provenance of a transport being a predicate on history does not show that component kinds can be historical. It shows that provenance is not an edit-signature. The inference “no reason to deny the same to components” is a non sequitur.  
+Correct verdict: **Partly valid** — selected/constructed is a historical provenance classification, not a counterexample to component-kind edit-signatures.  
+Severity: serious — it is used to change the central semantics.
+
+7. **A7.1 — C_phys is not a clean repair.**  
+Quote: “**The section equivocates on ‘kind’ … | **Valid — the central finding, and it has a clean repair.** | … Define **C_phys** = all physically admitted edits, and **world-kind** = signature on C_phys. … evaluable in principle by physics, fallible in practice.”  
+Why the concession fails: “all physically admitted edits” is not a contract and may be infinite or incompletely specified. (F1) is defined relative to a declared C; evaluating it on C_phys requires a well-defined edit set, grain, and boundary. The witness may show the original section refuted a strawman, but the accepted repair introduces a metaphysical totality that is not operational.  
+Correct verdict: **Partly valid** — the equivocation is real, but C_phys is not a clean repair.  
+Severity: serious.
+
+8. **C2.2 — scalar fitness does not represent “what went wrong.”**  
+Quote: “**‘Nothing inside B represents what went wrong’ is false; a per-candidate fitness is a coarse representation.** | **Valid.** | Same as C1.4.”  
+Why the concession fails: a scalar fitness represents that something went wrong, or how much, not what went wrong. The original sentence can be read as denying itemised representation of the defect content, which remains true.  
+Correct verdict: **Partly valid**.  
+Severity: minor.
+
+9. **C2.3 — same fidelity does not mean same kind or same process.**  
+Quote: “**The C/B contrast collapses to informed local search versus mutation search; S5 (B reaches the same fidelity) confirms the difference is efficiency and inductive bias, not kind.** | **Valid for what the experiment showed.**”  
+Why the concession fails: S5 shows convergence in performance, not identity of process or provenance. Two processes can reach the same fidelity and still differ in whether they use itemised defect records or scalar feedback. The witness’s “not kind” assumes kind = final performance.  
+Correct verdict: **Partly valid** — the experiment does not establish a taxonomic kind difference, but it does instantiate a process/route difference.  
+Severity: serious.
+
+10. **D8.1 — “no test of any file 10 definition” is too broad.**  
+Quote: “**The experiment never instantiates file 10’s formal objects** — … | **Valid.** | Both experiments were built as operational proxies. The honest statement is that they test proxies the semantics motivates, and that no result so far is a test of any file 10 definition as stated.”  
+Why the concession fails: testing operational proxies is the normal way to test formal definitions. Failure to instantiate every object does not entail “no result … is a test of any file 10 definition as stated.” It entails no direct instantiation of the full tuple.  
+Correct verdict: **Partly valid** — scope limitation, not a blanket no-test claim.  
+Severity: serious.
+
+11. **A2.6 — the counterexample may attack a claim Derivation 2 did not need.**  
+Quote: “**Derivation 2 claims components ‘pairwise of one kind’ with no bijection between the two candidates’ decompositions.** … | **Valid, and the claim as stated is false.** | My error. The correct statement: … not the same decomposition.”  
+Why the concession fails: the one-conjunction-vs-two-conjuncts example shows the candidates do not have the same decomposition. It does not show Derivation 2’s central claim is false if that claim was only about anchored relations or pulled-back answer profiles. The author concedes a decomposition claim that may never have been required.  
+Correct verdict: **Partly valid** — if Derivation 2 asserted identical decomposition, valid; if it asserted identical anchored relations, the witness attacks a strawman.  
+Severity: serious — it weakens “indistinguishable is identical” unnecessarily.
+
+12. **C1.1 — “fatal” is too strong for M4.**  
+Quote: “**M4 tests data flow, not provenance.** C is *defined* to read V; B is *defined* not to. Scrambling V can only affect C. The outcome is entailed by the implementations. | **Valid — fatal to ‘this is the test that distinguishes the provenances.’**”  
+Why the concession fails: as a conceptual discrimination, the outcome is entailed by the definitions; as an implementation check, it is not entailed—the code could fail to read V despite the definition. The author’s own note says M4 shows C’s output depends on pairing. That is a narrower, fixable scope claim.  
+Correct verdict: **Partly valid** — fatal to the claim that M4 discriminates provenances, not fatal to the experiment or to M4 as a code check.  
+Severity: serious.
+
+13. **D6.4 — “protocol breach” may overstate a warning.**  
+Quote: “**S6 did not hold (M6(ii) ✗) and phase 2 was run anyway, violating the frozen rule ‘Phase 2 only if S1–S6 hold’ (design §11 step 5).** | **Valid — a protocol breach.** | I read S6 as ‘content, not carrier ⚠️’ and went on.”  
+Why the concession fails: if S6 was recorded as a warning (⚠️) rather than a failure (✗), then running phase 2 is a judgment call under a warning, not a protocol breach. The row itself reports both ✗ and ⚠️.  
+Correct verdict: **Partly valid** — phase 2 should be exploratory because the gate was not cleanly met, but “breach” overstates if the frozen criterion allowed warnings.  
+Severity: minor/serious.
+
+14. **A5.1 — historical predicates are not obviously component kinds.**  
+Quote: “**Historical kinds are real and are not edit-signatures**: forgery vs authentic, homology vs analogy, stolen vs donated. | **Valid, serious — and it changes the document’s central sentence.**”  
+Why the concession fails: the examples are historical predicates about provenance, not kinds of component in a causal-mechanical explanation. They refute an unqualified “all kinds are edit-signatures,” but not the claim that component kinds are.  
+Correct verdict: **Partly valid**.  
+Severity: serious.
+
+15. **C3.3 — “analytic” overstates G0 closedness.**  
+Quote: “**G0’s closedness to pairwise rules is analytic; S1 (‘needed’) restates the definition.** … | **Valid.**”  
+Why the concession fails: the closedness of a particular grammar to a particular rule is analytic only relative to the grammar’s definition. The empirical question is whether the initial grammar can approximate the target; the author’s own 0.819 vs 0.923 is a substantive closedness measure.  
+Correct verdict: **Partly valid** — S1 may restate a definition, but “closedness is analytic” is too strong.  
+Severity: minor/serious.
+====================================================================================================
+E3_overcorrection | deepseek_audit | sample 1 | finish stop | 12088 chars | error None
+====================================================================================================
+Below are places where the adjudication over-concedes. I number them and quote the row being attacked.
+
+---
+
+**1. C3.1 — “G0 grew” is not fatal; the finding equivocates on “G0.”**
+
+Quoted row:
+
+> **“G0 grew” is false indexed to the program (every rule was in the fixed meta-grammar from t = 0) and vacuous indexed to G0 (defined to exclude pairwise rules). No third index is supplied.** | **Valid — fatal to the framing.** | The concession in §1 did not leave a narrowed claim standing; it removed the distinction the experiment was named for.
+
+Why this over-concedes: the finding treats “the meta-grammar containing the rule as a possible composition” as if that were the same as “G0 containing the rule.” It does not follow. If G0 is the current grammar/rule set, then adding a rule that was not in G0 *is* G0 growing. That the rule was expressible by the fixed meta-grammar from t=0 is irrelevant to whether it was in G0. The second clause is also not obviously “vacuous”: whether G0 can express pairwise interactions is a property of G0’s primitives, and S1 can test whether the target requires that extension. The real problems are C3.4 (pre-authored rules) and C3.5 (world fitted to language), not the word “grew.”
+
+Correct verdict: **Partly valid at most; “fatal” is wrong.** Severity: serious over-concession.
+
+Fix: distinguish three levels — meta-grammar, initial G0, constructed rule set — and restate the claim as “the constructed rule set is not a composition of G0 rules, and the target requires that non-compositional extension.” Keep C3.4/C3.5 as the substantive criticisms.
+
+---
+
+**2. C3.9 — S5 does not license striking “distinct from selection.”**
+
+Quoted row:
+
+> **S5/F1 tension: if C and B are one kind on this contract, the experiment cannot support “distinct from selection.”** | **Valid.** | Strike “distinct” from what the experiment supports.
+
+Why this over-concedes: it conflates *kind* with *provenance*. File 10 defines selected vs constructed by history — Sel vs Con — not by output kind or fidelity. C and B can produce the same kind and the same fidelity while still having different provenance. S5 showing same output therefore does not show same provenance, and it does not show that C is not distinct from selection. At most S5 shows convergence in kind/output.
+
+Correct verdict: **Invalid as stated** if the claim under attack is “distinct provenance”; **Partly valid** only if the claim was “distinct kind.” Severity: serious.
+
+Fix: separate the two claims. Say: “S5 shows C and B converge on the same rule/kind; it does not test whether their provenance differs. Provenance distinctness remains a definitional/historical claim, not an experimental result of S5.”
+
+---
+
+**3. C1.4 / C2.2 — “receives a scalar” is not yet a representation in file 10’s sense.**
+
+Quoted row:
+
+> **B is not defect-blind: its scalar is an aggregate of the same true fields. The contrast is itemised versus scalar, not representation versus none.** | **Valid, and it reaches file 10.** | File 10’s “a selected process has nothing inside that represents the defect” must become “receives the defect only as a scalar.”
+
+Why this over-concedes: file 10’s “represents” is a technical predicate — Rep, Sel/Con, faithful transport, etc. A scalar fitness aggregate is an error signal; it is not automatically a representation in that technical sense. The witness’s “a per-candidate fitness is a coarse representation” is a colloquial use of “representation.” The author accepts the colloquial reading and rewrites a semantic claim before applying the defined predicate. The real distinction — itemised versus scalar feedback — can be true while “nothing inside represents the defect” remains true under file 10’s definition.
+
+Correct verdict: **Partly valid at most.** Severity: serious.
+
+Fix: keep the behavioural distinction (B receives a scalar error signal; C receives itemised records). Do not rewrite file 10’s Rep claim until Rep has been defined and the scalar tested against it. If the scalar is not a structure-preserving transport, file 10’s sentence stands.
+
+---
+
+**4. D8.1 contradicts D8.10; “never instantiates” is too strong.**
+
+Quoted D8.1:
+
+> **The experiment never instantiates file 10’s formal objects** … | **Valid.** | … no result so far is a test of any file 10 definition as stated.
+
+Quoted D8.10:
+
+> **“Thing identities through translated edits” are not translated edits in file 10’s sense (no transport t, no τ).** | **Partly valid.** | M3 does apply the same change to world and predictor, which is the operational core of a translated edit …
+
+Why this over-concedes: D8.1 says no result tests any file 10 definition as stated; D8.10 admits M3 partially instantiates translated-edit fidelity. D5.2 also says M3 was designed as the finer contract. The two concessions cannot both stand as written. “No full formal instantiation” is defensible; “never instantiates” and “no result is a test of any definition” is not.
+
+Correct verdict: **D8.1 should be Partly valid, not Valid.** Severity: serious.
+
+Fix: state that neither experiment instantiates the full formal tuple, but list the partial operational instantiations — M3/translated-edit fidelity, S4/data-flow provenance, etc. Then the scope claim is accurate.
+
+---
+
+**5. A6.6 — selection is not obviously supposed to produce objecthood.**
+
+Quoted row:
+
+> **The primitive layer P is defined as already containing persistent things with identity — so selection cannot be what produces objecthood; it presupposes it.** | **Valid, serious.** | Part IV contradicts Part 0. Fix with three layers …
+
+Why this over-concedes: the finding treats file 10’s “selection” as an ontological world-making mechanism. But selection in file 10 is a provenance of a transport — a way a representation/history is selected — not necessarily the mechanism by which the primitive layer comes to contain objects. Experiment 1’s selection of persistence is selection of a parameter within a population that already has a sensory field; that is not the same as producing objecthood ex nihilo. The author’s three-layer repair may be solving a problem the semantics did not have.
+
+Correct verdict: **Partly valid or Invalid as stated.** Severity: serious over-concession.
+
+Fix: distinguish selection of representations from ontological genesis. Only add the raw-sensory-field layer if Part IV actually asserts that selection produces the primitive layer. Otherwise state that P is primitive and selection operates within it.
+
+---
+
+**6. A1.6 — Org_ℓ is an underconstrained definition, not yet a third primitive.**
+
+Quoted row:
+
+> **Org_ℓ is a third primitive dressed as physics.** … | **Valid, serious.** | This is the strongest hit. … Fix: either count three primitives, or constrain Org_ℓ …
+
+Why this over-concedes: the finding shows Org_ℓ is underconstrained, not that it is a primitive. The author’s own proposed constraint — an occurrence instantiates D at ℓ only if D’s components have signatures realised by Θ’s admitted edits — would derive Org_ℓ from the other machinery if it works. “Count three primitives” is therefore premature. The witness’s “implementation relations are not free” is a general warning, not a proof that this implementation relation is primitive.
+
+Correct verdict: **Partly valid; not “the strongest hit.”** Severity: serious over-concession.
+
+Fix: add the constraint and then prove whether Org_ℓ is derived. If it cannot be derived, mark it as a primitive; do not concede the primitive count before doing the derivation.
+
+---
+
+**7. A5.1 — historical kinds do not falsify the central sentence simpliciter.**
+
+Quoted row:
+
+> **Historical kinds are real and are not edit-signatures** … | **Valid, serious — and it changes the document’s central sentence.** | “A kind is nothing over and above how a component responds to the changes that level admits” is false for historical kinds.
+
+Why this over-concedes: the central sentence is about component kinds at a contract/level. The witness’s examples — forgery vs authentic, homology vs analogy, stolen vs donated — are historical kinds of objects or whole systems. They refute the sentence only if it is read as unrestricted over every kind of kind. The author’s own two-kind repair — forward kinds and historical kinds — is a scoping clarification. It does not show the central claim about component response-kinds is false.
+
+Correct verdict: **Partly valid.** Severity: serious over-concession.
+
+Fix: say “the central sentence must be scoped to forward kinds; historical kinds are a separate category.” Do not say the central sentence is false without that scope.
+
+---
+
+**8. B2.4 — Change 19 may be a clarification, not a redefinition.**
+
+Quoted row:
+
+> **Change 19 excluded `rebind` from the neutrality check after it sat 0.026 below, although §2.6 defined the kind under test as “the τ gene and the `rebind` rule.”** | **Valid — a redefinition after the fact.** | … Under the *original* definition, neutrality **fails** by 0.026.
+
+Why this over-concedes: if §2.6’s phrase is a loose conceptual description, and `rebind` demonstrably lacks velocity memory — the persistence mechanism under test — then excluding it is a conceptual correction. The post-hoc timing is a real process concern, but the substantive claim “neutrality fails under the original definition” is only as strong as the original definition’s status as a pre-registered operational criterion. The author reports both figures, which is the right treatment; calling it a redefinition after the fact is too strong without qualification.
+
+Correct verdict: **Partly valid — process/timing finding, not a substantive failure.** Severity: minor to serious.
+
+Fix: label it “ambiguous pre-registration” and report both numbers as done. Do not say the original definition was binding unless the design clearly fixed it as an operational threshold.
+
+---
+
+**9. C3.3 — G0 closedness is not purely analytic.**
+
+Quoted row:
+
+> **G0’s closedness to pairwise rules is analytic; S1 (“needed”) restates the definition.** … | **Valid.** | … The lookup’s 0.819 against the ceiling’s 0.923 is the honest closedness figure …
+
+Why this over-concedes: whether G0 can express pairwise interactions depends on G0’s primitives; it is not analytic merely because G0 was defined to exclude pairwise rules. S1 “needed” can be tested against the world/ceiling, not only against a hand-built rule from the same meta-grammar. The author’s own 0.819 vs 0.923 shows G0 gets 89% of the way by memorising local patterns — that is a measurable, substantive closedness result. The witness overreaches by reducing the whole issue to definition.
+
+Correct verdict: **Partly valid.** Severity: serious.
+
+Fix: keep two separate measures — definitional expressibility (G0 lacks pairwise primitives) and world-relative closedness (G0’s ceiling gap). Do not withdraw S1 entirely.
+
+---
+
+**10. C2.3 — S5 does not collapse the C/B contrast to efficiency.**
+
+Quoted row:
+
+> **The C/B contrast collapses to informed local search versus mutation search; S5 (B reaches the same fidelity) confirms the difference is efficiency and inductive bias, not kind.** | **Valid for what the experiment showed.**
+
+Why this over-concedes: S5 shows output convergence, not sameness of kind or sameness of provenance. The C/B contrast also includes the route and granularity of the error signal — itemised records for C, scalar feedback for B — which C1.4 itself concedes. That difference may not establish a difference in kind, but “collapses to efficiency and inductive bias” overstates it. At most the experiment fails to establish a difference in kind.
+
+Correct verdict: **Partly valid.** Severity: serious.
+
+Fix: say “the experiment does not establish a difference in kind; it does establish a difference in feedback granularity/route.” Keep the efficiency claim separate from the provenance claim.
+
+---
+
+These are the clearest over-concessions. In particular, C3.1’s “fatal,” C3.9’s “strike distinct,” C1.4’s rewrite of file 10’s representation sentence, and D8.1’s “no result is a test of any file 10 definition” should be withdrawn or downgraded.
+====================================================================================================
+E3_overcorrection | deepseek_audit | sample 2 | finish stop | 18488 chars | error None
+====================================================================================================
+I checked every row in this adjudication against the quoted finding and against the other verdicts in the same document. Findings below are ordered by section. Where I found nothing to attack I say so in one line.
+
+---
+
+**1. §0.8 / D8 preamble: the defence of the badly-built item is circular.**
+
+Attacked claim: "The verdict survives because the mapping to the definitions is absent from file 13 as well — that is the finding — but the item was badly built" (§0.8), repeated at D8: "The verdict on the mapping does not depend on file 13, because the mapping is not in file 13 either — that is the finding."
+
+Why it fails: the absence of the mapping from file 13 *is* the finding under test (D8.1: "S1–S6 are loose analogies to Account, Repair, (K), provenance and Build"). You cannot justify not having shown the witnesses file 13 by asserting the conclusion they were asked to reach. Two of three samples reconstructed the mapping from file 14; sample 2 said explicitly that its mappings were reconstruction. So the item is not merely "badly built" — its verdict is unsupported for two samples and self-reported as unsupported by the third.
+
+Severity: serious (this is a defect in the cross-examination instrument, in the section that certifies the instrument).
+
+Fix: rerun D8 with files 10, 13 and 14, or restate the verdict as "file 13 does not state the mapping" (a claim about file 13, checkable by the author) rather than "S1–S6 are loose analogies to file 10."
+
+---
+
+**2. §0.12: "the commonest error" is asserted, not exhibited.**
+
+Attacked claim: "The commonest error: treating a pre-registered narrowing as concealment when it was a stated limit."
+
+Why it fails: no row in this document marked Invalid is of that type. The Invalid rows here are A1.20 (primitives), B4.10 (§7.3), B4.11 (future date), C4.7 (tie-breaking). Conversely, every row in this document that concerns a narrowing — B2.3 (change 18), B2.4 (change 19), C5.4 (change 4), D5.4 (change 2) — is *conceded*, not rejected. So the announced "commonest error" is unsupported by the artefact and, read against B2/C5, is in tension with the author's own verdicts.
+
+Severity: minor (rhetorical, but it pre-labels the reader's attitude to rows not yet written).
+
+Fix: cite the rows it summarises, or delete until those rows exist.
+
+---
+
+**3. A1.2 and A4.3 give incompatible definitions of C.**
+
+Attacked claims: A1.2 — "Fix: scope is an index S with **C = C_phys ∩ S**; 'stated' belongs in the record, not in Account." A4.3 — "Fix: a contract's edits must be *declared and formally specified*; each is either physically admitted or **explicitly counterfactual** with its meaning stated."
+
+Why it fails: C = C_phys ∩ S entails C ⊆ C_phys. A4.3 requires C to be able to contain edits that are *not* physically admitted, or impossibility explanations (A4.3) and historical counterfactual contrasts (A5.10) are impossible again. The two repairs are carried in the same change list and cannot both be adopted. (A1.2 also uses `C_phys` before A7.1 introduces it.)
+
+Severity: serious.
+
+Fix: state C = (C_phys ∩ S) ∪ K, where K is the declared counterfactual set with stated meaning, and say which tests are evaluated on C_phys and which on C.
+
+---
+
+**4. A1.4: the reason given does not establish the finding.**
+
+Attacked row: "**'Content-preserving recoding' presupposes content identity.** | **Valid.** | Derivation 8 has the right notion (structure-preserving bijection) but it is used in Parts IX and X before it is defined."
+
+Why it fails: the "Why" answers a different complaint (definition order). The witness's complaint is that "content-preserving" already requires a notion of content — i.e. it presupposes what (R) is supposed to give. Defining the term earlier does not remove the presupposition; only A1.11's stratification does, and A1.4 does not say so.
+
+Severity: minor.
+
+Fix: fold A1.4 into A1.11 and state that content identity at this point is the primitive-layer notion, not Rep.
+
+---
+
+**5. A1.6's repair presupposes something D8.12 says does not exist.**
+
+Attacked claim: A1.6 — "either count three primitives, or constrain Org_ℓ ... an occurrence instantiates D at ℓ only if D's components have signatures realised by **Θ's admitted edits**." Same structure at A1.5 ("coarsenings under which components keep signatures that Θ's admitted edits realise").
+
+Why it fails: D8.12, accepted by the author, says "The physical module and admitted edits (Part XIV) are never stated, so no scope claim can be checked." A repair that quantifies over Θ's admitted edits is therefore not yet a repair; it is a promissory note. The same defect attaches to A7.1's C_phys (see finding 12).
+
+Severity: serious (it is the load-bearing repair for the primitive count).
+
+Fix: state Θ's admitted edit set explicitly in file 10 before using it as a constraint anywhere.
+
+---
+
+**6. A1.8, A1.12, A1.15, A1.16: documentation notes rated as defects.**
+
+Attacked rows, with the author's own rebuttals quoted:
+- A1.15 "**Lic, Scope, Live are undefined.** — **Partly valid, minor** — They are the appraisal's declared data (FW5: 'enacted license'). Say so."
+- A1.8 "**O_p appears in every question...** — **Partly valid** — Conflates two things: obligations ... and the normative relation 𝒩."
+- A1.16 "**'Controlled-action interpretation' and 'resources' in Θ smuggle agency.** — **Partly valid** — Constructor theory defines tasks and resources physically."
+
+Why it fails: by the author's own criterion in A1.20 — "a definition that depends on nothing is not a primitive in the sense the document means" — undefined declared data is not a defect. Where the author's "Why" says the witness "conflates two things" or that the terms are physically defined, the finding is a misreading, not partly valid. The correct verdicts are Invalid, with a one-line documentation instruction attached; "Partly valid" concedes a defect that the stated reason denies.
+
+Severity: minor individually, serious as a pattern (it inflates the concession count on which §0.12's "minority of rows" claim rests).
+
+Fix: separate "the witness misread" from "the text should be clearer" and label the latter as cosmetic, not Valid/Partly valid.
+
+---
+
+**7. A1.11's fix restates the clause A6.5 declares ill-typed.**
+
+Attacked claims: A1.11 — "Sel is defined with no use of 'represents' — 'no member of the history is a transport to t, H, or the survival condition that is faithful on C'." A6.5 — "The clause 'no member of the history represents t, H, or the survival condition' is ill-typed: H's members are edit–boundary pairs... **The condition is on the events**." A6.1's re-fix — "no **event in the selection process** is a faithful transport to t, to H, or to the survival condition."
+
+Why it fails: A1.11's repair keeps the locution ("no member of the history") that A6.5 rejects; A6.1 gives a different repair for the same clause. File 10 cannot be changed on both texts.
+
+Severity: serious (two mutually inconsistent repairs to the same sentence, both in the change list).
+
+Fix: adopt A6.1's wording, and mark A1.11 as superseded.
+
+---
+
+**8. A5.3 contradicts A4.3 on what file 10 did with FW5's rule.**
+
+Attacked claims: A5.3 — "FW5's rule, **which file 10 keeps**, is that the contract ranges over *unperformed* admitted changes." A4.3 — "File 10 **tightened** non-vacuity to physically admitted edits to close the 'could matter' loophole."
+
+Why it fails: if file 10 kept FW5's rule, A4.3's regression does not exist; if file 10 tightened it, A5.3's "keeps" is false. The two rows are used to licence the same repair from opposite readings of the document.
+
+Severity: minor–serious.
+
+Fix: one statement of what file 10's rule is, then the single repair (declared counterfactuals) from A4.3.
+
+---
+
+**9. A6.2 adds conditions "on H" while A6.5 says the condition must be on the events.**
+
+Attacked claims: A6.2 — "Add to Sel: **H non-empty**; the survival condition eliminates at least one candidate **on H**; t is produced by iterated variation from an initial population that does not contain it." A6.5 — "Distinguish H (the encountered pairs) from the selection history (the events of variation and survival). The condition is on the events."
+
+Why it fails: A6.2's non-triviality conditions are written over H, the very conflation A6.5 identifies. Either H here means the selection history (then the notation in A6.5's fix is not adopted) or the conditions are ill-typed (then A6.5's fix is not applied where it is needed).
+
+Severity: serious.
+
+Fix: write A6.2's conditions over the selection history S_h, and use H only for the encountered edit–boundary pairs.
+
+---
+
+**10. A6.3 borrows as a definition the test section C declares vacuous, and it conflicts with C1.4.**
+
+Attacked claims: A6.3 — "Blindness = the variation operator's route contains no representation of the target or of the defect; operationally, **its output is unchanged when the defect records are scrambled or removed**. That is the ablation test of file 14 section 5, stated as a definition." C1.1 — "**Valid — fatal to 'this is the test that distinguishes the provenances.'**" C1.4 — "File 10's 'a selected process has nothing inside that represents the defect' must become **'receives the defect only as a scalar.'**"
+
+Why it fails: (a) the semantics is repaired by borrowing the operational test that section C says cannot distinguish what it claims to distinguish; (b) C1.4 concedes B *does* receive the defect, as a scalar. B passes the scramble only because the scrambled records were injected in a channel B never reads — so "output unchanged under scrambling" is not the operational form of "receives the defect only as a scalar," and would certify as blind a process that the repaired semantics classifies as non-blind.
+
+Severity: serious.
+
+Fix: define blindness as absence of an itemised representation, with the scalar explicitly allowed; test by scrambling the channel that carries the scalar as well as the record channel.
+
+---
+
+**11. A6.9 upgrades B2.9's normative choice into a semantic premise.**
+
+Attacked claims: A6.9 — "State the map: a carrier persists iff its prediction of the world port matches under the encountered edit. **Both experiments defined fitness exactly so; the semantics should.**" B2.9 — "Fitness against true occupancy 'makes persistence beneficial under occlusion by construction' ... the witness is right that **it should be stated as the choice that sets the direction of the result**."
+
+Why it fails: B2.9 concedes the map is a normative stipulation that *produces* experiment 1's direction of result. A6.9 then tells the semantics to adopt the same map as a premise — which would make the headline conditional on an assumption the semantics has not earned, while presenting the assumption as a description of survival.
+
+Severity: serious.
+
+Fix: state it as a *stipulated* survival criterion with its direction noted, and carry the note into the experiments' limits, as A1.13 partly does.
+
+---
+
+**12. A7.1's C_phys repair concedes the steelman on terms that make the anchoring grade either untestable or uninstantiable.**
+
+Attacked claim: A7.1 — "Define **C_phys** = all physically admitted edits, and **world-kind** = signature on C_phys. Then the anchoring condition *is* (F1) evaluated on C_phys instead of C. It is stronger than account-on-C, evaluable in principle by physics, fallible in practice."
+
+Why it fails: (a) C_phys is not stated anywhere (finding 5, D8.12), so "evaluable in principle" is unsupported; (b) if world-kind is the signature over *all* physically admitted edits at the component's footprint, then any two physical systems that differ under any admitted edit differ in world-kind — which is the individual, not a kind. On that reading no account is ever "anchored," and A5.1's residual ("what is left is a difference that shows up under no intervention and in no record") never arises because every difference shows up under some intervention. The author concedes the steelman and pays for it with a criterion that has no instances.
+
+Severity: serious.
+
+Fix: restrict C_phys to edits admissible on the component's declared ports while holding the surrounding conditions at the boundary fixed, state the restriction, and say what makes two systems share a C_phys signature.
+
+---
+
+**13. "Fatal" is applied to a sentence and to a name, not to the claims that fail.**
+
+Attacked rows: C1.1 — "**Valid — fatal to 'this is the test that distinguishes the provenances.'**" C3.1 — "**Valid — fatal to the framing.**"
+
+Why it fails: C1.1's own "Why" says M4's outcome "is entailed by the implementations" and that M4 still shows "C's output depends on the state–outcome pairing" — i.e. a withdrawn claim and a repurposed test, not a fatality. C3.1's own C3.11 supplies three criteria under which a "grew" claim could stand, and D6.12 preserves a residue; the finding is that "grew" has no valid *index*, which is a claim-level failure, repairable by restating the index or by the experiments in C3.11.
+
+Severity: minor–serious (severity inflation of the same kind the author criticises in witnesses).
+
+Fix: replace both "fatal" labels with the precise sentence: "the claim in file 14 §5 / design §1 is withdrawn; the test is re-described as X; the experiment is retained as Y."
+
+---
+
+**14. C4.3 rates as a defect what is a design-scope statement.**
+
+Attacked row: "**The target's depth (two rules) was matched to K = 3.** | **Valid.** | Design §4 says so ('that is deliberate'). Another alignment between world, language and success criterion."
+
+Why it fails: matching the target to the constructor's capacity is what a first experiment of this kind does, and the design declares it. It becomes a defect only if the results claim depth-generality, which is not shown anywhere in this document (and C3.11 accepts that no such claim was made). The row is a scope limit being counted as a flaw.
+
+Severity: minor.
+
+Fix: reclassify as a declared scope statement; the defect would be a generality claim, and there is none to attack.
+
+---
+
+**15. D5.4/C5.2 treat change 2's narrowing as concealment when the author knows it was pre-run.**
+
+Attacked rows: D5.4 — "**S3 is reported as partly failed from now on**: passes on same-target pairs (0.935 unconditional), fails on crossing pairs (0.000), **the original S3 text covered both**." C5.2 — "Change 2 amends S3's scope while §10 declares §9 fixed. The frozen document is internally inconsistent."
+
+Against C5.1 — "Change 2 **was** written before the code (same turn, before the first control)."
+
+Why it fails: the only party who can date change 2 is the author, and he dates it before any run. On his own account the narrow S3 is the pre-registered criterion and the experiment met it on same-target pairs; the crossings gap is then a clause of the *original* §9 wording that change 2 superseded, i.e. a drafting inconsistency in §10, not a threshold removed from a failing subset. "Partly failed" is exactly the pattern §0.12 says witnesses err by. Report both, but do not label the result as a failure on a criterion the design had replaced.
+
+Severity: serious.
+
+Fix: verdict "S3 as frozen passed on same-target pairs and was silent on crossings; §9's unamended text covers crossings and is unmet; file 13 must state which is operative," plus the timestamping rule already proposed in C5.
+
+---
+
+**16. D5.6's verdict contradicts A7.1's repair.**
+
+Attacked claim: D5.6 — "**Partly valid.** The world does have identities and the translated-edit test is exactly how file 10 says a finer contract shows up. But 'invisible law' should read 'identity is underdetermined by occupancy'; **C's rule is a correct representative of the equivalence class**."
+
+Why it fails: A7.1 settles the case the other way. If the world has identities and M3 is a translated-edit test, the identities are differences under physically admitted edits, so under A7.1 C's rule is a correct *account at C* and **not anchored**. D5.6's phrasing ("correct representative of the equivalence class") collapses the two grades A7.1 had just separated, and lets the crossing failure read as an artefact of a coarser contract rather than as an anchoring failure.
+
+Severity: serious.
+
+Fix: "account at the sensory contract, not anchored; C_phys separates the representatives and C's rule fails there."
+
+---
+
+**17. D8.1 and D8.8/D8.10 disagree about whether anything tests a file-10 notion.**
+
+Attacked claims: D8.1 — "The honest statement is that they test proxies the semantics motivates, and that **no result so far is a test of any file 10 definition as stated**." D8.8 — "**Only M3 is a (partial) fidelity test in file 10's sense.**" D8.10 — "M3 does apply the same change to world and predictor, which is the operational core of a translated edit."
+
+Why it fails: "no result ... is a test" and "only M3 is a (partial) fidelity test" cannot both be the summary. If M3 is partial, say what part of the definition it does not reach and state the verdict as "no result tests a full file-10 definition."
+
+Severity: minor.
+
+Fix: one sentence, scoped per definition (Con, Sel, Derivation 2, translated-edit fidelity).
+
+---
+
+**18. Two Invalid verdicts rest on bare assertions.**
+
+Attacked rows: B4.11 — "The frozen date 'is in the future.' | **Invalid.** | The witness's own clock is wrong." B4.10 — "§7.3's 'what you could later do' was not run as a transfer test. | **Invalid.** | M2 is exactly that..."
+
+Why it fails: "the witness's clock is wrong" is asserted, not shown — if the artefact's date is later than the run, that is itself a process finding of the kind §0.12 keeps announcing. "M2 is exactly that" is asserted; §7.3 is also read in B4.3 as a correction to the headline, and the reader cannot see which reading is the §7.3 text.
+
+Severity: minor (these are rejections, not concessions, but the document presents its verdicts as checkable, and these two are not).
+
+Fix: quote the frozen date and the run date; quote §7.3's sentence alongside M2's specification.
+
+---
+
+**19. Uncheckable verdicts elsewhere.** D3.4, D4.6, D5.5, D6.7 and D6.11 are resolved by results in file 17 that are not reproduced here ("File 17 §8c: B's rule from every seed gives the same M3 figures as C" — D5.5). The reader cannot verify the resolutions. Severity: minor. Fix: inline the numbers and the code path in this document.
+
+---
+
+No attack on A2.1–A2.8, A3, A4.1–A4.2, A5.1–A5.7, A6.4–A6.8, A6.10–A6.12, B2.1–B2.10, B4.1–B4.9, B5, C1.2–C1.9, C2, C3.2–C3.11, C5.1–C5.7, D3, D4.1–D4.8, D6, D8.2–D8.13, other than as noted above.

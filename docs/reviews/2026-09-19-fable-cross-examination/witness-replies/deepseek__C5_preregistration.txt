@@ -1,0 +1,175 @@
+====================================================================================================
+C5_preregistration | deepseek | sample 0 | finish stop | 6893 chars | error None
+====================================================================================================
+**Finding 1 — Change 4 is post-hoc rationalisation, not pre-registration.**
+Quote: “As first written it applied a 0.1 margin to *any* G0 architecture on collision steps. The best G0 architecture on collision steps turned out to be the lookup table at 0.819 … The check now has a structural part (slot-only G0 on collision steps) and an overall part (any G0, all steps); the lookup's collision figure is reported as is.”
+Claim: the split is a fair restatement.
+Why it fails: The original check was on any G0 architecture on collision steps. The data show it fails: 0.819 is not below 0.906 − 0.1 = 0.806. The new check excludes the best G0 architecture on collision steps from the collision-step threshold. This is a moved goalpost. The temporal order is explicit in the change text: “after the old grammar's lookup scored 0.819.” Severity: **fatal** to the pre-registered status of the closedness check.
+Fix: Report the original check as failed. Treat the split as exploratory and label it so. If a split is wanted as confirmatory, pre-register it for a new experiment before running.
+
+**Finding 2 — The “machinery” exemption is undefined and arbitrary.**
+Quote: “The margin was meant for machinery … a memoriser of local patterns, not machinery.”
+Claim: the lookup is not machinery.
+Why it fails: G0 is defined as “the 208 architectures of experiment 1.” The lookup is one of them. The original check said “any G0 architecture.” No independent criterion for “machinery” is given. A lookup table is a mechanism. The distinction is introduced after seeing the lookup score. Severity: **serious**.
+Fix: Define “machinery” before data, or admit that G0 includes memorisers and therefore is not closed to the feature’s behavioural effects.
+
+**Finding 3 — The overall check is unreported and cannot be verified.**
+Quote: “The check now has a structural part … and an overall part (any G0, all steps) … Both parts pass.”
+Claim: both parts pass.
+Why it fails: No numbers for the overall part are given. The reader cannot verify. The overall check on all steps can be dominated by non-collision steps, where the new feature is inactive. Severity: **serious**.
+Fix: Report the overall numbers and the exact margin used.
+
+**Finding 4 — Change 2 redefines the primary outcome S3 to exclude a predicted failure.**
+Quote: “S3's threshold applies to pairs with **no crossing after the change step**; pairs with a post-change crossing are reported separately as **F3 — the invisible law**”
+Claim: this is a legitimate pre-registration.
+Why it fails: Even if pre-registered before code, it changes S3 from “M3 given-bound for A0+C ≥ 0.9 on collision-containing pairs” to a subset. The original S3 is not reported as failed; it is replaced. Redefining a primary outcome to exclude a known failure mode is a moved goalpost, not pre-registration. Severity: **serious**.
+Fix: Keep S3 as originally stated. Report its failure on crossing-containing pairs. Add F3 as a separate, pre-registered secondary finding.
+
+**Finding 5 — Change 2’s “before any code ran” is unverifiable and chronologically suspicious.**
+Quote: “A pre-registered expectation added after thinking the world through, before any code ran.”
+Claim: it is pre-registered.
+Why it fails: Change 4 explicitly follows code (“after the old grammar's lookup scored 0.819”), and change 3 follows section-6 checks. The document provides no timestamp or commit history. The assertion cannot be audited. Severity: **minor**.
+Fix: Provide a dated repository commit or log showing the change was made before any code execution.
+
+**Finding 6 — Change 2 leaves section 9 inconsistent.**
+Quote: “pairs with a post-change crossing are reported separately as **F3 — the invisible law**”
+Claim: F3 is a finding.
+Why it fails: Section 9’s “Findings either way” lists only F1 and F2. F3 is not there. Also S3 in section 9 still reads “on collision-containing pairs” without the crossing exclusion. Severity: **minor**.
+Fix: Update section 9 to include F3 and the revised S3.
+
+**Finding 7 — Change 2’s partial construction undermines the “faithful component” claim.**
+Quote: “C … is expected not to build the crossing rule … only same-target collisions (things would land on one cell) produce visible defects.”
+Claim: the built rules are “components with the collision's signature, not a fix for the observed cases.”
+Why it fails: The world’s collision law requires two rules. C can build only one. A rule that handles same-target but not crossing is precisely a fix for the observed (visible) cases, not a faithful component of the full law. Severity: **serious**.
+Fix: Reframe the claim: C builds a partial, visible-defect-driven component. The full collision law is not constructed. Report M1 and M3 separately.
+
+**Finding 8 — The structural check does not test G0 closure.**
+Quote: “the best slot-only architecture in G0 is below A0 + hand-built rules on collision steps by at least 0.1”
+Claim: this shows G0 is closed.
+Why it fails: The best G0 architecture on collision steps is the lookup at 0.819, not slot-only. By excluding it, the structural check tests only a subset of G0. It does not show that G0 as a whole cannot do what a pairwise rule does. Severity: **serious**.
+Fix: Either include all G0 architectures on collision steps, or justify the exclusion with a pre-registered definition of the relevant subset.
+
+**Finding 9 — The overall check dilutes the new feature.**
+Quote: “*Overall:* the best G0 architecture of any kind is below A0 + hand-built rules overall by at least 0.1.”
+Claim: this supports closure.
+Why it fails: The new feature (elastic collision) only operates on collision steps. An overall check on all steps can be dominated by non-collision steps, where G0 and hand-built rules may both perform well. A small overall gap does not establish that G0 cannot represent the pairwise interaction. Severity: **serious**.
+Fix: Make the collision-step check primary. If it fails, report failure. Do not substitute an overall check.
+
+**Finding 10 — The principled line: change 2 and change 4 fall on opposite sides.**
+Quote: Change 2: “before any code ran.” Change 4: “after the old grammar's lookup scored 0.819.”
+Answer: The line is informational and temporal. Pre-registration allows theoretical deductions from the design before any data that could influence the decision. It does not allow changing the decision rule after seeing empirical results. Change 2, if the “before any code” claim is true, is legitimate pre-registration of a known limitation. Change 4 is post-hoc rationalisation because the split was made after observing the lookup score. Even for change 2, however, redefining S3 rather than adding a secondary analysis is a moved goalpost. The fix for change 4 is to report the original check as failed and label the new check as exploratory. The fix for change 2 is to keep the original S3 and add F3 as a secondary finding.
+====================================================================================================
+C5_preregistration | deepseek | sample 1 | finish stop | 8613 chars | error None
+====================================================================================================
+## Findings
+
+1. **Chronology claim contradicts the document.**  
+   **Attacked:** “A pre-registered expectation added after thinking the world through, before any code ran.”  
+   **Why it fails:** Change 4 says “As first coded… The section-6 check showed…”, and §11 orders “1. Code… 2. Section 6 checks…”. So code had run before freezing. If “any code” means phase-1 C code, say so; as written it is false or misleading.  
+   **Seriousness:** Serious.  
+   **Fix:** State exactly which code and data had been seen, with a timestamp/hash at the moment change 2 was added.
+
+2. **Change 2 rewrites S3 after S3 is declared fixed.**  
+   **Attacked:** “S3’s threshold applies to pairs with **no crossing after the change step**…”  
+   **Why it fails:** §10 says “**Fixed:** sections 2–5, 7, 8, 9.” §9 still says S3 is “M3 given-bound for A0+C ≥ 0.9 on collision-containing pairs” with no exclusion. §11 step 5 says “Classify against section 9.” The document is internally inconsistent.  
+   **Seriousness:** Fatal.  
+   **Fix:** Either amend §9 and remove it from the fixed list, or keep S3 as originally written and treat the crossing exclusion as a separate, explicitly exploratory finding.
+
+3. **The crossing prediction is analytically entailed, not a risky empirical prediction.**  
+   **Attacked:** “C, which builds from sensory defects, is expected **not to build the crossing rule**, because there are no defects from crossings…”  
+   **Why it fails:** C stops when no V remain and only induces conditions from V/N. Crossings produce no V. So C cannot build the crossing rule by construction. This is a design property, not a test that could disconfirm the theory.  
+   **Seriousness:** Serious.  
+   **Fix:** State it as a known limitation of C’s algorithm, not as a pre-registered outcome. If it is meant to be a test, change C’s inputs or the world so crossings leave a trace.
+
+4. **Excluding crossings weakens the faithfulness claim without acknowledging it.**  
+   **Attacked:** “S3’s threshold applies to pairs with no crossing… F3 — the invisible law…”  
+   **Why it fails:** §1 claims “a faithful component with the world’s kind-signature.” The world’s collision law includes crossing. If C does not build the crossing rule, its component is not fully faithful to the law. S3 as amended supports only partial faithfulness.  
+   **Seriousness:** Serious.  
+   **Fix:** Rename S3 to “faithful to the visible collision law” and explicitly state that C’s construction is partial and contract-relative.
+
+5. **The pre-emptive excuse rhetoric is not evidence.**  
+   **Attacked:** “Had this not been written down now it would have looked like an excuse later.”  
+   **Why it fails:** This is rhetoric, not a timestamp or independent record. It anticipates the accusation without answering it.  
+   **Seriousness:** Minor/serious.  
+   **Fix:** Remove it; provide a verifiable timestamp or registry entry.
+
+6. **Change 4 is post-hoc by the author’s own admission.**  
+   **Attacked:** “The best G0 architecture on collision steps turned out to be the lookup table at 0.819… The margin was meant for machinery.”  
+   **Why it fails:** The original check applied a 0.1 margin to **any** G0 architecture on collision steps. 0.906 − 0.819 = 0.087 < 0.1, so the original check fails. The split was made after seeing that score. That is a moved goalpost.  
+   **Seriousness:** Fatal.  
+   **Fix:** Report the original check as failed. If the original wording was mis-specified, pre-register the revised check on fresh data or a fresh world.
+
+7. **The new structural check does not support S1’s baseline.**  
+   **Attacked:** “The check now has a structural part (slot-only G0 on collision steps) and an overall part (any G0, all steps).”  
+   **Why it fails:** S1 says “A0+C > best-of-G0 on collision steps.” The structural check uses slot-only G0; the overall check uses all steps. If best-of-G0 is the lookup at 0.819, the structural check is irrelevant to S1. The closedness check and S1 use different baselines.  
+   **Seriousness:** Serious.  
+   **Fix:** Use the same baseline as S1: best-of-G0 on collision steps.
+
+8. **The overall check’s numbers are missing.**  
+   **Attacked:** “Both parts pass.”  
+   **Why it fails:** Only collision numbers are given: “A0 alone 0.352; best slot-only G0 0.366; lookup 0.819; hand 0.906.” No overall numbers for best G0 of any kind and hand-built are reported. The overall pass is unverifiable.  
+   **Seriousness:** Serious.  
+   **Fix:** Report overall fidelity for every relevant architecture, with confidence intervals and the exact margin.
+
+9. **The 0.1 threshold is arbitrary and inconsistently applied.**  
+   **Attacked:** “0.1 margin” in the original check and in the new split.  
+   **Why it fails:** No justification is given for 0.1. The lookup is 0.087 below hand-built and 0.104 below ceiling, so the result is threshold-sensitive. The threshold is applied on collision steps in one part and all steps in the other.  
+   **Seriousness:** Serious.  
+   **Fix:** Justify the threshold from ceiling/noise, or use equivalence testing instead of an arbitrary margin.
+
+10. **“Memoriser, not machinery” is question-begging.**  
+    **Attacked:** “a memoriser of local patterns, not machinery. The margin was meant for machinery.”  
+    **Why it fails:** G0 is defined as the 208 architectures of experiment 1. If the lookup is one of them, it is G0. Excluding it from the closure check because it is a “memoriser” assumes the conclusion that G0 is closed.  
+    **Seriousness:** Serious.  
+    **Fix:** Define “machinery” operationally before seeing results, or test closure on the full G0 set.
+
+11. **There is no timestamp at the time of the change.**  
+    **Attacked:** “Fingerprints of this file and the code will be recorded in the results file (14) at freezing.”  
+    **Why it fails:** Recording a fingerprint at freezing does not prove change 2 was added before the relevant data. Pre-registration requires evidence of timing.  
+    **Seriousness:** Serious.  
+    **Fix:** Timestamp and hash the design file when change 2 is added, or use an external registry.
+
+12. **The original check is not quoted.**  
+    **Attacked:** “As first written it applied a 0.1 margin to *any* G0 architecture on collision steps.”  
+    **Why it fails:** The reader cannot verify that the split is a fair restatement without the original wording.  
+    **Seriousness:** Minor/serious.  
+    **Fix:** Quote the original text verbatim in the change log.
+
+13. **F3 creates a selection effect that protects S3.**  
+    **Attacked:** “pairs with a post-change crossing are reported separately as F3 — the invisible law, and are expected to fail M3 for A0+C while passing for A0 + hand-built rules.”  
+    **Why it fails:** S3 is evaluated on cases where C is expected to succeed, while the cases that distinguish C from hand-built are relegated to F3. This narrows the support claim in a way that makes S3 easier to pass.  
+    **Seriousness:** Serious.  
+    **Fix:** Either make S3 include crossings, or state explicitly that the support claim is only about visible collisions.
+
+---
+
+## The principled line
+
+Pre-registration is not about whether the author thought about the world before or after running code. It is about the evidential relationship between the prediction and the data.
+
+**Legitimate pre-registration:** the prediction, the measurement, and the decision rule are fixed and timestamped before the relevant data are observed; the prediction is risky and could fail; the success criteria are not altered after seeing the data.
+
+**Post-hoc rationalisation:** the criterion, scope, or classification is changed after seeing data, especially when the change rescues the hypothesis from a specific observed failure. The key counterfactual test is: would the same change have been made if the data had come out the other way? If not, it is post-hoc.
+
+Applied here:
+
+- **Change 2:** The prediction “C will not build the crossing rule” is theoretically sound, but it is analytically entailed by C’s algorithm, and the document does not establish that it was written before the relevant phase-1 data. More importantly, it modifies S3 after S3 was fixed. At best it is a pre-freeze amendment, not a pre-registered outcome.
+- **Change 4:** This is post-hoc rationalisation. The original check failed against the lookup at 0.819, and the check was split after seeing that score. Recording the numbers is transparency, not pre-registration. The principled fix is to report the original failure and run the revised check on fresh data or as an explicitly exploratory analysis.
+====================================================================================================
+C5_preregistration | deepseek | sample 2 | finish length | 2318 chars | error None
+====================================================================================================
+**Direct answers.** Change 2 is, in *content*, an a priori derivation — but it is asserted rather than derived, its specific consequence does not follow from the reason given, it is not operationalised, and it is smuggled in as a change to a section the file declares fixed. So: partly legitimate in content, post-hoc in form and timing, and it fails verification for want of an artefact. Change 4 is a straightforward goalpost move by its own numbers. Item 1 ("B's fitness is on the exposure half") — no finding; the direction of the correction is right.
+
+---
+
+## Change 2
+
+**1. The timing claim ("before any code ran") is unsupported and inconsistent with the file's own procedure.**
+Quote: *"**A pre-registered expectation added after thinking the world through, before any code ran.**"*
+Claim attacked: that this text predates all execution, hence is pre-registration.
+Why it fails: the file's own workflow puts execution before freezing. §11: *"2. Section 6 checks. Stop and revise if either fails. 3. Fingerprint this file and the code together; record in file 14."* The §6 checks require running G0, the lookup, and the hand-built rules; §6.2 quotes performance margins. §12 item 4 of the *same list* reports run outputs (*"the best G0 architecture on collision steps turned out to be the lookup table at 0.819"*), so at least part of the list was written after code ran. The file is fingerprinted only at freezing, i.e. after all of it. Therefore nothing in the artefact can date item 2 relative to the runs, and item 2's stronger claim ("before any code ran") is exactly the claim that no artefact here can support. "Pre-freezing" is what the document can attest to, and pre-freezing includes runs.
+Severity: serious — timing is the sole thing that makes an expectation a pre-registration.
+Fix: put each §12 entry in a version-controlled artefact with a commit hash and timestamp, and record the code's hash at the moment of writing; or relabel item 2 as a post-hoc derivation of the design's own consequences, written before phase 1.
+
+**2. The derivation is asserted, not shown, and the reason given is weaker than the conclusion used.**
+Quote: *"When two things meet head-on in adjacent cells, "they bounce" and "they pass through each other" produce the *same* occupancy fields at every step — the identity

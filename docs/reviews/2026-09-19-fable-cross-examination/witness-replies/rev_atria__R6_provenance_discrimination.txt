@@ -1,0 +1,92 @@
+====================================================================================================
+R6_provenance_discrimination | rev_atria | sample 0 | finish stop | 16459 chars | error None
+====================================================================================================
+## Q1 — Is the revised selection witness still trivially satisfiable?
+
+**Finding 1.** *Claim attacked:* "a survival condition requiring fidelity on H that **eliminated at least one member** of 𝒯" plus Grievance 9's "Without the elimination clause every transport would count as selected; with it, 'selected' is a hypothesis, not a stipulation."
+*Why it fails:* The elimination clause is satisfiable by a guaranteed-loser construction. Take any transport t; let t* be t with one component relation altered so it fails at (a,b); let 𝒯={t,t*}, H={(a,b)}, μ the alter-that-relation operator applied once to t. t* fails on H and is eliminated; t survives; H is non-empty and contains a non-trivial pair. Every new clause is satisfied. The only thing that blocks this is the counterfactual reading of "the environment's filtering causally responsible for t's presence" — which is exactly the undefined predicate (Finding 6). On the merely-consistent reading, t's presence is independent of t*'s elimination and the witness is trivially satisfiable.
+*Seriousness:* serious. The anti-stipulation claim in Grievance 9 is an overclaim as things stand.
+*Fix:* require that the population compete for a slot the module identifies (so that the survivor's presence depends on the elimination), and state the dependence condition in Θ's vocabulary.
+
+**Finding 2.** *Claim attacked:* "a variation operator μ on 𝒯 that was physically applied at least once in the selection history Σ_h."
+*Why it fails:* μ is required to be *applied*, not to *generate* anything. It need not produce the eliminated member, need not produce t, and 𝒯 need not be closed under μ. So μ can be applied once to an arbitrary member producing nothing relevant, and the witness still holds. Variation is disconnected from population and survivor.
+*Seriousness:* serious.
+*Fix:* require the eliminated member to lie in the image of μ applied to 𝒯, and t in the μ-closure of the initial population.
+
+**Finding 3.** *Claim attacked:* Part XV's defence — "A rewriting that satisfies only the trivial reading of selection (singleton population, empty history) does not count, because that reading is excluded."
+*Why it fails:* The goalposts were moved to exclude exactly two trivial readings. The guaranteed-loser reading (Findings 1–2), the disconnected-μ reading, and the off-route-defect reading (Finding 13) all survive the exclusion. The defence enumerates trivial constructions rather than excluding the class.
+*Seriousness:* serious (the defence is incomplete as stated).
+*Fix:* state a condition that excludes the class — e.g. require the eliminated member to be a serious candidate (not constructible from t by a known-bad edit), and require blindness of the *variation*, not only of the defect→variation route.
+
+**Finding 4.** *Claim attacked:* "a finite history H⊆C … non-empty and containing at least one pair at which fidelity is non-trivial (some member of 𝒯 fails it)."
+*Why it fails:* Redundant. The survival condition "requiring fidelity on H" that "eliminated at least one member" already entails that some member fails at some pair of H. The non-triviality clause adds no constraint.
+*Seriousness:* cosmetic.
+*Fix:* delete, or make it do independent work (e.g. require the non-trivial pair to be outside t's prior history).
+
+**Finding 5.** *Claim attacked:* "Non-triviality is a condition on the *events* of Σ_h: no event in the selection process is itself a faithful transport to t, to H, or to the survival condition."
+*Why it fails:* Ill-typed. "Faithful on C" is defined (Part IV) for a transport between organizations; t is a transport, H is a set of edit–boundary pairs, the survival condition is a condition — none is an organization. Under the only typed reading available ("no event is a faithful transport between the organizations t connects"), the clause forbids faithful members of 𝒯, contradicting the requirement that t — a faithful survivor — is in 𝒯. So the clause is either vacuous or self-contradictory. It is the clause assigned the anti-circular job, and it does no work.
+*Seriousness:* serious.
+*Fix:* restate structurally and typedly: no event in Σ_h instantiates an organization whose solution set, on its own contract, contains the pair (state at which fidelity failed, relation that would have held). Do not use (R) inside the witness — that would be circular.
+
+## Q2 — Does "causally responsible" reintroduce a primitive?
+
+**Finding 6.** *Claim attacked:* "with the environment's filtering causally responsible for t's presence and not merely consistent with it", together with Part XIV's claim that the primitive packages are exactly two, and Derivation 6's "No residual predicate is left undefined."
+*Why it fails:* Part XII lists what Θ supplies — state spaces, attributes, admitted processes, A_Θ, intervention repertoire, resources, accuracy grades, Inst, ≺, Exec. Causal responsibility is not among them, and no defined predicate of Parts II–XIII supplies it; ≺ is an admitted-process *dependency order*, not a counterfactual responsibility for survival. Part XIV lists "Provenance, from physical history (Part IV, XII)" as derived, but the derivation rests on an undefined causal notion. Worse, the semantics claims to *analyse* causation (Part II, Grievances 1 and 11: causation is a family of signatures under (K)) while presupposing event-causation in the witness for provenance, which feeds (R), Deploy, and (EK). Causation is used before it is derived.
+*Seriousness:* serious. Derivation 6 and the two-package bookkeeping claim both fail.
+*Fix:* either add an event-causal-responsibility relation to Θ's supply list and say what it costs (a third primitive, or an axiomatised component of the package), or define it over Exec: every execution in which the filtering is absent has t absent.
+
+**Finding 7.** *Claim attacked:* Part XIV's declared-parameters list, which is claimed to be complete ("it claims that they are all listed").
+*Why it fails:* The population 𝒯, the variation operator μ, the *environment*, and the survival condition are neither in Θ, nor among the declared parameters, nor derived. They are existentially quantified over unspecified physical history with no typed home.
+*Seriousness:* serious, given the claim being made is completeness of the list.
+*Fix:* add them to the declared parameters (population membership criterion, system/environment boundary, survival condition statement) or to Θ.
+
+## Q3 — Does the precedence rule let a plainly selected transport count as constructed?
+
+**Finding 8.** *Claim attacked:* "it is *constructed* if a construction witness exists; otherwise *selected* … Maintenance histories after origination do not change provenance."
+*Why it fails:* The rule is existential and unindexed in time. Grievance 12 says "A transport is an occurrence in a physical history", so t's history extends to later episodes. A transport that *originated* by selection and is later re-prepared in an owned subhistory with a novel binding is not "maintenance"; a construction witness then exists for t, and precedence reclassifies t as constructed. Provenance is not stable for any transport that gets re-used creatively, and the classification is not a function of origination.
+*Seriousness:* serious.
+*Fix:* index provenance to (transport, origination event): "constructed if a construction witness exists at or before the transport's origination."
+
+**Finding 9.** *Claim attacked:* Part X's barriers to Build — "a binding construction is **nontrivial** when the binding is neither a relabelling of a binding already in the repertoire nor obtainable from the incoming carriers by ≡_ℓ; it is **required for the use** when deleting the binding breaks (F1) or (A)."
+*Why it fails:* "Required for the use" is nearly always satisfied: λ is transport data and (F1) is a condition on λ(k), so deleting the binding breaks (F1) for any transport that satisfies (F1). "Nontrivial" excludes only relabellings and ≡_ℓ-obtainable bindings. Combined with Part IV's Con requirement — "the organization t targets is instantiated by an occurrence … before e" — which is trivially satisfied for any transport whose target is persistently instantiated (e.g. the primitive layer P), the barrier to gerrymandering Con for a selected transport is low. Since creativity is located *only* in construction, this inflates creative attribution.
+*Seriousness:* serious.
+*Fix:* require the construction witness to be the *origination* of the binding (Finding 8), and strengthen nontriviality so that the binding is not obtainable from the incoming carriers by any admitted process short of the episode, not only by ≡_ℓ.
+
+## Q4 — Can every construction witness be rewritten as a selection witness, or vice versa?
+
+**Finding 10.** *Claim attacked:* Part 0: "The three are distinguished by their histories, not their outputs", and Part IV: "What keeps the two apart: a selection witness contains no itemised representation of a defect and no target instantiated before the variation; a construction witness contains both."
+*Why it fails:* Internally inconsistent with Part IV's own concession, four lines later: "A physical system may exhibit both; the witnesses differ, and the precedence rule of Part IV says which the resulting transport bears." If one history bears both witnesses, then "distinguished by their histories" is false of that history — the distinction is made by the precedence rule. And the "keeps the two apart" sentence is false too, unless read as "no itemised representation *on the route*" (see Finding 13).
+*Answer to the question, as posed:* Not every construction witness can be rewritten as a selection witness — a *responsive* construction (variation derived from the itemised defect) is sighted and fails blindness, and most construction episodes lack a population with an eliminating survival condition. Not every selection witness can be rewritten as a construction witness — it has no instantiated pre-variation target and no nontrivial binding. But the classes *overlap*; neither is the complement of the other.
+*Seriousness:* serious (the discrimination claim is overstated; the overlap is not the same as the reduction claimed in attack (D), but it defeats the "distinguished by their histories" phrasing).
+*Fix:* drop the exclusivity claim; state that the witnesses are not jointly exhaustive and that precedence adjudicates the overlap, and define the overlap cases explicitly.
+
+**Finding 11.** *Claim attacked:* Part IV's "a construction witness contains both [an itemised representation of a defect and a target instantiated before the variation]", versus Part X's actual definition of Build.
+*Why it fails:* Part X's Build requires an owned subhistory, an organization prepared, "a **nontrivial binding construction required for that use**", and non-compositionality under ≡_ℓ. It requires **no itemised defect representation at all**. The episode of Part X requires "a recognized difficulty" — and "recognized" is far weaker than Part IV's blindness-defining "record pairing the state at which fidelity failed with what would have held". So Part IV's discrimination condition is not entailed by Part X; the two parts are inconsistent in extension.
+*Seriousness:* serious.
+*Fix:* add to Build an explicit requirement that the witness contain the itemised defect representation *on the route from the defect to the variation* — which makes construction essentially sighted and makes the witnesses genuinely exclusive — and then Part IV's "may exhibit both" must be read as applying to *different transports*, not one.
+
+## Q5 — Is the blindness definition consistent with Part X's construction witness?
+
+**Finding 12.** *Claim attacked:* Part I: "An idea may be entertained without justification", together with blindness as "no itemised representation of the defect … lies on the route from the defect to the variation."
+*Why it fails:* The semantics is explicitly Popperian: conjecture need not be derived from any representation of the defect. But then a *conjectural* construction — the paradigm case — has no itemised defect representation on the route to the variation, hence is **blind** by Part IV's own definition, hence satisfies selection's discrimination clause. The blind/sighted line, which is supposed to separate selection from construction, fails to separate *conjectural* construction from selection. This is the deepest hole in the discrimination requirement: the semantics' own theory of creativity makes its own provenance distinction non-exclusive.
+*Seriousness:* serious (bears directly on attack (D)).
+*Fix:* make sightedness a requirement of *construction*, not a mark of it: Build must require that the itemised defect representation lie on the route to the variation (Finding 11), and conjecture-without-justification must then be relocated to the *objection* stage (Part IX) rather than the binding stage.
+
+**Finding 13.** *Claim attacked:* "A process is **blind** with respect to a defect when no itemised representation of the defect … lies on the route from the defect to the variation", read with "a selection witness contains no itemised representation of a defect".
+*Why it fails:* The definition constrains only the *route*. A system may hold a fully itemised defect representation — e.g. a criticism that bears, satisfying (K1) with Account(E_c,p_δ) — and still be blind with respect to it, provided the representation is off-route. The "keeps the two apart" sentence therefore overstates: the selection witness forbids on-route itemisation, not possession.
+*Seriousness:* serious (as an overclaim) but cheaply fixable.
+*Fix:* reword to "no itemised representation of the defect lies on the route from the defect to the variation", and say that possession of an off-route representation is permitted for selection.
+
+**Finding 14.** *Claim attacked:* "a scalar summary of fidelity (how many failures, how badly) is explicitly permitted and does not make the process sighted."
+*Why it fails:* The permitted/denied boundary is drawn by dimensionality rather than by content. A scalar can be an error code, an index into a table of failed states, or a loss value evaluated at the current state; together with the state the system already holds, that *is* the pairing "state at which fidelity failed / what would have held". Nothing in the clause forbids this; the parenthetical "(how many failures, how badly)" presumes coarseness without requiring it.
+*Seriousness:* serious for the discrimination claim.
+*Fix:* state the condition by content, not dimension: the σ-algebra generated by what the route carries must not separate the cells of the pairing (failed state, correcting relation); a scalar is permitted only if it is constant on those cells.
+
+**Finding 15.** *Claim attacked:* "This is the only definition of selection; Part XII says what makes it a physical claim" and Part XII's "This paragraph adds no second definition; Part IV's is the only one."
+*Why it fails:* Grievance 9 restates selection as "a population with more than one member, a variation operator that was applied, a survival condition that eliminated at least one candidate, and a sequence of events causally responsible for the survivor's presence" — omitting blindness, event-non-triviality, and the non-trivial pair. Part XII's restatement omits blindness and event-non-triviality. Two divergent restatements of "the only definition".
+*Seriousness:* cosmetic.
+*Fix:* make the restatements enumerate the full clause list.
+
+---
+
+**Direct answers.** (1) Yes — the guaranteed-loser population with a disconnected μ still satisfies every clause; the causal-responsibility clause is the only barrier and it is undefined. (2) Yes — "causally responsible" is neither in Θ, nor in the declared parameters, nor derived; Derivation 6 is false as written. (3) Yes — precedence is existential and unindexed in time, Build's barriers are weak, and the pre-variation-instantiated-target clause is trivially met by persistent targets; a selected transport re-prepared with a novel binding becomes constructed. (4) Not every either way — but the classes overlap, so they are not distinguished by history alone; conjectural construction (Part I) is blind and hence selection-compatible. (5) No — Part X's Build never requires an itemised defect representation, so Part IV's claim that a construction witness "contains both" is unentailed; and the scalar-summary permission is not a well-formed content condition.

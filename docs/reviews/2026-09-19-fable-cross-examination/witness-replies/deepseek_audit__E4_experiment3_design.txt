@@ -1,0 +1,1027 @@
+====================================================================================================
+E4_experiment3_design | deepseek_audit | sample 0 | finish stop | 38579 chars | error None
+====================================================================================================
+## Findings
+
+I treat the object under attack as the errata §10 sketch:
+
+> “Equal access: both processes receive the defect records; the same search operator and budget; one uses per-record credit, the other must collapse the records to a scalar; scramble for both; the prediction is that only the per-record process changes. Budget-matched: a world whose fitness landscape is deceptive for scalar search and not for itemised credit. A world law fixed before the language is written. Closedness against the ceiling, not against hand-built rules. That is experiment 3.”
+
+---
+
+### 1. The itemised-versus-scalar contrast is under-defined and can be trivial by construction
+
+**Claim attacked:** “one uses per-record credit, the other must collapse the records to a scalar.”
+
+**Why it fails:** “Scalar” does not mean “information-poor.” A scalar can be a sufficient statistic of the per-record data: for example, the log-likelihood of the records under a candidate rule uses the state–outcome pairing and is one number per candidate. A ranking process also ultimately needs a scalar to select. So the contrast “per-record vs scalar” conflates three different things: (i) whether the process sees records at all, (ii) whether the scoring is per-component or per-candidate, and (iii) whether the scalar summary is sufficient for the law. If “must collapse” is read as a fixed permutation-invariant summary, then the scramble prediction is entailed by the definition. If “must collapse” allows arbitrary scalar functions, the scalar process can recover pairing and the prediction may be false. The design never says which.
+
+**Severity:** fatal as stated.
+
+**Fix:** Replace “itemised vs scalar” with a pre-registered information-and-credit contrast. Specify exactly what the scalar process is allowed to compute from the records: counts, marginals, likelihood, learned embedding, finite-difference credit, or one number supplied by the experimenter. Include a sufficient-statistic scalar control. If that control matches the per-record process, the claimed advantage is information, not credit assignment.
+
+---
+
+### 2. The prediction “only the per-record process changes” is analytic under a weak scalar collapse
+
+**Claim attacked:** “the prediction is that only the per-record process changes.”
+
+**Why it fails:** If the scalar process’s input is invariant under the scramble—say, total defect count or marginal action frequency—then it cannot change. That is a logical consequence of the collapse function, not an empirical discovery. If the scalar process’s scalar is sensitive to the scramble, the prediction may fail for reasons that have nothing to do with provenance. The design does not specify the scalar class, so the prediction can be made true or false by choosing the collapse.
+
+**Severity:** fatal.
+
+**Fix:** Do not make scramble sensitivity the primary endpoint. Make the primary endpoint held-out law recovery or generalisation under matched budgets. Pre-register equivalence bounds and effect sizes. Include both an invariant scalar and a sufficient-statistic scalar. If the sufficient-statistic scalar changes under scramble, then “only the per-record process changes” is false.
+
+---
+
+### 3. “Equal access to defect records” does not equalise the error signal
+
+**Claim attacked:** “Equal access: both processes receive the defect records.”
+
+**Why it fails:** Receiving the same records is not the same as receiving the same error signal. The per-record process can assign credit to individual conditions and actions; the scalar process must aggregate. But if the scalar process computes its own scalar from the records, it may use the pairing, the ordering, or the record identity. The design does not say whether the collapse is inside the process or outside it. If it is outside, the scalar process never really has access; if it is inside, the scalar process may be able to reconstruct much of the per-record signal.
+
+**Severity:** serious; fatal if the claim is about process kind rather than input format.
+
+**Fix:** Declare the process boundary. State who computes the collapse, when, and from what. Count record reads and candidate evaluations for both. If the collapse is inside the process, treat the collapse as part of the process under test and report it.
+
+---
+
+### 4. “Same search operator” is incompatible with different credit
+
+**Claim attacked:** “the same search operator and budget; one uses per-record credit, the other must collapse the records to a scalar.”
+
+**Why it fails:** Credit assignment is part of the search operator. If one process proposes edits using per-record residuals and the other only has a scalar per candidate, the operators are not the same. The design either has the same proposal distribution and different scoring, or the same scoring and different proposals, or neither. Calling both “same search operator” hides the treatment.
+
+**Severity:** serious.
+
+**Fix:** Separate the proposal operator from the credit operator. Pre-register the proposal distribution, mutation set, acceptance rule, and budget. State that the treatment is the credit signal. If the proposal distribution differs, stop calling it “same operator.”
+
+---
+
+### 5. “Budget-matched” is undefined and the old unit mismatch can recur
+
+**Claim attacked:** “same search operator and budget.”
+
+**Why it fails:** In experiment 2, “zero fitness evaluations” compared C’s cost to B’s in different units: C scored thousands of conditions over thousands of records and up to hundreds of condition–action pairs; B called the world’s fitness function about 1,750 times. Experiment 3 says it will report record checks and candidate evaluations, but “budget” could mean candidate evaluations, record reads, floating-point operations, wall-clock time, number of mutations, or search rounds. Without a pre-registered exchange rate, either process can be handicapped.
+
+**Severity:** serious.
+
+**Fix:** Pre-register budgets in at least two units: candidate evaluations and record accesses. Report Pareto fronts. If one process uses more record reads per candidate, state the trade-off. Do not call it matched unless the matching rule is explicit and fixed before the run.
+
+---
+
+### 6. “A world whose fitness landscape is deceptive for scalar search” is circular
+
+**Claim attacked:** “Budget-matched: a world whose fitness landscape is deceptive for scalar search and not for itemised credit.”
+
+**Why it fails:** This selects the world because it makes the scalar process fail. That is the same pattern as the old change 3, where the world was reshaped to have “the same shape as the rule language.” If you choose a world because it is deceptive for scalar search, you have guaranteed the direction of the result. It is no longer a test of the scalar process in general; it is a demonstration that one chosen landscape defeats one chosen scalar method.
+
+**Severity:** fatal for any general claim.
+
+**Fix:** Pre-register a world generator or a family of laws independently of the processes. Sample target laws before the language and processes are finalised. Report results over the whole family, not one deceptive instance. Define “deceptive” without reference to the process, for example by a pre-registered property of the scalar objective: flat local gradient, plateau, or low mutual information between scalar improvement and distance to the true law.
+
+---
+
+### 7. “A world law fixed before the language is written” is necessary but not sufficient
+
+**Claim attacked:** “A world law fixed before the language is written.”
+
+**Why it fails:** If the author knows the law while writing the language, the law can still be tailored to the language. The errata itself records this: the action set contains the law’s exact operation `swap_next_v`; the terms include the world’s next-states `n, w`; the antecedent is a single equality atom; the rule depth was matched to the K = 3 budget. Fixing the law first prevents later revisions; it does not prevent the author’s knowledge from leaking into the language, action inventory, term inventory, or defect-generation contract.
+
+**Severity:** fatal to the spirit of the control; the letter can be met while the intent is defeated.
+
+**Fix:** Separate roles. Have an independent party write the law, or generate it from a pre-registered law family and keep the target law hidden from the language designer. Freeze the language before seeing the target law. Do not allow language revision after an expressibility failure; count the failure as a result. Commit each component with a hash and timestamp before the next is written.
+
+---
+
+### 8. “Closedness against the ceiling” is under-specified and can be unfair or tautological
+
+**Claim attacked:** “Closedness against the ceiling, not against hand-built rules.”
+
+**Why it fails:** In experiment 2, “the ceiling” was 0.923 and the lookup scored 0.819; the hand-built rules scored 0.906. Those are different ceilings: a sensory majority/continuation ceiling, a hand-built expressibility ceiling, and a true-law ceiling. If experiment 3 compares a process to the true law, it measures search failure plus approximation error. If it compares to a best-in-language oracle, it measures only search. If it compares to an in-sample sensory ceiling, it can pass while missing the world’s law entirely.
+
+**Severity:** serious.
+
+**Fix:** Pre-register at least three ceilings: (i) true law or exhaustive best-in-language for small worlds, (ii) best held-out predictor under the same sensory contract, (iii) best architecture under the same budget. Report all. State which ceiling supports which inference. Do not use “the ceiling” as if there were one.
+
+---
+
+### 9. A sensory ceiling is in-sample and blind to crossings
+
+**Claim attacked:** “Closedness measured against a sensory ceiling” / “Closedness against the ceiling.”
+
+**Why it fails:** The adjudication already notes: “The sensory ceiling is in-sample,” and “The collision-step metric cannot see a crossing error at the collision step — the sensory fields agree there and diverge only later. M3 is the only measurement that sees it.” A process can be closed against a sensory ceiling and still fail the world law’s identity-through-crossing half. If experiment 3 uses a sensory ceiling as the closedness target, it cannot support a claim about the world’s law.
+
+**Severity:** serious.
+
+**Fix:** Use held-out ceilings. Report closedness against the sensory contract and against the finer contract separately. If the claim is about world law, include translated-edit or identity-tracking tests on the finer contract. Do not let a sensory ceiling stand in for the law.
+
+---
+
+### 10. The design still does not instantiate file 10’s formal objects
+
+**Claim attacked:** The implication that experiment 3 will test the semantics’ construction/selection distinction.
+
+**Why it fails:** The adjudication’s D8 verdict is: “The experiment never instantiates file 10’s formal objects — no D, E, p, t = (π, τ, σ, λ), Γ, contract C as a set of edit–boundary pairs, no (F1), (F2), (A), no non-circular dependence, no non-vacuity. S1–S6 are loose analogies.” Experiment 3 as sketched does not add those objects. It tests two learning algorithms over a rule grammar. At best it tests proxies for credit granularity and error-signal route.
+
+**Severity:** serious. Any positive result would be overclaimed as a result about construction versus selection.
+
+**Fix:** Either state explicitly that experiment 3 tests proxies and limit all conclusions to credit assignment, information routing, and search efficiency; or write down the mapping from the experiment’s objects to file 10’s D, E, p, t, C, Γ, (F1), (F2), (A), Sel, Con, and Build, and show which definitions are actually instantiated.
+
+---
+
+### 11. A positive result would fail to show construction versus selection
+
+**Claim attacked:** The design’s implicit hope that if the per-record process changes and the scalar process does not, it has shown a provenance distinction.
+
+**Why it fails:** It would show only that a process using per-record pairing is sensitive to a manipulation of that pairing, while a process using a scalar summary is insensitive. That is a statement about information content and credit route. It does not show that the per-record process constructs rather than selects. Both processes are searches over the same fixed meta-grammar. The adjudication already said: “To show more than efficiency: a budget-matched case where scalar search fails and itemised credit succeeds.” Even that shows efficiency and inductive bias, not construction in file 10’s sense. It does not show nontrivial binding construction, a represented target, an owned subhistory, a construction witness, or non-selected provenance.
+
+**Severity:** serious.
+
+**Fix:** Limit the claim to credit assignment and information granularity. If the target is construction, add the file 10 objects: binding construction, represented target, ownership, active route, non-circular dependence, non-vacuity. Without those, do not use the words “construction,” “provenance,” or “selection” except as labels for the two algorithms.
+
+---
+
+### 12. A negative result would fail to show that no distinction exists
+
+**Claim attacked:** If the scalar process also changes, or if both change, the distinction is refuted.
+
+**Why it fails:** If the scalar process changes, the scalar collapse was not invariant. That may mean the collapse was mis-specified, or the scramble corrupted generic features, or the scalar was a sufficient statistic. If both change, the scramble may have damaged the records in ways irrelevant to the proposed distinction. If neither changes, the scramble may have been ineffective. None of these outcomes is a clean refutation of a well-defined distinction.
+
+**Severity:** serious.
+
+**Fix:** Include manipulation checks and positive controls: an invariant scalar should not change; a sufficient-statistic scalar should change; a placebo column should not change either process; a known corrupted record set should change both. Pre-register what each outcome licenses.
+
+---
+
+### 13. The scramble effect is already known to be seed-dependent
+
+**Claim attacked:** “scramble for both” as if it were a clean manipulation.
+
+**Why it fails:** The errata’s own diagnostic says: “The scramble effect is seed-dependent: two of five permutations produced no degradation at all, because many records share a state, so permuting outcomes among records leaves the state→outcome mapping largely intact for those states. The original result (0.906 → 0.355 on one seed) was partly luck.” S4 held in only 3 of 5 permutations. Experiment 3 cannot use a single scramble seed and claim a result.
+
+**Severity:** serious.
+
+**Fix:** Pre-register the permutation family and the number of permutations. Report every permutation, not the best or worst. Use a mixed-effects or hierarchical analysis across seeds and worlds. Report the manipulation check: how many records remain defects, how the state→outcome mapping changes, how action frequencies change.
+
+---
+
+### 14. The proposed stronger scramble may still be invalid or may change the wrong thing
+
+**Claim attacked:** “A scramble that actually destroys the mapping must permute outcomes *within* groups of identical states or replace each outcome with a different wrong field — which is what the witnesses proposed and what experiment 3 will use.”
+
+**Why it fails:** If the world is deterministic, permuting outcomes within groups of identical states may be a no-op, because identical states may already have the same outcome. Replacing every outcome with a different wrong field changes the marginal distribution of outcomes, the number of defects, the action frequencies, and possibly the base rates. The manipulation may destroy the law, but it may also destroy the record format in a way that neither process can use. That confounds “loss of pairing” with “generic corruption.”
+
+**Severity:** serious.
+
+**Fix:** Pre-register the scramble distribution and verify it. Report mutual information between state and outcome before and after, defect counts, action counts, and per-state outcome entropy. Include a placebo scramble on a field neither process scores. Include a scramble that preserves marginals but destroys pairing, if one can be constructed. If only generic corruption works, say the result is about corruption, not pairing.
+
+---
+
+### 15. The evaluation metric remains confounded: B’s fitness was overall exposure, C’s records were collision-dominated
+
+**Claim attacked:** “Equal access” as if it equalised the training signal.
+
+**Why it fails:** The adjudication already records: “B’s fitness is overall exposure accuracy; C’s records are collision-dominated. Another asymmetry to remove in experiment 3.” If experiment 3 uses collision-step fidelity as the primary metric, the scalar process may be penalised for optimising a different distribution. If it uses overall accuracy, the per-record process may be penalised because its records are collision-heavy. Equal access to records does not fix the distribution mismatch.
+
+**Severity:** serious.
+
+**Fix:** Match the training distribution. If defect records are collision-dominated, both processes must be trained on those records. Report metrics on the same held-out distribution. Separately report overall exposure accuracy and collision-step fidelity, and say which one the claim depends on.
+
+---
+
+### 16. The collision-step metric cannot see the crossing failure
+
+**Claim attacked:** Using collision-step fidelity or sensory closedness as the main test.
+
+**Why it fails:** The adjudication says: “The collision-step metric cannot see a crossing error at the collision step — the sensory fields agree there and diverge only later. M3 is the only measurement that sees it.” If the world law has a crossing half, and experiment 3 measures only collision steps or sensory fidelity, it can report success while missing the law. If it measures crossings, the sensory contract may make them invisible to both processes, so the result is about the contract, not about credit.
+
+**Severity:** serious.
+
+**Fix:** Pre-register both metrics: sensory-visible sub-contract fidelity and finer-contract identity/crossing fidelity. Report unconditional rates. If the defect records contain no crossing residuals, state that the full-law claim is untestable in this design.
+
+---
+
+### 17. The old implementation hazards are not removed by the sketch
+
+**Claim attacked:** The sketch’s implied clean comparison.
+
+**Why it fails:** The adjudication lists the following as real code hazards: (i) no held-out validation inside the process—“C builds and accepts rules on the same records”; (ii) only the top 20 conditions are ever paired with actions; (iii) condition scoring ignores base rates; (iv) tie-breaking on record order; (v) the rule language is hardcoded to two slots; (vi) B searches one rule per round greedily; (vii) the collision metric is blind to crossings. The §10 sketch does not say these are fixed. If they remain, the comparison is confounded by implementation details.
+
+**Severity:** serious.
+
+**Fix:** Pre-register the scoring function, validation split, hypothesis cap, tie-break, slot count, and sequential protocol. If the language is still two-slot, limit all generality claims to two things. If the cap remains, report its effect. If B is greedy and C is not, match the sequential protocol.
+
+---
+
+### 18. There is no power analysis or sample-size plan
+
+**Claim attacked:** The design’s implicit assumption that one world, a few seeds, and one scramble will decide the claim.
+
+**Why it fails:** Experiment 2’s scramble result was 3 of 5 seeds. B matched C on M3 for most seeds. The claimed effects are small enough that seed variation can reverse them. The §10 sketch says nothing about number of worlds, seeds, permutations, or power.
+
+**Severity:** serious.
+
+**Fix:** Pre-register the number of worlds, seeds, and scramble permutations. Give a power analysis or a Bayesian design with a region of practical equivalence. Report all runs. If the effect is only detectable under one seed or one world, that is the result.
+
+---
+
+### 19. “Changes” is undefined
+
+**Claim attacked:** “only the per-record process changes.”
+
+**Why it fails:** “Changes” could mean the rule text changes, the rule set changes, the fidelity drops, the defect count changes, the search trajectory changes, or the final generalisation changes. A process can change its rule text while keeping the same fidelity; a process can keep the same rule text while changing its confidence. Without a pre-registered endpoint, any difference can be counted as success.
+
+**Severity:** serious.
+
+**Fix:** Define the primary endpoint before the run: exact rule recovery up to equivalence, held-out intervention accuracy, or component-level signature under translated edits. Define the null and the smallest effect of interest. Report all secondary endpoints separately.
+
+---
+
+### 20. The design does not say how “closedness” relates to the world law
+
+**Claim attacked:** “Closedness against the ceiling.”
+
+**Why it fails:** In experiment 2, closedness was measured on collision steps against a ceiling, and the lookup scored 0.819 of 0.923. That is closedness of the old grammar to a sensory ceiling, not closedness to the world law. The world law had a crossing half the sensory contract could not see. If experiment 3 repeats “closedness against the ceiling” without specifying whether the ceiling is sensory or law-level, it can again report closedness while the law is not represented.
+
+**Severity:** serious.
+
+**Fix:** Define closedness relative to a named ceiling and a named contract. Report closedness to the sensory ceiling and to the law-level ceiling. If the law-level ceiling is unavailable, say the claim is limited to the sensory sub-contract.
+
+---
+
+### 21. The defect-generation contract is not specified
+
+**Claim attacked:** The design’s assumption that equal access to defect records is enough.
+
+**Why it fails:** The adjudication says the crossing condition is expressible, but “the limit is in the error signal, not in what the language can say”: crossing steps produce no sensory defects. If experiment 3 uses the same collision-dominated defect records, itemised credit will not help on the crossing half. If it adds a cue or a new defect type to expose crossings, then the world or observation contract has been changed, and the result is about the cue, not about credit granularity.
+
+**Severity:** serious.
+
+**Fix:** Pre-register the defect-generation process: which events produce records, what labels are available, what is hidden. If the target law includes crossings, either provide defect records that expose crossings or explicitly limit the claim to the sensory-visible sub-contract. Do not silently change the contract to make the itemised process succeed.
+
+---
+
+### 22. Process boundaries are unspecified
+
+**Claim attacked:** “both processes receive the defect records.”
+
+**Why it fails:** The adjudication already asks: “is the fitness evaluator inside B? If so B reads outcomes in aggregate; if not, C’s record collector is outside C too. Boundaries must be declared.” The §10 sketch does not declare them. If the scalar is computed outside the process, the process is not receiving records. If the record collector is outside the per-record process, its cost and access are not counted. The comparison is not well-defined.
+
+**Severity:** serious.
+
+**Fix:** Draw the boundary. State which components are inside each process, which are experimenter-provided, and which cost units are counted. Report record reads, scalar computations, and candidate evaluations separately.
+
+---
+
+### 23. The design does not match information, only budget
+
+**Claim attacked:** “Budget-matched” as if it were information-matched.
+
+**Why it fails:** Per-record labels contain more information than a collapsed scalar unless the scalar is sufficient. Matching budget does not match information. If the per-record process wins, the result may be that more information helps at fixed compute. That is true but trivial. If the scalar process wins, the result may be that the per-record process wasted budget. Neither tests construction versus selection.
+
+**Severity:** serious.
+
+**Fix:** Add an information-matched control: give the scalar process a sufficient statistic or the same per-record data but force it to aggregate before making component-level decisions. If the sufficient-statistic scalar matches the per-record process, the advantage is information, not credit route. If it does not, the claim is about credit assignment.
+
+---
+
+### 24. Cross-classification and mediation controls are absent
+
+**Claim attacked:** The implication that one per-record process and one scalar process can support a taxonomy.
+
+**Why it fails:** The adjudication already accepted: “Cross-classification controls are needed: a selection process that reads itemised records; a construction process that does not. Scramble sensitivity must cluster by concept, not by implementation.” And: “Mediation, not input-dependence: instrument C, delete individual records, show specific rule changes.” The §10 sketch has neither. One process per cell cannot distinguish the treatment from the implementation.
+
+**Severity:** serious.
+
+**Fix:** Use a factorial design: at least two processes per credit type, including a scalar process that reads itemised records and a per-record process that does not use them for construction. Add mediation: delete individual records that support the true rule and check whether the specific rule changes. If scramble sensitivity clusters by code path rather than by concept, the taxonomy fails.
+
+---
+
+### 25. The author who knows the law cannot meet the “law before language” control alone
+
+**Claim attacked:** “A world law fixed before the language is written” as a control the author can satisfy.
+
+**Why it fails:** The author knows the law. Even if the law file is hashed first, the author can choose the language’s action set, term set, depth, and scoring to fit the law. Experiment 2 did exactly this: `swap_next_v` was added to the language, `n, w` were the world’s next-states, the antecedent was one equality atom, and the target’s depth was matched to K = 3. Fixing the law before the language prevents later edits; it does not prevent author knowledge from shaping the language.
+
+**Severity:** fatal to the intent of the control.
+
+**Fix:** The author cannot meet the intent alone. Use an independent law author or a pre-registered law generator. Keep the target law hidden from the language designer. Freeze the language before the target law is revealed. If that is impossible, freeze the language before the law is chosen and sample laws from a pre-registered family after the language is fixed. Report the law and language hashes. No revision after an expressibility failure.
+
+---
+
+### 26. “Closedness against the ceiling, not against hand-built rules” repeats the old category error if the ceiling is hand-built by the author
+
+**Claim attacked:** The contrast between “ceiling” and “hand-built rules.”
+
+**Why it fails:** In experiment 2, the hand-built rules were written by the author from knowledge of the law. If experiment 3’s ceiling is also authored by the same person, or if it is a true-law oracle the author constructs, the ceiling can inherit the same tailoring. A ceiling is only independent if its construction is independent of the language and process and is pre-registered.
+
+**Severity:** serious.
+
+**Fix:** Make the ceiling mechanical or independent. For small worlds, compute the best possible predictor by exhaustive enumeration over the declared hypothesis space. For larger worlds, use held-out laws and an oracle that does not share the author’s language. Report the ceiling’s construction and its own error.
+
+---
+
+### 27. The design does not say what happens if the language cannot express the target law
+
+**Claim attacked:** The design’s silence on expressibility failure.
+
+**Why it fails:** The old design’s expressibility check could not fail because the world was reshaped when the language failed. If experiment 3 fixes the law first and the language cannot express it, the only honest outcome is that the process fails for expressibility reasons. If the design allows the language to be revised after seeing the failure, the control is defeated. The §10 sketch does not say.
+
+**Severity:** serious.
+
+**Fix:** Pre-register the rule: no language revision after the target law is revealed. If the language cannot express the law, record that as a result. Include a separate expressibility check with an independent oracle: can any architecture in the language represent the law? Do not use the process’s failure as evidence about credit if the language is inexpressive.
+
+---
+
+### 28. The design does not specify how the two processes are initialised or seeded
+
+**Claim attacked:** The implicit assumption that the comparison is algorithmically clean.
+
+**Why it fails:** Search over discrete rule grammars is sensitive to initialisation, tie-breaking, proposal order, and random seed. Experiment 2’s phase 2 wrong action came from a tie-break. The §10 sketch says nothing about matched initialisation, seed pairing, or tie-breaking.
+
+**Severity:** serious.
+
+**Fix:** Use paired seeds where possible. Pre-register initialisation, tie-breaking, proposal order, and stopping rule. Report all seeds. If the two processes cannot be paired, use enough seeds and a pre-registered mixed-effects analysis.
+
+---
+
+### 29. The design does not specify how to avoid post-hoc exclusion of architectures
+
+**Claim attacked:** “Closedness against the ceiling” as if it fixes the old lookup exclusion.
+
+**Why it fails:** In experiment 2, the lookup scored 0.819 against hand-built 0.906, and was then moved out of the thresholded comparison as “a memoriser, not machinery.” The errata admits: “That is a reclassification after the number.” Experiment 3 says closedness against the ceiling, but if an architecture is later excluded as “not machinery,” the same move can recur. The §10 sketch does not pre-register inclusion.
+
+**Severity:** serious.
+
+**Fix:** Pre-register all architectures and all ceilings. Report every architecture against every ceiling. Do not exclude a lookup or a memoriser after seeing its score. If a class is excluded, pre-register the exclusion criterion before the run and justify it independently of the score.
+
+---
+
+### 30. The design conflates “scalar” with “selection” and “per-record” with “construction”
+
+**Claim attacked:** The implicit mapping from the computational contrast to the semantic distinction.
+
+**Why it fails:** The per-record process is still doing selection over hypotheses with scores. The scalar process is still doing selection over hypotheses with a score. The adjudication already conceded: “C itself scores and ranks — it is selection over hypotheses with itemised scores.” The contrast is itemised versus scalar feedback, not construction versus selection. If experiment 3 keeps the semantic vocabulary, it will overclaim.
+
+**Severity:** serious.
+
+**Fix:** Rename the processes by what they do: per-record-credit search and scalar-credit search. Reserve “construction” and “selection” for cases where the file 10 provenance definitions are actually instantiated. State the proxy relation explicitly.
+
+---
+
+## Direct answers
+
+**Is the itemised-versus-scalar contrast also trivial by construction?**  
+As stated, yes. If “must collapse to a scalar” means a fixed, permutation-invariant summary, the scramble prediction is entailed. If it means any scalar function, the scalar process may use a sufficient statistic and the prediction can fail. The design does not specify which, so the contrast is either trivial or under-defined. It becomes non-trivial only when the scalar class is pre-registered, includes strong sufficient-statistic and finite-difference controls, and the primary endpoint is held-out law recovery rather than scramble sensitivity.
+
+**What would a result in either direction fail to show?**  
+A positive result—per-record changes, scalar does not—would fail to show construction versus selection, provenance, creativity, explanation, or any file 10 definition. It would show at most that a process using per-record pairing is sensitive to a manipulation of pairing while a process using a scalar summary is not. A negative result—both unchanged—would fail to show that no distinction exists; it could mean the scramble was ineffective or the scalar was too informative. A result where both change would fail to isolate the treatment; it could be generic corruption. A result where the per-record process does worse would fail to support the claim; it could mean the scramble destroyed the signal or the credit rule is mis-specified.
+
+**What confounds survive?**  
+At least: unequal information versus budget; undefined process boundaries; undefined budget units; different proposal operators; training distribution mismatch (collision-dominated records versus overall exposure fitness); sensory metric blind to crossings; in-sample sensory ceiling; defect-generation contract that cannot expose crossing law; author knowledge of the law; hand-built or author-chosen ceilings; no validation split; top-k hypothesis caps; base-rate-blind scoring; tie-breaking; two-slot hardcoding; greedy versus local search protocol; seed-dependent scramble; multiple testing; no power analysis; post-hoc exclusion of architectures; and no mapping to file 10’s formal objects.
+
+**What does “a world law fixed before the language” require in practice, and can the author meet it?**  
+In practice it requires: a frozen law specification including state space, hidden variables, transition law, observation map, action set, defect-generation rule, and contract; a hash/timestamp before the language is written; a frozen language specification including terms, actions, combinators, depth, scoring, and proposal operator; no revision of either after seeing failures; and ideally an independent law author or a hidden target law from a pre-registered generator. The author who knows the law cannot meet the intent alone. They can meet the letter by committing the law first and then writing the language, but their knowledge can still tailor the language, action set, terms, and depth. The only serious fixes are independent custody, a hidden target law, or freezing the language before the target law is sampled.
+
+---
+
+## Sharpest version of the experiment that could actually fail
+
+**Design:** A matched-information, cross-classified, held-out-law test of credit granularity, not “construction versus selection.”
+
+1. **Law family and blinding.** Pre-register a law generator over worlds with at least three slots, hidden identity permutations, collision and crossing events, primitive actions, and a sensory observation map. Generate a set of target laws before the language is finalised. Keep target laws hidden from the language designer, or have an independent party write them. Commit law hashes. No revision after language failures.
+
+2. **Language.** Freeze a grammar from primitive operations and generic combinators. The language designer has no access to the target laws. Freeze the action set, term set, depth limit, proposal distribution, scoring function, validation split, tie-break, and stopping rule. Commit hashes. Do not revise after seeing expressibility failures; record them.
+
+3. **Processes.** Use a common candidate representation and common proposal distribution over rule sets. Treat the credit signal as the experimental factor. Four cells:
+   - per-record credit with local component updates;
+   - per-record credit aggregated before selection;
+   - scalar credit from a pre-registered simple summary (counts, net defects, accuracy);
+   - scalar credit from a sufficient statistic or learned embedding that uses the same records.
+   Match candidate evaluations, record accesses, mutation proposals, and wall-clock budgets. Report all.
+
+4. **Primary prediction.** On held-out target laws, the per-record-credit process recovers the law or generalises to unseen interventions better than the simple-scalar process by a pre-registered margin. The sufficient-statistic scalar process is the critical control: if it matches the per-record process, the advantage is information, not credit route. If it does not, the claim is about credit assignment.
+
+5. **Manipulations.** Scramble raw defect records before either process sees them. Use multiple pre-registered permutations: within-state permutations where they are not no-ops, and outcome replacements that preserve marginals where possible. Verify manipulation: state→outcome mutual information, defect counts, action frequencies, per-state outcome entropy. Include a placebo column. Include a known corruption positive control. Report every permutation.
+
+6. **Mediation.** Delete individual records that support the true rule. Check whether the per-record process’s specific rule changes and whether the scalar process’s rule changes. This tests whether the credit signal is actually used to change components, not just final scores.
+
+7. **Metrics.** Primary: held-out law recovery and generalisation on unseen interventions, including crossings. Secondary: collision-step fidelity, sensory closedness, law-level closedness, component signature under translated edits. Report unconditional rates. Report all architectures, including lookups and memorisers, against all ceilings.
+
+8. **Ceilings.** Pre-register: true law or exhaustive best-in-language for small worlds; best held-out predictor under the same sensory contract; best architecture under the same budget. Do not use one unlabelled “ceiling.” Do not exclude architectures after seeing scores.
+
+9. **Power and analysis.** Pre-register number of worlds, seeds, and permutations. Use paired seeds where possible. Use a hierarchical model across worlds and seeds. Define the smallest effect of interest and an equivalence region. Report all runs.
+
+10. **What can fail.** The claim fails if the sufficient-statistic scalar matches the per-record process; if the per-record process fails to recover crossings when the defect records contain crossing residuals; if the scramble leaves both unchanged or changes both generically; if the per-record advantage disappears under matched information; if the language cannot express the target law and the per-record process fails for expressibility reasons; or if the effect is seed-, world-, or hyperparameter-specific. Any of these is a real failure, not a reclassification.
+====================================================================================================
+E4_experiment3_design | deepseek_audit | sample 1 | finish stop | 22997 chars | error None
+====================================================================================================
+I treat §10 of file 17 as the design. Findings are numbered; each gives the attacked claim, why it fails, severity, and fix.
+
+**1. The itemised-vs-scalar contrast is analytic if the scalar is computed from the same records.**
+- Claim attacked: “one uses per-record credit and the other must collapse the records to a scalar; scramble for both; the prediction is that only the per-record process changes.”
+- Why it fails: if the scalar is a function of the same defect records, a scramble that changes those records changes the scalar unless the scalar is deliberately chosen to be invariant. If it is invariant, the prediction is entailed by the definition of the scalar, not discovered. This is the same defect the errata conceded for B: “B's byte-identical clause is analytic” (C1.2).
+- Severity: fatal.
+- Fix: define the scalar as a non-invariant sufficient statistic chosen by an adversary trying to maximise scalar performance, or let the scalar process choose its own scalar from the records. Pre-register multiple scrambles and predict a sensitivity profile, not a binary.
+
+**2. “Equal access” and “must collapse to a scalar” contradict each other.**
+- Claim attacked: “Equal access: both processes receive the defect records; … the other must collapse the records to a scalar.”
+- Why it fails: if the scalar process receives the records, it can read them. Enforcing collapse requires either a sandbox that withholds per-record data, which violates equal access, or a code-level prohibition, which makes the result an implementation entailment rather than a test.
+- Severity: serious/fatal.
+- Fix: declare the process boundary. Give both processes the same raw records, but let the scalar process consume only a scalar produced by an external collapse module. Give the itemised process the same module plus a per-record port. Verify by ablation that the scalar process cannot access the per-record port.
+
+**3. “Same search operator” is ill-defined when the credit signals are different.**
+- Claim attacked: “the same search operator and budget.”
+- Why it fails: an operator that accepts a per-record vector and one that accepts a scalar cannot be the same operator unless the per-record process first aggregates to a scalar, in which case the contrast disappears. If they are different operators, the performance difference is confounded with the update rule.
+- Severity: serious.
+- Fix: state precisely what is shared: same variation operator, same candidate-selection rule after credit aggregation, same budget. The treatment is then credit assignment before aggregation, not “same search operator.”
+
+**4. The predicted scramble result is not a risky prediction.**
+- Claim attacked: “the prediction is that only the per-record process changes.”
+- Why it fails: if the scramble destroys state–outcome pairing but preserves the aggregate used by the scalar process, the result is guaranteed. If it changes the aggregate, the scalar process should change too. The design never specifies a scramble under which the prediction could fail.
+- Severity: fatal.
+- Fix: pre-register at least two scrambles: one that changes the best scalar and one that preserves it. Predict the full pattern. Use mediation, not input-dependence.
+
+**5. The “deceptive landscape” is goalpost selection.**
+- Claim attacked: “Budget-matched: a world whose fitness landscape is deceptive for scalar search and not for itemised credit.”
+- Why it fails: “deceptive for scalar search” is relative to the scalar algorithm. Choosing such a world after knowing the algorithms guarantees a positive result if the itemised process wins and makes a failure uninterpretable.
+- Severity: fatal to inference.
+- Fix: fix the world law family before the algorithms. Sample worlds from a pre-registered distribution. Include non-deceptive controls. Prove deceptiveness analytically for a class of scalar optimisers, not for the actual scalar process after it is built.
+
+**6. “A world law fixed before the language is written” does not prevent tailoring.**
+- Claim attacked: “A world law fixed before the language is written.”
+- Why it fails: the author knows the law when writing the language. Chronological order does not remove knowledge. The author can choose terms, actions, depth, and budget to fit the law. The errata itself admits “The world was fitted to the language” (§4), and C4.2 says `swap_next_v` is the law’s action as a primitive.
+- Severity: serious/fatal.
+- Fix: use an independent law custodian, a separate blinded language author, or an automated law generator sampled after the language is frozen. Hash the language before sampling the law. Permit no post-hoc language revision.
+
+**7. The author cannot meet epistemic independence by chronology alone.**
+- Claim attacked: “A fair design fixes the world's law before the language is finalised” (file 17 §4).
+- Why it fails: the same author writes both. “Fixed” only means not edited; it does not mean inaccessible. The author can select a law whose features match the language they intend to write.
+- Severity: serious.
+- Fix: separate the roles. One party writes the law and seals it. Another writes the language without seeing it. A third samples the law after the language hash. If that is impossible, use a random law generator from a pre-registered distribution and report failures of expressibility.
+
+**8. The design still does not instantiate file 10’s definitions.**
+- Claim attacked: “What would test the claim.”
+- Why it fails: the adjudication already states: “The experiment never instantiates file 10's formal objects” (D8.1). Itemised versus scalar credit is not Sel versus Con. There is no D, E, p, t = (π, τ, σ, λ), Γ, contract C as edits, (F1), (F2), (A), construction witness, or owned subhistory.
+- Severity: fatal to the claimed target.
+- Fix: write an explicit mapping from every experimental object to file 10’s objects before building, or rename the claim to “credit granularity in search” and stop invoking provenance.
+
+**9. “Construction” is not operationalised.**
+- Claim attacked: “one uses per-record credit and the other must collapse the records to a scalar.”
+- Why it fails: the per-record process may still select rules from a fixed grammar. Local credit assignment is not binding construction. File 10’s Con requires a construction witness and a new component whose relation is not a composition of prior relations.
+- Severity: fatal to the construction claim.
+- Fix: include a phase in which no existing rule in the grammar suffices. Require the per-record process to compose or build a new component. Measure the decomposition condition from A3: distinct anchors, joint coverage, injective translation of surgeries.
+
+**10. The scalar collapse function is under the author’s control.**
+- Claim attacked: “the other must collapse the records to a scalar.”
+- Why it fails: the experimenter can choose a lossy scalar that guarantees itemised advantage, or a sufficient scalar that guarantees a null. The result is determined by that choice, not by the process’s provenance.
+- Severity: serious.
+- Fix: pre-register a class of scalar functions. Include the best scalar for the task, chosen by an adversarial referee. Or let the scalar process learn its own scalar from the records under the same budget. Report the full class.
+
+**11. “Scramble for both” is under-specified and already known to be seed-dependent.**
+- Claim attacked: “scramble for both.”
+- Why it fails: §8b reports that “The scramble effect is seed-dependent: two of five permutations produced no degradation at all.” A within-state permutation can preserve the aggregate defect count, leaving the scalar process unchanged by construction.
+- Severity: serious.
+- Fix: pre-register the scramble class. Include within-identical-state outcome permutations, outcome replacements, and a placebo. Verify that the scramble actually destroys the state–outcome mapping. Run multiple seeds and report the distribution.
+
+**12. Record generation and equality of access are not specified.**
+- Claim attacked: “both processes receive the defect records.”
+- Why it fails: defect records depend on the current hypothesis. If each process generates its own records, they are not equal. If both get a common baseline’s records, neither is using its own error signal. The design does not say which.
+- Severity: serious.
+- Fix: define two conditions: a fixed common record set generated from a common baseline, and an online paired condition where both processes see the same records from the same initial hypothesis. Report both.
+
+**13. Stopping rule, initialisation, and seed handling are unspecified.**
+- Claim attacked: “same search operator and budget.”
+- Why it fails: Exp2 used different stopping rules: C stopped when no defects remained, B ran a fixed number of evaluations. If Exp3 does not match stopping, initialisation, and seeds, the difference is confounded with search protocol.
+- Severity: serious.
+- Fix: pre-register a fixed candidate-evaluation budget and a common stopping rule. Use the same seeds and the same initial hypotheses. Report distributions, not single runs.
+
+**14. “Closedness against the ceiling” conflates predictive accuracy with representational closure.**
+- Claim attacked: “Closedness against the ceiling, not against hand-built rules.”
+- Why it fails: §5 already reports that the lookup scored “0.819 of 0.923” on collision steps by memorising local sensory patterns. A high ratio to a sensory ceiling can indicate memorisation, not a closed rule language.
+- Severity: serious.
+- Fix: define closedness as the ability to represent and select the law on held-out compositional tests. Use the sensory ceiling only as a baseline. Add mediation: delete specific records and check whether the built rule changes in the predicted way.
+
+**15. The sensory ceiling is undefined and known to be in-sample.**
+- Claim attacked: “Closedness against the ceiling.”
+- Why it fails: D6.10 says “The sensory ceiling is in-sample.” An in-sample ceiling is not an upper bound on generalisation. It can be beaten or gamed, and its ratio to process performance is not a closedness measure.
+- Severity: serious.
+- Fix: define the ceiling as the best predictor in a pre-registered sensory-only hypothesis class, estimated on held-out data. Report absolute performance and confidence intervals, not only the ratio.
+
+**16. The design does not address the invisible-law/crossing problem.**
+- Claim attacked: “Closedness against the ceiling.”
+- Why it fails: §6 says “Fidelity claims apply to the sensory-visible sub-contract only.” If the law has an identity-through-crossing half that produces no sensory defects, both processes can fail it while scoring high on the sensory ceiling. The experiment then says nothing about constructing the full law.
+- Severity: serious.
+- Fix: either make identity observable, or add a cue that breaks the crossing symmetry. Pre-register a crossing test. Test whether the itemised process builds the crossing rule when crossing defects are present.
+
+**17. There is no held-out validation inside either process.**
+- Claim attacked: “same search operator and budget.”
+- Why it fails: D4.2 says “C builds and accepts on the same exposure records with no held-out check inside the process.” The itemised process can overfit the record set. Its advantage may be overfitting, not better credit assignment.
+- Severity: serious.
+- Fix: give both processes the same train/validation split. Rule acceptance must use the validation half. Report training and held-out performance separately.
+
+**18. A common hypothesis space is not specified.**
+- Claim attacked: “same search operator and budget.”
+- Why it fails: if the itemised process can use a richer rule language, different primitives, or new composition operators that the scalar process cannot, any difference is confounded with the language.
+- Severity: serious.
+- Fix: use the same fixed meta-grammar and the same primitives for both. The only permitted difference is the credit signal. Pre-register the language before either process is built.
+
+**19. Law depth may again be matched to the budget.**
+- Claim attacked: “A world law fixed before the language is written.”
+- Why it fails: Exp2 §8a admits “The two-rule depth of the target was matched to the K = 3 budget by design.” Fixing the law before the language does not prevent choosing a law whose depth matches the intended search budget.
+- Severity: serious.
+- Fix: pre-register a distribution over law depths. Fix the language independently. Do not tune depth to budget. Report performance across depths.
+
+**20. Cross-classification controls are missing.**
+- Claim attacked: the two-process design.
+- Why it fails: D3.5 states “Cross-classification controls are needed: a selection process that reads itemised records; a construction process that does not. Scramble sensitivity must cluster by concept, not by implementation.” One itemised process and one scalar process cannot distinguish credit granularity from provenance.
+- Severity: serious.
+- Fix: use at least four cells: itemised/construction, itemised/selection, scalar/construction, scalar/selection. Or use two independent implementations per concept and require the effect to cluster by concept.
+
+**21. Mediation is missing.**
+- Claim attacked: “the prediction is that only the per-record process changes.”
+- Why it fails: D3.6 says “Mediation, not input-dependence: instrument C, delete individual records, show specific rule changes.” Input-dependence is trivial; the experiment needs to show that specific records cause specific rule components to change.
+- Severity: serious.
+- Fix: pre-register record deletion, permutation, and ablation. Show that removing a specific record or pair of records changes a specific rule or component. Use causal mediation.
+
+**22. Process boundaries are not declared.**
+- Claim attacked: “Equal access: both processes receive the defect records.”
+- Why it fails: D3.9 says “Process boundaries unspecified: is the fitness evaluator inside B? If so B reads outcomes in aggregate; if not, C's record collector is outside C too. Boundaries must be declared in experiment 3.” Without boundaries, the provenance ascription is arbitrary.
+- Severity: serious.
+- Fix: draw the boundary diagram. Declare what is inside each process, what is outside, which information channels cross the boundary, and who computes the scalar, the records, and the fitness.
+
+**23. Law knowledge leaks through the action set and terms.**
+- Claim attacked: “A world law fixed before the language is written.”
+- Why it fails: C4.2 states “`swap_next_v` is the law's action as a primitive; `n_i, w_i` are the world's intermediate variables… The meta-grammar was written by someone who knew the law.” Fixing the law first does not stop the language author from putting the law’s exact operation into the action set.
+- Severity: fatal to the construction claim.
+- Fix: derive the action set from lower-level primitives fixed before the law. Require the process to compose the law’s operation. Forbid law-specific predicates, terms, and actions.
+
+**24. No failure criteria, effect size, or power analysis are given.**
+- Claim attacked: “the prediction is that only the per-record process changes.”
+- Why it fails: there is no pre-registered threshold for “changes,” no effect size, no power calculation, and no multiple-comparison plan. A single world and a single seed can produce an anecdote.
+- Severity: serious.
+- Fix: pre-register the primary outcome, the success threshold, the number of worlds and seeds, the analysis plan, and corrections for multiple comparisons.
+
+**25. “Closedness against the ceiling” may not be comparable across processes.**
+- Claim attacked: “Closedness against the ceiling, not against hand-built rules.”
+- Why it fails: if the two processes have different languages, budgets, or evaluation sets, the ratio to the ceiling is not a common measure. A process with a richer language may score higher for reasons unrelated to closedness.
+- Severity: serious.
+- Fix: use the same evaluation set, the same ceiling, and the same normalisation for both. Report absolute performance alongside the ratio.
+
+**26. No result direction would be diagnostic of provenance.**
+- Claim attacked: the design as a test of construction versus selection.
+- Why it fails: if itemised wins, it shows only that per-record credit helps on this world; it does not show construction, because the process may still be selecting from a fixed grammar. If scalar wins, it shows only that aggregation or regularisation helped; it does not show selection. If they tie, it shows only that the world or budget was insufficiently discriminative. If only itemised changes under scramble, it shows only that the scalar was invariant by construction.
+- Severity: fatal.
+- Fix: state what each outcome would falsify. Pre-register a hypothesis that only one specific pattern supports, and control the alternative explanations. Do not interpret any difference as provenance without a construction witness.
+
+**27. “Equal access” can be trivially satisfied while still giving the itemised process a superset of information.**
+- Claim attacked: “Equal access: both processes receive the defect records.”
+- Why it fails: if the itemised process can also compute any scalar the scalar process can compute, it has strictly more information. Its advantage is then information, not credit granularity.
+- Severity: serious.
+- Fix: define whether the scalar is a sufficient statistic for the task. If it is not, the experiment tests information loss, not credit granularity. If it is, then the itemised process has no information advantage, and any difference is credit assignment.
+
+**28. The design does not specify the law’s relation to the sensory ceiling.**
+- Claim attacked: “Closedness against the ceiling.”
+- Why it fails: if the law is sensory-visible, memorisation can reach the ceiling. If the law has an invisible component, the sensory ceiling is irrelevant to that component. The design never says which.
+- Severity: serious.
+- Fix: choose a law with both a sensory-visible component and an invisible or compositional component. Test closedness separately on each. Report which part of the law is being measured.
+
+**29. A positive control where itemised credit should not help is missing.**
+- Claim attacked: “the prediction is that only the per-record process changes.”
+- Why it fails: without a world where the scalar is informationally equivalent, any win by the itemised process could be due to extra computation, overfitting, or a bad scalar.
+- Severity: serious.
+- Fix: include a null world where the law is a single sensory-visible rule and the scalar is sufficient. Both processes should tie. If the itemised process wins there too, the effect is not about credit granularity.
+
+**30. The design does not say how to prevent the author from selecting the scalar to fail.**
+- Claim attacked: “the other must collapse the records to a scalar.”
+- Why it fails: the scalar collapse is a design choice. If the author wants the itemised process to win, a lossy scalar does it. If the author wants a null, a sufficient scalar does it.
+- Severity: serious.
+- Fix: have an adversarial referee choose the scalar from a pre-registered class after the law and language are frozen. Or let the scalar process optimise over scalar functions under the same budget, so the scalar is not a free experimental variable.
+
+**31. The design still treats “selection” as a strawman.**
+- Claim attacked: the itemised-versus-scalar contrast as a test of construction versus selection.
+- Why it fails: C2.3 already concluded “The C/B contrast collapses to informed local search versus mutation search.” Per-record credit is still selection over hypotheses; it is selection with a finer error signal. It is not construction unless a new component is built.
+- Severity: fatal to the framing.
+- Fix: either rename the claim to “credit granularity in search,” or add a construction operation that creates a new component not present in the fixed grammar and measure it with file 10’s construction witness.
+
+---
+
+**Sharpest version of the experiment that could actually fail**
+
+Drop the claim that itemised versus scalar credit by itself tests provenance. Build an experiment that tests both credit granularity and binding construction, with independent artefact custody.
+
+1. **Independent artefacts.** A law generator samples a law from a pre-registered distribution. The rule language and action set are written by a different party without seeing the law, and hashed before the law is sampled. No post-hoc revision. The action set contains only low-level primitives; the law’s operation must be composed, not handed over.
+
+2. **A law that requires a binding construction.** The law has two parts: a sensory-visible same-target rule and a compositional crossing rule that requires binding two carriers. Crossing produces sensory defects only when the current hypothesis has a same-target rule, so the defect records contain the information needed to detect the crossing.
+
+3. **Matched processes.** Both use the same variation operator, the same candidate-evaluation budget, the same train/validation split, the same seeds, the same stopping rule, and the same number of passes over the records. The scalar process consumes only a scalar chosen by an adversarial referee from a pre-registered class. The itemised process consumes per-record errors and may create new components by binding ports from distinct carriers.
+
+4. **Primary outcome.** On held-out novel combinations and translated-edit tests, does the itemised process build the crossing component with a construction witness: a new component, footprint joining distinct carriers, relation not a composition of prior relations, satisfying (F1) on C_phys? Does the scalar process fail to build it? Pre-register thresholds.
+
+5. **Mediation and scramble.** Delete records mentioning the two carriers. The itemised process’s crossing component should disappear. The scalar process should be unaffected. Pre-register scrambles that destroy the state–outcome mapping and verify that they do. Include a placebo scramble on a field neither process uses. Run multiple seeds.
+
+6. **Falsifiers.** The experiment fails if the itemised process does not build the crossing component, if the scalar process builds it, if both fail, or if both succeed. A null world with a single sensory-visible rule must produce a tie; if the itemised process wins there too, the effect is not about construction.
+
+7. **Closedness.** Measure closedness by whether the built component satisfies the decomposition condition and translates to the law on C_phys, not by a ratio to an in-sample sensory ceiling. Use the sensory ceiling only as a baseline for prediction accuracy.
+
+This version can fail in the ways the current §10 cannot: the per-record process may not construct anything, the scalar process may construct it, or the law may be unexpressible by the frozen language.
+====================================================================================================
+E4_experiment3_design | deepseek_audit | sample 2 | finish stop | 35195 chars | error None
+====================================================================================================
+## The design sentence under attack
+
+> “Equal access: both processes receive the defect records; the same search operator and budget; one uses per-record credit, the other must collapse the records to a scalar; scramble for both; the prediction is that only the per-record process changes. Budget-matched: a world whose fitness landscape is deceptive for scalar search and not for itemised credit. A world law fixed before the language is written. Closedness against the ceiling, not against hand-built rules. That is experiment 3.”
+
+---
+
+## Findings
+
+### 1. The itemised-versus-scalar contrast is trivial by construction unless the scalar and scramble are specified much more tightly.
+**Claim attacked:** “one uses per-record credit, the other must collapse the records to a scalar; scramble for both; the prediction is that only the per-record process changes.”
+
+**Why it fails:** If the scalar is any symmetric aggregate of the same record multiset — total defect count, mean loss, sum over records, histogram of labels — and the scramble is any permutation of records, then the scalar is unchanged by construction. The per-record process changes because it reads the pairing that the scramble destroys. The prediction “only the per-record process changes” is then a restatement of the definitions, exactly the analytic entailment already conceded at file 17 §1: “C was defined to read the defect records and B was defined not to; scrambling the records can only affect C, and B's byte-identical output is a consequence of its definition.” If instead the scalar is allowed to change under the scramble, the prediction is not guaranteed and may simply fail. The design gives no fixed scalar functional form, no bit-width, no prohibition on encoding, and no statement of which scramble preserves which aggregate.
+
+**Seriousness:** Fatal to the claim that this is a non-trivial test.
+
+**Fix:** Pre-register the scalar exactly: fixed functional form, fixed bit-width, no encoding of records, no access to individual records after aggregation. Use two scrambles: S1 preserves the scalar exactly but destroys per-record pairing; S2 changes the scalar. Pre-register P changes under S1, Q does not, and both may change under S2. If Q changes under S1, the scalar operationalisation is invalid.
+
+---
+
+### 2. The contrast is not a test of construction versus selection; it is a test of feedback granularity.
+**Claim attacked:** The section is titled “What would test the claim,” and proposes per-record credit versus scalar collapse.
+
+**Why it fails:** File 15 C2.3 already states the deflation: “The C/B contrast collapses to informed local search versus mutation search; S5 (B reaches the same fidelity) confirms the difference is efficiency and inductive bias, not kind.” It adds: “The provenance distinction in file 10 is a definition; the experiment instantiated it, it did not test it.” D6.12 says the only residue “is rule-added versus no-rule, not construction versus selection, and B is now known to match.” Experiment 3 as described manipulates the error signal, not the provenance. If the per-record process succeeds and the scalar process fails, that shows itemised feedback is useful in that world. It does not show that the per-record process has constructed provenance in file 10’s sense, nor that the scalar process is a selected process in file 10’s sense.
+
+**Seriousness:** Fatal to any claim that experiment 3 tests the semantics’ construction/selection distinction.
+
+**Fix:** Either retitle the claim as “itemised versus scalar credit assignment,” or instantiate file 10’s formal objects and verify Con/Sel provenance independently from execution traces. Do not use “construction” and “selection” as labels unless D8.1–D8.3 are repaired.
+
+---
+
+### 3. “Same search operator and budget” is under-specified and likely incoherent.
+**Claim attacked:** “the same search operator and budget.”
+
+**Why it fails:** If “search operator” includes selection or update, then the two processes do not have the same operator, because one updates from per-record credit and the other from a scalar. If “search operator” excludes selection, then the per-record credit has no route into candidate generation. File 15 C1.5 already found the original confound: “C and B differ in search operator, population, budget and input format; any difference is confounded with algorithm.” D6.3 found the cost comparison was in different units: “Zero fitness evaluations” compared C’s cost to B’s in different units. Section 10 says “same … budget” but does not say whether budget is candidate evaluations, record-label reads, FLOPs, wall-clock, or memory. Per-record credit needs more record reads per candidate; a scalar process needs fewer. Matching one metric mismatches another.
+
+**Seriousness:** Serious. Any result can be attributed to the unmatched resource.
+
+**Fix:** Separate proposal operator from credit-assignment/update rule. Match proposal distribution, population size, initialisation, stopping rule, and total record-label accesses. Report Pareto curves over candidate evaluations and record reads. Pre-register the resource metric. If a single scalar budget is required, state which and why.
+
+---
+
+### 4. “A world whose fitness landscape is deceptive for scalar search and not for itemised credit” is question-begging.
+**Claim attacked:** “Budget-matched: a world whose fitness landscape is deceptive for scalar search and not for itemised credit.”
+
+**Why it fails:** This selects the world because one method fails and the other succeeds. That is the same pattern as file 15 C3.5: “The world was fitted to the meta-grammar … A fair design fixes the world's law before the language is finalised.” Here the world is fitted to the intended winner. A world can always be made “deceptive for scalar search” by requiring a local credit signal that a scalar aggregate cannot expose. That is not a discovery about construction; it is a property of the chosen landscape.
+
+**Seriousness:** Serious. It makes the intended outcome likely by design.
+
+**Fix:** Sample the world from a pre-registered distribution of laws independent of the language and processes. Pre-register the prediction before sampling. If a deceptive world is used, define “deceptive” independently of the two algorithms, e.g., by an information-theoretic property of the scalar sufficient statistic. Do not choose the world after seeing which method struggles.
+
+---
+
+### 5. “A world law fixed before the language is written” cannot be met by the author who knows the law merely by ordering the acts.
+**Claim attacked:** “A world law fixed before the language is written.”
+
+**Why it fails:** If the same author knows the law and writes the language, fixing the law first does not prevent leakage. File 15 C4.2 already found the exact leak in experiment 2: “`swap_next_v` is the law's action as a primitive; `n_i, w_i` are the world's intermediate variables; the collision antecedent is one atom of equality over them. The language hands the constructor the world's hidden ontology and bypasses the binding problem.” It adds: “A fair design derives the action set from principles fixed before the world, or requires C to compose the action from lower-level operations.” Merely timestamping the law before writing the language does not stop the author from encoding knowledge of the law into the language, action set, terms, or ceiling.
+
+**Seriousness:** Fatal to fairness if not repaired.
+
+**Fix:** The law must be specified and hashed by a party who does not write the language, or sampled after the language is frozen. The language must be generated from a universal grammar fixed before the law is known. The action set must be derived from lower-level operations independent of the law. The author must be blind to the law until the language is committed. Per-change hashes and timestamps are necessary but not sufficient.
+
+---
+
+### 6. “Closedness against the ceiling” is undefined and the ceiling in experiment 2 was itself written by the author who knew the law.
+**Claim attacked:** “Closedness against the ceiling, not against hand-built rules.”
+
+**Why it fails:** File 17 §5 admits: “The hand-built rules were written by me from knowledge of the law before either process ran. They were intended as an expressibility check and were then used as the ceiling against which ‘growth’ was measured.” If experiment 3 uses a ceiling built by the same author who knows the law, the ceiling is not independent. If it uses a sensory ceiling, file 17 §5 shows the lookup already gets “0.819 of 0.923” by “memorising local sensory patterns.” A sensory ceiling measures prediction accuracy, not whether the language represents the law.
+
+**Seriousness:** Serious. Closedness can be satisfied by memorisation and author-supplied ceiling.
+
+**Fix:** Define closedness operationally on held-out translated edits that require the hidden law. The ceiling must be an oracle that knows the law, or a formal expressibility proof in a language fixed independently of the law. Report out-of-sample. Do not use author-written hand-built rules as the ceiling.
+
+---
+
+### 7. “Must collapse the records to a scalar” is ill-defined because any finite record set can be encoded into a scalar.
+**Claim attacked:** “one uses per-record credit, the other must collapse the records to a scalar.”
+
+**Why it fails:** A scalar with unbounded precision can be a Gödel number of the record set. A scalar process can then recover every per-record label and simulate the per-record process. Conversely, if the scalar is restricted to a simple aggregate, the contrast may be trivial as in finding 1. The design specifies neither the precision nor the class of admissible scalar functions.
+
+**Seriousness:** Serious. The contrast is either empty or analytically true.
+
+**Fix:** Bound the scalar to a fixed bit-width and a fixed functional form, e.g., total mismatch count per candidate. Prohibit encoding. Audit the scalar process’s internal state for record reconstruction. Report the scalar’s bit-width and the process’s memory.
+
+---
+
+### 8. “Both processes receive the defect records” is ambiguous about whether the records are exogenous or candidate-relative.
+**Claim attacked:** “Equal access: both processes receive the defect records.”
+
+**Why it fails:** If defect records are generated relative to each process’s current predictions, then the two processes do not receive the same records. If they are fixed by an external teacher, the design must say so. File 15 D3.9 already found boundaries unspecified: “is the fitness evaluator inside B? If so B reads outcomes in aggregate; if not, C's record collector is outside C too.” The same ambiguity survives in experiment 3.
+
+**Seriousness:** Serious. “Equal access” can be violated before the experiment starts.
+
+**Fix:** Declare the record generator, its inputs, and its timing. Use a fixed external dataset or a teacher that returns the same records to both processes for every candidate. Declare process boundaries symmetrically.
+
+---
+
+### 9. “Scramble for both” repeats a scramble that experiment 2 showed is seed-dependent and often does not destroy the mapping.
+**Claim attacked:** “scramble for both.”
+
+**Why it fails:** File 17 §8b reports: “The scramble effect is seed-dependent: two of five permutations produced no degradation at all, because many records share a state, so permuting outcomes among records leaves the state→outcome mapping largely intact for those states.” It adds that the original result “was partly luck” and that a real scramble must “permute outcomes within groups of identical states or replace each outcome with a different wrong field.” Section 10 does not say which scramble will be used. If it repeats the old permutation, the experiment may fail to affect the per-record process on some seeds.
+
+**Seriousness:** Serious. The manipulation may not manipulate.
+
+**Fix:** Use within-state permutations or counterfactual wrong-field replacements. Verify that the state→outcome mapping is destroyed. Run many pre-registered seeds. Report the distribution and the fraction of records still defects.
+
+---
+
+### 10. “The prediction is that only the per-record process changes” is not a risky prediction if the scalar process is defined not to read the pairing.
+**Claim attacked:** “the prediction is that only the per-record process changes.”
+
+**Why it fails:** File 15 C1.1 already established the original version was entailed: “C is defined to read V; B is defined not to; scrambling V can only affect C. The outcome is entailed by the implementations.” If the scalar process must collapse records to a scalar before search, and that scalar is invariant under the scramble, then the prediction follows from the definition. A prediction that cannot fail is not a test.
+
+**Seriousness:** Fatal to the evidential value of the prediction.
+
+**Fix:** Allow the scalar process to compute an aggregate that can in principle change under the scramble. Pre-register both outcomes: if the scalar process changes, the scalar is not a fixed aggregate; if it does not, the result is an input-dependence check, not a provenance test. Use a sufficient-statistic scalar control.
+
+---
+
+### 11. No held-out validation inside the process survives from experiment 2.
+**Claim attacked:** The design does not mention validation splits.
+
+**Why it fails:** File 15 D4.2 found: “C builds and accepts on the same exposure records with no internal validation split; a small positive net by chance can be accepted.” File 17 §13.4 repeats this. Phase 2’s wrong action was that risk biting. If experiment 3 does not hold out validation, the per-record process can overfit the records and the scalar process can overfit the scalar.
+
+**Seriousness:** Serious. Overfitting is confounded with the feedback manipulation.
+
+**Fix:** Hold out a validation subset of the exposure records. Use held-out translated edits for final evaluation. Pre-register acceptance thresholds. Report both training and held-out performance.
+
+---
+
+### 12. The base-rate-blind condition score, the top-20 cap, and the two-slot hardcoding are not addressed.
+**Claim attacked:** Section 10 does not say these will be fixed.
+
+**Why it fails:** File 15 D4.3: “Condition scoring is raw `tp − fp`, which ignores base rates (V = 2,830, N = 4,778) and is neither precision nor a likelihood.” D4.4: “Only the top 20 conditions by that score are ever paired with actions (`top_m = 20`). A hard, unlisted cap on the hypothesis space.” D4.5: “The rule language is hardcoded to two slots (`for i, j in ((0, 1), (1, 0))`); with three slots, no rule ever fires on slot 2.” These are code and algorithm confounds. If they remain, the per-record process may win or lose for irrelevant reasons.
+
+**Seriousness:** Serious to minor depending on the world, but they must be declared and fixed.
+
+**Fix:** Use a balanced or likelihood-based condition score. Remove or pre-register the cap. Generalise the rule language beyond two slots, or declare the two-slot limit and restrict all claims accordingly.
+
+---
+
+### 13. The fitness metric asymmetry survives unless explicitly removed.
+**Claim attacked:** Section 10 says “same search operator and budget” but not same fitness metric.
+
+**Why it fails:** File 15 D4.8: “B's fitness is overall exposure accuracy; C's records are collision-dominated. Another asymmetry to remove in experiment 3's equal-access design.” If the per-record process is trained on collision records and the scalar process is evaluated on overall exposure, the comparison is confounded.
+
+**Seriousness:** Serious.
+
+**Fix:** Use the same record distribution and the same final metric for both. If collision-step performance is the target, both must optimize and be evaluated on collision steps. Report the sampling distribution.
+
+---
+
+### 14. Process boundaries are still unspecified.
+**Claim attacked:** The design does not say what is inside each process.
+
+**Why it fails:** File 15 D3.9: “Process boundaries unspecified: is the fitness evaluator inside B? If so B reads outcomes in aggregate; if not, C's record collector is outside C too.” If the scalar process has the record collector outside it and the per-record process has it inside, the comparison is rigged.
+
+**Seriousness:** Serious.
+
+**Fix:** Draw the boundary for both processes. Include or exclude the record collector and evaluator symmetrically. Declare where the scalar is computed and by whom.
+
+---
+
+### 15. The cross-classification controls demanded by the witnesses are missing.
+**Claim attacked:** Section 10 proposes one per-record process and one scalar process.
+
+**Why it fails:** File 15 D3.5: “Cross-classification controls are needed: a selection process that reads itemised records; a construction process that does not. Scramble sensitivity must cluster by concept, not by implementation.” One process of each feedback type cannot support a taxonomy of provenance. If per-record/scalar is confounded with construction/selection, the experiment cannot separate them.
+
+**Seriousness:** Serious.
+
+**Fix:** Use a 2×2 design: provenance (construction-like vs selection-like) × feedback (itemised vs scalar). Verify provenance independently. Test whether scramble sensitivity tracks feedback or provenance.
+
+---
+
+### 16. Mediation is not in the design.
+**Claim attacked:** Section 10 proposes an input-dependence swap, not a mediation analysis.
+
+**Why it fails:** File 15 D3.6: “Mediation, not input-dependence: instrument C, delete individual records, show specific rule changes.” Input-dependence shows that the process reads records. It does not show which records cause which rule changes. The construction claim requires a route from specific defects to specific constructed components.
+
+**Seriousness:** Serious.
+
+**Fix:** Add mediation: delete or perturb individual records or record classes, and show that specific rule components appear or disappear. Pre-register the expected mediation path.
+
+---
+
+### 17. The action set and terms may still hand the process the law’s hidden ontology.
+**Claim attacked:** “A world law fixed before the language is written” is supposed to remove this.
+
+**Why it fails:** File 15 C4.2 already found the leak: “`swap_next_v` is the law's action as a primitive; `n_i, w_i` are the world's intermediate variables; the collision antecedent is one atom of equality over them. The language hands the constructor the world's hidden ontology and bypasses the binding problem.” Fixing the law before the language does not prevent the language author from including the law’s operations if the author knows the law.
+
+**Seriousness:** Fatal to the construction interpretation if uncorrected.
+
+**Fix:** Derive the action set from lower-level operations fixed before the law. Do not include law-specific actions. Require the process to compose the law’s operation from primitives. Have an independent party audit the language for law leakage.
+
+---
+
+### 18. The target depth may again be matched to the grammar budget.
+**Claim attacked:** Section 10 does not address the depth-budget match.
+
+**Why it fails:** File 15 C4.3: “The target's depth (two rules) was matched to K = 3. … Another alignment between world, language and success criterion.” If experiment 3 again chooses a law whose depth matches the search budget, success is overdetermined.
+
+**Seriousness:** Serious.
+
+**Fix:** Pre-register the grammar budget independently of the law depth. Vary depth. Include laws that require more rules than the budget can compose in one round. Report expressibility separately from search success.
+
+---
+
+### 19. Threshold and goalpost patterns from experiment 2 are not guarded against.
+**Claim attacked:** Section 10 does not mention thresholds, exclusions, or change auditing.
+
+**Why it fails:** File 15 C5.4: “Change 4 is a goalpost move by its own numbers: the original check applied 0.1 to any G0 architecture on collision steps; the lookup was 0.087 below; the check was split after that score.” File 17 §5 repeats the lookup exclusion after its score. Experiment 3 must not repeat this.
+
+**Seriousness:** Serious.
+
+**Fix:** Pre-register every threshold with a derivation. Hash and timestamp every design change. Do not exclude a result after seeing its score. Report failed thresholds as failed. Use an independent auditor.
+
+---
+
+### 20. The protocol breach lesson is not operationalised.
+**Claim attacked:** Section 10 does not state a stopping rule enforcement mechanism.
+
+**Why it fails:** File 17 §11: “The frozen design … says ‘Phase 2 only if S1–S6 hold.’ S6 did not hold: M6(ii) failed. I recorded S6 as ‘⚠️ content, not carrier’ and ran phase 2 anyway. That is a breach of the pre-registered stopping rule.” A future experiment can repeat this unless enforcement is automatic.
+
+**Seriousness:** Serious. A post-hoc fix does not restore pre-registration.
+
+**Fix:** Automatic stopping rules. An independent monitor triggers the stop. No post-hoc fixes may license a forbidden phase. Report any breach as invalidating the affected phase.
+
+---
+
+### 21. The per-record process is not shown to satisfy Con, and the scalar process is not shown to satisfy Sel.
+**Claim attacked:** The design calls them construction and selection processes.
+
+**Why it fails:** File 15 D8.3: “C is not shown to satisfy Con (no owned subhistory, no binding construction, no represented target); B is not shown to satisfy Sel (fitness evaluations in a search are not a population with a survival history).” Experiment 3 as described still does not instantiate Con or Sel. It uses operational proxies.
+
+**Seriousness:** Fatal to any semantic claim.
+
+**Fix:** Verify provenance from execution traces against file 10’s definitions, or rename the processes. If proxies are used, state exactly which formal claims are not being tested.
+
+---
+
+### 22. The experiment still does not instantiate file 10’s formal objects.
+**Claim attacked:** The section is offered as a test of “the claim” from the semantics and experiment 2.
+
+**Why it fails:** File 15 D8.1: “The experiment never instantiates file 10's formal objects — no D, E, p, t = (π, τ, σ, λ), Γ, contract C as a set of edit–boundary pairs, no (F1), (F2), (A), no non-circular dependence, no non-vacuity. S1–S6 are loose analogies to Account, Repair, (K), provenance and Build.” Experiment 3 as described adds no formal instantiation.
+
+**Seriousness:** Fatal to any claim that experiment 3 tests file 10 as stated.
+
+**Fix:** Either instantiate the formal objects and measure (F1), (F2), (A), non-circular dependence, and non-vacuity, or state that the experiment tests an operational proxy and restrict all conclusions accordingly.
+
+---
+
+### 23. “Closedness against the ceiling” still permits memorisation.
+**Claim attacked:** “Closedness against the ceiling, not against hand-built rules.”
+
+**Why it fails:** File 17 §5: “The honest closedness figure is the lookup against the ceiling: 0.819 of 0.923 — the old grammar gets 89% of the way on collision steps by memorising local sensory patterns, and the structured part of the old grammar gets 38%.” A ceiling on sensory prediction can be approached by a lookup. It does not measure whether the process represents the law.
+
+**Seriousness:** Serious.
+
+**Fix:** Measure closedness on held-out interventions that require the hidden law. Include crossing or other hidden-variable interventions. Use an oracle ceiling and a memorisation baseline. Report both.
+
+---
+
+### 24. The sensory ceiling is in-sample.
+**Claim attacked:** The design does not say the ceiling will be out-of-sample.
+
+**Why it fails:** File 15 D6.10: “The sensory ceiling is in-sample. It is computed on the evaluation half from the evaluation half's own majority continuation. It is an upper bound, marked as such.” An in-sample ceiling is not an independent bound.
+
+**Seriousness:** Serious to minor, but it undermines the closedness comparison.
+
+**Fix:** Compute the ceiling out-of-sample. Use a held-out intervention set. Report the ceiling’s construction and data.
+
+---
+
+### 25. Either outcome fails to show construction versus selection.
+**Claim attacked:** The design is presented as a test of the construction claim.
+
+**Why it fails:**
+- If the per-record process changes and the scalar does not: it shows the per-record process uses record pairing. It does not show construction, creativity, or provenance.
+- If both change: the scalar operationalisation is not a fixed aggregate; the contrast is invalid.
+- If the scalar process changes more: itemised credit is not necessary in that world; it does not show selection can construct.
+- If neither changes: the scramble did not manipulate the relevant content.
+- If the per-record process wins on accuracy: it shows itemised feedback is useful under that budget. File 15 D6.12 already says the residue is “rule-added versus no-rule, not construction versus selection.”
+
+**Seriousness:** Fatal to the broad claim.
+
+**Fix:** Narrow the claim to itemised versus scalar credit assignment. If the construction claim is wanted, instantiate Con/Sel and verify them independently.
+
+---
+
+### 26. The scalar process can be a strawman or an oracle depending on how “collapse” is implemented.
+**Claim attacked:** “the other must collapse the records to a scalar.”
+
+**Why it fails:** If “collapse” means a fixed aggregate like total mismatch count, the scalar process may be unable to use the local structure that the world requires. If “collapse” means any scalar, the scalar process can encode the records and defeat the contrast. The design does not choose.
+
+**Seriousness:** Serious.
+
+**Fix:** Pre-register the scalar function and its bit-width. Include a control scalar that is a sufficient statistic for the task. If the per-record process still wins against a sufficient scalar, the route/granularity matters. If it does not, the advantage was information content, not construction.
+
+---
+
+### 27. “Budget-matched” may be information-theoretically impossible.
+**Claim attacked:** “same search operator and budget.”
+
+**Why it fails:** Per-record credit gives more information per candidate than a scalar. If both use the same candidate evaluations, the per-record process has an information advantage. If both use the same record-label reads, the scalar process may need fewer reads per candidate but can evaluate more candidates. There is no single matched budget that equalizes both. File 15 D6.3 already found the original cost comparison was a unit mismatch.
+
+**Seriousness:** Serious.
+
+**Fix:** Report performance versus total record-label accesses and versus candidate evaluations. Compare Pareto frontiers. If a point budget is used, pre-register it and explain why it is the fair one. Include an oracle scalar sufficient-statistic control.
+
+---
+
+### 28. The experiment may be underpowered on seed-dependent scramble effects.
+**Claim attacked:** Section 10 does not mention seeds or power.
+
+**Why it fails:** File 17 §8b: “two of five permutations produced no degradation at all.” If experiment 3 runs one or a few seeds, it may conclude no effect when the manipulation is simply seed-dependent. The original result was “partly luck.”
+
+**Seriousness:** Serious.
+
+**Fix:** Pre-register a sufficient number of seeds. Run a power analysis on the placebo and scramble conditions. Report the full distribution. Pre-register the minimum effect and the percentage of seeds required.
+
+---
+
+### 29. The record semantics are still under-specified.
+**Claim attacked:** The design does not define what counts as a defect record or how a condition is evaluated on one.
+
+**Why it fails:** File 17 §8: “The design's text under-specified how a condition is evaluated on a record (which slot ordering; what counts as a record fixed); the hashed code defines it (either ordering; the whole field must be right).” If experiment 3 does not pre-register record semantics, the two processes may not be using the same records.
+
+**Seriousness:** Serious.
+
+**Fix:** Pre-register the record tuple, label rule, slot ordering, and what counts as a defect. Use the same record semantics for both processes. Put it in the design before code.
+
+---
+
+### 30. “A world law fixed before the language is written” is not a procedure that can be checked from the artifact unless there is a commit history per change.
+**Claim attacked:** The design gives only a temporal requirement.
+
+**Why it fails:** File 15 C5.1: “‘Before any code ran’ is unsupported: the file is fingerprinted only at freezing, after the §6 runs, so nothing in the artefact dates change 2 relative to execution.” File 17 §8a: “No hash or timestamp exists for any individual change; only for the frozen whole.” A single hash at freezing cannot prove that the law was fixed before the language or that no leakage occurred.
+
+**Seriousness:** Serious.
+
+**Fix:** Hash and timestamp every design change, including the law, the language, the action set, and the ceiling. Use git commits or an append-only log. Have an independent auditor verify the order. If the author knows the law, use blinding or a third party.
+
+---
+
+## What either result would fail to show
+
+- **Per-record changes, scalar does not:** shows the per-record process depends on record pairing. It does not show construction, creativity, provenance, or file 10’s Con. It does not show that the scalar process is a selection process in file 10’s sense. It does not generalise beyond the one world, one language, one operator, one budget.
+- **Both change:** shows the scalar is not invariant under the scramble. It invalidates the intended contrast. It does not show equivalence of provenance.
+- **Scalar changes more:** shows itemised credit is not necessary in that world. It does not show that selection can construct.
+- **Neither changes:** shows the scramble did not destroy the relevant content. It does not show the processes are provenance-equivalent.
+- **Per-record wins on accuracy:** shows itemised feedback is useful under that budget and world. It does not show construction. File 15 D6.12 already reduced the residue to “rule-added versus no-rule, not construction versus selection.”
+- **Scalar wins on accuracy:** shows the per-record process is not necessary for that task. It does not show construction is impossible or that selection is the same kind.
+- **Any result:** does not test file 10’s definitions as stated unless D8.1–D8.3 are repaired.
+
+---
+
+## What “a world law fixed before the language” requires in practice, and whether the author can meet it
+
+It requires all of the following:
+
+1. The law is specified in a formalism independent of the candidate rule language.
+2. The law is committed and hashed before the language is written.
+3. The language is generated from a universal grammar fixed before the law is known, or by a party who does not know the law.
+4. The action set is derived from lower-level operations fixed before the law, not from the law’s operations.
+5. The ceiling and success criteria are fixed before the law is revealed to the process designer.
+6. Every change is individually hashed and timestamped.
+7. An independent auditor can verify the order and check for leakage.
+
+Can the author, who knows the law, meet it? Not by merely writing the law down first. The author can still encode the law into the language, the action set, the terms, the ceiling, and the stopping rules. To meet it, the author must either (a) not know the law while writing the language, or (b) use a third party or sealed sampling procedure so that the language is fixed before the law is revealed. A single hash at the end does not prove the order. Per-change hashes are necessary but still do not prevent the author’s knowledge from leaking. Blinding is the requirement, not temporal ordering alone.
+
+---
+
+## Sharpest version of the experiment that could actually fail
+
+**Pre-registered claim to test:** For a fixed rule language L and a world W with a hidden pairwise interaction, on held-out translated edits, a construction-capable process using per-record defect feedback will identify a rule that transfers, while a selection-capable process using only a fixed scalar aggregate of the same records and the same candidate-generation operator/budget will not; and the difference is due to the feedback route, not to extra information, compute, language leakage, or world tailoring.
+
+**Design requirements:**
+
+1. **Independent law.** W is sampled from a pre-registered distribution of pairwise laws over hidden slots. W is hashed before L is written. The author is blind to W until L is frozen. A third party or sealed sampler holds W.
+2. **Independent language.** L is generated from a universal sensory grammar fixed before W is sampled. No law-specific primitives (`swap_next_v`, `n, w`). The action set is composed from lower-level operations. An auditor checks for leakage.
+3. **Matched processes.** Both processes use the same proposal operator, population size, initialisation, stopping rule, and total record-label accesses. P gets the full per-record mismatch vector. Q gets a fixed scalar aggregate, pre-registered, fixed bit-width, no encoding.
+4. **Exogenous records.** A fixed external teacher generates the same records for both processes. Records do not depend on the process’s current candidate.
+5. **Validation.** A held-out validation subset is fixed before the run. Final evaluation is on held-out translated edits, including hidden crossing interventions. Report training and held-out.
+6. **Scrambles.** S1: within-state permutation of outcomes that preserves Q’s scalar exactly but destroys state–outcome pairing. S2: counterfactual wrong-field replacement that changes Q’s scalar. Pre-register: P changes under S1; Q does not; both may change under S2.
+7. **Ceiling.** Closedness is measured on held-out translated edits against an oracle ceiling that knows W, not against author-written hand-built rules. Memorisation baselines are included.
+8. **Controls.** 2×2 provenance × feedback. A sufficient-statistic scalar control. A lower-level action-set control. Mediation: delete individual records and show specific rule changes. Multiple pre-registered seeds.
+9. **Process rules.** Per-change hashes and timestamps. Automatic stopping rules. Independent monitor. No post-hoc exclusions.
+
+**Pre-registered failure conditions:**
+
+- If Q matches P on held-out translated edits at matched budget, the claim that scalar collapse is insufficient for construction is falsified.
+- If P’s advantage disappears when Q is given an oracle scalar sufficient statistic for W, the advantage was information content, not feedback route.
+- If P’s advantage disappears when the action set is derived from lower-level operations fixed before W, the result was language leakage.
+- If Q changes under S1, the scalar operationalisation is invalid.
+- If P does not change under S1, P does not use per-record pairing; the per-record credit claim is falsified.
+- If neither process satisfies Con/Sel by independent trace audit, no provenance claim is licensed.
+
+This version can fail. It does not make the scalar process a strawman by definition. It does not let the author fit the world to the language. It does not let the ceiling be a memorisation target. It does not claim construction from an input-dependence check.

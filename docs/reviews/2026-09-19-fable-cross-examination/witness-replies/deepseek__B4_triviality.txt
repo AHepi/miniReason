@@ -1,0 +1,400 @@
+====================================================================================================
+B4_triviality | deepseek | sample 0 | finish stop | 16850 chars | error None
+====================================================================================================
+**Verdict on the requested argument.** The triviality argument is stronger. The best non-trivial case for the result is not the headline itself but the downstream observation that H_neutral underdetermines τ while later M2 performance diverges (7.3), or that H_passive/H_kinematic select *against* persistence (7.4). But those either follow from the same definitional mechanism or are post hoc. Section 7 does **not** rescue non-triviality: 7.1 and 7.3 are post-hoc storytelling; 7.3 actually contradicts the headline; 7.2 is a separate measurement observation; 7.4 sharpens but does not escape the trivial reading. Below are the specific failures.
+
+**1. H_neutral is circularly defined to produce the tie.**
+- Claim attacked: “On **H_neutral**, the best architecture for every persistence value ties (within 0.01): the history cannot tell a thing-tracker from a cell-tracker” (design §4).
+- Why it fails: H_neutral is defined as “one thing, never occluded, no crossings — nothing in its content distinguishes a thing-tracker from a cell-tracker” (design §2.7). The predicted outcome is entailed by the definition of the history.
+- Severity: **fatal** to the headline as a discovery.
+- Fix: define neutrality by an independent criterion before defining histories, or test a history that could distinguish persistence but does not.
+
+**2. τ is causally inert when every slot is confirmed every step.**
+- Claim attacked: “A thing-tracker keeps a slot alive when nothing confirms it; a cell-tracker does not” (design §2.6).
+- Why it fails: τ applies when “an unconfirmed slot not re-bound persists, counting steps; it is dropped when its count exceeds τ” (design §2.6). In H_neutral there is no occlusion and no crossing, so slots are confirmed each step. The tie is a mechanical consequence, not a selection result.
+- Severity: **fatal**.
+- Fix: use a parameter whose causal effect is not definitionally tied to the presence of unconfirmed slots.
+
+**3. H_full selecting τ=∞ is tautological.**
+- Claim attacked: “Only the world with occlusion selected the tracker that keeps a thing alive when it can’t see it” (results, one-paragraph answer).
+- Why it fails: occlusion is the only change that creates prolonged non-confirmation. Persistence is the only mechanism in the grammar for tracking hidden things. The result says the required mechanism is selected when required.
+- Severity: **fatal** to non-triviality.
+- Fix: include a world where occlusion can be handled without persistence, or where persistence has competing costs, and show selection still picks it.
+
+**4. The headline overgeneralises from H_full to all histories.**
+- Claim attacked: “**History determined which kind got expressed, exactly as the diagnosis said**” (results, one-paragraph answer).
+- Why it fails: results §2 shows H_neutral ties all four τ values exactly, and results §7.3 admits “history did not select between them; which one you got was luck.” So in H_neutral history did **not** determine which kind got expressed.
+- Severity: **serious**.
+- Fix: state the conditional: history determines kind only when the history contains the discriminative change; otherwise it underdetermines.
+
+**5. §7.3 contradicts diagnosis point 3.**
+- Claim attacked: “That is points 1 and 3 together, with a role for chance the diagnosis did not mention” (results §7.3).
+- Why it fails: point 3 says “**history determines which become expressed**” (design §1). If drift decides τ in H_neutral, then point 3 is false for that history. Adding “a role for chance” is not a rescue; it is a retraction.
+- Severity: **serious**.
+- Fix: revise point 3 to “history plus drift,” or demonstrate that the drift is itself a historical selection process.
+
+**6. §7.1’s “second kind” is post hoc and confounded.**
+- Claim attacked: “whether ‘displacement’ exists as a kind distinct from ‘velocity change’ was decided by how many things there were” (results §7.1).
+- Why it fails: the *j* gene was added in design change 14, after a first control run. It is not in the pre-registered outcomes. H_passive has identity only, no displace changes, yet selects *j*=no; so *j*=no cannot be specifically about displacement versus velocity change. It is confounded with crossings, co-location, and number of things.
+- Severity: **serious**.
+- Fix: run a frozen, orthogonal design crossing number of things with change types, and pre-register *j*.
+
+**7. §7.2 does not rescue selection.**
+- Claim attacked: “Prediction fitness is a coarse signal for kind; component-fidelity is sharp” (results §7.2).
+- Why it fails: M3 is a different contract. If selection uses M1/M2, then the kind distinction was not strongly selected by history; it was measured by a test the history did not run. This is a measurement observation, not evidence that history selected the kind.
+- Severity: **serious**.
+- Fix: pre-register M3 sensitivity or make component fidelity part of the selection pressure.
+
+**8. Moved goalpost in §6.**
+- Claim attacked: “Fidelity and kind come apart — did not fire as stated: M2-best and M3-best on H_full are the same architecture (τ=∞). *But see 7.2*” (results §6).
+- Why it fails: the pre-registered outcome required M2-maximal ≠ M3-maximal. It did not fire. “But see 7.2” substitutes a different observation for the failure of the original prediction.
+- Severity: **serious**.
+- Fix: state the non-firing plainly and treat 7.2 as a separate post-hoc observation.
+
+**9. The selected architecture does not satisfy the design’s own thing-kind definition.**
+- Claim attacked: “those have thing-kind under M3” (design §4) and “The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on” (results §4).
+- Why it fails: design §3 defines thing-kind as holding “for every configuration and every change.” Results §4 reports τ=∞ passing all pairs 0.801, with 816/4,104 unbound. So it fails the unconditional definition. The conditional column is a relaxation created after the fact.
+- Severity: **serious**.
+- Fix: report the unconditional M3 fraction and explicitly redefine thing-kind as conditional before freezing, or admit the selected architecture does not have thing-kind under the original definition.
+
+**10. “Pre-registered” is false.**
+- Claim attacked: “Written before any code was run, and not changed after” (design §4).
+- Why it fails: design §9 change 8 says “Pre-registered outcomes rewritten to match, with two added.” Multiple control runs and grammar changes occurred before freezing (changes 13, 14, 17, 18, 19). Results §9 confirms “Three rounds.”
+- Severity: **fatal** to the confirmatory framing.
+- Fix: call them frozen predictions, not pre-registered, and report the full timeline with numbers for every revision.
+
+**11. The first control run contradicts the final H_neutral result.**
+- Claim attacked: “The first control run … already showed τ = 0 winning H_neutral and τ = ∞ winning H_full, which is the supporting outcome; this change does not create that result” (design §9 change 16).
+- Why it fails: the final results say H_neutral has all four τ values tying exactly, not τ=0 winning. If the first control had τ=0 winning, either later grammar changes altered the result or the claim is false. The neutrality outcome is therefore revision-dependent.
+- Severity: **fatal**.
+- Fix: report the first control numbers and the effect of each revision on the H_neutral tie.
+
+**12. The frozen date is in the future.**
+- Claim attacked: “Frozen at 2026-09-18 15:55 UTC” (results header).
+- Why it fails: the current date is 2026-05-09. The run cannot have been frozen four months in the future.
+- Severity: **serious** (credibility) or cosmetic if a typo.
+- Fix: correct the date.
+
+**13. Swap adds no selection pressure.**
+- Claim attacked: H_full includes “all 24” changes (design §2.3).
+- Why it fails: swap leaves the sensory field unchanged, and fitness is against true occupancy, which swap does not change. M2 swap scores equal identity scores. Swap cannot drive selection; it only matters for M3.
+- Severity: **minor**.
+- Fix: state that swap is selection-inert and only tests component fidelity.
+
+**14. The search-bias conclusion is overstated.**
+- Claim attacked: “no bias toward or away from persistence” (results §5).
+- Why it fails: H_neutral seeds converged to τ=2, ∞, 2, 5, 2, 5; none to τ=0, despite τ=0 being in the tied selected set. With six seeds this is not proof of bias, but it is also not proof of no bias. The mutation operator is “free” and hashed, not analysed.
+- Severity: **minor/serious**.
+- Fix: report seed trajectories, initial populations, and mutation operator; use more seeds or state underpowered.
+
+**15. The 208-architecture count is not verifiable.**
+- Claim attacked: “208 distinct architectures” (design §2.6).
+- Why it fails: with lookup on/off, k ∈ {1,2,3}, slot count ∈ {1,2,3}, and 17 rules, the obvious products do not give 208. The exact enumeration is not specified.
+- Severity: **minor**.
+- Fix: list the exact combinations and count.
+
+**16. The “sensory ceiling” is an in-sample fit, not a bound.**
+- Claim attacked: “best deterministic predictor from sensation on the evaluation half … It is an in-sample bound” (design §2.5).
+- Why it fails: an in-sample predictor fitted on the evaluation half is not an upper bound on held-out performance. Results §1 then reports percentages of this ceiling.
+- Severity: **minor**.
+- Fix: compute the ceiling on exposure and evaluate on evaluation, or label it descriptive.
+
+**17. M3 gives the architecture the correct binding at step 2.**
+- Claim attacked: M3 tests thing-kind (design §3).
+- Why it fails: M3 manually matches slots to things at step 2 and applies the translated change. It does not test whether the architecture could infer the binding. For τ=∞, once given the correct state and the world’s kinematics, tracking is nearly tautological.
+- Severity: **serious**.
+- Fix: test binding inference without manual translation, or use a change that the slot dynamics do not automatically track.
+
+**18. H_passive is not controlled for neutrality.**
+- Claim attacked: “Whether H_passive is also content-neutral … is an empirical question the controls answer” (design §2.7).
+- Why it fails: the only neutrality control is H_neutral (design §5). H_passive is not checked. Results show H_passive selects τ=0 strictly, so it is not neutral.
+- Severity: **minor**.
+- Fix: run a neutrality control on H_passive or drop the claim.
+
+**19. Lookup-only is a weak baseline.**
+- Claim attacked: “Lookup-only architectures were never selected on any history” (results §2).
+- Why it fails: lookup tables predict empty for unseen keys, are filled from the exposure half only, and have no generalisation mechanism. This is a straw-man non-slot baseline.
+- Severity: **minor**.
+- Fix: include a non-slot predictor with a reasonable inductive bias, or narrow the claim.
+
+**20. The rival is a straw man.**
+- Claim attacked: “Under the diagnosis, kind-preserving structure appears only when the history contains changes that demand it … Under the rival, it appears regardless” (design §1).
+- Why it fails: a correspondence theorist can hold that kinds are prior while also holding that a faithful predictor should be parsimonious and not add unneeded persistence under H_neutral. The rival is not forced to predict persistence in a world with nothing hidden.
+- Severity: **serious**.
+- Fix: give the rival a precise prediction that differs from the diagnosis, not a prediction that no reasonable parsimonious view would make.
+
+**21. Exhaustive selection is not variation and selection.**
+- Claim attacked: “This is selection with unlimited reach” (design §2.8).
+- Why it fails: it is argmax over a fixed grammar. There is no variation, inheritance, or selection dynamics. The evolutionary secondary is still search on the same fitness function. The experiment cannot show kinds are outputs of selection; only that the best architecture in the grammar depends on the history.
+- Severity: **serious**.
+- Fix: rephrase, or run a developmental/constructive process where the grammar itself changes.
+
+**22. The “kind” is just a parameter value.**
+- Claim attacked: “The kind under test is persistence — the τ gene” (design §2.6).
+- Why it fails: if kind = parameter value, then “history determined which kind got expressed” reduces to “fitness selected the parameter.” The diagnosis’s stronger claim is that kinds are not inputs to explanation. This experiment fixes the grammar, so the kinds are inputs to the experiment.
+- Severity: **fatal** to the headline as stated.
+- Fix: distinguish latent mechanism from kind, and test whether new mechanisms are constructed rather than selected.
+
+**23. Thing count and occlusion are confounded.**
+- Claim attacked: “Only the world with occlusion selected the tracker…” (results, one-paragraph answer).
+- Why it fails: H_neutral is 1-thing and no occlusion; H_full is 2-thing and occlusion. H_passive and H_kinematic are 2-thing and no occlusion and select τ=0. There is no 1-thing-with-occlusion history. The contrast cannot isolate occlusion from thing count.
+- Severity: **serious**.
+- Fix: run 1-thing + occlusion and 2-thing + no occlusion in a factorial design.
+
+**24. The 0.95-of-ceiling adequacy threshold was dropped after the tracker failed it.**
+- Claim attacked: “Adequacy is now the ordering, slot-only > lookup-only” (design §9 change 18).
+- Why it fails: the original pre-registered outcome said no slot architecture reaching 0.95 × ceiling means the grammar is inadequate. Results show the tracker at 0.8009 against a 0.909 ceiling (88%), then the threshold is dropped. This is a moved goalpost.
+- Severity: **serious**.
+- Fix: keep the threshold and report failure, or justify the new threshold independently before freezing.
+
+**25. §7.3’s “what you could later do” is not actually run.**
+- Claim attacked: “it determined what you could later do” (results §7.3).
+- Why it fails: the experiment reports M2 fitness on the full contract, not a no-retraining transfer run from H_neutral to an occlusion task. The inference is post hoc.
+- Severity: **minor**.
+- Fix: run the transfer test explicitly.
+
+**26. §7.4 is a sharpening of the trivial reading, not an escape from it.**
+- Claim attacked: “Persistence was selected against, not merely not-for, when two visible things interact” (results §7.4).
+- Why it fails: the same definitional point explains it. τ controls unconfirmed slot lifetime; in visible two-thing worlds, unconfirmed slots are usually stale or crossing-related errors, so dropping them helps. This is still a parameter being selected by the presence/absence of the condition it governs.
+- Severity: **minor/serious**.
+- Fix: treat it as a qualification of the trivial reading, not as evidence of non-trivial emergence.
+
+**27. M4 is not reported.**
+- Claim attacked: “M4 — failure structure: for every architecture on every history, which change types fail on M2” (design §3).
+- Why it fails: the results report M2 for selected architectures only, not M4 for every architecture on every history.
+- Severity: **minor**.
+- Fix: report the full M4 table or drop the claim that M4 was measured.
+
+**28. M3 is not reported by all change types.**
+- Claim attacked: “Reported as a fraction, by change type” (design §3).
+- Why it fails: results §4 reports overall, unbound, conditional overall, and occlusion conditional, not all change types.
+- Severity: **minor**.
+- Fix: report the full breakdown.
+
+**29. “Any slots” in results §3 is hand-wavy.**
+- Claim attacked: “τ=0 (any slots)” (results §3).
+- Why it fails: the M2 table aggregates across slot counts without showing whether they are identical. If they are not, the row is misleading.
+- Severity: **cosmetic/minor**.
+- Fix: report per-slot-count or state the aggregation is exact.
+
+**30. “Nobody declared that; the history did” is unsupported agency.**
+- Claim attacked: “Nobody declared that; the history did” (results §7.1).
+- Why it fails: the *j* gene was declared by the experimenter in design change 14. History selected a parameter value; it did not declare a kind.
+- Severity: **cosmetic**.
+- Fix: remove the agency language.
+
+**Final answer to the posed question.** The triviality argument wins because the design defines the neutral history as one where persistence cannot matter, and the full history as one where persistence is the only mechanism for the hidden-thing task. The best non-trivial counter-argument — that H_passive/H_kinematic select *against* persistence, and that H_neutral underdetermination has downstream consequences — is either a restatement of the same mechanism or post hoc. Section 7 does not rescue the headline. 7.1 is post hoc and confounded; 7.2 is a separate measurement observation; 7.3 contradicts the headline and was not actually run as a transfer test; 7.4 sharpens the trivial reading.
+====================================================================================================
+B4_triviality | deepseek | sample 1 | finish stop | 14750 chars | error None
+====================================================================================================
+**Short answer:** For the headline as written — “history determined which kind got expressed” — the trivial argument is stronger. The strongest non-trivial counterargument is not the headline itself but the sign-reversal pattern: two visible things with no occlusion select *against* persistence. That is a real, interesting result, but it is narrower than the headline, partly post hoc, and confounded with world cardinality and crossing statistics. Section 7 does **not** rescue pre-registered non-triviality; it is explicitly post hoc, and 7.3 actually weakens “history determined” by introducing drift.
+
+## The trivial argument
+
+The result is close to a restatement of the architecture. The kind under test is persistence, operationalized as the τ gene and `rebind` (design §2.6). τ only matters when a slot is unconfirmed. If a history never produces unconfirmed slots, τ is causally inert. H_neutral is one thing, never occluded, no crossings, so the exact tie is expected: “all four values tie exactly” (results §2). H_full contains occlusion, so τ is exercised. The design therefore contrasts a history where the parameter can act with histories where it cannot, or where it acts differently. That is not a deep discovery about “history determining kinds”; it is the grammar’s own semantics.
+
+## The opposite argument
+
+The non-trivial X is this: H_passive and H_kinematic have **no occlusion**, yet they select τ = 0 strictly — “τ = 0 only” (results §2) — and results §7.4 says persistence “was selected against, not merely not-for.” So the parameter is not only selected under occlusion; its **sign** flips depending on whether unconfirmed slots are caused by occlusion or by two things crossing. There is also the j-gene flip: one-thing histories select `j=yes`, two-thing histories select `j=no` (results §7.1). That is not entailed by “occlusion selects persistence.” It suggests history content can determine not just whether a kind is used, but which direction its selection runs.
+
+## Which argument is stronger?
+
+The trivial argument is stronger for the actual headline. The non-trivial argument is stronger for a revised headline: “history can select for or against persistence, and can flip the jump rule, depending on whether unconfirmed slots arise from occlusion or from crossing/misbinding.” But that revised claim is not the headline, it is partly post hoc, and it is confounded. Section 7 does not rescue the original non-triviality; it offers candidates for a future frozen test.
+
+## Numbered findings
+
+**Finding 1 — The headline is near-tautological given the grammar.**
+- **Claim attacked:** “**History determined which kind got expressed, exactly as the diagnosis said.**” (results, opening paragraph).
+- **Why it fails:** τ is defined as what a slot does when unconfirmed. H_neutral has no occlusion and no crossings; therefore τ is not exercised. The exact tie is not evidence that “history cannot tell a thing-tracker from a cell-tracker”; it is evidence that the parameter is causally irrelevant in that history. H_full contains occlusion; therefore the parameter is exercised. The contrast is built into the architecture and the histories.
+- **Severity:** Serious for novelty.
+- **Fix:** Retitle the claim as “history selects among latent read-in rules when the relevant unconfirmation regime is present,” or add a history that exercises τ without occlusion.
+
+**Finding 2 — The strongest non-trivial pattern is the sign reversal, but it is under-analysed.**
+- **Claim attacked:** “A world with two visible things selected *against* persistence” (results, opening paragraph; §7.4).
+- **Why it fails as a rescue:** This is a real pattern, but the design pre-registered H_passive/H_kinematic as cases where the selected set “includes non-persisting architectures” (design §4). It did not pre-register that these histories would select τ = 0 *strictly* and that persisting slots would do worse. The interpretation “selected against, not merely not-for” is post hoc. It is also confounded: H_passive/H_kinematic differ from H_neutral in world cardinality, crossing frequency, and read-in demands.
+- **Severity:** Serious.
+- **Fix:** Freeze a 2-thing no-occlusion vs 2-thing occlusion-only comparison, and a 1-thing occlusion comparison, to isolate occlusion from cardinality and crossings.
+
+**Finding 3 — The pre-registered support bullet is contradicted by the results.**
+- **Claim attacked:** Design §4: “On H_passive and H_kinematic, the selected set includes non-persisting architectures… That is: the thing-tracker / cell-tracker distinction is selected for only when the history contains occlusion; without it, the two are one kind for that history.”
+- **Why it fails:** Results §2 shows H_passive selects “τ = 0 only” and H_kinematic selects “τ = 0 only.” These histories contain no occlusion, yet they distinguish persistence from non-persistence — indeed they select against persistence. The phrase “without it, the two are one kind” is false for H_passive/H_kinematic; it is true only for H_neutral. The results treat the first half of the bullet as support while ignoring the second half.
+- **Severity:** Serious.
+- **Fix:** Correct the pre-registered interpretation or reclassify this outcome as a partial disconfirmation.
+
+**Finding 4 — M3 moved the goalpost from “every configuration and change” to “given bound.”**
+- **Claim attacked:** Design §3 M3: “A slot architecture **has thing-kind** when this holds for every configuration and every change.”
+- **Why it fails:** Results §4 reports the H_full-selected architecture at 0.801 passing “all pairs” but 1.000 “given bound.” Results §6 then says it “passes M3 on 100% of bound pairs.” That is not the pre-registered criterion. If unbound pairs count as failures, the architecture does **not** have thing-kind by the stated definition. The conditional column silently converts a 20% failure rate into a 100% success claim.
+- **Severity:** Fatal for the M3 claim as written.
+- **Fix:** Either count unbound pairs as failures, or pre-register that unbound pairs are excluded and justify that exclusion before freezing.
+
+**Finding 5 — For occlusion, M3 is circular.**
+- **Claim attacked:** “The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on, including every occlusion” (results §4).
+- **Why it fails:** In M3, occlusion is translated as “nothing, it is a sensor edit” (design §2.6/§3). τ = ∞ is defined as a thing-tracker that never forgets. So when the sensor is edited to hide the thing, the τ = ∞ slot persists by definition and then matches the hidden thing’s continued kinematics. The test is not independent evidence that the architecture has “thing-kind”; it is a restatement of τ = ∞.
+- **Severity:** Serious.
+- **Fix:** Test component fidelity under an intervention that does not directly instantiate the kind under test, or separate persistence from the thing-signature criterion.
+
+**Finding 6 — The adequacy threshold is internally contradictory.**
+- **Claim attacked:** Design §4 “Underpowered”: “No slot architecture reaches 0.95 × the sensory ceiling on H_full. Then the grammar in 2.6 cannot express an adequate predictor…”
+- **Why it fails:** Design §9.18 says “The 0.95-of-ceiling adequacy threshold is dropped.” Results §6 says “Underpowered — did not fire: adequacy passed before freezing.” But the best H_full slot architecture scores 0.8009 against a ceiling of 0.909 — about 88%, below 0.95. If the §4 threshold still applies, the underpowered condition fires. If §9.18 applies, §4 is stale. Either way, the classification is not clean.
+- **Severity:** Fatal for the adequacy classification.
+- **Fix:** Reconcile §4 and §9.18, then reclassify under the frozen criterion.
+
+**Finding 7 — The “only occlusion” claim is not isolated.**
+- **Claim attacked:** “Only the world with occlusion selected the tracker that keeps a thing alive when it can’t see it” (results, opening paragraph).
+- **Why it fails:** H_neutral vs H_full changes world cardinality (1 thing vs 2), change inventory, sequence counts, and the presence of occlusion and swap. H_kinematic vs H_full is closer, but H_full still adds swap and more change types. Swap is irrelevant to occupancy, so occlusion is the likely driver, but the design never runs a 2-thing occlusion-only history or a 1-thing occlusion history. The inference rests on a confounded contrast.
+- **Severity:** Serious.
+- **Fix:** Add occlusion-only and no-occlusion histories with matched world cardinality and change counts.
+
+**Finding 8 — “Only one architecture passes M3” is unsupported by the reported table.**
+- **Claim attacked:** “The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on.”
+- **Why it fails:** Results §1 says 51 slot-only architectures were put through M3, but §4 reports only five architectures plus a row for “any 1-slot architecture.” Other τ = ∞ variants with different `r`, `j`, or slot counts may also pass. The “only one” claim is not verifiable from the displayed data.
+- **Severity:** Serious.
+- **Fix:** Report the full M3 table or drop the uniqueness claim.
+
+**Finding 9 — The selection of τ = ∞ over τ = 5 is tiny.**
+- **Claim attacked:** “Only the world with occlusion selected the tracker that keeps a thing alive when it can’t see it” — specifically, infinite persistence.
+- **Why it fails:** Results §7.2: τ = 5 and τ = ∞ differ by “0.003 in prediction fitness (0.798 vs 0.801)” on H_full. A 0.003 exact margin selects infinite persistence over five-step persistence. That is not robust to run length, change timing, or small grammar changes. The M3 difference is sharp, but the selection signal is nearly flat.
+- **Severity:** Serious for the “history determined which kind” claim if “kind” means infinite persistence rather than persistence-in-general.
+- **Fix:** Report per-configuration margins and robustness to run length; pre-register whether τ = 5 and τ = ∞ count as different kinds for selection.
+
+**Finding 10 — The search-bias classification is ambiguous.**
+- **Claim attacked:** Design §4 “Search bias”: “the **evolutionary** search converges on slot architectures (or on lookup) in most seeds. Then kind-structure can be expressed by the shape of the search alone…”
+- **Why it fails:** Results §5 reports H_neutral seeds converging to “τ = 2, ∞, 2, 5, 2, 5,” all slot architectures, and says “no bias toward or away from persistence.” But the pre-registered condition was about convergence on slot architectures in most seeds, which did happen 6/6. The results reinterpret “search bias” as preference among τ values. That is a different question.
+- **Severity:** Serious.
+- **Fix:** Clarify the pre-registered search-bias condition and report the full final-population distribution, including τ = 0.
+
+**Finding 11 — The evolutionary secondary is not independent evidence.**
+- **Claim attacked:** “The search found what the table found. Reachability… did not bite in this world” (results §5).
+- **Why it fails:** The evolutionary search runs on the same 208 architectures, same fitness function, and memoised fitness. It is a search over a tiny, fully enumerated space. It cannot show that reachability is generally benign; it shows that a 32-population, 40-generation search can find the top of a 208-item table.
+- **Severity:** Minor to serious.
+- **Fix:** Do not overinterpret; describe it as a search-bias diagnostic on this exact space.
+
+**Finding 12 — Stale count: 112 vs 208 architectures.**
+- **Claim attacked:** Design §9.6: “112 architectures can be enumerated.”
+- **Why it fails:** Design §2.6 says “208 distinct architectures,” and results §1 says “208 architectures.” Change 14 added the `j` gene and updated the grammar, but §9.6 was not updated.
+- **Severity:** Cosmetic.
+- **Fix:** Update the leftover number.
+
+**Finding 13 — The sensory ceiling is in-sample and used as if it were a neutral yardstick.**
+- **Claim attacked:** “Top fitness 0.8931 (98% of ceiling)” and similar percentages (results §2).
+- **Why it fails:** The ceiling is “an in-sample bound” (design §2.5). It sees the evaluation half and chooses the majority continuation per prefix. Comparing an out-of-sample architecture to an in-sample oracle inflates the apparent gap and makes “98%” less meaningful than it sounds.
+- **Severity:** Minor.
+- **Fix:** Label it consistently as an in-sample oracle, not a performance target.
+
+**Finding 14 — Section 7 does not rescue non-triviality; it is explicitly post hoc.**
+- **Claim attacked:** “Observations that were not pre-registered… treat them as candidates for a future frozen test, not as findings” (results §7).
+- **Why it fails:** The section cannot rescue the pre-registered headline because it disclaims itself. 7.1 (j-gene flip) is a genuinely interesting candidate, but it is post hoc. 7.2 shows the selection margin is tiny. 7.3 says “which one you got was luck” and admits “a role for chance the diagnosis did not mention” — that directly weakens “history determined.” 7.4 is partly supported by the §2 table but the “selected against” interpretation is post hoc.
+- **Severity:** Serious.
+- **Fix:** Freeze a new test for the j-gene flip and the sign reversal; do not use §7 as evidence for the original claim.
+
+**Finding 15 — The headline overclaims relative to the declared scope.**
+- **Claim attacked:** “History determined which kind got expressed” (results, opening paragraph).
+- **Why it fails:** The design says: “This tests selection — the expression of latent kinds. It cannot test construction — the extension of what is latent” (design §4). The results repeat: “The experiment shows history choosing among latent kinds; it cannot show new machinery being built” (results §8). So the headline should be “history selected among latent kind-variants in a fixed grammar,” not “which kind got expressed” without qualification.
+- **Severity:** Serious.
+- **Fix:** Retitle the result to match the declared scope.
+
+**Finding 16 — M3 tests response to externally translated changes, not inference of those changes.**
+- **Claim attacked:** “had components that respond to every allowed change exactly as a thing does” (results, opening paragraph).
+- **Why it fails:** In M3 the experimenter applies the translated change directly to the slot state. The architecture is not required to infer the change from sensation. For displace and set_velocity, M3 tests whether the read-in rule preserves identity once told what happened. That is a component-fidelity test, not a test of the predictor’s full competence.
+- **Severity:** Minor to serious depending on how the sentence is read.
+- **Fix:** Clarify that M3 is a conditional component test, not an end-to-end inference test.
+====================================================================================================
+B4_triviality | deepseek | sample 2 | finish stop | 10643 chars | error None
+====================================================================================================
+**Verdict up front:** The triviality argument is stronger for the headline as written. The strongest non-trivial argument requires weakening the headline from “history determined which kind got expressed” to “the contract determines the granularity and polarity of selection on a pre-supplied persistence parameter.” Section 7 does **not** rescue non-triviality; by its own admission it is post hoc, and one of its observations contradicts the headline.
+
+---
+
+## A. The triviality argument
+
+**Finding 1 — The headline is entailed by the design.**
+(1) Claim attacked: `"History determined which kind got expressed, exactly as the diagnosis said."`
+(2) Why it fails: The kind under test is explicitly persistence: `"The kind under test is persistence — the τ gene and the rebind rule."` The only history that contains occlusion is H_full; H_neutral is defined as `"one thing, never occluded, no crossings — nothing in its content distinguishes a thing-tracker from a cell-tracker."` Under the fitness target — predicting true occupancy — persistence only has predictive payoff when occupancy is hidden. So the result “H_full selects τ>0, H_neutral ties” is a relevance check, not an emergence discovery. You built the parameter, built the history where it matters, and then observed that it matters there.
+(3) Severity: **Fatal to the headline as an empirical discovery.**
+(4) Fix: Restate as “occlusion selects for a pre-supplied persistence parameter.” Or pre-register a case where persistence is fitness-relevant but not selected, or selected without being fitness-relevant.
+
+**Finding 2 — The rival correspondence view is not actually tested.**
+(1) Claim attacked: `"Under the rival, it appears regardless."`
+(2) Why it fails: A correspondence view can agree that a bounded predictor does not need to represent hidden-thing persistence when nothing is ever hidden. The experiment tests selection among latent read-in rules; it does not test whether kinds are prior inputs. The grammar supplies the kind from the start, and construction is declared out of scope.
+(3) Severity: **Serious, close to fatal for the claim that the experiment separates the diagnosis from the rival.**
+(4) Fix: Define an independent operational contrast, e.g. interventions on grammar availability, or a fitness-neutral but causally efficacious representation test. Otherwise admit the experiment only ranks latent parameters.
+
+**Finding 3 — “History determined” is contradicted by H_neutral.**
+(1) Claim attacked: `"History determined which kind got expressed"` and `"trackers that forget and trackers that never forget tied to the last decimal."`
+(2) Why it fails: If the H_neutral selected set contains both τ=0 and τ=∞, then H_neutral did **not** determine which kind got expressed; it underdetermined it. The pre-registered bullet itself says `"the history cannot tell a thing-tracker from a cell-tracker."` Later, 7.3 says `"history did not select between them; which one you got was luck."` That directly contradicts the headline.
+(3) Severity: **Serious to fatal for the headline.**
+(4) Fix: Reword to “history sometimes selects for persistence; neutral histories leave it undetermined,” or confine the claim to H_full.
+
+---
+
+## B. The strongest non-trivial argument
+
+The best non-trivial reading is this: the result is not merely “occlusion selects persistence.” It is that the same latent parameter is selected in **opposite directions** by different world structures, and the kind boundary is contract-relative. On H_neutral all τ tie, so cell-tracker and thing-tracker are one kind at that contract. On H_passive and H_kinematic, τ=0 is strictly selected, so persistence is actively harmful when two visible things cross or share cells. On H_full, τ=∞ is selected and passes M3 given-bound 1.000 including occlusion. That is a real contract-relative granularity claim, close to Derivation 2. The M3 component-fidelity result also separates τ=5 from τ=∞ sharply where prediction fitness barely does.
+
+But this non-trivial argument is weaker for the headline as written, for the reasons below.
+
+**Finding 4 — M3 thing-signature is close to definitional.**
+(1) Claim attacked: `"The architecture H_full selected is the only one that passes the thing-signature test on every pair it could be tested on, including every occlusion."`
+(2) Why it fails: τ=∞ is defined as a thing-tracker that never forgets; τ=0 is defined as a cell-tracker that drops unconfirmed slots. M3 tests exactly that behavior under occlusion. The conditional score `"Passing, given bound"` also ignores the 20% unbound cases, mostly co-located starts.
+(3) Severity: **Serious for the strong interpretation; minor as an internal consistency check.**
+(4) Fix: Use an independent structural test not defined by τ/read-in rule, and pre-register a binding criterion that handles co-located starts.
+
+**Finding 5 — Search bias is misclassified; the data show bias toward persistence.**
+(1) Claim attacked: `"no bias toward or away from persistence"` and section 6 `"Search bias — did not fire."`
+(2) Why it fails: The table shows H_neutral seeds converging to τ = 2, ∞, 2, 5, 2, 5. None converged to τ=0, even though τ=0 is in the exhaustive selected set. That is a bias toward persisting architectures. The pre-registered search-bias scenario was exactly that search shape expresses kind without content pressure.
+(3) Severity: **Serious to fatal for that classification; also undermines “history determined.”**
+(4) Fix: Reclassify as search bias fired; analyze mutation/initialization cause; rerun with neutral initialization or different mutation.
+
+**Finding 6 — The 0.95 ceiling threshold was moved.**
+(1) Claim attacked: `"Underpowered — did not fire: adequacy passed before freezing."`
+(2) Why it fails: The original pre-registered underpowered condition was `"No slot architecture reaches 0.95 × the sensory ceiling on H_full."` The result is H_full top 0.8009 against ceiling 0.909, i.e. 0.881, below 0.95. The threshold was dropped before freezing after controls. Even if justified, it removes a failure condition after observing it would fail.
+(3) Severity: **Serious.**
+(4) Fix: Keep the original threshold and report failure; or pre-register a new threshold with independent rationale before seeing relevant data.
+
+---
+
+## C. Does section 7 rescue non-triviality?
+
+**Finding 7 — Section 7 is post hoc by its own admission and cannot rescue the headline.**
+(1) Claim attacked: The implicit use of section 7 to support non-triviality.
+(2) Why it fails: Section 7 says: `"These are post hoc. They are reported because they are in the data, not because they were predicted; treat them as candidates for a future frozen test, not as findings."` Post-hoc observations can generate hypotheses, not rescue a headline. 7.1’s `"Nobody declared that; the history did"` is a causal overclaim from a post-hoc pattern. 7.3’s `"which one you got was luck"` contradicts the headline.
+(3) Severity: **Serious for the rescue claim; minor as a source of future hypotheses.**
+(4) Fix: Freeze a new experiment with predictions for j, drift, and persistence-against; report it as pre-registered or not at all.
+
+**Finding 8 — 7.1 overinterprets the j gene as a “second kind.”**
+(1) Claim attacked: `"whether 'displacement' exists as a kind distinct from 'velocity change' was decided by how many things there were. Nobody declared that; the history did."`
+(2) Why it fails: j is a specific velocity-correction rule. The comparison is confounded: H_neutral is one thing with no occlusion; H_full is two things with occlusion, swap, and a different change set. There is no two-thing occlusion-only or one-thing occlusion history to isolate the cause. There is also no independent measure of “displacement kind.”
+(3) Severity: **Minor to serious if used to rescue non-triviality.**
+(4) Fix: Pre-register histories crossing thing count and occlusion; define an independent j-signature.
+
+**Finding 9 — 7.2 is a real pattern but does not establish the headline.**
+(1) Claim attacked: `"Prediction fitness is a coarse signal for kind; component-fidelity is sharp."`
+(2) Why it fails: It shows two contracts rank architectures differently, not that history determined kind. Under exhaustive selection, a 0.003 difference is still a selection difference. The sharpness of M3 is partly because M3 tests the same persistence under occlusion.
+(3) Severity: **Minor.**
+(4) Fix: Pre-register both contracts and predicted dissociation; use held-out changes.
+
+---
+
+## D. Additional referee findings
+
+**Finding 10 — Swap is inert for the fitness target.**
+(1) Claim attacked: `"H_full | 2 things | all 24, including occlusion and swap"` and the M2 swap column.
+(2) Why it fails: swap exchanges identities; the sensory field is unchanged; true occupancy is unaffected. It cannot affect prediction selection, only M3. Including it in fitness histories is inert and can mislead about what H_full adds.
+(3) Severity: **Cosmetic to minor.**
+(4) Fix: Mark swap as M3-only or report it separately.
+
+**Finding 11 — H_neutral vs H_full confounds cardinality with occlusion.**
+(1) Claim attacked: The H_neutral-versus-H_full contrast.
+(2) Why it fails: H_neutral is one thing; H_full is two things. They differ in cardinality, crossings, change set, and occlusion. H_kinematic vs H_full does isolate occlusion within a two-thing world, since swap is fitness-irrelevant. So the occlusion conclusion can be rescued there, but the pre-registered H_neutral bullet is confounded.
+(3) Severity: **Minor if H_kinematic/H_full is used; serious if H_neutral/H_full is used.**
+(4) Fix: Emphasize H_kinematic vs H_full; add a one-thing occlusion history.
+
+**Finding 12 — “Kinds” plural is an overclaim.**
+(1) Claim attacked: `"History determined which kind got expressed"` and the plural `"kinds."`
+(2) Why it fails: Only one kind is under test: persistence. The experiment cannot generalize to object, cause, rule, or persistence as a general phenomenon. It tests one parameter family in one grammar.
+(3) Severity: **Serious.**
+(4) Fix: Restrict the claim to persistence.
+
+---
+
+**Overall adjudication:** The triviality argument wins on the headline as written, because the design supplies the kind, defines the history where the kind matters, and rewards that kind through the fitness target. The non-trivial argument has some force only if the claim is weakened to “the contract determines the granularity and polarity of selection on a pre-supplied persistence parameter.” Section 7 does not rescue the headline; it is explicitly post hoc, and 7.3 in particular contradicts the headline by saying history did not select between the kinds.

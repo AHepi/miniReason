@@ -1,0 +1,64 @@
+====================================================================================================
+C4_tailoring | atria | sample 0 | finish stop | 9549 chars | error None
+====================================================================================================
+## The tailoring charge
+
+**1. The world's collision response is a single primitive of the language.**
+- **Claim attacked:** "the two things **stay where they are and exchange outgoing velocities**: thing 1 takes w_2, thing 2 takes w_1" (§3) versus the action "`swap_next_v` (take the other's outgoing velocity)" with "`hold` (do not move this step)" (§4).
+- **Why it fails:** The world's law, on its visible (same-target) branch, *is* the rule `IF n_1 == n_2 THEN swap_next_v + hold` — one atom, one primitive action, depth one. The language does not contain a general vocabulary from which the law emerges; it contains the law. The action is named after, and defined as, the world's response. Nothing was constructed that was not latent at depth 1.
+- **Seriousness:** fatal to the headline claim that construction builds machinery not already present in the language.
+- **Fix:** remove `swap_next_v`; force the law to be composed from elementary actions only (`reverse_i`, `stop_i`, cell-level moves), and report whether C still reaches it. Or add a world whose response is not named by any action and report the failure.
+
+**2. Change 3 redefined the world to fit the language — the direction of the fix is the circularity.**
+- **Claim attacked:** "The world is now defined as kinematics first, then the pairwise law on the kinematic next-states; the edge case is then just a same-target collision. The rule language's terms are the slots' own kinematic next-states, so world and language have the same shape." (§12 change 3)
+- **Why it fails:** The section-6 check found an inexpressible case ("inexpressible in the rule language"). The response was to change the *world* until the language covered it, not to generalise the language and not to report the inexpressibility as a result. "World and language have the same shape" is not a reassurance; it is the statement of the problem. An unrigged design freezes the world and lets the language fail.
+- **Seriousness:** fatal to the "needed"/closedness framing — the meta-grammar's closure to this world was *achieved*, not tested.
+- **Fix:** freeze the world before designing the language, or restore the edge case and report it as a genuine closedness finding for the language.
+
+**3. The language's terms are the world's intermediate variables, so the target condition is one of the 56 atoms.**
+- **Claim attacked:** "first compute each thing's kinematic next-state (n_i, w_i)" (§3) alongside "its own kinematic next cell `n` and next velocity `w`" (§4).
+- **Why it fails:** The world computes (n_i, w_i) as scratch space, then applies the pairwise rule to them. The language reads that scratch space. The condition that separates defect records from non-defects — `n_1 == n_2` — is literally an atom in the language, so C's "induction" is a lookup over the world's own decomposition. The abstraction that ought to be discovered (compute next states, then compare) is supplied free by the term set.
+- **Seriousness:** serious — this is the mechanism that biases success; it is why C's top-ranked condition will be the law's condition with near-perfect V/N separation.
+- **Fix:** restrict terms to observables (cells, velocities) and make C build the next-state abstraction; or report C's performance with `n`/`w` removed from the term set.
+
+**4. The defence "the language is general / B has the same actions" defends fairness, not non-circularity.**
+- **Claim attacked:** "**B never reads a defect record. Its only input is a number per candidate.**" (§5) and S5, "B reaches collision fidelity within 0.05 of C in at least 4 of 6 seeds. Same machinery, different route."
+- **Why it fails:** A shared action set makes the C-vs-B *comparison* unrigged. It says nothing about whether the world's law was placed inside the language. Worse, S5 *predicts* that blind search finds the law easily — which is exactly what you expect when the law is a depth-1 element with a dedicated primitive. B's success is evidence of tailoring, not against it. The strongest available defence is addressed to the wrong charge.
+- **Seriousness:** serious — the tailoring question ("is the world's law low-complexity in this language?") is nowhere measured.
+- **Fix:** measure it — minimal description length of the law in the language versus a neutral encoding; add a control world whose law is not expressible and report C's failure there.
+
+**5. The two-round design is undercut by change 2: construction is partial by design.**
+- **Claim attacked:** "The world's collision law needs two rules in this language... **That is deliberate: building it takes two rounds.**" (§4) versus "C... is **expected not to build the crossing rule**, because there are no defects from crossings." (§12 change 2)
+- **Why it fails:** The design deliberately makes the law two rules so construction is multi-round, then pre-registers that C can build only one of them. "A0+C" is therefore A0 plus *half the law*, with the other half supplied only by the hand-built baseline. S1's comparison (A0+C > best-of-G0) measures a partial artefact.
+- **Seriousness:** serious.
+- **Fix:** make the crossing case visible so C can build both, or restate the claim as "construction builds the visible half of the law" and use A0 + same-target-rule-only as the honest baseline for both C and hand-built.
+
+**6. The kind-signature test excludes the one case that distinguishes component from patch.**
+- **Claim attacked:** S3, "The built rules are components with the collision's signature, not a fix for the observed cases," qualified by "S3's threshold applies to pairs with **no crossing after the change step**... expected to fail M3 for A0+C while passing for A0 + hand-built rules." (§12 change 2)
+- **Why it fails:** The identity swap on crossing is precisely where a pairwise rule's kind differs from a memorised local patch. The success threshold excludes exactly that case, and hand-built passes it. So the "faithful component" claim is established on the subset that cannot discriminate, with the discriminating subset reported as expected failure.
+- **Seriousness:** serious.
+- **Fix:** promote the crossing subset to a first-class thresholded result, and state that C's machinery is kind-faithful only for visible collisions.
+
+**7. The language anticipates phase 2 as well — forward tailoring, not just retroactive.**
+- **Claim attacked:** "(A wall hit is `v_i != w_i`, so phase 2's law is expressible without constants.)" (§4)
+- **Why it fails:** The removal of constants is justified by the fact that the *next experiment's* law happens to be expressible. The vocabulary is tuned to both planned worlds before either runs.
+- **Seriousness:** minor, but it is the same defect one experiment ahead.
+- **Fix:** show the language was frozen before phase 2's law was chosen, or add a law the vocabulary did not anticipate and report expressibility.
+
+**8. Closure is tested against a grammar that is closed by construction.**
+- **Claim attacked:** "**This is a pairwise interaction.** Nothing in G0 has one: every G0 slot updates independently. That is what makes G0 closed to it, if it is." (§3); S1/K1 compare A0+C to best-of-G0.
+- **Why it fails:** G0 has no pairwise terms, so "G0 is closed to pairwise interaction" is close to a tautology. The interesting closure question — is the *meta-grammar* closed to the world? — was answered "no" and then fixed by redefining the world (finding 2). "Needed" is established only against the deliberately weaker grammar.
+- **Seriousness:** serious for S1.
+- **Fix:** separate the two closure claims explicitly and state that the meta-grammar's coverage of this world was constructed, not discovered.
+
+**9. "Guaranteed to succeed" is too strong; the accurate charge is "biased by design."**
+- **Claim attacked (your framing):** construction is guaranteed to succeed.
+- **Why it partly fails as a charge:** C could still be misled by tie-breaking, the top-20 condition window, or noisy V/N counts. But the target condition is an atom with near-perfect separation from N records, so success is the overwhelmingly likely outcome *because of how the world was defined*. Overclaiming "guaranteed" invites the author to rebut the strong version and ignore the real one.
+- **Seriousness:** a correction to the criticism, not to the paper.
+- **Fix:** demand the paper report the V/N separation score of the chosen condition and its runner-up, so the reader can see exactly how privileged the target was.
+
+## Verdict on the defence
+
+**Adequate for one thing only.** The shared action set plus change 1 (B's fitness moved to the exposure half) does establish that the C-vs-B comparison is not rigged in C's favour, and S5's prediction that B matches C is the right test of "same machinery, different route." The scramble test (M4/S4) is a genuine test of *provenance* — whether C uses defect content.
+
+**Inadequate for everything the tailoring charge targets.** Generality (50,176 rules) is irrelevant when the law sits at depth 1 with a dedicated primitive; a small language containing the law would be equally "general" by that standard. And B's access to the same actions shows the *space* is shared, not that the *world* was independent of it. The claims that remain undefended are S1 ("needed" — established only against a grammar closed by construction, while the meta-grammar's coverage was built in), S3 ("faithful" — thresholded on the subset that cannot discriminate), and the headline claim that construction builds new machinery rather than retrieving a law the language was holding in plain sight.
