@@ -1,0 +1,234 @@
+# Critique of Claude Fable Semantics, Attack Point (A)
+
+## 0. Corrections first
+
+Your diagnosis, as stated in Part 0 under **(A)**, is correct on the page, with one exception that changes nothing about the main claim but does change the accounting.
+
+You write that the one-component repackaging "satisfies (E) on every contract and fails conditions 1 and 3." It fails those two anchored conditions, as you say. But its satisfaction of the *non-circular dependence* conjunct of (E) is not supported by your own witness. The witness reads:
+
+> "The witness: there exists an edit τ(a) on E, translated from some (a,b) ∈ C, that removes or replaces a nonempty **proper** sub-block B ⊊ Γ while preserving the other boundary conditions, under which the answer profile changes or ceases to be determined in the claimed way."
+
+For the one-component candidate, Γ = {k}. A nonempty *proper* subset of a singleton does not exist. So the witness cannot fire. The candidate's passage of non-circularity therefore rests entirely on the prose clause ("the answer follows by evaluating E under its independent boundary conditions"), which the repackaging does satisfy — it computes the answer from boundary conditions that happen to be independent. The witness, which is the part of the condition that does the excluding, is vacuous for singleton Γ.
+
+This does not rescue the candidate: anchored conditions 1 and 3 still block it, exactly as you say. But it means non-circularity is doing less work than its witness suggests, and the honest statement is that the one-component repackaging satisfies *five* conjuncts of (E) and has the sixth vacuous, not that it satisfies all six. The practical consequence appears in the two-component split, examined below.
+
+Everything else in your diagnosis checks out against the page.
+
+---
+
+## Pass 1 — Scene by scene: the four construction attempts
+
+I treat each attempt as a scene and run the remove/swap tests. The concrete target throughout is the pole-and-shadow organization of Part VII:
+
+> "Stipulate H := U_H, θ := U_θ, L := H cot θ. Under A containing interventions on H and θ, these ports are inputs and L is an output."
+
+D has ports {H, θ, L}, one component d₁ with footprint {H, θ, L} and relation L = H cot θ. The question p is production: interventions on H and θ, answer reads L.
+
+### Attempt 1 — The one-component repackaging
+
+**What is there.** E has one component k₁ with footprint {H, θ, L} and L_{k₁} = {(H,θ,L) : L = H cot θ} = Sol_D. Transport is identity.
+
+**Checks.** (F1) holds with λ(k₁) = D: proj_{V_{k₁}}[Sol_D] = Sol_D = L_{k₁}. (F2) holds trivially. (A) holds. Non-vacuity and adequacy hold on a non-protective contract. Non-circularity: vacuous witness as above.
+
+**What blocks it.** Anchored condition 1: "Every anchor λ(k) is a proper subnetwork of D" — λ(k₁) = D is not proper. Anchored condition 3: "No active component's relation is, on C, definable as Sol_D(a,b) or a projection of it" — L_{k₁} *is* Sol_D.
+
+**Remove test.** Remove condition 1's properness clause: the candidate is still caught by condition 3. Remove condition 3: still caught by condition 1. Remove both: the candidate passes and explains nothing. So on this candidate the two conditions are **two routes to one job**, and the skill's rule applies — keep both only if each has a second job. Condition 3 does: it also catches multi-component candidates whose component relations are projections of Sol_D even when their anchors are proper (see Attempt 2). Condition 1 does: its cover clause ("no component of D that some pair in C_adm touches lies outside every anchor") is a distinct requirement that condition 3 does not enforce. Both have second jobs. Keep both.
+
+**A structural note on that redundancy.** Given (F1), condition 1's properness clause is *fully* subsumed by condition 3. If λ(k) = D, then (F1) forces L_k = proj_{V_k}[Sol_D], which is "Sol_D or a projection of it" — condition 3 fires. The converse fails: a component can have a projection relation with a proper anchor. So condition 3 is strictly stronger on the properness axis. Only the cover clause of condition 1 does independent work. This is not a fault — both conditions earn their keep through their other clauses — but the properness clause is dead weight given condition 3, and a reviser could drop it without losing any excluding power.
+
+### Attempt 2 — A two-component split of the repackaging
+
+**What is there.** Split the single relation into two components whose joint constraint set yields Sol_D. I tried two concrete factorizations.
+
+*Option A: one substantive, one trivial.* k₁ footprint {H,θ,L}, relation = Sol_D; k₂ footprint {H,θ,L}, relation = full. Sol_E = Sol_D ∩ full = Sol_D. But k₁'s relation is Sol_D — condition 3 fires immediately, and λ(k₁) = D fails condition 1. Blocked.
+
+*Option B: factor through overlapping projections.* k₁ footprint {H,L}, relation R₁ = {(H,L) : ∃θ, L = H cot θ}; k₂ footprint {θ,L}, relation R₂ = {(θ,L) : ∃H, L = H cot θ}. Then Sol_E = {(H,θ,L) : (H,L) ∈ R₁ ∧ (θ,L) ∈ R₂} = {(H,θ,L) : L = H cot θ} = Sol_D, so (F2) holds. This is the interesting version, because neither relation *is* Sol_D.
+
+Two conditions block it:
+
+- **Condition 3.** R₁ = proj_{H,L}[Sol_D]. It is literally a projection of the target's solution set. The condition reads "or a projection of it," and this is that. Same for R₂. Both fire.
+- **(F1), independently.** λ(k₁) must be a *proper* subnetwork of D whose projected solution set is R₁. D has one component; its only proper subnetwork is the empty one, whose solution set is the full relation on all three ports, not R₁. No anchor matches. (F1) fails before the anchored grade is even reached.
+
+**The general reason the split cannot work.** (F1) forces each component's relation to equal its anchor's projected solution set, and the anchors are subnetworks of D. So the split's relations are *determined by D's own subnetworks*. If D has one component, no proper subnetwork produces anything but the full relation, and every non-trivial factorization fails (F1). If D has several components, a split that aligns with D's component boundaries just *is* D's own decomposition — it is an account, not a decoy. A split that misaligns with D's boundaries fails (F1), because no subnetwork of D has the required projected solution set.
+
+**The non-circularity gap does not help here.** In a two-component candidate the witness *can* fire (removing one of two components is a proper sub-block). So the vacuity I found in Attempt 1 closes as soon as Γ has two elements. The gap is real but narrow: it covers singleton Γ only, and singletons are caught by conditions 1 and 3 regardless.
+
+### Attempt 3 — A lookup with a proper decomposition
+
+**What is there.** A table encoding Sol_D(a,b) for every (a,b) ∈ C_adm, split into multiple components each anchored to a proper subnetwork.
+
+**What the page says.** You anticipate this exactly:
+
+> "A table that genuinely encodes an organization's response to every admitted change is not excluded by (E); it is excluded by properness if it is one component, and by nothing if it is a faithful decomposition — in which case it is an account."
+
+**Checks.** One-component version: fails condition 1 (anchor = whole target). Multi-component version with each component matching a proper subnetwork's behaviour on all of C_adm: this *passes*. It passes (F1), (F2), (A), non-circularity (the witness fires on multi-component Γ), non-vacuity, adequacy, and all four anchored conditions.
+
+**So this is the closest thing to a counterexample — and it is not one, by your own framework's lights.** The candidate is a faithful re-decomposition of D's behaviour under every admitted change. The semantics' constitutive commitment is that this *is* what explanation is: "an explanation is a question-relevant organization of dependencies, held to a target by a transport that is checked by what changes when things are changed." A properly decomposed table that tracks every admitted change satisfies that definition.
+
+The residual intuition that it "explains nothing" is a demand for something (E) does not measure, and you say so explicitly:
+
+> "A less elegant account satisfies (E) as fully as a more elegant one with the same fidelity... depth is question-relative and (E) measures none of it."
+
+**My judgment.** This is the correct place for the disagreement to live, and it is a philosophical one, not a formal gap. Your sufficiency claim survives the lookup attempt because the attempt either fails condition 1 or is, by the semantics' own commitment, an account. If the sufficiency claim is wrong, the wrongness is here — in the identification of "captures every dependency under every admitted change" with "explains" — but that is the constitutive conjecture, not a condition to be gamed.
+
+### Attempt 4 — A decoy with the same world-kind
+
+**What is there.** An organization D′ that differs from the mechanism but shares its signature on all of C_adm.
+
+**Checks.** Condition 4 requires each component of E to be "of one forward kind, on (ℓ, C_adm), with its anchor." Two cases:
+
+- D′ differs from its anchor on some (a,b) ∈ C_adm: signatures differ there, condition 4 fails.
+- D′ differs on no (a,b) ∈ C_adm: then by (K) the two *are* one forward kind on C_adm. The semantics has no resources to call it a decoy. You say what remains:
+
+> "What remains after it — a label that discriminates where no admitted change and no history does — is the analysis-of-kinds conjecture of Part XV, which this document does not claim to have proved."
+
+**Swap test on the decoy.** Replace "decoy" with "the mechanism itself at a coarser grain." If the grain and contract are held fixed, the swap is undetectable — which is exactly the point. The decoy is not a counterexample; it is the phenomenon the analysis-of-kinds conjecture is *about*, and you have correctly left it as a conjecture rather than a theorem.
+
+### Novel attempts I tried and could not make work
+
+- **Identity re-encoding** (E = D relabeled, transport identity, provenance selected): passes everything, but is the mechanism itself, not a non-explanation.
+- **Coarse-grained shadow** (fewer components, lumping D's parts): passes only if the lumped parts have no distinct effect on Ans_p — otherwise condition 2 fires. If it passes, the coarse-graining is legitimate at that grain.
+- **K-set exploitation** (using declared counterfactuals to hide a difference): condition 4 ranges over C_adm, not K, so K cannot smuggle a decoy past it.
+- **Conspiracy theory** (a wildly different but equally faithful mechanism): either differs on some admitted change (fails 4) or is indistinguishable by the semantics' own lights (Derivation 2's underdetermination, correctly reported as a scoping statement rather than a gap).
+
+**Conclusion for Pass 1.** I cannot construct the candidate attack (A) asks for. Every attempt fails a named condition, as you claim, and the failures are structural rather than accidental: (F1) ties each component's relation to a subnetwork of D, condition 1 forces the subnetworks to be proper and covering, and condition 4 forces the tie to hold on all admitted changes. Together these make any passing candidate a faithful re-decomposition of D's actual behaviour, which the semantics counts as an explanation by definition.
+
+---
+
+## Pass 2 — Sequences and the chain of questions
+
+**The chain.** The document's question-chain runs: what is an organization → what is a question → what is a transport → what is an account at C → what is an anchored account → what is construction → what is knowledge. Each closing question becomes the next opening. Part V is the hinge: it states (E) and then, in the same breath, says (E) is not enough and states the four anchored conditions. The sequence closes narrow: "is change-fidelity plus proper anchoring sufficient?" Part XV collects the question and leaves it open, which is the correct closing for a constitutive conjecture.
+
+**Planted and never collected.** I kept lists. The analysis-of-kinds conjecture is planted in Grievance 1 ("A cause and a correlation are two components with different signatures under (K)") and collected in Part XV and Derivation 1 — left open, as stated. The new-dimension limit is planted in Part X and collected in Part XV. The four open necessity cases are planted in Part VII and collected in Part XV. The physical module as primitive is planted in Part 0 and collected in Part XII. I found no plant without a collector, and no collector without a plant. This is a well-run garden.
+
+**Cause versus label.** For the key turn — "the anchored grade separates a mechanism from a decoy" — the cause is shown, not labelled: Part VII's reversed calculation demonstrates concretely that the decoy fails condition 4 on production edits. Good.
+
+**Lucky meetings.** The physical module arrives with exactly what the theory needs (decomposition, admitted edits, histories). This is not hidden — "That module is a primitive here, and what it must supply is stated exactly" — and Part XII lists its obligations. It is an assumed oracle, not a lucky meeting, and it is labelled as such.
+
+**One sequence-level note.** The two grades are the document's central structural device, and their relationship is stated with unusual care: "The first grade is what can be assessed within a question. The second is what 'the explanation is about the actual mechanism' means, and it is a condition on the same fidelity relation on a larger contract, not a new primitive." This is the strongest single move in the document, because it makes the second grade *derivable* rather than stipulated. A reader who rejects the anchored grade must reject it by rejecting that (E)-at-C_adm is the right extension, not by pointing at an unexplained primitive.
+
+---
+
+## Pass 3 — People and their choices
+
+The "characters" are the conditions; their "choices" are the design decisions. I ran the choice test on the load-bearing ones.
+
+**Condition 4's choice of C_adm over C.** The options were (a) require same-kind anchors on C, or (b) require world-kind on C_adm. You state both and choose (b):
+
+> "A condition of the form 'each component of E must be tied to a component of D *of the same kind*' would be evaluable — λ is transport data and Inst says what D's components are — but it would not be evaluable *by the changes in C* where C contains no separating change, and on C alone the two are one forward kind. The right court of appeal is not C but C_adm."
+
+This is a true choice with a stated reason. **Flip it:** had you chosen (a), the reversed calculation would pass as a production account, because on the identification contract alone it and the mechanism share a signature. The job that holds (b) in place is "catch the decoy that the question's own contract cannot see." Held.
+
+**(E)'s choice to carry no provenance condition.** The options were to include provenance in (E) or exclude it. You exclude it:
+
+> "(E) carries **no provenance condition**: any modelled candidate, including one whose transport is declared, can be assessed for account-hood, because a modeller must be able to assess an account without settling its history."
+
+True choice, stated reason. **Flip it:** had you included provenance, (E) would become unassessable without historical evidence, and the whole assessment apparatus would need a physical historian. The job that holds the exclusion in place is "assessability." Held. The cost is paid in (R), Deploy and (EK), which must each add Sel∨Con explicitly — and they do.
+
+**The cost test** (adapted: is the price of each design choice felt in an example, not merely stated?). The price of the two-grade split is felt: the reversed calculation is an account at the identification contract and not anchored, and Part VII shows the bill coming due at a specific pair. The price of condition 4 is felt: any candidate faithful only on C is exiled from the anchored grade. The price of excluding depth from (E) is felt: the properly decomposed lookup passes, and Part V says so plainly. Costs are visible in the worked cases, not just in prose.
+
+**Who benefits.** The one-component repackaging benefits its author (it is the cheapest possible passing candidate at the first grade). The semantics does not pretend otherwise, and the second grade exists because of it. Good — the story knows who is getting away with what.
+
+---
+
+## Pass 4 — Theme as a pattern
+
+**The central question.** "What is it for an account to be about the actual mechanism, rather than to reproduce the target's behaviour by some other route?"
+
+**The pattern count.**
+
+| Who | Meets the question how | Faces whom |
+|---|---|---|
+| (E) at C | Reproduces behaviour on the question's own contract; asks nothing about history or the rest of the module | The anchored grade, in Part V |
+| Anchored grade | Demands fidelity on all of C_adm, proper and resolved decomposition, no repackaged solution set, active routes | (E), in Part V's two-grade statement |
+| (R) | Adds provenance (Sel∨Con) to fidelity; a declared transport does not represent | (E), which carries no provenance condition |
+| (K) / kinds | Distinguishes by edit-signature at an index; says two unseparated components *are* one forward kind there | The analysis-of-kinds conjecture, which it cannot settle |
+| Provenance | Distinguishes by physical history; says fidelity is what a transport *is*, survival is how it *got there* | (K), in Grievance 3 |
+
+Five distinct answers, set against each other in Part V and Grievances 1–3 and 12. No character gives another's answer. The pattern is well distributed.
+
+**The fair mirror test.** Part V treats the one-component repackaging and a genuine mechanism as different, and the difference is real: the repackaging's relation *is* Sol_D, the mechanism's components are proper parts with their own relations. The mirror does not pretend they are equal. It also does not pretend the repackaging explains nothing at the first grade — it grants it account-hood at C and says so:
+
+> "That is the honest statement of what (E) alone can do, and why the second grade exists."
+
+This is a fair mirror, and it is the document's most rhetorically strong move: it concedes the weakness by naming it, then shows the second grade as the repair.
+
+**The unquestioned first case.** The first time "about the actual mechanism" appears is the definition of the anchored grade itself. It is questioned — immediately, by the four conditions and by the examples that fail them. Good.
+
+**The ending.** Part XV stays open by design, listing undefeated attacks and saying "None of these is protected by notation, by the availability of this document, or by any version label." For a constitutive conjecture this is the correct ending: it narrows to one question (is the class right?) with a clear feeling attached (it might not be). An open ending that closes nothing would be a fault here; an open ending that enumerates exactly what would close it is the type delivering its promise.
+
+---
+
+## Pass 5 — How it fits, and whether the anchored conditions exclude genuine mechanisms
+
+**Meeting points.** Plot events that are also thematic moves: the two-grade statement (Part V), the reversed calculation (Part VII), the one-component concession (Part V, "What (E) excludes"), the selection-guarantees-nothing derivation (Derivation 3). Four meeting points between the formal apparatus and the central question. The rest of the formalism is load-bearing structure, not theme — which is appropriate for a semantics, and the dependence order of Part XIV keeps it honest.
+
+**Medium check.** The document is formal prose with worked examples. The pole-and-shadow and matrix examples work in this medium: they are written-out organizations with stated edits, not gestures. Derivation 10 is labelled "a scenario, not a consistency witness: its organizations are described, not written out, and no condition is checked on it" — the correct label for an illustrative passage in a formal document. Point of view is consistently external (Part I: "Every success predicate in this document is external"). No device fails the medium.
+
+**The vanishing test.** The constitutive conjecture (Part 0) is present in Part XV. The two grades (Part V) are present in Part XV. The grievances are answered in order throughout. Nothing important in the first third vanishes from the last.
+
+### Do the four anchored conditions exclude any genuine mechanism?
+
+I tested each condition against candidate genuine mechanisms. Two findings, one genuine tension and one narrow false-negative risk.
+
+**Finding 1 — Conditions 1 and 4 conflict for redundant systems (a genuine tension, possibly a real exclusion).**
+
+Take a physical target D with two pathways from input to output: pathway A (active) and pathway B (a backup that would respond identically if A failed). The module supplies a history in which A is active and B is dormant. C_adm includes a failover edit that activates B, because failover is physically possible.
+
+- **Condition 1** requires: "no component of D that some pair in C_adm touches lies outside every anchor." The failover edit touches B. So B must lie in some anchor.
+- **Condition 4** requires: "each anchor is an active route (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically."
+- **Part IX** says: "A backup that would have responded identically is not on the active route."
+
+So B must be in an anchor (condition 1), and any anchor containing B is not an active route (condition 4 + Part IX). If both readings are in force, **no candidate can be anchored for this target.** The anchored grade is unsatisfiable for redundant systems with admitted failover.
+
+I could not settle whether this is the intended reading, because the page holds both:
+
+- The definite article in "A backup that would have responded identically is not on **the** active route" supports reading B as excluded from *any* active route, which creates the contradiction.
+- The indefinite in "each anchor is **an** active route," plus the definition of an active route as "a connected subnetwork of actual occurrences" — and B *is* an actual occurrence — supports reading B as excludable from *the particular* route A is on, but includable in a different subnetwork that still joins an input to a result.
+
+This is a working open question, not a hole: each reading is held by something on the page, and nothing settles between them. But the stakes are real. Under the first reading, the anchored grade excludes a class of genuine mechanisms — redundant systems — and attack (F) has a candidate answer. Under the second, the active-route condition is weaker than it looks and may not do the job of distinguishing active from backup pathways that Part IX assigns it. I would ask which you mean.
+
+**Finding 2 — Condition 3 can exclude a mechanism with a global-constraint component (a narrow false-negative risk).**
+
+Condition 3 forbids any active component whose relation is "definable as Sol_D(a,b) or a projection of it." Suppose D itself has a component whose relation happens to equal a projection of Sol_D — a global constraint, such as a conservation law that constrains all ports. A faithful E anchored to that component would inherit its relation, which *is* a projection of Sol_D, and condition 3 would fire. The mechanism is excluded for matching a global part of the target.
+
+This is narrow, because in most cases a conservation law is a component of the *target* D, and E's component anchored to it inherits the law's relation, not the solution set's projection — those differ unless the law is the whole solution in disguise. The risk is real only when the target genuinely contains a component whose relation coincides with a projection of its own solution set, which is the signature of a pseudo-law rather than a mechanism. But it is worth a line saying so, because condition 3 is currently stated as an unconditional exclusion.
+
+**Findings 3 and 4 — Conditions 1 and 2 exclude partial and coarse mechanisms from the anchored grade (by design, not by fault).**
+
+A mechanism that models only a subsystem fails condition 1's cover clause. A mechanism that lumps separately-varying components into one unit fails condition 2. In both cases the candidate is an account at C and not anchored — which is exactly the two-grade architecture's intended behaviour, and Part VII's reversed calculation is the worked instance. These are not exclusions of genuine explanations; they are exclusions from the *stronger* grade, and the document says so. I list them only to distinguish them from Findings 1 and 2.
+
+---
+
+## How it fits together
+
+Plot, theme and people meet in Part V. The six conjuncts of (E) are the plot: each one does a separable job, and the remove-in-pairs test shows (F1) and (F2) are not two routes to one job but two different jobs — local fidelity and assembly fidelity — with the document naming what each prevents. The four anchored conditions are the theme: they are what "about the actual mechanism" means, and they are stated in the same vocabulary as (E) rather than as a new primitive, which is the single strongest structural choice in the document. The concessions — the one-component repackaging passing (E), the properly decomposed lookup passing everything — are the people: the document lets its own antagonists win at the grade where they can win, and says precisely which grade that is. Where the three do not meet is the redundancy between conditions 1 and 3, the vacuity of the non-circularity witness for singletons, and the unresolved active-route/cover tension for redundant systems.
+
+---
+
+## The faults that matter most, ranked
+
+1. **The active-route / cover-clause tension for redundant systems (Part V condition 1 + condition 4, Part IX).** Under one reading of "not on the active route," the anchored grade is unsatisfiable for any target with a backup pathway that admitted changes can reach. This is the only place I found where the anchored conditions may exclude a genuine mechanism, and it is attack (F)'s strongest candidate. It needs one sentence settling which reading is intended.
+
+2. **The non-circularity witness is vacuous for singleton Γ (Part V).** The condition's excluding power rests on a witness that cannot fire when Γ has one element. The one-component repackaging is caught by anchored conditions regardless, so nothing leaks — but the honest statement is that the candidate satisfies five conjuncts and has the sixth vacuous, and any future argument that leans on non-circularity for singletons is leaning on air.
+
+3. **Condition 1's properness clause is subsumed by condition 3 given (F1) (Part V).** Not a fault in the excluding sense — both conditions have second jobs, and the skill's rule says keep them — but the properness clause does no independent work, and a reviser can drop it without losing anything.
+
+Also noted, not ranked as a fault: the properly decomposed lookup passes the anchored grade. This is a deliberate bullet-bite, stated in the document, and the disagreement it invites is about the constitutive conjecture rather than about the conditions.
+
+**What a reviser must protect.** The derivation of the second grade from the first — "a condition on the same fidelity relation on a larger contract, not a new primitive" — is the load-bearing move, and it must survive any revision. So must the two-grade concession structure: granting the one-component candidate account-hood at C while naming the second grade as the repair is what makes the document's central claim testable rather than stipulated. The Part XV enumeration of undefeated attacks, and the refusal to protect them, is what makes the conjecture falsifiable.
+
+---
+
+## What I am unsure of
+
+- **The active-route reading.** As stated above: I cannot tell from the page whether "A backup that would have responded identically is not on the active route" excludes backups from *every* active route or from *the* route the mechanism used. Both readings are held by the text. If the first, the anchored grade excludes redundant systems; if the second, the condition is weaker than Part IX's explanation of it suggests. This may be deliberate openness, and I have not "fixed" it.
+- **Condition 3's false-negative risk.** I could not construct a concrete physical case where a genuine mechanism component's relation is exactly a projection of Sol_D without the component being a pseudo-law. The risk is logical, not demonstrated. It may be that the condition is exactly right and my worry is unfounded; I flag it because the exclusion is unconditional and the case is not discussed.
+- **The lookup judgment.** My conclusion that the properly decomposed lookup is an account *by the semantics' own lights* rests on the constitutive conjecture being the standard of judgment. A reader who holds that explanation requires unification or depth that (E) does not measure will read this as a sufficiency failure, not a bullet-bite. I judged from the page, and the page is explicit that it is biting the bullet; but the philosophical disagreement is real and I have not settled it.
+- **Provenance of the transport in my construction attempts.** Attack (A) requires a non-declared transport. In the one- and two-component attempts I used the identity transport without specifying a selection or construction history, because those candidates fail anchored conditions regardless of provenance. In the lookup attempt, whether a selection witness could exist for a table-encoding transport depends on the population, which the attack does not specify. This does not affect the conclusions — the blocking conditions are provenance-independent — but the attack's own constraint was not fully exercised.
+
+---
+
+## One next step
+
+Write the redundant-system case as a worked example in Part VII, alongside the pole-and-shadow: a target with an active pathway and a backup, failover in C_adm, and a candidate E anchored to the active pathway. Then check which reading of "not on the active route" the example forces, and add one sentence to condition 1 or condition 4 settling it. This is the only place where the anchored conditions may exclude a genuine mechanism, and a worked example will show whether the exclusion is real or an artifact of the definite article.

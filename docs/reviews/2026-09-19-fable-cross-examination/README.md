@@ -22,6 +22,8 @@ What this folder is: a self-contained review thread from one session (Claude Cod
 | `26 Skill experiment - two method skills on file 20.md` | The file-20 cross-examination run twice more with a method skill as the witnesses' system prompt (the user's hard-to-vary skill, then the user's story-critique skill), compared with the plain run of file 21: recall of the known defects, new findings ruled, false findings, kind of finding, verdict (better, not incapacitated, on DeepSeek; Atria half open). |
 | `26a Skill experiment - design frozen before reading.md` | The design and four predictions, published before any reply was read. |
 | `26b Working notes - reply by reply.md` | The per-reply working log behind file 26, appended to as replies land. |
+| `26c Supplement - the Atria replies.md` | The Atria half of the skill experiment: every call and failure across three passes, structure adherence, recall of the known defects, twenty-two findings ruled, two false findings, the disagreements with file 21 (including the two skills reaching opposite remedies on the same witness), and whether file 26's verdict holds. File 26 unchanged. |
+| `15g Supplement 6 - after the Atria half of the skill experiment.md` | Project story additions after supplement 15f. |
 | `15f Supplement 5 - after the skill experiment.md` | Project story additions after the skill experiment. |
 | `15e Supplement 4 - after rounds two and three.md` | Project story additions after rounds two and three. |
 | `15d Supplement 3 - after the cross-examination of the revision.md` | Project story additions after file 21. |
