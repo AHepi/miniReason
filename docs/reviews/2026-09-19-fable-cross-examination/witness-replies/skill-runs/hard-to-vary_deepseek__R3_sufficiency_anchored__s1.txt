@@ -1,0 +1,165 @@
+# Hard-to-vary report on attack (A) for `20_semantics_revised`
+
+**Frozen question.** Your attack (A) is:
+
+> “Produce a candidate that satisfies the anchored grade of Account (Part V) on a physically admitted contract, with a non-declared transport, and that plainly explains nothing.”  
+> — Part 0, “Where to attack this”
+
+You also ask: if I cannot, name which condition blocks each classic attempt — the one-component repackaging, a two-component split of it, a lookup with a proper decomposition, a decoy with the same world-kind — and test whether the four anchored conditions exclude any genuine mechanism.
+
+**Kind of question.** Sufficiency attack on the anchored grade, plus an over-exclusion check on the four anchored conditions. The non-declared transport is part of your attack; the document’s anchored grade itself does **not** include a provenance condition. It says: “Anchored account-hood adds four conditions on the anchor map” and lists them, and separately: “(E) carries **no provenance condition**” — Part V.
+
+**Method note.** The skill’s vocabulary is drawn from the source theory. Here the document is a revision of that same theory, so I treat its own terms as the object under test, not as independent evidence.
+
+---
+
+## 1. The explanation in parts
+
+The document’s claim is that `(E)` plus four anchored conditions is sufficient to exclude non-explanations and to capture “the actual mechanism.” The parts are:
+
+- `(E)`: `(F1)`, `(F2)`, `(A)`, Non-circular dependence, Non-vacuity, Contract adequacy.
+- Anchored grade: Properness, Resolution, No global relation, World-kind (with active-route clause).
+- Extra burden from your attack: non-declared transport = selected or constructed provenance.
+
+---
+
+## 2. Part-by-part marks
+
+| Part | Mark | Why |
+|---|---|---|
+| `(F1)` component fidelity | **Held** | It is the core change-response condition. |
+| `(F2)` assembly fidelity | **Held** | It prevents locally correct pieces from hiding a lost shared constraint. |
+| `(A)` question fidelity | **Held** | It holds the query fixed. |
+| Non-circular dependence | **Held as a condition, but the document’s accompanying claim is loose** | See Finding 1. |
+| Non-vacuity | **Held** | Requires nonempty baseline and stated scope. |
+| Contract adequacy | **Held** | Requires `C` not be protective against `C_adm`. |
+| Properness | **Held for blocking whole-target repackaging; loose for over-exclusion** | See Finding 3. |
+| Resolution | **Held** | Forces decomposition at least as fine as dependencies. |
+| No global relation | **Loose / over-reaching** | The “or a projection of it” clause excludes genuine product decompositions. See Finding 2. |
+| World-kind | **Held** | Requires fidelity on `C_adm`, not just `C`. |
+| Active route | **Held** | Ties anchors to actual occurrences where history is supplied. |
+| Non-declared transport | **Not in the anchored grade as stated** | It is added by your attack. See Finding 7. |
+
+---
+
+## 3. Findings on the classic attempts
+
+### Finding 1. The one-component repackaging does **not** satisfy `(E)` as written — the document’s own claim is inconsistent.
+
+The document says:
+
+> “The one-component candidate that repackages `Sol_D` satisfies (E) on every contract and fails conditions 1 and 3”  
+> — Part V
+
+But Non-circular dependence says:
+
+> “The witness: there exists an edit `τ(a)` on `E`, translated from some `(a,b)∈C`, that removes or replaces a nonempty **proper** sub-block `B⊂neq Γ` while preserving the other boundary conditions, under which the answer profile changes or ceases to be determined in the claimed way. Removing all of `Γ` changes the profile of any candidate and witnesses nothing.”  
+> — Part V
+
+If `E` has one active component, then `Γ={k}`. There is no nonempty proper sub-block of a singleton. So the witness required by Non-circular dependence cannot exist. The one-component repackaging therefore fails `(E)`, contrary to the document’s statement. It is blocked by Non-circular dependence before properness or condition 3 is reached.
+
+**Consequence.** The document’s motivation for the anchored grade — that `(E)` alone admits the one-component repackaging — is wrong on its own terms. The one-component repackaging is already excluded by `(E)`.
+
+### Finding 2. Condition 3 (“or a projection of it”) excludes a genuine mechanism.
+
+Condition 3 says:
+
+> “3. **No global relation.** No active component’s relation is, on `C`, definable as `Sol_D(a,b)` or a projection of it: a component whose relation is the target’s own solution set is the explanandum repackaged as a law, and it is excluded by name.”  
+> — Part V
+
+Consider a target `D` with two independent causal links:
+
+- Ports: `A`, `B`, `L1`, `L2`.
+- Components: `j1` imposes `L1 = A`; `j2` imposes `L2 = B`.
+- Admitted edits: set `A`; set `B`.
+- Question `p`: `Q` reads `L1`.
+- Candidate `E`: same organization as `D`, identity transport, `λ(j1)=j1`, `λ(j2)=j2`.
+
+Check `(E)`: `(F1)` holds, `(F2)` holds, `(A)` holds, Non-circular dependence holds (removing `j1` makes `L1` undetermined), Non-vacuity holds, adequacy holds if `C=C_adm`.
+
+Check anchored:
+
+- Properness: `j1` and `j2` are proper subnetworks; they cover every component touched by `C_adm`.
+- Resolution: `j1` and `j2` can be separately varied, but only `j1` has a distinct effect on `Ans_p` (which reads `L1`). So the resolution condition does not force them into distinct anchors.
+- World-kind: identity, so holds.
+- No global relation: `j1`’s relation is `L1 = A`. But `Sol_D(a,b)` is the set of all valuations with `L1=A` and `L2=B`. The projection of `Sol_D(a,b)` onto `{A,L1}` is exactly `L1=A`. So `j1`’s relation **is a projection of `Sol_D`**. Condition 3 fails.
+
+Yet this is a genuine mechanism: the account correctly represents the independent causal link from `A` to `L1`. Condition 3 excludes it. The clause “or a projection of it” is too broad: it treats every projection of the global solution set as a repackaging, but in a product target the projection **is** the local mechanism.
+
+**Blocking condition for the two-component split:** condition 3, but only by over-blocking. For a non-product target, `(F2)` already blocks the split, because `Sol_E` would be larger than `π[Sol_D]`. So the “or a projection” clause is either redundant or harmful.
+
+### Finding 3. Properness excludes single-component targets.
+
+Properness says:
+
+> “Every anchor `λ(k)` is a proper subnetwork of `D`, and the anchors of the active components refine a cover of `D`’s components: no anchor is the whole target, and no component of `D` that some pair in `C_adm` touches lies outside every anchor.”  
+> — Part V
+
+If `D` has exactly one component, then any anchor that covers it is the whole target, violating “no anchor is the whole target.” An anchor that omits it leaves it outside every anchor, violating the cover requirement. So no anchored account exists for a one-component target.
+
+This may exclude a genuine mechanism if the mechanism at the question’s grain is a single law or a single component, e.g. `F = kx` for a spring. The document can reply that the anchored grade is for mechanisms, not laws, and that one must go to a finer grain. But as written, the condition blocks the anchored grade at that grain.
+
+### Finding 4. Lookup with proper decomposition: the document concedes it is an account.
+
+The document says:
+
+> “A table that genuinely encodes an organization’s response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component, and by nothing if it is a faithful decomposition — in which case it is an account.”  
+> — Part V
+
+So a lookup table that satisfies `(F1)`, `(F2)`, `(A)`, and the anchored conditions is, by the document’s own definition, an account. It cannot serve as a counterexample unless one disputes the document’s notion of explanation. If the target `D` is a lookup table, the account explains the lookup table’s behavior. The attack’s phrase “plainly explains nothing” does not settle this; it is a disagreement about what counts as an explanation.
+
+### Finding 5. Decoy with the same world-kind is blocked by condition 4 and active route.
+
+World-kind says:
+
+> “4. **World-kind.** Each active component of `E` is of one forward kind, on `(ℓ,C_adm)`, with its anchor: fidelity holds not only on the pairs the contract selected but on every pair the module admits. Where the physical module supplies a history for `D`, each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically.”  
+> — Part V
+
+If a decoy has the same world-kind on `C_adm`, then no admitted change separates it from the mechanism. The document says such components are one forward kind: “Where no admitted change separates two components, they are one forward kind at that grain and contract; if their histories differ, that is a historical kind” — Part 0, Grievance 11. If the history differs, the active-route clause excludes a backup that would have responded identically. So the decoy attempt is blocked.
+
+### Finding 6. Non-declared transport is an extra requirement not in the anchored grade.
+
+The anchored grade as stated adds four conditions and no provenance condition. The document explicitly says:
+
+> “(E) carries **no provenance condition**: any modelled candidate, including one whose transport is declared, can be assessed for account-hood”  
+> — Part V
+
+Your attack adds “with a non-declared transport.” So any candidate must additionally satisfy `Sel` or `Con` under Part IV. That is a separate burden. The four anchored conditions alone do not exclude a declared transport.
+
+---
+
+## 4. Whole-explanation checks
+
+**Flip.** The document says the one-component repackaging satisfies `(E)`. Under the stated Non-circular condition, it fails. That is a flip in the document’s own reasoning.
+
+**Reverse.** Condition 3 is supposed to run forward from mechanism to account. In the product-target example, it runs backward: because the global solution set is a product, it treats the local mechanism as a forbidden projection. Direction is wrong for independent components.
+
+**Hunt the answer in the starting points.** Condition 3 assumes that any projection of `Sol_D` is a repackaging. In a product target, the projection is exactly the local mechanism. The conclusion “this is a repackaging” is already sitting in the premise that projections are suspect.
+
+**Add a job.** Add the job: “account for two independent causal links.” The product-target candidate does this. Condition 3 fails it. The new job rules out the genuine decomposition, so condition 3 is too strong.
+
+**Build the best rival.** The best rival anchored grade drops the “or a projection of it” clause, or replaces it with: “excluding only `Sol_D` itself and projections that are not the local solution set of any proper subnetwork.” The product-target example tells the two apart.
+
+**Check the patches.** The document patches the one-component repackaging by adding anchored conditions. But Non-circular dependence already blocks the one-component repackaging. The patch is aimed at a problem that `(E)` already handles, and the patch introduces the over-exclusion in Finding 2.
+
+**Look inside.** Condition 3 looks at whether a component’s relation is a projection of the global solution. In a product target, the component’s internal workings are exactly its local relation. The condition fails to look inside correctly.
+
+---
+
+## 5. What would make it harder to vary
+
+1. Fix condition 3: exclude `Sol_D` itself, and exclude projections only when they are **not** the local solution set of a proper subnetwork.
+2. Reconcile the one-component repackaging claim with Non-circular dependence. Either adjust Non-circular dependence to allow removal of all of `Γ` when `Γ` is a singleton, or delete the claim that the one-component repackaging satisfies `(E)`.
+3. Decide whether properness should allow a single-component target when no proper decomposition exists at the question’s grain.
+
+---
+
+## 6. What this does not show
+
+This does not show the theory is false. It shows one internal inconsistency and one over-exclusion. The product-target example is simple, but it is a genuine causal explanation. A defender may reply that the target should be defined more narrowly, or that the grain should be finer. That is a new question, and it should be recorded as one.
+
+---
+
+## 7. One next step
+
+Write out the product-target example formally — ports, components, `C_adm`, `Sol_D`, `E`, transport, and each of `(F1)`, `(F2)`, `(A)`, Non-circular, Non-vacuity, adequacy, properness, resolution, condition 3, world-kind — and check it against the document line by line. That will settle whether condition 3’s projection clause really excludes a genuine mechanism, or whether the document has a narrower reading of “projection” that I have missed.

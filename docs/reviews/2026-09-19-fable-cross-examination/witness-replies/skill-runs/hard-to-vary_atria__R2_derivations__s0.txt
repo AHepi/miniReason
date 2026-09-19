@@ -1,0 +1,353 @@
+# Hard-to-vary report: Part XVI of *Claude Fable Semantics* (revised)
+
+## 1. The question, frozen
+
+**What is being examined:** every derivation and remark in Part XVI, checked against the definitions it cites.
+
+**The four jobs each derivation must do** (its "jobs", in the skill's sense):
+
+1. **J1 — Sufficiency:** the stated hypotheses are enough for the step taken.
+2. **J2 — Validity:** the proof as written is a valid chain from those hypotheses.
+3. **J3 — Consequence:** what is stated as following, follows; no more.
+4. **J4 — Citation hygiene:** nothing elsewhere in the document cites the result as stronger than what was proved.
+
+**Kind of question:** this is a *proof/definition* domain (skill reference `by-domain.md` §6). The "changes" are changes to the **conditions**: drop one, weaken one, swap a hypothesis for a near neighbour, and look for the counter-case that gets through.
+
+**Change list, stated up front:** I drop each hypothesis; swap hypotheses for near neighbours (injectivity → disjointness-of-images; closure → parametric richness; bijection → structure-preserving bijection); flip each outcome (what if the derivation had failed?); and hunt for rival readings the construction cannot separate. I also check whether the document itself already ran these tests (Part XV is the document's own change list, and it is unusually honest — finding 4 below).
+
+**A bookkeeping note on the skill's own reference file.** `references/word-list.md` maps "the same explanation at this level" to "Derivation 2" of the source theory. This document is a revision of that theory, and its Derivation 2 **does not** say that — its caveat explicitly denies the analogous collapse (quoted in finding 7). I therefore do not use the word-list entry as evidence about the document; I report the divergence only so the reference file can be corrected.
+
+---
+
+## 2. The explanation in parts
+
+The ten parts, in the document's own words:
+
+| # | Part | Claimed consequence |
+|---|---|---|
+| 1 | Kind preservation under fidelity | faithful components carry their anchor's signature on the translated contract |
+| 2 | Account-equivalence | two candidates sharing (F1),(F2),(A), anchors and Γ-structure are account-equivalent |
+| 3 | Selection guarantees nothing off its history | under closure, selection data don't determine the survivor off H |
+| 4 | Surprise (remark) | no transport ⇒ no surprise; H = C ⇒ no surprise |
+| 5 | Question-finding is representable | a question determines an organization D_p; its solutions are exactly the coherently posed questions |
+| 6 | Two primitive packages | every predicate is defined; the Rep/Con cycle is broken |
+| 7 | Frozen assessment / moving question | the two are consistent; claims at different indices can't contradict |
+| 8 | Equivariance under recoding | transporting all data along φ preserves (E), anchoring, (G), (P), (EK) |
+| 9 | Output descriptions | same I/O projection + differing account claim ⇒ no function of the projection tracks the claim |
+| 10 | Three-layer episode | illustrative scenario only |
+
+---
+
+## 3. Part by part
+
+### Finding 1 — Derivation 1: held. Injectivity is exactly the hypothesis for the strong reading; the weak reading needs less.
+
+**Claim:** "Let \(t\) satisfy (F1) on \(C\), and let \((\tau,\sigma)\) be injective on \(C\). Then every active component \(k\) of \(E\) has, on \(\tau[C]\), the signature that its anchor subnetwork \(\lambda(k)\) has on \(C\), up to the port translation."
+
+**Test — remove the injectivity hypothesis.** (F1) is
+
+> "\(\operatorname{proj}_{V_k}[\operatorname{Sol}_{\lambda(k)}(a,b)]=L_k(\tau(a),\sigma(b))\)"
+
+and (K) gives \(\operatorname{sig}_{\tau[C]}(k)=\{(\tau(a),\sigma(b),L_k(\tau(a),\sigma(b)))\}\). Even **without** injectivity, the *sets* coincide as images: \(\operatorname{sig}_{\tau[C]}(k)=\varphi(\operatorname{sig}_C(\lambda(k)))\) where \(\varphi\) applies \((\tau,\sigma)\) to the first two coordinates. So the weak reading ("the anchored and component relations correspond pointwise") follows from (F1) alone.
+
+**What injectivity buys** is the proof's actual step:
+
+> "injectivity of \((\tau,\sigma)\) on \(C\) makes the map between the two sets a bijection on the first two coordinates."
+
+That is the strong reading: the two contracts are in bijection, so the signatures correspond *pair by pair*, not merely as images. Remove injectivity and that bijection fails (a constant \(\tau\) collapses \(\tau[C]\) to one pair while \(C\) has many). So: **hypothesis sufficient, and no stronger than the proof needs for the reading the proof actually delivers.**
+
+**Two smaller points.**
+
+- *Implicit third hypothesis.* The proof writes "\(\operatorname{sig}_C(\lambda(k))=\{(a,b,\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b))\}\), the visible ports of the anchor being those \(\lambda\) translates to \(V_k\)". Part II defines the subnetwork signature via "a declared subset \(V_U^{\mathrm{vis}}\)"; it does not say that for an anchor this declared subset *is* the \(\lambda\)-translated port set. (F1) presupposes the same identification ("projecting away its hidden ports"). So the derivation leans on a declared-parameter convention that Part II leaves declared. It is consistent, but it is a third, unstated hypothesis.
+- *Dual-contract indexing.* The claim is carefully typed (signature of \(k\) on \(\tau[C]\), of \(\lambda(k)\) on \(C\)). The caveat paraphrases it as "a faithful component is of one forward kind, **on \(C\)**, with its anchor subnetwork", which glosses the two-contract setup. Harmless — coincidence on all of \(C\) implies coincidence on \(C\setminus\{(1,b)\}\), which is what Part II's forward-kind relation requires — but the paraphrase is looser than the claim.
+
+**Mark: held** — by (F1), injectivity of \((\tau,\sigma)\) on \(C\), and the visible-ports convention. The injectivity hypothesis is loose only in the sense that the weak reading doesn't need it; the strong reading cannot do without it.
+
+---
+
+### Finding 2 — Part V's citation of Derivation 1: accurate under the weak reading.
+
+Part V says:
+
+> "By Derivation 1, (F1) entails that every component of \(E\) has the signature of its anchor subnetwork on the translated contract"
+
+This is the weak reading, which (F1) does deliver. The sentence drops injectivity from the attribution, but what it attributes is the weak claim, so J4 holds. Part V is also explicit that the anchored grade's condition 4 is separate:
+
+> "The anchored grade of Part V is where signature on \(C_{\mathrm{adm}}\) is required; it is a condition, not a corollary."
+
+**Mark: held.**
+
+---
+
+### Finding 3 — Derivation 2: held, but nearly definitional; (F2) is idle and (F1) is loose.
+
+**Definition:** two candidates are account-equivalent "when there is a bijection between their active components carrying \(\Gamma\) onto \(\Gamma'\) under which, for every \((a,b)\in C\), the anchored relations \(\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b)\) coincide, and the pulled-back answer profiles coincide."
+
+**Claim:** "If \(\mathcal E\) and \(\mathcal E'\) both satisfy (F1), (F2) and (A) on \(C\), have the same anchor map up to that bijection, and \(\Gamma\) corresponds to \(\Gamma'\), then they are account-equivalent on \(C\)."
+
+**Test — remove (F2).** The proof is:
+
+> "(F1) for each gives the anchored relations as the component relations; the shared anchor map and the bijection give coincidence; (A) gives the profiles."
+
+The definition's second condition concerns the **anchored** relations \(\operatorname{proj}_{V_k}\operatorname{Sol}_{\lambda(k)}(a,b)\), which are computed in \(D\). Under the hypothesis "same anchor map up to that bijection", these coincide **whether or not (F1) holds** — same subnetwork, same visible ports, same projection. So (F2) is **idle** for this claim, and (F1) is used only as a detour ("gives the anchored relations as the component relations") that the definition does not require. The real work is done by (A): both pulled-back profiles equal \(\operatorname{Ans}_p\).
+
+**Test — hunt the answer in the starting points.** The definition already contains the bijection, the \(\Gamma\)-correspondence, and the coincidence of anchored relations as *conditions*; the claim hypothesises exactly those and adds (A) for the profiles. So the derivation is close to a restatement. Its genuine content is the flip-side hedge:
+
+> "Two candidates satisfying (F1), (F2), (A) on \(C\) with *different* decompositions, or different active commitments, are not one account, and no result here says they are."
+
+That hedge is doing the real job — it prevents the over-reading that account-equivalence collapses distinct accounts. It is a patch, and a good one: it narrows the claim out loud rather than silently.
+
+**Citation check.** Nothing elsewhere in the document cites Derivation 2. **But the skill's word-list is stale:** it attributes "two candidates that no listed change can separate are one account at that grain" to Derivation 2. The revised Derivation 2 does not prove this; its hedge says the opposite for differing decompositions. In the revision, that load is carried by Part II's (K)-equivalence at the component level and by the analysis-of-kinds conjecture (Part XV, attack (C)), not by Derivation 2.
+
+**Mark: held** (the consequence follows), with **(F2) idle**, **(F1) loose**, and a mild case of the answer sitting in the starting points.
+
+---
+
+### Finding 4 — Derivation 3: **the proof has a gap.** Two hypotheses are missing; with them added, it is valid and the consequence follows exactly as stated.
+
+**Claim:** with \(\mathcal T\) "closed under pointwise alteration off \(H\)", "for every \((a,b)\in C\setminus H\) there is a pair in \(\mathcal T\) that survives on \(H\) and whose solution set at \((\tau(a),\sigma(b))\) differs from \(E\)'s, whenever some admissible \(L'\) changes that solution set."
+
+**Proof as written:**
+
+> "Survival on \(H\) constrains only the relations at pairs in \(H\). The altered pair agrees with \((E,t)\) on \(H\), hence survives; it differs at \((a,b)\) by hypothesis."
+
+**The gap.** The closure hypothesis gives a pair "agreeing with \((E,t)\) everywhere except that \(L_j(\tau(a),\sigma(b))=L'\)". Suppose some \((a_1,b_1)\in H\) has \(\tau(a_1)=\tau(a)\) and \(\sigma(b_1)=\sigma(b)\) — possible whenever \((\tau,\sigma)\) is non-injective, and nothing in Part IV's transport definition requires injectivity (Derivation 1 has to *assume* it). Then the altered pair does **not** agree at \((a_1,b_1)\): (F1) at \((a_1,b_1)\) demands \(\operatorname{proj}_{V_j}\operatorname{Sol}_{\lambda(j)}(a_1,b_1)=L_j(\tau(a_1),\sigma(b_1))=L'\), while the anchor sits in the unchanged \(D\). Fidelity on \(H\) fails, and "hence survives" does not follow.
+
+**The two missing hypotheses:**
+
+1. **Disjointness / injectivity.** The altered coordinate \((\tau(a),\sigma(b))\) is not the \((\tau,\sigma)\)-image of any pair in \(H\) — guaranteed, for instance, by the injectivity of \((\tau,\sigma)\) on \(C\) that Derivation 1 already uses.
+2. **Survival is exactly fidelity on \(H\).** Part IV defines selection by "a survival condition **requiring** fidelity on \(H\) that eliminated at least one member". A condition that *requires* fidelity on \(H\) may require more (fidelity on \(H\) plus simplicity, energy budget, …). The proof's opening line — "Survival on \(H\) constrains only the relations at pairs in \(H\)" — is true only if the survival condition *is* fidelity on \(H\), or depends only on the restriction to \(H\). That must be stated.
+
+**Everything else is sound.** The closure hypothesis is exactly the richness condition needed; the "whenever some admissible \(L'\) changes that solution set" clause correctly handles pairs where no admissible relation can differ; the consequence is hedged precisely right:
+
+> "Under the closure hypothesis, the selection data do not determine the survivor off \(H\): selection provides no *guarantee* of fidelity where it did not test. It does not follow that the survivor *is* unfaithful there — it may be faithful on all of \(C\) — and nothing here says the survivor will fail."
+
+**Flip test — passed.** The document states the flip itself: "Where the population is parametric and not closed under pointwise alteration, the survivor may be determined off \(H\) by its parametrisation, and this derivation is silent."
+
+**Citation check — J4 slightly over-promises.** Grievance 3 says:
+
+> "There is a result below (Derivation 3) that selection provides no guarantee of fidelity off the history it was selected on, under a stated hypothesis about the population."
+
+and Part XV's attack list:
+
+> "A non-fallible selected transport. A selection history \(H\subsetneq C\), in a population closed under pointwise alteration of component relations off \(H\), whose survivor is determined on \(C\setminus H\). This refutes Derivation 3 under its hypothesis."
+
+Both hedges ("under a stated hypothesis") are the right shape, but the *stated* hypothesis set is not yet sufficient, so "under its stated hypothesis" currently claims more than the proof delivers. Add the two hypotheses and both citations become exact.
+
+**Mark: unknown → held once fixed.** The settling test: add injectivity-of-\((\tau,\sigma)\) (or disjointness of the \(H\) and \(C\setminus H\) images) and "survival \(\iff\) fidelity on \(H\)", then re-run the two-line proof. It then goes through with no residue.
+
+---
+
+### Finding 5 — Derivation 4: held, and correctly demoted.
+
+> "That a system with no transport is never surprised, and that a system whose history exhausts its contract is never surprised, follow from the definition by unpacking. This is recorded as a remark and not as a derivation, and nothing else in this document cites it as support."
+
+Part IV defines surprise as "a violation at \((a,b)\notin H\)" and a violation as "fidelity fails at \((a,b)\)". No transport ⇒ no fidelity relation to fail; \(H=C\) ⇒ no pair outside \(H\). Both follow by unpacking. Part IV's cross-reference is accurate:
+
+> "follow from them by unpacking and are not results (Derivation 4 says so)."
+
+The document also resists the tempting upgrade: "What would be a result — conditions under which a violation at some \((a,b)\in C\setminus H\) actually occurs — depends on the world and on the population, and is not proved here." That is the skill's "add a job" test being declined honestly.
+
+**Mark: held**, and **idle as a result** — by design, and labelled as such.
+
+---
+
+### Finding 6 — Derivation 5: representability **held**; "its solutions are exactly the coherently posed questions" **not established**.
+
+The user asked specifically whether the solutions are *exactly* the coherently posed questions. They are not, as written, and the mismatch runs in four directions.
+
+Part III's coherence condition:
+
+> "It is **coherently posed** when \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) is defined on every pair in \(C\), and \(S\) and \(K\) are disjoint from each other's complements as stated."
+
+and a question is the tuple "\(p=(D,\ C,\ b_0,\ \mathcal Q,\ O_p,\ \rho_p)\)".
+
+**(a) Over-constrains: a closure condition Part III does not impose.** The construction's components include:
+
+> "the closure conditions — the baseline port reads 'in'; if \(u_{(a_2a_1,b)}\) reads 'in' then so do its factors where the composition is defined"
+
+Part II requires the *admitted edit set* \(A\) to be "closed under a partial associative composition with identity \(1\)"; it requires nothing of the *contract* \(C\subseteq A\times B\), and Part III requires only that \(C\) "contains the baseline \((1,b_0)\)" and has the form \(C=(C_{\mathrm{adm}}\cap S)\cup K\). A contract \(\{(1,b_0),(a_2a_1,b)\}\) is coherently posed by Part III and is **not** a solution of \(D_p\). So the solutions are at most the *factorisation-closed* coherent questions — a proper subset in general, unless Part III is silently strengthened.
+
+**(b) Under-constrains: baseline solvability is boundary, not component.** "\(\operatorname{Sol}_D(1,b_0)\neq\varnothing\)" is a property of \(D\) and \(b_0\), which the construction holds fixed as "Boundary: the target \(D\) and \(b_0\), held fixed". If the baseline is unsolvable, no coherently posed question exists, yet \(D_p\) still has solutions. Nothing in \(D_p\) detects this.
+
+**(c) The \(\mathcal Q\)-definedness condition is reading-dependent.** "\(\mathcal Q\) is defined on every pair in \(C\)" is enforced only if the port domain "the set of queries admissible on \(D\)" means *queries defined on every pair* — the construction does not say so.
+
+**(d) Solutions determine \((C,\mathcal Q,S,K)\), not a question.** A valuation of the \(u\)-ports fixes the contract, query, scope and counterfactual set. It fixes neither \(O_p\) nor \(\rho_p\), both of which Part III puts in the question tuple. The construction's last line — "provenance attaches to the whole question through this organization" — asserts the attachment without a mechanism, and \(O_p\) is never mentioned. (This matters, because Part X's merit condition needs an obligation \(o\in O\) to be repairable.)
+
+**Rival test.** The construction cannot separate "solutions = coherently posed questions" from "solutions = factorisation-closed contract–query packages over a solvable baseline, with obligations supplied from outside". Nothing in \(D_p\) distinguishes them, so at this grain the "exactly" claim is loose.
+
+**What does hold.** \(D_p\) is plausibly an organization in the sense of (O): ports with nonempty domains, components as closure constraints, fixed boundary, and admitted edits (toggle, alter \(\mathcal Q\), alter \(S\), add to \(K\)) that are plausibly closed under composition — toggle∘toggle = 1, toggles commute, composing two \(\mathcal Q\)-alterations is a \(\mathcal Q\)-alteration. The edit-set closure is not written out, but it is checkable in principle. So the *representability* claim — "determines an organization \(D_p\) in the sense of (O), which can be the content \(c\) in (G)" — survives: it needs only the type-level fact that \(D_p\) is an organization, and (G)'s other conjuncts and the merit condition are doing the creative work.
+
+**Citation check — clean.** Part III and Part X cite only the question-organization's *existence* and its limit:
+
+> "the question-organization of Derivation 5 is built over an existing \(A\times B\)."
+
+Both hold. Neither citation relies on "exactly".
+
+**Mark: representability held; the "exactly" claim loose** (over-constrains on factorisation, under-constrains on baseline solvability and \(O_p\), silent on \(\rho_p\)'s mechanism).
+
+---
+
+### Finding 7 — Derivation 6: the Rep/Con cycle is broken **at the witness level**; "the only cycle that could arise" overstates it, and a second path is unaddressed.
+
+The user asked specifically about the Rep/Con cycle. It is genuinely broken for the case the proof names, but the claim covers more than the proof reaches.
+
+**The proof:**
+
+> "the only cycle that could arise — construction requiring a represented target while representation requires construction — is broken by Part IV, where a construction witness requires an *instantiated* target and (R) is not used inside any provenance witness."
+
+**Where this holds.** \(\operatorname{Con}(t;h,e)\) requires
+
+> "an episode (Part X) whose construction witness prepares \(t\), and in which the organization \(t\) targets is instantiated by an occurrence in the episode's history before \(e\)"
+
+— instantiation is \(\operatorname{Inst}_\ell\), a primitive of the physical module, not (R). And (R) itself requires "\(\operatorname{Sel}(t)\lor\operatorname{Con}(t)\)". So (R) → provenance → Con → Inst, with no edge back from Con to (R) **provided** the construction witness is (R)-free. The construction witness is
+
+> "A construction witness identifies the controlled processes, the incoming carriers, the bindings constructed, and the resulting organization."
+
+— occurrences, bindings, organizations; Part IV is explicit that "Occurrences are not identified by carrying the same words", so carriers need not represent. Part XIV states the same stratification:
+
+> "provenance depends on \(\Theta\) and on Part X's witnesses, which depend on \(\operatorname{Inst}\) and \(\equiv_\ell\) but not on (R) — the stratification of Part IV (targets are *instantiated*, not *represented*, in a construction witness) is what keeps this order well-founded."
+
+So the named cycle is broken. **But the proof says "the *only* cycle that could arise", and there is another path it does not consider.**
+
+**The second path.** Con requires "an episode (Part X)". Part X's episodes are:
+
+> "A complete critical episode contains a recognized difficulty, a target available before its criticism, a conjectural objection, and a content-sensitive response."
+
+The natural formalization of "content-sensitive response" is Part IX's reason use:
+
+> "a response uses a reason when a structural map from the **represented objection** into the response subnetwork preserves role bindings, … and lands on an **active route**."
+
+and Part IX's active route is
+
+> "a connected subnetwork of actual occurrences joining a **represented input** to an operative result".
+
+Both "represented objection" and "represented input" can be read as invoking (R). If they do, the cycle is: Con → complete critical episode → content-sensitive response → reason use → active route → represented input → (R) → Con. Derivation 6 never considers it. The text does not settle whether "represented" in Part IX means (R)-representation or mere occurrence-level encoding; the proof's key sentence — "(R) is not used inside any provenance witness" — is **asserted**, not derived from the definitions of episode, response or active route.
+
+**A third, adjacent loose end.** \(\operatorname{Build}\) requires an owned subhistory that
+
+> "prepares an organization that some occurrence of \(s\) instantiates **for explanatory use of \(c\)**, contains a nontrivial binding construction required for that use"
+
+and "required for the use" is then cashed out as "deleting the binding breaks (F1) or (A) for \(c\) on its contract". If "explanatory use of \(c\)" means \(\operatorname{Deploy}(s,c,\xi';U_c)\), then Build depends on (R) (Deploy requires (R)), and Con requires a Build-witness — a cycle. Part XIV's order says "Build depends on histories, ownership, bindings and (E)", pointedly *not* Deploy, so the document reads "explanatory use" via the (F1)/(A) requirement. That reading is available but not forced by the text.
+
+**Coverage check on the bookkeeping claim.** The claim is "Every predicate in Parts II–XIII is defined from the physical module …, the normative relation where invoked, and the declared parameters listed in Part XIV, by the dependence order there." Part XIV's order lists (O), (Q), (K), (F1), (F2), (A), (E), anchoring, (S), (B), (D), (R), (K1), Deploy, Build, (N), (G), (P), (EK), (RC), (U1)–(U3). It does **not** list Part IX's histories, active route, reason use, \(\operatorname{Lic}_j/\operatorname{Scope}_j/\operatorname{Live}_j\) (K2), (K3) or receipts — so "the order of Part XIV is followed from each predicate to its base" cannot cover them. And the episode vocabulary ("recognized difficulty", "conjectural objection", "content-sensitive response", "Closing an episode is a decision, not a proof") stays informal rather than reduced to the two packages.
+
+The consequence is hedged exactly right:
+
+> "No residual predicate is left undefined. That is a property of the formalism. Whether the defined predicates capture explanation, representation, causation or knowledge is the constitutive conjecture, and this derivation says nothing about it."
+
+**Mark: the Rep/Con cycle as named — held** by Part IV's stratification. **"The only cycle that could arise" — loose** (the episode → response → reason use → active route → (R) path is unaddressed, and "(R) is not used inside any provenance witness" is asserted rather than shown). **The "every predicate is defined" sweep — borrowed** on the formal predicates (it rests on Part XIV's order, which is itself the thing being checked) and **unknown** on the informal episode vocabulary. Settling test: rewrite the episode conditions in explicitly (R)-free terms — occurrence-level structural maps plus \(\equiv_\ell\), which Part IX's reason use is one clause away from — or show that "represented" in Part IX is occurrence-level encoding.
+
+---
+
+### Finding 8 — Derivation 7: held.
+
+> "The claim '\(E\) is an account on \(C\)' and the claim '\(E\) is not an account on \(C'\)' are claims at different indices and may both be true."
+
+Part VIII supplies the index discipline ("a claim at a new index is a new claim"); Part III supplies the assessment boundary ("any change to either ends that assessment and begins another, and the record must show the boundary"). Two claims at different indices about different contracts cannot contradict. (E) is a predicate of \((E,p)\) and \(p\) carries \(C\), so the two claims are about different questions. Valid.
+
+**One loose bolt** in the consequence:
+
+> "the adequacy condition of Part V is what catches a change made to protect a candidate, whether or not it is recorded."
+
+Adequacy ("there is no admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) at which \(\operatorname{Ans}_p\) differs from its baseline value while \(\operatorname{Ans}_E(\tau(a),\sigma(b))\) does not, or the reverse") catches protective contracts *at the index where they are proposed*; it does not retroactively repair the earlier claim, and the record requirement is a separate Part III condition. The sentence conflates the two mechanisms slightly, but neither is mis-stated.
+
+**Mark: held.** Grievance 10's citation ("Derivation 7 shows the two are consistent") is accurate.
+
+---
+
+### Finding 9 — Derivation 8: held under the *intended* reading; the stated hypothesis is insufficient as written, and Part X cites it as stronger than stated.
+
+The user asked specifically about the restriction on bijections.
+
+**Claim:** "Let \(\phi\) be a family of bijections on carriers, relations, transports (including their anchor maps \(\lambda\)), histories, contracts, obligations and the normative relation, that preserves the physical module's admission (\(A_\Theta\), \(\operatorname{Inst}\), \(\prec\)), the stated scopes and counterfactual meanings, and \(\mathcal N\). Transporting all data along \(\phi\) preserves (E), anchoring, (G), (P), (EK)."
+
+**The equivariance argument is sound in form:** each target predicate is a conjunction of equalities and existence claims over the data, and if \(\phi\) is an isomorphism of the whole typed structure carrying every input along, satisfaction is preserved.
+
+**But the hypothesis as stated is a list, not an isomorphism condition.** Two items are missing.
+
+1. **Preservation of each organization's (O)-structure.** The proof's key exclusion is:
+
+   > "because \(\lambda\) is among the transported data, a recoding that would change what a component is anchored to — the pole-height port carried to the shadow-length port — is not among the permitted \(\phi\), since it does not preserve \(D\)'s structure."
+
+   "It does not preserve \(D\)'s structure" is exactly the unstated hypothesis. A bare "bijection on carriers, relations, transports" that swaps the height and shadow ports *and* carries the relation \(L=H\cot\theta\) along with them preserves the list items; what it fails to preserve is \(D\)'s organization structure — the component relation is not carried to itself pointwise. The exclusion follows only if \(\phi\) is required to be a structure-preserving bijection (a recoding in the \(\equiv_\ell\) sense: a bijection "between their port sets, value domains, components and boundaries that carries the admitted edits of one onto the other and the component relations of one onto the other pointwise").
+
+2. **The query.** (E) is \(\operatorname{Account}(E,p)\), and \(p\) includes \(\mathcal Q\). The transported list contains contracts but not queries. If \(\phi\) does not fix \(\mathcal Q\), the transported claim is about a *transported* question — equivariance, not preservation. The claim's wording ("Transporting all data along \(\phi\) preserves …") is ambiguous between the two, and the proof does not disambiguate.
+
+**Over-citation (J4).** Part X says:
+
+> "the structure-preserving bijections of Derivation 8, applied to contents"
+
+"Structure-preserving bijections" is a stronger and more general notion than Derivation 8 *states*: Derivation 8 states a list of preserved items and justifies the crucial exclusion by an informal appeal to "\(D\)'s structure" inside the proof. Part X thus cites Derivation 8 as having established a general structure-preservation condition that Derivation 8's claim does not in fact state.
+
+**Limits — well stated:**
+
+> "The result does not apply to coarsenings, changed boundaries, lost event identities, or maps that alter admission."
+
+**Mark: held under the stronger (isomorphism-of-the-whole-structure) reading; the stated hypothesis is loose** (missing (O)-structure preservation and query preservation); **the bijection restriction is asserted in the proof, not in the claim**; **Part X's citation is stronger than what was stated.**
+
+---
+
+### Finding 10 — Derivation 9: held.
+
+> "If \(M_0,M_1\) have the same input–output projection and differ on an account claim, no function of the projection agrees with the claim on both. *Proof.* Equal inputs to a function give equal outputs. ∥"
+
+Valid: \(\pi(M_0)=\pi(M_1)\) but \(A(M_0)\neq A(M_1)\), so no function of \(\pi\) can track \(A\) on both. The instances ("Parallel and priority wiring are an instance"; "the same holds for attribution from emitted text and for use inferred from delivery logs") are apt — each is a case where the projection is shared and the internal route differs. Consistent with Part 0's "Two systems with identical outputs and different internal routes are different organizations here", which does not over-claim.
+
+**Mark: held.**
+
+---
+
+### Finding 11 — Derivation 10: idle as a derivation, by design and by label; one conditional application is loose.
+
+> "This is a scenario, not a consistency witness: its organizations are described, not written out, and no condition is checked on it."
+
+It claims nothing, so J1–J4 do not bite. Its conditional applications:
+
+- **Loose:** "If (F1) and (F2) hold for \(t_1\) … then **by Derivation 1** the persistence components are of one forward kind". Derivation 1's hypotheses are (F1) **and injectivity of \((\tau,\sigma)\) on \(C\)**. The scenario omits the injectivity clause. Since the scenario is explicitly unchecked, this is a slip rather than an error, but it is the one place a derivation is cited without its full hypothesis set.
+- **Correct:** the swap-edit observation — "with the swap supplying the footprint bijection, the two persistence components are of one forward kind on any contract containing the swap — and that is a claim from signature coincidence, not from prediction-invariance, which the semantics does not accept as kind-identity" — is a clean application of Part II's (K), and its moral ("identity, at this grain and contract, is exhausted by trajectory") matches Part II and Grievance 12.
+
+**Mark: idle** (as a result); the Derivation 1 citation is **loose**.
+
+---
+
+## 4. Whole-explanation checks
+
+**Flip (had the opposite happened, would the framing have covered it?).** This is the document's strongest structural feature, and it is worth naming. Part XV is an explicit change list of refuting conditions, including "A mathematical error. A counterexample to the finite monotone theorem, (I2), (O1), (T2), (CT2), or Derivations 1–3 and 8 **under their stated assumptions**." Each of Derivations 1, 2, 3, 8 carries its own flip-hedge ("It does not show that a kind-label can do no work…"; "are not one account, and no result here says they are"; "It does not follow that the survivor *is* unfaithful there"; "does not apply to coarsenings…"). Two derivations lack it: **Derivation 5** (no flip-case for a coherently posed question that is not a solution of \(D_p\)) and **Derivation 6** ("the *only* cycle that could arise" — no flip-case for a second cycle path).
+
+**Direction (running backwards from the result?).** Mostly forward. Two mild backward cases: **Derivation 2**, whose definition already contains the bijection, the \(\Gamma\)-correspondence and the coincidence condition it concludes; and **Derivation 5**'s "exactly", which is close to being true-by-construction (the closure components are put in to make solutions coherent), which is precisely why the over- and under-constraint is invisible from inside.
+
+**Hunt the answer in the starting points.** Three hits, all named above: Derivation 2's definition; Derivation 6's "(R) is not used inside any provenance witness" (the conclusion restated as a premise); Derivation 5's closure conditions encoding the coherence they then "deliver".
+
+**Change list gaps.** Derivation 3: injectivity/disjointness and survival \(\iff\) fidelity on \(H\). Derivation 5: factorisation closure vs Part III. Derivation 6: the Part IX path and Part IX's absence from Part XIV's order. Derivation 8: (O)-structure and query preservation.
+
+**Rivals.** Derivation 3 concedes its rival correctly ("the population is parametric and not closed … this derivation is silent"). Derivation 2 concedes its rival correctly ("different decompositions … are not one account"). Derivation 5 does **not** separate "solutions = coherently posed questions" from "solutions = factorisation-closed contract–query packages" — nothing in the construction can tell them apart, so at this grain they are the same claim, and the honest report is the narrower one.
+
+**Look inside (matching the workings, not just the outputs).** This is where Derivation 3's gap lives: the proof's outputs (an altered pair that survives) are right, but the internal step — "agrees with \((E,t)\) on \(H\)" — does not survive a shared coordinate. Derivation 5's inside (which component enforces which coherence condition) is what reveals the mismatch. Derivation 6's inside (the dependency graph including Part IX) is what reveals the second cycle path.
+
+**Where the parts came from.** All ten are **built**, not fitted: they are worked out with the definitions in view and each commits to changes nobody has run (Derivation 3 commits to behaviour off \(H\) under closure; Derivation 8 commits to equivariance under recodings; Derivation 1 commits to signature correspondence under injectivity). Three are **asserted** rather than built, and the assertions sit inside otherwise-built derivations: Derivation 5's "Its solutions are exactly the coherently posed questions on \(D\)", Derivation 6's "(R) is not used inside any provenance witness" and "the only cycle that could arise", and Derivation 8's "since it does not preserve \(D\)'s structure". Derivation 4 is **built but trivial**, and is labelled a remark; Derivation 10 is **asserted** and is labelled a scenario. Nothing here is fitted — there is no tuning on past cases to be caught out by.
+
+---
+
+## 5. What would make it harder to vary
+
+In order of load borne:
+
+1. **Derivation 3 (highest).** Add the two missing hypotheses — \((\tau,\sigma)\) injective on \(C\) (or: the altered coordinate is not the \((\tau,\sigma)\)-image of any pair in \(H\)), and the survival condition is exactly fidelity on \(H\). Two clauses, and the derivation becomes airtight; Grievance 3 and Part XV attack (D) then cite it exactly. This is the highest priority because Derivation 3 is the only result in Part XVI cited *in support of a substantive philosophical claim* (that survival is not truth).
+2. **Derivation 6.** Either write the episode conditions in explicitly (R)-free terms — Part IX's reason use is one clause away, needing only "represented objection" read as an occurrence-level structural map — or show that "represented" in Part IX is not (R). Then extend Part XIV's dependence order to cover histories, active route, reason use, (K2), (K3) and receipts, so "the order of Part XIV is followed from each predicate to its base" can actually be carried out.
+3. **Derivation 5.** Either add factorisation closure to Part III's definition of "coherently posed" (making the closure components definitional rather than an unstated extra), or replace "exactly" with "the factorisation-closed coherent contract–query packages, given a solvable baseline", and add a port for \(O_p\) or say why the question-organization need not carry it.
+4. **Derivation 8.** Restate the hypothesis as: \(\phi\) is a family of isomorphisms of the organizations, questions (including queries), transports, histories and obligations, preserving \(A_\Theta\), \(\operatorname{Inst}\), \(\prec\), the stated scopes, the counterfactual meanings and \(\mathcal N\). The pole/shadow exclusion then follows from the isomorphism condition instead of being asserted inside the proof, and Part X's citation of "the structure-preserving bijections of Derivation 8" becomes exact.
+
+---
+
+## 6. What this does not show
+
+Hard-to-vary is not truth. Every finding above is about whether each derivation's steps track the definitions it cites. Nothing here bears on the constitutive conjecture — that these four things (organizations and their admitted changes, change-fidelity transports, provenances, physical realization) characterize explanatory creativity. Derivation 6 itself says the right thing about its own scope: "Whether the defined predicates capture explanation, representation, causation or knowledge is the constitutive conjecture, and this derivation says nothing about it."
+
+Three further limits on this report: I checked Part XVI and the definitions it cites, not Part VI's finite monotone theorem, (I2), (O1), (T2) or (CT2) (outside Part XVI; a spot-check of the finite monotone theorem's lattice argument — upward closure plus finiteness gives \(\bigcup\min\mathsf S\) and \(\bigcap\min\mathsf S\) — is sound). Where I said "plausible" (\(D_p\)'s edit-set closure under composition), that is an unrun check, and I have marked it as such rather than asserting it. And the skill's own `word-list.md` entry for Derivation 2 is stale relative to this revision — a defect of the reference file, not of the document.
+
+---
+
+## 7. One next step
+
+Fix Derivation 3 first: insert the injectivity (or disjointness) clause and the "survival \(\iff\) fidelity on \(H\)" clause, then re-run the proof and re-check that the added injectivity does not clash with Part IV's selection definition, which nowhere requires \(\tau\) injective. It is the one place in Part XVI where a gap sits underneath a citation the document treats as load-bearing.

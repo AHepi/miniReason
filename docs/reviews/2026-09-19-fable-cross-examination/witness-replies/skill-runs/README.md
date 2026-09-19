@@ -1,0 +1,3 @@
+# Skill-run replies
+
+Public reply texts from the skill experiment (file 26): battery `battery_rev.json` (R1–R9) on file 20, with a method skill as the system prompt. File names are `<method>_<model>__<item>__s<sample>.txt`. `usage_summary_skill_runs.json` lists every call, including the ones that failed at the gateway (empty reply, first line of the error kept). The harness variant is `../cross_examine_skill.py` with the framing texts `../frame_htv.txt` and `../frame_sc.txt`; the skills themselves are under `../method-skills/`. Hidden reasoning text is not published. The Atria rows are partial at the publication of file 26 and are refreshed with supplement 26c.

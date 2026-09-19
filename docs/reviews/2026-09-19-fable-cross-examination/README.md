@@ -19,13 +19,17 @@ What this folder is: a self-contained review thread from one session (Claude Cod
 | `24 Claude Fable Semantics - third revision.md` | File 22 revised against file 23 by forty-three exact replacements. Under cross-examination at publication. |
 | `24a Revision ledger 3 - where each item of file 23 landed.md` | The mapping for the third revision. |
 | `25 Adjudication - third cross-examination round, and a verdict on the loop.md` | Rulings on round three (file 24) and the judgement that patch-revision has reached diminishing returns; what a rewrite from the core would be. |
+| `26 Skill experiment - two method skills on file 20.md` | The file-20 cross-examination run twice more with a method skill as the witnesses' system prompt (the user's hard-to-vary skill, then the user's story-critique skill), compared with the plain run of file 21: recall of the known defects, new findings ruled, false findings, kind of finding, verdict (better, not incapacitated, on DeepSeek; Atria half open). |
+| `26a Skill experiment - design frozen before reading.md` | The design and four predictions, published before any reply was read. |
+| `26b Working notes - reply by reply.md` | The per-reply working log behind file 26, appended to as replies land. |
+| `15f Supplement 5 - after the skill experiment.md` | Project story additions after the skill experiment. |
 | `15e Supplement 4 - after rounds two and three.md` | Project story additions after rounds two and three. |
 | `15d Supplement 3 - after the cross-examination of the revision.md` | Project story additions after file 21. |
 | `15c Supplement 2 - after the revision.md` | Project story additions after the revision. |
 | `18`, `19` | Witness profiles: where each model was strong and weak, under what conditions, with evidence. |
 | `miniReason - project story.md` | The user-facing narrative with a numbered log (entries 1–31). |
 | `diagnostics/` | Scripts that import the frozen code unchanged and check one witness claim each, with their outputs. |
-| `witness-replies/` | The harness (`cross_examine.py`, keys from the environment only), the three batteries, every public reply as text (`<model>__<item>.txt`), and `usage_summary.json` (tokens, finish reasons, seconds). Hidden reasoning text was captured for diagnosis and is **not** published. |
+| `witness-replies/` | The harness (`cross_examine.py`, keys from the environment only; `cross_examine_skill.py` loads a method skill as the system prompt), the batteries, `skill-runs/` (the skill-experiment replies and their usage), `method-skills/` (the two skills verbatim), `compare_runs.py`, every public reply as text (`<model>__<item>.txt`), and `usage_summary.json` (tokens, finish reasons, seconds). Hidden reasoning text was captured for diagnosis and is **not** published. |
 
 Witnesses (files 10–17): `deepseek-flash` (three samples per item at the 131,072-token cap, plus audits) and `Atria-Dawn-Preview` (one to two samples per item at its 65,536-token cap; 25 of 26 items answered; later replies and rulings are in the supplement 15b, never by editing the published files). The author adjudicated; the witnesses' statements are evidence, not verdicts.
 
