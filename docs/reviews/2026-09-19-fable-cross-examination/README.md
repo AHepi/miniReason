@@ -13,6 +13,8 @@ What this folder is: a self-contained review thread from one session (Claude Cod
 | `20 Claude Fable Semantics - revised standalone theory.md` | The semantics revised against the whole consolidated list (file 15 §G as amended). Standalone, no history in it. Not yet cross-examined. |
 | `20a Revision ledger - where each item landed.md` | Which item of the list landed in which section of file 20, what went beyond the list, and what was not done. |
 | `21 Adjudication - cross-examination of the revised semantics.md` | Rulings on what both witnesses found in file 20, grouped by defect, with the second revision list (16 items, not started). |
+| `22 Claude Fable Semantics - second revision.md` | File 20 revised against file 21 §4 by sixty-nine exact replacements. Standalone. Under cross-examination at publication. |
+| `22a Revision ledger 2 - where each item of file 21 landed.md` | The mapping for the second revision. |
 | `15d Supplement 3 - after the cross-examination of the revision.md` | Project story additions after file 21. |
 | `15c Supplement 2 - after the revision.md` | Project story additions after the revision. |
 | `18`, `19` | Witness profiles: where each model was strong and weak, under what conditions, with evidence. |
