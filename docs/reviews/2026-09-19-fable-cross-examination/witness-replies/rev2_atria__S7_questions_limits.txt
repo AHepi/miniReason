@@ -1,4 +1,146 @@
 ====================================================================================================
-S7_questions_limits | rev2_atria | sample 0 | finish None | 0 chars | error None
+S7_questions_limits | rev2_atria | sample 0 | finish stop | 26688 chars | error None
 ====================================================================================================
-(empty)
+# Referee report: 22_semantics_second_revision
+
+## A. Is the withdrawal of the merit condition honest?
+
+**1. (G) is not typed for question-contents, so the concession is not yet evaluable.**
+Claim attacked: "The content \(c\) may be an organization, a transport, or a question (through its question-organization, Derivation 5, as far as that construction goes). When it is a question, the originative act is the finding of a question." (Part X); and "a random new contract that is new to the repertoire and built satisfies (G) as written." (Part X).
+Why it fails: A content is "an organization together with its contract-relative commitments" (Part IV); (R) quantifies over a transport "faithful on \(c\)'s contract" \(C_c\); Build requires an organization "held to \(c\) by a transport faithful on \(c\)'s contract." A question is a *tuple* \((D,C,b_0,\mathcal Q,O_p,\rho_p)\). Derivation 5 substitutes "an occurrence carrying \(D_p\) with the question as its solution" — i.e. an organization *plus a valuation*. A valuation is not an organization, and no contract \(C_c\) for a question-content is stated anywhere. So "satisfies (G) as written" is not a well-formed claim: (G) cannot be applied to questions until the content-type is fixed. The withdrawal is therefore neither honest nor dishonest; it is *premature*, and the four listed gaps do not include the typing gap.
+Serious.
+Fix: define the content associated to a found question explicitly — e.g. \(c=(D_p,\nu)\) where \(\nu\) is the solution fixing the question — and state \(C_c\) (is it the found question's own \(C\)? the contract of \(D_p\)?) and what fidelity of \(t:c\to D\) means for it.
+
+**2. (EK) reintroduces merit for found questions without acknowledging it.**
+Claim attacked: "It does not supply … a merit function for questions or for accounts. It supplies places where such things would go if anyone had them, and marks those places as empty." (Part 0); "the semantics has no condition on what makes a found question worth finding, and says so." (Part 0).
+Why it fails: (EK) requires "\(\operatorname{Account}(E_c,p_c)\)" and "Here \(E_c\) is the organization of the content \(c\), and \(\operatorname{Account}\) is evaluated on the contract of \(p_c\) fixed at \(e_c\)" (Part XI). If \(c\) is a found question, \(E_c\) is its question-organization, and the found question must be an *adequate account of a prior question* \(p_c\) — component fidelity, question fidelity, non-circularity, non-vacuity on \(p_c\)'s contract. That is a substantive adequacy condition on the found question, and the place is not empty. On the \(E_c=D_p\) reading the condition is also typically unsatisfiable: \(D_p\)'s components are closure conditions on toggle ports, not dependency components, so (F1)/(A) for an arbitrary prior question will usually fail — meaning found questions are silently excluded from knowledge creation. On the alternative reading (\(E_c\)= the found question's target) the condition does no work.
+Serious.
+Fix: state explicitly that (EK) imposes account-hood on found questions, give the typing, and either defend that as the semantics' merit condition for questions or mark it as a separate open item.
+
+**3. (G) does not require the found question to be coherent.**
+Claim attacked: "\(\operatorname{Attempt}(s,c,p,h,e)\) the relation that \(c\) is actually used, on an active route, to address \(p\) — where \(p\) is a coherently posed question … and some obligation in \(O_p\) fails at the state before \(e\)" (Part X).
+Why it fails: coherence is demanded of \(p\), not of \(c\). When \(c\) is a question and \(p\) is the question it addresses (\(p\neq c\)), nothing requires \(c\) to be coherently posed (\(\operatorname{Sol}_D(1,b_0)\neq\varnothing\), \(\mathcal Q\) defined on \(C\), \(S\subseteq C_{\rm adm}\), \(K\cap C_{\rm adm}=\varnothing\)). So the concession understates itself: not only a random new contract but an *incoherent* one satisfies (G). The document never says which of \(p=c\) or \(p\neq c\) is intended.
+Minor.
+Fix: add "and \(c\) is coherently posed when \(c\) is a question" to (G), or state that incoherent found questions count and accept the consequence.
+
+**4. Question-provenance is conditional on the unclosed sketch, but is used as if defined.**
+Claim attacked: "Its witness is the one Part IV gives for the provenance of any content's occurrence: the provenance of the transport by which an occurrence represents the question-organization of Derivation 5." (Part III); and Part 0's "the semantics represents both, as far as the construction in Derivation 5 goes."
+Why it fails: \(\rho_p\) is a component of *every* question tuple, hence of every claim in Parts III–XV, yet its witness runs through a construction the document itself downgrades to "a sketch: its gaps are listed after it, and until they are closed, question-finding is representable *conditionally* on closing them." So \(\rho_p\in\{\text{declared, selected, constructed}\}\) is not yet a defined predicate; the hedge "as far as that construction goes" is doing load-bearing work that Part III does not repeat.
+Minor.
+Fix: mark \(\rho_p\) as conditional at each point of use, or close the sketch.
+
+## B. Are the four gaps the right gaps, and closable?
+
+**5. A fifth gap, not listed: the well-formedness of the contract is not encoded in \(D_p\).**
+Claim attacked: "Components: the closure conditions — the baseline port reads 'in'; if \(u_{(a_2a_1,b)}\) reads 'in' then so do its factors where the composition is defined; \(u_S\) and \(u_K\) are consistent with the 'in' ports in the form of Part III." (Derivation 5), with gaps (i)–(iv) following.
+Why it fails: Part III requires \(C=(C_{\rm adm}\cap S)\cup K\) with \(S\subseteq C_{\rm adm}\), \(K\cap C_{\rm adm}=\varnothing\), and "the reason for each exclusion recorded." No component of \(D_p\) enforces any of these. The solutions of \(D_p\) therefore include tuples that are not legitimate contracts at all (e.g. \(K\) overlapping \(C_{\rm adm}\), or \(S\) containing non-admitted pairs), which is a distinct defect from gap (i)'s coherence and is not dismissed by any listed gap.
+Serious.
+Fix: add components enforcing \(S\subseteq C_{\rm adm}\), \(K\cap C_{\rm adm}=\varnothing\), \(C=(C_{\rm adm}\cap S)\cup K\); state what carries the "reasons for exclusion" (they are not port values as constructed).
+
+**6. Gap (i) is mis-diagnosed: one half is a boundary constant, the other is encodable.**
+Claim attacked: "Coherence (\(\operatorname{Sol}_D(1,b_0)\neq\varnothing\); \(\mathcal Q\) defined on \(C\)) is a global condition on \(D\) and is not a local component of \(D_p\); the solutions of \(D_p\) include incoherent questions unless a component encoding it is supplied, and none is here."
+Why it fails: the construction fixes "Boundary: the target \(D\) and \(b_0\), held fixed." With \(D\) and \(b_0\) in the boundary, \(\operatorname{Sol}_D(1,b_0)\neq\varnothing\) is a property of the boundary, constant across solutions — it does not vary between candidate questions at all (which is precisely why gap (ii) proposes reinstating \(b_0\) as a port; gaps (i) and (ii) are not independent). And "\(\mathcal Q\) defined on \(C\)" is a relation between the value of \(u_{\mathcal Q}\) and the values of the toggle ports — a legitimate component constraint, so it *is* locally encodable. The gap as stated conflates a boundary constant with a solution-dependent condition.
+Minor.
+Fix: restate gap (i) as "coherence is boundary-relative as constructed; making it solution-relative requires \(b_0\) as a port (gap (ii)); the \(\mathcal Q\)-defined-on-\(C\) half is closable by a binary component."
+
+**7. Gap (ii)'s treatment of \(\rho_p\) contradicts Part III.**
+Claim attacked: "\(b_0\), \(O_p\) and \(\rho_p\) are not ports of \(D_p\) as constructed; adding \(b_0\) as a port with domain \(B\) and \(O_p\) as a port with domain the subsets of the declared obligations is straightforward and not done."
+Why it fails: the sentence lists \(\rho_p\) alongside \(b_0\) and \(O_p\) as a missing port, but Part III defines \(\rho_p\) as *witness-derived*, not declared: "Its witness is the one Part IV gives for the provenance of any content's occurrence." A port value is declared data; making provenance a port value would make question-provenance stipulated rather than witnessed, destroying the declared/selected/constructed distinction for questions.
+Serious.
+Fix: drop \(\rho_p\) from the port list; derive it from the transport witnessing (R) for the question-content (which requires finding 1 to be resolved first).
+
+**8. Gap (ii)'s \(O_p\) port hides an unlisted limit: no novel obligations.**
+Claim attacked: "adding … \(O_p\) as a port with domain the subsets of the declared obligations is straightforward and not done."
+Why it fails: it is straightforward only because the domain is fixed by the *declared* obligations. So the question-space \(D_p\) can recombine pre-declared obligations but cannot contain an obligation of a new kind. This is exactly parallel to the dimension-of-variation limit that Part X does state ("a port no admissible grain supplies"), and it is not stated anywhere. A question that demands something outside the declared obligation vocabulary is as unrepresentable as an unlicensed dimension.
+Serious.
+Fix: state the obligation-vocabulary limit in Part X and list it under attack (E), alongside the dimension limit.
+
+**9. Closing gap (iii) as proposed inverts Part III's declaration requirement.**
+Claim attacked: "'Add a pair to \(K\)' requires the pair's declared relations as a port value; the domain of \(u_K\) must be the set of pairs-with-relations, and it is not written out."
+Why it fails: Part III requires each counterfactual pair to be "declared together with the component relations \(L_j(a,b)\) it imposes, which is what its 'stated meaning' is." If those relations are port *values*, then on this construction the meaning of a counterfactual is a *solution* — invented by the finder — not declared. The fix as described thus silently converts \(K\) from declared data into constructed content, which changes what "adequacy is relative to the declared admission relation" (Part VII) comes to.
+Serious.
+Fix: either restrict \(u_K\)'s domain to a pre-declared list of pairs-with-relations (and say that questions with genuinely new counterfactual meanings are unrepresentable), or explicitly make \(K\)'s meanings part of the construction and re-state Part III's declaration requirement accordingly.
+
+**10. Gap (iv) is stated too narrowly.**
+Claim attacked: "Whether Inst licenses an organization whose ports range over edits of another organization is a question for the physical module and is not argued."
+Why it fails: the same realization question arises for *every* port of \(D_p\) — \(u_{\mathcal Q}\) (domain "the set of queries admissible on \(D\)"), \(u_S\) (stated scopes), \(u_K\) (pairs-with-relations) — and for the gap-(ii) fixes \(u_{b_0}\) and \(u_{O_p}\). All range over abstract set-theoretic objects, not over physical states. Singling out edits makes the deepest gap look narrower than it is.
+Minor.
+Fix: restate gap (iv) as "whether Inst licenses an organization whose value domains are these abstract sets (edits, queries, scopes, obligation-families, pairs-with-relations)."
+
+**11. A sixth gap: the witnessing transport for a question-content is degenerate.**
+Claim attacked: "an occurrence carrying \(D_p\) with the question as its solution can be the content \(c\) in (G)" (Derivation 5); and (R), which requires a transport \(t:c\to D\) faithful on \(C_c\) with provenance Sel or Con.
+Why it fails: the carrier's organization *is* \(D_p\) with its ports fixed at that solution. So the transport from the content to the carrier is the identity, and the provenance of the question becomes the provenance of an identity transport — neither selected nor constructed in any non-trivial sense. No non-identity representing transport is identified, so \(\operatorname{Sel}(t)\) and \(\operatorname{Con}(t)\) have nothing to evaluate for a found question. This is distinct from gap (iv) (which is about Inst licensing \(D_p\)'s ports) and from finding 1 (which is about the content's contract).
+Serious.
+Fix: specify the representing transport for question-contents — e.g. a transport from the question-content to a *carrier* organization distinct from \(D_p\) — and say what its provenance witness is.
+
+## C. Is the relocation of the concept-creation limit right?
+
+**12. No: the limit is the semantics' vocabulary, not the module's fixity.**
+Claim attacked: "The limit is the module's fixity, not the semantics' vocabulary; it is stated, and Part XV lists it." (Part X).
+Why it fails: the module is explicitly *not* fixed in this semantics. Part VIII: "a later module with a larger \(A_\Theta\) makes it a new claim at a new index"; Part V: the objectivity claim is "indexed to the module in force." So the invention of a dimension the current module does not license is not blocked by the module's fixity (there is no such fixity) — it is unrepresentable *because the semantics has no originative predicate for module change at all*. Radical concept-creation is neither a found question nor a construction nor even a claim; it is an unrecorded index change. That is precisely a vocabulary limit, which the sentence denies. The relocation is a mis-attribution, and it matters: it makes the deepest creative acts invisible to (G), (EK), and (U3) rather than merely hard.
+Serious.
+Fix: replace the sentence with "the limit is that this semantics has no predicate for module revision as an originative act; the module in force is an index, and changing it is not represented as creativity," and add module-change to attack (E).
+
+**13. The escape clause is incomplete.**
+Claim attacked: "Where the module does license the dimension at some grain, its introduction is the construction of a new organization attribution and Build covers it." (Part X).
+Why it fails: Part II makes grain-admissibility a *conjunctive* condition: "every component of that organization is touched by some admitted pair." A module can license a port without licensing any edit that touches the component containing it; in that case the grain is inadmissible and the dimension remains unrepresentable even though it is "licensed." The sentence silently assumes licensing a dimension comes with licensing an edit on it.
+Minor.
+Fix: strengthen to "licenses the dimension at some admissible grain," i.e. port *and* an admitted pair touching its component.
+
+## D. The artefact case and the symmetry case
+
+**14. The artefact case is not "closable" as described, and Part VII and Part XV contradict each other about it.**
+Claim attacked (i): "explanation of an apparent effect as a selection artefact, which needs two targets (the data organization and the population organization) and a transport for each." (Part VII). Claim attacked (ii): "what is missing is not a second target but a provenance clause on the target's own components (that the effect's component was selected by the data-gathering, not by the population), which the historical kinds of Part II can carry; the construction is not written." (Part XV).
+Why it fails: (a) The two passages disagree: two targets, versus not a second target. (b) Historical kinds cannot carry the clause. Part II defines a historical kind as "a predicate on the history that produced an occurrence of a component … with the witness that Part IV requires for the provenance of a content's occurrence, applied to the binding that realizes the component." That witness exists only for bindings that realize a *content*, i.e. for components of representing organizations whose transport has Sel/Con provenance. Components of the *target* \(D\) are realized by \(\operatorname{Inst}_\ell\), which is not a transport and has no provenance. So target components have no historical kind as defined. (c) Even granting the clause, it could not do its work: (F1) anchors components of \(E\) to subnetworks \(\lambda(k)\subseteq D\); a historical kind is a predicate on a history, not a subnetwork, so it cannot serve as an anchor. (d) And (E) "carries **no provenance condition**" by explicit design, while the anchored grade "does not look at history"; the only history-looking condition is the operative one, which requires anchors to be "active route[s] … a subnetwork of actual occurrences" — and the data-gathering process is not an occurrence of the data organization \(D\). So reaching the selection history requires enlarging \(D\) to include data-gathering, which is a second (or enlarged) target after all. Part VII was right; Part XV is wrong.
+Serious.
+Fix: re-sort the case as "needs a target extension (the data-gathering process inside the target) plus an operative-condition treatment," and either extend historical kinds to target components by defining a provenance for \(\operatorname{Inst}\)-realized components, or say plainly that the semantics has no provenance for target components.
+
+**15. Symmetry: the stated reason for openness is a category error; the real obstruction is different, and the case may be closer to closable.**
+Claim attacked: "explanation by symmetry, whose force is an entailment among the components of \(E\) (from invariance to independence) that (F1), a per-component condition, and (F2), an assembly condition, do not constrain; no construction exists here and none is known to follow from present machinery." (Part XV).
+Why it fails: (F1) and (F2) were never intended to constrain entailments *within* \(E\); they constrain the \(E\)-to-\(D\) relation. Internal entailments of \(E\) are supplied by its component relations \(L_k\), which are declared data. That invariance entails independence inside \(E\) is therefore no more unconstrained than any other deduction in any other example (e.g. the determinant example's internal arithmetic). The genuine obstruction is elsewhere: invariance is a *global* property of the target — an automorphism of \(D\) under the contract — whereas \(\lambda\) assigns each component of \(E\) a *subnetwork* of \(D\), and properness forbids the whole target as an anchor whenever \(D\) has more than one component ("An anchor may be the whole target only when \(D\) has one component"). A proper subnetwork of a symmetric target need not be invariant, so the invariance component has no proper anchor. That is the real reason, and it points to a possible fix (allowing quotients, or anchors that are global structure), which "none is known to follow from present machinery" does not.
+Serious.
+Fix: restate the obstruction as anchoring/globality, and either give the quotient construction or say precisely what extension of \(\lambda\) (or of properness) would be needed.
+
+**16. The mathematics case is sorted by inserting a qualifier the attack does not contain.**
+Claim attacked: "What the example does not do is fall under attack (B)'s quantifier over *physically* admitted contracts, because there is no physical module here; it falls under the declared one." (Part VII); versus attack (B) as stated: "Produce a genuine explanation whose organization cannot be captured by *any* transport satisfying component fidelity under *any* admitted contract." (Part 0) and "A genuine explanation whose organization no transport can preserve under any admitted contract." (Part XV).
+Why it fails: the attack quantifies over admitted contracts, and Part III explicitly says that for a mathematical organization the admission relation *is* declared and counts as admitted. Inserting "physically" to exempt the case is a moved goalpost. Under the attack as written, mathematical explanation falls under (B) and is answered *relative to a declaration* — which is exactly what "(iv) relative, not open" should mean, not "does not fall under the attack at all."
+Minor.
+Fix: state attack (B) as quantifying separately over physically admitted contracts and over declared admission relations, and classify mathematics as answered-relative under the second.
+
+## E. Further defects found while checking
+
+**17. The non-circularity witness contradicts the one-component example.**
+Claim attacked: "The witness: there exists an edit \(\tau(a)\) on \(E\) … that removes or replaces a nonempty **proper** sub-block \(B\subsetneq\Gamma\) … Removing all of \(\Gamma\) changes the profile of any candidate and witnesses nothing." (Part V); and "The one-component candidate that repackages \(\operatorname{Sol}_D\) for a target with several components satisfies (E): its single commitment is removable, so non-circular dependence has its witness." (Part V).
+Why it fails: for \(|\Gamma|=1\) there is no nonempty proper sub-block, so the witness cannot exist; and removing the single commitment *is* removing all of \(\Gamma\), which the same paragraph says witnesses nothing. The two sentences are inconsistent. On the correct reading the one-component repackaging should *fail* non-circularity, since it is precisely the forbidden case — "The target's answer does not appear … as an unanalysed … component" — which removes the stated motivation for the second grade in this instance (properness still excludes it).
+Serious.
+Fix: require \(|\Gamma|\ge2\) for a witnessable non-circularity condition, or replace "\(B\subsetneq\Gamma\)" by "\(B\subseteq\Gamma\), \(B\neq\varnothing\), with \(B\neq\Gamma\) when \(|\Gamma|\ge2\)", and correct the one-component claim.
+
+**18. The objectivity condition is evadable by a partial \(\tau\), and Part XV's version of the attack is incoherent.**
+Claim attacked: "\(C\) is protective when there is an admitted pair \((a,b)\in C_{\rm adm}\setminus C\) on which the candidate is *evaluable* — \(\tau(a)\), \(\sigma(b)\) and the query are all defined there — and on which the candidate's pulled-back answer differs from the target's … Silence about a change — a pair on which the candidate has no translation — is a stated limit of scope, not protection." (Part V); and "A stated scope, passing Part V's objectivity condition, that nonetheless excludes an admitted change on which the candidate is evaluable and wrong." (Part XV).
+Why it fails: by definition, a pair on which the candidate is evaluable and wrong *fails* the condition, so the attack as stated in Part XV cannot be launched. The only live routes are (a) \(\tau\) partial — Part IV writes "\(\tau:A_D\to A_E\)" (total notation) but Part V's silence clause requires \(\tau\) to be sometimes undefined; a modeller may declare \(\tau\) undefined on exactly the admitted pairs where the candidate would be wrong, converting protection into "stated scope"; or (b) the query undefined. The totality of \(\tau,\sigma\) on \(C_{\rm adm}\) is never stated, and the two readings have opposite consequences: total \(\Rightarrow\) the silence clause is vacuous and protection is hard to evade; partial \(\Rightarrow\) protection is evadable by construction.
+Serious.
+Fix: require \(\tau,\sigma\) total on \(C_{\rm adm}\) for any objectivity claim; restrict "silence" to pairs where the *query* is undefined; and restate the Part XV attack as "a partial \(\tau\) declared so as to be undefined precisely where the candidate would fail."
+
+**19. Derivation 8's equivariance claim is under-proved.**
+Claim attacked: "Let \(\phi\) be a family of bijections on carriers, organizations …, transports (including their anchor maps \(\lambda\)), histories with their events and precedence, contracts, obligations and the normative relation, such that \(\phi\) preserves the physical module's admission (\(A_\Theta\), Inst, \(\prec\)) … Transporting all data along \(\phi\) preserves (E), anchoring, (R), (G), (P), (EK)."
+Why it fails: \(\phi\)'s hypothesis omits exactly what the later predicates need. Ownership (Part X) is defined from retained realization (CT1), which requires the execution families \(\operatorname{Exec}\), resources and accuracy grades, and the indices \((\Omega,\beta)\) — none of which is in \(\phi\)'s list. Build requires ownership; \(\operatorname{Con}\) requires Build; (R) requires \(\operatorname{Sel}\lor\operatorname{Con}\); Deploy requires a use task \(U\); (G) requires Deploy; (P) and (EK) require (G). So preservation of (R), (G), (P) and (EK) is not established. Only (E) and anchoring (and, with the population carried along, \(\operatorname{Sel}\)) are covered.
+Serious.
+Fix: either add \(\operatorname{Exec}\), resources, \(\Omega\), \(\beta\), use tasks and enabling conditions to \(\phi\)'s hypothesis, or restrict the claim to (E), anchoring, and selection-based (R).
+
+**20. Derivation 6 overclaims the well-foundedness of the defined order.**
+Claim attacked: "Every *defined* predicate in Parts II–XIII is defined from the physical module … by the dependence order there, and that order has no cycle." (Derivation 6).
+Why it fails: the definition of a question (Part III) includes \(\rho_p\), whose witness is "the question-organization of Derivation 5" — an unclosed construction sketch, not a defined predicate of Parts II–XIII. Since questions are inputs to (A), (E), (G), (EK), (U1)–(U3), the well-foundedness claim holds only conditionally on closing Derivation 5, which Derivation 6 does not say.
+Minor.
+Fix: add "conditional on Derivation 5" to Derivation 6, or close the sketch.
+
+**21. The earliest-witness rule is under-determined.**
+Claim attacked: "the provenance of the **earliest** witness in \(\prec_h\) whose events produced the occurrence that carries \(t\)" (Part IV); "where several do, the earliest."
+Why it fails: \(\prec_h\) is acyclic, not linear; two earliest witnesses can be incomparable, in which case "the earliest" does not select one and the transport's provenance is indeterminate.
+Minor.
+Fix: add a tie-break clause (e.g. earliest by a declared well-order on witnesses) or state that incomparable earliest witnesses leave provenance indeterminate.
+
+**22. (U1) and (U2) contain a redundant conjunction.**
+Claim attacked: "\(\operatorname{UU}\iff\forall c\in\mathfrak E_\Theta\ \exists\chi,\ \operatorname{Enable}(s,U_c,\chi)\land\operatorname{Can}(\xi_0,U_c;\chi)\)", with "\(\operatorname{Enable}(s,U,\chi)\) holds when \(\chi\) is an admitted enabling condition … under which \(s\) has \(\operatorname{Can}\) for the use task \(U\)."
+Why it fails: \(\operatorname{Enable}\) already entails \(\operatorname{Can}\); the conjunction repeats it (same defect in (U2) with \(\operatorname{CanAdv}\), which is not defined inside \(\operatorname{Enable}\) — so (U2) is merely redundant, (U1) is vacuously so).
+Cosmetic.
+Fix: drop the second conjunct in (U1), or define \(\operatorname{Enable}\) as a condition on \(\chi\) alone and keep \(\operatorname{Can}\) separate.

@@ -18,6 +18,8 @@ What this folder is: a self-contained review thread from one session (Claude Cod
 | `23 Adjudication - second cross-examination round.md` | Rulings on round two (file 22), including my own four misses, and the third revision list. |
 | `24 Claude Fable Semantics - third revision.md` | File 22 revised against file 23 by forty-three exact replacements. Under cross-examination at publication. |
 | `24a Revision ledger 3 - where each item of file 23 landed.md` | The mapping for the third revision. |
+| `25 Adjudication - third cross-examination round, and a verdict on the loop.md` | Rulings on round three (file 24) and the judgement that patch-revision has reached diminishing returns; what a rewrite from the core would be. |
+| `15e Supplement 4 - after rounds two and three.md` | Project story additions after rounds two and three. |
 | `15d Supplement 3 - after the cross-examination of the revision.md` | Project story additions after file 21. |
 | `15c Supplement 2 - after the revision.md` | Project story additions after the revision. |
 | `18`, `19` | Witness profiles: where each model was strong and weak, under what conditions, with evidence. |

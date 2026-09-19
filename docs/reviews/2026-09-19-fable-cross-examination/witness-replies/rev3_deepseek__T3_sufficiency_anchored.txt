@@ -1,0 +1,450 @@
+====================================================================================================
+T3_sufficiency_anchored | rev3_deepseek | sample 0 | finish stop | 22105 chars | error None
+====================================================================================================
+**Finding 1 — The requested counterexample to sufficiency exists, exploiting overlapping anchors and a redundant active component.**
+(1) Claim attacked: Part XV says  
+> “A candidate meeting the anchored grade of (E) on an admitted contract and satisfying Origin (new, built, deployed), which plainly provides no account. This refutes sufficiency.”
+
+(2) Why it fails: The anchored grade as written does not require the anchors to form a disjoint partition, does not require every component of \(E\) that affects \(\operatorname{Sol}_E\) to be active/anchored, and does not require active components to be non-redundant. Construct a target \(D\) with ports \(v_1,v_2,v_3\), components \(j_1,j_2,j_3\), baseline \(v_1=v_2=v_3=0\), and admitted edits: \(a_{12}\) replaces the pair \((j_1,j_2)\) with a joint relation \(v_1=v_2=1\); \(a_3\) replaces \(j_3\) with \(v_3=1\). There is no edit setting \(v_1\) alone or \(v_2\) alone. Let the question read \((v_1,v_2,v_3)\). Build \(E\) with three active components: \(k_1\) anchored to \(\{j_1,j_2\}\) with relation the joint projection of \(j_1,j_2\); \(k_2\) anchored to \(\{j_3\}\); and \(k_3\) anchored to \(\{j_1\}\) with relation the projection of \(j_1\). F1 holds by construction. F2 holds because \(k_3\) is implied by \(k_1\). Non-circular dependence holds: removing \(k_1\) leaves \(v_2\) undetermined. Non-vacuity holds. Properness passes as written because the anchors \(\{j_1,j_2\},\{j_3\},\{j_1\}\) cover all touched components, are distinct, and none is the whole target. Resolution passes because \(j_1\) and \(j_2\) cannot be separately varied by any admitted edit. World-kind passes because each \(k\)'s relation equals the projection of its anchor under every admitted edit. Origin can be stipulated: \(E\) is not in the prior repertoire; an owned subhistory builds it; the binding \(k_1\mapsto\{j_1,j_2\}\) is nontrivial and required for F1; an itemised defect record from a prior failure on \(a_{12}\) is used at acceptance; \(E\) is deployed. Yet \(E\) plainly explains nothing: \(k_3\) is redundant with \(k_1\), and \(k_1\) merely regroups \(j_1,j_2\) as \(D\) already does. It is a bloated restatement, not an account of why they flip together. This directly refutes the sufficiency claim.
+(3) Severity: fatal.
+(4) Fix: Require anchors to form a pairwise disjoint cover of the touched components; require \(\Gamma\) to contain every component of \(E\) that affects \(\operatorname{Sol}_E\) or the answer; impose a non-redundancy/independence condition on active components; strengthen resolution to forbid any two separately variable target components sharing an anchor; add Deploy and the operative condition to Origin.
+
+**Finding 2 — Origin does not require deployment, despite the text saying it does.**
+(1) Claim attacked: Part XV says  
+> “satisfying Origin (new, built, deployed).”
+
+But Part X defines  
+> “\(\operatorname{Origin}_{\beta,\ell}(s,c,p,h,e)\iff\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}. \tag{G}\)”
+
+(2) Why it fails: Deploy appears nowhere in (G). A candidate can satisfy (G) while not being deployed. The sufficiency attack as stated cannot be tested against (G) as written.
+(3) Severity: serious.
+(4) Fix: Add \(\operatorname{Deploy}\) to (G), or correct Part XV and Part 0 to say Origin is new and built only.
+
+**Finding 3 — The document contradicts itself about whether the target’s own copy fails Origin.**
+(1) Claim attacked: Part V says  
+> “The target itself, \(E=D\) under the identity transport, is an anchored account of \(D\). So is a modular table whose pieces each carry the local signature of an anchor on every admitted edit. Both are extensional copies of the mechanism at this grain… ‘This explains nothing’ said of the target’s own copy is not a complaint about account-hood; it is a complaint about **origin and deployment** — that the copy is not new to any repertoire, was not built, and is not held by anyone — and those are Part X’s predicates, not Part V’s.”
+
+Part XV says  
+> “Candidates meeting the anchored grade and explaining nothing are already known — the target’s own copy, the faithful modular table — and the class does not claim they explain: they fail Origin.”
+
+But Part X says  
+> “So the target’s own faithful copy, built from error records, is an anchored, originated account that is \(\equiv_\ell\) to the target: New fails for it if the target is already in the repertoire, and holds if it is not — in which case building the target’s mirror from its errors is discovering it, and the semantics says so without embarrassment.”
+
+(2) Why it fails: “New” is relative to \(R_{<e}(s,h)\), the deployable repertoire of a particular system. If the target is not already in that repertoire, the target’s own faithful copy satisfies New. If it is built from error records and deployed, it can satisfy Build and Deploy. The blanket claim that the target’s own copy “fails Origin” is therefore false as a general claim.
+(3) Severity: serious.
+(4) Fix: Remove the blanket “fail Origin” claim; state that target copies fail Origin only when the target is already in the relevant repertoire and not built/deployed by the system.
+
+**Finding 4 — Properness does not require a proper decomposition; it permits overlapping anchors.**
+(1) Claim attacked:  
+> “**Properness.** The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches, and the anchor map is injective on that cover: distinct active components have distinct anchors, and no touched component of \(D\) lies outside every anchor. An anchor may be the whole target only when \(D\) has one component.”
+
+(2) Why it fails: “Distinct active components have distinct anchors” forbids identical anchors, but it does not forbid overlapping anchors. A component of \(D\) may lie in several anchors. That is not a proper decomposition; it allows double-counting and redundant structure, as in Finding 1.
+(3) Severity: serious.
+(4) Fix: Require the anchors to be pairwise disjoint and to cover exactly the touched components. Replace “refine a cover” with “form a partition of the touched components.”
+
+**Finding 5 — Anchoring constrains only active components; unanchored components can carry the explanatory load.**
+(1) Claim attacked:  
+> “Write \(\mathcal E=(E,p,t,\Gamma)\). The predicate is two-place on the organization and the question, with the transport and commitments existentially quantified:  
+> \[\operatorname{Account}(E,p)\iff\exists t,\Gamma\ \operatorname{Account}(E,p,t,\Gamma),\]”
+
+and  
+> “**Component fidelity.** For every active component \(k\) of \(E\) with anchor subnetwork \(\lambda(k)\subseteq D\)…”
+
+and  
+> “**World-kind.** Each active component of \(E\) is of one forward kind… with its anchor subnetwork…”
+
+(2) Why it fails: \(\Gamma\) is existentially chosen. Nothing requires \(\Gamma\) to include every component of \(E\) that affects \(\operatorname{Sol}_E\) or the answer. An unanchored, world-kind-free component can be added to \(E\), can alter \(\operatorname{Sol}_E\), and can be essential for F2 or for the answer profile, while all anchoring conditions apply only to the chosen active subset. This is a direct hole in the anchored grade.
+(3) Severity: fatal.
+(4) Fix: Require \(\Gamma\) to be the set of all components of \(E\) that affect \(\operatorname{Sol}_E\) or the answer, and apply anchoring to all of them. Alternatively, define \(E\) modulo components that are provably inert on all of \(C_{\mathrm{adm}}\).
+
+**Finding 6 — World-kind is per-component on \(C_{\mathrm{adm}}\), but assembled behavior on \(C_{\mathrm{adm}}\) is not required; the “decoy is the mechanism” claim fails.**
+(1) Claim attacked:  
+> “**World-kind.** Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\)… with its anchor subnetwork… fidelity holds not only on the pairs the contract selected but on every admitted pair that **touches** the anchor — changes the relation of some component in it.”
+
+and  
+> “What it does not separate is a decoy with the same response to *every* admitted edit — and the semantics says that such a decoy is, at this index, the mechanism.”
+
+(2) Why it fails: Component fidelity on \(C_{\mathrm{adm}}\) does not entail assembled fidelity on \(C_{\mathrm{adm}}\). F2 is required only on \(C\). Two organizations can have identical per-component relations on every admitted pair but different shared constraints or different inactive components, so their assembled solution sets on admitted pairs outside \(C\) differ. Such a decoy is not “the mechanism,” and the anchored grade does not exclude it.
+(3) Severity: serious.
+(4) Fix: For the anchored grade, require F2 on \(C_{\mathrm{adm}}\) as well as F1 on \(C_{\mathrm{adm}}\), or define world-kind at the level of the assembled organization.
+
+**Finding 7 — Properness excludes genuine multi-component mechanisms for single-component targets.**
+(1) Claim attacked:  
+> “An anchor may be the whole target only when \(D\) has one component.”
+
+combined with  
+> “distinct active components have distinct anchors.”
+
+(2) Why it fails: If \(D\) has one component at the chosen grain, the only nonempty anchor is the whole target. Injectivity then forbids \(E\) from having more than one active component. A genuine mechanism that decomposes a coarse single-component target into several explanatory components is excluded by fiat. This is not a fringe case: it is what finer-grained mechanistic explanation routinely does.
+(3) Severity: serious.
+(4) Fix: Allow anchors to finer-grain organizations of the same occurrence, or allow decomposition of a target component into subcomponents/ports licensed by the module.
+
+**Finding 8 — Properness excludes partial mechanisms.**
+(1) Claim attacked:  
+> “no touched component of \(D\) lies outside every anchor.”
+
+(2) Why it fails: This requires a cover of every component of \(D\) touched by any pair in \(C_{\mathrm{adm}}\), not merely every component relevant to the question’s contract \(C\). A genuine partial mechanism that explains one dependency, while leaving other physically manipulable but question-irrelevant components unanchored, fails the anchored grade.
+(3) Severity: serious.
+(4) Fix: Require a cover only of the components touched by \(C\) or relevant to \(S\); allow a declared partial anchor with an explicitly smaller scope.
+
+**Finding 9 — World-kind excludes idealizations.**
+(1) Claim attacked:  
+> “**World-kind.** Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\)… fidelity holds not only on the pairs the contract selected but on every admitted pair that **touches** the anchor.”
+
+and  
+> “‘World’ here means the physical module: a world-kind is a fact about \((\Theta,\ell,C_{\mathrm{adm}})\), and the module is the semantics’ only access to the world.”
+
+(2) Why it fails: Idealized explanations—frictionless planes, ideal gases, mean-field models, infinite-population limits—are not faithful on every admitted physical change that touches their anchors. They are explanatory precisely by abstracting from those changes. The anchored grade excludes them unless the idealization is reclassified as a different target/question. That is a loss of genuine mechanism.
+(3) Severity: serious.
+(4) Fix: Provide an approximation/idealization grade, or allow a declared idealization contract/admission relation analogous to the mathematical case.
+
+**Finding 10 — The use of \(C_{\mathrm{adm}}\) rather than \(C\) or a grain-relative admission set excludes coarse-grained mechanisms.**
+(1) Claim attacked:  
+> “**Resolution.** Whenever two components of \(D\) can be separately varied by pairs in \(C_{\mathrm{adm}}\) with distinct effects on \(\operatorname{Ans}_p\), they lie in distinct anchors.”
+
+and  
+> “**World-kind.** Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\)…”
+
+(2) Why it fails: \(C_{\mathrm{adm}}\) is occurrence-level, not grain-relative. A coarse-grain mechanism may be faithful on the question’s contract \(C\) but may not supply relations for fine-grained admitted edits that touch the coarse anchor. The anchored grade then rejects it, even though it is the genuine coarse-grained account. The same issue affects resolution: it forces decomposition at a fineness set by the module, not by the question.
+(3) Severity: serious.
+(4) Fix: Index \(C_{\mathrm{adm}}\) to the grain, or let resolution and world-kind range over the admitted edits expressible at that grain. For coarse-grain claims, use \(C\) or a declared grain-relative admission relation.
+
+**Finding 11 — Resolution is ambiguous and overstrong.**
+(1) Claim attacked:  
+> “Whenever two components of \(D\) can be separately varied by pairs in \(C_{\mathrm{adm}}\) with distinct effects on \(\operatorname{Ans}_p\), they lie in distinct anchors.”
+
+(2) Why it fails: “Separately varied” and “distinct effects on \(\operatorname{Ans}_p\)” are not defined. If read strictly, the condition can force an arbitrary fine decomposition even when the question does not distinguish the components. If read loosely, it permits overlapping or grouped anchors that are not explanatory. It is doing load-bearing work with undefined terms.
+(3) Severity: minor to serious, depending on interpretation.
+(4) Fix: Define in terms of edit pairs and differences between answer profiles: e.g., there exist \((a,b),(a',b')\in C\) that differ only on the target component and produce different \(\operatorname{Ans}_p\). Restrict the condition to \(C\) or to the question’s scope.
+
+**Finding 12 — The modular-table discussion is a no-true-Scotsman move and is inconsistent with Origin.**
+(1) Claim attacked:  
+> “A table that genuinely encodes an organization’s response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component anchored to a target with several, and by nothing if it is a faithful decomposition — in which case it is an account, as the previous section says.”
+
+But Part XV says  
+> “the faithful modular table — and the class does not claim they explain: they fail Origin.”
+
+(2) Why it fails: Any table that passes F1 is reclassified as “not a table in that sense.” Meanwhile, a faithful modular table that is new, built from defect records, and deployed can satisfy Origin. The document cannot both treat “modular table” as a known failure of Origin and define it as an account when it is faithful.
+(3) Severity: serious.
+(4) Fix: Define “table” independently of the conditions it is supposed to fail. Then assess Origin case by case. Do not use “table” as a pejorative label that shifts when the candidate passes the formal tests.
+
+**Finding 13 — The Build clause is grammatically and conceptually ambiguous.**
+(1) Claim attacked:  
+> “contains a **nontrivial binding construction required for that transport**, contains an **itemised defect representation** … and is neither a content-preserving transfer nor a composition of them.”
+
+(2) Why it fails: It is unclear what “is neither a content-preserving transfer nor a composition of them” attaches to: the owned subhistory, the organization, the binding, or the defect representation. “Nontrivial” is then defined partly by “obtainable from the incoming carriers by \(\equiv_\ell\),” but “obtainable” is not defined. This makes Build vulnerable to arbitrary stipulation.
+(3) Severity: minor to serious.
+(4) Fix: Rewrite with explicit subjects and define “obtainable” as a content-preserving transfer or a finite composition of such transfers between explicitly named carriers.
+
+**Finding 14 — Origin depends on an admittedly unfinished construction of the question-organization.**
+(1) Claim attacked:  
+> “\(\operatorname{Attempt}(s,c,p,h,e)\) the relation that \(c\) is actually used, on an active route, to address \(p\) — where \(p\) is a coherently posed question whose question-organization some occurrence of \(s\) instantiates before \(e\)…”
+
+But Derivation 5 says  
+> “The construction below is a sketch: its gaps are listed after it, and until they are closed, question-finding is representable *conditionally* on closing them.”
+
+(2) Why it fails: Origin requires the instantiation of a question-organization. Derivation 5 lists gaps including that a solution of \(D_p\) is not a content, coherence is not encoded, \(b_0,O_p,\rho_p\) are not ports, \(u_K\)'s domain is not written, and Inst licensing is not argued. Until those gaps are closed, Origin is not fully defined for question contents. The sufficiency attack cannot be cleanly assessed.
+(3) Severity: serious.
+(4) Fix: Close the Derivation 5 gaps or restrict Origin to contents whose question-organization construction is explicitly supplied.
+
+**Finding 15 — New is too weak: it is relative to the deployable repertoire, not to internal structure.**
+(1) Claim attacked:  
+> \[\operatorname{New}(s,c,h,e)\iff\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c. \tag{N}\]
+
+(2) Why it fails: \(R\) is the set of contents deployable in some nontrivial use respect. A system can internally re-derive a structure it already has but has never deployed, and New will hold. The condition is therefore not a robust newness condition for construction.
+(3) Severity: minor to serious.
+(4) Fix: Compare against the system’s internal organizations and historical kinds, not only against the deployable repertoire.
+
+**Finding 16 — The operative condition is outside both the anchored grade and Origin, so a backup decomposition can be “anchored” and “originated” while explaining nothing.**
+(1) Claim attacked:  
+> “**An operative condition, openly historical.** Where the physical module supplies a history for \(D\), an anchored account is **operative** when each anchor is an **active route** (Part IX) — a subnetwork of actual occurrences — and not a backup that would have responded identically. This condition is about history, not signature; it is stated outside the anchored grade…”
+
+and  
+> “\(\operatorname{Origin}_{\beta,\ell}(s,c,p,h,e)\iff\operatorname{Attempt}\land\operatorname{New}\land\operatorname{Build}. \tag{G}\)”
+
+(2) Why it fails: The anchored grade does not require anchors to be active routes, and Origin does not include the operative condition. A candidate can therefore be anchored, new, built, and even deployed while its anchors are backups that would have responded identically. It explains nothing about the actual mechanism, yet satisfies both grades as stated.
+(3) Severity: serious.
+(4) Fix: Include the operative condition in Origin for explanatory claims, or make it part of the anchored grade when explanation of an actual occurrence is claimed.
+
+**Finding 17 — “Refine a cover” is backwards and obscures the missing partition requirement.**
+(1) Claim attacked:  
+> “The anchors of the active components refine a cover of the components of \(D\)…”
+
+(2) Why it fails: To “refine a cover” normally means the anchors are finer than a given cover. But the intended condition is that the anchors cover the touched components. The wording is backwards and helps conceal that no disjointness is required.
+(3) Severity: cosmetic to minor.
+(4) Fix: State directly that the anchors form a pairwise disjoint cover of the touched components.
+
+**Finding 18 — The extensional stance on copies is inconsistent with the claim that explanation is not fidelity.**
+(1) Claim attacked:  
+> “Both grades are extensional: the target’s own faithful copy satisfies them, and whether a copy *explains* is a question about origin and deployment (Part X), not about fidelity.”
+
+(2) Why it fails: Origin is itself defined without Deploy and is contingent on repertoire and build history. Thus a faithful copy can satisfy the formal account grades and Origin if it is new to the repertoire and built. The document then has no formal resources left to deny that it explains. The extensional stance collapses the distinction it was meant to preserve.
+(3) Severity: serious.
+(4) Fix: Either add a non-extensional explanatory condition beyond fidelity and Origin, or admit that faithful copies that satisfy Origin are explanations on this account and defend that consequence.
+
+**Finding 19 — The claim that a decoy sharing world-kind is “the mechanism” ignores the active/inactive component and assembly loopholes.**
+(1) Claim attacked:  
+> “What it does not separate is a decoy with the same response to *every* admitted edit — and the semantics says that such a decoy is, at this index, the mechanism.”
+
+(2) Why it fails: As shown in Findings 5 and 6, “same response” is ambiguous between same active-component response and same assembled response. A decoy can match every active component’s world-kind while differing in unanchored components or in shared constraints on admitted pairs outside \(C\). It is not the mechanism, and the anchored grade does not exclude it.
+(3) Severity: serious.
+(4) Fix: Define world-kind for the whole assembled organization on \(C_{\mathrm{adm}}\), and require all components that affect the assembly to be anchored.
+
+**Finding 20 — The document’s own attack (A) is already met by a faithful copy if the copy is built and deployed.**
+(1) Claim attacked:  
+> “The target’s own copy and the faithful modular table satisfy the anchored grade and fail Origin, and the semantics says so rather than hiding it; a reversed calculation fails anchoring on the production edits; conclusion-as-premise fails non-circular dependence.”
+
+(2) Why it fails: The first clause is false when the target is not already in the system’s repertoire, as Part X itself concedes. Build a faithful copy of the target from error records, ensure it is new to the system’s deployable repertoire, and deploy it. It satisfies the anchored grade, and it can satisfy Attempt, New, and Build. It plainly explains nothing beyond the target. That is exactly the counterexample Part XV says refutes sufficiency.
+(3) Severity: fatal.
+(4) Fix: Stop asserting as a general truth that the target’s own copy fails Origin. Either add a condition that excludes all copies of the target, or accept the sufficiency counterexample.
+====================================================================================================
+T3_sufficiency_anchored | rev3_deepseek | sample 1 | finish stop | 13804 chars | error None
+====================================================================================================
+**Finding 1 — Concrete counterexample to (A): the built target-mirror.**
+The document itself supplies the candidate. Part X says: “So the target’s own faithful copy, built from error records, is an anchored, originated account that is \(\equiv_\ell\) to the target: New fails for it if the target is already in the repertoire, and holds if it is not — in which case building the target’s mirror from its errors is discovering it, and the semantics says so without embarrassment.”
+
+Take a one-component black-box target \(D\):
+- \(V=\{x,y\}\), \(X_x=X_y=\{0,1\}\);
+- \(J=\{j\}\), \(V_j=\{x,y\}\);
+- \(C_{\mathrm{adm}}\) contains set-\(x\) edits and observe-\(y\) edits;
+- \(L_j(\text{set }x=r,b_0)=\{(r,f(r))\}\) for an arbitrary Boolean \(f\);
+- question \(p\) asks “why is \(y=f(x)\)?”, with \(\mathcal Q\) reading \(y\);
+- \(E=D\), \(t=\mathrm{id}\), \(\Gamma=\{j\}\).
+
+This is an anchored account: properness is satisfied because “An anchor may be the whole target only when \(D\) has one component”; resolution is vacuous; world-kind is identity. It satisfies (E): (F1), (F2), (A) are identity, non-circular dependence holds by deleting \(j\), and non-vacuity holds. It satisfies Origin if \(s\) has no prior \(D\)-equivalent content, the learner builds the mirror from itemised failure records, uses them at acceptance, and deploys the result. It plainly explains nothing: it is the target’s own input–output relation restated, with no decomposition, no independent dependency, no answer to *why* \(f\) is \(f\).  
+**Severity:** fatal to the sufficiency claim.  
+**Fix:** add a non-copying/non-restatement condition to the anchored grade or Build; exclude \(E\cong D\) unless \(E\) supplies an independently constructed decomposition; or withdraw sufficiency.
+
+**Finding 2 — The document contradicts itself on whether the target’s copy fails Origin.**
+Part XV says: “Candidates meeting the anchored grade and explaining nothing are already known — the target’s own copy, the faithful modular table — and the class does not claim they explain: they fail Origin, and the sufficiency claim is for the conjunction.” But Part X explicitly says the target’s mirror built from errors is “an anchored, originated account” when the target is not already in the repertoire.  
+**Why it fails:** the claim “they fail Origin” is false for a built, new, deployed mirror. The sufficiency test is therefore already met by the document’s own admitted case.  
+**Severity:** fatal.  
+**Fix:** replace “they fail Origin” with “an *unbuilt/un-deployed* copy fails Origin”; then either accept that the built copy refutes sufficiency or strengthen Build.
+
+**Finding 3 — Single-component targets are a loophole in properness.**
+Part V says: “An anchor may be the whole target only when \(D\) has one component.” This allows \(E=D\) with one active component anchored to the whole target. The document also admits that non-circular dependence is weak here: “when it has one, removing it is the only witness there is, and the condition then does little.”  
+**Why it fails:** for any one-component black-box target, the anchored grade admits a one-component restatement. With Origin satisfied by a new, built, deployed copy, the conjunction is met and explains nothing.  
+**Severity:** fatal for one-component targets; serious for the general sufficiency claim.  
+**Fix:** require decomposition even for one-component targets, or state that one-component targets cannot be explained by the anchored grade alone.
+
+**Finding 4 — Properness excludes genuine decomposition of single-component targets.**
+Properness requires “distinct active components have distinct anchors, and no touched component of \(D\) lies outside every anchor.” If \(D\) has one component, there is only one nonempty anchor subnetwork. Therefore \(E\) cannot have multiple active components with distinct anchors.  
+**Why it fails:** a genuine mechanism may explain a single observed phenomenon by multiple sub-mechanisms. The anchored grade forbids that unless the physical module already decomposes \(D\) into those subcomponents.  
+**Severity:** serious exclusion of genuine mechanisms.  
+**Fix:** allow \(E\)’s components to anchor to parts of \(D\) not listed as components of \(D\), or allow a refinement relation not limited to \(D\)’s given component inventory.
+
+**Finding 5 — Properness excludes partial mechanisms.**
+Properness requires a cover of “the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches,” and “no touched component of \(D\) lies outside every anchor.”  
+**Why it fails:** a genuine partial explanation may leave some physically touchable components as background. Under this condition, those components must lie in some active anchor, so the account must cover the whole touched mechanism.  
+**Severity:** serious.  
+**Fix:** restrict the cover to components relevant to the question’s \(C\) and \(\operatorname{Ans}_p\), or allow declared background components.
+
+**Finding 6 — Idealizations fail world-kind.**
+World-kind requires each active component of \(E\) to be “of one forward kind, on \((\ell,C_{\mathrm{adm}})\) … under every admitted pair that **touches** the anchor.” This is exact equality on every admitted pair.  
+**Why it fails:** ideal gas laws, frictionless planes, rational-agent models, infinite-population models, and other genuine idealizations are not exactly faithful on every admitted change that touches their anchors. If \(C_{\mathrm{adm}}\) includes the neglected factors, world-kind fails.  
+**Severity:** serious exclusion of genuine idealizational explanations.  
+**Fix:** add a tolerance/approximation condition, or treat idealizations as declared counterfactuals with a scoped objectivity claim rather than as anchored accounts on \(C_{\mathrm{adm}}\).
+
+**Finding 7 — Coarse grains are underdefined and may be excluded.**
+Admissibility requires “every component of that organization is touched by some admitted pair.” World-kind then quantifies over \(C_{\mathrm{adm}}\) with a transport \(\tau:A_D\to A_E\).  
+**Why it fails:** for a coarse-grained \(E\), many micro-edits in \(A_D\) have no coarse counterpart. If \(\tau\) maps them to identity, world-kind may fail; if \(\tau\) is not defined, the anchored grade cannot be evaluated. Exact coarse-grainings may survive, but statistical or approximate coarse-grained mechanisms are excluded or left formally undefined.  
+**Severity:** serious.  
+**Fix:** define coarse-graining transports explicitly, allow aggregate signatures, and relax exactness where the coarse grain is the explanatory target.
+
+**Finding 8 — The anchored grade does not require (F2) on \(C_{\mathrm{adm}}\).**
+Condition 3 of the anchored grade says only: “Each active component of \(E\) is of one forward kind … with its anchor subnetwork.” But Part V then says: “Anchoring is therefore component fidelity on the full admitted contract, with a proper decomposition at the question’s resolution.”  
+**Why it fails:** (F1) is per-component, and the anchored grade extends (F1) to \(C_{\mathrm{adm}}\); but (F2), the assembled-solution condition, is only required on \(C\). A candidate can have each component world-kind faithful while the assembled organization fails on admitted pairs outside \(C\).  
+**Severity:** serious formal gap.  
+**Fix:** add (F2) on \(C_{\mathrm{adm}}\) for pairs touching anchored components.
+
+**Finding 9 — The extensional stance makes “plainly explains nothing” unrepresentable.**
+Part V says: “the semantics has no predicate that separates a mechanism from its faithful copy, and does not want one.”  
+**Why it fails:** attack (A) asks for a candidate satisfying the anchored grade and Origin that “plainly explains nothing.” But the semantics explicitly refuses a predicate that separates a mechanism from a faithful copy. Any candidate that passes the formal conditions is therefore an account by definition; calling it non-explanatory is external to the semantics. The sufficiency claim is either tautological or unsupported.  
+**Severity:** fatal to the advertised empirical content of attack (A).  
+**Fix:** either admit that “explains nothing” is an external intuition the semantics cannot formalize, or add a formal non-explanation predicate.
+
+**Finding 10 — The modular-table defense is circular.**
+Part V says: “A table that genuinely encodes an organization’s response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component anchored to a target with several, and by nothing if it is a faithful decomposition — in which case it is an account.”  
+**Why it fails:** a table that fails is reclassified as “not a table in that sense”; a table that passes is reclassified as “a faithful decomposition” and therefore an account. There is no independent criterion for when a modular table is explanatory rather than merely tabular.  
+**Severity:** serious.  
+**Fix:** specify a non-table condition independent of passing (E), or concede that any faithful decomposition is explanatory by fiat.
+
+**Finding 11 — Non-circular dependence is trivial for one-component accounts, contradicting the claim that the anchored grade excludes one-component repackaging.**
+Part V says: “when it has one, removing it is the only witness there is, and the condition then does little — which is why the anchored grade, not this condition, is what excludes the one-component repackaging.”  
+**Why it fails:** for \(D\) with one component, properness explicitly allows the anchor to be the whole target. Thus the anchored grade does *not* exclude one-component repackaging. The sentence is inconsistent with the single-component case.  
+**Severity:** serious.  
+**Fix:** state that one-component repackaging is not excluded unless \(D\) is decomposed, or add a separate condition.
+
+**Finding 12 — Build’s “nontrivial binding” clause permits mere copying.**
+Build says a binding construction is nontrivial when it “is neither a relabelling of a binding already carried by some occurrence of \(s\) before \(e\) … nor obtainable from the incoming carriers by \(\equiv_\ell\).”  
+**Why it fails:** if \(s\) has no prior binding to \(D\), the identity/relabelling binding from a target-mirror \(E=D\) to \(D\) counts as nontrivial, even though it is just copying \(D\)’s own component structure.  
+**Severity:** serious loophole for Origin.  
+**Fix:** exclude identity or structural isomorphism to the target from the nontriviality clause unless the binding is independently constructed.
+
+**Finding 13 — New is agent-relative, not explanatory.**
+Part X defines: “\(\operatorname{New}(s,c,h,e)\iff\neg\exists d\in R_{<e}(s,h),\ d\equiv_\ell c\).”  
+**Why it fails:** building a copy of the target when the target is not in \(s\)’s prior repertoire satisfies New, even though the explanatory content is not new in any world-relative or mechanism-relative sense.  
+**Severity:** serious.  
+**Fix:** strengthen New to require non-equivalence to the target itself, or to any previously represented mechanism.
+
+**Finding 14 — Deploy can be satisfied by using the copy.**
+Deploy holds when \(s\) “holds a representation of \(c\) … integrated into problem-directed activity and supporting the declared use task \(U\) as a retained capability.”  
+**Why it fails:** if \(s\) uses the copied target-mirror to answer the question, Deploy is satisfied. No requirement of understanding, manipulation, or counterfactual reasoning beyond the copy is imposed.  
+**Severity:** serious.  
+**Fix:** require deployment in novel counterfactual or transfer tasks not reducible to replaying the copied relation.
+
+**Finding 15 — Objectivity cannot catch the target-mirror.**
+Objectivity requires that \(C\) is “not protective” against the module. For \(E=D\), no admitted pair can make the candidate’s transported answer differ from the target’s.  
+**Why it fails:** the objectivity condition is trivially satisfied by the target-mirror. It does not help separate explanation from a faithful copy.  
+**Severity:** minor to serious.  
+**Fix:** acknowledge that objectivity is orthogonal to the copy problem.
+
+**Finding 16 — Properness makes local explanations hostage to the entire module.**
+Properness quantifies over “components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches.”  
+**Why it fails:** a question about a narrow local phenomenon must still cover every component touched by any admitted edit in the module. This excludes genuine local explanations that deliberately ignore physically touchable but question-irrelevant components.  
+**Severity:** serious.  
+**Fix:** use the question’s \(C\) or declared scope to determine the relevant components.
+
+**Finding 17 — World-kind’s “touches” ignores boundary-only changes.**
+World-kind says: “under every admitted pair that **touches** the anchor — changes the relation of some component in it.”  
+**Why it fails:** an admitted boundary change can alter the solution through the anchor without changing the anchor’s component relation. Such a pair is ignored by world-kind, so a candidate can pass world-kind while failing on admitted boundary changes.  
+**Severity:** minor to serious.  
+**Fix:** define “touches” by change in the projected solution set of the anchor, not merely by change in a component relation.
+
+**Finding 18 — “A new attempt must fail none of these” is already false.**
+Part 0 says: “A new attempt must fail none of these.”  
+**Why it fails:** the built target-mirror from Part X fails none of the listed conditions when the target is not already in the repertoire. It is anchored, new, built, deployed, and plainly explains nothing.  
+**Severity:** fatal to the sufficiency claim.  
+**Fix:** strengthen the anchored grade or Origin so that the built target-mirror fails, or admit that it is a counterexample.
+====================================================================================================
+T3_sufficiency_anchored | rev3_deepseek | sample 2 | finish stop | 15261 chars | error None
+====================================================================================================
+**Finding 1 (fatal): A single-component target gives an anchored, originated account that plainly explains nothing.**
+
+Attacked claim: Part V, “An anchor may be the whole target only when \(D\) has one component,” together with the non-circular dependence passage: “when it has one, removing it is the only witness there is, and the condition then does little—which is why the anchored grade, not this condition, is what excludes the one-component repackaging.”
+
+Why it fails: Let \(D\) have exactly one component \(j\) with footprint \(\{x,y\}\) and relation \(L_j(a,b)=\{(x,y):y=f(x)\}\). Let the contract contain edits setting \(x\). Let \(E=D\) under the identity transport. Properness permits the whole target as anchor because \(D\) has one component. Resolution is vacuous. World-kind is tautological: \(E\)’s component is its own anchor. So \(E\) is anchored. If the target is not already in \(s\)’s repertoire, New holds; if \(s\) builds the single component from error records, Build can hold; if \(s\) deploys it to predict \(y\), Deploy holds. Thus Origin can hold. But \(E\) is literally the target’s one-component relation restated. It provides no decomposition, no independent dependencies, no mechanism. It “plainly explains nothing.” The anchored grade does not exclude it, because the only exclusionary clause for one-component repackaging is properness, and properness explicitly permits the whole target when \(D\) has one component.
+
+Seriousness: fatal to the sufficiency attack (A) as stated.
+
+Fix: either require \(D\) to have a proper decomposition for any anchored explanation, or add a condition that \(E\) is not identical to \(D\) and that the target’s component is decomposed into independently variable subcomponents. If single-component targets cannot be mechanistically explained, state that rather than admitting them as anchored.
+
+**Finding 2 (fatal): Part 0 and Part X contradict each other on whether the target’s own copy fails Origin.**
+
+Attacked claim: Part 0, “The target's own copy and the faithful modular table satisfy the anchored grade and fail Origin, and the semantics says so rather than hiding it.”
+
+Why it fails: Part X says the opposite can happen: “So the target's own faithful copy, built from error records, is an anchored, originated account that is \(\equiv_\ell\) to the target: New fails for it if the target is already in the repertoire, and holds if it is not — in which case building the target's mirror from its errors is discovering it.” If the target is not already in the repertoire, New holds. If it is built from error records, Build can hold. If it is deployed, Deploy can hold. So the target’s own copy does not fail Origin in general. Part 0’s universal claim is false.
+
+Seriousness: fatal inconsistency in the framing of attack (A).
+
+Fix: qualify Part 0: the target’s own copy fails Origin only when it is already in the repertoire, not built, or not held. Or strengthen Origin so that identity copies cannot satisfy it.
+
+**Finding 3 (serious): Properness over \(C_{\mathrm{adm}}\) excludes genuine partial mechanisms.**
+
+Attacked claim: “The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches, and the anchor map is injective on that cover: distinct active components have distinct anchors, and no touched component of \(D\) lies outside every anchor.”
+
+Why it fails: Suppose \(D\) has components \(A\) and \(B\). \(A\) affects \(\operatorname{Ans}_p\); \(B\) is touched by some admitted edit in \(C_{\mathrm{adm}}\) but is irrelevant to \(\operatorname{Ans}_p\). A genuine partial mechanism for the question anchors \(A\) only and omits \(B\). Properness fails because \(B\) is touched by \(C_{\mathrm{adm}}\) and lies outside every anchor. The condition makes physical admittance, not question relevance, determine the required decomposition.
+
+Seriousness: serious; it excludes partial mechanisms that are legitimate relative to the question.
+
+Fix: restrict the cover to components touched by \(C\) or to components that can affect \(\operatorname{Ans}_p\). Allow touched-but-irrelevant components to be named background or silent.
+
+**Finding 4 (serious): Properness excludes a genuine single-component global explanation of a multi-component target.**
+
+Attacked claim: “An anchor may be the whole target only when \(D\) has one component.”
+
+Why it fails: Suppose \(D\) has several components, but the genuine explanation is a single global law or symmetry principle, e.g. conservation of energy or momentum. A one-component \(E\) anchored to the whole target fails properness solely because \(D\) has more than one component. The anchored grade therefore excludes a genuine explanatory form rather than merely blocking a trivial repackaging.
+
+Seriousness: serious.
+
+Fix: allow a singleton anchor to the whole target when no admitted pair separately varies components with distinct effects on \(\operatorname{Ans}_p\), or when the question’s dependencies are global rather than component-local.
+
+**Finding 5 (serious): World-kind on \(C_{\mathrm{adm}}\) excludes idealizations.**
+
+Attacked claim: “Each active component of \(E\) is of one forward kind, on \((\ell,C_{\mathrm{adm}})\) with the question's baseline pair excluded, with its anchor subnetwork ... fidelity holds not only on the pairs the contract selected but on every admitted pair that **touches** the anchor.”
+
+Why it fails: An idealization such as a frictionless plane, point mass, or ideal gas component matches its anchor only on a restricted domain. On admitted pairs that break the idealization, the component relation differs from the anchor subnetwork. So the component is not one forward kind on \(C_{\mathrm{adm}}\), and the account is not anchored. If such idealizations are genuine explanations, the anchored grade excludes them.
+
+Seriousness: serious if the constitutive conjecture claims to capture explanatory creativity; minor if idealizations are explicitly relegated to the weaker “account at \(C\)” grade.
+
+Fix: either state that idealizations are not anchored explanations, or add an idealization grade with a declared idealization relation and a modulus, or restrict \(C_{\mathrm{adm}}\) to the idealization’s domain.
+
+**Finding 6 (serious): World-kind on \(C_{\mathrm{adm}}\) excludes coarse-grained and approximate mechanisms.**
+
+Attacked claim: same world-kind passage as Finding 5.
+
+Why it fails: A coarse-grained component is typically only approximately the projection of a fine-grained anchor subnetwork. On admitted pairs that expose fine-grained differences, the coarse component and the projected anchor will not coincide exactly. Since world-kind requires exact signature coincidence on \(C_{\mathrm{adm}}\), such coarse-grained mechanisms cannot be anchored. Part VIII allows approximate transport with a modulus, but the anchored grade does not use it.
+
+Seriousness: serious.
+
+Fix: either allow approximate transport with a modulus to satisfy the anchored grade, or make \(C_{\mathrm{adm}}\) grain-relative so that fine-grained edits are not admitted at the coarse grain.
+
+**Finding 7 (serious): Resolution uses \(C_{\mathrm{adm}}\), not \(C\), contradicting “at the question's resolution.”**
+
+Attacked claim: “Resolution. Whenever two components of \(D\) can be separately varied by pairs in \(C_{\mathrm{adm}}\) with distinct effects on \(\operatorname{Ans}_p\), they lie in distinct anchors. The decomposition of \(E\) is at least as fine as the dependencies the question asks about.”
+
+Why it fails: The question’s contract is \(C=(C_{\mathrm{adm}}\cap S)\cup K\). If the stated scope \(S\) excludes an admitted pair that separates two components with distinct effects on \(\operatorname{Ans}_p\), the question deliberately does not range over that pair. Resolution nevertheless forces the account to separate those components. That is not “at the question's resolution”; it is at the full admitted resolution. The stated scope is bypassed.
+
+Seriousness: serious.
+
+Fix: use \(C\) or \(C_{\mathrm{adm}}\cap S\) for resolution, not full \(C_{\mathrm{adm}}\). Keep \(C_{\mathrm{adm}}\) only for world-kind identity of the components that are actually anchored.
+
+**Finding 8 (serious): Properness’s “refine a cover” and “injective on that cover” are too ambiguous to evaluate.**
+
+Attacked claim: “The anchors of the active components refine a cover of the components of \(D\) that some pair in \(C_{\mathrm{adm}}\) touches, and the anchor map is injective on that cover: distinct active components have distinct anchors, and no touched component of \(D\) lies outside every anchor.”
+
+Why it fails: The text does not say whether anchors must be disjoint, whether they may overlap, whether an anchor may be a proper subset of a component, whether a component may appear in several anchors, or whether the cover is a partition. These details determine whether (F1) entails (F2), whether one-component repackaging is excluded, and whether partial mechanisms fail. As written, properness is not a checkable condition.
+
+Seriousness: serious.
+
+Fix: formalize the condition as a partition of the set of touched components into disjoint nonempty subsets, each assigned to a distinct active component, with every touched component in exactly one anchor. Or state the overlap rules explicitly.
+
+**Finding 9 (fatal to the sufficiency attack framing): The extensional stance leaves no predicate to say that an Origin-satisfying copy explains nothing.**
+
+Attacked claim: Part V, “account-hood at either grade is an extensional fidelity fact: the semantics has no predicate that separates a mechanism from its faithful copy, and does not want one.” Then: “This explains nothing” said of the target's own copy is not a complaint about account-hood; it is a complaint about origin and deployment.
+
+Why it fails: If origin and deployment are satisfied, the semantics has no remaining predicate to say the candidate “explains nothing.” Part X explicitly allows the target’s own faithful copy to satisfy Origin when it is new to the repertoire and built from error records. So the conjunction anchored+Origin can hold of a faithful copy that the document itself wants to describe as non-explanatory. The document cannot both have no mechanism/copy separator and use “explains nothing” as a meaningful complaint about a candidate that satisfies all its predicates.
+
+Seriousness: fatal to the stated sufficiency attack framing.
+
+Fix: either add a non-extensional condition on explanation—e.g. the account’s components must be independently realizable, or the account must not be identical to the target’s organization—or admit that a faithful copy satisfying Origin is an explanation and drop the claim that it explains nothing.
+
+**Finding 10 (serious): The “faithful modular table” claim is unsupported and contradicted by Part V.**
+
+Attacked claim: Part 0, “The target's own copy and the faithful modular table satisfy the anchored grade and fail Origin.”
+
+Why it fails: “Modular table” is never formally defined. Part V says: “A table that genuinely encodes an organization's response to every admitted change is not a table in that sense and is not excluded by (E); it is excluded by properness if it is one component anchored to a target with several, and by nothing if it is a faithful decomposition—in which case it is an account.” So a faithful modular decomposition table can be an account, and if it is new, built, and deployed, it can satisfy Origin. Part 0’s universal claim that such a table fails Origin is therefore false or unsupported.
+
+Seriousness: serious.
+
+Fix: define “modular table” formally and prove it fails at least one Origin condition, or remove the claim.
+
+**Finding 11 (serious): Properness over \(C_{\mathrm{adm}}\) makes “silence” practically impossible for anchored accounts, undercutting the objectivity condition.**
+
+Attacked claim: “A candidate is silent on an admitted pair only when that pair touches no anchor of any active component; silence is structural, read off \(\lambda\), never declared, and by properness an anchored account is silent on no admitted pair that touches a component the question's contract reaches.”
+
+Why it fails: An admissible grain requires every component of the organization to be touched by some admitted pair. Properness requires every component touched by \(C_{\mathrm{adm}}\) to lie in some anchor. Therefore an anchored account has no silence on any admitted pair that touches any component. The qualification “that the question's contract reaches” is redundant or misleading. If silence is impossible for anchored accounts, the objectivity condition’s appeal to silence does little work at the anchored grade.
+
+Seriousness: serious.
+
+Fix: align properness’s cover with \(C\), not \(C_{\mathrm{adm}}\), so that silence can be a real structural limit for components excluded by the question’s scope. Or state explicitly that anchored accounts are globally non-silent.
+
+**Finding 12 (serious): The objectivity condition may be redundant for anchored accounts, or else the anchored grade does not extend (F2).**
+
+Attacked claim: “\(C\) is protective when there is an admitted pair \((a,b)\in C_{\mathrm{adm}}\setminus C\) that touches some anchor of an active component of \(E\) … and on which the target's answer is defined and the candidate's transported answer differs from it.”
+
+Why it fails: World-kind extends component fidelity (F1) to every admitted pair touching an anchor. If the anchors partition the touched components of \(D\), then (F1) on all active components may already entail (F2) on \(C_{\mathrm{adm}}\), in which case the candidate’s transported answer agrees with the target on every protective pair, and no anchored account can be protective. If (F2) is not extended, the text must explain how component fidelity can hold on all anchors while the assembled answer differs on an admitted pair. The document does not resolve this.
+
+Seriousness: serious.
+
+Fix: state explicitly whether world-kind extends only (F1) or also (F2) to \(C_{\mathrm{adm}}\). If it extends both, state that anchored accounts are automatically non-protective. If it extends only (F1), give a condition under which (F2) can fail on an admitted pair despite component fidelity.
+
+**Finding 13 (serious): Build’s “nontrivial binding” condition is too weak for one-component targets, making Origin too easy.**
+
+Attacked claim: “contains a nontrivial binding construction required for that transport … neither a relabelling of a binding already carried by some occurrence of \(s\) before \(e\) … nor obtainable from the incoming carriers by \(\equiv_\ell\).”
+
+Why it fails: For a one-component target, the identity binding from the single component of \(E\) to the single component of \(D\) can be nontrivial if \(s\) carried no prior binding, and it is “required” if no other binding satisfies (F1)/(F2). So Build can hold with a trivial identity binding. This makes Origin satisfiable by a mere one-component restatement, as in Finding 1.
+
+Seriousness: serious.
+
+Fix: require the built organization to have a decomposition finer than the target’s trivial decomposition, or require the binding construction to decompose a target component into independently variable subcomponents.

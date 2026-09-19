@@ -61,6 +61,8 @@ def call(messages, temperature, max_tokens=int(os.environ.get("XEXAM_MAX_TOKENS"
                             if ch.get("finish_reason"):
                                 finish = ch["finish_reason"]
                     usage["finish_reason"] = finish
+                    if finish is None:  # the stream ended without a finish marker: the connection was cut
+                        raise ConnectionError(f"stream cut after {sum(map(len, reasoning))} reasoning chars and {sum(map(len, content))} content chars")
                     return {"content": "".join(content), "reasoning": "".join(reasoning)}, usage, None
                 body = json.loads(r.read().decode())
                 msg = body["choices"][0]["message"]
