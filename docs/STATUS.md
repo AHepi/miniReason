@@ -2,7 +2,7 @@
 
 ## 2026-09-19 — FW5 rewrite review thread published (separate from H005)
 
-A separate session read only PURPOSE.md and FW5, rewrote the semantics around kinds as edit-signatures, ran two frozen experiments, and had both cross-examined by two outside models. The thread is in [docs/reviews/2026-09-19-fable-cross-examination/](reviews/2026-09-19-fable-cross-examination/README.md); the transferable lessons are under 2026-09-19 headings in [docs/lessons/](lessons/README.md). Outcome: the experiments' headlines did not survive (a fair memoriser ties the selected tracker; the construction-versus-selection contrast was analytic; a frozen stopping rule was breached), and the rewrite has a consolidated revision list (file 15 §G) that has not yet been carried out. Nothing in H005 is affected; its section below remains current for that study.
+A separate session read only PURPOSE.md and FW5, rewrote the semantics around kinds as edit-signatures, ran two frozen experiments, and had both cross-examined by two outside models. The thread is in [docs/reviews/2026-09-19-fable-cross-examination/](reviews/2026-09-19-fable-cross-examination/README.md); the transferable lessons are under 2026-09-19 headings in [docs/lessons/](lessons/README.md). Outcome: the experiments' headlines did not survive (a fair memoriser ties the selected tracker; the construction-versus-selection contrast was analytic; a frozen stopping rule was breached), and the rewrite has been revised against its consolidated list as file 20 (with the mapping in 20a); file 20 has not been cross-examined, which is the next authorized task for that thread. Nothing in H005 is affected; its section below remains current for that study.
 
 ## H005 active three-cycle comparison — 2026-09-14
 

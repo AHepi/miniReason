@@ -10,6 +10,9 @@ What this folder is: a self-contained review thread from one session (Claude Cod
 | `15 Adversarial cross-examination - findings and adjudication.md` | Every witness finding with a verdict; §0 the failure modes of the cross-examination itself; §E the audits of the adjudication; §F the second witness; §G the consolidated revision list for file 10. |
 | `16`, `17` | Errata: what each experiment is still allowed to claim, sentence by sentence with its concession, plus post-freeze diagnostics labelled as such. |
 | `15b Adjudication supplement - after publication.md` | Everything added to files 15, 16, 17 and the story after the folder was first published: the last DeepSeek items, the whole second witness on the experiments, the corrected timing account, the consolidated revision list's amendments. The published files are unchanged. |
+| `20 Claude Fable Semantics - revised standalone theory.md` | The semantics revised against the whole consolidated list (file 15 §G as amended). Standalone, no history in it. Not yet cross-examined. |
+| `20a Revision ledger - where each item landed.md` | Which item of the list landed in which section of file 20, what went beyond the list, and what was not done. |
+| `15c Supplement 2 - after the revision.md` | Project story additions after the revision. |
 | `18`, `19` | Witness profiles: where each model was strong and weak, under what conditions, with evidence. |
 | `miniReason - project story.md` | The user-facing narrative with a numbered log (entries 1–31). |
 | `diagnostics/` | Scripts that import the frozen code unchanged and check one witness claim each, with their outputs. |
